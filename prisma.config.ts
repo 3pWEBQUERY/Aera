@@ -1,4 +1,4 @@
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
 // Load .env without requiring the `dotenv` package, so the Prisma CLI / MCP
 // can run migrations even before `npm install` has populated node_modules.
@@ -13,5 +13,9 @@ try {
 export default defineConfig({
   schema: "prisma/schema.prisma",
   migrations: { path: "prisma/migrations" },
-  datasource: { url: env("DATABASE_URL") },
+  // `prisma generate` (runs in postinstall on every service, incl. the cron
+  // worker) does not connect, so DATABASE_URL may be absent there. Fall back to
+  // an empty string instead of throwing. `migrate deploy` still requires a real
+  // value, which is present wherever migrations actually run.
+  datasource: { url: process.env.DATABASE_URL ?? "" },
 });
