@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display, Lora } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
@@ -24,8 +24,29 @@ const lora = Lora({
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("uiMigration.auth");
-  return { title: t("rootTitle"), description: t("rootDescription") };
+  return {
+    title: t("rootTitle"),
+    description: t("rootDescription"),
+    manifest: "/manifest.webmanifest",
+    icons: {
+      icon: [
+        { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+        { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+      ],
+      // iOS "Add to Home Screen" uses this PNG (black background + logo).
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+    },
+    appleWebApp: {
+      capable: true,
+      title: "Aera",
+      statusBarStyle: "black-translucent",
+    },
+  };
 }
+
+export const viewport: Viewport = {
+  themeColor: "#000000",
+};
 
 export default async function RootLayout({
   children,

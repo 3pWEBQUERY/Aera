@@ -9,15 +9,12 @@ export default async function manifest(): Promise<MetadataRoute.Manifest> {
     description: t("manifestDescription"),
     start_url: "/home",
     display: "standalone",
-    background_color: "#f4f1ea",
-    theme_color: "#161613",
+    background_color: "#000000",
+    theme_color: "#000000",
     icons: [
-      {
-        src: "/logo.svg",
-        sizes: "any",
-        type: "image/png",
-        purpose: "any",
-      },
+      { src: "/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }
