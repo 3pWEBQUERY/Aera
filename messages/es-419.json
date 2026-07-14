@@ -1,0 +1,101 @@
+{
+  "auth": {
+    "forgotPassword": "¿Olvidaste tu contraseña?"
+  },
+  "search": {
+    "noResults": "Sin resultados para “{query}”"
+  },
+  "home": {
+    "tiles": {
+      "videos": {
+        "name": "Videos",
+        "hint": "Mediateca"
+      }
+    },
+    "chapters": {
+      "c2": {
+        "title": "Membresías que valen la pena",
+        "text": "Membresías gratuitas y pagas, suscripciones, compras únicas y productos digitales. El pago es seguro, el contenido pago se desbloquea automáticamente tras la compra — y tus ingresos se te depositan.",
+        "tag1": "Gratis y pagas",
+        "tag2": "Suscripciones y compras únicas",
+        "tag3": "Pago seguro y depósito"
+      }
+    },
+    "revenue": {
+      "tiers": {
+        "name": "Niveles de membresía",
+        "detail": "recurrente, gratis o pago"
+      },
+      "paidAccess": {
+        "name": "Spaces y cursos pagos",
+        "detail": "acceso mediante paywall"
+      }
+    },
+    "finaleText": "Empieza gratis, configura spaces, invita miembros — monetiza cuando estés listo. No se necesita tarjeta de crédito."
+  },
+  "dashboard": {
+    "media": {
+      "openStudio": "Studio",
+      "openInStudio": "Edit in Studio",
+      "uploadMedia": "Upload media",
+      "uploadingProgress": "Uploading… {done}/{total}",
+      "uploadFailed": "Upload failed: {name}",
+      "storageTitle": "Media storage",
+      "storageOf": "{used} of {limit} used"
+    },
+    "mediaStudio": {
+      "metaTitle": "Image Studio",
+      "title": "Image Studio",
+      "subtitle": "Create, edit and refine images with AI",
+      "back": "Back to media",
+      "credits": "credits",
+      "credit": "credit",
+      "creditsHint": "Monthly AI credit balance",
+      "aiOff": "AI is not configured (GEMINI_API_KEY missing). Only Resize is available.",
+      "upload": "Upload",
+      "fromLibrary": "From library",
+      "fromLibraryHint": "Pick an image from your media library",
+      "libraryEmpty": "No images in your library yet.",
+      "tool_create": "Create",
+      "tool_edit": "Edit",
+      "tool_remove-bg": "Remove background",
+      "tool_enhance": "Enhance quality",
+      "tool_resize": "Resize",
+      "apply_create": "Generate image",
+      "apply_edit": "Apply edit",
+      "apply_remove-bg": "Remove background",
+      "apply_enhance": "Enhance",
+      "apply_resize": "Resize & save",
+      "hint_remove-bg": "One click: the subject is cut out onto a transparent background.",
+      "hint_enhance": "One click: sharper details, less noise, better exposure.",
+      "promptCreate": "Describe the image",
+      "promptCreatePlaceholder": "e.g. Minimal poster of a coffee cup, warm morning light",
+      "promptEdit": "Describe the change",
+      "promptEditPlaceholder": "e.g. Make the sky sunset orange, keep everything else",
+      "resizeTarget": "Target size",
+      "resize_square": "Square",
+      "resize_wide": "Wide",
+      "resize_portrait": "Portrait",
+      "resize_banner": "Banner",
+      "width": "Width",
+      "height": "Height",
+      "emptyCreate": "Describe your image below — or start from an existing one",
+      "emptyPick": "Add an image to work on",
+      "emptyHint": "Upload a file or pick one from your library",
+      "clearImage": "Remove working image",
+      "working": "Working…",
+      "history": "This session",
+      "historySaved": "All results are saved to your media library automatically.",
+      "historyUse": "Use as working image",
+      "download": "Open",
+      "errorNotImage": "Please choose an image file.",
+      "errorLoad": "The image could not be loaded.",
+      "errorCredits": "No credits left — top up in Credits & usage.",
+      "errorNoImage": "No image came back. Try rephrasing your request.",
+      "errorGeneric": "Something went wrong. Please try again."
+    }
+  },
+  "pricing": {
+    "storageChip": "{gb} GB media storage"
+  }
+}

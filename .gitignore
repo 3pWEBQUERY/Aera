@@ -1,0 +1,14 @@
+node_modules
+.trash_node_modules_DELETE_ME
+.next
+.env
+.env*.local
+app/generated
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+public/uploads
+# Stray local artifacts (never source code)
+/private
+*.png
+!public/**/*.png

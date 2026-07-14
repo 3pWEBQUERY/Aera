@@ -1,0 +1,18 @@
+-- Reference RLS policy (applied programmatically by scripts/apply-rls.ts).
+-- Every tenant-scoped table is isolated by the session GUC `aera.tenant_id`.
+--
+-- Enforcement model:
+--   * Application-level scoping (every query filters tenantId) is the primary,
+--     always-on guarantee.
+--   * Global system paths use the privileged connection. Tenant-scoped Prisma
+--     operations switch to the non-owner `aera_app` role and execute:
+--         SET LOCAL ROLE aera_app;
+--         SET LOCAL aera.tenant_id = '<tenant-id>';
+--     inside the same transaction, enforcing isolation even when the physical
+--     connection belongs to the table owner.
+--
+-- Example policy (created for each tenant table):
+--   ALTER TABLE "Post" ENABLE ROW LEVEL SECURITY;
+--   CREATE POLICY tenant_isolation ON "Post"
+--     USING ("tenantId" = current_setting('aera.tenant_id', true))
+--     WITH CHECK ("tenantId" = current_setting('aera.tenant_id', true));
