@@ -82,27 +82,31 @@ export const LOCALE_ENGLISH_NAMES: Record<AppLocale, string> = {
   ko: "Korean",
 };
 
-/** Flaggen-Emojis für den Sprachwähler (rund zugeschnitten dargestellt). */
+/**
+ * Runde SVG-Flaggen für den Sprachwähler (public/flags/, circle-flags, MIT).
+ * Kreisförmig beschnittene Vektoren — füllen den Kreis vollständig und sehen
+ * auf allen Plattformen identisch aus (keine Emoji-Inkonsistenzen).
+ */
 export const LOCALE_FLAGS: Record<AppLocale, string> = {
-  de: "🇩🇪",
-  en: "🇺🇸",
-  "en-GB": "🇬🇧",
-  da: "🇩🇰",
-  es: "🇪🇸",
-  "es-419": "🇲🇽",
-  fr: "🇫🇷",
-  it: "🇮🇹",
-  nl: "🇳🇱",
-  nb: "🇳🇴",
-  pl: "🇵🇱",
-  "pt-BR": "🇧🇷",
-  sv: "🇸🇪",
-  ru: "🇷🇺",
-  uk: "🇺🇦",
-  ja: "🇯🇵",
-  "zh-Hans": "🇨🇳",
-  "zh-Hant": "🇹🇼",
-  ko: "🇰🇷",
+  de: "/flags/de.svg",
+  en: "/flags/us.svg",
+  "en-GB": "/flags/gb.svg",
+  da: "/flags/dk.svg",
+  es: "/flags/es.svg",
+  "es-419": "/flags/mx.svg",
+  fr: "/flags/fr.svg",
+  it: "/flags/it.svg",
+  nl: "/flags/nl.svg",
+  nb: "/flags/no.svg",
+  pl: "/flags/pl.svg",
+  "pt-BR": "/flags/br.svg",
+  sv: "/flags/se.svg",
+  ru: "/flags/ru.svg",
+  uk: "/flags/ua.svg",
+  ja: "/flags/jp.svg",
+  "zh-Hans": "/flags/cn.svg",
+  "zh-Hant": "/flags/tw.svg",
+  ko: "/flags/kr.svg",
 };
 
 export function normalizeLocale(value: string | undefined | null): AppLocale {

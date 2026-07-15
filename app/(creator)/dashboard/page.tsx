@@ -9,6 +9,7 @@ import prisma from "@/lib/prisma";
 import { logoutAction } from "@/app/actions/auth";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
+import { MobileTabbar } from "@/components/home/mobile-tabbar";
 import logoBlack from "@/public/logo_black.svg";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -123,6 +124,11 @@ export default async function DashboardIndex() {
           </Link>
         </div>
       </main>
+
+      {/* App-Shell-Tabbar (mobil) — wie auf /home. */}
+      <MobileTabbar
+        user={{ name: user.name, avatarUrl: user.avatarUrl }}
+      />
     </div>
   );
 }

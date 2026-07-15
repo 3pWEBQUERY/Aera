@@ -59,6 +59,10 @@ export const env = {
   S3_ACCESS_KEY_ID: process.env.S3_ACCESS_KEY_ID ?? "",
   S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY ?? "",
   S3_PUBLIC_URL: process.env.S3_PUBLIC_URL ?? "",
+  /** Bundle-ID der iOS-App (z. B. "so.aera.app") — Pflicht für Apple-IAP-Validierung. */
+  APPLE_BUNDLE_ID: process.env.APPLE_BUNDLE_ID ?? "",
+  /** "1" erlaubt Sandbox-Transaktionen (TestFlight/Simulator); Production sonst Pflicht. */
+  APPLE_IAP_ALLOW_SANDBOX: process.env.APPLE_IAP_ALLOW_SANDBOX === "1",
 };
 
 export const features = {

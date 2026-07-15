@@ -58,6 +58,26 @@ body {
   }
 }
 
+/* Soft entrance for header popovers (language switcher & co.). */
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.popover-in {
+  animation: popover-in 0.16s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .popover-in {
+    animation: none;
+  }
+}
+
 /* Hide scrollbars on horizontal sliders (content stays scrollable). */
 .scrollbar-none {
   scrollbar-width: none;

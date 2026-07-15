@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { HomeRail, type RailMembership } from "@/components/home/home-rail";
+import { MobileTabbar } from "@/components/home/mobile-tabbar";
 import { VerifyEmailBanner } from "@/components/verify-email-banner";
 
 export const metadata: Metadata = {
@@ -36,10 +37,14 @@ export default async function HomeLayout({
         memberships={memberships}
         user={user ? { name: user.name, avatarUrl: user.avatarUrl } : null}
       />
-      <main className="min-w-0 flex-1">
+      {/* pb-28: Freiraum für die schwebende Mobile-Tabbar. */}
+      <main className="min-w-0 flex-1 pb-28 md:pb-0">
         {user && !user.emailVerifiedAt && <VerifyEmailBanner email={user.email} />}
         {children}
       </main>
+      <MobileTabbar
+        user={user ? { name: user.name, avatarUrl: user.avatarUrl } : null}
+      />
     </div>
   );
 }

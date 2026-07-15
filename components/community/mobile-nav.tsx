@@ -1,20 +1,28 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Sheet } from "@/components/dashboard/sheet";
 import { Icon } from "@/components/dashboard/icons";
-import { SpaceNav } from "./space-nav";
+import type { SidebarItem } from "./sidebar";
 
-/** Burger button + full-screen sheet with the community navigation (mobile only). */
+/**
+ * Burger-Button + iOS-Style Bottom-Sheet mit der Community-Navigation (nur
+ * mobil). Bekommt dieselben Items wie die Desktop-Sidebar — also das vom
+ * Creator im Layout-Editor konfigurierte Navigationsmenü (bzw. den Auto-
+ * Fallback), damit Web- und Mobil-Ansicht identisch sind.
+ */
 export function MobileCommunityNav({
-  slug,
   name,
-  spaces,
+  logoUrl,
+  items,
 }: {
-  slug: string;
   name: string;
-  spaces: { slug: string; name: string; type: string; locked: boolean }[];
+  /** Creator-Logo aus den Community-Einstellungen (Fallback: Initial). */
+  logoUrl?: string | null;
+  items: SidebarItem[];
 }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -40,11 +48,56 @@ export function MobileCommunityNav({
         onClose={() => setOpen(false)}
         title={name}
         subtitle="Navigation"
-        icon="spaces"
+        logo={
+          logoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logoUrl}
+              alt=""
+              className="h-8 w-8 shrink-0 rounded-lg object-cover"
+            />
+          ) : (
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--brand)] font-bold text-white">
+              {name.charAt(0).toUpperCase()}
+            </span>
+          )
+        }
+        variant="bottom"
       >
-        <div className="min-h-0 flex-1 overflow-y-auto p-4">
-          <SpaceNav slug={slug} spaces={spaces} />
-        </div>
+        <nav className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
+          {items
+            // Die dynamische "Zuletzt besucht"-Sektion gibt es nur im
+            // Desktop-Rail — mobil zeigen wir die eigentlichen Menüpunkte.
+            .filter((item) => !item.recent)
+            .map((item) => {
+              const active = item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "flex items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+                    active
+                      ? "bg-[#161613]/5 text-[#161613]"
+                      : "text-[#161613]/70 hover:bg-[#161613]/5",
+                  )}
+                >
+                  <Icon
+                    name={item.icon}
+                    size={17}
+                    className={cn(
+                      "shrink-0",
+                      active ? "text-[var(--brand)]" : "text-[#161613]/50",
+                    )}
+                  />
+                  <span className="flex-1 truncate">{item.label}</span>
+                </Link>
+              );
+            })}
+        </nav>
       </Sheet>
     </div>
   );

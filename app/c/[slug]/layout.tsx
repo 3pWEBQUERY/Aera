@@ -190,7 +190,11 @@ export default async function CommunityLayout({
         <header className="sticky top-0 z-40 border-b border-[#161613]/10 bg-[#f4f1ea]/90 backdrop-blur">
           <div className="flex w-full items-center gap-4 px-4 py-3 sm:px-6">
             <div className="flex min-w-0 items-center gap-2">
-              <MobileCommunityNav slug={slug} name={displayName} spaces={spaces} />
+              <MobileCommunityNav
+                name={displayName}
+                logoUrl={displayLogo}
+                items={sidebarItems}
+              />
               <Link
                 href={`/c/${slug}`}
                 className="flex min-w-0 items-center gap-2.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"

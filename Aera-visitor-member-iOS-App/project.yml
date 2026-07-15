@@ -1,0 +1,44 @@
+name: Aera
+options:
+  bundleIdPrefix: so.aera
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_LANGUAGE: de
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+targets:
+  Aera:
+    type: application
+    platform: iOS
+    sources:
+      - path: Aera
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: so.aera.app
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_CFBundleDisplayName: Aera
+        SWIFT_EMIT_LOC_STRINGS: YES
+        CODE_SIGN_STYLE: Automatic
+    info:
+      path: Aera/Info.plist
+      properties:
+        CFBundleDevelopmentRegion: de
+        CFBundleLocalizations:
+          [de, en, en-GB, da, es, es-419, fr, it, ja, ko, nb, nl, pl, pt-BR, ru, sv, uk, zh-Hans, zh-Hant]
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        ITSAppUsesNonExemptEncryption: false
+schemes:
+  Aera:
+    build:
+      targets:
+        Aera: all
+    run:
+      config: Debug
+      storeKitConfiguration: Aera.storekit

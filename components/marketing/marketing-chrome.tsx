@@ -2,7 +2,7 @@
 
 import { usePathname } from "next/navigation";
 
-const BARE_ROUTES = new Set(["/login", "/signup"]);
+const BARE_ROUTES = new Set(["/login", "/signup", "/forgot"]);
 
 /**
  * Hides marketing header/footer on focused auth screens (e.g. login, signup).

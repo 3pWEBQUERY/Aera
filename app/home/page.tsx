@@ -14,6 +14,7 @@ import {
   type SliderCreator,
 } from "@/components/home/creator-slider";
 import { CategoryChips } from "@/components/home/category-chips";
+import { HScrollRow } from "@/components/community/h-scroll-row";
 
 /** Poster palette — same muted tones as the landing-page marquee tiles. */
 const CATEGORY_TILE_TONES = [
@@ -238,7 +239,7 @@ export default async function DiscoverPage({
       ? prisma.membership.findMany({
           where: { userId: user.id, status: "ACTIVE" },
           orderBy: { joinedAt: "desc" },
-          take: 4,
+          take: 16,
           include: { tenant: { select: CARD_SELECT } },
         })
       : Promise.resolve([]),
@@ -310,37 +311,35 @@ export default async function DiscoverPage({
       </div>
 
       {mineTenants.length > 0 && (
-        <Section title={t("mineTitle")}>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {mineTenants.map((tenant) => (
-              <Link
-                key={tenant.slug}
-                href={`/c/${tenant.slug}`}
-                className="group flex items-center gap-3.5 rounded-2xl border border-[#161613]/10 bg-white p-4 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
-              >
-                {tenant.logoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={tenant.logoUrl} alt="" className="h-11 w-11 shrink-0 rounded-xl object-cover" />
-                ) : (
-                  <span
-                    className="display-serif flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg text-white"
-                    style={{ backgroundColor: tenant.primaryColor }}
-                  >
-                    {tenant.name.charAt(0).toUpperCase()}
-                  </span>
-                )}
-                <span className="min-w-0">
-                  <span className="display-serif block truncate text-base leading-tight text-[#161613]">
-                    {tenant.name}
-                  </span>
-                  <span className="mt-1 block truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
-                    {t("memberCount", { count: tenant._count.memberships })}
-                  </span>
+        <HScrollRow title={t("mineTitle")}>
+          {mineTenants.map((tenant) => (
+            <Link
+              key={tenant.slug}
+              href={`/c/${tenant.slug}`}
+              className="group flex w-[260px] shrink-0 snap-start items-center gap-3.5 rounded-2xl border border-[#161613]/10 bg-white p-4 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25 sm:w-[280px]"
+            >
+              {tenant.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={tenant.logoUrl} alt="" className="h-11 w-11 shrink-0 rounded-xl object-cover" />
+              ) : (
+                <span
+                  className="display-serif flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg text-white"
+                  style={{ backgroundColor: tenant.primaryColor }}
+                >
+                  {tenant.name.charAt(0).toUpperCase()}
                 </span>
-              </Link>
-            ))}
-          </div>
-        </Section>
+              )}
+              <span className="min-w-0">
+                <span className="display-serif block truncate text-base leading-tight text-[#161613]">
+                  {tenant.name}
+                </span>
+                <span className="mt-1 block truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+                  {t("memberCount", { count: tenant._count.memberships })}
+                </span>
+              </span>
+            </Link>
+          ))}
+        </HScrollRow>
       )}
 
       {popularClean.length > 0 && (

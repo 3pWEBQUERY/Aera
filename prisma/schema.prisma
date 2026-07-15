@@ -385,6 +385,8 @@ model MembershipTier {
   interval        BillingInterval @default(FREE)
   stripeProductId String?
   stripePriceId   String?
+  /// Explizites Apple-IAP-Produkt (StoreKit) für diese Stufe; null = Preis-Pool-Fallback.
+  appleProductId  String?
   entitlementKey  String // e.g. "tier:premium" — granted to members on this tier
   isDefault       Boolean         @default(false)
   isPublic        Boolean         @default(true)
@@ -902,6 +904,8 @@ model Product {
   type                 ProductType @default(DIGITAL)
   stripeProductId      String?
   stripePriceId        String?
+  /// Explizites Apple-IAP-Produkt (StoreKit); PHYSICAL-Produkte sind nie per IAP kaufbar.
+  appleProductId       String?
   downloadUrl          String?
   grantsEntitlementKey String? // entitlement granted on purchase
   isPublished          Boolean     @default(true)
@@ -939,6 +943,8 @@ model Order {
   fulfilled             Boolean     @default(false)
   stripeSessionId       String?     @unique
   stripePaymentIntentId String?
+  /// Apple-IAP: transactionId der signierten StoreKit-Transaktion (Idempotenz).
+  appleTransactionId    String?     @unique
   // Snapshot used to revoke paid access even if the product/package changes.
   grantedEntitlementKey String?
   refundedAt            DateTime?
@@ -959,6 +965,8 @@ model Subscription {
   tier                 MembershipTier     @relation(fields: [tierId], references: [id])
   status               SubscriptionStatus @default(ACTIVE)
   stripeSubscriptionId String?            @unique
+  /// Apple-IAP: originalTransactionId des Auto-Renewable-Abos (Idempotenz + Notification-Sync).
+  appleOriginalTransactionId String?      @unique
   currentPeriodEnd     DateTime?
   cancelAtPeriodEnd    Boolean            @default(false)
   createdAt            DateTime           @default(now())

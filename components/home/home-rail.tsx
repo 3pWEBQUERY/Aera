@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { cn, initials } from "@/lib/utils";
+import logoButton from "@/public/logo_button.svg";
 
 export interface RailMembership {
   slug: string;
@@ -71,11 +73,11 @@ export function HomeRail({
     >
       <Link
         href="/"
-        aria-label="Aera"
-        className="display-serif group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-xl text-[#161613] transition hover:rounded-2xl hover:bg-[#ece7dc]"
+        aria-label={t("home")}
+        className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
       >
-        A
-        <Tooltip label="Aera" />
+        <Image src={logoButton} alt="" className="h-9 w-9" />
+        <Tooltip label={t("home")} />
       </Link>
 
       <div className="h-px w-7 shrink-0 bg-white/10" />

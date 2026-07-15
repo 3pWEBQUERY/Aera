@@ -3027,6 +3027,14 @@
       "create": "Create community",
       "account": "Your account",
       "login": "Log in"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

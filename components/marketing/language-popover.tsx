@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { setLocaleAction } from "@/app/actions/locale";
@@ -10,15 +11,28 @@ import {
   type AppLocale,
 } from "@/i18n/locales";
 
-/** Runde Flagge (Emoji, kreisförmig zugeschnitten). */
+/**
+ * Runde SVG-Flagge (circle-flags): füllt den Kreis vollständig aus.
+ * Der Inset-Ring liegt als Overlay über der Grafik und gibt der Kante
+ * auf dunklem Grund eine saubere, dezente Kontur.
+ */
 function Flag({ locale, size = 24 }: { locale: AppLocale; size?: number }) {
   return (
     <span
       aria-hidden
-      className="flex shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 leading-none ring-1 ring-white/15"
-      style={{ width: size, height: size, fontSize: size * 0.92 }}
+      className="relative block shrink-0 overflow-hidden rounded-full"
+      style={{ width: size, height: size }}
     >
-      {LOCALE_FLAGS[locale]}
+      <Image
+        src={LOCALE_FLAGS[locale]}
+        alt=""
+        width={size}
+        height={size}
+        unoptimized
+        draggable={false}
+        className="h-full w-full object-cover"
+      />
+      <span className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/15 ring-inset" />
     </span>
   );
 }
@@ -26,7 +40,7 @@ function Flag({ locale, size = 24 }: { locale: AppLocale; size?: number }) {
 /**
  * Runder Sprach-Button für den dunklen Marketing-Header: zeigt die Flagge
  * der aktiven Sprache und öffnet ein Popover mit allen Sprachen (runde
- * Flaggen + native Namen). Auswahl speichert das Cookie per Server-Action.
+ * SVG-Flaggen + native Namen). Auswahl speichert das Cookie per Server-Action.
  */
 export function LanguagePopover() {
   const locale = useLocale() as AppLocale;
@@ -74,20 +88,27 @@ export function LanguagePopover() {
         aria-label={t("title")}
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 transition-colors hover:border-white/40 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+        className={
+          "group flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 " +
+          (open
+            ? "border-white/40 bg-white/10"
+            : "border-white/15 hover:border-white/40 hover:bg-white/10")
+        }
       >
-        <Flag locale={locale} size={24} />
+        <span className="transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
+          <Flag locale={locale} size={26} />
+        </span>
       </button>
 
       {open && (
         <div
           role="menu"
-          className="absolute right-0 top-full z-50 mt-2 w-[19rem] rounded-2xl border border-white/10 bg-[#161613] p-2 shadow-2xl sm:w-[26rem]"
+          className="popover-in absolute right-0 top-full z-50 mt-2 w-[19rem] origin-top-right rounded-2xl border border-white/10 bg-[#161613]/95 p-2 shadow-2xl shadow-black/40 backdrop-blur-xl sm:w-[26rem]"
         >
           <p className="px-3 pb-1.5 pt-2 text-[11px] font-bold uppercase tracking-[0.18em] text-white/40">
             {t("title")}
           </p>
-          <div className="grid max-h-[60vh] grid-cols-1 gap-1 overflow-y-auto sm:grid-cols-2">
+          <div className="grid max-h-[60vh] grid-cols-1 gap-0.5 overflow-y-auto sm:grid-cols-2">
             {SUPPORTED_LOCALES.map((l) => {
               const active = l === locale;
               return (
@@ -99,10 +120,10 @@ export function LanguagePopover() {
                   disabled={pending}
                   onClick={() => choose(l)}
                   className={
-                    "flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-sm transition-colors disabled:opacity-60 " +
+                    "flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-sm transition-colors disabled:opacity-60 " +
                     (active
                       ? "bg-white/10 font-semibold text-white"
-                      : "text-white/65 hover:bg-white/10 hover:text-white")
+                      : "text-white/65 hover:bg-white/[0.07] hover:text-white")
                   }
                 >
                   <Flag locale={l} size={22} />
@@ -110,10 +131,18 @@ export function LanguagePopover() {
                     {LOCALE_LABELS[l]}
                   </span>
                   {active && (
-                    <span
+                    <svg
                       aria-hidden
-                      className="h-1.5 w-1.5 shrink-0 rounded-full bg-white"
-                    />
+                      viewBox="0 0 16 16"
+                      className="h-3.5 w-3.5 shrink-0 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth={2.25}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="m3 8.5 3.2 3.2L13 4.8" />
+                    </svg>
                   )}
                 </button>
               );

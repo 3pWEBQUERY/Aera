@@ -3027,6 +3027,14 @@
       "create": "Community erstellen",
       "account": "Dein Konto",
       "login": "Anmelden"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Entdecken",
+      "search": "Suche",
+      "create": "Erstellen",
+      "account": "Profil",
+      "login": "Anmelden"
     }
   },
   "categories": {

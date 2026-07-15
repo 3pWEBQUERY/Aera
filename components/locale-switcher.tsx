@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { setLocaleAction } from "@/app/actions/locale";
 import {
@@ -48,12 +49,21 @@ export function LocaleSwitcher() {
                     <span className="h-2 w-2 rounded-full bg-[#161613]" />
                   )}
                 </span>
-                {/* Runde Flagge (Emoji, kreisförmig zugeschnitten). */}
+                {/* Runde SVG-Flagge (circle-flags), füllt den Kreis komplett. */}
                 <span
                   aria-hidden
-                  className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#161613]/5 text-[22px] leading-none ring-1 ring-[#161613]/10"
+                  className="relative block h-6 w-6 shrink-0 overflow-hidden rounded-full"
                 >
-                  {LOCALE_FLAGS[l]}
+                  <Image
+                    src={LOCALE_FLAGS[l]}
+                    alt=""
+                    width={24}
+                    height={24}
+                    unoptimized
+                    draggable={false}
+                    className="h-full w-full object-cover"
+                  />
+                  <span className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-[#161613]/10 ring-inset" />
                 </span>
                 {/* min-w-0 + break-words: lange Namen wie „(Latinoamérica)"
                     brechen innerhalb der Karte um, statt überzulaufen. */}
