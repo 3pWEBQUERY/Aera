@@ -136,7 +136,7 @@ MembershipHome { community: CommunityCard, tier: {name, slug, priceCents, interv
 - `POST /c/{slug}/join-free` 🔒 → tritt Default-/Free-Tier bei → `{ viewer: Viewer }`; 409 `payment_required` wenn kein Free-Tier existiert, 403 `banned`.
 - `GET /c/{slug}/tiers` → `{ data: Tier[] }`
 - `POST /c/{slug}/membership/cancel` 🔒 → `{ ok }` — nur für nicht-Apple-Abos (Stripe→Web-Hinweis via 409 `manage_on_web`); Apple-Abos werden über iOS-Abo-Verwaltung gekündigt.
-- `GET /c/{slug}/space/{spaceSlug}?q=&tab=&cursor=` → `{ space: SpaceSummary & { description, settings }, content: Content }` — 403 `not_member` / `payment_required` wenn Space nicht zugänglich (mit `space` trotzdem geliefert für Paywall-UI).
+- `GET /c/{slug}/space/{spaceSlug}?q=&tab=&cursor=&page=` → `{ space: SpaceSummary & { description, settings }, content: Content }` — 403 `not_member` / `payment_required` wenn Space nicht zugänglich (mit `space` trotzdem geliefert für Paywall-UI). `page` wird nur von BLOG ausgewertet (seitenbasiertes Paging), `cursor` von FEED/FORUM/VIDEOS/PODCAST.
 
 `Content` ist eine tagged union über `space.type`:
 
@@ -215,6 +215,7 @@ ChatMessage { id, body, createdAt, author: Author, mine: boolean }
   Body: `{ tenantSlug, jws, kind: "tier"|"product"|"post"|"media"|"media-item"|"tip"|"request"|"booking", refId, }`
   Antwort: `{ ok: true, viewer: Viewer }` bzw. 400 `iap_invalid` / `iap_product_mismatch`.
   - `kind:"tier"` → Membership ACTIVE + Subscription (mit `appleOriginalTransactionId`) + Entitlement `TIER` + Punkte + Referral, wie Stripe-`tier`.
+  - Bei `kind:"tier"` ist `refId` optional (leer/fehlend erlaubt, z. B. Restore auf neuem Gerät): der Server leitet das Tier aus der `productId` der verifizierten Transaktion ab — explizites `MembershipTier.appleProductId`-Match, sonst Abo-Pool-Produkt → Tier mit exakt passendem `priceCents` + Intervall im Tenant; bei 0 oder >1 Treffern → 400 `iap_product_mismatch`. Für alle anderen kinds bleibt `refId` Pflicht.
   - andere kinds → `Order(PAID, appleTransactionId)` + `grantEntitlement(PURCHASE)` + typspezifische Effekte (Request→FULFILLED, Booking→CONFIRMED, Tip→PAID).
 - `POST /iap/apple-notifications` — **kein** Bearer; App Store Server Notifications V2 (`{ signedPayload }`). Verifiziert JWS, verarbeitet `DID_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`, `REFUND`, `GRACE_PERIOD_EXPIRED` → synct `Subscription.status`/Entitlement wie `customer.subscription.updated`/`charge.refunded`.
 

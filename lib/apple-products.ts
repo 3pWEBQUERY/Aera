@@ -56,6 +56,17 @@ export function parseTipAppleProductId(productId: string): number | null {
   return TIP_SET.has(cents) ? cents : null;
 }
 
+/** Intervall + Betrag (Cents) aus einer `aera.sub.month|year.{cents}`-Produkt-ID; null wenn kein Pool-Produkt. */
+export function parseSubscriptionAppleProductId(
+  productId: string,
+): { interval: "MONTH" | "YEAR"; priceCents: number } | null {
+  const m = /^aera\.sub\.(month|year)\.(\d+)$/.exec(productId);
+  if (!m) return null;
+  const cents = Number(m[2]);
+  if (!SUB_SET.has(cents)) return null;
+  return { interval: m[1] === "month" ? "MONTH" : "YEAR", priceCents: cents };
+}
+
 /** `aera.sub.month.{cents}` / `aera.sub.year.{cents}` bei exaktem Pool-Match. */
 export function subscriptionAppleProductId(
   interval: BillingInterval,

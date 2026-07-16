@@ -10,19 +10,26 @@ import { jsonError, jsonOk, parseJsonBody, requireMobileAuth } from "@/lib/mobil
 import { buildViewerContext } from "@/lib/mobile/serializers";
 
 // POST /api/mobile/v1/iap/validate
-// { tenantSlug, jws, kind, refId } → { ok: true, viewer }
+// { tenantSlug, jws, kind, refId? } → { ok: true, viewer }
 // Verifiziert die JWS-signierte StoreKit-2-Transaktion (x5c-Kette gegen
 // Apple Root CA – G3), prüft bundleId/Environment und das Produkt-Mapping
 // (explizit oder Preis-Pool) und vergibt Membership/Entitlement/Order
 // identisch zum Stripe-Webhook-Pfad — idempotent über transactionId bzw.
 // originalTransactionId.
+// refId ist nur bei kind:"tier" optional (Restore ohne lokalen Kaufkontext):
+// dann leitet der Server das Tier aus der productId der Transaktion ab.
 
-const schema = z.object({
-  tenantSlug: z.string().min(1),
-  jws: z.string().min(1),
-  kind: z.enum(["tier", "product", "post", "media", "media-item", "tip", "request", "booking"]),
-  refId: z.string().min(1),
-});
+const schema = z
+  .object({
+    tenantSlug: z.string().min(1),
+    jws: z.string().min(1),
+    kind: z.enum(["tier", "product", "post", "media", "media-item", "tip", "request", "booking"]),
+    refId: z.string().optional(),
+  })
+  .refine((body) => body.kind === "tier" || (body.refId !== undefined && body.refId.length > 0), {
+    message: "refId is required for this kind.",
+    path: ["refId"],
+  });
 
 export async function POST(req: Request) {
   const auth = await requireMobileAuth(req);
@@ -55,9 +62,11 @@ export async function POST(req: Request) {
   try {
     return await withTenantContext(tenant.id, async () => {
       if (kind === "tier") {
-        await fulfillTierPurchase({ tenant, userId: user.id, tierId: refId, txn });
+        // Leere/fehlende refId → Tier wird aus txn.productId abgeleitet.
+        await fulfillTierPurchase({ tenant, userId: user.id, tierId: refId || undefined, txn });
       } else {
-        await fulfillOneTimePurchase({ tenant, userId: user.id, kind, refId, txn });
+        // Für alle anderen kinds erzwingt das Schema eine nicht-leere refId.
+        await fulfillOneTimePurchase({ tenant, userId: user.id, kind, refId: refId!, txn });
       }
       const { viewer } = await buildViewerContext(tenant, user);
       return jsonOk({ ok: true, viewer });

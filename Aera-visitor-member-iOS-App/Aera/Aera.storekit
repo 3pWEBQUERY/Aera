@@ -1,0 +1,647 @@
+{
+  "identifier": "64113B11-D9DE-4CAC-8A93-27284467F0D2",
+  "nonRenewingSubscriptions": [],
+  "products": [
+    {
+      "displayPrice": "0.99",
+      "familyShareable": false,
+      "id": "5508E0C4-722D-4DAD-B7CE-2E3D034D8003",
+      "internalID": "7100000001",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.99",
+      "referenceName": "Freischaltung 0,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "1.99",
+      "familyShareable": false,
+      "id": "9C3905EA-A394-4674-941F-F0ADDB04D0C8",
+      "internalID": "7100000002",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.199",
+      "referenceName": "Freischaltung 1,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "2.99",
+      "familyShareable": false,
+      "id": "13BAC292-4572-485B-958E-A757742D2BFC",
+      "internalID": "7100000003",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.299",
+      "referenceName": "Freischaltung 2,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "4.99",
+      "familyShareable": false,
+      "id": "E61E6FCF-DED0-4B6E-865F-ECFACD3223CA",
+      "internalID": "7100000004",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.499",
+      "referenceName": "Freischaltung 4,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "7.99",
+      "familyShareable": false,
+      "id": "BF2B8DC4-DA12-4B4F-870B-B6F10D2D0529",
+      "internalID": "7100000005",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.799",
+      "referenceName": "Freischaltung 7,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "9.99",
+      "familyShareable": false,
+      "id": "FE9111D1-D670-41DA-A379-D5C6F362569A",
+      "internalID": "7100000006",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.999",
+      "referenceName": "Freischaltung 9,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "14.99",
+      "familyShareable": false,
+      "id": "0178BF6D-E607-4EBC-A90E-4303587956E6",
+      "internalID": "7100000007",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.1499",
+      "referenceName": "Freischaltung 14,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "19.99",
+      "familyShareable": false,
+      "id": "E2DE6FCF-A26E-4D06-8957-B0E1B14B96F7",
+      "internalID": "7100000008",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.1999",
+      "referenceName": "Freischaltung 19,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "29.99",
+      "familyShareable": false,
+      "id": "98BF4FFA-0BC6-4B95-920F-30B25DADEA04",
+      "internalID": "7100000009",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.2999",
+      "referenceName": "Freischaltung 29,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "49.99",
+      "familyShareable": false,
+      "id": "7BCC902C-444D-4D53-A5E2-BBFDA9693F3F",
+      "internalID": "7100000010",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.4999",
+      "referenceName": "Freischaltung 49,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "99.99",
+      "familyShareable": false,
+      "id": "9A8FCA02-4F77-4902-8EDC-D123F4E1221D",
+      "internalID": "7100000011",
+      "localizations": [
+        {
+          "description": "Schaltet einen Inhalt frei.",
+          "displayName": "Freischaltung",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.unlock.9999",
+      "referenceName": "Freischaltung 99,99 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "1.00",
+      "familyShareable": false,
+      "id": "95DF25EC-AFD0-48B9-989A-152E279985D6",
+      "internalID": "7100000012",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.100",
+      "referenceName": "Trinkgeld 1,00 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "3.00",
+      "familyShareable": false,
+      "id": "8289042D-861F-43B2-AEBC-F22A47F9F381",
+      "internalID": "7100000013",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.300",
+      "referenceName": "Trinkgeld 3,00 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "5.00",
+      "familyShareable": false,
+      "id": "41E2E3C1-4C97-4010-8332-3D35178E09AB",
+      "internalID": "7100000014",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.500",
+      "referenceName": "Trinkgeld 5,00 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "10.00",
+      "familyShareable": false,
+      "id": "203CDBC1-5B70-4D83-B223-87AA1D3EB452",
+      "internalID": "7100000015",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.1000",
+      "referenceName": "Trinkgeld 10,00 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "25.00",
+      "familyShareable": false,
+      "id": "FE159C40-570F-4635-B75D-DEBAE49159E6",
+      "internalID": "7100000016",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.2500",
+      "referenceName": "Trinkgeld 25,00 €",
+      "type": "consumable"
+    },
+    {
+      "displayPrice": "50.00",
+      "familyShareable": false,
+      "id": "53A34319-6A23-45DE-A033-D36A50F4086A",
+      "internalID": "7100000017",
+      "localizations": [
+        {
+          "description": "Unterstütze den Creator.",
+          "displayName": "Trinkgeld",
+          "locale": "de_DE"
+        }
+      ],
+      "productID": "aera.tip.5000",
+      "referenceName": "Trinkgeld 50,00 €",
+      "type": "consumable"
+    }
+  ],
+  "settings": {
+    "_locale": "de_DE",
+    "_storefront": "DEU"
+  },
+  "subscriptionGroups": [
+    {
+      "id": "21500000",
+      "localizations": [],
+      "name": "Aera Mitgliedschaften",
+      "subscriptions": [
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "2.99",
+          "familyShareable": false,
+          "groupNumber": 1,
+          "id": "C076BB80-306A-4797-A268-C76FFB5A72A1",
+          "internalID": "7100000018",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.299",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 2,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "id": "04DBDC04-915F-455E-AE8B-52BA019527CF",
+          "internalID": "7100000019",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.499",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 4,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "7.99",
+          "familyShareable": false,
+          "groupNumber": 3,
+          "id": "64E6851E-34D7-4495-A91B-F9D76E5B1481",
+          "internalID": "7100000020",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.799",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 7,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "9.99",
+          "familyShareable": false,
+          "groupNumber": 4,
+          "id": "4F894750-B9F9-41F7-85EA-98E51C8A4DC4",
+          "internalID": "7100000021",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.999",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 9,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "14.99",
+          "familyShareable": false,
+          "groupNumber": 5,
+          "id": "AA366DB5-3435-4284-8CFC-CBD05E78086F",
+          "internalID": "7100000022",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.1499",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 14,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "19.99",
+          "familyShareable": false,
+          "groupNumber": 6,
+          "id": "0A39C272-436A-4F25-BDA8-1C27E5E66E5B",
+          "internalID": "7100000023",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.1999",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 19,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 7,
+          "id": "11E3E4CF-F1A6-46C4-824F-7EE781909F5B",
+          "internalID": "7100000024",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.2999",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 29,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "49.99",
+          "familyShareable": false,
+          "groupNumber": 8,
+          "id": "8194ED9D-47C2-486D-91F1-42BC9A3CF09F",
+          "internalID": "7100000025",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.month.4999",
+          "recurringSubscriptionPeriod": "P1M",
+          "referenceName": "Mitgliedschaft 49,99 €/Monat",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "2.99",
+          "familyShareable": false,
+          "groupNumber": 9,
+          "id": "00CACCB3-5973-4535-8FC6-B6D7BF90D320",
+          "internalID": "7100000026",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.299",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 2,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "4.99",
+          "familyShareable": false,
+          "groupNumber": 10,
+          "id": "3A875BC6-5E8D-4E60-877D-0FA974A86AFB",
+          "internalID": "7100000027",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.499",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 4,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "7.99",
+          "familyShareable": false,
+          "groupNumber": 11,
+          "id": "941E627D-C677-4A27-BCFB-8F1607D99C72",
+          "internalID": "7100000028",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.799",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 7,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "9.99",
+          "familyShareable": false,
+          "groupNumber": 12,
+          "id": "89F5D5DC-2886-4944-B34A-C24F92B9797C",
+          "internalID": "7100000029",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.999",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 9,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "14.99",
+          "familyShareable": false,
+          "groupNumber": 13,
+          "id": "B2CEEBAD-7DCD-45C0-B3B3-838961215E4F",
+          "internalID": "7100000030",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.1499",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 14,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "19.99",
+          "familyShareable": false,
+          "groupNumber": 14,
+          "id": "E88B9408-BAEF-4CC7-A9EF-F49A05820F7C",
+          "internalID": "7100000031",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.1999",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 19,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "29.99",
+          "familyShareable": false,
+          "groupNumber": 15,
+          "id": "1DB9C1A4-3C40-4879-8BDC-00EC40706C6A",
+          "internalID": "7100000032",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.2999",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 29,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "49.99",
+          "familyShareable": false,
+          "groupNumber": 16,
+          "id": "939DC9B2-A5CF-439C-8E94-897C17DE6547",
+          "internalID": "7100000033",
+          "introductoryOffer": null,
+          "localizations": [
+            {
+              "description": "Mitgliedschaft in einer Aera-Community.",
+              "displayName": "Mitgliedschaft",
+              "locale": "de_DE"
+            }
+          ],
+          "productID": "aera.sub.year.4999",
+          "recurringSubscriptionPeriod": "P1Y",
+          "referenceName": "Mitgliedschaft 49,99 €/Jahr",
+          "subscriptionGroupID": "21500000",
+          "type": "autoRenewable"
+        }
+      ]
+    }
+  ],
+  "version": {
+    "major": 3,
+    "minor": 0
+  }
+}

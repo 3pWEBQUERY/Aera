@@ -121,12 +121,27 @@ final class PurchaseCoordinator {
 
         var succeeded = 0
         for entitlement in entitlements {
-            let context = purchaseContext(for: entitlement.transaction.productID)
+            let productId = entitlement.transaction.productID
+            let context = purchaseContext(for: productId)
+            let isTierSubscription = productId.hasPrefix("aera.sub.") || context?.kind == .tier
             do {
-                _ = try await api.validateIAP(tenantSlug: tenantSlug,
-                                              jws: entitlement.jws,
-                                              kind: context?.kind ?? .tier,
-                                              refId: context?.refId ?? "")
+                if isTierSubscription {
+                    // Abo: refId weglassen — der Server leitet das Tier aus
+                    // der productId ab (Restore z. B. nach Gerätewechsel
+                    // ohne lokal persistierten Kaufkontext).
+                    _ = try await api.validateIAP(tenantSlug: tenantSlug,
+                                                  jws: entitlement.jws,
+                                                  kind: .tier)
+                } else if let context {
+                    _ = try await api.validateIAP(tenantSlug: tenantSlug,
+                                                  jws: entitlement.jws,
+                                                  kind: context.kind,
+                                                  refId: context.refId)
+                } else {
+                    // Nicht-Abo ohne Kontext: keinem Inhalt zuordenbar —
+                    // still überspringen.
+                    continue
+                }
                 succeeded += 1
             } catch {
                 // Einzelne Fehler bewusst schlucken (z. B. Entitlement

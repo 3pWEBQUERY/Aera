@@ -56,7 +56,9 @@ final class StoreService {
     var onTransactionUpdate: TransactionUpdateHandler?
 
     /// Produkt-Cache (Produkt-ID → StoreKit-Produkt).
-    private var productCache: [String: Product] = [:]
+    /// `StoreKit.Product` explizit, da das App-Modell `Product` (Models.swift)
+    /// den importierten Typ sonst verschattet.
+    private var productCache: [String: StoreKit.Product] = [:]
 
     /// Verifizierte, aber noch nicht abgeschlossene Kauf-Transaktionen
     /// (JWS → Transaktion), bis der Server validiert hat.
@@ -83,10 +85,10 @@ final class StoreService {
 
     /// Lädt StoreKit-Produkte für die gegebenen IDs; bereits geladene
     /// Produkte kommen aus dem Cache. Unbekannte IDs werden ausgelassen.
-    func products(ids: [String]) async throws -> [Product] {
+    func products(ids: [String]) async throws -> [StoreKit.Product] {
         let missing = ids.filter { productCache[$0] == nil }
         if !missing.isEmpty {
-            let loaded = try await Product.products(for: missing)
+            let loaded = try await StoreKit.Product.products(for: missing)
             for product in loaded {
                 productCache[product.id] = product
             }

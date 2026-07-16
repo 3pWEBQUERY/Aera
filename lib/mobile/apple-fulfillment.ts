@@ -7,6 +7,7 @@ import { recordReferralPurchase } from "@/lib/referrals";
 import { emitWebhookEvent } from "@/lib/webhooks";
 import { writeAudit } from "@/lib/audit";
 import {
+  parseSubscriptionAppleProductId,
   parseTipAppleProductId,
   productAppleProductId,
   tierAppleProductId,
@@ -53,17 +54,63 @@ function txDate(ms: number | undefined): Date | null {
 }
 
 // ---------------------------------------------------------------- Tier (Abo)
+/**
+ * Restore ohne refId: Tier des Tenants aus der Apple-Produkt-ID der
+ * verifizierten Transaktion ableiten — zuerst explizites
+ * `MembershipTier.appleProductId`-Match, sonst Abo-Pool-Produkt
+ * (`aera.sub.month|year.{cents}`) → Tier mit exakt passendem Preis +
+ * Intervall. Bei 0 oder >1 Treffern: 400 `iap_product_mismatch`.
+ */
+async function resolveTierFromProductId(tenantId: string, productId: string) {
+  const explicit = await prisma.membershipTier.findMany({
+    where: { tenantId, appleProductId: productId },
+  });
+  if (explicit.length === 1) return explicit[0]!;
+  if (explicit.length > 1) {
+    throw new IapFulfillmentError(
+      "iap_product_mismatch",
+      `Apple product "${productId}" maps to multiple tiers.`,
+    );
+  }
+  const pool = parseSubscriptionAppleProductId(productId);
+  if (!pool) {
+    throw new IapFulfillmentError(
+      "iap_product_mismatch",
+      `Apple product "${productId}" does not map to any tier.`,
+    );
+  }
+  // Pool-Produkte gelten laut Vertrag nur ohne explizites Mapping.
+  const candidates = await prisma.membershipTier.findMany({
+    where: {
+      tenantId,
+      appleProductId: null,
+      priceCents: pool.priceCents,
+      interval: pool.interval,
+    },
+  });
+  if (candidates.length !== 1) {
+    throw new IapFulfillmentError(
+      "iap_product_mismatch",
+      `Apple product "${productId}" does not map to exactly one tier.`,
+    );
+  }
+  return candidates[0]!;
+}
+
 /** Membership ACTIVE + Subscription + Entitlement + Punkte + Referral — wie Stripe-`tier`. */
 export async function fulfillTierPurchase(input: {
   tenant: Tenant;
   userId: string;
-  tierId: string;
+  /** Optional (Restore ohne lokalen Kaufkontext): dann Ableitung aus `txn.productId`. */
+  tierId?: string;
   txn: JWSTransactionDecodedPayload;
 }): Promise<void> {
   const { tenant, userId, txn } = input;
-  const tier = await prisma.membershipTier.findFirst({
-    where: { id: input.tierId, tenantId: tenant.id },
-  });
+  const tier = input.tierId
+    ? await prisma.membershipTier.findFirst({
+        where: { id: input.tierId, tenantId: tenant.id },
+      })
+    : await resolveTierFromProductId(tenant.id, txn.productId);
   if (!tier) throw new IapFulfillmentError("not_found", "Tier not found.", 404);
   if (tier.priceCents <= 0 || tier.interval === "FREE") {
     throw new IapFulfillmentError("iap_product_mismatch", "Free tiers are not purchasable via IAP.");

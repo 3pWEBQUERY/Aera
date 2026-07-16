@@ -164,20 +164,25 @@ final class APIClient {
         let _: OKEnvelope = try await send(Endpoint(.post, "c/\(slug)/membership/cancel"))
     }
 
-    /// `GET /c/{slug}/space/{spaceSlug}?q=&tab=&cursor=`
+    /// `GET /c/{slug}/space/{spaceSlug}?q=&tab=&cursor=&page=`
     ///
     /// Bei nicht zugänglichem Space wirft die Methode `APIError` mit
     /// `.notMember`/`.paymentRequired`; der Server liefert `space` trotzdem —
     /// über `error.decodeDetails(GatedSpacePayload.self)?.space` für die Paywall-UI.
+    ///
+    /// `page` wird nur von BLOG-Spaces ausgewertet (seitenbasiertes Paging),
+    /// `cursor` von FEED/FORUM/VIDEOS/PODCAST (Cursor-Paging).
     func space(slug: String,
                spaceSlug: String,
                q: String? = nil,
                tab: ForumTab? = nil,
-               cursor: String? = nil) async throws -> SpaceResponse {
+               cursor: String? = nil,
+               page: Int? = nil) async throws -> SpaceResponse {
         var items: [URLQueryItem] = []
         if let q, !q.isEmpty { items.append(URLQueryItem(name: "q", value: q)) }
         if let tab { items.append(URLQueryItem(name: "tab", value: tab.rawValue)) }
         if let cursor { items.append(URLQueryItem(name: "cursor", value: cursor)) }
+        if let page { items.append(URLQueryItem(name: "page", value: String(page))) }
         return try await send(Endpoint(.get, "c/\(slug)/space/\(spaceSlug)", query: items))
     }
 
@@ -349,10 +354,12 @@ final class APIClient {
 
     /// `POST /iap/validate` — sendet die JWS-signierte StoreKit-2-Transaktion.
     /// Fehler: 400 `iap_invalid` / `iap_product_mismatch`.
+    /// `refId` ist nur bei `kind == .tier` optional (Restore ohne lokalen
+    /// Kaufkontext): der Server leitet das Tier dann aus der `productId` ab.
     func validateIAP(tenantSlug: String,
                      jws: String,
                      kind: IAPPurchaseKind,
-                     refId: String) async throws -> IAPValidateResponse {
+                     refId: String? = nil) async throws -> IAPValidateResponse {
         try await send(Endpoint(.post, "iap/validate"),
                        body: IAPValidateBody(tenantSlug: tenantSlug, jws: jws, kind: kind, refId: refId))
     }
@@ -503,7 +510,8 @@ private struct IAPValidateBody: Encodable {
     let tenantSlug: String
     let jws: String
     let kind: IAPPurchaseKind
-    let refId: String
+    /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
+    let refId: String?
 }
 
 private struct ErrorEnvelope: Decodable {

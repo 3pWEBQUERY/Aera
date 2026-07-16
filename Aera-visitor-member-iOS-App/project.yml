@@ -17,6 +17,8 @@ targets:
     platform: iOS
     sources:
       - path: Aera
+        excludes:
+          - "**/.DS_Store"
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: so.aera.app
@@ -41,4 +43,4 @@ schemes:
         Aera: all
     run:
       config: Debug
-      storeKitConfiguration: Aera.storekit
+      storeKitConfiguration: Aera/Aera.storekit

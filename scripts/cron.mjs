@@ -9,7 +9,9 @@
 // processes to exit, otherwise follow-up runs are skipped — hence the timeout
 // and explicit process.exit.
 
-const base = (process.env.APP_URL ?? "").replace(/\/$/, "");
+// Accept APP_URL with or without scheme (Railway domains are https-only).
+let base = (process.env.APP_URL ?? "").trim().replace(/\/$/, "");
+if (base && !/^https?:\/\//i.test(base)) base = `https://${base}`;
 const secret = process.env.CRON_SECRET ?? "";
 
 if (!base || !secret) {
