@@ -212,7 +212,7 @@ struct CommunityView: View {
 
     @ViewBuilder
     private func announcementBanner(_ announcement: Announcement) -> some View {
-        if let href = announcement.href, let url = URL(string: href) {
+        if let href = announcement.href, let url = AppConfig.mediaURL(href) {
             Link(destination: url) {
                 announcementLabel(announcement, showsLinkIcon: true)
             }

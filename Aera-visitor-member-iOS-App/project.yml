@@ -31,6 +31,13 @@ targets:
       path: Aera/Info.plist
       properties:
         CFBundleDevelopmentRegion: de
+        CFBundleDisplayName: Aera
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+          UIImageName: LaunchLogo
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIRequiresFullScreen: false
         CFBundleLocalizations:
           [de, en, en-GB, da, es, es-419, fr, it, ja, ko, nb, nl, pl, pt-BR, ru, sv, uk, zh-Hans, zh-Hant]
         UIApplicationSceneManifest:

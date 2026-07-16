@@ -13,7 +13,7 @@ import {
   activeAnnouncements,
   isAnnouncementsOnly,
 } from "@/lib/space-settings";
-import { CATEGORIES } from "@/lib/categories";
+import { CATEGORIES, categoryByKey } from "@/lib/categories";
 import { excerpt } from "@/lib/utils";
 import {
   productAppleProductId,
@@ -126,6 +126,8 @@ export interface CommunityCardDto {
   primaryColor: string;
   accentColor: string;
   category: string | null;
+  /** Anzeige-Label der Kategorie (aus lib/categories.ts), z.B. "Kurse & Lernen". */
+  categoryLabel: string | null;
   memberCount: number;
   isMember: boolean;
 }
@@ -158,14 +160,15 @@ export function toCommunityCard(
     primaryColor: tenant.primaryColor,
     accentColor: tenant.accentColor,
     category: tenant.category,
+    categoryLabel: categoryByKey(tenant.category)?.label ?? tenant.category,
     memberCount: opts.memberCount,
     isMember: opts.isMember,
   };
 }
 
-/** Discover-Kategorien (Keys aus lib/categories.ts). */
-export function discoverCategories(): string[] {
-  return CATEGORIES.map((c) => c.key);
+/** Discover-Kategorien (Key + Anzeige-Label aus lib/categories.ts). */
+export function discoverCategories(): Array<{ key: string; label: string }> {
+  return CATEGORIES.map((c) => ({ key: c.key, label: c.label }));
 }
 
 // ================================================================ Viewer

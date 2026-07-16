@@ -47,7 +47,7 @@ struct AvatarView: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.27, style: .continuous)
         Group {
-            if let url, let imageURL = URL(string: url) {
+            if let imageURL = AppConfig.mediaURL(url) {
                 AsyncImage(url: imageURL) { phase in
                     if let image = phase.image {
                         image.resizable().scaledToFill()
@@ -174,7 +174,9 @@ struct PillLabel: View {
             Text(text)
                 .font(.system(size: 12, weight: prominent ? .semibold : .medium))
                 .monospacedDigit()
+                .lineLimit(1)
         }
+        .fixedSize()
         .padding(.horizontal, 10)
         .padding(.vertical, 5)
         .foregroundStyle(prominent ? brand.color : Theme.ink.opacity(0.7))
@@ -382,7 +384,7 @@ struct AsyncImageView: View {
     }
 
     var body: some View {
-        if let url, let imageURL = URL(string: url) {
+        if let imageURL = AppConfig.mediaURL(url) {
             AsyncImage(url: imageURL) { phase in
                 switch phase {
                 case .success(let image):

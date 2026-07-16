@@ -74,7 +74,7 @@ struct PodcastSpaceView: View {
                             .font(.system(size: 13, weight: .medium))
                     }
                     .foregroundStyle(Theme.ink.opacity(0.6))
-                } else if let audioUrl = post.videoUrl, let url = URL(string: audioUrl) {
+                } else if let audioUrl = post.videoUrl, let url = AppConfig.mediaURL(audioUrl) {
                     AudioPlayerBar(url: url)
                 }
             }

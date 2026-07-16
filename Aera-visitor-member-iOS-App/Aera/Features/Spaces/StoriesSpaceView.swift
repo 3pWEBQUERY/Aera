@@ -170,7 +170,7 @@ struct StoryPlayerView: View {
 
     @ViewBuilder
     private func storyPage(for story: Story) -> some View {
-        if story.mediaType == .video, let url = URL(string: story.mediaUrl) {
+        if story.mediaType == .video, let url = AppConfig.mediaURL(story.mediaUrl) {
             RemoteVideoPlayer(url: url)
         } else {
             AsyncImageView(url: story.mediaUrl, contentMode: .fit)

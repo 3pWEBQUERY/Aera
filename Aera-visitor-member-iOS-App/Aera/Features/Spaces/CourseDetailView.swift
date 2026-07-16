@@ -78,11 +78,11 @@ struct CourseDetailView: View {
     @ViewBuilder
     private var header: some View {
         if course.format == .online {
-            if let videoUrl = course.videoUrl, let url = URL(string: videoUrl) {
+            if let videoUrl = course.videoUrl, let url = AppConfig.mediaURL(videoUrl) {
                 RemoteVideoPlayer(url: url)
                     .aspectRatio(16 / 9, contentMode: .fit)
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-            } else if let streamUrl = course.streamUrl, let url = URL(string: streamUrl) {
+            } else if let streamUrl = course.streamUrl, let url = AppConfig.mediaURL(streamUrl) {
                 Link(destination: url) {
                     HStack(spacing: 8) {
                         Image(systemName: "dot.radiowaves.left.and.right")
@@ -234,7 +234,7 @@ struct CourseDetailView: View {
 
                 if isExpanded {
                     VStack(alignment: .leading, spacing: 12) {
-                        if let videoUrl = lesson.videoUrl, let url = URL(string: videoUrl) {
+                        if let videoUrl = lesson.videoUrl, let url = AppConfig.mediaURL(videoUrl) {
                             RemoteVideoPlayer(url: url)
                                 .aspectRatio(16 / 9, contentMode: .fit)
                                 .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -302,7 +302,7 @@ struct CourseDetailView: View {
 
     private func hasVideo(_ lesson: Lesson) -> Bool {
         guard let videoUrl = lesson.videoUrl else { return false }
-        return URL(string: videoUrl) != nil
+        return AppConfig.mediaURL(videoUrl) != nil
     }
 
     // MARK: - Abschließen

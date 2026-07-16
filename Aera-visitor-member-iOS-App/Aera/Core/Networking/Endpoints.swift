@@ -22,6 +22,16 @@ enum AppConfig {
     static var apiBaseURL: URL {
         baseURL.appending(path: "api/mobile/v1")
     }
+
+    /// Löst Medien-URLs auf: absolute URLs unverändert, relative Pfade
+    /// (z. B. `/api/media/…` oder `/uploads/…`) gegen die Basis-URL.
+    static func mediaURL(_ raw: String?) -> URL? {
+        guard let raw = raw?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !raw.isEmpty else { return nil }
+        if let url = URL(string: raw), url.scheme != nil { return url }
+        let path = raw.hasPrefix("/") ? raw : "/" + raw
+        return URL(string: path, relativeTo: baseURL)?.absoluteURL
+    }
 }
 
 // MARK: - Endpoint

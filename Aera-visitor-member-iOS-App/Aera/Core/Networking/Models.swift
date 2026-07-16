@@ -205,6 +205,8 @@ struct CommunityCard: Decodable, Hashable, Sendable, Identifiable {
     var primaryColor: String
     var accentColor: String
     var category: String?
+    /// Anzeige-Label der Kategorie (z. B. "Kurse & Lernen"); `category` ist der Key.
+    var categoryLabel: String?
     var memberCount: Int
     var isMember: Bool
 
@@ -592,11 +594,59 @@ struct MeResponse: Decodable, Sendable {
     var memberships: [MembershipHome]
 }
 
+/// Discover-Kategorie: `key` für Filter-Queries, `label` für die Anzeige.
+/// Decodiert tolerant: sowohl `{ "key": "kurse", "label": "Kurse & Lernen" }`
+/// (aktuelles Backend) als auch nackte Strings `"kurse"` (älteres Backend).
+struct DiscoverCategory: Decodable, Hashable, Sendable, Identifiable {
+    var key: String
+    var label: String
+
+    var id: String { key }
+
+    private enum CodingKeys: String, CodingKey {
+        case key
+        case label
+    }
+
+    init(from decoder: Decoder) throws {
+        if let container = try? decoder.container(keyedBy: CodingKeys.self),
+           let decodedKey = try? container.decode(String.self, forKey: .key) {
+            key = decodedKey
+            label = (try? container.decode(String.self, forKey: .label)) ?? decodedKey.capitalized
+        } else {
+            let raw = try decoder.singleValueContainer().decode(String.self)
+            key = raw
+            label = raw.capitalized
+        }
+    }
+}
+
+/// „Themen entdecken"-Kachel (Kategorie mit Community-Anzahl).
+struct DiscoverTopic: Decodable, Hashable, Sendable, Identifiable {
+    var key: String
+    var label: String
+    var count: Int
+
+    var id: String { key }
+}
+
+/// „Top-Kreative"-Reihe je Kategorie.
+struct DiscoverCreatorRow: Decodable, Hashable, Sendable, Identifiable {
+    var key: String
+    var label: String
+    var communities: [CommunityCard]
+
+    var id: String { key }
+}
+
 struct DiscoverResponse: Decodable, Hashable, Sendable {
-    var categories: [String]
+    var categories: [DiscoverCategory]
     var myCommunities: [CommunityCard]
     var popular: [CommunityCard]
     var newest: [CommunityCard]
+    // Optional: ältere Backends liefern diese Sektionen noch nicht.
+    var topics: [DiscoverTopic]?
+    var topCreators: [DiscoverCreatorRow]?
 }
 
 struct CommunityResponse: Decodable, Hashable, Sendable {

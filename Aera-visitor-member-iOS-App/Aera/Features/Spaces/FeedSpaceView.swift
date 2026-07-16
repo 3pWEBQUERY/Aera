@@ -273,7 +273,7 @@ private struct FeedPostCard: View {
                     }
                 }
                 .clipShape(shape)
-        } else if let videoUrl = post.videoUrl, let url = URL(string: videoUrl) {
+        } else if let videoUrl = post.videoUrl, let url = AppConfig.mediaURL(videoUrl) {
             RemoteVideoPlayer(url: url)
                 .aspectRatio(16 / 9, contentMode: .fit)
                 .clipShape(shape)

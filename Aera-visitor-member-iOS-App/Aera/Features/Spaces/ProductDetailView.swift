@@ -123,7 +123,7 @@ struct ProductDetailView: View {
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(Theme.ink)
                 }
-                if let downloadUrl = product.downloadUrl, let url = URL(string: downloadUrl) {
+                if let downloadUrl = product.downloadUrl, let url = AppConfig.mediaURL(downloadUrl) {
                     Link(destination: url) {
                         HStack(spacing: 8) {
                             Image(systemName: "arrow.down.circle")

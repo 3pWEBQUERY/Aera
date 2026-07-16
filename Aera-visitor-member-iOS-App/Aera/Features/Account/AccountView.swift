@@ -396,7 +396,7 @@ struct AccountView: View {
 
                 HStack(spacing: 10) {
                     OrderStatusPill(status: order.status)
-                    if let downloadUrl = order.downloadUrl, let url = URL(string: downloadUrl) {
+                    if let downloadUrl = order.downloadUrl, let url = AppConfig.mediaURL(downloadUrl) {
                         Button {
                             openURL(url)
                         } label: {

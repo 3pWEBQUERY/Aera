@@ -336,7 +336,7 @@ private struct GalleryFullscreenViewer: View {
 
     @ViewBuilder
     private func mediaPage(for item: GalleryItem) -> some View {
-        if item.type == .video, let urlString = item.url, let url = URL(string: urlString) {
+        if item.type == .video, let urlString = item.url, let url = AppConfig.mediaURL(urlString) {
             RemoteVideoPlayer(url: url)
         } else {
             ZoomableRemoteImage(url: item.url ?? item.thumbUrl)

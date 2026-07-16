@@ -21,7 +21,9 @@ User { id, name, email, avatarUrl: string|null, emailVerified: boolean, totpEnab
 CommunityCard {
   slug, name, tagline: string|null, logoUrl: string|null, coverUrl: string|null,
   primaryColor, accentColor,            // Hex, z.B. "#6d28d9"
-  category: string|null, memberCount: number, isMember: boolean
+  category: string|null,                // Key, z.B. "kurse"
+  categoryLabel: string|null,           // Anzeige-Label, z.B. "Kurse & Lernen"
+  memberCount: number, isMember: boolean
 }
 
 Viewer {
@@ -127,7 +129,7 @@ MembershipHome { community: CommunityCard, tier: {name, slug, priceCents, interv
 
 ### Discover (Token optional — personalisiert wenn vorhanden)
 
-- `GET /discover` → `{ categories: string[], myCommunities: CommunityCard[], popular: CommunityCard[], newest: CommunityCard[] }`
+- `GET /discover` → `{ categories: { key, label }[], myCommunities: CommunityCard[], popular: CommunityCard[], newest: CommunityCard[] }`
 - `GET /discover/search?q=&category=` → `{ data: CommunityCard[] }`
 
 ### Community (Token optional; gated je nach Viewer)
