@@ -160,7 +160,7 @@ struct StoryPlayerView: View {
                 }
         )
         .interactiveDismissDisabled(false)
-        .preferredColorScheme(.dark)
+        .environment(\.colorScheme, .dark) // nicht .preferredColorScheme: blockiert Dismiss in fullScreenCover
         .task(id: currentIndex) {
             await runStoryTimer()
         }

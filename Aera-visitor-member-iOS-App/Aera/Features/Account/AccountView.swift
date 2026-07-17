@@ -1,13 +1,13 @@
 import SwiftUI
 import PhotosUI
 
-/// Konto-Tab: Profil (Avatar-Upload via PhotosPicker), Mitgliedschaften
-/// (inkl. Abo-Verwaltung), Bestellungen, Einstellungen (Name, Passwort,
-/// Debug-Basis-URL) und Abmelden. Ohne Login: Hero mit Anmelde-Einstieg.
+/// Konto-Tab: Übersichtsseite mit Profil (Avatar-Upload via PhotosPicker)
+/// und einer Karten-Liste, die zu „Mitgliedschaften" und „Bestellungen"
+/// pusht sowie Name/Passwort ändert. Darunter Abmelden + Version.
+/// Ohne Login: Hero mit Anmelde-Einstieg.
 struct AccountView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.brand) private var brand
-    @Environment(\.openURL) private var openURL
 
     @State private var memberships: [MembershipHome] = []
     @State private var orders: [Order] = []
@@ -17,21 +17,13 @@ struct AccountView: View {
     @State private var avatarPickerItem: PhotosPickerItem?
     @State private var isUploadingAvatar = false
 
-    @State private var showNameAlert = false
-    @State private var nameDraft = ""
+    @State private var showNameSheet = false
     @State private var showPasswordSheet = false
-    @State private var cancelTarget: MembershipHome?
     @State private var showLogoutConfirmation = false
 
     @State private var errorMessage: String?
     @State private var infoMessage: String?
     @State private var successCount = 0
-
-    #if DEBUG
-    @AppStorage(AppConfig.baseURLDefaultsKey) private var baseURLOverride = ""
-    #endif
-
-    private static let appleSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")
 
     var body: some View {
         NavigationStack {
@@ -53,12 +45,8 @@ struct AccountView: View {
         .sheet(isPresented: $showPasswordSheet) {
             ChangePasswordSheet()
         }
-        .alert("Name ändern", isPresented: $showNameAlert) {
-            TextField("Name", text: $nameDraft)
-            Button("Speichern") { saveName() }
-            Button("Abbrechen", role: .cancel) {}
-        } message: {
-            Text("Wie sollen andere Mitglieder dich sehen?")
+        .sheet(isPresented: $showNameSheet) {
+            ChangeNameSheet()
         }
         .alert("Fehler", isPresented: Binding(
             get: { errorMessage != nil },
@@ -75,22 +63,6 @@ struct AccountView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(infoMessage ?? "")
-        }
-        .confirmationDialog(
-            "Mitgliedschaft kündigen?",
-            isPresented: Binding(
-                get: { cancelTarget != nil },
-                set: { if !$0 { cancelTarget = nil } }
-            ),
-            titleVisibility: .visible,
-            presenting: cancelTarget
-        ) { membership in
-            Button("Mitgliedschaft kündigen", role: .destructive) {
-                cancelMembership(membership)
-            }
-            Button("Abbrechen", role: .cancel) {}
-        } message: { membership in
-            Text("Deine Mitgliedschaft bei \(membership.community.name) wird zum Ende der Laufzeit beendet.")
         }
         .confirmationDialog(
             "Wirklich abmelden?",
@@ -162,15 +134,7 @@ struct AccountView: View {
             VStack(alignment: .leading, spacing: 28) {
                 profileHeader
 
-                membershipsSection
-
-                ordersSection
-
-                settingsSection
-
-                #if DEBUG
-                developerSection
-                #endif
+                accountListSection
 
                 logoutButton
 
@@ -225,28 +189,391 @@ struct AccountView: View {
         }
     }
 
-    // MARK: - Mitgliedschaften
+    // MARK: - Karten-Liste (Navigation + Einstellungen)
 
-    private var membershipsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            SectionHeader("Mitgliedschaften")
-            if !isLoaded {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-            } else if memberships.isEmpty {
-                EmptyStateView(
-                    icon: "person.2",
-                    title: "Keine Mitgliedschaften",
-                    message: "Entdecke Communities und werde Mitglied."
-                )
-            } else {
-                ForEach(memberships) { membership in
-                    membershipCard(membership)
+    /// Studio-Einstieg nur für Mitglieder mit Staff-Rolle (OWNER/ADMIN/MODERATOR).
+    private var hasStudioAccess: Bool {
+        memberships.contains { $0.role != .member }
+    }
+
+    private var accountListSection: some View {
+        AeraCard(padding: 0, cornerRadius: 16) {
+            VStack(spacing: 0) {
+                if hasStudioAccess {
+                    NavigationLink {
+                        StudioView()
+                    } label: {
+                        accountRow(icon: "megaphone", title: "Studio")
+                    }
+                    .buttonStyle(.plain)
+
+                    rowDivider
                 }
+
+                NavigationLink {
+                    AccountMembershipsView(memberships: memberships,
+                                           isLoaded: isLoaded) {
+                        await load(force: true)
+                    }
+                } label: {
+                    accountRow(icon: "person.2", title: "Mitgliedschaften")
+                }
+                .buttonStyle(.plain)
+
+                rowDivider
+
+                NavigationLink {
+                    AccountOrdersView(orders: orders,
+                                      isLoaded: isLoaded) {
+                        await load(force: true)
+                    }
+                } label: {
+                    accountRow(icon: "bag", title: "Bestellungen")
+                }
+                .buttonStyle(.plain)
+
+                rowDivider
+
+                Button {
+                    showNameSheet = true
+                } label: {
+                    accountRow(icon: "person.text.rectangle", title: "Name ändern")
+                }
+                .buttonStyle(.plain)
+
+                rowDivider
+
+                Button {
+                    showPasswordSheet = true
+                } label: {
+                    accountRow(icon: "key", title: "Passwort ändern")
+                }
+                .buttonStyle(.plain)
             }
         }
     }
+
+    private var rowDivider: some View {
+        Divider().padding(.leading, 58)
+    }
+
+    private func accountRow(icon: String, title: LocalizedStringKey) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(brand.color)
+                .frame(width: 30, height: 30)
+                .background(brand.soft, in: .circle)
+            Text(title)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundStyle(Theme.ink)
+            Spacer()
+            Image(systemName: "chevron.right")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(Theme.ink.opacity(0.3))
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .contentShape(Rectangle())
+    }
+
+    // MARK: - Abmelden & Fußzeile
+
+    private var logoutButton: some View {
+        Button {
+            showLogoutConfirmation = true
+        } label: {
+            Text("Abmelden")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Theme.danger)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Theme.card, in: .capsule)
+                .overlay(Capsule().strokeBorder(Theme.danger.opacity(0.3), lineWidth: 1))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var versionFooter: some View {
+        Text(versionLabel)
+            .font(.system(size: 12))
+            .monospacedDigit()
+            .foregroundStyle(Theme.ink.opacity(0.4))
+            .frame(maxWidth: .infinity)
+            .padding(.bottom, 8)
+    }
+
+    private var versionLabel: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
+        return String(localized: "Aera \(version) (\(build))")
+    }
+
+    // MARK: - Laden
+
+    private func load(force: Bool = false) async {
+        guard appState.session.isLoggedIn else {
+            memberships = []
+            orders = []
+            isLoaded = false
+            return
+        }
+        if isLoaded && !force { return }
+        do {
+            async let meResponse = appState.api.me()
+            async let myOrders = appState.api.myOrders()
+            let (me, loadedOrders) = try await (meResponse, myOrders)
+            appState.session.update(user: me.user)
+            memberships = me.memberships
+            orders = loadedOrders
+            isLoaded = true
+        } catch let error as APIError where error.status == 401 {
+            appState.session.clear()
+        } catch {
+            if !isLoaded {
+                memberships = []
+                orders = []
+                isLoaded = true
+                errorMessage = String(localized: "Dein Konto konnte nicht geladen werden. Ziehe zum Aktualisieren nach unten.")
+            }
+        }
+    }
+
+    // MARK: - Avatar-Upload
+
+    private func uploadAvatar(_ item: PhotosPickerItem) async {
+        defer { avatarPickerItem = nil }
+
+        guard let tenant = memberships.first?.community.slug else {
+            infoMessage = String(localized: "Um ein Profilbild hochzuladen, tritt zuerst einer Community bei.")
+            return
+        }
+
+        isUploadingAvatar = true
+        defer { isUploadingAvatar = false }
+
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self),
+                  let image = UIImage(data: data),
+                  let jpegData = image.aeraResized(maxDimension: 1600).jpegData(compressionQuality: 0.8) else {
+                errorMessage = String(localized: "Das Bild konnte nicht verarbeitet werden.")
+                return
+            }
+            let url = try await appState.api.uploadAvatar(imageData: jpegData, tenant: tenant)
+            let user = try await appState.api.updateProfile(avatarUrl: url)
+            appState.session.update(user: user)
+            successCount += 1
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+}
+
+// MARK: - ChangeNameSheet
+
+/// Name ändern — gleiches Sheet-Muster wie `ChangePasswordSheet`.
+@MainActor
+private struct ChangeNameSheet: View {
+    @Environment(AppState.self) private var appState
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var name = ""
+    @State private var isSubmitting = false
+    @State private var errorMessage: String?
+    @State private var successCount = 0
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Name")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(Theme.ink.opacity(0.7))
+                        TextField("", text: $name)
+                            .textContentType(.name)
+                            .authInputStyle()
+                    }
+
+                    Text("Wie sollen andere Mitglieder dich sehen?")
+                        .font(.system(size: 13))
+                        .foregroundStyle(Theme.ink.opacity(0.5))
+
+                    if let validationHint {
+                        Text(validationHint)
+                            .font(.system(size: 13))
+                            .foregroundStyle(Theme.ink.opacity(0.5))
+                    }
+
+                    if let errorMessage {
+                        Text(errorMessage)
+                            .font(.system(size: 13))
+                            .foregroundStyle(Theme.danger)
+                    }
+
+                    Button {
+                        submit()
+                    } label: {
+                        Group {
+                            if isSubmitting {
+                                ProgressView()
+                                    .tint(.white)
+                            } else {
+                                Text("Speichern")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.brand(fullWidth: true))
+                    .disabled(!canSubmit || isSubmitting)
+                    .opacity(canSubmit ? 1 : 0.55)
+                }
+                .padding(20)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .background(Theme.paper.ignoresSafeArea())
+            .navigationTitle("Name ändern")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button("Abbrechen") {
+                        dismiss()
+                    }
+                    .disabled(isSubmitting)
+                }
+            }
+        }
+        .sensoryFeedback(.success, trigger: successCount)
+        .interactiveDismissDisabled(isSubmitting)
+        .onAppear {
+            if name.isEmpty {
+                name = appState.session.currentUser?.name ?? ""
+            }
+        }
+    }
+
+    private var trimmedName: String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var validationHint: String? {
+        if !trimmedName.isEmpty && trimmedName.count < 2 {
+            return String(localized: "Der Name muss mindestens 2 Zeichen haben.")
+        }
+        return nil
+    }
+
+    private var canSubmit: Bool {
+        trimmedName.count >= 2 && trimmedName != appState.session.currentUser?.name
+    }
+
+    private func submit() {
+        guard canSubmit, !isSubmitting else { return }
+        isSubmitting = true
+        errorMessage = nil
+        Task {
+            do {
+                let user = try await appState.api.updateProfile(name: trimmedName)
+                appState.session.update(user: user)
+                successCount += 1
+                dismiss()
+            } catch {
+                errorMessage = error.localizedDescription
+                isSubmitting = false
+            }
+        }
+    }
+}
+
+// MARK: - AccountMembershipsView
+
+/// Unterseite „Mitgliedschaften": Karten pro Mitgliedschaft mit Push zur
+/// `CommunityView`, Abo-Status, Apple-Abo-Verwaltung bzw. Kündigen-Flow
+/// (inkl. `manage_on_web`-Hinweis). Daten kommen vom Parent, `reload`
+/// stößt dessen `load(force:)` an.
+struct AccountMembershipsView: View {
+    @Environment(AppState.self) private var appState
+    @Environment(\.openURL) private var openURL
+
+    let memberships: [MembershipHome]
+    let isLoaded: Bool
+    let reload: () async -> Void
+
+    @State private var cancelTarget: MembershipHome?
+    @State private var errorMessage: String?
+    @State private var infoMessage: String?
+    @State private var successCount = 0
+
+    private static let appleSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Mitgliedschaften")
+                    .font(.displaySerif(26))
+                    .kerning(-0.4)
+                    .foregroundStyle(Theme.ink)
+
+                if !isLoaded {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                } else if memberships.isEmpty {
+                    EmptyStateView(
+                        icon: "person.2",
+                        title: "Keine Mitgliedschaften",
+                        message: "Entdecke Communities und werde Mitglied."
+                    )
+                } else {
+                    ForEach(memberships) { membership in
+                        membershipCard(membership)
+                    }
+                }
+            }
+            .padding(16)
+        }
+        .background(Theme.paper.ignoresSafeArea())
+        .scrollEdgeEffectStyle(.soft, for: .top)
+        .navigationTitle("Mitgliedschaften")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable { await reload() }
+        .sensoryFeedback(.success, trigger: successCount)
+        .alert("Fehler", isPresented: Binding(
+            get: { errorMessage != nil },
+            set: { if !$0 { errorMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(errorMessage ?? "")
+        }
+        .alert("Hinweis", isPresented: Binding(
+            get: { infoMessage != nil },
+            set: { if !$0 { infoMessage = nil } }
+        )) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(infoMessage ?? "")
+        }
+        .confirmationDialog(
+            "Mitgliedschaft kündigen?",
+            isPresented: Binding(
+                get: { cancelTarget != nil },
+                set: { if !$0 { cancelTarget = nil } }
+            ),
+            titleVisibility: .visible,
+            presenting: cancelTarget
+        ) { membership in
+            Button("Mitgliedschaft kündigen", role: .destructive) {
+                cancelMembership(membership)
+            }
+            Button("Abbrechen", role: .cancel) {}
+        } message: { membership in
+            Text("Deine Mitgliedschaft bei \(membership.community.name) wird zum Ende der Laufzeit beendet.")
+        }
+    }
+
+    // MARK: - Karten
 
     private func membershipCard(_ membership: MembershipHome) -> some View {
         AeraCard(padding: 16, cornerRadius: 16) {
@@ -347,25 +674,66 @@ struct AccountView: View {
         .foregroundStyle(Theme.ink.opacity(0.6))
     }
 
-    // MARK: - Bestellungen
+    // MARK: - Kündigen
 
-    private var ordersSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            SectionHeader("Bestellungen")
-            if !isLoaded {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-            } else if orders.isEmpty {
-                Text("Noch keine Bestellungen.")
-                    .font(.system(size: 14))
-                    .foregroundStyle(Theme.ink.opacity(0.5))
-            } else {
-                ForEach(orders) { order in
-                    orderRow(order)
-                }
+    private func cancelMembership(_ membership: MembershipHome) {
+        Task {
+            do {
+                try await appState.api.cancelMembership(slug: membership.community.slug)
+                successCount += 1
+                await reload()
+            } catch let error as APIError where error.code == .manageOnWeb {
+                infoMessage = String(localized: "Dieses Abo kann nur auf der Website verwaltet werden.")
+            } catch {
+                errorMessage = error.localizedDescription
             }
         }
+    }
+}
+
+// MARK: - AccountOrdersView
+
+/// Unterseite „Bestellungen": alle Käufe mit Status-Pill und optionalem
+/// Download-Link. Daten kommen vom Parent, `reload` stößt dessen
+/// `load(force:)` an.
+struct AccountOrdersView: View {
+    @Environment(\.openURL) private var openURL
+
+    let orders: [Order]
+    let isLoaded: Bool
+    let reload: () async -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Bestellungen")
+                    .font(.displaySerif(26))
+                    .kerning(-0.4)
+                    .foregroundStyle(Theme.ink)
+
+                if !isLoaded {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 40)
+                } else if orders.isEmpty {
+                    EmptyStateView(
+                        icon: "bag",
+                        title: "Keine Bestellungen",
+                        message: "Deine Käufe und Downloads erscheinen hier."
+                    )
+                } else {
+                    ForEach(orders) { order in
+                        orderRow(order)
+                    }
+                }
+            }
+            .padding(16)
+        }
+        .background(Theme.paper.ignoresSafeArea())
+        .scrollEdgeEffectStyle(.soft, for: .top)
+        .navigationTitle("Bestellungen")
+        .navigationBarTitleDisplayMode(.inline)
+        .refreshable { await reload() }
     }
 
     private func orderRow(_ order: Order) -> some View {
@@ -415,192 +783,6 @@ struct AccountView: View {
                         .overlay(Capsule().strokeBorder(Theme.border, lineWidth: 1))
                     }
                 }
-            }
-        }
-    }
-
-    // MARK: - Einstellungen
-
-    private var settingsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            SectionHeader("Einstellungen")
-            AeraCard(padding: 0) {
-                VStack(spacing: 0) {
-                    settingsRow(icon: "person.text.rectangle", title: "Name ändern") {
-                        nameDraft = appState.session.currentUser?.name ?? ""
-                        showNameAlert = true
-                    }
-                    Divider().padding(.leading, 52)
-                    settingsRow(icon: "key", title: "Passwort ändern") {
-                        showPasswordSheet = true
-                    }
-                }
-            }
-        }
-    }
-
-    private func settingsRow(icon: String, title: LocalizedStringKey, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            HStack(spacing: 12) {
-                Image(systemName: icon)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(brand.color)
-                    .frame(width: 28)
-                Text(title)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(Theme.ink)
-                Spacer()
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 11, weight: .semibold))
-                    .foregroundStyle(Theme.ink.opacity(0.3))
-            }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 14)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-
-    #if DEBUG
-    private var developerSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            SectionHeader("Entwickler")
-            AeraCard(padding: 14) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Basis-URL")
-                        .font(.system(size: 13, weight: .medium))
-                        .foregroundStyle(Theme.ink.opacity(0.7))
-                    TextField("https://aera.so", text: $baseURLOverride)
-                        .keyboardType(.URL)
-                        .textInputAutocapitalization(.never)
-                        .autocorrectionDisabled()
-                        .authInputStyle()
-                    Text("Leer lassen für die Produktions-URL. Änderungen gelten für neue Anfragen.")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Theme.ink.opacity(0.5))
-                }
-            }
-        }
-    }
-    #endif
-
-    // MARK: - Abmelden & Fußzeile
-
-    private var logoutButton: some View {
-        Button {
-            showLogoutConfirmation = true
-        } label: {
-            Text("Abmelden")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(Theme.danger)
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .background(Theme.card, in: .capsule)
-                .overlay(Capsule().strokeBorder(Theme.danger.opacity(0.3), lineWidth: 1))
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var versionFooter: some View {
-        Text(versionLabel)
-            .font(.system(size: 12))
-            .monospacedDigit()
-            .foregroundStyle(Theme.ink.opacity(0.4))
-            .frame(maxWidth: .infinity)
-            .padding(.bottom, 8)
-    }
-
-    private var versionLabel: String {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"
-        return String(localized: "Aera \(version) (\(build))")
-    }
-
-    // MARK: - Laden
-
-    private func load(force: Bool = false) async {
-        guard appState.session.isLoggedIn else {
-            memberships = []
-            orders = []
-            isLoaded = false
-            return
-        }
-        if isLoaded && !force { return }
-        do {
-            async let meResponse = appState.api.me()
-            async let myOrders = appState.api.myOrders()
-            let (me, loadedOrders) = try await (meResponse, myOrders)
-            appState.session.update(user: me.user)
-            memberships = me.memberships
-            orders = loadedOrders
-            isLoaded = true
-        } catch let error as APIError where error.status == 401 {
-            appState.session.clear()
-        } catch {
-            if !isLoaded {
-                memberships = []
-                orders = []
-                isLoaded = true
-                errorMessage = String(localized: "Dein Konto konnte nicht geladen werden. Ziehe zum Aktualisieren nach unten.")
-            }
-        }
-    }
-
-    // MARK: - Avatar-Upload
-
-    private func uploadAvatar(_ item: PhotosPickerItem) async {
-        defer { avatarPickerItem = nil }
-
-        guard let tenant = memberships.first?.community.slug else {
-            infoMessage = String(localized: "Um ein Profilbild hochzuladen, tritt zuerst einer Community bei.")
-            return
-        }
-
-        isUploadingAvatar = true
-        defer { isUploadingAvatar = false }
-
-        do {
-            guard let data = try await item.loadTransferable(type: Data.self),
-                  let image = UIImage(data: data),
-                  let jpegData = image.aeraResized(maxDimension: 1600).jpegData(compressionQuality: 0.8) else {
-                errorMessage = String(localized: "Das Bild konnte nicht verarbeitet werden.")
-                return
-            }
-            let url = try await appState.api.uploadAvatar(imageData: jpegData, tenant: tenant)
-            let user = try await appState.api.updateProfile(avatarUrl: url)
-            appState.session.update(user: user)
-            successCount += 1
-        } catch {
-            errorMessage = error.localizedDescription
-        }
-    }
-
-    // MARK: - Name & Kündigung
-
-    private func saveName() {
-        let trimmed = nameDraft.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty, trimmed != appState.session.currentUser?.name else { return }
-        Task {
-            do {
-                let user = try await appState.api.updateProfile(name: trimmed)
-                appState.session.update(user: user)
-                successCount += 1
-            } catch {
-                errorMessage = error.localizedDescription
-            }
-        }
-    }
-
-    private func cancelMembership(_ membership: MembershipHome) {
-        Task {
-            do {
-                try await appState.api.cancelMembership(slug: membership.community.slug)
-                successCount += 1
-                await load(force: true)
-            } catch let error as APIError where error.code == .manageOnWeb {
-                infoMessage = String(localized: "Dieses Abo kann nur auf der Website verwaltet werden.")
-            } catch {
-                errorMessage = error.localizedDescription
             }
         }
     }

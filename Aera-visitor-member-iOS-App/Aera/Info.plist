@@ -56,8 +56,6 @@
 		<key>UIImageName</key>
 		<string>LaunchLogo</string>
 	</dict>
-	<key>UIRequiresFullScreen</key>
-	<false/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

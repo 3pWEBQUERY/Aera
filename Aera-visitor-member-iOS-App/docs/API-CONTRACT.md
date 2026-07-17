@@ -232,3 +232,73 @@ ChatMessage { id, body, createdAt, author: Author, mine: boolean }
 `MembershipTier.appleProductId String?`, `Product.appleProductId String?`, `Order.appleTransactionId String? @unique`, `Subscription.appleOriginalTransactionId String? @unique`.
 
 **Env:** `APPLE_BUNDLE_ID` (z.B. `so.aera.app`), optional `APPLE_IAP_ALLOW_SANDBOX=1`.
+
+### Studio (Creator-Verwaltung) 🔒 Rolle ≥ ADMIN
+
+Alle Routen unter `/api/mobile/v1/studio/**` verlangen Bearer-Auth **und** eine
+Membership mit Rolle ≥ `ADMIN` im jeweiligen Tenant, sonst **403**
+`not_authorized`. Einzige Ausnahme (wie die Web-Moderations-Guards):
+`DELETE …/posts/{postId}` ist ab `MODERATOR` erlaubt. Unbekannter Slug →
+**404** `not_found`. Rollenwechsel und das Bepreisen von Requests bleiben dem
+Web-Dashboard vorbehalten.
+
+```ts
+StudioPost { id, title: string|null, body,            // Klartext, serverseitig auf 200 Zeichen gekürzt
+             spaceSlug, spaceName, spaceType: SpaceType,
+             publishedAt,                             // bei geplanten Posts = geplanter Go-live
+             isScheduled: boolean,                    // true = wartet auf Cron /api/cron/posts
+             isPinned: boolean, likeCount: number, commentCount: number }
+
+StudioMember { userId, name, email, avatarUrl: string|null, role: Role,
+               status: "ACTIVE"|"PENDING"|"BANNED", tierName: string|null,
+               points: number, joinedAt }
+
+// Request-Shape der Community-API + author.email; unlock ist im Studio immer
+// null (Staff kauft nicht), myVote ist die eigene Stimme des Staff-Users.
+StudioRequest { id, title, body, status: "OPEN"|"ACCEPTED"|"PRICED"|"FULFILLED"|"DECLINED",
+                score, myVote: "UP"|"DOWN"|null, priceCents: number|null, unlock: null,
+                author: { userId, name, email, avatarUrl: string|null, role: Role|null },
+                createdAt }
+
+StudioOrder { id, description, productName: string|null,
+              customer: { name, email },
+              amountCents, currency, status: "PENDING"|"PAID"|"REFUNDED"|"FAILED",
+              fulfilled: boolean, requiresShipping: boolean,
+              shippingDetails: { name: string|null,
+                                 address: { line1, line2, city, state, postalCode,
+                                            country }|null   // alle Felder string|null
+                               }|null,                       // nur Name/Adresse, nie Telefon o.Ä.
+              createdAt }
+```
+
+**Übersicht**
+
+- `GET /studio` → `{ communities: [{ community: CommunityCard, role: "OWNER"|"ADMIN"|"MODERATOR", memberCount, pendingMembers, revenueCents30d }] }` — alle Tenants, in denen der User OWNER/ADMIN/MODERATOR ist (sortiert nach Beitritt). `memberCount` = aktive Mitglieder, `revenueCents30d` = Summe `Order(PAID, nicht erstattet)` der letzten 30 Tage. MODERATOR-Tenants erscheinen hier, dürfen aber nur die Moderations-Endpoints aufrufen.
+- `GET /studio/{slug}/overview` → `{ stats: { members, activeMembers, pendingMembers, posts30d, comments30d, revenueCents30d, revenueCentsTotal, currency, subscribers }, recentActivity: [{ kind: "member_joined"|"comment"|"order"|"request", title, subtitle: string|null, createdAt }] }` — `members` = alle Memberships (inkl. PENDING/BANNED), `activeMembers`/`pendingMembers` nach Status; Umsatz = `Order(PAID, nicht erstattet)`; `subscribers` = aktive Subscriptions; `currency` = Währung der letzten bezahlten Order (Fallback `"eur"`). `recentActivity` max. 15 Einträge, absteigend nach `createdAt` (member_joined: title=Name, subtitle=Tier-Name|null · comment: title=Autor, subtitle=Text-Auszug · order: title=Beschreibung, subtitle=Käufer · request: title=Titel, subtitle=Autor).
+
+**Posts**
+
+- `GET /studio/{slug}/posts?filter=scheduled|published&cursor=&limit=` → `{ data: StudioPost[], nextCursor: string|null }` — `scheduled` = wartet auf den Cron (aufsteigend nach Go-live), `published` = live (absteigend nach `publishedAt`), ohne Filter alle Posts (absteigend).
+- `POST /studio/{slug}/posts` `{ spaceSlug, title? (≤160), body (1–20000), publishedAt? }` → `StudioPost` — `publishedAt` als ISO-Datum **in der Zukunft** ⇒ geplanter Post (`isScheduled: true`, veröffentlicht vom bestehenden Cron `/api/cron/posts`); fehlend/vergangen ⇒ sofort live. Ungültiges Datum → 400 `validation`. Unbekannter `spaceSlug` → 404.
+- `DELETE /studio/{slug}/posts/{postId}` → `{ ok: true }` — Rolle ≥ **MODERATOR**; entfernt Post + Suchindex-Eintrag (wie Web-Moderation).
+- `POST /studio/{slug}/posts/{postId}/pin` → `{ isPinned: boolean }` — Toggle.
+
+**Mitglieder**
+
+- `GET /studio/{slug}/members?status=&q=&cursor=&limit=` → `{ data: StudioMember[], nextCursor: string|null }` — `status` ∈ ACTIVE|PENDING|BANNED (optional), `q` sucht in Name/E-Mail (case-insensitive), aufsteigend nach `joinedAt`. Cursor = interne Membership-ID aus `nextCursor`.
+- `POST /studio/{slug}/members/{userId}` `{ action: "approve"|"ban"|"unban" }` → `{ member: StudioMember }` — approve: PENDING→ACTIVE (sonst 400 `validation`), ban: →BANNED, unban: BANNED→ACTIVE (sonst 400). Guards wie im Web: OWNER nicht änderbar und eigene Membership tabu → je **403** `not_authorized`. Rollenwechsel gibt es mobil nicht.
+
+**Requests (Wünsche)**
+
+- `GET /studio/{slug}/requests?status=` → `{ data: StudioRequest[] }` — alle Requests inkl. DECLINED (max. 100), sortiert wie im Web (score desc, createdAt desc); `status` ∈ OPEN|ACCEPTED|PRICED|FULFILLED|DECLINED (optional).
+- `POST /studio/{slug}/requests/{requestId}` `{ action: "accept"|"decline"|"fulfill" }` → `StudioRequest` (aktualisiert) — accept→ACCEPTED, decline→DECLINED, fulfill→FULFILLED. Bepreisen (PRICED) nur im Web.
+
+**Bestellungen**
+
+- `GET /studio/{slug}/orders?status=&cursor=&limit=` → `{ data: StudioOrder[], nextCursor: string|null }` — absteigend nach `createdAt`; `status` ∈ PENDING|PAID|REFUNDED|FAILED (optional). `requiresShipping` kommt vom Produkt; `shippingDetails` enthält ausschließlich Name + Adressfelder.
+- `POST /studio/{slug}/orders/{orderId}/fulfill` → `{ fulfilled: true }` — markiert die Bestellung als erfüllt/versendet (idempotent, Status bleibt unverändert).
+
+**Events**
+
+- `POST /studio/{slug}/events` `{ spaceSlug?, title (2–120), description? (≤2000), startsAt (ISO), endsAt? (ISO), location? (≤160), isOnline?: boolean (Default false), meetingUrl? (URL), capacity?: number }` → `Event` (Shape wie Community-API; frisch angelegt: `rsvpCount: 0, myRsvp: false, accessible: true`). Space-Ermittlung wie im Web-Dashboard: expliziter EVENTS-Space per `spaceSlug` (unbekannt → 404), sonst erster EVENTS-Space, sonst wird automatisch ein „Events“-Space (MEMBERS) angelegt. Ungültige Daten → 400 `validation`.
+- `DELETE /studio/{slug}/events/{eventId}` → `{ ok: true }` — entfernt Event + Suchindex-Eintrag.

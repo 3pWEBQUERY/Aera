@@ -59,9 +59,12 @@ export function localeChain(locale: string): string[] {
   return chain;
 }
 
-export default getRequestConfig(async () => {
-  const store = await cookies();
-  const locale = normalizeLocale(store.get(LOCALE_COOKIE)?.value);
+export default getRequestConfig(async ({ locale: explicitLocale }) => {
+  // Explizite Locale (z. B. getTranslations({ locale }) in API-Routen ohne
+  // Cookie-Kontext — Mobile-API) hat Vorrang vor dem NEXT_LOCALE-Cookie.
+  const locale = explicitLocale
+    ? normalizeLocale(explicitLocale)
+    : normalizeLocale((await cookies()).get(LOCALE_COOKIE)?.value);
 
   let messages: Messages = {};
   for (const step of localeChain(locale)) {

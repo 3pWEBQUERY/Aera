@@ -343,7 +343,7 @@ private struct LibraryMediaPager: View {
             }
             .padding(16)
         }
-        .preferredColorScheme(.dark)
+        .environment(\.colorScheme, .dark) // nicht .preferredColorScheme: blockiert Dismiss in fullScreenCover
     }
 
     @ViewBuilder

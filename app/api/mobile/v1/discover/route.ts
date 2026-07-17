@@ -41,7 +41,7 @@ async function categoriesInUse(): Promise<Map<string, number>> {
 export async function GET(req: Request) {
   const user = await mobileAuth(req);
 
-  const [popularRows, newestRows, myMemberships] = await Promise.all([
+  const [popularRows, newestRows, myMemberships, ownedCount] = await Promise.all([
     prisma.tenant.findMany({
       include: { _count: { select: { memberships: true } } },
       orderBy: { memberships: { _count: "desc" } },
@@ -59,6 +59,9 @@ export async function GET(req: Request) {
           include: { tenant: { include: { _count: { select: { memberships: true } } } } },
         })
       : Promise.resolve([]),
+    // Besitzt der Nutzer bereits eine Community? (Creator-CTA in der App
+    // ausblenden.) Ohne Token immer false.
+    user ? prisma.tenant.count({ where: { ownerId: user.id } }) : Promise.resolve(0),
   ]);
 
   const myTenants = myMemberships.map((m) => m.tenant as TenantWithCount);
@@ -97,6 +100,7 @@ export async function GET(req: Request) {
 
   return jsonOk({
     categories: discoverCategories(),
+    ownsCommunity: ownedCount > 0,
     myCommunities: myTenants.map(card),
     popular: popularRows.map((t) => card(t as TenantWithCount)),
     newest: newestRows.map((t) => card(t as TenantWithCount)),

@@ -57,7 +57,7 @@ struct JoinView: View {
             }
         }
         .brandTheme(brand)
-        .preferredColorScheme(.light)
+        .environment(\.colorScheme, .light) // nicht .preferredColorScheme: stört Dismiss in Sheets
         .overlay {
             if appState.purchases.isPurchasing {
                 purchasingOverlay

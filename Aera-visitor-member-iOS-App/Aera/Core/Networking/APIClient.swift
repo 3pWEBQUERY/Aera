@@ -20,6 +20,8 @@ struct APIError: Error, LocalizedError, Sendable {
         case iapProductMismatch = "iap_product_mismatch"
         case physicalNotSupported = "physical_not_supported"
         case manageOnWeb = "manage_on_web"
+        case nameTaken = "name_taken"
+        case addressTaken = "address_taken"
         // Client-seitige Codes
         case unauthorized = "unauthorized"
         case network = "network_error"
@@ -135,6 +137,34 @@ final class APIClient {
             Endpoint(.get, "discover/search", query: items)
         )
         return envelope.data
+    }
+
+    // MARK: - Community erstellen
+
+    /// `GET /communities/name-check?name=` — Live-Verfügbarkeit eines
+    /// Community-Namens. Liefert den Status-String:
+    /// `"available"`, `"taken"`, `"short"` oder `"long"`.
+    func checkCommunityName(_ name: String) async throws -> String {
+        let envelope: NameStatusEnvelope = try await send(
+            Endpoint(.get, "communities/name-check",
+                     query: [URLQueryItem(name: "name", value: name)])
+        )
+        return envelope.status
+    }
+
+    /// `POST /communities` — legt eine neue Community an (Owner-Membership,
+    /// Free-Tier und Default-Spaces werden serverseitig geseedet) und liefert
+    /// den Slug. Fehler: 409 `name_taken`/`address_taken`.
+    /// `locale` steuert die Sprache der geseedeten Inhalte.
+    func createCommunity(name: String,
+                         tagline: String? = nil,
+                         category: String? = nil,
+                         locale: String = Locale.current.language.languageCode?.identifier ?? "de") async throws -> String {
+        let envelope: SlugEnvelope = try await send(
+            Endpoint(.post, "communities"),
+            body: CreateCommunityBody(name: name, tagline: tagline, category: category, locale: locale)
+        )
+        return envelope.slug
     }
 
     // MARK: - Community
@@ -364,6 +394,158 @@ final class APIClient {
                        body: IAPValidateBody(tenantSlug: tenantSlug, jws: jws, kind: kind, refId: refId))
     }
 
+    // MARK: - Studio (Creator-Verwaltung)
+
+    /// `GET /studio` — alle Tenants, in denen der User OWNER/ADMIN/MODERATOR ist.
+    func studioCommunities() async throws -> [StudioCommunity] {
+        let envelope: StudioCommunitiesResponse = try await send(Endpoint(.get, "studio"))
+        return envelope.communities
+    }
+
+    /// `GET /studio/{slug}/overview` — Kennzahlen + letzte Aktivität.
+    func studioOverview(slug: String) async throws -> StudioOverview {
+        try await send(Endpoint(.get, "studio/\(slug)/overview"))
+    }
+
+    /// `GET /studio/{slug}/posts?filter=&cursor=` — `scheduled` aufsteigend
+    /// nach Go-live, `published` absteigend nach `publishedAt`.
+    func studioPosts(slug: String,
+                     filter: StudioPostFilter? = nil,
+                     cursor: String? = nil) async throws -> DataResponse<StudioPost> {
+        var items: [URLQueryItem] = []
+        if let filter { items.append(URLQueryItem(name: "filter", value: filter.rawValue)) }
+        if let cursor { items.append(URLQueryItem(name: "cursor", value: cursor)) }
+        return try await send(Endpoint(.get, "studio/\(slug)/posts", query: items))
+    }
+
+    /// `POST /studio/{slug}/posts` — `publishedAt` in der Zukunft ⇒ geplanter
+    /// Post (Cron veröffentlicht); fehlend/vergangen ⇒ sofort live.
+    func createStudioPost(slug: String,
+                          spaceSlug: String,
+                          title: String? = nil,
+                          body: String,
+                          publishedAt: Date? = nil) async throws -> StudioPost {
+        try await send(
+            Endpoint(.post, "studio/\(slug)/posts"),
+            body: CreateStudioPostBody(
+                spaceSlug: spaceSlug,
+                title: title,
+                body: body,
+                publishedAt: publishedAt.map { AeraDateParser.standard.string(from: $0) }
+            )
+        )
+    }
+
+    /// `DELETE /studio/{slug}/posts/{postId}` — Rolle ≥ MODERATOR;
+    /// entfernt Post + Suchindex-Eintrag.
+    func deleteStudioPost(slug: String, postId: String) async throws {
+        let _: OKEnvelope = try await send(Endpoint(.delete, "studio/\(slug)/posts/\(postId)"))
+    }
+
+    /// `POST /studio/{slug}/posts/{postId}/pin` — Toggle, liefert den neuen Zustand.
+    func togglePinStudioPost(slug: String, postId: String) async throws -> Bool {
+        let envelope: PinEnvelope = try await send(
+            Endpoint(.post, "studio/\(slug)/posts/\(postId)/pin")
+        )
+        return envelope.isPinned
+    }
+
+    /// `GET /studio/{slug}/members?status=&q=&cursor=` — aufsteigend nach
+    /// `joinedAt`; Cursor = interne Membership-ID aus `nextCursor`.
+    func studioMembers(slug: String,
+                       status: MemberStatus? = nil,
+                       query: String? = nil,
+                       cursor: String? = nil) async throws -> DataResponse<StudioMember> {
+        var items: [URLQueryItem] = []
+        if let status { items.append(URLQueryItem(name: "status", value: status.rawValue)) }
+        if let query, !query.isEmpty { items.append(URLQueryItem(name: "q", value: query)) }
+        if let cursor { items.append(URLQueryItem(name: "cursor", value: cursor)) }
+        return try await send(Endpoint(.get, "studio/\(slug)/members", query: items))
+    }
+
+    /// `POST /studio/{slug}/members/{userId}` — approve/ban/unban.
+    /// OWNER und die eigene Membership sind serverseitig geschützt (403).
+    func memberAction(slug: String,
+                      userId: String,
+                      action: StudioMemberAction) async throws -> StudioMember {
+        let envelope: StudioMemberEnvelope = try await send(
+            Endpoint(.post, "studio/\(slug)/members/\(userId)"),
+            body: StudioMemberActionBody(action: action)
+        )
+        return envelope.member
+    }
+
+    /// `GET /studio/{slug}/requests?status=` — alle Requests inkl. DECLINED
+    /// (max. 100), sortiert wie im Web (score desc, createdAt desc).
+    func studioRequests(slug: String, status: RequestStatus? = nil) async throws -> [StudioRequest] {
+        var items: [URLQueryItem] = []
+        if let status { items.append(URLQueryItem(name: "status", value: status.rawValue)) }
+        let envelope: DataResponse<StudioRequest> = try await send(
+            Endpoint(.get, "studio/\(slug)/requests", query: items)
+        )
+        return envelope.data
+    }
+
+    /// `POST /studio/{slug}/requests/{requestId}` — accept/decline/fulfill;
+    /// liefert den aktualisierten Request.
+    func requestAction(slug: String,
+                       requestId: String,
+                       action: StudioRequestAction) async throws -> StudioRequest {
+        try await send(Endpoint(.post, "studio/\(slug)/requests/\(requestId)"),
+                       body: StudioRequestActionBody(action: action))
+    }
+
+    /// `GET /studio/{slug}/orders?status=&cursor=` — absteigend nach `createdAt`.
+    func studioOrders(slug: String,
+                      status: OrderStatus? = nil,
+                      cursor: String? = nil) async throws -> DataResponse<StudioOrder> {
+        var items: [URLQueryItem] = []
+        if let status { items.append(URLQueryItem(name: "status", value: status.rawValue)) }
+        if let cursor { items.append(URLQueryItem(name: "cursor", value: cursor)) }
+        return try await send(Endpoint(.get, "studio/\(slug)/orders", query: items))
+    }
+
+    /// `POST /studio/{slug}/orders/{orderId}/fulfill` — markiert die
+    /// Bestellung als erfüllt/versendet (idempotent).
+    func fulfillOrder(slug: String, orderId: String) async throws {
+        let _: FulfilledEnvelope = try await send(
+            Endpoint(.post, "studio/\(slug)/orders/\(orderId)/fulfill")
+        )
+    }
+
+    /// `POST /studio/{slug}/events` — legt ein Event an; Space-Ermittlung wie
+    /// im Web-Dashboard (expliziter/erster EVENTS-Space, sonst Auto-Anlage).
+    func createStudioEvent(slug: String,
+                           spaceSlug: String? = nil,
+                           title: String,
+                           description: String? = nil,
+                           startsAt: Date,
+                           endsAt: Date? = nil,
+                           location: String? = nil,
+                           isOnline: Bool = false,
+                           meetingUrl: String? = nil,
+                           capacity: Int? = nil) async throws -> Event {
+        try await send(
+            Endpoint(.post, "studio/\(slug)/events"),
+            body: CreateStudioEventBody(
+                spaceSlug: spaceSlug,
+                title: title,
+                description: description,
+                startsAt: AeraDateParser.standard.string(from: startsAt),
+                endsAt: endsAt.map { AeraDateParser.standard.string(from: $0) },
+                location: location,
+                isOnline: isOnline,
+                meetingUrl: meetingUrl,
+                capacity: capacity
+            )
+        )
+    }
+
+    /// `DELETE /studio/{slug}/events/{eventId}` — entfernt Event + Suchindex-Eintrag.
+    func deleteStudioEvent(slug: String, eventId: String) async throws {
+        let _: OKEnvelope = try await send(Endpoint(.delete, "studio/\(slug)/events/\(eventId)"))
+    }
+
     // MARK: - Kern
 
     private func makeRequest(_ endpoint: Endpoint) -> URLRequest {
@@ -466,6 +648,14 @@ private struct ChangePasswordBody: Encodable {
     let newPassword: String
 }
 
+private struct CreateCommunityBody: Encodable {
+    let name: String
+    /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
+    let tagline: String?
+    let category: String?
+    let locale: String
+}
+
 private struct CreatePostBody: Encodable {
     let spaceSlug: String
     let title: String?
@@ -506,6 +696,36 @@ private struct UserIdBody: Encodable {
     let userId: String
 }
 
+private struct CreateStudioPostBody: Encodable {
+    let spaceSlug: String
+    /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
+    let title: String?
+    let body: String
+    /// ISO-8601; in der Zukunft ⇒ geplanter Post.
+    let publishedAt: String?
+}
+
+private struct StudioMemberActionBody: Encodable {
+    let action: StudioMemberAction
+}
+
+private struct StudioRequestActionBody: Encodable {
+    let action: StudioRequestAction
+}
+
+private struct CreateStudioEventBody: Encodable {
+    /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
+    let spaceSlug: String?
+    let title: String
+    let description: String?
+    let startsAt: String
+    let endsAt: String?
+    let location: String?
+    let isOnline: Bool
+    let meetingUrl: String?
+    let capacity: Int?
+}
+
 private struct IAPValidateBody: Encodable {
     let tenantSlug: String
     let jws: String
@@ -543,6 +763,14 @@ private struct ViewerEnvelope: Decodable {
     let viewer: Viewer
 }
 
+private struct NameStatusEnvelope: Decodable {
+    let status: String
+}
+
+private struct SlugEnvelope: Decodable {
+    let slug: String
+}
+
 private struct PostEnvelope: Decodable {
     let post: Post
 }
@@ -569,4 +797,16 @@ private struct MessageEnvelope: Decodable {
 
 private struct ReservationEnvelope: Decodable {
     let status: ReservationStatus
+}
+
+private struct PinEnvelope: Decodable {
+    let isPinned: Bool
+}
+
+private struct StudioMemberEnvelope: Decodable {
+    let member: StudioMember
+}
+
+private struct FulfilledEnvelope: Decodable {
+    let fulfilled: Bool
 }

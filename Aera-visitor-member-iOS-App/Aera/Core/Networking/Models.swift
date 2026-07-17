@@ -647,6 +647,9 @@ struct DiscoverResponse: Decodable, Hashable, Sendable {
     // Optional: ältere Backends liefern diese Sektionen noch nicht.
     var topics: [DiscoverTopic]?
     var topCreators: [DiscoverCreatorRow]?
+    /// `true`, wenn der eingeloggte Nutzer bereits eine Community besitzt
+    /// (Creator-CTA ausblenden). Ohne Token bzw. bei älteren Backends `nil`/`false`.
+    var ownsCommunity: Bool?
 }
 
 struct CommunityResponse: Decodable, Hashable, Sendable {
@@ -744,4 +747,171 @@ struct IAPValidateResponse: Decodable, Hashable, Sendable {
 struct DataResponse<Item: Decodable>: Decodable {
     var data: [Item]
     var nextCursor: String?
+}
+
+// MARK: - Studio (Creator-Verwaltung)
+
+/// Eintrag aus `GET /studio`: Community mit Staff-Rolle und Kennzahlen.
+struct StudioCommunity: Decodable, Hashable, Sendable, Identifiable {
+    var community: CommunityCard
+    var role: Role
+    /// Aktive Mitglieder.
+    var memberCount: Int
+    var pendingMembers: Int
+    /// Summe `Order(PAID, nicht erstattet)` der letzten 30 Tage.
+    var revenueCents30d: Int
+
+    var id: String { community.slug }
+}
+
+/// Kennzahlen aus `GET /studio/{slug}/overview`.
+struct StudioStats: Decodable, Hashable, Sendable {
+    /// Alle Memberships (inkl. PENDING/BANNED).
+    var members: Int
+    var activeMembers: Int
+    var pendingMembers: Int
+    var posts30d: Int
+    var comments30d: Int
+    var revenueCents30d: Int
+    var revenueCentsTotal: Int
+    /// Währung der letzten bezahlten Order (Fallback `"eur"`).
+    var currency: String
+    /// Aktive Subscriptions.
+    var subscribers: Int
+}
+
+/// Eintrag in `recentActivity` (max. 15, absteigend nach `createdAt`).
+struct StudioActivity: Decodable, Hashable, Sendable {
+    enum Kind: String, Decodable, Hashable, Sendable {
+        case memberJoined = "member_joined"
+        case comment
+        case order
+        case request
+    }
+
+    var kind: Kind
+    var title: String
+    var subtitle: String?
+    var createdAt: Date
+}
+
+struct StudioOverview: Decodable, Hashable, Sendable {
+    var stats: StudioStats
+    var recentActivity: [StudioActivity]
+}
+
+/// Beitrag in der Studio-Verwaltung (`GET /studio/{slug}/posts`).
+struct StudioPost: Decodable, Hashable, Sendable, Identifiable {
+    var id: String
+    var title: String?
+    /// Klartext, serverseitig auf 200 Zeichen gekürzt.
+    var body: String
+    var spaceSlug: String
+    var spaceName: String
+    var spaceType: SpaceType
+    /// Bei geplanten Posts der geplante Go-live.
+    var publishedAt: Date
+    /// `true` = wartet auf den Cron (`/api/cron/posts`).
+    var isScheduled: Bool
+    var isPinned: Bool
+    var likeCount: Int
+    var commentCount: Int
+}
+
+/// Filter für `GET /studio/{slug}/posts`.
+enum StudioPostFilter: String, Hashable, Sendable {
+    case scheduled
+    case published
+}
+
+/// Mitglied in der Verwaltungssicht (inkl. E-Mail und Status).
+struct StudioMember: Decodable, Hashable, Sendable, Identifiable {
+    var userId: String
+    var name: String
+    var email: String
+    var avatarUrl: String?
+    var role: Role
+    var status: MemberStatus
+    var tierName: String?
+    var points: Int
+    var joinedAt: Date
+
+    var id: String { userId }
+}
+
+/// Aktion für `POST /studio/{slug}/members/{userId}`.
+enum StudioMemberAction: String, Encodable, Hashable, Sendable {
+    case approve
+    case ban
+    case unban
+}
+
+/// Request-Shape der Community-API + `author.email`; `unlock` ist im Studio
+/// immer `null` und wird deshalb nicht dekodiert.
+struct StudioRequest: Decodable, Hashable, Sendable, Identifiable {
+    struct RequestAuthor: Decodable, Hashable, Sendable {
+        var userId: String
+        var name: String
+        var email: String
+        var avatarUrl: String?
+        var role: Role?
+    }
+
+    var id: String
+    var title: String
+    var body: String
+    var status: RequestStatus
+    var score: Int
+    /// Eigene Stimme des Staff-Users.
+    var myVote: VoteDirection?
+    var priceCents: Int?
+    var author: RequestAuthor
+    var createdAt: Date
+}
+
+/// Aktion für `POST /studio/{slug}/requests/{requestId}`.
+/// Bepreisen (PRICED) bleibt dem Web-Dashboard vorbehalten.
+enum StudioRequestAction: String, Encodable, Hashable, Sendable {
+    case accept
+    case decline
+    case fulfill
+}
+
+/// Verkauf des Tenants (`GET /studio/{slug}/orders`).
+struct StudioOrder: Decodable, Hashable, Sendable, Identifiable {
+    struct Customer: Decodable, Hashable, Sendable {
+        var name: String
+        var email: String
+    }
+
+    /// Nur Name + Adresse (sanitisiertes Stripe-`shipping_details`).
+    struct ShippingDetails: Decodable, Hashable, Sendable {
+        struct Address: Decodable, Hashable, Sendable {
+            var line1: String?
+            var line2: String?
+            var city: String?
+            var state: String?
+            var postalCode: String?
+            var country: String?
+        }
+
+        var name: String?
+        var address: Address?
+    }
+
+    var id: String
+    var description: String
+    var productName: String?
+    var customer: Customer
+    var amountCents: Int
+    var currency: String
+    var status: OrderStatus
+    var fulfilled: Bool
+    var requiresShipping: Bool
+    var shippingDetails: ShippingDetails?
+    var createdAt: Date
+}
+
+struct StudioCommunitiesResponse: Decodable, Sendable {
+    var communities: [StudioCommunity]
 }

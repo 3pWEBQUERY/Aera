@@ -13,6 +13,10 @@ struct DiscoverView: View {
     @State private var searchResults: [CommunityCard]?
     @State private var isSearching = false
     @State private var showLogin = false
+    @State private var showCreateCommunity = false
+    /// Nach Login über den Creator-CTA direkt das Create-Sheet öffnen.
+    @State private var pendingCreateAfterLogin = false
+    @State private var createdCommunity: CreatedCommunity?
 
     var body: some View {
         NavigationStack {
@@ -60,7 +64,27 @@ struct DiscoverView: View {
             .sheet(isPresented: $showLogin) {
                 LoginSheetView {
                     Task { await load() }
+                    if pendingCreateAfterLogin {
+                        pendingCreateAfterLogin = false
+                        // Kurz warten, bis das Login-Sheet weggeräumt ist,
+                        // sonst verschluckt SwiftUI die zweite Präsentation.
+                        Task {
+                            try? await Task.sleep(for: .milliseconds(450))
+                            showCreateCommunity = true
+                        }
+                    }
                 }
+            }
+            .sheet(isPresented: $showCreateCommunity) {
+                CreateCommunityView(categories: discover?.categories ?? []) { slug in
+                    Task {
+                        await load()
+                        createdCommunity = CreatedCommunity(slug: slug)
+                    }
+                }
+            }
+            .navigationDestination(item: $createdCommunity) { created in
+                CommunityView(slug: created.slug)
             }
         }
     }
@@ -98,6 +122,7 @@ struct DiscoverView: View {
                 Spacer(minLength: 8)
 
                 Button("Anmelden") {
+                    pendingCreateAfterLogin = false
                     showLogin = true
                 }
                 .buttonStyle(.secondary)
@@ -320,7 +345,10 @@ struct DiscoverView: View {
             }
         }
 
-        creatorCTA
+        // CTA ausblenden, sobald der Nutzer bereits eine eigene Community besitzt.
+        if discover.ownsCommunity != true {
+            creatorCTA
+        }
 
         if discover.popular.isEmpty, discover.newest.isEmpty, discover.myCommunities.isEmpty {
             EmptyStateView(
@@ -340,11 +368,11 @@ struct DiscoverView: View {
         .buttonStyle(.plain)
     }
 
-    /// Dunkler Creator-Banner wie auf der Web-Discover-Seite (führt zu /start im Web).
+    /// Dunkler Creator-Banner wie auf der Web-Discover-Seite. Startet die
+    /// In-App-Erstellung: eingeloggt → Create-Sheet, sonst Login → Create-Sheet.
     private var creatorCTA: some View {
         VStack(alignment: .leading, spacing: 12) {
-            (Text("Deine Inhalte. Deine Mitglieder. ")
-                + Text("Deine Community.").foregroundStyle(.white.opacity(0.55)))
+            Text("Deine Inhalte. Deine Mitglieder. \(Text("Deine Community.").foregroundStyle(.white.opacity(0.55)))")
                 .font(.displaySerif(24))
                 .kerning(-0.3)
                 .foregroundStyle(.white)
@@ -355,7 +383,14 @@ struct DiscoverView: View {
                 .foregroundStyle(.white.opacity(0.7))
                 .fixedSize(horizontal: false, vertical: true)
 
-            Link(destination: AppConfig.baseURL.appending(path: "start")) {
+            Button {
+                if appState.session.isLoggedIn {
+                    showCreateCommunity = true
+                } else {
+                    pendingCreateAfterLogin = true
+                    showLogin = true
+                }
+            } label: {
                 Label("Community starten", systemImage: "plus")
                     .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(Theme.ink)
@@ -363,6 +398,7 @@ struct DiscoverView: View {
                     .padding(.vertical, 11)
                     .background(.white, in: .capsule)
             }
+            .buttonStyle(.plain)
             .padding(.top, 4)
         }
         .padding(24)
@@ -396,6 +432,14 @@ struct DiscoverView: View {
         }
         .frame(maxWidth: .infinity)
     }
+}
+
+/// Hashable-Wrapper für `navigationDestination(item:)` — Slug der frisch
+/// erstellten Community.
+private struct CreatedCommunity: Identifiable, Hashable {
+    let slug: String
+
+    var id: String { slug }
 }
 
 // MARK: - Discover-Bausteine (Web-Home-Pendants)
@@ -547,41 +591,55 @@ private struct CommunityCardView: View {
                         }
                     }
 
-                    HStack(spacing: 6) {
-                        PillLabel(String(localized: "\(community.memberCount) Mitglieder"),
-                                  systemImage: "person.2")
-                        if let categoryLabel = community.categoryLabel ?? community.category,
-                           !categoryLabel.isEmpty {
-                            PillLabel(categoryLabel)
-                        }
-                        if community.isMember {
-                            PillLabel(String(localized: "Mitglied"),
-                                      systemImage: "checkmark",
-                                      prominent: true)
+                    // Pills unten anpinnen — hält alle Karten gleich hoch.
+                    Spacer(minLength: 0)
+
+                    // Scrollbar statt Umbruch/Überlauf, falls die Pills breiter als die Karte sind.
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 6) {
+                            PillLabel(String(localized: "\(community.memberCount) Mitglieder"),
+                                      systemImage: "person.2")
+                            if let categoryLabel = community.categoryLabel ?? community.category,
+                               !categoryLabel.isEmpty {
+                                PillLabel(categoryLabel)
+                            }
+                            if community.isMember {
+                                PillLabel(String(localized: "Mitglied"),
+                                          systemImage: "checkmark",
+                                          prominent: true)
+                            }
                         }
                     }
+                    .scrollIndicators(.hidden)
                 }
                 .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
+            // Einheitliche Kartenhöhe, unabhängig von Tagline-Länge:
+            // Cover 170 + Inhalt fix.
+            .frame(height: 306, alignment: .top)
         }
         .environment(\.brand, BrandTheme(primaryHex: community.primaryColor,
                                          accentHex: community.accentColor))
     }
 
-    @ViewBuilder
+    /// Festes Cover-Format (Höhe 170), unabhängig vom Seitenverhältnis des Bildes —
+    /// Hochformat-Cover können die Karte so nicht mehr aufblähen.
     private var cover: some View {
-        if community.coverUrl != nil {
-            Color.clear
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .overlay {
-                    AsyncImageView(url: community.coverUrl)
-                }
-                .clipped()
-        } else {
-            BrandCoverPlaceholder(name: community.name,
-                                  brand: BrandTheme(primaryHex: community.primaryColor,
-                                                    accentHex: community.accentColor))
-                .aspectRatio(16 / 9, contentMode: .fit)
+        Group {
+            if community.coverUrl != nil {
+                Color.clear
+                    .overlay {
+                        AsyncImageView(url: community.coverUrl)
+                    }
+            } else {
+                BrandCoverPlaceholder(name: community.name,
+                                      brand: BrandTheme(primaryHex: community.primaryColor,
+                                                        accentHex: community.accentColor))
+            }
         }
+        .frame(height: 170)
+        .frame(maxWidth: .infinity)
+        .clipped()
     }
 }

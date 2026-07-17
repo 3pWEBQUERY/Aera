@@ -54,7 +54,9 @@ struct GallerySpaceView: View {
         .padding(.horizontal, 16)
         .sensoryFeedback(.success, trigger: purchaseSuccessCount)
         .fullScreenCover(item: $viewerContext) { context in
-            GalleryFullscreenViewer(items: context.items, startIndex: context.startIndex)
+            GalleryFullscreenViewer(items: context.items, startIndex: context.startIndex) {
+                viewerContext = nil
+            }
         }
         .confirmationDialog(
             "Freischalten",
@@ -284,13 +286,15 @@ private struct GalleryViewerContext: Identifiable {
 private struct GalleryFullscreenViewer: View {
     let items: [GalleryItem]
     let startIndex: Int
+    let onClose: () -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var currentIndex: Int
 
-    init(items: [GalleryItem], startIndex: Int) {
+    init(items: [GalleryItem], startIndex: Int, onClose: @escaping () -> Void) {
         self.items = items
         self.startIndex = startIndex
+        self.onClose = onClose
         self._currentIndex = State(initialValue: min(max(startIndex, 0), max(items.count - 1, 0)))
     }
 
@@ -309,13 +313,15 @@ private struct GalleryFullscreenViewer: View {
 
             VStack(alignment: .trailing, spacing: 10) {
                 Button {
+                    onClose()
                     dismiss()
                 } label: {
                     Image(systemName: "xmark")
                         .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 40, height: 40)
-                        .glassEffect(.regular.interactive(), in: .circle)
+                        .frame(width: 44, height: 44)
+                        .glassEffect(.regular, in: .circle)
+                        .contentShape(.circle)
                 }
                 .buttonStyle(.plain)
 
@@ -331,7 +337,10 @@ private struct GalleryFullscreenViewer: View {
             }
             .padding(16)
         }
-        .preferredColorScheme(.dark)
+        // WICHTIG: kein .preferredColorScheme(.dark) hier — der Modifier wirkt in
+        // fullScreenCover auf die gesamte Präsentation und verhindert das Schließen
+        // (bekannter SwiftUI-Bug). Scoped-Variante verwenden:
+        .environment(\.colorScheme, .dark)
     }
 
     @ViewBuilder

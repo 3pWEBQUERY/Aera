@@ -34,6 +34,13 @@ struct RequestsSpaceView: View {
 
     var body: some View {
         LazyVStack(spacing: 12) {
+            if content.canCreate {
+                HStack {
+                    Spacer()
+                    composeButton
+                }
+            }
+
             if requests.isEmpty {
                 EmptyStateView(
                     icon: "lightbulb",
@@ -51,11 +58,6 @@ struct RequestsSpaceView: View {
             }
         }
         .padding(.horizontal, 16)
-        .overlay(alignment: .bottomTrailing) {
-            if content.canCreate {
-                composeButton
-            }
-        }
         .onChange(of: content.requests) { _, newValue in
             requests = newValue
         }
@@ -79,18 +81,18 @@ struct RequestsSpaceView: View {
 
     // MARK: - Compose-Button
 
+    /// Kompakter „+"-Button rechts oberhalb der Wunsch-Liste.
     private var composeButton: some View {
         Button {
             showComposeSheet = true
         } label: {
             Image(systemName: "plus")
-                .font(.system(size: 18, weight: .semibold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(.white)
-                .frame(width: 52, height: 52)
+                .frame(width: 38, height: 38)
                 .glassEffect(.regular.tint(brand.color).interactive(), in: .circle)
         }
         .buttonStyle(.plain)
-        .padding(20)
         .accessibilityLabel(Text("Neue Anfrage"))
     }
 
