@@ -110,6 +110,31 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
     case tips = "TIPS"
     case calendar = "CALENDAR"
 
+    /// Anzeige-Name des Space-Typs (z. B. für die Space-Pill im Home-Feed).
+    var displayName: String {
+        switch self {
+        case .feed: String(localized: "Feed")
+        case .forum: String(localized: "Forum")
+        case .blog: String(localized: "Blog")
+        case .videos: String(localized: "Videos")
+        case .podcast: String(localized: "Podcast")
+        case .gallery: String(localized: "Galerie")
+        case .course: String(localized: "Kurse")
+        case .shop: String(localized: "Shop")
+        case .events: String(localized: "Events")
+        case .newsletter: String(localized: "Newsletter")
+        case .knowledge: String(localized: "Wissen")
+        case .links: String(localized: "Links")
+        case .live: String(localized: "Live")
+        case .chat: String(localized: "Chat")
+        case .requests: String(localized: "Wünsche")
+        case .booking: String(localized: "Termine")
+        case .stories: String(localized: "Stories")
+        case .tips: String(localized: "Unterstützen")
+        case .calendar: String(localized: "Kalender")
+        }
+    }
+
     /// SF-Symbol-Mapping nach DESIGN.md §4.
     var symbolName: String {
         switch self {
@@ -652,6 +677,35 @@ struct DiscoverResponse: Decodable, Hashable, Sendable {
     var ownsCommunity: Bool?
 }
 
+/// Eintrag des aggregierten Home-Feeds (`GET /home`): Post + Community-Karte.
+struct HomeItem: Decodable, Hashable, Sendable, Identifiable {
+    var community: CommunityCard
+    var post: Post
+
+    var id: String { post.id }
+}
+
+/// `tab`-Parameter für `GET /home`.
+enum HomeFeedTab: String, Hashable, Sendable, CaseIterable {
+    case home
+    case members
+}
+
+struct HomeFeedResponse: Decodable, Sendable {
+    var data: [HomeItem]
+    var nextCursor: String?
+}
+
+/// Antwort von `GET /explore` (Patreon-artige Entdecken-Seite).
+struct ExploreResponse: Decodable, Hashable, Sendable {
+    /// Kategorien sortiert nach Community-Anzahl (max. 8).
+    var trending: [DiscoverCategory]
+    /// Personalisiert (Kategorien der eigenen Mitgliedschaften), sonst beliebteste.
+    var forYou: [CommunityCard]
+    /// Meiste neue Mitglieder der letzten 7 Tage, per `memberCount` aufgefüllt.
+    var popularWeek: [CommunityCard]
+}
+
 struct CommunityResponse: Decodable, Hashable, Sendable {
     var community: CommunityDetail
     var viewer: Viewer
@@ -806,6 +860,8 @@ struct StudioPost: Decodable, Hashable, Sendable, Identifiable {
     var title: String?
     /// Klartext, serverseitig auf 200 Zeichen gekürzt.
     var body: String
+    var imageUrl: String?
+    var videoUrl: String?
     var spaceSlug: String
     var spaceName: String
     var spaceType: SpaceType
@@ -822,6 +878,26 @@ struct StudioPost: Decodable, Hashable, Sendable, Identifiable {
 enum StudioPostFilter: String, Hashable, Sendable {
     case scheduled
     case published
+}
+
+/// `purpose`-Parameter für `POST /studio/{slug}/upload`.
+enum StudioUploadPurpose: String, Hashable, Sendable {
+    /// Post-Bild (PUBLIC, nur Bilder, max. 5 MB).
+    case postImage = "post-image"
+    /// Post-Video (MEMBERS — Media-Proxy gated, nur Videos, max. 512 MB).
+    case postVideo = "post-video"
+    /// Story-Medium (Bild oder Video, PUBLIC).
+    case story
+}
+
+/// Antwort von `POST /studio/{slug}/stories` (Story-Item-Shape wie im
+/// STORIES-Space-Content).
+struct StudioStory: Decodable, Hashable, Sendable, Identifiable {
+    var id: String
+    var mediaUrl: String
+    var mediaType: MediaType
+    var createdAt: Date
+    var expiresAt: Date
 }
 
 /// Mitglied in der Verwaltungssicht (inkl. E-Mail und Status).

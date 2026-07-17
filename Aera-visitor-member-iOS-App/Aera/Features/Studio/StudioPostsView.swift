@@ -1,8 +1,10 @@
 import SwiftUI
+import PhotosUI
 
 /// „Beiträge & Planung": geplante und veröffentlichte Beiträge des Tenants
 /// (`GET /studio/{slug}/posts`), Pin-Toggle und Löschen per Kontextmenü,
-/// Erstellen (inkl. Planung) über ein Compose-Sheet. Cursor-Pagination.
+/// Erstellen (inkl. Planung und Bild-Anhang) über ein Compose-Sheet.
+/// Cursor-Pagination.
 struct StudioPostsView: View {
     let community: StudioCommunity
 
@@ -151,6 +153,18 @@ struct StudioPostsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
                     PillLabel(post.spaceName, systemImage: post.spaceType.symbolName)
+                    if post.imageUrl != nil {
+                        Image(systemName: "photo")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(Theme.ink.opacity(0.45))
+                            .accessibilityLabel(Text("Mit Bild"))
+                    }
+                    if post.videoUrl != nil {
+                        Image(systemName: "play.rectangle")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundStyle(Theme.ink.opacity(0.45))
+                            .accessibilityLabel(Text("Mit Video"))
+                    }
                     Spacer(minLength: 0)
                     if post.isPinned {
                         Image(systemName: "pin.fill")
@@ -160,20 +174,35 @@ struct StudioPostsView: View {
                     }
                 }
 
-                if let title = post.title, !title.isEmpty {
-                    Text(title)
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Theme.ink)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(2)
-                }
+                HStack(alignment: .top, spacing: 10) {
+                    VStack(alignment: .leading, spacing: 8) {
+                        if let title = post.title, !title.isEmpty {
+                            Text(title)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(Theme.ink)
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(2)
+                        }
 
-                if !post.body.isEmpty {
-                    Text(post.body)
-                        .font(.system(size: 13))
-                        .foregroundStyle(Theme.ink.opacity(0.65))
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(3)
+                        if !post.body.isEmpty {
+                            Text(post.body)
+                                .font(.system(size: 13))
+                                .foregroundStyle(Theme.ink.opacity(0.65))
+                                .multilineTextAlignment(.leading)
+                                .lineLimit(3)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if post.imageUrl != nil {
+                        AsyncImageView(url: post.imageUrl)
+                            .frame(width: 48, height: 48)
+                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 8, style: .continuous)
+                                    .strokeBorder(Theme.border, lineWidth: 1)
+                            )
+                    }
                 }
 
                 if post.isScheduled {
@@ -308,8 +337,9 @@ struct StudioPostsView: View {
 // MARK: - StudioPostComposeSheet
 
 /// Sheet zum Erstellen eines Beitrags: Space-Picker (content-fähige Spaces
-/// aus `GET /c/{slug}`), optionaler Titel, Text und optionale Planung
-/// (Datum in der Zukunft) → `POST /studio/{slug}/posts`.
+/// aus `GET /c/{slug}`), optionaler Titel, Text, optionales Bild
+/// (PhotosPicker → `POST /studio/{slug}/upload` purpose `post-image`) und
+/// optionale Planung (Datum in der Zukunft) → `POST /studio/{slug}/posts`.
 private struct StudioPostComposeSheet: View {
     let slug: String
     let onCreated: (StudioPost) -> Void
@@ -324,10 +354,15 @@ private struct StudioPostComposeSheet: View {
     @State private var body_ = ""
     @State private var isScheduling = false
     @State private var publishDate = Self.defaultPublishDate
+    @State private var imagePickerItem: PhotosPickerItem?
+    @State private var attachedImage: UIImage?
+    /// JPEG-Daten des Anhangs — beim Absenden hochgeladen.
+    @State private var attachedImageData: Data?
     @State private var isSubmitting = false
     @State private var errorMessage: String?
 
-    /// Space-Typen, in denen Beiträge erstellt werden können.
+    /// Space-Typen, in denen Beiträge erstellt werden können
+    /// (FEED/FORUM/BLOG/VIDEOS/PODCAST wie der Home-Feed-Vertrag).
     private static let composableTypes: Set<SpaceType> = [.feed, .forum, .blog, .videos, .podcast]
 
     private static var defaultPublishDate: Date {
@@ -356,6 +391,8 @@ private struct StudioPostComposeSheet: View {
                             .lineLimit(6...14)
                             .authInputStyle()
                     }
+
+                    imageSection
 
                     scheduleSection
 
@@ -395,6 +432,84 @@ private struct StudioPostComposeSheet: View {
         }
         .interactiveDismissDisabled(isSubmitting)
         .task { await loadSpaces() }
+        .onChange(of: imagePickerItem) { _, item in
+            guard let item else { return }
+            Task { await loadAttachedImage(item) }
+        }
+    }
+
+    // MARK: - Bild-Anhang
+
+    @ViewBuilder
+    private var imageSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            if let attachedImage {
+                ZStack(alignment: .topTrailing) {
+                    Image(uiImage: attachedImage)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 180)
+                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .strokeBorder(Theme.border, lineWidth: 1)
+                        )
+
+                    Button {
+                        withAnimation(.snappy(duration: 0.25)) {
+                            removeAttachedImage()
+                        }
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(.white)
+                            .frame(width: 26, height: 26)
+                            .background(.black.opacity(0.55), in: .circle)
+                    }
+                    .buttonStyle(.plain)
+                    .padding(8)
+                    .disabled(isSubmitting)
+                    .accessibilityLabel(Text("Bild entfernen"))
+                }
+            } else {
+                PhotosPicker(selection: $imagePickerItem, matching: .images) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "photo.badge.plus")
+                            .font(.system(size: 13, weight: .medium))
+                        Text("Bild anhängen")
+                            .font(.system(size: 14, weight: .medium))
+                    }
+                    .foregroundStyle(Theme.ink)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 10)
+                    .background(Theme.card, in: .capsule)
+                    .overlay(Capsule().strokeBorder(Theme.border, lineWidth: 1))
+                }
+                .disabled(isSubmitting)
+            }
+        }
+    }
+
+    private func removeAttachedImage() {
+        imagePickerItem = nil
+        attachedImage = nil
+        attachedImageData = nil
+    }
+
+    private func loadAttachedImage(_ item: PhotosPickerItem) async {
+        defer { imagePickerItem = nil }
+        guard let data = try? await item.loadTransferable(type: Data.self),
+              let image = UIImage(data: data),
+              let jpegData = image.studioResized(maxDimension: 2048).jpegData(compressionQuality: 0.85) else {
+            errorMessage = String(localized: "Das Bild konnte nicht verarbeitet werden.")
+            return
+        }
+        withAnimation(.snappy(duration: 0.25)) {
+            attachedImage = image
+            attachedImageData = jpegData
+        }
+        errorMessage = nil
     }
 
     // MARK: - Space-Auswahl
@@ -490,13 +605,34 @@ private struct StudioPostComposeSheet: View {
         errorMessage = nil
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedBody = body_.trimmingCharacters(in: .whitespacesAndNewlines)
+        let imageData = attachedImageData
         Task {
+            // Bild zuerst hochladen — Fehler dabei brechen das Absenden ab
+            // (inline gemeldet), der Beitrag bleibt unangetastet.
+            var imageUrl: String?
+            if let imageData {
+                do {
+                    imageUrl = try await appState.api.studioUpload(
+                        slug: slug,
+                        purpose: .postImage,
+                        fileData: imageData,
+                        filename: "post.jpg",
+                        mimeType: "image/jpeg"
+                    )
+                } catch {
+                    errorMessage = String(localized: "Bild-Upload fehlgeschlagen: \(error.localizedDescription)")
+                    isSubmitting = false
+                    return
+                }
+            }
+
             do {
                 let post = try await appState.api.createStudioPost(
                     slug: slug,
                     spaceSlug: spaceSlug,
                     title: trimmedTitle.isEmpty ? nil : trimmedTitle,
                     body: trimmedBody,
+                    imageUrl: imageUrl,
                     publishedAt: isScheduling ? publishDate : nil
                 )
                 onCreated(post)
@@ -525,6 +661,25 @@ private struct StudioPostComposeSheet: View {
             if spaces == nil {
                 spacesErrorMessage = error.localizedDescription
             }
+        }
+    }
+}
+
+// MARK: - UIImage-Resize (Studio-Uploads)
+
+extension UIImage {
+    /// Skaliert das Bild proportional, sodass die längste Kante
+    /// `maxDimension` nicht überschreitet (Post-/Story-Uploads).
+    func studioResized(maxDimension: CGFloat) -> UIImage {
+        let largestSide = max(size.width, size.height)
+        guard largestSide > maxDimension, largestSide > 0 else { return self }
+        let scaleFactor = maxDimension / largestSide
+        let newSize = CGSize(width: size.width * scaleFactor,
+                             height: size.height * scaleFactor)
+        let format = UIGraphicsImageRendererFormat.default()
+        format.scale = 1
+        return UIGraphicsImageRenderer(size: newSize, format: format).image { _ in
+            draw(in: CGRect(origin: .zero, size: newSize))
         }
     }
 }

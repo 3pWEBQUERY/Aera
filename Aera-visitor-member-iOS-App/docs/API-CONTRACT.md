@@ -131,6 +131,27 @@ MembershipHome { community: CommunityCard, tier: {name, slug, priceCents, interv
 
 - `GET /discover` → `{ categories: { key, label }[], myCommunities: CommunityCard[], popular: CommunityCard[], newest: CommunityCard[] }`
 - `GET /discover/search?q=&category=` → `{ data: CommunityCard[] }`
+- `GET /communities/cards?slugs=a,b,c` → `{ data: CommunityCard[] }` — Token optional, **max 20 Slugs** (mehr → 400 `validation`), Antwort in der Reihenfolge der angefragten Slugs; unbekannte Slugs werden still übersprungen (für „Zuletzt besucht": Client speichert Slugs lokal).
+
+### Home-Feed (Token optional)
+
+- `GET /home?tab=home|members&cursor=&limit=` → `{ data: HomeItem[], nextCursor: string|null }`
+  - Aggregierter Content-Feed **über Tenants hinweg**, absteigend nach `publishedAt` (Keyset über `publishedAt`+`id`, `cursor` = Post-ID des letzten Items; unbekannter Cursor → 400 `validation`). `limit` Default **20**, max **50**.
+  - Quellen: veröffentlichte Posts (`isPublished`, `publishedAt <= now`) aus Spaces der Typen `FEED`, `FORUM`, `BLOG`, `VIDEOS`, `PODCAST` (keine archivierten Spaces, keine Banner-Container).
+  - `tab=home` (Default): alle Tenants, Token optional. `tab=members`: nur Tenants mit **ACTIVE**-Membership des Users — ohne Token → **401** `unauthorized`; ohne Mitgliedschaften → leere Liste.
+  - Gating pro Tenant wie in der Community-API: nicht zugänglicher Space (Visibility/Entitlement, Gäste sehen nur `PUBLIC`) oder Pay-per-Post ⇒ `post.locked: true` + `body`/`bodyHtml`/`imageUrl`/`videoUrl` **serverseitig genullt** + `teaserUrl`. `unlock` ist nur bei Pay-per-Post gesetzt (Space-gesperrte freie Posts sind nicht einzeln kaufbar → `unlock: null`, Beitritt nötig).
+  - `post.score`/`post.myVote` wie überall nur bei `spaceType: "FORUM"`, sonst `null`; `readingMinutes` im Home-Feed immer `null` (kein Blog-Listing-Modus).
+
+```ts
+HomeItem { community: CommunityCard, post: Post }
+```
+
+### Explore (Token optional — personalisiert wenn vorhanden)
+
+- `GET /explore` → `{ trending: { key, label }[], forYou: CommunityCard[], popularWeek: CommunityCard[] }`
+  - `trending`: Kategorien sortiert nach Community-Anzahl, **max 8**.
+  - `forYou` (**max 12**): eingeloggt → Communities aus den Kategorien der eigenen ACTIVE-Mitgliedschaften, **ohne** eigene Communities, sortiert nach `memberCount`. Ausgeloggt oder keine passenden Kategorien/Treffer → beliebteste Communities.
+  - `popularWeek` (**max 12**): meiste neue Mitglieder der letzten 7 Tage (`Membership.joinedAt`), bei weniger als 12 Treffern per `memberCount` aufgefüllt.
 
 ### Community (Token optional; gated je nach Viewer)
 
@@ -244,6 +265,7 @@ Web-Dashboard vorbehalten.
 
 ```ts
 StudioPost { id, title: string|null, body,            // Klartext, serverseitig auf 200 Zeichen gekürzt
+             imageUrl: string|null, videoUrl: string|null,
              spaceSlug, spaceName, spaceType: SpaceType,
              publishedAt,                             // bei geplanten Posts = geplanter Go-live
              isScheduled: boolean,                    // true = wartet auf Cron /api/cron/posts
@@ -279,9 +301,23 @@ StudioOrder { id, description, productName: string|null,
 **Posts**
 
 - `GET /studio/{slug}/posts?filter=scheduled|published&cursor=&limit=` → `{ data: StudioPost[], nextCursor: string|null }` — `scheduled` = wartet auf den Cron (aufsteigend nach Go-live), `published` = live (absteigend nach `publishedAt`), ohne Filter alle Posts (absteigend).
-- `POST /studio/{slug}/posts` `{ spaceSlug, title? (≤160), body (1–20000), publishedAt? }` → `StudioPost` — `publishedAt` als ISO-Datum **in der Zukunft** ⇒ geplanter Post (`isScheduled: true`, veröffentlicht vom bestehenden Cron `/api/cron/posts`); fehlend/vergangen ⇒ sofort live. Ungültiges Datum → 400 `validation`. Unbekannter `spaceSlug` → 404.
+- `POST /studio/{slug}/posts` `{ spaceSlug, title? (≤160), body (1–20000), imageUrl?, videoUrl?, publishedAt? }` → `StudioPost` — `publishedAt` als ISO-Datum **in der Zukunft** ⇒ geplanter Post (`isScheduled: true`, veröffentlicht vom bestehenden Cron `/api/cron/posts`); fehlend/vergangen ⇒ sofort live. Ungültiges Datum → 400 `validation`. Unbekannter `spaceSlug` → 404. `imageUrl`/`videoUrl` müssen **eigene** Upload-URLs sein (beginnend mit `/api/media/` oder `/uploads/`, typischerweise aus `POST /studio/{slug}/upload`) — sonst 400 `validation`.
 - `DELETE /studio/{slug}/posts/{postId}` → `{ ok: true }` — Rolle ≥ **MODERATOR**; entfernt Post + Suchindex-Eintrag (wie Web-Moderation).
 - `POST /studio/{slug}/posts/{postId}/pin` → `{ isPinned: boolean }` — Toggle.
+
+**Upload**
+
+- `POST /studio/{slug}/upload` — multipart `file` + `purpose` ∈ `"post-image" | "post-video" | "story"` → `{ url }` (relative Media-Proxy-URL, direkt in `imageUrl`/`videoUrl`/`mediaUrl` verwendbar).
+  - Spiegelt den Web-Upload (`app/api/upload`): MIME-Allowlists (Bilder: jpeg/png/webp/gif/avif, max **5 MB**; Videos: mp4/webm/ogv/mov/mkv/m4v, max **512 MB**), Plan-Speicher-Quota, Storage-Key-Schema `tenants/{tenantId}/{purpose}/{uuid}.{ext}`, `StorageObject`-Eintrag.
+  - Purpose-/Visibility-Mapping wie die Web-Purpose-Map: `post-image` → `feed-image` (PUBLIC, nur Bilder), `post-video` → `space-video` (MEMBERS — Media-Proxy gated, nur Videos), `story` → `story` (Bild) bzw. `story-video` (Video), beide PUBLIC.
+  - Fehler: falscher/fehlender `purpose`/`file`/MIME-Typ/zu groß → 400 `validation`; Speicher-Quota erschöpft → **413** `storage_full`; Storage-Fehler → 500 `upload_failed`.
+
+**Stories**
+
+- `POST /studio/{slug}/stories` `{ mediaUrl, mediaType: "IMAGE"|"VIDEO", caption? (≤280) }` → `{ id, mediaUrl, mediaType, createdAt, expiresAt }` — Story-Item-Shape wie im `STORIES`-Space-Content der Community-API.
+  - Persistenz exakt wie die Web-Dashboard-Action (`createStoryAction`): sofort live (`publishAt = now`), Ablauf nach **24 h** (`expiresAt = publishAt + 24h`); Sichtbarkeit ergibt sich wie im Web aus dem Ziel-Space.
+  - Ziel-Space = **erster `STORIES`-Space** des Tenants; existiert keiner → **409** `no_stories_space`.
+  - `mediaUrl` muss eine eigene Upload-URL sein (`/api/media/…` oder `/uploads/…`, aus `POST /studio/{slug}/upload` mit `purpose: "story"`) — sonst 400 `validation`.
 
 **Mitglieder**
 

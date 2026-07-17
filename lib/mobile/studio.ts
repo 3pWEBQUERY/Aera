@@ -65,6 +65,8 @@ export interface StudioPostDto {
   title: string | null;
   /** Klartext, serverseitig auf 200 Zeichen gekürzt (lib/utils excerpt). */
   body: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
   spaceSlug: string;
   spaceName: string;
   spaceType: SpaceType;
@@ -80,6 +82,8 @@ export interface StudioPostRow {
   id: string;
   title: string | null;
   body: string;
+  imageUrl: string | null;
+  videoUrl: string | null;
   isPinned: boolean;
   isPublished: boolean;
   publishedAt: Date;
@@ -113,6 +117,8 @@ export async function studioPostDtos(
     id: p.id,
     title: p.title,
     body: excerpt(p.body, 200),
+    imageUrl: p.imageUrl,
+    videoUrl: p.videoUrl,
     spaceSlug: p.space.slug,
     spaceName: p.space.name,
     spaceType: p.space.type,

@@ -1,12 +1,21 @@
 import SwiftUI
 
-/// Root-Tab „Entdecken": Suche (`GET /discover/search`, debounced),
-/// Kategorie-Chips und die Sektionen „Meine Communities" (nur eingeloggt),
-/// „Beliebt" und „Neu" aus `GET /discover`.
+/// Tab „Entdecken" (Patreon-artige Explore-Seite, `GET /explore`):
+/// Suche (`GET /discover/search`, debounced), „Im Trend"-Kategorie-Chips,
+/// „Zuletzt besucht" (lokale Slugs via `RecentCommunitiesStore`, hydriert über
+/// `GET /communities/cards`), „Kreative für dich" und „Diese Woche beliebt",
+/// darunter der Creator-CTA mit In-App-Erstellung.
+///
+/// `embedded: true` lässt den eigenen `NavigationStack` weg — so ist die
+/// Seite aus der Startseite pushbar (Lupe/„Communities entdecken").
 struct DiscoverView: View {
     @Environment(AppState.self) private var appState
 
-    @State private var discover: DiscoverResponse?
+    @State private var explore: ExploreResponse?
+    @State private var recentCommunities: [CommunityCard] = []
+    /// `true`, sobald der Nutzer eine eigene Community besitzt (OWNER-Rolle)
+    /// → Creator-CTA ausblenden (wie `discover.ownsCommunity` zuvor).
+    @State private var ownsCommunity = false
     @State private var loadErrorMessage: String?
     @State private var searchText = ""
     @State private var selectedCategory: String?
@@ -17,75 +26,90 @@ struct DiscoverView: View {
     /// Nach Login über den Creator-CTA direkt das Create-Sheet öffnen.
     @State private var pendingCreateAfterLogin = false
     @State private var createdCommunity: CreatedCommunity?
+    /// Vollständige Kategorien-Liste für `CreateCommunityView` — wird erst
+    /// beim Öffnen des Create-Sheets über `GET /discover` geladen
+    /// (Fallback: `explore.trending`).
+    @State private var createCategories: [DiscoverCategory] = []
+
+    private let embedded: Bool
+
+    init(embedded: Bool = false) {
+        self.embedded = embedded
+    }
 
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    titleHeader
-
-                    if !appState.session.isLoggedIn {
-                        loginCard
-                    }
-
-                    if let categories = discover?.categories, !categories.isEmpty {
-                        categoryChips(categories)
-                    }
-
-                    if isFilterActive {
-                        searchSection
-                    } else if let discover {
-                        sections(discover)
-                    } else if let loadErrorMessage {
-                        loadErrorCard(loadErrorMessage)
-                    } else {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 60)
-                    }
-                }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
-                .padding(.bottom, 32)
+        if embedded {
+            content
+        } else {
+            NavigationStack {
+                content
             }
-            .background(Theme.paper.ignoresSafeArea())
-            .scrollEdgeEffectStyle(.soft, for: .top)
-            .navigationBarTitleDisplayMode(.inline)
-            .searchable(text: $searchText, prompt: Text("Communities suchen"))
-            .refreshable { await load() }
-            .task {
-                if discover == nil {
-                    await load()
+        }
+    }
+
+    private var content: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                titleHeader
+
+                if !appState.session.isLoggedIn {
+                    loginCard
+                }
+
+                if isFilterActive {
+                    searchSection
+                } else if let explore {
+                    sections(explore)
+                } else if let loadErrorMessage {
+                    loadErrorCard(loadErrorMessage)
+                } else {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 60)
                 }
             }
-            .task(id: searchKey) {
-                await runSearch()
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 32)
+        }
+        .background(Theme.paper.ignoresSafeArea())
+        .scrollEdgeEffectStyle(.soft, for: .top)
+        .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $searchText, prompt: Text("Communities suchen"))
+        .refreshable { await load() }
+        .task {
+            if explore == nil {
+                await load()
             }
-            .sheet(isPresented: $showLogin) {
-                LoginSheetView {
-                    Task { await load() }
-                    if pendingCreateAfterLogin {
-                        pendingCreateAfterLogin = false
-                        // Kurz warten, bis das Login-Sheet weggeräumt ist,
-                        // sonst verschluckt SwiftUI die zweite Präsentation.
-                        Task {
-                            try? await Task.sleep(for: .milliseconds(450))
-                            showCreateCommunity = true
-                        }
-                    }
-                }
-            }
-            .sheet(isPresented: $showCreateCommunity) {
-                CreateCommunityView(categories: discover?.categories ?? []) { slug in
+        }
+        .task(id: searchKey) {
+            await runSearch()
+        }
+        .sheet(isPresented: $showLogin) {
+            LoginSheetView {
+                Task { await load() }
+                if pendingCreateAfterLogin {
+                    pendingCreateAfterLogin = false
+                    prepareCreateCategories()
+                    // Kurz warten, bis das Login-Sheet weggeräumt ist,
+                    // sonst verschluckt SwiftUI die zweite Präsentation.
                     Task {
-                        await load()
-                        createdCommunity = CreatedCommunity(slug: slug)
+                        try? await Task.sleep(for: .milliseconds(450))
+                        showCreateCommunity = true
                     }
                 }
             }
-            .navigationDestination(item: $createdCommunity) { created in
-                CommunityView(slug: created.slug)
+        }
+        .sheet(isPresented: $showCreateCommunity) {
+            CreateCommunityView(categories: createCategories) { slug in
+                Task {
+                    await load()
+                    createdCommunity = CreatedCommunity(slug: slug)
+                }
             }
+        }
+        .navigationDestination(item: $createdCommunity) { created in
+            CommunityView(slug: created.slug)
         }
     }
 
@@ -114,7 +138,7 @@ struct DiscoverView: View {
                     Text("Schon dabei?")
                         .font(.system(size: 14, weight: .semibold))
                         .foregroundStyle(Theme.ink)
-                    Text("Melde dich an, um deine Communities zu sehen.")
+                    Text("Melde dich an, um Empfehlungen für dich zu sehen.")
                         .font(.system(size: 13))
                         .foregroundStyle(Theme.ink.opacity(0.55))
                 }
@@ -128,56 +152,6 @@ struct DiscoverView: View {
                 .buttonStyle(.secondary)
             }
         }
-    }
-
-    // MARK: - Kategorien
-
-    private func categoryChips(_ categories: [DiscoverCategory]) -> some View {
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                allChip
-                ForEach(categories) { category in
-                    categoryChip(category)
-                }
-            }
-            .padding(.vertical, 2)
-        }
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
-    }
-
-    private var allChip: some View {
-        let isSelected = selectedCategory == nil
-        return Button {
-            withAnimation(.snappy(duration: 0.25)) {
-                selectedCategory = nil
-            }
-        } label: {
-            Text("Alle")
-                .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
-                .foregroundStyle(isSelected ? .white : Theme.ink.opacity(0.7))
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(isSelected ? Theme.ink : Theme.softFill, in: .capsule)
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func categoryChip(_ category: DiscoverCategory) -> some View {
-        let isSelected = selectedCategory == category.key
-        return Button {
-            withAnimation(.snappy(duration: 0.25)) {
-                selectedCategory = isSelected ? nil : category.key
-            }
-        } label: {
-            Text(category.label)
-                .font(.system(size: 13, weight: isSelected ? .semibold : .medium))
-                .foregroundStyle(isSelected ? .white : Theme.ink.opacity(0.7))
-                .padding(.horizontal, 14)
-                .padding(.vertical, 8)
-                .background(isSelected ? Theme.ink : Theme.softFill, in: .capsule)
-        }
-        .buttonStyle(.plain)
     }
 
     // MARK: - Suche
@@ -196,6 +170,8 @@ struct DiscoverView: View {
 
     @ViewBuilder
     private var searchSection: some View {
+        activeCategoryChip
+
         if isSearching {
             ProgressView()
                 .frame(maxWidth: .infinity)
@@ -212,6 +188,39 @@ struct DiscoverView: View {
                 }
             }
         }
+    }
+
+    /// Aktiver Kategorie-Filter als abwählbarer Chip (die alte Chip-Leiste
+    /// wurde durch „Im Trend" ersetzt — hier lässt sich der Filter lösen).
+    @ViewBuilder
+    private var activeCategoryChip: some View {
+        if let selectedCategory {
+            Button {
+                withAnimation(.snappy(duration: 0.25)) {
+                    self.selectedCategory = nil
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Text(categoryLabel(for: selectedCategory))
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(.white)
+                    Image(systemName: "xmark")
+                        .font(.system(size: 10, weight: .semibold))
+                        .foregroundStyle(.white.opacity(0.7))
+                }
+                .padding(.horizontal, 14)
+                .padding(.vertical, 8)
+                .background(Theme.ink, in: .capsule)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Filter \(categoryLabel(for: selectedCategory)) entfernen"))
+        }
+    }
+
+    private func categoryLabel(for key: String) -> String {
+        explore?.trending.first(where: { $0.key == key })?.label
+            ?? createCategories.first(where: { $0.key == key })?.label
+            ?? key.capitalized
     }
 
     private func runSearch() async {
@@ -239,123 +248,154 @@ struct DiscoverView: View {
     // MARK: - Sektionen
 
     @ViewBuilder
-    private func sections(_ discover: DiscoverResponse) -> some View {
-        if appState.session.isLoggedIn, !discover.myCommunities.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader("Deine Communities")
-                ScrollView(.horizontal) {
-                    HStack(spacing: 12) {
-                        ForEach(discover.myCommunities) { community in
-                            NavigationLink {
-                                CommunityView(slug: community.slug)
-                            } label: {
-                                MyCommunityCompactCard(community: community)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-            }
+    private func sections(_ explore: ExploreResponse) -> some View {
+        if !explore.trending.isEmpty {
+            trendingSection(explore.trending)
         }
 
-        if let topics = discover.topics, !topics.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader("Themen entdecken")
-                ScrollView(.horizontal) {
-                    HStack(spacing: 12) {
-                        ForEach(Array(topics.enumerated()), id: \.element.id) { index, topic in
-                            Button {
-                                withAnimation(.snappy(duration: 0.25)) {
-                                    selectedCategory = topic.key
-                                }
-                            } label: {
-                                TopicTile(topic: topic,
-                                          tone: TopicTile.tones[index % TopicTile.tones.count])
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-            }
+        if !recentCommunities.isEmpty {
+            recentSection
         }
 
-        if let creatorRows = discover.topCreators {
-            ForEach(creatorRows) { row in
-                if !row.communities.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            EyebrowLabel("Top-Kreative")
-                            Text(row.label)
-                                .font(.displaySerif(22))
-                                .kerning(-0.3)
-                                .foregroundStyle(Theme.ink)
-                        }
-                        ScrollView(.horizontal) {
-                            HStack(spacing: 12) {
-                                ForEach(row.communities) { community in
-                                    NavigationLink {
-                                        CommunityView(slug: community.slug)
-                                    } label: {
-                                        CreatorPosterCard(community: community)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                        }
-                        .scrollIndicators(.hidden)
-                        .scrollClipDisabled()
-                    }
-                }
-            }
+        if !explore.forYou.isEmpty {
+            forYouSection(explore.forYou)
         }
 
-        if !discover.popular.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader("Beliebt")
-                ScrollView(.horizontal) {
-                    HStack(spacing: 12) {
-                        ForEach(discover.popular) { community in
-                            communityLink(community)
-                                .frame(width: 300)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-            }
-        }
-
-        if !discover.newest.isEmpty {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader("Neu")
-                ScrollView(.horizontal) {
-                    HStack(spacing: 12) {
-                        ForEach(discover.newest) { community in
-                            communityLink(community)
-                                .frame(width: 300)
-                        }
-                    }
-                }
-                .scrollIndicators(.hidden)
-                .scrollClipDisabled()
-            }
+        if !explore.popularWeek.isEmpty {
+            popularWeekSection(explore.popularWeek)
         }
 
         // CTA ausblenden, sobald der Nutzer bereits eine eigene Community besitzt.
-        if discover.ownsCommunity != true {
+        if !ownsCommunity {
             creatorCTA
         }
 
-        if discover.popular.isEmpty, discover.newest.isEmpty, discover.myCommunities.isEmpty {
+        if explore.trending.isEmpty, explore.forYou.isEmpty, explore.popularWeek.isEmpty {
             EmptyStateView(
                 icon: "sparkles",
                 title: "Noch nichts zu entdecken",
                 message: "Sobald hier Communities verfügbar sind, erscheinen sie an dieser Stelle."
             )
+        }
+    }
+
+    // MARK: - Im Trend
+
+    /// Kategorie-Chips in zwei untereinander gestapelten, horizontal
+    /// scrollenden Reihen (Items abwechselnd verteilt); Tap setzt den Filter.
+    private func trendingSection(_ trending: [DiscoverCategory]) -> some View {
+        let firstRow = trending.enumerated().filter { $0.offset.isMultiple(of: 2) }.map(\.element)
+        let secondRow = trending.enumerated().filter { !$0.offset.isMultiple(of: 2) }.map(\.element)
+
+        return VStack(alignment: .leading, spacing: 12) {
+            SectionHeader("Im Trend")
+            ScrollView(.horizontal) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(spacing: 8) {
+                        ForEach(firstRow) { category in
+                            trendingChip(category)
+                        }
+                    }
+                    if !secondRow.isEmpty {
+                        HStack(spacing: 8) {
+                            ForEach(secondRow) { category in
+                                trendingChip(category)
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+    }
+
+    private func trendingChip(_ category: DiscoverCategory) -> some View {
+        Button {
+            withAnimation(.snappy(duration: 0.25)) {
+                selectedCategory = category.key
+            }
+        } label: {
+            HStack(spacing: 6) {
+                Text(category.label)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(Theme.ink)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Theme.ink.opacity(0.4))
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 9)
+            .background(Theme.softFill, in: .capsule)
+        }
+        .buttonStyle(.plain)
+    }
+
+    // MARK: - Zuletzt besucht
+
+    private var recentSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader("Zuletzt besucht")
+            ScrollView(.horizontal) {
+                HStack(spacing: 12) {
+                    ForEach(recentCommunities) { community in
+                        NavigationLink {
+                            CommunityView(slug: community.slug)
+                        } label: {
+                            RecentCommunityRow(community: community)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+    }
+
+    // MARK: - Kreative für dich
+
+    private func forYouSection(_ communities: [CommunityCard]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                if appState.session.isLoggedIn {
+                    EyebrowLabel("Basierend auf deinen Mitgliedschaften")
+                }
+                SectionHeader("Kreative für dich")
+            }
+            ScrollView(.horizontal) {
+                HStack(spacing: 12) {
+                    ForEach(communities) { community in
+                        NavigationLink {
+                            CommunityView(slug: community.slug)
+                        } label: {
+                            CreatorPosterCard(community: community)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+    }
+
+    // MARK: - Diese Woche beliebt
+
+    private func popularWeekSection(_ communities: [CommunityCard]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader("Diese Woche beliebt")
+            ScrollView(.horizontal) {
+                HStack(spacing: 12) {
+                    ForEach(communities) { community in
+                        communityLink(community)
+                            .frame(width: 300)
+                    }
+                }
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
         }
     }
 
@@ -385,6 +425,7 @@ struct DiscoverView: View {
 
             Button {
                 if appState.session.isLoggedIn {
+                    prepareCreateCategories()
                     showCreateCommunity = true
                 } else {
                     pendingCreateAfterLogin = true
@@ -409,12 +450,47 @@ struct DiscoverView: View {
     // MARK: - Laden
 
     private func load() async {
+        async let exploreResult = appState.api.explore()
+        async let recentResult = loadRecentCards()
+        async let ownerResult = loadOwnsCommunity()
+
         do {
-            discover = try await appState.api.discover()
+            explore = try await exploreResult
             loadErrorMessage = nil
         } catch {
-            if discover == nil {
+            if explore == nil {
                 loadErrorMessage = error.localizedDescription
+            }
+        }
+        if let recent = await recentResult {
+            recentCommunities = recent
+        }
+        ownsCommunity = await ownerResult
+    }
+
+    /// Hydriert die lokal gespeicherten „Zuletzt besucht"-Slugs;
+    /// `nil` = Anfrage fehlgeschlagen (bestehende Liste behalten).
+    private func loadRecentCards() async -> [CommunityCard]? {
+        let slugs = RecentCommunitiesStore.slugs()
+        guard !slugs.isEmpty else { return [] }
+        return try? await appState.api.communityCards(slugs: slugs)
+    }
+
+    /// OWNER-Rolle in irgendeiner Mitgliedschaft = eigene Community vorhanden.
+    private func loadOwnsCommunity() async -> Bool {
+        guard appState.session.isLoggedIn else { return false }
+        guard let me = try? await appState.api.me() else { return ownsCommunity }
+        return me.memberships.contains { $0.role == .owner }
+    }
+
+    /// Lädt die vollständige Kategorien-Liste für das Create-Sheet nach
+    /// (nur beim Öffnen; Fallback: Trend-Kategorien aus `GET /explore`).
+    private func prepareCreateCategories() {
+        guard createCategories.isEmpty else { return }
+        createCategories = explore?.trending ?? []
+        Task {
+            if let response = try? await appState.api.discover() {
+                createCategories = response.categories
             }
         }
     }
@@ -442,86 +518,36 @@ private struct CreatedCommunity: Identifiable, Hashable {
     var id: String { slug }
 }
 
-// MARK: - Discover-Bausteine (Web-Home-Pendants)
+// MARK: - RecentCommunityRow
 
-/// Kompakte „Deine Communities"-Karte: Logo + Name + Mitgliederzahl (Web: HScrollRow).
-private struct MyCommunityCompactCard: View {
+/// Kompakte „Zuletzt besucht"-Zeile: Logo 44 + Name.
+private struct RecentCommunityRow: View {
     let community: CommunityCard
 
     var body: some View {
         HStack(spacing: 12) {
             AvatarView(url: community.logoUrl, name: community.name, size: 44)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(community.name)
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(Theme.ink)
-                    .lineLimit(1)
-                Text("\(community.memberCount) Mitglieder")
-                    .font(.system(size: 11, weight: .semibold))
-                    .kerning(1.2)
-                    .textCase(.uppercase)
-                    .foregroundStyle(Theme.ink.opacity(0.45))
-                    .lineLimit(1)
-            }
+                .environment(\.brand, BrandTheme(primaryHex: community.primaryColor,
+                                                 accentHex: community.accentColor))
+            Text(community.name)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(1)
             Spacer(minLength: 0)
         }
-        .padding(14)
-        .frame(width: 260, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(12)
+        .frame(width: 210, alignment: .leading)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 16, style: .continuous)
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
                 .stroke(Theme.border, lineWidth: 1)
         )
     }
 }
 
-/// „Themen entdecken"-Kachel mit den Marketing-Tönen der Web-App.
-private struct TopicTile: View {
-    let topic: DiscoverTopic
-    let tone: (background: Color, foreground: Color)
+// MARK: - CreatorPosterCard
 
-    /// Poster-Palette aus app/home/page.tsx (CATEGORY_TILE_TONES).
-    static let tones: [(background: Color, foreground: Color)] = [
-        (Color(hex: "#ECE7DC"), Color(hex: "#161613")),
-        (Color(hex: "#21372B"), Color(hex: "#ECE7DC")),
-        (Color(hex: "#C8553A"), Color(hex: "#F7F1E8")),
-        (Color(hex: "#1C1C19"), Color(hex: "#ECE7DC")),
-        (Color(hex: "#D8D1F0"), Color(hex: "#241458")),
-    ]
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Text("Thema")
-                    .font(.system(size: 11, weight: .semibold))
-                    .kerning(1.6)
-                    .textCase(.uppercase)
-                Spacer()
-                Image(systemName: "sparkles")
-                    .font(.system(size: 13, weight: .medium))
-            }
-            .opacity(0.75)
-
-            Spacer(minLength: 12)
-
-            Text(topic.label)
-                .font(.displaySerif(21))
-                .kerning(-0.3)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-            Text("\(topic.count) Communities")
-                .font(.system(size: 12))
-                .opacity(0.75)
-                .padding(.top, 3)
-        }
-        .padding(16)
-        .frame(width: 210, height: 140, alignment: .leading)
-        .foregroundStyle(tone.foreground)
-        .background(tone.background, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-    }
-}
-
-/// „Top-Kreative"-Posterkarte: Hochformat-Cover, Logo-Badge, Name darunter.
+/// Posterkarte („Kreative für dich"): Hochformat-Cover, Logo-Badge, Name darunter.
 private struct CreatorPosterCard: View {
     let community: CommunityCard
 

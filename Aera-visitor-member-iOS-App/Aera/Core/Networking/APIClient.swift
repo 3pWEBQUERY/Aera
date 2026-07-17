@@ -22,6 +22,10 @@ struct APIError: Error, LocalizedError, Sendable {
         case manageOnWeb = "manage_on_web"
         case nameTaken = "name_taken"
         case addressTaken = "address_taken"
+        case notAuthorized = "not_authorized"
+        case noStoriesSpace = "no_stories_space"
+        case storageFull = "storage_full"
+        case uploadFailed = "upload_failed"
         // Client-seitige Codes
         case unauthorized = "unauthorized"
         case network = "network_error"
@@ -118,6 +122,33 @@ final class APIClient {
 
         let envelope: URLEnvelope = try await perform(request)
         return envelope.url
+    }
+
+    // MARK: - Home-Feed & Explore (Token optional)
+
+    /// `GET /home?tab=&cursor=` — aggregierter Content-Feed über Tenants
+    /// hinweg. `tab: .home` funktioniert auch ausgeloggt; `tab: .members`
+    /// verlangt einen Token (sonst 401 `unauthorized`).
+    func homeFeed(tab: HomeFeedTab = .home, cursor: String? = nil) async throws -> HomeFeedResponse {
+        var items = [URLQueryItem(name: "tab", value: tab.rawValue)]
+        if let cursor { items.append(URLQueryItem(name: "cursor", value: cursor)) }
+        return try await send(Endpoint(.get, "home", query: items))
+    }
+
+    /// `GET /explore` — personalisiert, wenn ein Token vorhanden ist.
+    func explore() async throws -> ExploreResponse {
+        try await send(Endpoint(.get, "explore"))
+    }
+
+    /// `GET /communities/cards?slugs=` — max. 20 Slugs, Antwort in der
+    /// Reihenfolge der angefragten Slugs; unbekannte Slugs entfallen still.
+    func communityCards(slugs: [String]) async throws -> [CommunityCard] {
+        guard !slugs.isEmpty else { return [] }
+        let envelope: DataResponse<CommunityCard> = try await send(
+            Endpoint(.get, "communities/cards",
+                     query: [URLQueryItem(name: "slugs", value: slugs.joined(separator: ","))])
+        )
+        return envelope.data
     }
 
     // MARK: - Discover (Token optional)
@@ -420,10 +451,14 @@ final class APIClient {
 
     /// `POST /studio/{slug}/posts` — `publishedAt` in der Zukunft ⇒ geplanter
     /// Post (Cron veröffentlicht); fehlend/vergangen ⇒ sofort live.
+    /// `imageUrl`/`videoUrl` müssen eigene Upload-URLs sein
+    /// (aus `studioUpload`, sonst 400 `validation`).
     func createStudioPost(slug: String,
                           spaceSlug: String,
                           title: String? = nil,
                           body: String,
+                          imageUrl: String? = nil,
+                          videoUrl: String? = nil,
                           publishedAt: Date? = nil) async throws -> StudioPost {
         try await send(
             Endpoint(.post, "studio/\(slug)/posts"),
@@ -431,8 +466,47 @@ final class APIClient {
                 spaceSlug: spaceSlug,
                 title: title,
                 body: body,
+                imageUrl: imageUrl,
+                videoUrl: videoUrl,
                 publishedAt: publishedAt.map { AeraDateParser.standard.string(from: $0) }
             )
+        )
+    }
+
+    /// `POST /studio/{slug}/upload` — Multipart-Upload (`file` + `purpose`).
+    /// Liefert die relative Media-Proxy-URL (direkt in `imageUrl`/`videoUrl`/
+    /// `mediaUrl` verwendbar). Fehler u. a. 400 `validation` (MIME/Größe),
+    /// 413 `storage_full`, 500 `upload_failed`.
+    func studioUpload(slug: String,
+                      purpose: StudioUploadPurpose,
+                      fileData: Data,
+                      filename: String,
+                      mimeType: String) async throws -> String {
+        var form = MultipartFormData()
+        form.addField(name: "purpose", value: purpose.rawValue)
+        form.addFile(name: "file", filename: filename, mimeType: mimeType, data: fileData)
+
+        var request = makeRequest(Endpoint(.post, "studio/\(slug)/upload"))
+        request.setValue(form.contentType, forHTTPHeaderField: "Content-Type")
+        request.httpBody = form.encoded()
+
+        let envelope: URLEnvelope = try await perform(request)
+        return envelope.url
+    }
+
+    /// `POST /studio/{slug}/stories` — veröffentlicht eine Story (24 h sichtbar).
+    /// `mediaUrl` aus `studioUpload(purpose: .story)`; ohne STORIES-Space
+    /// antwortet der Server mit 409 `no_stories_space`.
+    @discardableResult
+    func createStudioStory(slug: String,
+                           mediaUrl: String,
+                           mediaType: MediaType,
+                           caption: String? = nil) async throws -> StudioStory {
+        try await send(
+            Endpoint(.post, "studio/\(slug)/stories"),
+            body: CreateStudioStoryBody(mediaUrl: mediaUrl,
+                                        mediaType: mediaType.rawValue,
+                                        caption: caption)
         )
     }
 
@@ -701,8 +775,19 @@ private struct CreateStudioPostBody: Encodable {
     /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
     let title: String?
     let body: String
+    /// Eigene Upload-URL aus `POST /studio/{slug}/upload` (sonst 400).
+    let imageUrl: String?
+    let videoUrl: String?
     /// ISO-8601; in der Zukunft ⇒ geplanter Post.
     let publishedAt: String?
+}
+
+private struct CreateStudioStoryBody: Encodable {
+    let mediaUrl: String
+    /// `"IMAGE"` oder `"VIDEO"`.
+    let mediaType: String
+    /// `nil` → Feld wird weggelassen (synthetisiertes `encodeIfPresent`).
+    let caption: String?
 }
 
 private struct StudioMemberActionBody: Encodable {

@@ -12,6 +12,7 @@ struct StudioHomeView: View {
     @State private var overview: StudioOverview?
     @State private var loadErrorMessage: String?
     @State private var showEventSheet = false
+    @State private var showStorySheet = false
     @State private var successCount = 0
 
     private var slug: String { community.community.slug }
@@ -44,6 +45,12 @@ struct StudioHomeView: View {
         .sensoryFeedback(.success, trigger: successCount)
         .sheet(isPresented: $showEventSheet) {
             StudioEventComposeSheet(slug: slug) {
+                successCount += 1
+            }
+            .brandTheme(brandTheme)
+        }
+        .sheet(isPresented: $showStorySheet) {
+            StudioStoryComposeSheet(slug: slug) {
                 successCount += 1
             }
             .brandTheme(brandTheme)
@@ -193,6 +200,15 @@ struct StudioHomeView: View {
                     showEventSheet = true
                 } label: {
                     studioRow(icon: "calendar.badge.plus", title: "Event erstellen")
+                }
+                .buttonStyle(.plain)
+
+                rowDivider
+
+                Button {
+                    showStorySheet = true
+                } label: {
+                    studioRow(icon: SpaceType.stories.symbolName, title: "Story veröffentlichen")
                 }
                 .buttonStyle(.plain)
             }

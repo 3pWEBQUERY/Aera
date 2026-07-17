@@ -383,6 +383,7 @@ struct CommunityView: View {
             let loaded = try await appState.api.community(slug: slug)
             response = loaded
             loadErrorMessage = nil
+            RecentCommunitiesStore.record(slug: slug)
             if selectedSpaceSlug == nil || !loaded.spaces.contains(where: { $0.slug == selectedSpaceSlug }) {
                 let spaces = sortedSpaces(loaded)
                 selectedSpaceSlug = (spaces.first(where: \.accessible) ?? spaces.first)?.slug

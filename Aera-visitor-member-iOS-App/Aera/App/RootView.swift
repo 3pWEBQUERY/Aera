@@ -15,7 +15,10 @@ struct RootView: View {
 
     var body: some View {
         TabView {
-            Tab("Entdecken", systemImage: "sparkles") {
+            Tab("Startseite", systemImage: "house") {
+                HomeFeedView()
+            }
+            Tab("Entdecken", systemImage: "magnifyingglass") {
                 DiscoverView()
             }
             Tab("Communities", systemImage: "person.2") {

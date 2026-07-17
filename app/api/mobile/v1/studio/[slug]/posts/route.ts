@@ -10,7 +10,8 @@ import {
 
 // GET  /api/mobile/v1/studio/{slug}/posts?filter=scheduled|published&cursor=
 //      → { data: StudioPost[], nextCursor }
-// POST /api/mobile/v1/studio/{slug}/posts { spaceSlug, title?, body, publishedAt? }
+// POST /api/mobile/v1/studio/{slug}/posts
+//      { spaceSlug, title?, body, imageUrl?, videoUrl?, publishedAt? }
 //      → StudioPost — Planung gespiegelt aus createSpacePostAction
 //      (app/actions/dashboard.ts): ISO-Zeitpunkt in der Zukunft ⇒
 //      scheduledAt gesetzt + isPublished=false; der bestehende Cron
@@ -54,10 +55,23 @@ export async function GET(
   return jsonOk({ data, nextCursor: hasMore ? page[page.length - 1]!.id : null });
 }
 
+/**
+ * Nur eigene Media-Proxy-/Upload-URLs (aus /studio/{slug}/upload bzw.
+ * lib/storage.ts) — keine fremden/absoluten URLs in Post-Media zulassen.
+ */
+const ownMediaUrl = z
+  .string()
+  .max(2048)
+  .refine((u) => u.startsWith("/api/media/") || u.startsWith("/uploads/"), {
+    message: "Must be an own upload URL (/api/media/… or /uploads/…).",
+  });
+
 const createSchema = z.object({
   spaceSlug: z.string().min(1),
   title: z.string().max(160).optional(),
   body: z.string().min(1).max(20000),
+  imageUrl: ownMediaUrl.optional(),
+  videoUrl: ownMediaUrl.optional(),
   /** ISO-Datum; in der Zukunft ⇒ geplanter Beitrag (Cron veröffentlicht). */
   publishedAt: z.string().optional(),
 });
@@ -102,6 +116,10 @@ export async function POST(
       authorId: user.id,
       title,
       body,
+      // Media wie createSpacePostAction (app/actions/dashboard.ts): optionale
+      // eigene Upload-URLs, leere Werte ⇒ null.
+      imageUrl: parsed.data.imageUrl ?? null,
+      videoUrl: parsed.data.videoUrl ?? null,
       scheduledAt: validSchedule,
       // Geplante Beiträge veröffentlicht später /api/cron/posts.
       isPublished: validSchedule ? false : true,

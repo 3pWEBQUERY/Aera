@@ -350,7 +350,7 @@ export function isPostLocked(
   );
 }
 
-interface PostEngagement {
+export interface PostEngagement {
   likeCounts: Map<string, number>;
   likedByMe: Set<string>;
   scores: Map<string, number>;
@@ -422,9 +422,11 @@ export function toPostDto(
   ctx: AccessContext,
   roles: Map<string, Role>,
   engagement: PostEngagement,
-  opts: { blogListing?: boolean } = {},
+  opts: { blogListing?: boolean; forceLocked?: boolean } = {},
 ): PostDto {
-  const locked = isPostLocked(post, ctx);
+  // forceLocked: Space-Gate (Visibility/Entitlement) aus dem Home-Feed —
+  // sperrt zusätzlich zur Pay-per-Post-Logik (isPostLocked).
+  const locked = opts.forceLocked === true || isPostLocked(post, ctx);
   const isForum = space.type === "FORUM";
   // BLOG-Index: body serverseitig genullt, readingMinutes = bodyChars/1000.
   const blog = opts.blogListing === true;
@@ -446,9 +448,12 @@ export function toPostDto(
     likedByMe: engagement.likedByMe.has(post.id),
     commentCount: post._count.comments,
     locked,
-    unlock: locked
-      ? unlockDto("post", post.id, post.priceCents, post.currency)
-      : null,
+    // Unlock nur für Pay-per-Post; Space-gesperrte freie Posts sind nicht
+    // einzeln kaufbar (Beitritt/Tier nötig) → unlock bleibt null.
+    unlock:
+      locked && post.priceCents > 0
+        ? unlockDto("post", post.id, post.priceCents, post.currency)
+        : null,
     score: isForum ? engagement.scores.get(post.id) ?? 0 : null,
     myVote: isForum ? engagement.myVotes.get(post.id) ?? null : null,
     readingMinutes: blog
