@@ -54,6 +54,21 @@ struct CoursesSpaceView: View {
                     .overlay {
                         AsyncImageView(url: course.coverUrl)
                     }
+                    .overlay(alignment: .topLeading) {
+                        if !course.accessible {
+                            HStack(spacing: 4) {
+                                Image(systemName: "lock.fill")
+                                    .font(.system(size: 10, weight: .semibold))
+                                Text("Gesperrt")
+                                    .font(.system(size: 11, weight: .semibold))
+                            }
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Theme.rail.opacity(0.85), in: .capsule)
+                            .padding(8)
+                        }
+                    }
                     .clipped()
                     .clipShape(
                         UnevenRoundedRectangle(

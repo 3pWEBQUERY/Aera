@@ -18,6 +18,7 @@ import {
   campaignSchema,
 } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { sendEmail, renderCampaignHtml, renderAccountActionHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
 import { features } from "@/lib/env";
@@ -1462,6 +1463,14 @@ export async function createMediaPackageAction(
   if (items.length === 0) return { error: await tErr("uploadOneMedia") };
 
   const priceCents = Math.max(0, Number(fd.get("priceCents") || 0) || 0);
+  // Apple-IAP-Konformität: bezahltes Paket + bepreiste Einzel-Medien nur zu
+  // festen Apple-Preispunkten.
+  if (priceCents > 0 && !isAllowedOneTimePriceCents(priceCents)) {
+    return { error: await tErr("priceNotAllowed") };
+  }
+  if (items.some((m) => (m.priceCents ?? 0) > 0 && !isAllowedOneTimePriceCents(m.priceCents ?? 0))) {
+    return { error: await tErr("priceNotAllowed") };
+  }
   const pkgSlug = await uniqueChildSlug("mediaPackage", tenant.id, title);
 
   const pkg = await prisma.mediaPackage.create({
@@ -1526,8 +1535,18 @@ export async function updateMediaPackageAction(
   const title = String(fd.get("title") || "").trim();
   if (title.length < 2) return { error: await tErr("titleRequired") };
 
+  const pkgPriceCents = Math.max(0, Number(fd.get("priceCents") || 0) || 0);
+  // Apple-IAP-Konformität: bezahltes Paket + bepreiste Einzel-Medien nur zu
+  // festen Apple-Preispunkten.
+  if (pkgPriceCents > 0 && !isAllowedOneTimePriceCents(pkgPriceCents)) {
+    return { error: await tErr("priceNotAllowed") };
+  }
+
   // Optionally append newly uploaded items.
   const newItems = parseMediaItems(String(fd.get("items") || "[]"));
+  if (newItems.some((m) => (m.priceCents ?? 0) > 0 && !isAllowedOneTimePriceCents(m.priceCents ?? 0))) {
+    return { error: await tErr("priceNotAllowed") };
+  }
   if (newItems.length) {
     const start = await prisma.mediaItem.count({ where: { packageId: pkg.id } });
     await prisma.mediaItem.createMany({
@@ -1565,7 +1584,7 @@ export async function updateMediaPackageAction(
     data: {
       title,
       description: String(fd.get("description") || "") || null,
-      priceCents: Math.max(0, Number(fd.get("priceCents") || 0) || 0),
+      priceCents: pkgPriceCents,
       isPublished: fd.get("isPublished") !== "false",
       availableUntil: parseAvailableUntil(fd.get("availableUntil")),
       coverUrl: firstImage?.url ?? pkg.coverUrl,
@@ -1712,6 +1731,10 @@ export async function createSpacePostAction(
 
   // Pay-per-view / pay-per-post
   const priceCents = Math.max(0, Math.floor(Number(fd.get("priceCents") || 0) || 0));
+  // Apple-IAP-Konformität: bezahlte Posts nur zu festen Apple-Preispunkten.
+  if (priceCents > 0 && !isAllowedOneTimePriceCents(priceCents)) {
+    return { error: await tErr("priceNotAllowed") };
+  }
   const teaserUrl = String(fd.get("teaserUrl") || "") || null;
   // Scheduling: an ISO/`datetime-local` value in the future keeps the post hidden.
   const rawSchedule = String(fd.get("scheduledAt") || "").trim();
@@ -2071,6 +2094,10 @@ export async function updatePostAction(
   let priceUpdate: Record<string, unknown> = {};
   if (rawPrice !== null) {
     const priceCents = Math.max(0, Math.floor(Number(rawPrice) || 0));
+    // Apple-IAP-Konformität: bezahlte Posts nur zu festen Apple-Preispunkten.
+    if (priceCents > 0 && !isAllowedOneTimePriceCents(priceCents)) {
+      return { error: await tErr("priceNotAllowed") };
+    }
     const space = await prisma.space.findFirst({
       where: { id: post.spaceId, tenantId: tenant.id },
       select: { type: true },

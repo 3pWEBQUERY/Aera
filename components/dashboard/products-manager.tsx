@@ -15,6 +15,7 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn, formatPrice } from "@/lib/utils";
+import { PricePointSelect } from "./price-point-select";
 
 export interface ProductRowData {
   id: string;
@@ -243,7 +244,7 @@ function ProductForm({
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="type" value={type} />
-      <input type="hidden" name="priceCents" value={cents} />
+      {type === "PHYSICAL" && <input type="hidden" name="priceCents" value={cents} />}
       <input type="hidden" name="freeShipping" value={freeShipping ? "true" : "false"} />
       <input type="hidden" name="shippingCents" value={shipCents} />
       {isEdit && <input type="hidden" name="productId" value={product!.id} />}
@@ -306,17 +307,27 @@ function ProductForm({
 
           <div>
             <Label htmlFor="pf-price">{t("priceLabel")}</Label>
-            <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
-              <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">€</span>
-              <input
+            {type === "PHYSICAL" ? (
+              <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
+                <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">€</span>
+                <input
+                  id="pf-price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  inputMode="decimal"
+                  placeholder="19.00"
+                  className="min-w-0 flex-1 px-3 py-2 text-sm outline-none"
+                />
+              </div>
+            ) : (
+              <PricePointSelect
                 id="pf-price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                inputMode="decimal"
-                placeholder="19.00"
-                className="min-w-0 flex-1 px-3 py-2 text-sm outline-none"
+                name="priceCents"
+                kind="oneTime"
+                allowFree
+                defaultCents={product && product.priceCents > 0 ? product.priceCents : 0}
               />
-            </div>
+            )}
           </div>
 
           {type === "DIGITAL" && (

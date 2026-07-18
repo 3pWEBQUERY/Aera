@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "Pytanie musi mieć co najmniej 5 znaków.",
     "helpQuestionTooLong": "Pytanie jest zbyt długie (maks. 200 znaków).",
     "helpAnswerRequired": "Wpisz odpowiedź.",
-    "helpAnswerTooLong": "Odpowiedź jest zbyt długa (maks. 8000 znaków)."
+    "helpAnswerTooLong": "Odpowiedź jest zbyt długa (maks. 8000 znaków).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Sprawdzanie dostępności…",
@@ -3021,6 +3022,14 @@
       "create": "Utwórz społeczność",
       "account": "Twoje konto",
       "login": "Zaloguj się"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

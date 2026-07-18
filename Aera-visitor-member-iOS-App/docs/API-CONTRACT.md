@@ -242,12 +242,23 @@ ChatMessage { id, body, createdAt, author: Author, mine: boolean }
   - andere kinds → `Order(PAID, appleTransactionId)` + `grantEntitlement(PURCHASE)` + typspezifische Effekte (Request→FULFILLED, Booking→CONFIRMED, Tip→PAID).
 - `POST /iap/apple-notifications` — **kein** Bearer; App Store Server Notifications V2 (`{ signedPayload }`). Verifiziert JWS, verarbeitet `DID_RENEW`, `EXPIRED`, `DID_CHANGE_RENEWAL_STATUS`, `REFUND`, `GRACE_PERIOD_EXPIRED` → synct `Subscription.status`/Entitlement wie `customer.subscription.updated`/`charge.refunded`.
 
+**Feste Apple-Preispunkte — einzige Quelle der Wahrheit** (`lib/apple-products.ts`). Bezahlte Inhalte dürfen ausschließlich diese Cent-Beträge verwenden; die Web-Server-Actions erzwingen das (zod/Inline-Validierung, Fehler-Key `errors.priceNotAllowed`). Jeder Preispunkt entspricht exakt einem StoreKit-Produkt (`Aera/Aera.storekit`):
+
+- `ONE_TIME_PRICE_POINTS` (Unlocks: PPV-Posts, Medien-Pakete/-Items, Requests, Booking **und digitale Shop-Produkte** DIGITAL/BUNDLE/COURSE_ACCESS/TIER_GRANT):
+  `[99, 199, 299, 399, 499, 599, 699, 799, 899, 999, 1199, 1299, 1499, 1799, 1999, 2499, 2999, 3499, 3999, 4999, 5999, 6999, 7999, 8999, 9999, 14999, 19999, 24999, 49999, 99999]`
+- `SUBSCRIPTION_PRICE_POINTS` (Tier-Abos monatlich & jährlich):
+  `[299, 499, 699, 799, 999, 1299, 1499, 1999, 2499, 2999, 3999, 4999, 5999, 7999, 9999, 14999, 19999]`
+- `TIP_PRICE_POINTS`: `[99, 299, 499, 999, 1999, 4999, 9999]`
+
 **Produkt-Mapping** (`lib/apple-products.ts`):
-1. Explizit: `MembershipTier.appleProductId` / `Product.appleProductId` (neue nullable Spalten).
-2. Preis-Pool-Fallback für One-Time-Unlocks (Posts, Medien, Requests, Booking): Konsumierbare Produkte `aera.unlock.{cents}` für cents ∈ {99, 199, 299, 499, 799, 999, 1499, 1999, 2999, 4999, 9999}; exakter Match, sonst `appleProductId: null`.
-3. Tips: `aera.tip.{cents}` für cents ∈ {100, 300, 500, 1000, 2500, 5000}.
-4. Abos-Pool: `aera.sub.month.{cents}` / `aera.sub.year.{cents}` für cents ∈ {299, 499, 799, 999, 1499, 1999, 2999, 4999} — nur wenn kein explizites Mapping.
-5. `PHYSICAL`-Produkte: nie IAP (`appleProductId: null`), iOS zeigt „Auf der Website verfügbar" ohne Kauf-Button/Preis-Link.
+1. Explizit: `MembershipTier.appleProductId` / `Product.appleProductId` (nullable Spalten).
+2. Preis-Pool-Fallback für One-Time-Unlocks (Posts, Medien, Requests, Booking): Konsumierbare Produkte `aera.unlock.{cents}` für cents ∈ `ONE_TIME_PRICE_POINTS`; exakter Match, sonst `appleProductId: null`.
+3. **Digitale Produkte** (type != PHYSICAL) nutzen denselben One-Time-Pool: explizites `Product.appleProductId`, sonst `aera.unlock.{cents}` für cents ∈ `ONE_TIME_PRICE_POINTS`.
+4. Tips: `aera.tip.{cents}` für cents ∈ `TIP_PRICE_POINTS`.
+5. Abos-Pool: `aera.sub.month.{cents}` / `aera.sub.year.{cents}` für cents ∈ `SUBSCRIPTION_PRICE_POINTS` — nur wenn kein explizites Mapping.
+6. `PHYSICAL`-Produkte: nie IAP (`appleProductId: null`), iOS zeigt „Auf der Website verfügbar" ohne Kauf-Button/Preis-Link. Nur PHYSICAL darf im Web einen freien (nicht-Preispunkt-)Preis führen.
+
+**Bestandsdaten:** `npm run db:snap-prices [-- --apply]` rundet vorhandene bezahlte Preise auf den nächsthöheren erlaubten Preispunkt (PHYSICAL unangetastet, idempotent, Standard dry-run).
 
 **Schema-Migration** (`prisma/migrations/…_apple_iap/migration.sql` + schema.prisma):
 `MembershipTier.appleProductId String?`, `Product.appleProductId String?`, `Order.appleTransactionId String? @unique`, `Subscription.appleOriginalTransactionId String? @unique`.

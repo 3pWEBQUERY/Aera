@@ -15,6 +15,7 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn, formatPrice } from "@/lib/utils";
+import { PricePointSelect } from "./price-point-select";
 
 export interface TierRowData {
   id: string;
@@ -174,19 +175,11 @@ function TierForm({
     initial,
   );
   const [interval, setInterval] = useState(tier?.interval ?? "FREE");
-  const [price, setPrice] = useState(
-    tier && tier.priceCents > 0 ? (tier.priceCents / 100).toString() : "",
-  );
   const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
-
-  const cents =
-    interval === "FREE"
-      ? 0
-      : Math.max(0, Math.round(Number(price.replace(",", ".")) * 100) || 0);
 
   async function onDelete() {
     if (!tier) return;
@@ -203,7 +196,7 @@ function TierForm({
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="interval" value={interval} />
-      <input type="hidden" name="priceCents" value={cents} />
+      {interval === "FREE" && <input type="hidden" name="priceCents" value={0} />}
       {isEdit && <input type="hidden" name="tierId" value={tier!.id} />}
 
       <div className="flex-1 overflow-y-auto">
@@ -251,17 +244,17 @@ function TierForm({
           {interval !== "FREE" && (
             <div>
               <Label htmlFor="tf-price">{t("priceLabel")}</Label>
-              <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-                <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">€</span>
-                <input
-                  id="tf-price"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  inputMode="decimal"
-                  placeholder="29.00"
-                  className="min-w-0 flex-1 px-3 py-2 text-sm outline-none"
-                />
-                <span className="shrink-0 px-3 py-2 text-sm text-slate-400">{suffix(interval)}</span>
+              <div className="flex items-center gap-2">
+                <div className="min-w-0 flex-1">
+                  <PricePointSelect
+                    id="tf-price"
+                    name="priceCents"
+                    kind="subscription"
+                    required
+                    defaultCents={tier && tier.priceCents > 0 ? tier.priceCents : undefined}
+                  />
+                </div>
+                <span className="shrink-0 text-sm text-slate-400">{suffix(interval)}</span>
               </div>
             </div>
           )}

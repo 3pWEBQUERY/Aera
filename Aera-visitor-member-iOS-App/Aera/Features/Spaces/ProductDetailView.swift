@@ -181,19 +181,14 @@ struct ProductDetailView: View {
 
     private func purchase() {
         guard !appState.purchases.isPurchasing else { return }
-        let unlock = Unlock(
-            priceCents: product.priceCents,
-            currency: product.currency,
-            appleProductId: product.appleProductId,
-            kind: .product,
-            refId: product.id
-        )
         Task {
             do {
-                try await appState.purchases.purchase(unlock: unlock, tenantSlug: slug)
+                try await appState.purchases.purchase(product: product, tenantSlug: slug)
                 product.owned = true
                 purchaseSuccessCount += 1
                 await reload()
+            } catch StoreError.cancelled {
+                // Nutzer-Abbruch: bewusst kein Alert.
             } catch {
                 purchaseError = error.localizedDescription
             }

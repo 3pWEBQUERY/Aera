@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "Вопрос должен содержать не менее 5 символов.",
     "helpQuestionTooLong": "Вопрос слишком длинный (макс. 200 символов).",
     "helpAnswerRequired": "Введите ответ.",
-    "helpAnswerTooLong": "Ответ слишком длинный (макс. 8000 символов)."
+    "helpAnswerTooLong": "Ответ слишком длинный (макс. 8000 символов).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Проверка доступности…",
@@ -3021,6 +3022,14 @@
       "create": "Создать сообщество",
       "account": "Твой аккаунт",
       "login": "Войти"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "Запитання має містити щонайменше 5 символів.",
     "helpQuestionTooLong": "Запитання задовге (макс. 200 символів).",
     "helpAnswerRequired": "Введіть відповідь.",
-    "helpAnswerTooLong": "Відповідь задовга (макс. 8000 символів)."
+    "helpAnswerTooLong": "Відповідь задовга (макс. 8000 символів).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Перевірка доступності…",
@@ -3021,6 +3022,14 @@
       "create": "Створити спільноту",
       "account": "Твій акаунт",
       "login": "Увійти"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

@@ -12,6 +12,7 @@ import { Icon } from "./icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Avatar, Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
+import { PricePointSelect } from "./price-point-select";
 
 export interface RequestRow {
   id: string;
@@ -152,10 +153,6 @@ function RequestForm({
 }) {
   const [state, action, pending] = useActionState(updateRequestAction, initial);
   const t = useTranslations("dashboard.requests");
-  const [priceEur, setPriceEur] = useState(
-    request.priceCents > 0 ? (request.priceCents / 100).toFixed(2) : "",
-  );
-  const priceCents = Math.max(0, Math.round(parseFloat(priceEur.replace(",", ".")) * 100) || 0);
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -164,7 +161,6 @@ function RequestForm({
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="requestId" value={request.id} />
-      <input type="hidden" name="priceCents" value={priceCents} />
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
           <FormError message={state.error} />
@@ -185,12 +181,12 @@ function RequestForm({
           </div>
           <div>
             <Label htmlFor="rq-price">{t("priceLabel")}</Label>
-            <Input
+            <PricePointSelect
               id="rq-price"
-              inputMode="decimal"
-              value={priceEur}
-              onChange={(e) => setPriceEur(e.target.value)}
-              placeholder="19,99"
+              name="priceCents"
+              kind="oneTime"
+              allowFree
+              defaultCents={request.priceCents > 0 ? request.priceCents : 0}
             />
             <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
           </div>

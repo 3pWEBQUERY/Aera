@@ -31,6 +31,9 @@ const PURPOSE_VISIBILITY: Record<string, "PUBLIC" | "MEMBERS"> = {
   "blog-image": "PUBLIC",
   "blog-video": "PUBLIC",
   "feed-image": "PUBLIC",
+  // PPV-Vorschaubild (unscharf für Nicht-Käufer) — muss öffentlich sein,
+  // damit es allen als Teaser angezeigt werden kann.
+  "ppv-teaser": "PUBLIC",
   story: "PUBLIC",
   "story-video": "PUBLIC",
   planner: "MEMBERS",

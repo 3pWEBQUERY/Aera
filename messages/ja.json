@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "質問は5文字以上必要です。",
     "helpQuestionTooLong": "質問が長すぎます（最大200文字）。",
     "helpAnswerRequired": "回答を入力してください。",
-    "helpAnswerTooLong": "回答が長すぎます（最大8000文字）。"
+    "helpAnswerTooLong": "回答が長すぎます（最大8000文字）。",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -3021,6 +3022,14 @@
       "create": "コミュニティを作成",
       "account": "あなたのアカウント",
       "login": "ログイン"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

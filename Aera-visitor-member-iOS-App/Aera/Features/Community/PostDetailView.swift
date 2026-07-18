@@ -12,6 +12,9 @@ struct PostDetailView: View {
 
     @State private var detail: PostDetailResponse?
     @State private var viewer: Viewer?
+    /// Brand der Community — selbst geladen, da gepushte Ziele das
+    /// `.brandTheme` des Community-Screens nicht automatisch erben.
+    @State private var communityBrand: BrandTheme?
     @State private var loadErrorMessage: String?
 
     @State private var commentText = ""
@@ -25,6 +28,10 @@ struct PostDetailView: View {
     @State private var successTrigger = 0
 
     @FocusState private var commentFieldFocused: Bool
+
+    /// Geladenes Community-Brand vor dem geerbten Environment-Brand —
+    /// eigene Body-Helfer sehen den selbst gesetzten `.brandTheme` nicht.
+    private var activeBrand: BrandTheme { communityBrand ?? brand }
 
     init(slug: String, postId: String) {
         self.slug = slug
@@ -43,6 +50,7 @@ struct PostDetailView: View {
             }
         }
         .background(Theme.paper.ignoresSafeArea())
+        .brandTheme(communityBrand ?? brand)
         .navigationBarTitleDisplayMode(.inline)
         .safeAreaInset(edge: .bottom, spacing: 0) {
             if detail != nil {
@@ -256,7 +264,7 @@ struct PostDetailView: View {
             } label: {
                 HStack(spacing: 5) {
                     Image(systemName: post.likedByMe ? "heart.fill" : "heart")
-                        .foregroundStyle(post.likedByMe ? brand.color : Theme.ink.opacity(0.5))
+                        .foregroundStyle(post.likedByMe ? activeBrand.color : Theme.ink.opacity(0.5))
                     Text(Format.compactCount(post.likeCount))
                         .monospacedDigit()
                         .contentTransition(.numericText())
@@ -311,7 +319,7 @@ struct PostDetailView: View {
                 } else {
                     ZStack {
                         Rectangle().fill(.ultraThinMaterial)
-                        brand.color.opacity(0.25)
+                        activeBrand.color.opacity(0.25)
                         VStack(spacing: 10) {
                             Image(systemName: "lock.fill")
                                 .font(.system(size: 18, weight: .semibold))
@@ -385,7 +393,7 @@ struct PostDetailView: View {
                         HStack(spacing: 6) {
                             Text("Antwort an \(replyTo.author.name)")
                                 .font(.system(size: 12, weight: .medium))
-                                .foregroundStyle(brand.color)
+                                .foregroundStyle(activeBrand.color)
                             Button {
                                 self.replyTo = nil
                             } label: {
@@ -420,7 +428,7 @@ struct PostDetailView: View {
                             } else {
                                 Image(systemName: "arrow.up.circle.fill")
                                     .font(.system(size: 30))
-                                    .foregroundStyle(canSendComment ? brand.color : Theme.ink.opacity(0.25))
+                                    .foregroundStyle(canSendComment ? activeBrand.color : Theme.ink.opacity(0.25))
                             }
                         }
                         .buttonStyle(.plain)
@@ -434,7 +442,7 @@ struct PostDetailView: View {
                 HStack(spacing: 10) {
                     Image(systemName: "bubble.left.and.bubble.right")
                         .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(brand.color)
+                        .foregroundStyle(activeBrand.color)
                     Text(appState.session.isLoggedIn
                          ? "Nur Mitglieder können kommentieren."
                          : "Melde dich an, um mitzudiskutieren.")
@@ -663,11 +671,15 @@ struct PostDetailView: View {
     private func load() async {
         do {
             async let postResponse = appState.api.post(slug: slug, postId: postId)
-            // Viewer (Mitgliedsstatus) parallel laden; Fehler hier blockieren
-            // das Post-Detail nicht.
-            async let loadedViewer = loadViewer()
+            // Viewer + Branding (Mitgliedsstatus, Community-Farben) parallel
+            // laden; Fehler hier blockieren das Post-Detail nicht.
+            async let loadedContext = loadCommunityContext()
             detail = try await postResponse
-            viewer = await loadedViewer
+            let (loadedViewer, loadedBrand) = await loadedContext
+            viewer = loadedViewer
+            if let loadedBrand {
+                communityBrand = loadedBrand
+            }
             loadErrorMessage = nil
         } catch {
             if detail == nil {
@@ -676,8 +688,13 @@ struct PostDetailView: View {
         }
     }
 
-    private func loadViewer() async -> Viewer? {
-        try? await appState.api.community(slug: slug).viewer
+    private func loadCommunityContext() async -> (Viewer?, BrandTheme?) {
+        guard let response = try? await appState.api.community(slug: slug) else {
+            return (nil, nil)
+        }
+        let theme = BrandTheme(primaryHex: response.community.primaryColor,
+                               accentHex: response.community.accentColor)
+        return (response.viewer, theme)
     }
 
     private func errorView(_ message: String) -> some View {

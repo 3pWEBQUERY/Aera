@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "Spørsmålet må ha minst 5 tegn.",
     "helpQuestionTooLong": "Spørsmålet er for langt (maks. 200 tegn).",
     "helpAnswerRequired": "Skriv inn et svar.",
-    "helpAnswerTooLong": "Svaret er for langt (maks. 8000 tegn)."
+    "helpAnswerTooLong": "Svaret er for langt (maks. 8000 tegn).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Sjekker tilgjengelighet…",
@@ -3021,6 +3022,14 @@
       "create": "Opprett community",
       "account": "Kontoen din",
       "login": "Logg inn"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

@@ -11,6 +11,7 @@ import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
+import { PricePointSelect } from "./price-point-select";
 
 export interface BookingSlotRow {
   id: string;
@@ -123,8 +124,6 @@ function SlotForm({
 }) {
   const [state, action, pending] = useActionState(createBookingSlotAction, initial);
   const t = useTranslations("dashboard.booking");
-  const [priceEur, setPriceEur] = useState("");
-  const priceCents = Math.max(0, Math.round(parseFloat(priceEur.replace(",", ".")) * 100) || 0);
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -133,7 +132,6 @@ function SlotForm({
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="spaceId" value={space.id} />
-      <input type="hidden" name="priceCents" value={priceCents} />
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
           <FormError message={state.error} />
@@ -157,12 +155,12 @@ function SlotForm({
           </div>
           <div>
             <Label htmlFor="bk-price">{t("priceLabel")}</Label>
-            <Input
+            <PricePointSelect
               id="bk-price"
-              inputMode="decimal"
-              value={priceEur}
-              onChange={(e) => setPriceEur(e.target.value)}
-              placeholder="0,00"
+              name="priceCents"
+              kind="oneTime"
+              allowFree
+              defaultCents={0}
             />
             <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
           </div>

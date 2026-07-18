@@ -83,6 +83,24 @@ final class PurchaseCoordinator {
                                   refId: unlock.refId)
     }
 
+    /// Kauft ein digitales Produkt (`Product.type != .physical`) über IAP.
+    /// Digitale Produkte liefern per Preis-Pool-Fallback stets eine
+    /// `appleProductId`; PHYSICAL bleibt `nil` → Kauf nur über die Website.
+    ///
+    /// Das Produkt hat im Vertrag kein `Unlock`-Objekt; die Zuordnung erfolgt
+    /// über `kind: .product` + `refId: product.id` (wie `POST /iap/validate`).
+    /// - Throws: `PurchaseError.notAvailableOnIOS` wenn `appleProductId == nil`,
+    ///   `StoreError.cancelled` bei Nutzer-Abbruch (keinen Alert zeigen).
+    func purchase(product: Product, tenantSlug: String) async throws {
+        guard let productId = product.appleProductId else {
+            throw PurchaseError.notAvailableOnIOS
+        }
+        try await performPurchase(productId: productId,
+                                  tenantSlug: tenantSlug,
+                                  kind: .product,
+                                  refId: product.id)
+    }
+
     /// Kauft eine Mitgliedschaftsstufe (Abo bzw. ONE_TIME).
     /// - Throws: `PurchaseError.notAvailableOnIOS` wenn `appleProductId == nil`,
     ///   `StoreError.cancelled` bei Nutzer-Abbruch (keinen Alert zeigen).

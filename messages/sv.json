@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "Frågan behöver minst 5 tecken.",
     "helpQuestionTooLong": "Frågan är för lång (max 200 tecken).",
     "helpAnswerRequired": "Ange ett svar.",
-    "helpAnswerTooLong": "Svaret är för långt (max 8000 tecken)."
+    "helpAnswerTooLong": "Svaret är för långt (max 8000 tecken).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",
@@ -3021,6 +3022,14 @@
       "create": "Skapa community",
       "account": "Ditt konto",
       "login": "Logga in"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

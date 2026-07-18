@@ -4,6 +4,7 @@
     "invalidCredentials": "Email or password is incorrect.",
     "totpCodeInvalid": "The 6-digit code is incorrect or expired.",
     "invalidInput": "Invalid input.",
+    "priceNotAllowed": "Please choose an allowed price.",
     "invalidData": "Invalid data.",
     "notLoggedIn": "Please sign in.",
     "notAuthenticated": "Not signed in.",
