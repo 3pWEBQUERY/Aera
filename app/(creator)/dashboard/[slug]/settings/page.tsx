@@ -215,9 +215,7 @@ export default async function SettingsPage({
         <DomainPanel
           slug={slug}
           rootDomain={env.ROOT_DOMAIN}
-          customDomain={tenant.customDomain}
-          domainVerified={Boolean(tenant.customDomainVerifiedAt)}
-          tenantId={tenant.id}
+          subdomain={tenant.subdomain}
         />
       ),
     },

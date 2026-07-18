@@ -251,6 +251,7 @@ model Tenant {
   id                     String    @id @default(cuid())
   name                   String    @unique
   slug                   String    @unique
+  subdomain              String?   @unique
   customDomain           String?   @unique
   /// Gesetzt, sobald der DNS-Nachweis (CNAME/TXT) erbracht wurde. Nur
   /// verifizierte Domains werden vom Proxy aufgelöst.
@@ -1470,8 +1471,9 @@ model AiUsageEvent {
 // ----------------------------------------------------------------------------
 model HelpCategory {
   id          String   @id @default(cuid())
+  locale      String   @default("de")
   title       String
-  slug        String   @unique
+  slug        String
   description String?
   icon        String   @default("knowledge")
   sortOrder   Int      @default(0)
@@ -1479,7 +1481,9 @@ model HelpCategory {
 
   articles HelpArticle[]
 
+  @@unique([locale, slug])
   @@index([sortOrder])
+  @@index([locale, sortOrder])
 }
 
 model HelpArticle {

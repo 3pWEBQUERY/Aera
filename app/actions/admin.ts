@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { isValidCategory } from "@/lib/categories";
+import { normalizeLocale } from "@/i18n/locales";
 import { signAccountToken, resetUrl } from "@/lib/tokens";
 import { tErr } from "@/lib/action-errors";
 import type { Prisma } from "@/app/generated/prisma/client";
@@ -313,6 +314,7 @@ export async function adminSaveHelpCategoryAction(
   if (title.length < 2) return { error: await tErr("helpTitleTooShort") };
   if (title.length > 80) return { error: await tErr("helpTitleTooLong") };
   const description = String(fd.get("description") ?? "").trim().slice(0, 240) || null;
+  const locale = normalizeLocale(String(fd.get("locale") ?? "de"));
 
   const categoryId = String(fd.get("categoryId") ?? "");
   if (categoryId) {
@@ -323,15 +325,16 @@ export async function adminSaveHelpCategoryAction(
   } else {
     const base = helpSlugify(title) || "kategorie";
     let slug = base;
-    for (let i = 2; await prisma.helpCategory.findUnique({ where: { slug } }); i++) {
+    for (let i = 2; await prisma.helpCategory.findFirst({ where: { locale, slug } }); i++) {
       slug = `${base}-${i}`;
     }
     await prisma.helpCategory.create({
       data: {
+        locale,
         title,
         slug,
         description,
-        sortOrder: await prisma.helpCategory.count(),
+        sortOrder: await prisma.helpCategory.count({ where: { locale } }),
       },
     });
   }
@@ -355,7 +358,10 @@ export async function adminMoveHelpCategoryAction(fd: FormData): Promise<void> {
   await requirePlatformAdmin();
   const categoryId = String(fd.get("categoryId"));
   const dir = String(fd.get("dir")) === "up" ? -1 : 1;
+  const moved = await prisma.helpCategory.findUnique({ where: { id: categoryId } });
+  if (!moved) return;
   const all = await prisma.helpCategory.findMany({
+    where: { locale: moved.locale },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
   });
   const idx = all.findIndex((c) => c.id === categoryId);

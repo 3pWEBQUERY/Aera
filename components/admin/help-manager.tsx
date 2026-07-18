@@ -40,7 +40,15 @@ type SheetState =
   | { kind: "article"; categoryId: string; article: HelpArticleRow | null };
 
 /** Platform help-center manager: categories with Q&A articles (public /hilfe). */
-export function HelpManager({ categories }: { categories: HelpCategoryRow[] }) {
+export function HelpManager({
+  categories,
+  locale,
+  locales,
+}: {
+  categories: HelpCategoryRow[];
+  locale: string;
+  locales: { code: string; label: string }[];
+}) {
   const [sheet, setSheet] = useState<SheetState>({ kind: "closed" });
   const [nonce, setNonce] = useState(0);
   const t = useTranslations("admin.help");
@@ -56,6 +64,21 @@ export function HelpManager({ categories }: { categories: HelpCategoryRow[] }) {
 
   return (
     <div>
+      <div className="mb-5 flex flex-wrap gap-1.5">
+        {locales.map((l) => (
+          <a
+            key={l.code}
+            href={`/admin/help?locale=${l.code}`}
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition ${
+              l.code === locale
+                ? "bg-slate-900 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            {l.label}
+          </a>
+        ))}
+      </div>
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
@@ -241,7 +264,7 @@ export function HelpManager({ categories }: { categories: HelpCategoryRow[] }) {
         icon="knowledge"
       >
         {sheet.kind === "category" && (
-          <CategoryForm key={nonce} category={sheet.category} onDone={close} />
+          <CategoryForm key={nonce} category={sheet.category} locale={locale} onDone={close} />
         )}
         {sheet.kind === "article" && (
           <ArticleForm
@@ -289,9 +312,11 @@ function FormFooter({
 
 function CategoryForm({
   category,
+  locale,
   onDone,
 }: {
   category: HelpCategoryRow | null;
+  locale: string;
   onDone: () => void;
 }) {
   const [state, action, pending] = useActionState(adminSaveHelpCategoryAction, initial);
@@ -303,6 +328,7 @@ function CategoryForm({
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       {category && <input type="hidden" name="categoryId" value={category.id} />}
+      <input type="hidden" name="locale" value={locale} />
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
           <FormError message={state.error} />

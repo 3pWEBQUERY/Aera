@@ -2307,3 +2307,55 @@ export async function deleteMediaAction(fd: FormData): Promise<void> {
   });
   revalidatePath(`/dashboard/${slug}/media`);
 }
+
+// Reservierte Subdomains, die niemand als Community-Adresse belegen darf.
+const RESERVED_SUBDOMAINS = new Set([
+  "www", "app", "api", "admin", "dashboard", "mail", "email", "ftp", "blog",
+  "help", "hilfe", "status", "cdn", "assets", "static", "account", "auth",
+  "login", "signup", "start", "home", "c", "stripe", "webhook", "webhooks",
+  "billing", "docs", "support", "team", "root", "system", "no-reply", "noreply",
+]);
+
+/**
+ * Setzt die Wunsch-Subdomain der Community (<sub>.aera.so). Leer oder gleich dem
+ * Slug entfernt die Wunsch-Subdomain — die Standardadresse (Slug) bleibt aktiv.
+ */
+export async function updateSubdomainAction(
+  _p: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant } = await requireTenantAdmin(slug);
+  const sub = String(fd.get("subdomain") || "")
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .split(".")[0]
+    .trim();
+
+  if (!sub || sub === tenant.slug) {
+    if (tenant.subdomain !== null) {
+      await prisma.tenant.update({ where: { id: tenant.id }, data: { subdomain: null } });
+      await writeAudit({ tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: null } });
+      revalidatePath(`/dashboard/${slug}/settings`);
+    }
+    return ok;
+  }
+
+  if (sub.length < 3 || sub.length > 63 || !/^[a-z0-9]([a-z0-9-]*[a-z0-9])?$/.test(sub)) {
+    return { error: await tErr("subInvalid") };
+  }
+  if (RESERVED_SUBDOMAINS.has(sub)) {
+    return { error: await tErr("subReserved") };
+  }
+  const taken = await prisma.tenant.findFirst({
+    where: { id: { not: tenant.id }, OR: [{ subdomain: sub }, { slug: sub }] },
+    select: { id: true },
+  });
+  if (taken) return { error: await tErr("subTaken") };
+
+  await prisma.tenant.update({ where: { id: tenant.id }, data: { subdomain: sub } });
+  await writeAudit({ tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: sub } });
+  revalidatePath(`/dashboard/${slug}/settings`);
+  return ok;
+}

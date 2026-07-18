@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { Icon } from "@/components/dashboard/icons";
 import { Reveal } from "@/components/marketing/reveal";
@@ -19,16 +19,30 @@ export default async function HelpCenterPage({
   const query = (q ?? "").trim().slice(0, 80);
   const t = await getTranslations("help");
 
-  const categories = await prisma.helpCategory.findMany({
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    include: {
-      articles: {
-        where: { isPublished: true },
-        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  const locale = await getLocale();
+  const loadForLocale = (loc: string) =>
+    prisma.helpCategory.findMany({
+      where: { locale: loc },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      include: {
+        articles: {
+          where: { isPublished: true },
+          orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        },
       },
-    },
-  });
-  const filled = categories.filter((c) => c.articles.length > 0);
+    });
+  // Show the active language; fall back to English, then German, if a language
+  // has no content yet (mirrors Aeras UI fallback model).
+  let categories = await loadForLocale(locale);
+  let filled = categories.filter((c) => c.articles.length > 0);
+  if (filled.length === 0 && locale !== "en") {
+    categories = await loadForLocale("en");
+    filled = categories.filter((c) => c.articles.length > 0);
+  }
+  if (filled.length === 0 && locale !== "de") {
+    categories = await loadForLocale("de");
+    filled = categories.filter((c) => c.articles.length > 0);
+  }
 
   // Search: flat result list across all categories.
   const needle = query.toLowerCase();

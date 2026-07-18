@@ -111,7 +111,10 @@
     "helpQuestionTooShort": "Die Frage braucht mindestens 5 Zeichen.",
     "helpQuestionTooLong": "Die Frage ist zu lang (max. 200 Zeichen).",
     "helpAnswerRequired": "Bitte gib eine Antwort ein.",
-    "helpAnswerTooLong": "Die Antwort ist zu lang (max. 8000 Zeichen)."
+    "helpAnswerTooLong": "Die Antwort ist zu lang (max. 8000 Zeichen).",
+    "subInvalid": "Ungültige Subdomain. Erlaubt sind 3–63 Zeichen aus Kleinbuchstaben, Zahlen und Bindestrichen (nicht am Anfang oder Ende).",
+    "subReserved": "Diese Subdomain ist reserviert. Bitte wähle eine andere.",
+    "subTaken": "Diese Subdomain ist bereits vergeben."
   },
   "billingSafety": {
     "creditsPaused": "Buchungen vorübergehend pausiert",
@@ -1488,7 +1491,11 @@
       "dnsIntro": "Richte einen der beiden DNS-Einträge ein:",
       "optionA": "<b>Option A (empfohlen):</b> CNAME <code>{domain}</code> → <code>{root}</code>",
       "optionB": "<b>Option B:</b> TXT <code>_aera.{domain}</code> = <code>aera-verify={tenantId}</code>",
-      "dnsWait": "Danach „Jetzt prüfen“ — DNS-Änderungen brauchen manchmal bis zu einer Stunde."
+      "dnsWait": "Danach „Jetzt prüfen“ — DNS-Änderungen brauchen manchmal bis zu einer Stunde.",
+      "subEditLabel": "Wunsch-Subdomain",
+      "subPlaceholder": "deine-community",
+      "subHint": "Nur Kleinbuchstaben, Zahlen und Bindestriche (3–63 Zeichen). Unter dieser Adresse ist deine Community erreichbar. Leer lassen = Standardadresse (dein Kürzel).",
+      "subSaved": "Subdomain gespeichert."
     },
     "danger": {
       "heading": "Gefahrenzone",

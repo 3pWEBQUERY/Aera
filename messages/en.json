@@ -111,7 +111,10 @@
     "helpQuestionTooShort": "The question needs at least 5 characters.",
     "helpQuestionTooLong": "The question is too long (max. 200 characters).",
     "helpAnswerRequired": "Please enter an answer.",
-    "helpAnswerTooLong": "The answer is too long (max. 8000 characters)."
+    "helpAnswerTooLong": "The answer is too long (max. 8000 characters).",
+    "subInvalid": "Invalid subdomain. Use 3–63 characters: lowercase letters, numbers and hyphens (not at the start or end).",
+    "subReserved": "This subdomain is reserved. Please choose another.",
+    "subTaken": "This subdomain is already taken."
   },
   "billingSafety": {
     "creditsPaused": "Billing temporarily paused",
@@ -1488,7 +1491,11 @@
       "dnsIntro": "Set up one of the two DNS records:",
       "optionA": "<b>Option A (recommended):</b> CNAME <code>{domain}</code> → <code>{root}</code>",
       "optionB": "<b>Option B:</b> TXT <code>_aera.{domain}</code> = <code>aera-verify={tenantId}</code>",
-      "dnsWait": "Then “Check now” — DNS changes can sometimes take up to an hour."
+      "dnsWait": "Then “Check now” — DNS changes can sometimes take up to an hour.",
+      "subEditLabel": "Custom subdomain",
+      "subPlaceholder": "your-community",
+      "subHint": "Lowercase letters, numbers and hyphens only (3–63 characters). Your community will be reachable at this address. Leave empty for the default (your handle).",
+      "subSaved": "Subdomain saved."
     },
     "danger": {
       "heading": "Danger zone",
