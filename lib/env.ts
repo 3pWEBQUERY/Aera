@@ -23,7 +23,11 @@ function requireAuthSecret(): string {
 export const env = {
   DATABASE_URL: process.env.DATABASE_URL ?? "",
   AUTH_SECRET: requireAuthSecret(),
-  ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost",
+  ROOT_DOMAIN: (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost")
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/[/:].*$/, "")
+    .toLowerCase(),
   /** Comma-separated e-mails with access to the platform admin (/admin). */
   PLATFORM_ADMIN_EMAILS: (process.env.PLATFORM_ADMIN_EMAILS ?? "")
     .split(",")

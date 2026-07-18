@@ -44,7 +44,11 @@ function rewriteToCommunity(req: NextRequest, slug: string) {
 export async function proxy(req: NextRequest) {
   const host = req.headers.get("host") ?? "";
   const hostname = host.split(":")[0].toLowerCase();
-  const root = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost").toLowerCase();
+  const root = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost")
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/[/:].*$/, "")
+    .toLowerCase();
   const url = req.nextUrl;
 
   const isApex =
