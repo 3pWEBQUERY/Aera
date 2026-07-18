@@ -1470,8 +1470,9 @@ model AiUsageEvent {
 // ----------------------------------------------------------------------------
 model HelpCategory {
   id          String   @id @default(cuid())
+  locale      String   @default("de")
   title       String
-  slug        String   @unique
+  slug        String
   description String?
   icon        String   @default("knowledge")
   sortOrder   Int      @default(0)
@@ -1479,7 +1480,9 @@ model HelpCategory {
 
   articles HelpArticle[]
 
+  @@unique([locale, slug])
   @@index([sortOrder])
+  @@index([locale, sortOrder])
 }
 
 model HelpArticle {

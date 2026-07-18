@@ -5,14 +5,23 @@ import {
   HelpManager,
   type HelpCategoryRow,
 } from "@/components/admin/help-manager";
+import { SUPPORTED_LOCALES, LOCALE_LABELS, normalizeLocale } from "@/i18n/locales";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("admin.nav");
   return { title: t("help") };
 }
 
-export default async function AdminHelpPage() {
+export default async function AdminHelpPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ locale?: string }>;
+}) {
+  const { locale: rawLocale } = await searchParams;
+  const locale = normalizeLocale(rawLocale);
+
   const rows = await prisma.helpCategory.findMany({
+    where: { locale },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     include: {
       articles: { orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] },
@@ -32,5 +41,7 @@ export default async function AdminHelpPage() {
     })),
   }));
 
-  return <HelpManager categories={categories} />;
+  const locales = SUPPORTED_LOCALES.map((code) => ({ code, label: LOCALE_LABELS[code] }));
+
+  return <HelpManager categories={categories} locale={locale} locales={locales} />;
 }
