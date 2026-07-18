@@ -15,6 +15,7 @@ struct CourseDetailView: View {
     @State private var completingLessonId: String?
     @State private var errorMessage: String?
     @State private var completionSuccessCount = 0
+    @State private var showJoin = false
 
     init(slug: String, course: Course, reload: @escaping () async -> Void) {
         self.slug = slug
@@ -39,7 +40,7 @@ struct CourseDetailView: View {
                 }
 
                 if !course.accessible {
-                    inaccessibleHint
+                    inaccessibleAccess
                 }
 
                 progressCard
@@ -70,6 +71,9 @@ struct CourseDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")
+        }
+        .sheet(isPresented: $showJoin) {
+            JoinView(slug: slug, onJoined: reload)
         }
     }
 
@@ -139,6 +143,19 @@ struct CourseDetailView: View {
             Text(text)
                 .font(.system(size: 15))
                 .foregroundStyle(Theme.ink.opacity(0.8))
+        }
+    }
+
+    /// Gesperrter Kurs: Hinweis-Karte + prominenter Freischalt-CTA.
+    /// Kurse werden per Mitgliedschaft/Tier oder COURSE_ACCESS-Produkt
+    /// freigeschaltet — der CTA öffnet die `JoinView` (kein Sackgassen-Zustand).
+    private var inaccessibleAccess: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            inaccessibleHint
+            Button("Zugang freischalten") {
+                showJoin = true
+            }
+            .buttonStyle(.brand(fullWidth: true))
         }
     }
 

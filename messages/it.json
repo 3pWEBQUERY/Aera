@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "La domanda deve avere almeno 5 caratteri.",
     "helpQuestionTooLong": "La domanda è troppo lunga (max 200 caratteri).",
     "helpAnswerRequired": "Inserisci una risposta.",
-    "helpAnswerTooLong": "La risposta è troppo lunga (max 8000 caratteri)."
+    "helpAnswerTooLong": "La risposta è troppo lunga (max 8000 caratteri).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Verifica disponibilità…",
@@ -3021,6 +3022,14 @@
       "create": "Crea community",
       "account": "Il tuo account",
       "login": "Accedi"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

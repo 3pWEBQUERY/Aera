@@ -139,6 +139,7 @@ struct EventDetailView: View {
     @State private var isSendingRSVP = false
     @State private var errorMessage: String?
     @State private var rsvpSuccessCount = 0
+    @State private var showJoin = false
 
     init(slug: String, event: Event, viewer: Viewer, reload: @escaping () async -> Void) {
         self.slug = slug
@@ -200,6 +201,9 @@ struct EventDetailView: View {
             Button("OK", role: .cancel) {}
         } message: {
             Text(errorMessage ?? "")
+        }
+        .sheet(isPresented: $showJoin) {
+            JoinView(slug: slug, onJoined: reload)
         }
     }
 
@@ -267,7 +271,13 @@ struct EventDetailView: View {
     @ViewBuilder
     private var rsvpSection: some View {
         if !event.accessible {
-            lockedHint
+            VStack(spacing: 12) {
+                lockedHint
+                Button("Mitgliedschaft ansehen") {
+                    showJoin = true
+                }
+                .buttonStyle(.brand(fullWidth: true))
+            }
         } else if isPast {
             Text("Dieses Event liegt in der Vergangenheit.")
                 .font(.system(size: 14))

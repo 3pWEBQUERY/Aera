@@ -52,8 +52,10 @@ struct StoriesSpaceView: View {
             }
         }
         .fullScreenCover(item: $selectedGroup) { group in
-            StoryPlayerView(group: group)
-                .brandTheme(brand)
+            StoryPlayerView(group: group) {
+                selectedGroup = nil
+            }
+            .brandTheme(brand)
         }
     }
 }
@@ -97,6 +99,10 @@ private struct StoryAuthorCell: View {
 /// Autor-Zeile in Glass-Kapsel, Swipe-down zum Schließen.
 struct StoryPlayerView: View {
     let group: StoryGroup
+    /// Setzt das Präsentations-Binding im Parent zurück — `dismiss()` allein
+    /// läuft ins Leere, wenn der präsentierende Space-Bereich lazy neu
+    /// aufgebaut wurde (gleiches Muster wie im Gallery-Viewer).
+    let onClose: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
@@ -105,6 +111,16 @@ struct StoryPlayerView: View {
     @State private var dragOffset: CGFloat = 0
 
     private static let storyDuration: Double = 5
+
+    init(group: StoryGroup, onClose: @escaping () -> Void = {}) {
+        self.group = group
+        self.onClose = onClose
+    }
+
+    private func close() {
+        onClose()
+        dismiss()
+    }
 
     var body: some View {
         ZStack {
@@ -151,7 +167,7 @@ struct StoryPlayerView: View {
                 }
                 .onEnded { value in
                     if value.translation.height > 120 {
-                        dismiss()
+                        close()
                     } else {
                         withAnimation(.snappy(duration: 0.25)) {
                             dragOffset = 0
@@ -223,7 +239,7 @@ struct StoryPlayerView: View {
             Spacer()
 
             Button {
-                dismiss()
+                close()
             } label: {
                 Image(systemName: "xmark")
                     .font(.system(size: 14, weight: .semibold))
@@ -262,7 +278,7 @@ struct StoryPlayerView: View {
                 currentIndex += 1
             }
         } else {
-            dismiss()
+            close()
         }
     }
 

@@ -8,6 +8,8 @@ import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
 import { entitlementKeys, grantEntitlement } from "@/lib/entitlements";
 import { createRequestCheckout, platformFeeCents } from "@/lib/stripe";
+import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
+import { tErr } from "@/lib/action-errors";
 import type { RequestStatus } from "@/app/generated/prisma/client";
 
 export interface ActionState {
@@ -132,6 +134,10 @@ export async function updateRequestAction(
     ? (rawStatus as RequestStatus)
     : undefined;
   const priceCents = Math.max(0, Math.floor(Number(fd.get("priceCents") || 0) || 0));
+  // Apple-IAP-Konformität: bepreiste Requests nur zu festen Apple-Preispunkten.
+  if (fd.get("priceCents") !== null && priceCents > 0 && !isAllowedOneTimePriceCents(priceCents)) {
+    return { error: await tErr("priceNotAllowed") };
+  }
   const staffNote = String(fd.get("staffNote") || "").trim().slice(0, 2000) || null;
 
   await prisma.memberRequest.update({

@@ -12,6 +12,8 @@ struct LiveSpaceView: View {
 
     @Environment(\.brand) private var brand
 
+    @State private var showJoin = false
+
     init(slug: String,
          space: SpaceDetail,
          content: LiveContent,
@@ -43,12 +45,21 @@ struct LiveSpaceView: View {
                         }
                         .buttonStyle(.plain)
                     } else {
-                        LiveSessionCard(session: session)
+                        VStack(spacing: 10) {
+                            LiveSessionCard(session: session)
+                            Button("Mitgliedschaft ansehen") {
+                                showJoin = true
+                            }
+                            .buttonStyle(.brand(fullWidth: true))
+                        }
                     }
                 }
             }
         }
         .padding(.horizontal, 16)
+        .sheet(isPresented: $showJoin) {
+            JoinView(slug: slug, onJoined: reload)
+        }
     }
 }
 

@@ -4,6 +4,7 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
+import { PricePointSelect } from "./price-point-select";
 import { useNameAvailability, NameStatusHint } from "./use-name-availability";
 import { useTranslations } from "next-intl";
 import {
@@ -105,7 +106,7 @@ export function TierForm({ slug }: { slug: string }) {
         </div>
         <div>
           <Label htmlFor="t-price">{t("priceCents")}</Label>
-          <Input id="t-price" name="priceCents" type="number" min={0} defaultValue={0} />
+          <PricePointSelect id="t-price" name="priceCents" kind="subscription" allowFree />
         </div>
       </div>
       <div>
@@ -143,7 +144,7 @@ export function ProductForm({ slug }: { slug: string }) {
         </div>
         <div>
           <Label htmlFor="p-price">{t("priceCents")}</Label>
-          <Input id="p-price" name="priceCents" type="number" min={0} defaultValue={0} required />
+          <PricePointSelect id="p-price" name="priceCents" kind="oneTime" allowFree />
         </div>
       </div>
       <div>

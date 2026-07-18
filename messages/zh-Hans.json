@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "问题至少需要 5 个字符。",
     "helpQuestionTooLong": "问题过长（最多 200 个字符）。",
     "helpAnswerRequired": "请输入答案。",
-    "helpAnswerTooLong": "答案过长（最多 8000 个字符）。"
+    "helpAnswerTooLong": "答案过长（最多 8000 个字符）。",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -3021,6 +3022,14 @@
       "create": "创建社区",
       "account": "你的账户",
       "login": "登录"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

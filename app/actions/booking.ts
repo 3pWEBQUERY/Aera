@@ -7,6 +7,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
 import { createBookingCheckout, platformFeeCents } from "@/lib/stripe";
+import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
+import { tErr } from "@/lib/action-errors";
 
 export interface ActionState {
   ok?: boolean;
@@ -43,6 +45,12 @@ export async function createBookingSlotAction(
   const startsAt = parseDate(fd.get("startsAt"));
   if (!startsAt) return { error: "Startzeit fehlt." };
 
+  const priceCents = Math.max(0, Math.floor(Number(fd.get("priceCents") || 0) || 0));
+  // Apple-IAP-Konformität: bezahlte Booking-Slots nur zu festen Apple-Preispunkten.
+  if (priceCents > 0 && !isAllowedOneTimePriceCents(priceCents)) {
+    return { error: await tErr("priceNotAllowed") };
+  }
+
   await prisma.bookingSlot.create({
     data: {
       tenantId: tenant.id,
@@ -51,7 +59,7 @@ export async function createBookingSlotAction(
       title,
       startsAt,
       durationMin: Math.max(5, Math.floor(Number(fd.get("durationMin") || 30) || 30)),
-      priceCents: Math.max(0, Math.floor(Number(fd.get("priceCents") || 0) || 0)),
+      priceCents,
       capacity: Math.max(1, Math.floor(Number(fd.get("capacity") || 1) || 1)),
     },
   });

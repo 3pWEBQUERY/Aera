@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "질문은 최소 5자 이상이어야 합니다.",
     "helpQuestionTooLong": "질문이 너무 깁니다(최대 200자).",
     "helpAnswerRequired": "답변을 입력하세요.",
-    "helpAnswerTooLong": "답변이 너무 깁니다(최대 8000자)."
+    "helpAnswerTooLong": "답변이 너무 깁니다(최대 8000자).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "사용 가능 여부 확인 중…",
@@ -3021,6 +3022,14 @@
       "create": "커뮤니티 만들기",
       "account": "내 계정",
       "login": "로그인"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

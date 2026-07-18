@@ -17,6 +17,7 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatPrice } from "@/lib/utils";
+import { PricePointSelect } from "./price-point-select";
 
 export interface GalleryItem {
   id: string;
@@ -258,16 +259,11 @@ function PackageForm({
     initial,
   );
   const [paid, setPaid] = useState((pkg?.priceCents ?? 0) > 0);
-  const [priceEur, setPriceEur] = useState(
-    pkg && pkg.priceCents > 0 ? (pkg.priceCents / 100).toFixed(2) : "",
-  );
   const t = useTranslations("dashboard.gallery");
 
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
-
-  const priceCents = paid ? Math.max(0, Math.round(parseFloat(priceEur.replace(",", ".")) * 100) || 0) : 0;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -315,7 +311,7 @@ function PackageForm({
         <input type="hidden" name="spaceId" value={space.id} />
         <input type="hidden" name="spaceSlug" value={space.slug} />
         {isEdit && <input type="hidden" name="packageId" value={pkg!.id} />}
-        <input type="hidden" name="priceCents" value={priceCents} />
+        {!paid && <input type="hidden" name="priceCents" value={0} />}
 
         <div className="flex-1 overflow-y-auto">
           <div className="mx-auto max-w-xl space-y-5 px-6 py-8">
@@ -375,12 +371,12 @@ function PackageForm({
               {paid && (
                 <div>
                   <Label htmlFor="mp-price">{t("priceLabel")}</Label>
-                  <Input
+                  <PricePointSelect
                     id="mp-price"
-                    inputMode="decimal"
-                    value={priceEur}
-                    onChange={(e) => setPriceEur(e.target.value)}
-                    placeholder="9,99"
+                    name="priceCents"
+                    kind="oneTime"
+                    required
+                    defaultCents={pkg && pkg.priceCents > 0 ? pkg.priceCents : undefined}
                   />
                 </div>
               )}

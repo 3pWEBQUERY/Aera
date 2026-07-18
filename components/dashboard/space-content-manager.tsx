@@ -19,6 +19,7 @@ import { RichTextEditor } from "./rich-text-editor";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
+import { PricePointSelect } from "./price-point-select";
 
 /** Resolve the "create" CTA label for a space type (falls back to a generic verb). */
 function useCreateLabel() {
@@ -276,7 +277,7 @@ function PostForm({
             <div className="space-y-4 rounded-2xl border border-slate-200 p-4">
               <div>
                 <Label htmlFor="sc-price">{t("ppvPriceLabel")}</Label>
-                <Input id="sc-price" name="priceCents" type="number" min={0} step={1} defaultValue={0} />
+                <PricePointSelect id="sc-price" name="priceCents" kind="oneTime" allowFree defaultCents={0} />
                 <p className="mt-1 text-xs text-slate-400">{t("ppvPriceHint")}</p>
               </div>
               <div>

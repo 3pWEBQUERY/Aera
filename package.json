@@ -23,6 +23,7 @@
     "db:test-automations": "tsx scripts/test-automation-outbox.ts",
     "db:test-newsletters": "tsx scripts/test-newsletter-outbox.ts",
     "db:test-rls": "tsx scripts/test-rls-enforcement.ts",
+    "db:snap-prices": "tsx scripts/snap-prices-to-apple.ts",
     "setup": "prisma generate && prisma migrate deploy && tsx scripts/apply-rls.ts",
     "postinstall": "prisma generate"
   },

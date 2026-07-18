@@ -110,7 +110,8 @@
     "helpQuestionTooShort": "De vraag heeft minstens 5 tekens nodig.",
     "helpQuestionTooLong": "De vraag is te lang (max. 200 tekens).",
     "helpAnswerRequired": "Voer een antwoord in.",
-    "helpAnswerTooLong": "Het antwoord is te lang (max. 8000 tekens)."
+    "helpAnswerTooLong": "Het antwoord is te lang (max. 8000 tekens).",
+    "priceNotAllowed": "Please choose an allowed price."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -3021,6 +3022,14 @@
       "create": "Community aanmaken",
       "account": "Jouw account",
       "login": "Inloggen"
+    },
+    "tabbar": {
+      "nav": "Navigation",
+      "home": "Discover",
+      "search": "Search",
+      "create": "Create",
+      "account": "Profile",
+      "login": "Log in"
     }
   },
   "categories": {

@@ -1,4 +1,8 @@
 import { z } from "zod";
+import {
+  isAllowedOneTimePriceCents,
+  isAllowedSubscriptionPriceCents,
+} from "@/lib/apple-products";
 
 // Fehlermeldungen sind Keys aus dem `errors`-Namespace (messages/*.json) und
 // werden in den Server-Actions via zodError() übersetzt.
@@ -62,25 +66,45 @@ export const commentSchema = z.object({
   parentId: z.string().optional().or(z.literal("")),
 });
 
-export const tierSchema = z.object({
-  name: z.string().min(2).max(60),
-  // Benefits list: one line per benefit, rendered on the join page.
-  description: z
-    .string()
-    .max(3000, "benefitsMax")
-    .optional()
-    .or(z.literal("")),
-  priceCents: z.coerce.number().int().min(0).max(10_000_00),
-  interval: z.enum(["FREE", "MONTH", "YEAR"]),
-});
+export const tierSchema = z
+  .object({
+    name: z.string().min(2).max(60),
+    // Benefits list: one line per benefit, rendered on the join page.
+    description: z
+      .string()
+      .max(3000, "benefitsMax")
+      .optional()
+      .or(z.literal("")),
+    priceCents: z.coerce.number().int().min(0).max(10_000_00),
+    interval: z.enum(["FREE", "MONTH", "YEAR"]),
+  })
+  // Apple-IAP-Konformität: bezahlte Abos (MONTH/YEAR mit Preis > 0) dürfen nur
+  // feste Apple-Preispunkte verwenden. FREE-Tier (Preis 0) bleibt erlaubt.
+  .refine(
+    (v) =>
+      !((v.interval === "MONTH" || v.interval === "YEAR") && v.priceCents > 0) ||
+      isAllowedSubscriptionPriceCents(v.priceCents),
+    { message: "priceNotAllowed", path: ["priceCents"] },
+  );
 
-export const productSchema = z.object({
-  name: z.string().min(2).max(80),
-  description: z.string().max(1000).optional().or(z.literal("")),
-  priceCents: z.coerce.number().int().min(0).max(10_000_00),
-  type: z.enum(["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"]),
-  downloadUrl: z.string().url().optional().or(z.literal("")),
-});
+export const productSchema = z
+  .object({
+    name: z.string().min(2).max(80),
+    description: z.string().max(1000).optional().or(z.literal("")),
+    priceCents: z.coerce.number().int().min(0).max(10_000_00),
+    type: z.enum(["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"]),
+    downloadUrl: z.string().url().optional().or(z.literal("")),
+  })
+  // Apple-IAP-Konformität: digitale Produkte (type != PHYSICAL, Preis > 0) dürfen
+  // nur feste Apple-Preispunkte verwenden. PHYSICAL wird nur im Web verkauft →
+  // freier Preis erlaubt. Kostenlose digitale Produkte (Preis 0) bleiben erlaubt.
+  .refine(
+    (v) =>
+      v.type === "PHYSICAL" ||
+      v.priceCents === 0 ||
+      isAllowedOneTimePriceCents(v.priceCents),
+    { message: "priceNotAllowed", path: ["priceCents"] },
+  );
 
 export const eventSchema = z.object({
   title: z.string().min(2).max(120),

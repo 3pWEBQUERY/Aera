@@ -15,6 +15,7 @@ struct KnowledgeSpaceView: View {
     @Environment(\.brand) private var brand
 
     @State private var query = ""
+    @State private var showJoin = false
 
     init(slug: String,
          space: SpaceDetail,
@@ -63,6 +64,9 @@ struct KnowledgeSpaceView: View {
         }
         .padding(.horizontal, 16)
         .animation(.snappy(duration: 0.25), value: filteredArticles)
+        .sheet(isPresented: $showJoin) {
+            JoinView(slug: slug, onJoined: reload)
+        }
     }
 
     // MARK: - Suche
@@ -102,10 +106,18 @@ struct KnowledgeSpaceView: View {
 
     // MARK: - Zeilen
 
+    /// Defensiver Locked-Fallback: Der Serializer setzt für Wissensartikel
+    /// aktuell nie `locked=true`, künftig könnte Per-Artikel-Gating hinzukommen.
+    /// Statt einer Sackgasse öffnet ein gesperrter Artikel die `JoinView`.
     @ViewBuilder
     private func articleRow(for article: KnowledgeArticle) -> some View {
         if article.locked {
-            articleCard(for: article)
+            Button {
+                showJoin = true
+            } label: {
+                articleCard(for: article)
+            }
+            .buttonStyle(.plain)
         } else {
             NavigationLink {
                 KnowledgeArticleDetailView(article: article)
