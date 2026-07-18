@@ -251,6 +251,7 @@ model Tenant {
   id                     String    @id @default(cuid())
   name                   String    @unique
   slug                   String    @unique
+  subdomain              String?   @unique
   customDomain           String?   @unique
   /// Gesetzt, sobald der DNS-Nachweis (CNAME/TXT) erbracht wurde. Nur
   /// verifizierte Domains werden vom Proxy aufgelöst.

@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
 const domainCache = new Map<string, { slug: string | null; expiresAt: number }>();
 const DOMAIN_TTL_MS = 60_000;
 
-async function resolveCustomDomain(req: NextRequest, host: string): Promise<string | null> {
+async function resolveHost(req: NextRequest, host: string): Promise<string | null> {
   const cached = domainCache.get(host);
   if (cached && cached.expiresAt > Date.now()) return cached.slug;
   try {
@@ -55,17 +55,20 @@ export async function proxy(req: NextRequest) {
 
   if (isApex || isSharedPath(url.pathname)) return NextResponse.next();
 
-  // Subdomain of the root domain -> direct rewrite.
+  // Subdomain of the root domain -> resolve to a community. Matches a tenant
+  // by its chosen subdomain OR its slug (default address); falls back to the
+  // raw subdomain so unknown names still render the community 404 page.
   if (hostname.endsWith(`.${root}`)) {
     const sub = hostname.slice(0, -1 * (root.length + 1));
     if (sub && sub !== "www" && sub !== "app") {
-      return rewriteToCommunity(req, sub);
+      const resolved = await resolveHost(req, hostname);
+      return rewriteToCommunity(req, resolved ?? sub);
     }
     return NextResponse.next();
   }
 
   // Anything else is a potential custom domain (Tenant.customDomain).
-  const slug = await resolveCustomDomain(req, hostname);
+  const slug = await resolveHost(req, hostname);
   if (slug) return rewriteToCommunity(req, slug);
 
   return NextResponse.next();

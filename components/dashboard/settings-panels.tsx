@@ -5,8 +5,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   updateBrandingAction,
-  updateCustomDomainAction,
-  verifyCustomDomainAction,
+  updateSubdomainAction,
   deleteTenantAction,
   type ActionState,
 } from "@/app/actions/dashboard";
@@ -264,24 +263,16 @@ function CopyableAddress({
 export function DomainPanel({
   slug,
   rootDomain,
-  customDomain,
-  domainVerified = false,
-  tenantId,
+  subdomain,
 }: {
   slug: string;
   rootDomain: string;
-  customDomain: string | null;
-  /** True, sobald der DNS-Nachweis erbracht wurde. */
-  domainVerified?: boolean;
-  /** Für den TXT-Verifizierungswert (aera-verify=<tenantId>). */
-  tenantId?: string;
+  /** Vom Creator gewählte Wunsch-Subdomain; null = Standard (= Slug). */
+  subdomain: string | null;
 }) {
-  const [state, action, pending] = useActionState(updateCustomDomainAction, initial);
-  const [verifyState, verifyAction, verifying] = useActionState(
-    verifyCustomDomainAction,
-    initial,
-  );
+  const [state, action, pending] = useActionState(updateSubdomainAction, initial);
   const t = useTranslations("dashboard.domain");
+  const current = subdomain ?? slug;
   return (
     <section>
       <h2 className="text-lg font-semibold text-slate-900">{t("heading")}</h2>
@@ -295,86 +286,42 @@ export function DomainPanel({
         />
         <CopyableAddress
           label={t("subdomainLabel")}
-          value={`${slug}.${rootDomain}`}
-          copyValue={`https://${slug}.${rootDomain}`}
+          value={`${current}.${rootDomain}`}
+          copyValue={`https://${current}.${rootDomain}`}
         />
       </div>
 
       <form action={action} className="mt-6 space-y-2 border-t border-slate-100 pt-6">
         <input type="hidden" name="tenant" value={slug} />
-        <Label htmlFor="dom">{t("customDomainLabel")}</Label>
-        {state.ok && <p className="text-sm text-green-700">{t("savedDomain")}</p>}
+        <Label htmlFor="sub">{t("subEditLabel")}</Label>
+        {state.ok && <p className="text-sm text-green-700">{t("subSaved")}</p>}
         <FormError message={state.error} />
         <div className="flex flex-col gap-2 sm:flex-row">
-          <Input id="dom" name="customDomain" defaultValue={customDomain ?? ""} placeholder={t("customDomainPlaceholder")} className="sm:flex-1" />
-          <button type="submit" disabled={pending} className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">
+          <div className="flex items-stretch overflow-hidden rounded-xl border border-slate-300 focus-within:border-slate-500 focus-within:ring-2 focus-within:ring-slate-200 sm:flex-1">
+            <input
+              id="sub"
+              name="subdomain"
+              defaultValue={current}
+              placeholder={t("subPlaceholder")}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none"
+            />
+            <span className="flex items-center whitespace-nowrap bg-slate-50 px-3 text-sm text-slate-500">
+              .{rootDomain}
+            </span>
+          </div>
+          <button
+            type="submit"
+            disabled={pending}
+            className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+          >
             {pending ? t("saving") : t("save")}
           </button>
         </div>
-        <p className="text-xs text-slate-400">{t("cnameHint", { rootDomain })}</p>
+        <p className="text-xs text-slate-400">{t("subHint")}</p>
       </form>
-
-      {/* Verifizierungs-Status + DNS-Anleitung */}
-      {customDomain && (
-        <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50/60 p-4">
-          <div className="flex flex-wrap items-center gap-3">
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
-                domainVerified
-                  ? "bg-green-100 text-green-700"
-                  : "bg-amber-100 text-amber-700"
-              }`}
-            >
-              <Icon name={domainVerified ? "check" : "clock"} size={13} />
-              {domainVerified ? t("verifiedActive") : t("verifyPending")}
-            </span>
-            <span className="min-w-0 truncate text-sm font-medium text-slate-700">
-              {customDomain}
-            </span>
-            {!domainVerified && (
-              <form action={verifyAction} className="ml-auto">
-                <input type="hidden" name="tenant" value={slug} />
-                <button
-                  type="submit"
-                  disabled={verifying}
-                  className="rounded-full bg-slate-900 px-4 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
-                >
-                  {verifying ? t("checkingDns") : t("checkNow")}
-                </button>
-              </form>
-            )}
-          </div>
-          {verifyState.error && (
-            <p className="mt-2 text-xs text-amber-700">{verifyState.error}</p>
-          )}
-          {!domainVerified && (
-            <div className="mt-3 space-y-1.5 text-xs leading-relaxed text-slate-500">
-              <p className="font-semibold text-slate-600">
-                {t("dnsIntro")}
-              </p>
-              <p>
-                {t.rich("optionA", {
-                  domain: customDomain,
-                  root: rootDomain,
-                  b: (c) => <span className="font-medium">{c}</span>,
-                  code: (c) => <code className="rounded bg-white px-1.5 py-0.5 ring-1 ring-slate-200">{c}</code>,
-                })}
-              </p>
-              {tenantId && (
-                <p>
-                  {t.rich("optionB", {
-                    domain: customDomain,
-                    tenantId,
-                    b: (c) => <span className="font-medium">{c}</span>,
-                    code: (c) => <code className="rounded bg-white px-1.5 py-0.5 ring-1 ring-slate-200">{c}</code>,
-                  })}
-                </p>
-              )}
-              <p>{t("dnsWait")}</p>
-            </div>
-          )}
-        </div>
-      )}
     </section>
   );
 }
