@@ -76,6 +76,7 @@ export function CreditsSheet({
   const [summary, setSummary] = useState<CreditSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const [planSlide, setPlanSlide] = useState(0);
   const plansRef = useRef<HTMLElement>(null);
   const t = useTranslations("dashboard.credits");
   const tSafety = useTranslations("billingSafety");
@@ -120,6 +121,12 @@ export function CreditsSheet({
     return () => cancelAnimationFrame(frame);
   }, [focusPlans, open, summary]);
 
+  useEffect(() => {
+    if (!open || !summary) return;
+    const currentIndex = summary.plans.findIndex((plan) => plan.key === summary.plan);
+    setPlanSlide(Math.max(0, Math.floor(Math.max(0, currentIndex) / 2)));
+  }, [open, summary]);
+
   const post = useCallback(
     async (body: Record<string, unknown>, busyKey: string) => {
       setBusy(busyKey);
@@ -162,6 +169,11 @@ export function CreditsSheet({
   const usedPct = summary
     ? Math.min(100, Math.round((summary.usedThisPeriod / Math.max(1, summary.monthlyCredits)) * 100))
     : 0;
+  const planPages = summary
+    ? Array.from({ length: Math.ceil(summary.plans.length / 2) }, (_, index) =>
+        summary.plans.slice(index * 2, index * 2 + 2),
+      )
+    : [];
 
   return (
     <Sheet open={open} onClose={onClose} title={t("title")} subtitle={t("subtitle")} icon="bolt">
@@ -261,18 +273,20 @@ export function CreditsSheet({
                       <p className="text-2xl font-bold text-slate-900">{nf.format(p.credits)}</p>
                       <p className="text-xs text-slate-400">{t("credits")}</p>
                       <p className="mt-3 text-sm font-semibold text-slate-700">{formatPrice(p.priceCents, "eur", locale)}</p>
-                      <button
-                        type="button"
-                        disabled={busy !== null || !summary.billingEnabled}
-                        onClick={() => post({ action: "buy", packId: p.id }, `buy_${p.id}`)}
-                        className="mt-3 inline-flex items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
-                      >
-                        {!summary.billingEnabled
-                          ? tSafety("unavailableAction")
-                          : busy === `buy_${p.id}`
-                            ? t("buying")
-                            : t("buy")}
-                      </button>
+                      <div className="mt-auto pt-3">
+                        <button
+                          type="button"
+                          disabled={busy !== null || !summary.billingEnabled}
+                          onClick={() => post({ action: "buy", packId: p.id }, `buy_${p.id}`)}
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+                        >
+                          {!summary.billingEnabled
+                            ? tSafety("unavailableAction")
+                            : busy === `buy_${p.id}`
+                              ? t("buying")
+                              : t("buy")}
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -280,55 +294,107 @@ export function CreditsSheet({
 
               {/* Plans */}
               <section ref={plansRef} className="scroll-mt-6">
-                <SectionTitle icon="tiers" title={t("managePlan")} subtitle={t("moreCreditsMonth")} />
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  {summary.plans.map((plan) => {
-                    const current = plan.key === summary.plan;
-                    return (
-                      <PlanCard
-                        key={plan.key}
-                        name={plan.name}
-                        tagline={plan.tagline}
-                        priceCents={plan.priceCents}
-                        features={plan.features}
-                        featured={plan.key === "PRO" && !current}
-                        current={current}
-                        labels={{
-                          locale,
-                          current: tpc("current"),
-                          popular: tpc("popular"),
-                          perMonth: tpc("perMonth"),
-                          free: tpc("free"),
-                          credits: tpc("creditsPerMonth", { count: nf.format(plan.monthlyCredits) }),
-                        }}
-                      >
+                <SectionTitle
+                  icon="tiers"
+                  title={t("managePlan")}
+                  subtitle={t("moreCreditsMonth")}
+                  actions={
+                    planPages.length > 1 ? (
+                      <div className="flex shrink-0 items-center gap-1.5">
                         <button
                           type="button"
-                          disabled={
-                            current ||
-                            busy !== null ||
-                            !summary.billingEnabled ||
-                            plan.priceCents <= 0
-                          }
-                          onClick={() => post({ action: "plan", plan: plan.key }, `plan_${plan.key}`)}
-                          className={cn(
-                            "inline-flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-sm font-semibold transition disabled:cursor-default",
-                            current
-                              ? "bg-slate-100 text-slate-400"
-                              : "bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50",
-                          )}
+                          disabled={planSlide === 0}
+                          onClick={() => setPlanSlide((value) => Math.max(0, value - 1))}
+                          aria-label={`← ${t("managePlan")}`}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-default disabled:opacity-35"
                         >
-                          {!summary.billingEnabled && !current
-                            ? tSafety("unavailableAction")
-                            : current
-                            ? t("currentPlan")
-                            : busy === `plan_${plan.key}`
-                              ? t("switching")
-                              : t("switchPlan")}
+                          <Icon name="chevron" size={15} className="rotate-90" />
                         </button>
-                      </PlanCard>
-                    );
-                  })}
+                        <span className="min-w-9 text-center text-xs font-semibold tabular-nums text-slate-400" aria-live="polite">
+                          {planSlide + 1}/{planPages.length}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={planSlide >= planPages.length - 1}
+                          onClick={() =>
+                            setPlanSlide((value) => Math.min(planPages.length - 1, value + 1))
+                          }
+                          aria-label={`${t("managePlan")} →`}
+                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-default disabled:opacity-35"
+                        >
+                          <Icon name="chevron" size={15} className="-rotate-90" />
+                        </button>
+                      </div>
+                    ) : null
+                  }
+                />
+                <div className="overflow-hidden pb-1 pt-1">
+                  <div
+                    className="flex transition-transform duration-300 ease-out"
+                    style={{ transform: `translateX(-${planSlide * 100}%)` }}
+                  >
+                    {planPages.map((plans, pageIndex) => (
+                      <div
+                        key={plans.map((plan) => plan.key).join("-")}
+                        className="grid w-full shrink-0 grid-cols-2 items-stretch gap-2 px-1.5 sm:gap-4 sm:px-1"
+                        aria-hidden={pageIndex !== planSlide}
+                        inert={pageIndex !== planSlide}
+                      >
+                        {plans.map((plan) => {
+                          const current = plan.key === summary.plan;
+                          return (
+                            <PlanCard
+                              key={plan.key}
+                              name={plan.name}
+                              tagline={plan.tagline}
+                              priceCents={plan.priceCents}
+                              features={plan.features}
+                              featured={plan.key === "PRO" && !current}
+                              current={current}
+                              compact
+                              labels={{
+                                locale,
+                                current: tpc("current"),
+                                popular: tpc("popular"),
+                                perMonth: tpc("perMonth"),
+                                free: tpc("free"),
+                                credits: tpc("creditsPerMonth", {
+                                  count: nf.format(plan.monthlyCredits),
+                                }),
+                              }}
+                            >
+                              <button
+                                type="button"
+                                disabled={
+                                  current ||
+                                  busy !== null ||
+                                  !summary.billingEnabled ||
+                                  plan.priceCents <= 0
+                                }
+                                onClick={() =>
+                                  post({ action: "plan", plan: plan.key }, `plan_${plan.key}`)
+                                }
+                                className={cn(
+                                  "inline-flex w-full items-center justify-center rounded-xl px-2 py-2.5 text-xs font-semibold transition disabled:cursor-default sm:px-3 sm:text-sm",
+                                  current
+                                    ? "bg-slate-100 text-slate-400"
+                                    : "bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50",
+                                )}
+                              >
+                                {!summary.billingEnabled && !current
+                                  ? tSafety("unavailableAction")
+                                  : current
+                                    ? t("currentPlan")
+                                    : busy === `plan_${plan.key}`
+                                      ? t("switching")
+                                      : t("switchPlan")}
+                              </button>
+                            </PlanCard>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 {summary.creatorSubscriptionStatus && summary.plan !== "FREE" && (
                   <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3">
@@ -421,20 +487,25 @@ function SectionTitle({
   icon,
   title,
   subtitle,
+  actions,
 }: {
   icon: IconName;
   title: string;
   subtitle: string;
+  actions?: React.ReactNode;
 }) {
   return (
-    <div className="mb-3 flex items-center gap-2.5">
-      <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
-        <Icon name={icon} size={16} />
-      </span>
-      <div>
-        <p className="text-sm font-bold text-slate-900">{title}</p>
-        <p className="text-[11px] text-slate-400">{subtitle}</p>
+    <div className="mb-3 flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+          <Icon name={icon} size={16} />
+        </span>
+        <div className="min-w-0">
+          <p className="text-sm font-bold text-slate-900">{title}</p>
+          <p className="text-[11px] text-slate-400">{subtitle}</p>
+        </div>
       </div>
+      {actions}
     </div>
   );
 }
