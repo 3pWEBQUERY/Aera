@@ -12,6 +12,7 @@ export async function GET(req: Request) {
 
   const rows = await prisma.tenant.findMany({
     where: {
+      status: "ACTIVE",
       ...(category ? { category } : {}),
       ...(q
         ? {

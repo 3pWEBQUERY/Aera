@@ -5,13 +5,17 @@ import { rateLimit } from "@/lib/rate-limit";
 import { jsonError, jsonOk, parseJsonBody, requestIp } from "@/lib/mobile/api";
 import { toUserDto } from "@/lib/mobile/serializers";
 
-// POST /api/mobile/v1/auth/signup  { name, email, password } → { token, user }
+// POST /api/mobile/v1/auth/signup
+// { name, email, password, acceptTerms: true, privacyNoticeAcknowledged: true }
+// → { token, user }
 // Rate-Limit wie Web-Signup (app/actions/auth.ts): 5/h/IP.
 
 const schema = z.object({
   name: z.string().min(2).max(80),
   email: z.string().email(),
   password: z.string().min(8).max(200),
+  acceptTerms: z.literal(true),
+  privacyNoticeAcknowledged: z.literal(true),
 });
 
 export async function POST(req: Request) {
@@ -23,7 +27,12 @@ export async function POST(req: Request) {
   const parsed = await parseJsonBody(req, schema);
   if ("response" in parsed) return parsed.response;
 
-  const result = await registerUser(parsed.data);
+  const result = await registerUser({
+    name: parsed.data.name,
+    email: parsed.data.email,
+    password: parsed.data.password,
+    legalAcceptanceSource: "MOBILE_SIGNUP",
+  });
   if (!result.ok) {
     return jsonError("email_already_registered", "This e-mail is already registered.", 409);
   }

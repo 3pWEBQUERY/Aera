@@ -1,14 +1,16 @@
 import "server-only";
-import prisma from "./prisma";
+import prisma, { systemPrisma } from "./prisma";
 import { env } from "./env";
 import type { Membership, Role, Tenant } from "@/app/generated/prisma/client";
 
 export async function getTenantBySlug(slug: string): Promise<Tenant | null> {
-  return prisma.tenant.findUnique({ where: { slug } });
+  return prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
 }
 
 export async function getTenantByDomain(domain: string): Promise<Tenant | null> {
-  return prisma.tenant.findUnique({ where: { customDomain: domain } });
+  return prisma.tenant.findUnique({
+    where: { customDomain: domain, status: "ACTIVE" },
+  });
 }
 
 /**
@@ -64,9 +66,27 @@ export function roleAtLeast(role: Role, min: Role): boolean {
   return RANK[role] >= RANK[min];
 }
 
+/** Roles never grant tenant capabilities while the membership is inactive. */
+export function activeRoleAtLeast(
+  membership: Pick<Membership, "role" | "status"> | null | undefined,
+  min: Role,
+): boolean {
+  return Boolean(
+    membership?.status === "ACTIVE" && roleAtLeast(membership.role, min),
+  );
+}
+
 export async function userTenants(userId: string): Promise<Tenant[]> {
-  const memberships = await prisma.membership.findMany({
-    where: { userId, role: { in: ["OWNER", "ADMIN"] } },
+  // Dashboard navigation intentionally spans tenants, so it must not inherit
+  // the currently selected tenant's RLS context. The userId + ACTIVE filters
+  // are the explicit privileged boundary.
+  const memberships = await systemPrisma.membership.findMany({
+    where: {
+      userId,
+      status: "ACTIVE",
+      role: { in: ["OWNER", "ADMIN"] },
+      tenant: { status: "ACTIVE" },
+    },
     include: { tenant: true },
     orderBy: { joinedAt: "asc" },
   });

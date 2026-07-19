@@ -15,7 +15,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const tenant = await prisma.tenant.findUnique({
-    where: { slug },
+    where: { slug, status: "ACTIVE" },
     select: { name: true },
   });
   if (!tenant) return {};

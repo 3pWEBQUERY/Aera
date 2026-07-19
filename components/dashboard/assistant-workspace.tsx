@@ -1,11 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Icon, type IconName } from "./icons";
 import { cn } from "@/lib/utils";
 import { CreditsSheet, type CreditSummary } from "./credits-sheet";
 import { MediaPickerSheet, type PickerImage } from "./media-picker-sheet";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 
 type AssistantT = ReturnType<typeof useTranslations>;
 
@@ -161,10 +162,14 @@ export function AssistantWorkspace({
   slug,
   geminiOn,
   user,
+  initialCreditsOpen = false,
+  initialCheckoutError = false,
 }: {
   slug: string;
   geminiOn: boolean;
   user: { name: string; avatarUrl: string | null };
+  initialCreditsOpen?: boolean;
+  initialCheckoutError?: boolean;
 }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -173,7 +178,12 @@ export function AssistantWorkspace({
   const [loading, setLoading] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Conversation | null>(null);
-  const [creditsOpen, setCreditsOpen] = useState(false);
+  const deleteTitleId = useId();
+  const deleteDialogRef = useModalAccessibility<HTMLDivElement>({
+    open: Boolean(pendingDelete),
+    onClose: () => setPendingDelete(null),
+  });
+  const [creditsOpen, setCreditsOpen] = useState(initialCreditsOpen);
   const [creditBalance, setCreditBalance] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -873,18 +883,26 @@ export function AssistantWorkspace({
         onClose={() => setCreditsOpen(false)}
         slug={slug}
         onChanged={(s) => setCreditBalance(s.balance)}
+        initialCheckoutError={initialCheckoutError}
       />
 
       {pendingDelete && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-slate-900/40" onClick={() => setPendingDelete(null)} />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+          <div
+            ref={deleteDialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={deleteTitleId}
+            tabIndex={-1}
+            className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+          >
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
                 <Icon name="trash" size={18} />
               </span>
               <div className="min-w-0">
-                <h3 className="text-base font-bold text-slate-900">
+                <h3 id={deleteTitleId} className="text-base font-bold text-slate-900">
                   {pendingDelete.kind === "IMAGE" ? t("deleteImageTitle") : t("deleteChatTitle")}
                 </h3>
                 <p className="mt-1 text-sm text-slate-500">

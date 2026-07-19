@@ -2,7 +2,12 @@ import "server-only";
 import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import prisma, { withTenantContext } from "./prisma";
 import type { WebhookDelivery, WebhookEndpoint } from "@/app/generated/prisma/client";
-import { validateWebhookUrl } from "./webhook-url";
+import { postWebhookUrl } from "./webhook-url";
+import {
+  decryptSecret,
+  encryptSecret,
+  secretNeedsRotation,
+} from "./secret-encryption";
 
 /**
  * Ausgehende Webhooks.
@@ -64,6 +69,8 @@ export function verifyWebhookSignature(
 
 const TIMEOUT_MS = 10_000;
 const MAX_ATTEMPTS = 5;
+const CLAIM_CHUNK_SIZE = 10;
+const MIN_CLAIM_WINDOW_MS = TIMEOUT_MS + 2_000;
 const RETRY_DELAYS_MS = [60_000, 5 * 60_000, 30 * 60_000, 2 * 3_600_000, 12 * 3_600_000];
 
 type DeliveryWithEndpoint = WebhookDelivery & { endpoint: WebhookEndpoint };
@@ -96,25 +103,27 @@ async function performDelivery(delivery: DeliveryWithEndpoint): Promise<boolean>
   let ok = false;
   let error: string | null = null;
   try {
-    const checked = await validateWebhookUrl(delivery.endpoint.url, {
-      allowHttp: process.env.NODE_ENV !== "production",
-    });
-    if (!checked.ok) throw new Error(`Blocked webhook URL: ${checked.error}`);
-    const res = await fetch(checked.url, {
-      method: "POST",
-      redirect: "manual",
+    const signingSecret = decryptSecret(delivery.endpoint.secret);
+    if (secretNeedsRotation(delivery.endpoint.secret)) {
+      await prisma.webhookEndpoint.update({
+        where: { id: delivery.endpoint.id },
+        data: { secret: encryptSecret(signingSecret) },
+      });
+    }
+    const res = await postWebhookUrl({
+      url: delivery.endpoint.url,
       headers: {
         "Content-Type": "application/json",
-        "Aera-Signature": signWebhookPayload(delivery.endpoint.secret, timestamp, rawBody),
+        "Aera-Signature": signWebhookPayload(signingSecret, timestamp, rawBody),
         "Aera-Event": delivery.event,
       },
       body: rawBody,
-      signal: AbortSignal.timeout(TIMEOUT_MS),
+      timeoutMs: TIMEOUT_MS,
+      allowHttp: process.env.NODE_ENV !== "production",
     });
     responseCode = res.status;
-    const redirected = res.status >= 300 && res.status < 400;
-    ok = res.ok && !redirected;
-    if (redirected) error = "Redirects are not allowed";
+    ok = res.ok && !res.redirected;
+    if (res.redirected) error = "Redirects are not allowed";
     else if (!res.ok) error = `HTTP ${res.status}`;
   } catch (cause) {
     error = cause instanceof Error ? cause.message : String(cause);
@@ -141,30 +150,50 @@ async function performDelivery(delivery: DeliveryWithEndpoint): Promise<boolean>
 /** Claim and process due deliveries across tenants (safe for parallel workers). */
 export async function processPendingWebhookDeliveries(
   limit = 50,
+  options: { deadlineAt?: number } = {},
 ): Promise<{ claimed: number; delivered: number; failed: number }> {
-  const claimed = await prisma.$queryRaw<
-    Array<{ delivery_id: string; tenant_id: string }>
-  >`SELECT * FROM aera_claim_webhook_deliveries(${Math.min(Math.max(limit, 1), 200)})`;
+  const boundedLimit = Math.min(Math.max(limit, 1), 200);
+  const deadlineAt = options.deadlineAt ?? Date.now() + 40_000;
+  let claimedCount = 0;
   let delivered = 0;
   let failed = 0;
-  for (const row of claimed) {
-    try {
-      const ok = await withTenantContext(row.tenant_id, async () => {
-        const delivery = await prisma.webhookDelivery.findUnique({
-          where: { id: row.delivery_id },
-          include: { endpoint: true },
-        });
-        return delivery ? performDelivery(delivery) : false;
-      });
+  while (
+    claimedCount < boundedLimit &&
+    Date.now() < deadlineAt - MIN_CLAIM_WINDOW_MS
+  ) {
+    const chunkLimit = Math.min(CLAIM_CHUNK_SIZE, boundedLimit - claimedCount);
+    const rows =
+      (await prisma.$queryRaw<Array<{ delivery_id: string; tenant_id: string }>>`
+        SELECT * FROM aera_claim_webhook_deliveries(${chunkLimit})
+      `) ?? [];
+    if (rows.length === 0) break;
+    claimedCount += rows.length;
+
+    const outcomes = await Promise.all(
+      rows.map(async (row) => {
+        try {
+          return await withTenantContext(row.tenant_id, async () => {
+            const delivery = await prisma.webhookDelivery.findUnique({
+              where: { id: row.delivery_id },
+              include: { endpoint: true },
+            });
+            return delivery ? performDelivery(delivery) : false;
+          });
+        } catch (error) {
+          console.error(`Webhook retry failed (${row.delivery_id}):`, error);
+          // The short bounded chunk completes well inside the database lease;
+          // a crashed row becomes claimable again after that lease expires.
+          return false;
+        }
+      }),
+    );
+    for (const ok of outcomes) {
       if (ok) delivered++;
       else failed++;
-    } catch (error) {
-      failed++;
-      console.error(`Webhook retry failed (${row.delivery_id}):`, error);
-      // The database lease expires after two minutes, making the row claimable again.
     }
+    if (rows.length < chunkLimit) break;
   }
-  return { claimed: claimed.length, delivered, failed };
+  return { claimed: claimedCount, delivered, failed };
 }
 
 /**

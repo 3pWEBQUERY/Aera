@@ -1,6 +1,8 @@
 import "server-only";
 import { env, features } from "./env";
 
+const EMAIL_TIMEOUT_MS = 15_000;
+
 export interface SendResult {
   ok: boolean;
   id?: string;
@@ -18,7 +20,25 @@ export async function sendEmail(input: {
   subject: string;
   html: string;
   idempotencyKey?: string;
+  /** Creator-authored bulk/lifecycle mail. Transactional is the safe default. */
+  category?: "transactional" | "marketing";
+  /** Mandatory for marketing; used for both RFC 2369 and RFC 8058 headers. */
+  unsubscribeUrl?: string;
 }): Promise<SendResult> {
+  if (input.category === "marketing") {
+    let unsubscribe: URL;
+    try {
+      unsubscribe = new URL(input.unsubscribeUrl ?? "");
+    } catch {
+      return { ok: false, error: "Marketing email requires a valid unsubscribe URL" };
+    }
+    if (
+      unsubscribe.origin !== new URL(env.APP_URL).origin ||
+      (process.env.NODE_ENV === "production" && unsubscribe.protocol !== "https:")
+    ) {
+      return { ok: false, error: "Marketing unsubscribe URL must use the configured app origin" };
+    }
+  }
   if (!features.email) {
     console.info(`[email:dev] -> ${input.to} :: ${input.subject}`);
     return { ok: true, skipped: true };
@@ -36,7 +56,17 @@ export async function sendEmail(input: {
         to: input.to,
         subject: input.subject,
         html: input.html,
+        ...(input.category === "marketing"
+          ? {
+              headers: {
+                "List-Unsubscribe": `<${input.unsubscribeUrl}>`,
+                "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+              },
+              tags: [{ name: "category", value: "marketing" }],
+            }
+          : {}),
       }),
+      signal: AbortSignal.timeout(EMAIL_TIMEOUT_MS),
     });
     if (!res.ok) {
       return { ok: false, error: `Resend ${res.status}` };

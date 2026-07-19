@@ -146,6 +146,23 @@ describe("buildAccessContext / hasPaidEntitlement", () => {
     expect(result.isStaff).toBe(true);
   });
 
+  it("does not grant staff bypass to pending or banned moderator roles", async () => {
+    prisma.membership.findUnique.mockResolvedValue({
+      id: "m1", tenantId: "t1", userId: "u1", role: "MODERATOR", status: "PENDING",
+    });
+    prisma.entitlement.findMany.mockResolvedValue([]);
+
+    const result = await buildAccessContext("t1", "u1");
+    expect(result.role).toBe("MODERATOR");
+    expect(result.isStaff).toBe(false);
+    expect(
+      canAccess(
+        { visibility: "PAID", requiredEntitlementKey: "tier:staff" },
+        result,
+      ),
+    ).toBe(false);
+  });
+
   it("expired entitlements are filtered by the query", async () => {
     prisma.membership.findUnique.mockResolvedValue(null);
     prisma.entitlement.findMany.mockResolvedValue([]);

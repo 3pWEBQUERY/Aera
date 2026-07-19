@@ -32,8 +32,13 @@ export async function GET(
   const encoder = new TextEncoder();
 
   const stream = new ReadableStream({
-    start(controller) {
+    async start(controller) {
       let closed = false;
+      let unsubscribe = () => {};
+      const timers: {
+        ping?: ReturnType<typeof setInterval>;
+        maxAge?: ReturnType<typeof setTimeout>;
+      } = {};
       const write = (chunk: string) => {
         if (closed) return;
         try {
@@ -42,19 +47,13 @@ export async function GET(
           cleanup();
         }
       };
-      const unsubscribe = subscribe(channel, (data) => {
-        write(`data: ${JSON.stringify(data)}\n\n`);
-      });
-      // Keep-alive gegen Proxy-Timeouts.
-      const ping = setInterval(() => write(": ping\n\n"), PING_MS);
-      const maxAge = setTimeout(() => cleanup(), MAX_AGE_MS);
-
       function cleanup() {
         if (closed) return;
         closed = true;
         unsubscribe();
-        clearInterval(ping);
-        clearTimeout(maxAge);
+        if (timers.ping) clearInterval(timers.ping);
+        if (timers.maxAge) clearTimeout(timers.maxAge);
+        req.signal.removeEventListener("abort", cleanup);
         try {
           controller.close();
         } catch {
@@ -62,7 +61,17 @@ export async function GET(
         }
       }
 
-      req.signal.addEventListener("abort", cleanup);
+      req.signal.addEventListener("abort", cleanup, { once: true });
+      unsubscribe = await subscribe(channel, (data) => {
+        write(`data: ${JSON.stringify(data)}\n\n`);
+      });
+      if (closed) {
+        unsubscribe();
+        return;
+      }
+      // Keep-alive gegen Proxy-Timeouts.
+      timers.ping = setInterval(() => write(": ping\n\n"), PING_MS);
+      timers.maxAge = setTimeout(() => cleanup(), MAX_AGE_MS);
       write(": connected\n\n");
     },
   });

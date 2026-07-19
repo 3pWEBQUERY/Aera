@@ -1,6 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { PrismaMock } from "./helpers/prisma-mock";
 
+const httpMocks = vi.hoisted(() => ({ postWebhookUrl: vi.fn() }));
+
 vi.mock("@/lib/prisma", async () => {
   const { createPrismaMock, prismaMockRef } = await import("./helpers/prisma-mock");
   const prisma = createPrismaMock();
@@ -13,6 +15,7 @@ vi.mock("@/lib/prisma", async () => {
 });
 vi.mock("@/lib/webhook-url", () => ({
   validateWebhookUrl: vi.fn(async (url: string) => ({ ok: true, url })),
+  postWebhookUrl: httpMocks.postWebhookUrl,
 }));
 
 import prismaModule from "@/lib/prisma";
@@ -64,11 +67,8 @@ describe("webhook signature", () => {
 });
 
 describe("emitWebhookEvent", () => {
-  const fetchMock = vi.fn();
-
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.stubGlobal("fetch", fetchMock);
     prisma.webhookDelivery.create.mockImplementation(
       async (args: { data: Record<string, unknown> }) => ({
         id: "delivery_1",
@@ -96,20 +96,20 @@ describe("emitWebhookEvent", () => {
   it("does nothing without subscribed endpoints", async () => {
     prisma.webhookEndpoint.findMany.mockResolvedValue([]);
     await emitWebhookEvent("t1", "member.joined", { a: 1 });
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(httpMocks.postWebhookUrl).not.toHaveBeenCalled();
   });
 
   it("POSTs a signed payload and logs the delivery", async () => {
     prisma.webhookEndpoint.findMany.mockResolvedValue([
       { id: "ep1", url: "https://example.com/hook", secret: "whsec_x", events: ["member.joined"], isActive: true },
     ]);
-    fetchMock.mockResolvedValue({ status: 200, ok: true });
+    httpMocks.postWebhookUrl.mockResolvedValue({ status: 200, ok: true, redirected: false });
 
     await emitWebhookEvent("t1", "member.joined", { memberName: "Anna" });
 
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const [url, init] = fetchMock.mock.calls[0]!;
-    expect(url).toBe("https://example.com/hook");
+    expect(httpMocks.postWebhookUrl).toHaveBeenCalledTimes(1);
+    const [init] = httpMocks.postWebhookUrl.mock.calls[0]!;
+    expect(init.url).toBe("https://example.com/hook");
     expect(init.headers["Aera-Event"]).toBe("member.joined");
     // Die Signatur muss zum gesendeten Body passen.
     expect(
@@ -141,7 +141,7 @@ describe("emitWebhookEvent", () => {
     prisma.webhookEndpoint.findMany.mockResolvedValue([
       { id: "ep1", url: "https://down.example.com", secret: "whsec_x", events: ["order.paid"], isActive: true },
     ]);
-    fetchMock.mockRejectedValue(new Error("ECONNREFUSED"));
+    httpMocks.postWebhookUrl.mockRejectedValue(new Error("ECONNREFUSED"));
 
     await expect(
       emitWebhookEvent("t1", "order.paid", {}),
@@ -165,13 +165,12 @@ describe("emitWebhookEvent", () => {
     prisma.webhookEndpoint.findMany.mockResolvedValue([
       { id: "ep1", url: "https://example.com/hook", secret: "whsec_x", events: ["order.paid"], isActive: true },
     ]);
-    fetchMock.mockResolvedValue({ status: 302, ok: false, headers: new Headers({ location: "http://169.254.169.254/" }) });
+    httpMocks.postWebhookUrl.mockResolvedValue({ status: 302, ok: false, redirected: true });
 
     await emitWebhookEvent("t1", "order.paid", {});
 
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://example.com/hook",
-      expect.objectContaining({ redirect: "manual" }),
+    expect(httpMocks.postWebhookUrl).toHaveBeenCalledWith(
+      expect.objectContaining({ url: "https://example.com/hook" }),
     );
     expect(prisma.webhookDelivery.update).toHaveBeenLastCalledWith(
       expect.objectContaining({
@@ -212,7 +211,7 @@ describe("emitWebhookEvent", () => {
         createdAt: new Date(),
       },
     });
-    fetchMock.mockResolvedValue({ status: 204, ok: true });
+    httpMocks.postWebhookUrl.mockResolvedValue({ status: 204, ok: true, redirected: false });
 
     const result = await processPendingWebhookDeliveries(10);
 
@@ -257,7 +256,7 @@ describe("emitWebhookEvent", () => {
         createdAt: new Date(),
       },
     });
-    fetchMock.mockResolvedValue({ status: 500, ok: false });
+    httpMocks.postWebhookUrl.mockResolvedValue({ status: 500, ok: false, redirected: false });
 
     const result = await processPendingWebhookDeliveries(10);
 
@@ -268,5 +267,14 @@ describe("emitWebhookEvent", () => {
         data: expect.objectContaining({ status: "EXHAUSTED", attempts: 5 }),
       }),
     );
+  });
+
+  it("does not claim another webhook chunk after the route deadline", async () => {
+    const result = await processPendingWebhookDeliveries(100, {
+      deadlineAt: Date.now() + 1_000,
+    });
+
+    expect(result).toEqual({ claimed: 0, delivered: 0, failed: 0 });
+    expect(prisma.$queryRaw).not.toHaveBeenCalled();
   });
 });

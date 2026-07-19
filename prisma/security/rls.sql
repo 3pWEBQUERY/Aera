@@ -1,4 +1,5 @@
--- Reference RLS policy (applied programmatically by scripts/apply-rls.ts).
+-- Reference RLS policy. Prisma migrations are the only source of truth;
+-- scripts/apply-rls.ts verifies the installed role, grants and policies.
 -- Every tenant-scoped table is isolated by the session GUC `aera.tenant_id`.
 --
 -- Enforcement model:
@@ -16,3 +17,7 @@
 --   CREATE POLICY tenant_isolation ON "Post"
 --     USING ("tenantId" = current_setting('aera.tenant_id', true))
 --     WITH CHECK ("tenantId" = current_setting('aera.tenant_id', true));
+--
+-- New tenant tables must enable RLS, add this policy and grant their required
+-- operations to aera_app in the same migration. There are intentionally no
+-- blanket default table grants.

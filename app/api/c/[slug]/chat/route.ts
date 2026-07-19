@@ -61,7 +61,7 @@ export async function POST(
   if (r.kind === "dm") {
     const message = await insertDirectMessage(r.community.tenant.id, r.id, userId, body);
     if (!message) return NextResponse.json({ error: "empty" }, { status: 400 });
-    publish(chatChannel(r.community.tenant.id, "dm", r.id), { message });
+    await publish(chatChannel(r.community.tenant.id, "dm", r.id), { message });
     return NextResponse.json({ message });
   }
 
@@ -91,6 +91,6 @@ export async function POST(
     r.settings.maxMessageLength,
   );
   if (!message) return NextResponse.json({ error: "empty" }, { status: 400 });
-  publish(chatChannel(r.community.tenant.id, "space", r.id), { message });
+  await publish(chatChannel(r.community.tenant.id, "space", r.id), { message });
   return NextResponse.json({ message });
 }

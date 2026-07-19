@@ -23,6 +23,7 @@ export interface TenantRow {
   primaryColor: string;
   customDomain: string | null;
   platformFeePercent: number;
+  status: "ACTIVE" | "SUSPENDED" | "DELETING";
   category: string | null;
   createdAt: string;
   ownerName: string;
@@ -137,6 +138,15 @@ export function CommunitiesManager({
                         {tCat(cat.key)}
                       </Pill>
                     )}
+                    <Pill
+                      className={
+                        tn.status === "ACTIVE"
+                          ? "bg-emerald-50 text-emerald-700"
+                          : "bg-amber-50 text-amber-700"
+                      }
+                    >
+                      {tn.status === "ACTIVE" ? t("statusActive") : t("statusSuspended")}
+                    </Pill>
                   </div>
                   <p className="mt-0.5 flex flex-wrap items-center gap-x-2 truncate text-sm text-slate-400">
                     <span className="truncate">
@@ -182,6 +192,7 @@ export function CommunitiesManager({
 function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void }) {
   const [state, action, pending] = useActionState(adminUpdateTenantAction, initial);
   const [confirmSlug, setConfirmSlug] = useState("");
+  const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("admin.communities");
   const tc = useTranslations("admin");
   const tCat = useTranslations("categories");
@@ -192,7 +203,12 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
   const formId = "admin-tenant-edit";
 
   async function handleDelete(fd: FormData) {
-    await adminDeleteTenantAction(fd);
+    setDeleteError(undefined);
+    const result = await adminDeleteTenantAction(fd);
+    if (result.error) {
+      setDeleteError(result.error);
+      return;
+    }
     onDone();
   }
 
@@ -224,7 +240,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
             </div>
           </div>
 
-          <FormError message={state.error} />
+          <FormError message={deleteError ?? state.error} />
 
           <form id={formId} action={action} className="space-y-5">
             <input type="hidden" name="tenantId" value={tenant.id} />
@@ -265,6 +281,18 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
                   defaultValue={tenant.platformFeePercent}
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="at-status">{t("status")}</Label>
+              <Select
+                id="at-status"
+                name="status"
+                defaultValue={tenant.status === "DELETING" ? "SUSPENDED" : tenant.status}
+              >
+                <option value="ACTIVE">{t("statusActive")}</option>
+                <option value="SUSPENDED">{t("statusSuspended")}</option>
+              </Select>
+              <p className="mt-1 text-xs text-slate-400">{t("statusHint")}</p>
             </div>
             <div>
               <Label htmlFor="at-domain">{t("customDomain")}</Label>

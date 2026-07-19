@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 
 export function ImageUpload({
   tenant,
@@ -34,16 +35,14 @@ export function ImageUpload({
     setError(null);
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      fd.set("tenant", tenant);
-      fd.set("purpose", purpose);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok || !json.url) setError(json.error ?? t("uploadFailed"));
-      else setUrl(json.url);
-    } catch {
-      setError(t("uploadFailed"));
+      const uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
+      setUrl(uploadedUrl);
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof UploadError
+          ? uploadError.message
+          : t("uploadFailed"),
+      );
     } finally {
       setUploading(false);
     }

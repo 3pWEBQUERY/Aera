@@ -3,7 +3,7 @@ import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { buildAccessContext, canAccess } from "@/lib/entitlements";
 import { getObject } from "@/lib/storage";
-import { env } from "@/lib/env";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import type { Visibility } from "@/app/generated/prisma/client";
 
 export async function GET(
@@ -13,19 +13,29 @@ export async function GET(
   const { key: segments } = await params;
   const key = segments.map((s) => decodeURIComponent(s)).join("/");
 
-  const object = await prisma.storageObject.findFirst({ where: { key } });
+  const object = await prisma.storageObject.findFirst({
+    where: { key },
+    include: { tenant: { select: { status: true } } },
+  });
   if (!object) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  setTenantContext(object.tenantId);
 
-  const isPublic = object.visibility === "PUBLIC" && !object.requiredEntitlementKey;
+  const tenantActive = object.tenant.status === "ACTIVE";
+  const isPublic =
+    tenantActive && object.visibility === "PUBLIC" && !object.requiredEntitlementKey;
+  // Resolve the global identity before activating tenant RLS. Otherwise a
+  // platform admin who is not also a tenant member would disappear behind
+  // the User membership policy and could not perform moderation.
+  const user = isPublic ? null : await getCurrentUser();
+  setTenantContext(object.tenantId);
   if (!isPublic) {
     // Gated object: require an active membership (MEMBERS), a paid
     // entitlement (PAID) or the specific entitlement key. Platform admins
     // may always view media for moderation.
-    const user = await getCurrentUser();
-    const isPlatformAdmin =
-      !!user && env.PLATFORM_ADMIN_EMAILS.includes(user.email.toLowerCase());
+    const isPlatformAdmin = hasPlatformAdminAccess(user);
     if (!isPlatformAdmin) {
+      if (!tenantActive) {
+        return NextResponse.json({ error: "Not found" }, { status: 404 });
+      }
       const ctx = await buildAccessContext(object.tenantId, user?.id ?? null);
       const allowed = canAccess(
         {
@@ -47,12 +57,15 @@ export async function GET(
   const headers: Record<string, string> = {
     "Content-Type": object.contentType ?? fetched.contentType ?? "application/octet-stream",
     // Gated content must not land in shared caches.
+    // Public media remains revocable: tenant suspension, deletion or a later
+    // visibility change must propagate within minutes, not after one year.
     "Cache-Control": isPublic
-      ? "public, max-age=31536000, immutable"
-      : "private, max-age=0, must-revalidate",
+      ? "public, max-age=300, stale-while-revalidate=60"
+      : "private, no-store, max-age=0",
     "Accept-Ranges": "bytes",
     "X-Content-Type-Options": "nosniff",
   };
+  if (!isPublic) headers.Vary = "Cookie, Authorization";
   if (fetched.contentLength !== undefined) {
     headers["Content-Length"] = String(fetched.contentLength);
   }

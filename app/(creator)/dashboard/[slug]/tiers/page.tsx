@@ -36,5 +36,5 @@ export default async function TiersPage({
     memberCount: t._count.memberships,
   }));
 
-  return <TiersManager slug={slug} tiers={tiers} stripeReady={features.stripe} />;
+  return <TiersManager slug={slug} tiers={tiers} stripeReady={features.marketplacePayments} />;
 }

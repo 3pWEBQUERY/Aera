@@ -1,151 +1,115 @@
 import { NextResponse } from "next/server";
 import { getTranslations } from "next-intl/server";
-import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
+import { createHash } from "node:crypto";
 import { getCurrentUser } from "@/lib/auth";
-import { roleAtLeast } from "@/lib/tenant";
+import { uploadObject } from "@/lib/storage";
+import { authorizeUpload } from "@/lib/upload-access";
 import {
-  uploadObject,
-  isAllowedImage,
-  isAllowedVideo,
-  isAllowedAudio,
-  extensionFor,
-} from "@/lib/storage";
-import { storageAllows, formatStorage } from "@/lib/storage-quota";
+  magicBytesMatch,
+  validateUploadDeclaration,
+} from "@/lib/upload-policy";
+import {
+  completeStorageReservation,
+  failStorageReservation,
+  reserveStorageUpload,
+} from "@/lib/secure-upload";
 
-const MAX_IMAGE = 5 * 1024 * 1024; // 5 MB
-const MAX_VIDEO = 512 * 1024 * 1024; // 512 MB
-const MAX_AUDIO = 256 * 1024 * 1024; // 256 MB
-
-/**
- * Allowlist of upload purposes and the visibility their objects get.
- * PUBLIC: branding/covers that render on public pages.
- * MEMBERS: gated content (paid galleries, course/space videos) — the media
- * proxy enforces access for anything non-PUBLIC.
- */
-const PURPOSE_VISIBILITY: Record<string, "PUBLIC" | "MEMBERS"> = {
-  avatar: "PUBLIC",
-  logo: "PUBLIC",
-  cover: "PUBLIC",
-  "blog-cover": "PUBLIC",
-  "blog-image": "PUBLIC",
-  "blog-video": "PUBLIC",
-  "feed-image": "PUBLIC",
-  // PPV-Vorschaubild (unscharf für Nicht-Käufer) — muss öffentlich sein,
-  // damit es allen als Teaser angezeigt werden kann.
-  "ppv-teaser": "PUBLIC",
-  story: "PUBLIC",
-  "story-video": "PUBLIC",
-  planner: "MEMBERS",
-  "event-cover": "PUBLIC",
-  "course-cover": "PUBLIC",
-  "product-cover": "PUBLIC",
-  announcement: "PUBLIC",
-  "community-cover": "PUBLIC",
-  "tier-cover": "PUBLIC",
-  gallery: "MEMBERS",
-  "space-video": "MEMBERS",
-  "course-video": "MEMBERS",
-  "podcast-cover": "PUBLIC",
-  "podcast-audio": "MEMBERS",
-  "ad-media": "PUBLIC",
-  "studio-image": "PUBLIC",
-  // Direct uploads into the media library (creator storage).
-  library: "PUBLIC",
-};
+// Local-development fallback only. Production media takes the signed direct
+// path and therefore never enters Next.js request memory.
+const MAX_BUFFERED_BODY = 10 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const t = await getTranslations("uiMigration.dashboard");
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const form = await req.formData();
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      { error: t("uploadFailed"), directUploadRequired: true },
+      { status: 410, headers: { "Cache-Control": "no-store" } },
+    );
+  }
+  const contentLength = Number(req.headers.get("content-length"));
+  if (
+    !Number.isSafeInteger(contentLength) ||
+    contentLength <= 0 ||
+    contentLength > MAX_BUFFERED_BODY
+  ) {
+    return NextResponse.json({ error: t("uploadFailed") }, { status: 413 });
+  }
+
+  const form = await req.formData().catch(() => null);
+  if (!form) return NextResponse.json({ error: t("uploadFailed") }, { status: 400 });
   const slug = String(form.get("tenant") || "");
   const purpose = String(form.get("purpose") || "avatar");
   const file = form.get("file");
-
   if (!(file instanceof File)) {
     return NextResponse.json({ error: t("noFile") }, { status: 400 });
   }
 
-  const visibility = PURPOSE_VISIBILITY[purpose];
-  if (!visibility) {
-    return NextResponse.json({ error: t("invalidUploadPurpose") }, { status: 400 });
-  }
-
-  const isImage = isAllowedImage(file.type);
-  const isVideo = isAllowedVideo(file.type);
-  const isAudio = isAllowedAudio(file.type);
-  if (!isImage && !isVideo && !isAudio) {
-    return NextResponse.json(
-      { error: t("unsupportedMedia") },
-      { status: 400 },
-    );
-  }
-  const max = isVideo ? MAX_VIDEO : isAudio ? MAX_AUDIO : MAX_IMAGE;
-  if (file.size > max) {
-    return NextResponse.json(
-      {
-        error: isVideo
-          ? t("videoTooLarge")
-          : isAudio
-            ? t("audioTooLarge")
-            : t("imageTooLarge"),
-      },
-      { status: 400 },
-    );
-  }
-
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
-  if (!tenant) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+  const declaration = validateUploadDeclaration({
+    purpose,
+    contentType: file.type,
+    sizeBytes: file.size,
   });
-  // Own avatar: any active member may upload. Everything else is admin-only.
-  const memberAllowed =
-    purpose === "avatar" && membership?.status === "ACTIVE";
-  if (!memberAllowed && (!membership || !roleAtLeast(membership.role, "ADMIN"))) {
-    return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-  }
-
-  // Plan storage quota — every upload counts against the tenant's bucket space.
-  const quota = await storageAllows(tenant.id, file.size);
-  if (!quota.ok) {
+  if (!declaration.ok) {
     return NextResponse.json(
       {
-        error: `Speicher voll: ${formatStorage(quota.usedBytes)} von ${formatStorage(quota.limitBytes)} belegt. Lösche Medien oder upgrade dein Paket.`,
-        storageFull: true,
+        error:
+          declaration.error === "purpose"
+            ? t("invalidUploadPurpose")
+            : declaration.error === "type"
+              ? t("unsupportedMedia")
+              : t("uploadFailed"),
       },
+      { status: 400 },
+    );
+  }
+  const access = await authorizeUpload(user, slug, purpose);
+  if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+  const bytes = Buffer.from(await file.arrayBuffer());
+  if (!magicBytesMatch(file.type, bytes.subarray(0, 4096))) {
+    return NextResponse.json({ error: t("unsupportedMedia") }, { status: 400 });
+  }
+  const checksumSha256 = createHash("sha256").update(bytes).digest("base64");
+  const reserved = await reserveStorageUpload({
+    tenantId: access.tenant.id,
+    ownerId: user.id,
+    purpose,
+    contentType: file.type,
+    sizeBytes: file.size,
+    checksumSha256,
+    visibility: declaration.policy.visibility,
+  });
+  if (!reserved.ok) {
+    return NextResponse.json(
+      { error: t("uploadFailed"), storageFull: true },
       { status: 413 },
     );
   }
 
-  const bytes = Buffer.from(await file.arrayBuffer());
-  const key = `tenants/${tenant.id}/${purpose}/${randomUUID()}.${extensionFor(file.type)}`;
-
-  let url: string;
   try {
-    url = await uploadObject({ key, body: bytes, contentType: file.type });
-  } catch (e) {
-    return NextResponse.json(
-      { error: `Upload fehlgeschlagen: ${(e as Error).message}` },
-      { status: 500 },
-    );
-  }
-
-  await prisma.storageObject.create({
-    data: {
-      tenantId: tenant.id,
-      ownerId: user.id,
-      key,
-      url,
-      purpose,
+    const uploadedUrl = await uploadObject({
+      key: reserved.reservation.key,
+      body: bytes,
       contentType: file.type,
-      sizeBytes: file.size,
-      visibility,
-    },
-  });
-
-  return NextResponse.json({ url });
+    });
+    const completed = await completeStorageReservation({
+      tenantId: access.tenant.id,
+      ownerId: user.id,
+      reservationId: reserved.reservation.id,
+      urlOverride: uploadedUrl,
+    });
+    if (!completed) throw new Error("Reservation could not be completed");
+    return NextResponse.json(completed);
+  } catch (error) {
+    await failStorageReservation({
+      tenantId: access.tenant.id,
+      reservationId: reserved.reservation.id,
+      key: reserved.reservation.key,
+    });
+    console.error("Buffered development upload failed:", error);
+    return NextResponse.json({ error: t("uploadFailed") }, { status: 500 });
+  }
 }

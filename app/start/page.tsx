@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { requireUser } from "@/lib/guards";
 import { env } from "@/lib/env";
+import { creatorPlanStartPath, parsePlanKey } from "@/lib/credit-plans";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -9,12 +10,19 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-export default async function StartPage() {
-  const user = await requireUser("/start");
+export default async function StartPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ plan?: string }>;
+}) {
+  const { plan: rawPlan } = await searchParams;
+  const selectedPlan = parsePlanKey(rawPlan) ?? "FREE";
+  const user = await requireUser(creatorPlanStartPath(selectedPlan));
   return (
     <OnboardingWizard
       rootDomain={env.ROOT_DOMAIN}
       user={{ name: user.name, avatarUrl: user.avatarUrl }}
+      selectedPlan={selectedPlan}
     />
   );
 }

@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { Avatar } from "@/components/ui/misc";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
 import { startDirectAction, createChatGroupAction } from "@/app/actions/chat";
@@ -292,6 +293,8 @@ function ModalShell({
   children: React.ReactNode;
 }) {
   const t = useTranslations("uiMigration.frontend.chatHub");
+  const titleId = useId();
+  const dialogRef = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
   return (
     <div
       className={cn(
@@ -301,6 +304,11 @@ function ModalShell({
     >
       <div className="absolute inset-0 bg-[#161613]/40" onClick={onClose} />
       <div
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={titleId}
+        tabIndex={-1}
         className={cn(
           "relative z-10 flex flex-col overflow-hidden bg-white",
           fullscreen
@@ -309,8 +317,9 @@ function ModalShell({
         )}
       >
         <div className="flex items-center justify-between border-b border-[#161613]/10 px-5 py-4">
-          <h2 className="display-serif text-xl text-[#161613]">{title}</h2>
+          <h2 id={titleId} className="display-serif text-xl text-[#161613]">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
             className="flex h-8 w-8 items-center justify-center rounded-full text-[#161613]/60 transition hover:bg-[#161613]/5"
             aria-label={t("close")}

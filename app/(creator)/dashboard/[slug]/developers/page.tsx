@@ -20,7 +20,7 @@ export default async function DevelopersPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant } = await requireTenantAdmin(slug, "OWNER");
   const t = await getTranslations("dashboard.developers");
 
   const [keysRaw, endpointsRaw] = await Promise.all([
@@ -31,7 +31,11 @@ export default async function DevelopersPage({
     prisma.webhookEndpoint.findMany({
       where: { tenantId: tenant.id },
       orderBy: { createdAt: "desc" },
-      include: {
+      select: {
+        id: true,
+        url: true,
+        events: true,
+        isActive: true,
         deliveries: { orderBy: { createdAt: "desc" }, take: 5 },
       },
     }),
@@ -49,7 +53,6 @@ export default async function DevelopersPage({
   const endpoints: EndpointRow[] = endpointsRaw.map((ep) => ({
     id: ep.id,
     url: ep.url,
-    secret: ep.secret,
     events: ep.events,
     isActive: ep.isActive,
     deliveries: ep.deliveries.map((d) => ({

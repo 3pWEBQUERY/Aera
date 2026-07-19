@@ -38,6 +38,6 @@ export default async function ProductsPage({
   }));
 
   return (
-    <ProductsManager slug={slug} products={products} stripeReady={features.stripe} />
+    <ProductsManager slug={slug} products={products} stripeReady={features.marketplacePayments} />
   );
 }

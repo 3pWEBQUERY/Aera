@@ -1,30 +1,29 @@
-import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import { env } from "@/lib/env";
 import { publishDueScheduledPosts } from "@/lib/scheduled-posts";
+import {
+  authorizeCronRequest,
+  cronMethodNotAllowed,
+} from "@/lib/cron-auth";
+import { runCronRoute } from "@/lib/cron-monitor";
 
 /**
- * GET /api/cron/posts?secret=<CRON_SECRET>
- * Run every minute. Flips scheduled posts to published once their time arrives.
+ * POST /api/cron/posts with Authorization: Bearer <CRON_SECRET>.
+ * Run every five minutes. Flips scheduled posts to published once their time arrives.
  */
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
-  if (!env.CRON_SECRET) {
-    return NextResponse.json({ error: "cron-disabled" }, { status: 503 });
-  }
-  const url = new URL(req.url);
-  const provided =
-    url.searchParams.get("secret") ??
-    (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (provided !== env.CRON_SECRET) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+export async function POST(req: Request) {
+  const denied = authorizeCronRequest(req);
+  if (denied) return denied;
 
-  const result = await publishDueScheduledPosts(200);
-  for (const ref of result.refs) {
-    revalidatePath(`/c/${ref.tenantSlug}/s/${ref.spaceSlug}`);
-    revalidatePath(`/c/${ref.tenantSlug}`);
-  }
-  return NextResponse.json({ ok: true, published: result.published });
+  return runCronRoute("posts", async () => {
+    const result = await publishDueScheduledPosts(200);
+    for (const ref of result.refs) {
+      revalidatePath(`/c/${ref.tenantSlug}/s/${ref.spaceSlug}`);
+      revalidatePath(`/c/${ref.tenantSlug}`);
+    }
+    return { published: result.published };
+  });
 }
+
+export const GET = cronMethodNotAllowed;

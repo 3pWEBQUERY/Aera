@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useId, useState } from "react";
 import { useTranslations } from "next-intl";
 import {
   createSpaceAction,
@@ -14,6 +14,7 @@ import { Icon, type IconName } from "./icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 
 export interface SpaceRowData {
   id: string;
@@ -248,6 +249,13 @@ function SpaceForm({
   const [visibility, setVisibility] = useState(space?.visibility ?? "MEMBERS");
   const [deleting, setDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const confirmTitleId = useId();
+  const confirmRef = useModalAccessibility<HTMLDivElement>({
+    open: confirmOpen,
+    onClose: () => {
+      if (!deleting) setConfirmOpen(false);
+    },
+  });
 
   useEffect(() => {
     if (state.ok) onDone();
@@ -296,6 +304,7 @@ function SpaceForm({
                     key={ty.value}
                     type="button"
                     onClick={() => setType(ty.value)}
+                    aria-pressed={sel}
                     className={cn(
                       "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
@@ -324,6 +333,7 @@ function SpaceForm({
                     key={v.value}
                     type="button"
                     onClick={() => setVisibility(v.value)}
+                    aria-pressed={sel}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
@@ -401,13 +411,20 @@ function SpaceForm({
               if (!deleting) setConfirmOpen(false);
             }}
           />
-          <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+          <div
+            ref={confirmRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={confirmTitleId}
+            tabIndex={-1}
+            className="relative z-10 w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
+          >
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-red-50 text-red-600">
                 <Icon name="trash" size={18} />
               </span>
               <div className="min-w-0">
-                <h3 className="text-base font-bold text-slate-900">{t("spaces.deleteConfirmTitle")}</h3>
+                <h3 id={confirmTitleId} className="text-base font-bold text-slate-900">{t("spaces.deleteConfirmTitle")}</h3>
                 <p className="mt-1 text-sm text-slate-500">
                   {t("spaces.deleteConfirmText", { name: space.name })}
                 </p>

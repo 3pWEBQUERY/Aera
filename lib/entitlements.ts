@@ -54,12 +54,13 @@ export async function buildAccessContext(
   });
   const keys = await entitlementKeys(tenantId, userId);
   const role = membership?.role ?? null;
+  const activeMembership = membership?.status === "ACTIVE";
   return {
     userId,
     membership,
     role,
     keys,
-    isStaff: role ? roleAtLeast(role, "MODERATOR") : false,
+    isStaff: Boolean(activeMembership && role && roleAtLeast(role, "MODERATOR")),
     hasPaidEntitlement: await hasPaidKey(tenantId, keys),
   };
 }

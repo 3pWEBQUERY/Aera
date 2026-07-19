@@ -5,9 +5,6 @@ export const metadata = {
   description: "Widerrufsbelehrung für Verbraucher bei Aera.so.",
 };
 
-/**
- * Vorlage — vor dem Launch juristisch prüfen lassen und Platzhalter ersetzen.
- */
 export default function WiderrufPage() {
   return (
     <LegalShell
@@ -20,7 +17,7 @@ export default function WiderrufPage() {
         <p className="mt-3">
           Verbrauchern mit gewöhnlichem Aufenthalt in der EU oder im EWR
           steht nach dortigem zwingendem Verbraucherrecht das folgende
-          Widerrufsrecht zu; wir räumen es freiwillig allen Verbrauchern ein.
+          Widerrufsrecht zu, soweit keine gesetzliche Ausnahme greift.
           Verbraucher ist jede natürliche Person, die ein Rechtsgeschäft zu
           Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch
           ihrer selbständigen beruflichen Tätigkeit zugerechnet werden können.
@@ -28,10 +25,12 @@ export default function WiderrufPage() {
         <p className="mt-3">
           Sie haben das Recht, binnen vierzehn Tagen ohne Angabe von Gründen
           diesen Vertrag zu widerrufen. Die Widerrufsfrist beträgt vierzehn
-          Tage ab dem Tag des Vertragsabschlusses.
+          Tage. Bei Dienstleistungen beginnt die Frist mit dem
+          Vertragsabschluss; bei Waren grundsätzlich mit dem Erhalt der Ware.
         </p>
         <p className="mt-3">
-          Um Ihr Widerrufsrecht auszuüben, müssen Sie uns —
+          Für Verträge, die unmittelbar mit Aera.so abgeschlossen wurden,
+          müssen Sie uns zur Ausübung des Widerrufsrechts —
         </p>
         <p className="mt-3">
           Alexander Sulschani, Aera.so, Schaffhauserstrasse 6, 8180 Bülach,
@@ -123,6 +122,12 @@ export default function WiderrufPage() {
           Richten Sie Ihren Widerruf in diesem Fall an den Creator; wir
           unterstützen auf Wunsch bei der Kontaktaufnahme unter{" "}
           <a href="mailto:contact@aera.so">contact@aera.so</a>.
+        </p>
+        <p className="mt-3">
+          Für Waren, Dienstleistungen oder digitale Inhalte eines Creators
+          können je nach Angebot unterschiedliche Fristbeginne, Rücksendewege
+          und gesetzliche Ausnahmen gelten. Maßgeblich sind die vor dem Kauf
+          angezeigten Anbieter- und Vertragsinformationen des Creators.
         </p>
       </section>
     </LegalShell>

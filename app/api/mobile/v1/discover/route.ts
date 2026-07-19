@@ -23,7 +23,7 @@ async function categoriesInUse(): Promise<Map<string, number>> {
     const rows = await prisma.tenant.groupBy({
       by: ["category"],
       _count: { _all: true },
-      where: { category: { not: null } },
+      where: { category: { not: null }, status: "ACTIVE" },
     });
     const map = new Map<string, number>();
     for (const r of rows) {
@@ -43,25 +43,33 @@ export async function GET(req: Request) {
 
   const [popularRows, newestRows, myMemberships, ownedCount] = await Promise.all([
     prisma.tenant.findMany({
+      where: { status: "ACTIVE" },
       include: { _count: { select: { memberships: true } } },
       orderBy: { memberships: { _count: "desc" } },
       take: 12,
     }),
     prisma.tenant.findMany({
+      where: { status: "ACTIVE" },
       include: { _count: { select: { memberships: true } } },
       orderBy: { createdAt: "desc" },
       take: 12,
     }),
     user
       ? prisma.membership.findMany({
-          where: { userId: user.id, status: "ACTIVE" },
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            tenant: { status: "ACTIVE" },
+          },
           orderBy: { joinedAt: "asc" },
           include: { tenant: { include: { _count: { select: { memberships: true } } } } },
         })
       : Promise.resolve([]),
     // Besitzt der Nutzer bereits eine Community? (Creator-CTA in der App
     // ausblenden.) Ohne Token immer false.
-    user ? prisma.tenant.count({ where: { ownerId: user.id } }) : Promise.resolve(0),
+    user
+      ? prisma.tenant.count({ where: { ownerId: user.id, status: "ACTIVE" } })
+      : Promise.resolve(0),
   ]);
 
   const myTenants = myMemberships.map((m) => m.tenant as TenantWithCount);
@@ -73,7 +81,7 @@ export async function GET(req: Request) {
   const catRows = await Promise.all(
     usedCats.map((c) =>
       prisma.tenant.findMany({
-        where: { category: c.key },
+        where: { category: c.key, status: "ACTIVE" },
         include: { _count: { select: { memberships: true } } },
         orderBy: { memberships: { _count: "desc" } },
         take: 12,

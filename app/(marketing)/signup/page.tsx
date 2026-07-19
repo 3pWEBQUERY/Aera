@@ -18,10 +18,14 @@ export default async function SignupPage({
 }) {
   const { next } = await searchParams;
   const user = await getCurrentUser();
-  if (user) redirect(next && next.startsWith("/") ? next : "/home");
+  const safeNext =
+    next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
+      ? next
+      : "/home";
+  if (user) redirect(safeNext);
   const t = await getTranslations("authPages");
 
-  const creatorIntent = next === "/start";
+  const creatorIntent = next === "/start" || next?.startsWith("/start?");
 
   return (
     <main

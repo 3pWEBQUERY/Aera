@@ -9,6 +9,7 @@ vi.mock("@/lib/prisma", async () => {
     default: prisma,
     prisma,
     withTenantTransaction: (fn: (tx: unknown) => unknown) => fn(prisma),
+    withTenantTransactionFor: (_tenantId: string, fn: (tx: unknown) => unknown) => fn(prisma),
   };
 });
 
@@ -19,8 +20,11 @@ import {
   consumeCredits,
   getOrCreateWallet,
   walletBalance,
+  activatePaidCreatorPlan,
   grantPaidCreditPack,
+  refillCreatorPlanFromPaidInvoice,
   refundPaidCreditPack,
+  updateCreatorSubscription,
 } from "@/lib/credits";
 
 function wallet(overrides: Record<string, unknown> = {}) {
@@ -68,9 +72,11 @@ describe("getOrCreateWallet", () => {
     expect(w.id).toBe("w1");
   });
 
-  it("resets the monthly allowance when the period has ended", async () => {
+  it("resets the FREE monthly allowance when the period has ended", async () => {
     const past = new Date(Date.now() - 40 * 86_400_000);
     const stale = wallet({
+      plan: "FREE",
+      monthlyCredits: 500,
       includedRemaining: 3,
       periodStart: new Date(past.getTime() - 30 * 86_400_000),
       periodEnd: past,
@@ -81,15 +87,35 @@ describe("getOrCreateWallet", () => {
       .mockResolvedValueOnce(stale)
       .mockResolvedValueOnce({
         ...stale,
-        includedRemaining: 2500,
+        includedRemaining: 500,
         periodStart: past,
         periodEnd: new Date(Date.now() + 20 * 86_400_000),
       });
 
     const w = await getOrCreateWallet("t1");
     // Allowance refilled, period rolled past "now".
-    expect(w.includedRemaining).toBe(2500);
+    expect(w.includedRemaining).toBe(500);
     expect((w.periodEnd as Date).getTime()).toBeGreaterThan(Date.now());
+  });
+
+  it("freezes an expired paid allowance instead of refilling it by calendar", async () => {
+    const stale = wallet({
+      plan: "PRO",
+      includedRemaining: 900,
+      stripeSubscriptionId: "sub_paid",
+      periodEnd: new Date(Date.now() - 1000),
+    });
+    prisma.aiCreditWallet.findUnique
+      .mockResolvedValueOnce(stale)
+      .mockResolvedValueOnce({ ...stale, includedRemaining: 0 });
+    prisma.aiCreditWallet.updateMany.mockResolvedValue({ count: 1 });
+
+    const result = await getOrCreateWallet("t1");
+
+    expect(result.includedRemaining).toBe(0);
+    expect(prisma.aiCreditWallet.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({ data: { includedRemaining: 0 } }),
+    );
   });
 
   it("does not touch a wallet inside its current period", async () => {
@@ -265,6 +291,160 @@ describe("refundPaidCreditPack", () => {
 
     expect(result).toEqual({ removedCredits: 750 });
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("creator plan invoice lifecycle", () => {
+  it("associates Checkout with the subscription but waits for invoice.paid", async () => {
+    prisma.aiCreditWallet.findUnique
+      .mockResolvedValueOnce(
+        wallet({
+          plan: "FREE",
+          stripeSubscriptionId: null,
+          lastPaidStripeInvoiceId: null,
+          creatorSubscriptionStatus: null,
+        }),
+      )
+      .mockResolvedValueOnce(null);
+    prisma.aiCreditWallet.updateMany.mockResolvedValueOnce({ count: 1 });
+
+    const result = await activatePaidCreatorPlan({
+      tenantId: "t1",
+      plan: "PRO",
+      stripeSubscriptionId: "sub_creator",
+      stripeCustomerId: "cus_creator",
+    });
+
+    expect(result.ok).toBe(true);
+    expect(prisma.aiCreditWallet.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          stripeSubscriptionId: null,
+          lastPaidStripeInvoiceId: null,
+        }),
+        data: expect.objectContaining({
+          includedRemaining: 0,
+          creatorSubscriptionStatus: "INCOMPLETE",
+          stripeSubscriptionId: "sub_creator",
+        }),
+      }),
+    );
+  });
+
+  it("does not overwrite a paid refill when invoice.paid wins the Checkout race", async () => {
+    prisma.aiCreditWallet.findUnique
+      .mockResolvedValueOnce(
+        wallet({
+          plan: "FREE",
+          stripeSubscriptionId: null,
+          lastPaidStripeInvoiceId: null,
+          creatorSubscriptionStatus: null,
+        }),
+      )
+      .mockResolvedValueOnce(null);
+    // The compare-and-set misses because invoice.paid associated the
+    // subscription and stored its paid invoice after the reads above.
+    prisma.aiCreditWallet.updateMany.mockResolvedValueOnce({ count: 0 });
+
+    const result = await activatePaidCreatorPlan({
+      tenantId: "t1",
+      plan: "PRO",
+      stripeSubscriptionId: "sub_creator",
+      stripeCustomerId: "cus_creator",
+    });
+
+    expect(result).toEqual({ ok: true, duplicate: true });
+    expect(prisma.aiCreditWallet.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          id: "w1",
+          stripeSubscriptionId: null,
+          lastPaidStripeInvoiceId: null,
+          OR: [
+            { creatorSubscriptionStatus: null },
+            { creatorSubscriptionStatus: { not: "ACTIVE" } },
+          ],
+        }),
+      }),
+    );
+    expect(prisma.aiCreditWallet.update).not.toHaveBeenCalled();
+  });
+
+  it("atomically refills a paid period once per Stripe invoice", async () => {
+    prisma.aiCreditWallet.findUnique.mockResolvedValue(
+      wallet({
+        plan: "PRO",
+        stripeSubscriptionId: "sub_creator",
+        lastPaidStripeInvoiceId: "in_previous",
+      }),
+    );
+    prisma.aiCreditWallet.updateMany.mockResolvedValueOnce({ count: 1 });
+    const periodStart = new Date("2026-08-01T00:00:00.000Z");
+    const periodEnd = new Date("2026-09-01T00:00:00.000Z");
+
+    const result = await refillCreatorPlanFromPaidInvoice({
+      tenantId: "t1",
+      plan: "PRO",
+      stripeSubscriptionId: "sub_creator",
+      stripeInvoiceId: "in_renewal",
+      stripeCustomerId: "cus_creator",
+      periodStart,
+      periodEnd,
+    });
+
+    expect(result).toEqual({ ok: true, refilled: true });
+    expect(prisma.aiCreditWallet.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          includedRemaining: 12000,
+          lastPaidStripeInvoiceId: "in_renewal",
+          creatorSubscriptionStatus: "ACTIVE",
+          periodStart,
+          periodEnd,
+        }),
+      }),
+    );
+  });
+
+  it("treats the same or an older paid invoice as a no-op", async () => {
+    prisma.aiCreditWallet.findUnique.mockResolvedValue(
+      wallet({
+        plan: "PRO",
+        stripeSubscriptionId: "sub_creator",
+        lastPaidStripeInvoiceId: "in_renewal",
+      }),
+    );
+    prisma.aiCreditWallet.updateMany.mockResolvedValueOnce({ count: 0 });
+
+    const result = await refillCreatorPlanFromPaidInvoice({
+      tenantId: "t1",
+      plan: "PRO",
+      stripeSubscriptionId: "sub_creator",
+      stripeInvoiceId: "in_renewal",
+      periodStart: new Date("2026-08-01T00:00:00.000Z"),
+      periodEnd: new Date("2026-09-01T00:00:00.000Z"),
+    });
+
+    expect(result).toEqual({ ok: true, refilled: false });
+  });
+
+  it("freezes included credits when Stripe marks the creator plan past due", async () => {
+    prisma.aiCreditWallet.updateMany.mockResolvedValue({ count: 1 });
+
+    await updateCreatorSubscription({
+      tenantId: "t1",
+      stripeSubscriptionId: "sub_creator",
+      status: "PAST_DUE",
+    });
+
+    expect(prisma.aiCreditWallet.updateMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        data: expect.objectContaining({
+          creatorSubscriptionStatus: "PAST_DUE",
+          includedRemaining: 0,
+        }),
+      }),
+    );
   });
 });
 

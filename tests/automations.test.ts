@@ -19,6 +19,14 @@ vi.mock("@/lib/email", () => ({
   sendEmail: mocks.sendEmail,
   renderCampaignHtml: (args: { body: string }) => `<html>${args.body}</html>`,
 }));
+vi.mock("@/lib/marketing-consent", () => ({
+  appendUnsubscribeFooter: (html: string) => `${html}<p>unsubscribe</p>`,
+  newsletterUnsubscribeUrls: () => ({
+    apiUrl: "http://localhost:3000/api/newsletter/unsubscribe/token",
+    pageUrl: "http://localhost:3000/unsubscribe/token",
+  }),
+  isNewsletterRecipientEligible: vi.fn(async () => true),
+}));
 
 import prismaModule from "@/lib/prisma";
 const prisma = prismaModule as unknown as PrismaMock;
@@ -42,8 +50,8 @@ function step(overrides: Record<string, unknown> = {}) {
 
 function member(userId: string, joinedDaysAgo: number) {
   return {
-    userId,
-    joinedAt: new Date(Date.now() - joinedDaysAgo * DAY),
+    email: `${userId}@example.com`,
+    optedInAt: new Date(Date.now() - joinedDaysAgo * DAY),
     user: { id: userId, name: "Anna", email: `${userId}@example.com` },
   };
 }
@@ -65,7 +73,7 @@ function mockRun(args: {
       args.claimed === false ? [] : [{ delivery_id: "d1", tenant_id: "t1" }],
     );
   prisma.automationStep.findUnique.mockResolvedValue(step());
-  prisma.membership.findMany.mockResolvedValue(args.memberships ?? [member("u1", 5)]);
+  prisma.newsletterConsent.findMany.mockResolvedValue(args.memberships ?? [member("u1", 5)]);
   prisma.automationDelivery.findUnique.mockResolvedValue({
     id: "d1",
     tenantId: "t1",
@@ -77,6 +85,7 @@ function mockRun(args: {
     status: "PROCESSING",
     attempts: 0,
     nextAttemptAt: new Date(),
+    unsubscribeUrl: "http://localhost:3000/api/newsletter/unsubscribe/token",
     ...args.delivery,
   });
 }
@@ -119,7 +128,7 @@ describe("runAutomations", () => {
       }),
     );
     // Nur verifizierte Adressen werden überhaupt selektiert.
-    expect(prisma.membership.findMany).toHaveBeenCalledWith(
+    expect(prisma.newsletterConsent.findMany).toHaveBeenCalledWith(
       expect.objectContaining({
         where: expect.objectContaining({
           user: expect.objectContaining({
@@ -127,7 +136,7 @@ describe("runAutomations", () => {
             automationDeliveries: { none: { stepId: "s1" } },
           }),
         }),
-        orderBy: { joinedAt: "asc" },
+        orderBy: [{ optedInAt: "asc" }, { id: "asc" }],
       }),
     );
   });
@@ -160,7 +169,7 @@ describe("runAutomations", () => {
     const result = await runAutomations();
     expect(result.sent).toBe(0);
     expect(result.tenants).toBe(0);
-    expect(prisma.membership.findMany).not.toHaveBeenCalled();
+    expect(prisma.newsletterConsent.findMany).not.toHaveBeenCalled();
   });
 
   it("persists a failed send for a later retry", async () => {

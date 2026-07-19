@@ -40,7 +40,11 @@ export async function GET(req: Request) {
   // Eigene aktive Mitgliedschaften: isMember-Flag + Tenant-Filter für tab=members.
   const myMemberships = user
     ? await prisma.membership.findMany({
-        where: { userId: user.id, status: "ACTIVE" },
+        where: {
+          userId: user.id,
+          status: "ACTIVE",
+          tenant: { status: "ACTIVE" },
+        },
         select: { tenantId: true },
       })
     : [];
@@ -71,6 +75,7 @@ export async function GET(req: Request) {
     where: {
       isPublished: true,
       publishedAt: { lte: now },
+      tenant: { status: "ACTIVE" },
       space: { type: { in: FEED_SPACE_TYPES }, isArchived: false },
       ...(tab === "members" ? { tenantId: { in: [...myTenantIds] } } : {}),
       ...cursorFilter,
@@ -111,7 +116,7 @@ export async function GET(req: Request) {
       tenantIds.length
         ? prisma.membership.groupBy({
             by: ["tenantId"],
-            where: { tenantId: { in: tenantIds } },
+            where: { tenantId: { in: tenantIds }, status: "ACTIVE" },
             _count: true,
           })
         : Promise.resolve([]),
@@ -119,7 +124,11 @@ export async function GET(req: Request) {
       // roleMapFor je Tenant); Zuordnung danach tenant-spezifisch.
       authorIds.length
         ? prisma.membership.findMany({
-            where: { tenantId: { in: tenantIds }, userId: { in: authorIds } },
+            where: {
+              tenantId: { in: tenantIds },
+              userId: { in: authorIds },
+              status: "ACTIVE",
+            },
             select: { tenantId: true, userId: true, role: true },
           })
         : Promise.resolve([]),

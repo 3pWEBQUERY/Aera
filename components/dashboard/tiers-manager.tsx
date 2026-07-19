@@ -176,6 +176,7 @@ function TierForm({
   );
   const [interval, setInterval] = useState(tier?.interval ?? "FREE");
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
 
   useEffect(() => {
     if (state.ok) onDone();
@@ -185,10 +186,16 @@ function TierForm({
     if (!tier) return;
     if (!confirm(t("confirmDelete", { name: tier.name }))) return;
     setDeleting(true);
+    setDeleteError(undefined);
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("tierId", tier.id);
-    await deleteTierAction(fd);
+    const result = await deleteTierAction(fd);
+    if (result.error) {
+      setDeleteError(result.error);
+      setDeleting(false);
+      return;
+    }
     onDone();
   }
 
@@ -201,7 +208,7 @@ function TierForm({
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-7 px-6 py-10">
-          <FormError message={state.error} />
+          <FormError message={deleteError ?? state.error} />
 
           <div>
             <Label htmlFor="tf-name">{t("nameLabel")}</Label>

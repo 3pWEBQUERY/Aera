@@ -1,0 +1,11 @@
+.git
+.github
+.next
+.next-qa
+node_modules
+backups
+private
+Aera-visitor-member-iOS-App
+.env
+.env.*
+*.log

@@ -91,6 +91,28 @@ export const PLANS: Record<PlanKey, PlanInfo> = {
 
 export const PLAN_ORDER: PlanKey[] = ["FREE", "STARTER", "PRO", "SCALE"];
 
+/**
+ * Parse the public plan intent. Only catalog keys are accepted; Stripe Price
+ * IDs and arbitrary client values never cross this boundary.
+ */
+export function parsePlanKey(value: unknown): PlanKey | null {
+  if (typeof value !== "string") return null;
+  const normalized = value.trim().toUpperCase();
+  return PLAN_ORDER.includes(normalized as PlanKey)
+    ? (normalized as PlanKey)
+    : null;
+}
+
+/** Internal route carried through signup/login until creator onboarding. */
+export function creatorPlanStartPath(plan: PlanKey): string {
+  return `/start?plan=${encodeURIComponent(plan)}`;
+}
+
+/** Public pricing CTA. `next` is encoded as one same-site redirect value. */
+export function creatorPlanSignupHref(plan: PlanKey): string {
+  return `/signup?next=${encodeURIComponent(creatorPlanStartPath(plan))}`;
+}
+
 // The plan we visually highlight as "Beliebt".
 export const FEATURED_PLAN: PlanKey = "PRO";
 

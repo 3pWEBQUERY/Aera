@@ -42,12 +42,50 @@ async function main() {
       );
     }
 
+    // Direct writes cannot create platform audit rows under the tenant role.
+    await client.query("SAVEPOINT before_forbidden_audit");
+    let directAuditBlocked = false;
+    try {
+      await client.query(
+        `INSERT INTO "AuditLog" (
+           "id", "tenantId", "action", "metadata", "createdAt"
+         ) VALUES ($1, NULL, 'smoke.forbidden', '{}'::jsonb, CURRENT_TIMESTAMP)`,
+        [randomUUID()],
+      );
+    } catch {
+      directAuditBlocked = true;
+      await client.query("ROLLBACK TO SAVEPOINT before_forbidden_audit");
+    }
+    if (!directAuditBlocked) throw new Error("aera_app inserted a platform audit row directly");
+
     const auditId = randomUUID();
+    await client.query("SAVEPOINT before_forbidden_audit_function");
+    let auditFunctionBlocked = false;
+    try {
+      await client.query(
+        `SELECT aera_write_audit($1, NULL, NULL, 'smoke.platform', NULL, NULL, '{}'::jsonb)`,
+        [auditId],
+      );
+    } catch {
+      auditFunctionBlocked = true;
+      await client.query("ROLLBACK TO SAVEPOINT before_forbidden_audit_function");
+    }
+    if (!auditFunctionBlocked) {
+      throw new Error("aera_app executed the privileged audit function");
+    }
+    await client.query("RESET ROLE");
     await client.query(
       `SELECT aera_write_audit($1, NULL, NULL, 'smoke.platform', NULL, NULL, '{}'::jsonb)`,
       [auditId],
     );
-    console.log("✅ Tenant-Abfragen laufen unter aera_app isoliert; globale Audit-Logs funktionieren.");
+    const audit = await client.query<{ tenantId: string | null }>(
+      `SELECT "tenantId" FROM "AuditLog" WHERE "id" = $1`,
+      [auditId],
+    );
+    if (audit.rows.length !== 1 || audit.rows[0].tenantId !== null) {
+      throw new Error("aera_write_audit did not persist the platform audit row");
+    }
+    console.log("✅ Tenant-Abfragen laufen unter aera_app isoliert; Audit-Schreibrechte bleiben privilegiert.");
   } finally {
     await client.query("ROLLBACK");
     await client.end();

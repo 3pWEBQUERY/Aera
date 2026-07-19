@@ -37,7 +37,7 @@ export default async function AutomationsPage({
     deliveryCount: s._count.deliveries,
   }));
 
-  const cronReady = Boolean(env.CRON_SECRET);
+  const cronReady = env.CRON_SECRET.length >= 32;
 
   return (
     <div>

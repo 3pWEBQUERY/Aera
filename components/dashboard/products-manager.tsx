@@ -219,6 +219,7 @@ function ProductForm({
     product && product.shippingCents > 0 ? (product.shippingCents / 100).toString() : "",
   );
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
 
   useEffect(() => {
     if (state.ok) onDone();
@@ -233,10 +234,16 @@ function ProductForm({
     if (!product) return;
     if (!confirm(t("confirmDelete", { name: product.name }))) return;
     setDeleting(true);
+    setDeleteError(undefined);
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("productId", product.id);
-    await deleteProductAction(fd);
+    const result = await deleteProductAction(fd);
+    if (result.error) {
+      setDeleteError(result.error);
+      setDeleting(false);
+      return;
+    }
     onDone();
   }
 
@@ -251,7 +258,7 @@ function ProductForm({
 
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-7 px-6 py-10">
-          <FormError message={state.error} />
+          <FormError message={deleteError ?? state.error} />
 
           <div>
             <Label>{t("imagesLabel")}</Label>

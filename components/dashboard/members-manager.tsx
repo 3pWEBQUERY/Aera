@@ -382,6 +382,7 @@ function EditForm({
 }) {
   const [state, action, pending] = useActionState(updateMemberAction, initial);
   const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("dashboard.members");
   const tRoles = useTranslations("dashboard.roles");
   const tStatus = useTranslations("dashboard.memberStatus");
@@ -392,10 +393,16 @@ function EditForm({
   async function onDelete() {
     if (!confirm(t("confirmRemove", { name: member.user.name }))) return;
     setDeleting(true);
+    setDeleteError(undefined);
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("membershipId", member.id);
-    await deleteMemberAction(fd);
+    const result = await deleteMemberAction(fd);
+    if (result.error) {
+      setDeleteError(result.error);
+      setDeleting(false);
+      return;
+    }
     onDone();
   }
 
@@ -413,7 +420,7 @@ function EditForm({
             </div>
           </div>
 
-          <FormError message={state.error} />
+          <FormError message={deleteError ?? state.error} />
 
           <div>
             <Label>{t("profilePhoto")}</Label>

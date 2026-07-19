@@ -1,35 +1,30 @@
-import { NextResponse } from "next/server";
-import { env } from "@/lib/env";
 import { runAutomations } from "@/lib/automations";
-import { processPendingWebhookDeliveries } from "@/lib/webhooks";
-import { processPendingNewsletterDeliveries } from "@/lib/newsletter-delivery";
+import {
+  authorizeCronRequest,
+  cronMethodNotAllowed,
+} from "@/lib/cron-auth";
+import { runCronRoute } from "@/lib/cron-monitor";
 
 /**
- * GET /api/cron/automations?secret=<CRON_SECRET>
- * (alternativ Header `Authorization: Bearer <CRON_SECRET>`)
+ * POST /api/cron/automations
+ * Authorization: Bearer <CRON_SECRET>
  *
- * Von einem externen Scheduler (z. B. Railway Cron) stündlich aufrufen.
+ * Von einem externen Scheduler (z. B. Railway Cron) alle fünf Minuten aufrufen.
  * Verarbeitet fällige Onboarding-E-Mails; idempotent.
  */
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
-  if (!env.CRON_SECRET) {
-    return NextResponse.json({ error: "cron-disabled" }, { status: 503 });
-  }
-  const url = new URL(req.url);
-  const provided =
-    url.searchParams.get("secret") ??
-    (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (provided !== env.CRON_SECRET) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+export async function POST(req: Request) {
+  const denied = authorizeCronRequest(req);
+  if (denied) return denied;
 
-  const [result, webhookDeliveries, newsletterDeliveries] = await Promise.all([
-    runAutomations(),
-    processPendingWebhookDeliveries(100),
-    processPendingNewsletterDeliveries(200),
-  ]);
-  return NextResponse.json({ ok: true, ...result, webhookDeliveries, newsletterDeliveries });
+  // Newsletter and webhook delivery have dedicated routes. Keeping them out
+  // of this job prevents duplicate orchestration and makes each heartbeat
+  // accurately describe one responsibility.
+  return runCronRoute("automations", ({ deadlineAt }) =>
+    runAutomations({ deadlineAt }),
+  );
 }
+
+export const GET = cronMethodNotAllowed;

@@ -31,7 +31,7 @@ async function main() {
          "status", "nextAttemptAt", "createdAt", "updatedAt"
        ) VALUES ($1, $2, $3, $4, 'smoke@example.invalid', 'Smoke', '<p>Smoke</p>',
          'PENDING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
-      [deliveryId, row.id, campaignId, randomUUID()],
+      [deliveryId, row.id, campaignId, row.ownerId],
     );
 
     const claimed = await client.query<{ delivery_id: string; tenant_id: string }>(

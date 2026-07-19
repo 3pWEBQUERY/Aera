@@ -19,6 +19,7 @@ import {
   createCommunityAction,
   type CommunityState,
 } from "@/app/actions/community";
+import { PLANS, type PlanKey } from "@/lib/credit-plans";
 
 const initial: CommunityState = {};
 
@@ -34,9 +35,11 @@ function slugify(input: string): string {
 export function OnboardingWizard({
   rootDomain,
   user,
+  selectedPlan,
 }: {
   rootDomain: string;
   user: { name: string; avatarUrl: string | null };
+  selectedPlan: PlanKey;
 }) {
   const [state, action, pending] = useActionState(createCommunityAction, initial);
   const t = useTranslations("onboarding");
@@ -79,6 +82,7 @@ export function OnboardingWizard({
   return (
     <form
       action={action}
+      aria-describedby={state.error ? "onboarding-error" : undefined}
       onKeyDown={(e) => {
         if (e.key === "Enter" && step < total && (e.target as HTMLElement).tagName !== "TEXTAREA") {
           e.preventDefault();
@@ -96,6 +100,7 @@ export function OnboardingWizard({
       <input type="hidden" name="visibility" value={access} />
       <input type="hidden" name="membershipName" value={membershipName} />
       <input type="hidden" name="spaces" value={JSON.stringify([...selected])} />
+      <input type="hidden" name="creatorPlan" value={selectedPlan} />
 
       {/* Top bar */}
       <header className="sticky top-0 z-20 border-b border-[#161613]/10 bg-[#f4f1ea]/90 backdrop-blur">
@@ -104,6 +109,9 @@ export function OnboardingWizard({
             <Image src={logoBlack} alt="Aera" priority className="h-7 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
+            <span className="hidden rounded-full border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
+              Aera {PLANS[selectedPlan].name}
+            </span>
             <span className="hidden rounded-full border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
               {t("stepShort", { step, total })}
             </span>
@@ -142,6 +150,7 @@ export function OnboardingWizard({
               return (
                 <li key={key} className="relative flex items-baseline gap-3 py-3 pl-6">
                   <span
+                    aria-current={active ? "step" : undefined}
                     className={cn(
                       "display-serif text-lg leading-none transition",
                       active ? "text-[#161613]" : "text-[#161613]/30",
@@ -263,6 +272,7 @@ export function OnboardingWizard({
                       key={b.type}
                       type="button"
                       onClick={() => toggleSpace(b.type)}
+                      aria-pressed={on}
                       className={cn(
                         "group relative flex flex-col items-start rounded-2xl border bg-white p-5 text-left transition duration-200",
                         on
@@ -363,7 +373,7 @@ export function OnboardingWizard({
                     {access === "MEMBERS" ? t("membersOnlyVisible") : t("publicFindable")}
                   </p>
                 </SummaryRow>
-                <FormError message={state.error} />
+                <FormError id="onboarding-error" message={state.error} />
               </div>
             )}
           </div>
@@ -430,6 +440,7 @@ function ColorRow({
               type="button"
               onClick={() => onChange(c)}
               aria-label={c}
+              aria-pressed={on}
               className={cn(
                 "h-8 w-8 rounded-full ring-offset-2 ring-offset-[#f4f1ea] transition",
                 on ? "ring-2 ring-[#161613]" : "ring-1 ring-[#161613]/10 hover:scale-105",
@@ -443,7 +454,7 @@ function ColorRow({
           title={customLabel}
         >
           <Icon name="plus" size={14} />
-          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} className="absolute inset-0 cursor-pointer opacity-0" />
+          <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={customLabel} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>
       </div>
     </div>
@@ -469,6 +480,7 @@ function AccessCard({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
         "flex flex-col items-start rounded-2xl border bg-white p-5 text-left transition duration-200",
         active ? "" : "border-[#161613]/10 hover:-translate-y-0.5 hover:border-[#161613]/30",

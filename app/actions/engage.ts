@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { setTenantContext, withTenantTransaction } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { env, features } from "@/lib/env";
 import {
@@ -18,15 +18,33 @@ import { emitWebhookEvent } from "@/lib/webhooks";
 import { resolveReferrer, recordReferralJoin } from "@/lib/referrals";
 import { moderateContent } from "@/lib/moderation";
 import { indexContent } from "@/lib/ai";
-import { createMediaCheckout, createMediaItemCheckout, createPostCheckout, createProductCheckout, createTierCheckout, platformFeeCents } from "@/lib/stripe";
+import {
+  createMediaCheckout,
+  createMediaItemCheckout,
+  createPostCheckout,
+  createProductCheckoutSession,
+  createTierCheckout,
+  isDefinitiveStripeRequestError,
+  platformFeeCents,
+  retrieveProductCheckoutSession,
+} from "@/lib/stripe";
+import {
+  attachProductCheckoutSession,
+  ProductOutOfStockError,
+  ProductReservationActiveError,
+  releaseProductOrderReservation,
+  reserveProductOrder,
+} from "@/lib/product-inventory";
 import { writeAudit } from "@/lib/audit";
 import { postSchema, commentSchema, signupSchema } from "@/lib/validation";
 import { registerUser } from "@/lib/auth";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { getErrorTranslator, zodError } from "@/lib/action-errors";
+import { immediatePerformanceConsentFromForm } from "@/lib/legal";
+import { optInToNewsletter } from "@/lib/marketing-consent";
 
 async function tenantBySlug(slug: string) {
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (tenant) setTenantContext(tenant.id);
   return tenant;
 }
@@ -73,7 +91,13 @@ export async function memberSignupAction(
     return { error: zodError(t, parsed) };
   }
 
-  const result = await registerUser(parsed.data);
+  if (fd.get("legalAcceptance") !== "on") {
+    return { error: t("termsRequired") };
+  }
+  const result = await registerUser({
+    ...parsed.data,
+    legalAcceptanceSource: "COMMUNITY_SIGNUP",
+  });
   if (!result.ok) return { error: t(result.error) };
   const user = result.user;
   await writeAudit({
@@ -82,6 +106,14 @@ export async function memberSignupAction(
     action: "user.signup",
     metadata: { via: `community:${slug}` },
   });
+  if (fd.get("newsletterOptIn") === "on") {
+    await optInToNewsletter({
+      tenantId: tenant.id,
+      userId: user.id,
+      email: user.email,
+      source: "COMMUNITY_SIGNUP",
+    });
+  }
 
   // Free default tier — the community decides what new members get.
   const tier =
@@ -151,6 +183,15 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
   const tenant = await tenantBySlug(slug);
   if (!tenant) redirect("/");
 
+  if (fd.get("newsletterOptIn") === "on") {
+    await optInToNewsletter({
+      tenantId: tenant.id,
+      userId: user!.id,
+      email: user!.email,
+      source: "COMMUNITY_JOIN",
+    });
+  }
+
   const existing = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId: user!.id } },
   });
@@ -159,7 +200,10 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
 
   const tier = tierId
     ? await prisma.membershipTier.findFirst({
-        where: { id: tierId, tenantId: tenant.id },
+        // Paid tiers are archived instead of hard-deleted while old Stripe
+        // Sessions may still reference them. They must nevertheless be
+        // impossible to purchase again through a forged form submission.
+        where: { id: tierId, tenantId: tenant.id, isPublic: true },
       })
     : await prisma.membershipTier.findFirst({
         where: { tenantId: tenant.id, isDefault: true },
@@ -172,6 +216,10 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
   }
 
   const paid = tier!.interval !== "FREE" && tier!.priceCents > 0;
+  const legalConsent = paid ? immediatePerformanceConsentFromForm(fd) : null;
+  if (paid && !legalConsent) {
+    redirect(`/c/${slug}/join?error=legal-consent`);
+  }
 
   // Until plan changes are implemented against the existing Stripe
   // subscription, fail closed. Starting another checkout here would create a
@@ -209,6 +257,7 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
         interval: tier!.interval as "MONTH" | "YEAR",
       },
       user: { id: user!.id, email: user!.email },
+      consent: legalConsent ?? undefined,
       successUrl: `${env.APP_URL}/c/${slug}?welcome=1`,
       cancelUrl: `${env.APP_URL}/c/${slug}/join`,
     });
@@ -584,7 +633,8 @@ export async function completeLessonAction(fd: FormData): Promise<void> {
     });
     const { isLessonUnlocked } = await import("@/lib/drip");
     const { roleAtLeast } = await import("@/lib/tenant");
-    const isStaff = membership ? roleAtLeast(membership.role, "MODERATOR") : false;
+    const isStaff =
+      membership?.status === "ACTIVE" && roleAtLeast(membership.role, "MODERATOR");
     if (!isStaff && !isLessonUnlocked(membership?.joinedAt ?? null, lesson.dripAfterDays)) {
       return;
     }
@@ -621,38 +671,128 @@ export async function purchaseProductAction(fd: FormData): Promise<void> {
   });
   if (!product) return;
 
-  // Out of stock guard (physical products with limited inventory).
-  if (product.stock !== null && product.stock <= 0) {
-    redirect(`/c/${slug}?soldout=${product.id}`);
+  const shippingCents = product.requiresShipping && !product.freeShipping ? product.shippingCents : 0;
+  const digitalConsent =
+    product.priceCents > 0 && product.type !== "PHYSICAL"
+      ? immediatePerformanceConsentFromForm(fd)
+      : null;
+  if (product.priceCents > 0 && product.type !== "PHYSICAL" && !digitalConsent) {
+    redirect(`/c/${slug}?error=legal-consent`);
   }
 
-  const shippingCents = product.requiresShipping && !product.freeShipping ? product.shippingCents : 0;
-
   if (features.stripe && product.priceCents > 0) {
-    const url = await createProductCheckout({
-      tenant: {
-        id: tenant.id,
-        name: tenant.name,
-        slug: tenant.slug,
-        platformFeePercent: tenant.platformFeePercent,
-        stripeAccountId: tenant.stripeAccountId,
-      },
-      product: {
-        id: product.id,
-        name: product.name,
-        priceCents: product.priceCents,
-        currency: product.currency,
-        requiresShipping: product.requiresShipping,
-        freeShipping: product.freeShipping,
-        shippingCents: product.shippingCents,
-      },
-      user: { id: user!.id, email: user!.email },
-      successUrl: `${env.APP_URL}/c/${slug}?purchased=${product.id}`,
-      cancelUrl: `${env.APP_URL}/c/${slug}`,
-    });
-    // Checkout creation failed -> never fall through to a free grant.
-    if (!url) redirect(`/c/${slug}?error=checkout`);
-    redirect(url!);
+    // Reserve before Stripe can accept money. A duplicate submit reuses the
+    // same order/idempotency key; it can never reserve a second unit.
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      let reservation: { id: string; expiresAt: Date };
+      let existingStripeSessionId: string | null = null;
+      try {
+        reservation = await reserveProductOrder({
+          tenantId: tenant.id,
+          userId: user!.id,
+          product,
+          platformFeeCents: platformFeeCents(product.priceCents, tenant.platformFeePercent),
+        });
+      } catch (error) {
+        if (error instanceof ProductOutOfStockError) {
+          redirect(`/c/${slug}?soldout=${product.id}`);
+        }
+        if (!(error instanceof ProductReservationActiveError) || !error.expiresAt) {
+          redirect(`/c/${slug}?error=checkout`);
+        }
+        reservation = { id: error.orderId, expiresAt: error.expiresAt };
+        existingStripeSessionId = error.stripeSessionId;
+        // A Session may exist even when the best-effort attachment failed.
+        // Never replay potentially edited product parameters in that case.
+        if (!existingStripeSessionId) redirect(`/c/${slug}?error=checkout`);
+      }
+
+      if (digitalConsent) {
+        await prisma.order.updateMany({
+          where: { id: reservation.id, tenantId: tenant.id, userId: user!.id },
+          data: {
+            immediatePerformanceConsentedAt: digitalConsent.consentedAt,
+            withdrawalLossAcknowledgedAt: digitalConsent.consentedAt,
+            legalTermsVersion: digitalConsent.termsVersion,
+          },
+        });
+      }
+
+      let checkout;
+      try {
+        checkout = existingStripeSessionId
+          ? await retrieveProductCheckoutSession(existingStripeSessionId)
+          : await createProductCheckoutSession({
+              tenant: {
+                id: tenant.id,
+                name: tenant.name,
+                slug: tenant.slug,
+                platformFeePercent: tenant.platformFeePercent,
+                stripeAccountId: tenant.stripeAccountId,
+              },
+              product: {
+                id: product.id,
+                name: product.name,
+                priceCents: product.priceCents,
+                currency: product.currency,
+                requiresShipping: product.requiresShipping,
+                freeShipping: product.freeShipping,
+                shippingCents: product.shippingCents,
+              },
+              user: { id: user!.id, email: user!.email },
+              reservation: { orderId: reservation.id, expiresAt: reservation.expiresAt },
+              consent: digitalConsent ?? undefined,
+              successUrl: `${env.APP_URL}/c/${slug}?purchased=${product.id}`,
+              cancelUrl: `${env.APP_URL}/c/${slug}`,
+            });
+      } catch (error) {
+        // Validation/auth/idempotency errors prove that Session creation did
+        // not succeed. Transport/API timeouts stay reserved because Stripe may
+        // have accepted the request before the connection was lost.
+        const missingExistingSession =
+          existingStripeSessionId &&
+          typeof error === "object" &&
+          error !== null &&
+          "code" in error &&
+          error.code === "resource_missing";
+        if (
+          (!existingStripeSessionId && isDefinitiveStripeRequestError(error)) ||
+          missingExistingSession
+        ) {
+          await releaseProductOrderReservation(
+            reservation.id,
+            new Date(),
+            existingStripeSessionId ?? undefined,
+          );
+        }
+        console.error("Product Checkout Session could not be confirmed:", error);
+        redirect(`/c/${slug}?error=checkout`);
+      }
+
+      if (!checkout) {
+        // No Stripe call was possible (missing config / Connect not ready).
+        await releaseProductOrderReservation(reservation.id);
+        redirect(`/c/${slug}?error=checkout`);
+      }
+      if (checkout.status === "expired") {
+        await releaseProductOrderReservation(reservation.id, new Date(), checkout.id);
+        if (attempt === 0) continue;
+        redirect(`/c/${slug}?error=checkout`);
+      }
+      if (checkout.status === "complete") {
+        redirect(`/c/${slug}?purchased=${product.id}`);
+      }
+      if (!checkout.url) redirect(`/c/${slug}?error=checkout`);
+      try {
+        await attachProductCheckoutSession(reservation.id, checkout.id);
+      } catch (error) {
+        // The Session metadata carries the order id, so the webhook can repair
+        // this association even when this best-effort write fails.
+        console.error("Product Checkout Session could not be attached:", error);
+      }
+      redirect(checkout.url);
+    }
+    redirect(`/c/${slug}?error=checkout`);
   }
 
   // Priced product, but no working payment path -> only dev may grant for free.
@@ -660,29 +800,44 @@ export async function purchaseProductAction(fd: FormData): Promise<void> {
     redirect(`/c/${slug}?error=payments-unavailable`);
   }
 
-  // Free product, or no Stripe (dev only) -> record order and grant immediately.
-  // Atomically claim one unit of inventory first — a plain read-then-write
-  // would let concurrent purchasers oversell the last unit.
-  if (product.stock !== null) {
-    const claimed = await prisma.product.updateMany({
-      where: { id: product.id, tenantId: tenant.id, stock: { gt: 0 } },
-      data: { stock: { decrement: 1 } },
+  // Free product, or no Stripe (dev only): the stock claim and paid order are
+  // one transaction. A failed order insert therefore cannot silently consume
+  // the last unit.
+  const freeOrderCreated = await withTenantTransaction(async (tx) => {
+    const limited = product.stock !== null;
+    const claimed = await tx.product.updateMany({
+      where: {
+        id: product.id,
+        tenantId: tenant.id,
+        isPublished: true,
+        ...(limited ? { stock: { gt: 0 } } : {}),
+      },
+      data: limited
+        ? { stock: { decrement: 1 } }
+        : { isPublished: true },
     });
-    if (claimed.count === 0) redirect(`/c/${slug}?soldout=${product.id}`);
-  }
-  await prisma.order.create({
-    data: {
-      tenantId: tenant.id,
-      userId: user!.id,
-      productId: product.id,
-      description: product.name,
-      amountCents: product.priceCents + shippingCents,
-      currency: product.currency,
-      platformFeeCents: platformFeeCents(product.priceCents, tenant.platformFeePercent),
-      shippingCents,
-      status: "PAID",
-    },
+    if (claimed.count === 0) return false;
+    await tx.order.create({
+      data: {
+        tenantId: tenant.id,
+        userId: user!.id,
+        productId: product.id,
+        description: product.name,
+        amountCents: product.priceCents + shippingCents,
+        currency: product.currency,
+        platformFeeCents: platformFeeCents(product.priceCents, tenant.platformFeePercent),
+        shippingCents,
+        status: "PAID",
+        grantedEntitlementKey: product.grantsEntitlementKey,
+        inventoryReservedAt: product.stock !== null ? new Date() : null,
+        immediatePerformanceConsentedAt: digitalConsent?.consentedAt,
+        withdrawalLossAcknowledgedAt: digitalConsent?.consentedAt,
+        legalTermsVersion: digitalConsent?.termsVersion,
+      },
+    });
+    return true;
   });
+  if (!freeOrderCreated) redirect(`/c/${slug}?soldout=${product.id}`);
   if (product.grantsEntitlementKey) {
     await grantEntitlement({
       tenantId: tenant.id,
@@ -721,6 +876,8 @@ export async function purchaseMediaPackageAction(fd: FormData): Promise<void> {
   if (pkg.priceCents <= 0) {
     redirect(backTo);
   }
+  const legalConsent = immediatePerformanceConsentFromForm(fd);
+  if (!legalConsent) redirect(`${backTo}?error=legal-consent`);
   const keys = await entitlementKeys(tenant.id, user!.id);
   if (keys.has(pkg.entitlementKey)) redirect(`${backTo}?open=${pkg.id}`);
 
@@ -735,6 +892,7 @@ export async function purchaseMediaPackageAction(fd: FormData): Promise<void> {
       },
       pkg: { id: pkg.id, title: pkg.title, priceCents: pkg.priceCents, currency: pkg.currency },
       user: { id: user!.id, email: user!.email },
+      consent: legalConsent,
       successUrl: `${env.APP_URL}${backTo}?purchased=${pkg.id}`,
       cancelUrl: `${env.APP_URL}${backTo}`,
     });
@@ -758,6 +916,9 @@ export async function purchaseMediaPackageAction(fd: FormData): Promise<void> {
       currency: pkg.currency,
       platformFeeCents: platformFeeCents(pkg.priceCents, tenant.platformFeePercent),
       status: "PAID",
+      immediatePerformanceConsentedAt: legalConsent.consentedAt,
+      withdrawalLossAcknowledgedAt: legalConsent.consentedAt,
+      legalTermsVersion: legalConsent.termsVersion,
     },
   });
   await grantEntitlement({
@@ -795,6 +956,8 @@ export async function purchaseMediaItemAction(fd: FormData): Promise<void> {
   // Mint a stable key on first purchase attempt if the item was priced without one.
   const entKey = item!.entitlementKey ?? `media-item:${item!.id}`;
   if (item!.priceCents <= 0) redirect(backTo);
+  const legalConsent = immediatePerformanceConsentFromForm(fd);
+  if (!legalConsent) redirect(`${backTo}?error=legal-consent`);
   const keys = await entitlementKeys(tenant.id, user!.id);
   if (keys.has(entKey)) redirect(`${backTo}?open=${item!.packageId}`);
 
@@ -810,6 +973,7 @@ export async function purchaseMediaItemAction(fd: FormData): Promise<void> {
       },
       item: { id: item!.id, title: item!.package.title, priceCents: item!.priceCents, currency },
       user: { id: user!.id, email: user!.email },
+      consent: legalConsent,
       successUrl: `${env.APP_URL}${backTo}?purchased=${item!.packageId}`,
       cancelUrl: `${env.APP_URL}${backTo}`,
     });
@@ -831,6 +995,9 @@ export async function purchaseMediaItemAction(fd: FormData): Promise<void> {
       platformFeeCents: platformFeeCents(item!.priceCents, tenant.platformFeePercent),
       status: "PAID",
       grantedEntitlementKey: entKey,
+      immediatePerformanceConsentedAt: legalConsent.consentedAt,
+      withdrawalLossAcknowledgedAt: legalConsent.consentedAt,
+      legalTermsVersion: legalConsent.termsVersion,
     },
   });
   await grantEntitlement({
@@ -868,6 +1035,8 @@ export async function purchasePostAction(fd: FormData): Promise<void> {
 
   // Free or already owned — nothing to buy.
   if (post!.priceCents <= 0) redirect(backTo);
+  const legalConsent = immediatePerformanceConsentFromForm(fd);
+  if (!legalConsent) redirect(`${backTo}?error=legal-consent`);
   const keys = await entitlementKeys(tenant.id, user!.id);
   if (keys.has(post!.entitlementKey!)) redirect(`${backTo}?open=${post!.id}`);
 
@@ -887,6 +1056,7 @@ export async function purchasePostAction(fd: FormData): Promise<void> {
         currency: post!.currency,
       },
       user: { id: user!.id, email: user!.email },
+      consent: legalConsent,
       successUrl: `${env.APP_URL}${backTo}?purchased=${post!.id}`,
       cancelUrl: `${env.APP_URL}${backTo}`,
     });
@@ -908,6 +1078,9 @@ export async function purchasePostAction(fd: FormData): Promise<void> {
       platformFeeCents: platformFeeCents(post!.priceCents, tenant.platformFeePercent),
       status: "PAID",
       grantedEntitlementKey: post!.entitlementKey,
+      immediatePerformanceConsentedAt: legalConsent.consentedAt,
+      withdrawalLossAcknowledgedAt: legalConsent.consentedAt,
+      legalTermsVersion: legalConsent.termsVersion,
     },
   });
   await grantEntitlement({

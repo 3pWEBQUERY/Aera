@@ -12,12 +12,15 @@ import {
 import { validateWebhookUrl } from "@/lib/webhook-url";
 import { writeAudit } from "@/lib/audit";
 import { tErr } from "@/lib/action-errors";
+import { encryptSecret } from "@/lib/secret-encryption";
 
 export interface DeveloperState {
   error?: string;
   ok?: boolean;
   /** Klartext-Key — nur einmal direkt nach dem Erstellen vorhanden. */
   createdKey?: string;
+  /** Webhook-Signing-Secret — ebenfalls nur direkt nach Erstellung sichtbar. */
+  createdWebhookSecret?: string;
 }
 
 const MAX_KEYS = 10;
@@ -29,7 +32,7 @@ export async function createApiKeyAction(
   fd: FormData,
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, user } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 
   const name = String(fd.get("name") || "").trim().slice(0, 60);
   if (name.length < 2) return { error: await tErr("keyName") };
@@ -55,7 +58,7 @@ export async function createApiKeyAction(
 export async function revokeApiKeyAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
-  const { tenant, user } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
   await revokeApiKey(tenant.id, id);
   await writeAudit({
     tenantId: tenant.id,
@@ -72,7 +75,7 @@ export async function createWebhookEndpointAction(
   fd: FormData,
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, user } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 
   const url = String(fd.get("url") || "").trim();
   const checked = await validateWebhookUrl(url, {
@@ -98,11 +101,12 @@ export async function createWebhookEndpointAction(
     return { error: await tErr("maxEndpoints", { max: MAX_ENDPOINTS }) };
   }
 
+  const secret = generateWebhookSecret();
   await prisma.webhookEndpoint.create({
     data: {
       tenantId: tenant.id,
       url: checked.url,
-      secret: generateWebhookSecret(),
+      secret: encryptSecret(secret),
       events: events as WebhookEventType[],
     },
   });
@@ -113,13 +117,13 @@ export async function createWebhookEndpointAction(
     metadata: { url: checked.url },
   });
   revalidatePath(`/dashboard/${slug}/developers`);
-  return { ok: true };
+  return { ok: true, createdWebhookSecret: secret };
 }
 
 export async function toggleWebhookEndpointAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant } = await requireTenantAdmin(slug, "OWNER");
   const ep = await prisma.webhookEndpoint.findFirst({
     where: { id, tenantId: tenant.id },
   });
@@ -135,7 +139,7 @@ export async function toggleWebhookEndpointAction(fd: FormData): Promise<void> {
 export async function deleteWebhookEndpointAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
-  const { tenant, user } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
   await prisma.webhookEndpoint.deleteMany({
     where: { id, tenantId: tenant.id },
   });

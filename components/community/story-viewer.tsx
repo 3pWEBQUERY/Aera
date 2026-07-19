@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "@/components/dashboard/icons";
 import { Avatar } from "@/components/ui/misc";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 
 export interface StoryItem {
   id: string;
@@ -49,6 +50,10 @@ export function StoryViewer({
   const imageMs = (autoplaySeconds > 0 ? autoplaySeconds : 5) * 1000;
   const cur = pos ? groups[pos.g]?.items[pos.i] ?? null : null;
   const group = pos ? groups[pos.g] ?? null : null;
+  const viewerRef = useModalAccessibility<HTMLDivElement>({
+    open: Boolean(pos),
+    onClose: () => setPos(null),
+  });
 
   const goNext = useCallback(() => {
     setPos((c) => {
@@ -72,6 +77,7 @@ export function StoryViewer({
   // Lock scroll + keyboard nav while open.
   useEffect(() => {
     if (!pos) return;
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setPos(null);
@@ -80,7 +86,7 @@ export function StoryViewer({
     };
     document.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKey);
     };
   }, [pos, goNext, goPrev]);
@@ -167,7 +173,15 @@ export function StoryViewer({
       )}
 
       {pos && group && cur && (
-        <div className="fixed inset-0 z-[80] flex flex-col bg-black/95" onClick={() => setPos(null)}>
+        <div
+          ref={viewerRef}
+          role="dialog"
+          aria-modal="true"
+          aria-label={group.authorName}
+          tabIndex={-1}
+          className="fixed inset-0 z-[80] flex flex-col bg-black/95"
+          onClick={() => setPos(null)}
+        >
           {/* segmented time bar */}
           <div className="flex shrink-0 gap-1 px-3 pt-3" onClick={(e) => e.stopPropagation()}>
             {group.items.map((_, idx) => (

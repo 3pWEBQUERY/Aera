@@ -1,14 +1,15 @@
-import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
-import {
-  uploadObject,
-  isAllowedImage,
-  isAllowedVideo,
-  extensionFor,
-} from "@/lib/storage";
-import { storageAllows, formatStorage } from "@/lib/storage-quota";
+import { createHash } from "node:crypto";
+import { uploadObject } from "@/lib/storage";
+import { formatStorage } from "@/lib/storage-quota";
 import { jsonError, jsonOk } from "@/lib/mobile/api";
 import { requireStudioAccess } from "@/lib/mobile/studio";
+import { magicBytesMatch, validateUploadDeclaration } from "@/lib/upload-policy";
+import {
+  completeStorageReservation,
+  failStorageReservation,
+  reserveStorageUpload,
+} from "@/lib/secure-upload";
+import { scanStoredObject } from "@/lib/malware-scan";
 
 // POST /api/mobile/v1/studio/{slug}/upload — multipart `file` + `purpose`
 //   → { url }
@@ -20,8 +21,7 @@ import { requireStudioAccess } from "@/lib/mobile/studio";
 //   story      → "story" (Bild) bzw. "story-video" (Video), beide PUBLIC
 // Rolle ≥ ADMIN via requireStudioAccess (wie der Web-Upload für diese Purposes).
 
-const MAX_IMAGE = 5 * 1024 * 1024; // 5 MB   (wie app/api/upload)
-const MAX_VIDEO = 512 * 1024 * 1024; // 512 MB (wie app/api/upload)
+const MAX_BUFFERED_BODY = 10 * 1024 * 1024;
 
 const PURPOSES = ["post-image", "post-video", "story"] as const;
 type Purpose = (typeof PURPOSES)[number];
@@ -34,6 +34,11 @@ export async function POST(
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
   const { tenant, user } = access;
+
+  const contentLength = Number(req.headers.get("content-length"));
+  if (!Number.isSafeInteger(contentLength) || contentLength <= 0 || contentLength > MAX_BUFFERED_BODY) {
+    return jsonError("validation", "Upload body is missing or exceeds the 10 MB API limit.", 413);
+  }
 
   let form: FormData;
   try {
@@ -54,8 +59,8 @@ export async function POST(
     return jsonError("validation", "file: A file is required.", 400);
   }
 
-  const isImage = isAllowedImage(file.type);
-  const isVideo = isAllowedVideo(file.type);
+  const isImage = file.type.startsWith("image/");
+  const isVideo = file.type.startsWith("video/");
 
   // Mobile-Purpose → Web-Storage-Purpose + Visibility (PURPOSE_VISIBILITY).
   let storagePurpose: string;
@@ -77,47 +82,53 @@ export async function POST(
     visibility = "PUBLIC";
   }
 
-  const max = isVideo ? MAX_VIDEO : MAX_IMAGE;
-  if (file.size > max) {
-    return jsonError(
-      "validation",
-      `file: Too large (max ${formatStorage(max)}).`,
-      400,
-    );
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const declaration = validateUploadDeclaration({
+    purpose: storagePurpose,
+    contentType: file.type,
+    sizeBytes: file.size,
+  });
+  if (!declaration.ok || !magicBytesMatch(file.type, bytes.subarray(0, 4096))) {
+    return jsonError("validation", "File content does not match the declared media type.", 400);
   }
-
-  // Plan-Speicher-Quota — jeder Upload zählt gegen den Bucket des Tenants.
-  const quota = await storageAllows(tenant.id, file.size);
-  if (!quota.ok) {
+  const reserved = await reserveStorageUpload({
+    tenantId: tenant.id,
+    ownerId: user.id,
+    purpose: storagePurpose,
+    contentType: file.type,
+    sizeBytes: file.size,
+    checksumSha256: createHash("sha256").update(bytes).digest("base64"),
+    visibility,
+  });
+  if (!reserved.ok) {
     return jsonError(
       "storage_full",
-      `Storage full: ${formatStorage(quota.usedBytes)} of ${formatStorage(quota.limitBytes)} used.`,
+      `Storage full: ${formatStorage(reserved.usedBytes + reserved.reservedBytes)} of ${formatStorage(reserved.limitBytes)} used.`,
       413,
     );
   }
-
-  const bytes = Buffer.from(await file.arrayBuffer());
-  const key = `tenants/${tenant.id}/${storagePurpose}/${randomUUID()}.${extensionFor(file.type)}`;
-
-  let uploadedUrl: string;
   try {
-    uploadedUrl = await uploadObject({ key, body: bytes, contentType: file.type });
-  } catch (e) {
-    return jsonError("upload_failed", `Upload failed: ${(e as Error).message}`, 500);
-  }
-
-  await prisma.storageObject.create({
-    data: {
+    const uploadedUrl = await uploadObject({
+      key: reserved.reservation.key,
+      body: bytes,
+      contentType: file.type,
+    });
+    await scanStoredObject(reserved.reservation.key);
+    const completed = await completeStorageReservation({
       tenantId: tenant.id,
       ownerId: user.id,
-      key,
-      url: uploadedUrl,
-      purpose: storagePurpose,
-      contentType: file.type,
-      sizeBytes: file.size,
-      visibility,
-    },
-  });
-
-  return jsonOk({ url: uploadedUrl });
+      reservationId: reserved.reservation.id,
+      urlOverride: uploadedUrl,
+    });
+    if (!completed) throw new Error("Upload reservation could not be completed");
+    return jsonOk(completed);
+  } catch (error) {
+    await failStorageReservation({
+      tenantId: tenant.id,
+      reservationId: reserved.reservation.id,
+      key: reserved.reservation.key,
+    });
+    console.error("Mobile studio upload failed:", error);
+    return jsonError("upload_failed", "Upload failed security verification.", 500);
+  }
 }

@@ -115,7 +115,7 @@ async function categoriesInUse(): Promise<Map<string, number>> {
     const rows = (await prisma.tenant.groupBy({
       by: ["category"],
       _count: { _all: true },
-      where: { category: { not: null } },
+      where: { category: { not: null }, status: "ACTIVE" },
     } as never)) as unknown as { category: string | null; _count: { _all: number } }[];
     const map = new Map<string, number>();
     for (const r of rows) {
@@ -144,6 +144,7 @@ export default async function DiscoverPage({
   if (query) {
     const results = await prisma.tenant.findMany({
       where: {
+        status: "ACTIVE",
         OR: [
           { name: { contains: query, mode: "insensitive" } },
           { tagline: { contains: query, mode: "insensitive" } },
@@ -197,7 +198,7 @@ export default async function DiscoverPage({
   if (activeCat) {
     const category = categoryByKey(activeCat)!;
     const results = await prisma.tenant.findMany({
-      where: { category: activeCat } as unknown as Prisma.TenantWhereInput,
+      where: { category: activeCat, status: "ACTIVE" } as unknown as Prisma.TenantWhereInput,
       orderBy: { memberships: { _count: "desc" } },
       take: 24,
       select: CARD_SELECT,
@@ -237,18 +238,24 @@ export default async function DiscoverPage({
   const [mine, popular, newest] = await Promise.all([
     user
       ? prisma.membership.findMany({
-          where: { userId: user.id, status: "ACTIVE" },
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            tenant: { status: "ACTIVE" },
+          },
           orderBy: { joinedAt: "desc" },
           take: 16,
           include: { tenant: { select: CARD_SELECT } },
         })
       : Promise.resolve([]),
     prisma.tenant.findMany({
+      where: { status: "ACTIVE" },
       orderBy: { memberships: { _count: "desc" } },
       take: 8,
       select: CARD_SELECT,
     }),
     prisma.tenant.findMany({
+      where: { status: "ACTIVE" },
       orderBy: { createdAt: "desc" },
       take: 8,
       select: CARD_SELECT,
@@ -270,7 +277,7 @@ export default async function DiscoverPage({
   const catRows = await Promise.all(
     usedCats.map((c) =>
       prisma.tenant.findMany({
-        where: { category: c.key } as unknown as Prisma.TenantWhereInput,
+        where: { category: c.key, status: "ACTIVE" } as unknown as Prisma.TenantWhereInput,
         orderBy: { memberships: { _count: "desc" } },
         take: 12,
         select: CARD_SELECT,

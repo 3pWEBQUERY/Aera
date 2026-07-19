@@ -83,10 +83,22 @@ export function EmptyState({
   );
 }
 
-export function FormError({ message }: { message?: string | null }) {
+export function FormError({
+  message,
+  id,
+}: {
+  message?: string | null;
+  id?: string;
+}) {
   if (!message) return null;
   return (
-    <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+    <p
+      id={id}
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700"
+    >
       {message}
     </p>
   );

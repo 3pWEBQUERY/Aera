@@ -6,7 +6,11 @@ import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
-import { createBookingCheckout, platformFeeCents } from "@/lib/stripe";
+import {
+  createBookingCheckout,
+  platformFeeCents,
+  retrieveProductCheckoutSession,
+} from "@/lib/stripe";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { tErr } from "@/lib/action-errors";
 
@@ -18,7 +22,7 @@ const ok: ActionState = { ok: true };
 const devPaymentFallbackAllowed = process.env.NODE_ENV !== "production";
 
 async function tenantBySlug(slug: string) {
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (tenant) setTenantContext(tenant.id);
   return tenant;
 }
@@ -99,15 +103,32 @@ export async function reserveBookingAction(fd: FormData): Promise<void> {
   });
   if (!slot) redirect(back);
 
+  const mine = await prisma.bookingReservation.findFirst({
+    where: { slotId: slot.id, userId: user!.id, status: { in: ["CONFIRMED", "PENDING"] } },
+  });
+  if (mine?.status === "CONFIRMED") redirect(`${back}?reserved=${slot.id}`);
+  if (mine?.status === "PENDING" && mine.stripeSessionId) {
+    const existing = await retrieveProductCheckoutSession(mine.stripeSessionId);
+    if (existing?.status === "open" && existing.url) redirect(existing.url);
+    if (existing?.status === "complete") redirect(`${back}?reserved=${slot.id}`);
+    if (!existing || existing.status === "expired") {
+      await prisma.bookingReservation.updateMany({
+        where: {
+          id: mine.id,
+          status: "PENDING",
+          stripeSessionId: mine.stripeSessionId,
+        },
+        data: { status: "CANCELLED" },
+      });
+      redirect(`${back}?error=checkout`);
+    }
+  }
+
   // Capacity guard: count reservations that hold a seat (confirmed or pending).
   const held = await prisma.bookingReservation.count({
     where: { slotId: slot.id, status: { in: ["CONFIRMED", "PENDING"] } },
   });
-  if (held >= slot.capacity) redirect(`${back}?full=${slot.id}`);
-  const mine = await prisma.bookingReservation.findFirst({
-    where: { slotId: slot.id, userId: user!.id, status: { in: ["CONFIRMED", "PENDING"] } },
-  });
-  if (mine) redirect(`${back}?reserved=${slot.id}`);
+  if (!mine && held >= slot.capacity) redirect(`${back}?full=${slot.id}`);
 
   // Free slot -> confirm immediately.
   if (slot.priceCents <= 0) {
@@ -118,12 +139,12 @@ export async function reserveBookingAction(fd: FormData): Promise<void> {
   }
 
   // Paid slot: create a pending reservation, then check out.
-  const reservation = await prisma.bookingReservation.create({
+  const reservation = mine ?? await prisma.bookingReservation.create({
     data: { tenantId: tenant.id, slotId: slot.id, userId: user!.id, status: "PENDING" },
   });
 
   if (features.stripe) {
-    const url = await createBookingCheckout({
+    const checkout = await createBookingCheckout({
       tenant: {
         id: tenant.id,
         name: tenant.name,
@@ -141,11 +162,22 @@ export async function reserveBookingAction(fd: FormData): Promise<void> {
       successUrl: `${env.APP_URL}${back}?reserved=${slot.id}`,
       cancelUrl: `${env.APP_URL}${back}`,
     });
-    if (!url) {
+    if (!checkout) {
       await prisma.bookingReservation.delete({ where: { id: reservation.id } });
       redirect(`${back}?error=checkout`);
     }
-    redirect(url!);
+    await prisma.bookingReservation.updateMany({
+      where: {
+        id: reservation.id,
+        status: "PENDING",
+        OR: [
+          { stripeSessionId: null },
+          { stripeSessionId: checkout.id },
+        ],
+      },
+      data: { stripeSessionId: checkout.id },
+    });
+    redirect(checkout.url);
   }
 
   if (!devPaymentFallbackAllowed) {

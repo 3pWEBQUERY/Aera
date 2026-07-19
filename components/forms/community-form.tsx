@@ -32,8 +32,8 @@ export function CommunityForm({ rootDomain }: { rootDomain: string }) {
   const effectiveSlug = touched ? slug : slugify(name);
 
   return (
-    <form action={action} className="space-y-5">
-      <FormError message={state.error} />
+    <form action={action} aria-describedby={state.error ? "community-form-error" : undefined} className="space-y-5">
+      <FormError id="community-form-error" message={state.error} />
       <div>
         <Label htmlFor="name">{t("communityName")}</Label>
         <Input
@@ -42,6 +42,7 @@ export function CommunityForm({ rootDomain }: { rootDomain: string }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={t("communityNamePlaceholder")}
+          aria-invalid={state.error ? true : undefined}
           required
         />
       </div>
@@ -58,6 +59,7 @@ export function CommunityForm({ rootDomain }: { rootDomain: string }) {
             }}
             className="min-w-0 flex-1 px-3 py-2 text-sm outline-none"
             placeholder="maker-studio"
+            aria-invalid={state.error ? true : undefined}
             required
           />
           <span className="shrink-0 bg-slate-50 px-3 py-2 text-sm text-slate-500">
@@ -76,6 +78,7 @@ export function CommunityForm({ rootDomain }: { rootDomain: string }) {
           rows={2}
           maxLength={140}
           placeholder={t("taglinePlaceholder")}
+          aria-invalid={state.error ? true : undefined}
         />
       </div>
       <Button

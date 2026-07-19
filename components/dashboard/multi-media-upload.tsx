@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -43,39 +44,35 @@ export function MultiMediaUpload({
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  function upload(file: File) {
+  async function upload(file: File) {
     const type: "IMAGE" | "VIDEO" = file.type.startsWith("video") ? "VIDEO" : "IMAGE";
     const key = nextKey();
     setUploads((u) => [...u, { key, name: file.name, type, progress: 0 }]);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/upload");
-    xhr.upload.onprogress = (ev) => {
-      if (ev.lengthComputable) {
-        const p = Math.round((ev.loaded / ev.total) * 100);
-        setUploads((u) => u.map((x) => (x.key === key ? { ...x, progress: p } : x)));
-      }
-    };
-    xhr.onload = () => {
+    try {
+      const uploadedUrl = await uploadMediaFile({
+        file,
+        tenant,
+        purpose,
+        onProgress: (progress) => {
+          setUploads((u) =>
+            u.map((x) => (x.key === key ? { ...x, progress } : x)),
+          );
+        },
+      });
+      setItems((it) => [
+        ...it,
+        { key: nextKey(), type, url: uploadedUrl, caption: "" },
+      ]);
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof UploadError
+          ? uploadError.message
+          : t("uploadFailed"),
+      );
+    } finally {
       setUploads((u) => u.filter((x) => x.key !== key));
-      try {
-        const j = JSON.parse(xhr.responseText) as { url?: string; error?: string };
-        if (xhr.status >= 200 && xhr.status < 300 && j.url) {
-          setItems((it) => [...it, { key: nextKey(), type, url: j.url!, caption: "" }]);
-        } else setError(j.error ?? t("uploadFailed"));
-      } catch {
-        setError(t("uploadFailed"));
-      }
-    };
-    xhr.onerror = () => {
-      setUploads((u) => u.filter((x) => x.key !== key));
-      setError(t("uploadFailed"));
-    };
-    const fd = new FormData();
-    fd.set("file", file);
-    fd.set("tenant", tenant);
-    fd.set("purpose", purpose);
-    xhr.send(fd);
+    }
   }
 
   function onPick(e: React.ChangeEvent<HTMLInputElement>) {

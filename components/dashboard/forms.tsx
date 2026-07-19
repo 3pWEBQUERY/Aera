@@ -47,16 +47,16 @@ export function SpaceForm({ slug }: { slug: string }) {
         <div>
           <Label htmlFor="sp-type">{t("type")}</Label>
           <Select id="sp-type" name="type" defaultValue="FEED">
-            <option value="FEED">Feed</option>
-            <option value="FORUM">Forum</option>
+            <option value="FEED">{t("feed")}</option>
+            <option value="FORUM">{t("forum")}</option>
             <option value="COURSE">{t("course")}</option>
-            <option value="SHOP">Shop</option>
-            <option value="NEWSLETTER">Newsletter</option>
-            <option value="EVENTS">Events</option>
-            <option value="BLOG">Blog</option>
+            <option value="SHOP">{t("shop")}</option>
+            <option value="NEWSLETTER">{t("newsletter")}</option>
+            <option value="EVENTS">{t("events")}</option>
+            <option value="BLOG">{t("blog")}</option>
             <option value="KNOWLEDGE">{t("knowledge")}</option>
             <option value="GALLERY">{t("gallery")}</option>
-            <option value="VIDEOS">Videos</option>
+            <option value="VIDEOS">{t("videos")}</option>
           </Select>
         </div>
         <div>
@@ -137,7 +137,7 @@ export function ProductForm({ slug }: { slug: string }) {
           <Label htmlFor="p-type">{t("type")}</Label>
           <Select id="p-type" name="type" defaultValue="DIGITAL">
             <option value="DIGITAL">{t("digitalProduct")}</option>
-            <option value="BUNDLE">Bundle</option>
+            <option value="BUNDLE">{t("bundle")}</option>
             <option value="COURSE_ACCESS">{t("courseAccess")}</option>
             <option value="TIER_GRANT">{t("tierUnlock")}</option>
           </Select>
@@ -449,7 +449,7 @@ export function BrandingForm({
         <NameStatusHint status={nameCheck} />
       </div>
       <div>
-        <Label htmlFor="br-tag">Tagline</Label>
+        <Label htmlFor="br-tag">{t("tagline")}</Label>
         <Input id="br-tag" name="tagline" defaultValue={tenant.tagline ?? ""} />
       </div>
       <div>
@@ -457,7 +457,7 @@ export function BrandingForm({
         <Textarea id="br-desc" name="description" rows={3} defaultValue={tenant.description ?? ""} />
       </div>
       <div>
-        <Label htmlFor="br-logo">Logo-URL</Label>
+        <Label htmlFor="br-logo">{t("logoUrl")}</Label>
         <Input id="br-logo" name="logoUrl" type="url" defaultValue={tenant.logoUrl ?? ""} placeholder="https://…" />
       </div>
       <div className="grid grid-cols-2 gap-3">

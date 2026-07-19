@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 import { MobileCommunityNav } from "@/components/community/mobile-nav";
@@ -40,7 +40,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const tenant = await prisma.tenant.findUnique({
-    where: { slug },
+    where: { slug, status: "ACTIVE" },
     select: { name: true, tagline: true, description: true },
   });
   if (!tenant) return {};
@@ -86,9 +86,22 @@ export default async function CommunityLayout({
   // shows the member/creator view switcher.
   const [ownTenants, staffRoles] = user
     ? await Promise.all([
-        prisma.tenant.count({ where: { ownerId: user.id } }),
-        prisma.membership.count({
-          where: { userId: user.id, role: { in: ["OWNER", "ADMIN", "MODERATOR"] } },
+        systemPrisma.tenant.count({
+          where: {
+            ownerId: user.id,
+            status: "ACTIVE",
+            memberships: {
+              some: { userId: user.id, role: "OWNER", status: "ACTIVE" },
+            },
+          },
+        }),
+        systemPrisma.membership.count({
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+            tenant: { status: "ACTIVE" },
+          },
         }),
       ])
     : [0, 0];

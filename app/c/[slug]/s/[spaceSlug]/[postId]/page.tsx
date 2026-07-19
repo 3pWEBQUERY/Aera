@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
@@ -10,6 +11,7 @@ import { ForumThread } from "@/components/community/forum-thread";
 import { ArticleShare } from "@/components/community/article-share";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
+import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { excerpt, formatDate, timeAgo } from "@/lib/utils";
 
 export default async function PostDetail({
@@ -18,6 +20,10 @@ export default async function PostDetail({
   params: Promise<{ slug: string; spaceSlug: string; postId: string }>;
 }) {
   const { slug, spaceSlug, postId } = await params;
+  const [t, locale] = await Promise.all([
+    getTranslations("spaces"),
+    getLocale(),
+  ]);
   const community = await getCommunityContext(slug);
   if (!community) notFound();
   const { tenant, user, ctx } = community;
@@ -123,7 +129,7 @@ export default async function PostDetail({
   const commentsBlock = (
     <div className="rounded-xl border border-[#161613]/10 bg-white p-5">
       <h2 className="mb-4 font-semibold text-[#161613]">
-        {comments.length} {comments.length === 1 ? "Kommentar" : "Kommentare"}
+        {t("commentCount", { count: comments.length })}
       </h2>
       <div className="space-y-4">
         {comments.map((c) => (
@@ -132,14 +138,14 @@ export default async function PostDetail({
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-medium text-[#161613]">{c.author.name}</span>
-                <span className="text-xs text-[#161613]/50">{timeAgo(c.createdAt)}</span>
+                <span className="text-xs text-[#161613]/50">{timeAgo(c.createdAt, locale)}</span>
               </div>
               <p className="mt-0.5 whitespace-pre-wrap text-sm text-[#161613]/80">{c.body}</p>
             </div>
           </div>
         ))}
         {comments.length === 0 && (
-          <p className="text-sm text-[#161613]/60">Noch keine Kommentare.</p>
+          <p className="text-sm text-[#161613]/60">{t("noComments")}</p>
         )}
       </div>
       {isMember && (
@@ -154,7 +160,11 @@ export default async function PostDetail({
   if (space.type === "BLOG") {
     const [authorMembership, relatedRaw] = await Promise.all([
       prisma.membership.findFirst({
-        where: { tenantId: tenant.id, userId: post.author.id },
+        where: {
+          tenantId: tenant.id,
+          userId: post.author.id,
+          status: "ACTIVE",
+        },
         select: { bio: true, role: true },
       }),
       prisma.post.findMany({
@@ -187,7 +197,7 @@ export default async function PostDetail({
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/50">
             <span className="text-[color:var(--brand)]">{space.name}</span>
             <span className="mx-2" aria-hidden>·</span>
-            {formatDate(post.createdAt)}
+            {formatDate(post.createdAt, locale)}
             <span className="mx-2" aria-hidden>·</span>
             von {post.author.name}
             <span className="mx-2" aria-hidden>·</span>
@@ -228,6 +238,7 @@ export default async function PostDetail({
                 <input type="hidden" name="tenant" value={slug} />
                 <input type="hidden" name="space" value={spaceSlug} />
                 <input type="hidden" name="postId" value={post.id} />
+                <ImmediateAccessConsent className="mb-3" />
                 <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#161613] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.99]">
                   <Icon name="lock" size={16} />
                   {post.priceCents / 100} {post.currency.toUpperCase()}

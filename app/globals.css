@@ -25,6 +25,34 @@ body {
   background: #ffffff;
 }
 
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 9999;
+  transform: translateY(calc(-100% - 2rem));
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #0f172a;
+  padding: 0.65rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 8px 30px rgb(15 23 42 / 0.2);
+  transition: transform 0.15s ease-out;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+  outline: 3px solid color-mix(in srgb, var(--brand) 55%, white);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skip-link {
+    transition: none;
+  }
+}
+
 /* Brand-derived tints for whitelabel UI (inputs, avatars, pills). Declared on
    `*` so they re-resolve against the inherited --brand on every element — the
    community layout overrides --brand per tenant and everything follows. */

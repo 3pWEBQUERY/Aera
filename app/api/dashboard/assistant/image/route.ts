@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
 import { getLocale } from "next-intl/server";
-import prisma from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
 import { geminiGenerateImage, aiLanguageInstruction } from "@/lib/ai";
@@ -11,7 +9,13 @@ import {
   reserveCredit,
   settleCreditReservation,
 } from "@/lib/credits";
-import { uploadObject, isAllowedImage, extensionFor } from "@/lib/storage";
+import { isAllowedImage } from "@/lib/storage";
+import { magicBytesMatch, MAX_IMAGE_BYTES } from "@/lib/upload-policy";
+import { storageAllows } from "@/lib/storage-quota";
+import {
+  persistVerifiedBufferUpload,
+  StorageQuotaExceededError,
+} from "@/lib/secure-upload";
 
 interface InputImage {
   mimeType: string;
@@ -32,21 +36,15 @@ async function persistImage(
   data: string,
 ): Promise<string> {
   const bytes = Buffer.from(data, "base64");
-  const key = `tenants/${tenantId}/assistant-image/${randomUUID()}.${extensionFor(mimeType)}`;
-  const url = await uploadObject({ key, body: bytes, contentType: mimeType });
-  await prisma.storageObject.create({
-    data: {
-      tenantId,
-      ownerId,
-      key,
-      url,
-      purpose: "assistant-image",
-      contentType: mimeType,
-      sizeBytes: bytes.length,
-      visibility: "PUBLIC",
-    },
+  const stored = await persistVerifiedBufferUpload({
+    tenantId,
+    ownerId,
+    purpose: "assistant-image",
+    contentType: mimeType,
+    bytes,
+    visibility: "PUBLIC",
   });
-  return url;
+  return stored.url;
 }
 
 // POST { slug, conversationId?, prompt, images?: [{ mimeType, data }] }
@@ -86,11 +84,33 @@ export async function POST(req: Request) {
     if (!data || data.length > MAX_B64_LEN) {
       return NextResponse.json({ error: "Ein Vorlagenbild ist zu groß (max. 5 MB)." }, { status: 400 });
     }
+    if (!/^[A-Za-z0-9+/]*={0,2}$/.test(data) || data.length % 4 === 1) {
+      return NextResponse.json({ error: "Ungültige Bilddaten." }, { status: 400 });
+    }
+    const bytes = Buffer.from(data, "base64");
+    if (bytes.length > MAX_IMAGE_BYTES) {
+      return NextResponse.json({ error: "Ein Vorlagenbild ist zu groß (max. 5 MB)." }, { status: 400 });
+    }
+    if (!magicBytesMatch(mimeType, bytes.subarray(0, 4096))) {
+      return NextResponse.json({ error: "Bildtyp und Bildinhalt stimmen nicht überein." }, { status: 400 });
+    }
     inputImages.push({ mimeType, data });
   }
 
   if (!prompt && inputImages.length === 0) {
     return NextResponse.json({ error: "empty" }, { status: 400 });
+  }
+
+  const inputBytes = inputImages.reduce(
+    (sum, image) => sum + Buffer.from(image.data, "base64").length,
+    0,
+  );
+  const quota = await storageAllows(tenant.id, inputBytes + 8 * 1024 * 1024);
+  if (!quota.ok) {
+    return NextResponse.json(
+      { error: "storage-full", storageFull: true },
+      { status: 413 },
+    );
   }
 
   // Atomically lease one credit before spending anything at the provider.
@@ -158,9 +178,13 @@ export async function POST(req: Request) {
       text,
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: `Speichern fehlgeschlagen: ${(e as Error).message}` },
-      { status: 500 },
-    );
+    if (e instanceof StorageQuotaExceededError) {
+      return NextResponse.json(
+        { error: "storage-full", storageFull: true },
+        { status: 413 },
+      );
+    }
+    console.error("Assistant image persistence failed:", e);
+    return NextResponse.json({ error: "persist-failed" }, { status: 500 });
   }
 }

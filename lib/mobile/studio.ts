@@ -1,7 +1,7 @@
 import "server-only";
 import type { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { roleAtLeast } from "@/lib/tenant";
+import { activeRoleAtLeast } from "@/lib/tenant";
 import { excerpt } from "@/lib/utils";
 import { jsonError, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import type {
@@ -47,7 +47,7 @@ export async function requireStudioAccess(
   const membership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId: auth.user.id } },
   });
-  if (!membership || !roleAtLeast(membership.role, minRole)) {
+  if (!membership || !activeRoleAtLeast(membership, minRole)) {
     return {
       response: jsonError(
         "not_authorized",

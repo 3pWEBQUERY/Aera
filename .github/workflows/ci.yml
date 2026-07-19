@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify production release
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: aera_ci
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d aera_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      CI: "true"
+      AERA_ENVIRONMENT: ci
+      DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/aera_ci
+      REDIS_URL: redis://127.0.0.1:6379
+      AUTH_SECRET: ci-auth-secret-012345678901234567890123456789
+      AERA_DATA_ENCRYPTION_KEYS: current:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      CRON_SECRET: ci-cron-secret-012345678901234567890123456789
+      NEXT_PUBLIC_ROOT_DOMAIN: aera.test
+      APP_URL: https://app.aera.test
+      DOMAIN_RESOLVER_ORIGIN: https://app.aera.test
+      STRIPE_SECRET_KEY: sk_live_ci01234567890123456789
+      STRIPE_WEBHOOK_SECRET: whsec_ci01234567890123456789
+      NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_live_ci01234567890123456789
+      STRIPE_CREATOR_STARTER_PRICE_ID: price_CIStarter123
+      STRIPE_CREATOR_PRO_PRICE_ID: price_CIPro123
+      STRIPE_CREATOR_SCALE_PRICE_ID: price_CIScale123
+      AERA_PLATFORM_FEE_PERCENT: "5"
+      RESEND_API_KEY: re_ci01234567890123456789
+      RESEND_WEBHOOK_SECRET: whsec_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789
+      QA_LOGIN_SECRET: ci-qa-login-secret-012345678901234567890123
+      EMAIL_FROM: Aera CI <noreply@aera.test>
+      S3_ENDPOINT: https://storage.aera.test
+      S3_REGION: auto
+      S3_BUCKET: aera-ci
+      S3_ACCESS_KEY_ID: AERACITEST
+      S3_SECRET_ACCESS_KEY: aera-ci-secret-0123456789
+      CLAMAV_HOST: 127.0.0.1
+      CLAMAV_PORT: "3310"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use pinned Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate production environment contract
+        run: npm run env:check:ci
+
+      - name: Deploy migrations and verify RLS grants
+        run: npm run db:predeploy
+
+      - name: Exercise database and RLS boundaries
+        run: npm run db:smoke:ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Run unit and integration tests
+        run: npm test
+
+      - name: Install Chromium for end-to-end tests
+        run: npx playwright install --with-deps chromium
+
+      - name: Run browser end-to-end tests
+        run: npm run test:e2e
+
+      - name: Build production application
+        run: npm run build
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Upload Playwright report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -6,6 +6,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { parseLayout } from "@/lib/layout";
 import { nameStatus } from "@/lib/tenant-name";
 import { tErr } from "@/lib/action-errors";
+import { activeRoleAtLeast } from "@/lib/tenant";
 
 export interface LayoutState {
   ok?: boolean;
@@ -28,16 +29,16 @@ export async function saveLayoutAction(
   const user = await getCurrentUser();
   if (!user) return { error: await tErr("notAuthenticated") };
 
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (!tenant) return { error: await tErr("communityNotFound") };
   setTenantContext(tenant.id);
 
   const membership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
   });
-  const isStaff =
-    membership?.role === "OWNER" || membership?.role === "ADMIN" || membership?.role === "MODERATOR";
-  if (!isStaff) return { error: await tErr("noPermission") };
+  if (!activeRoleAtLeast(membership, "MODERATOR")) {
+    return { error: await tErr("noPermission") };
+  }
 
   let payload: Record<string, unknown>;
   try {

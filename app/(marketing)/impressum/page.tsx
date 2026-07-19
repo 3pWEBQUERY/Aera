@@ -5,11 +5,6 @@ export const metadata = {
   description: "Impressum und Anbieterkennzeichnung von Aera.so.",
 };
 
-/**
- * WICHTIG: Die Platzhalter in eckigen Klammern müssen vor dem Launch durch
- * die echten Betreiberdaten ersetzt werden. Diese Seite ist eine Vorlage
- * und ersetzt keine Rechtsberatung.
- */
 export default function ImpressumPage() {
   return (
     <LegalShell eyebrow="Rechtliches" title="Impressum" updated="Stand: Juli 2026">
@@ -41,16 +36,6 @@ export default function ImpressumPage() {
       </section>
 
       <section>
-        <h2>Unternehmens-Identifikationsnummer / Umsatzsteuer-ID</h2>
-        <p className="mt-3">
-          UID (Schweiz): wurde beantragt (wird in Kürze eingetragen)
-          <br />
-          USt-IdNr. (EU, sofern registriert): wurde beantragt (wird in Kürze
-          eingetragen)
-        </p>
-      </section>
-
-      <section>
         <h2>Verantwortlich für den Inhalt</h2>
         <p className="mt-3">
           Alexander Sulschani, Anschrift wie oben (für Angebote in Deutschland:
@@ -67,7 +52,7 @@ export default function ImpressumPage() {
           Urheberin bzw. der jeweilige Urheber verantwortlich. Hinweise auf
           rechtswidrige Inhalte nehmen wir unter{" "}
           <a href="mailto:contact@aera.so">contact@aera.so</a> entgegen und
-          entfernen diese nach Prüfung umgehend.
+          bearbeiten sie nach einer dokumentierten Prüfung.
         </p>
       </section>
 

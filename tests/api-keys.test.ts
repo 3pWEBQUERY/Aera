@@ -54,7 +54,7 @@ describe("authenticateApiRequest", () => {
     prisma.apiKey.findUnique.mockResolvedValue({
       id: "k1",
       revokedAt: null,
-      tenant: { id: "t1", slug: "demo" },
+      tenant: { id: "t1", slug: "demo", status: "ACTIVE" },
     });
     prisma.apiKey.update.mockResolvedValue({});
 
@@ -70,6 +70,15 @@ describe("authenticateApiRequest", () => {
       id: "k1",
       revokedAt: new Date(),
       tenant: { id: "t1" },
+    });
+    expect(await authenticateApiRequest(requestWithAuth(`Bearer ${key}`))).toBeNull();
+  });
+
+  it("rejects keys belonging to a suspended tenant", async () => {
+    prisma.apiKey.findUnique.mockResolvedValue({
+      id: "k1",
+      revokedAt: null,
+      tenant: { id: "t1", slug: "demo", status: "SUSPENDED" },
     });
     expect(await authenticateApiRequest(requestWithAuth(`Bearer ${key}`))).toBeNull();
   });

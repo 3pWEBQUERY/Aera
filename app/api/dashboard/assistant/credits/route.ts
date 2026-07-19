@@ -5,13 +5,14 @@ import {
   PLANS,
   getCreditSummary,
   getOrCreateWallet,
+  endCreatorSubscription,
   updateCreatorSubscription,
 } from "@/lib/credits";
 import {
-  cancelSubscriptionAtPeriodEnd,
   createCreditPackCheckout,
-  createCreatorPlanCheckout,
 } from "@/lib/stripe";
+import { startTrackedCreatorPlanCheckout } from "@/lib/creator-checkout";
+import { cancelMembershipStripeSubscription } from "@/lib/stripe-cleanup";
 import { env, features } from "@/lib/env";
 import type { CreatorPlan } from "@/app/generated/prisma/client";
 
@@ -23,7 +24,11 @@ export async function GET(req: Request) {
   const { tenant } = await requireTenantAdmin(slug);
   const summary = await getCreditSummary(tenant.id);
   return NextResponse.json({
-    summary: { ...summary, billingEnabled: features.creatorBilling },
+    summary: {
+      ...summary,
+      billingEnabled: features.creatorBilling,
+      cancellationEnabled: features.stripe,
+    },
   });
 }
 
@@ -46,7 +51,13 @@ export async function POST(req: Request) {
   if (action !== "buy" && action !== "plan" && action !== "cancel_plan") {
     return NextResponse.json({ error: "unknown action" }, { status: 400 });
   }
-  if (!features.creatorBilling) {
+  if (action === "cancel_plan" && !features.stripe) {
+    return NextResponse.json(
+      { error: "stripe_unavailable", message: "Stripe is required to cancel this plan." },
+      { status: 503 },
+    );
+  }
+  if (action !== "cancel_plan" && !features.creatorBilling) {
     return NextResponse.json(
       {
         error: "billing_unavailable",
@@ -64,17 +75,28 @@ export async function POST(req: Request) {
     if (!wallet.stripeSubscriptionId) {
       return NextResponse.json({ error: "no_active_creator_plan" }, { status: 409 });
     }
-    const periodEnd = await cancelSubscriptionAtPeriodEnd(wallet.stripeSubscriptionId);
-    await updateCreatorSubscription({
-      tenantId: tenant.id,
-      stripeSubscriptionId: wallet.stripeSubscriptionId,
-      status: wallet.creatorSubscriptionStatus ?? "ACTIVE",
-      cancelAtPeriodEnd: true,
-      currentPeriodEnd: periodEnd,
-    });
+    const cancellation = await cancelMembershipStripeSubscription(wallet.stripeSubscriptionId);
+    if (cancellation.mode === "immediate") {
+      await endCreatorSubscription({
+        tenantId: tenant.id,
+        stripeSubscriptionId: wallet.stripeSubscriptionId,
+      });
+    } else {
+      await updateCreatorSubscription({
+        tenantId: tenant.id,
+        stripeSubscriptionId: wallet.stripeSubscriptionId,
+        status: wallet.creatorSubscriptionStatus ?? "ACTIVE",
+        cancelAtPeriodEnd: true,
+        currentPeriodEnd: cancellation.currentPeriodEnd,
+      });
+    }
     const summary = await getCreditSummary(tenant.id);
     return NextResponse.json({
-      summary: { ...summary, billingEnabled: features.creatorBilling },
+      summary: {
+        ...summary,
+        billingEnabled: features.creatorBilling,
+        cancellationEnabled: features.stripe,
+      },
     });
   }
 
@@ -106,7 +128,7 @@ export async function POST(req: Request) {
         { status: 409 },
       );
     }
-    checkoutUrl = await createCreatorPlanCheckout({
+    checkoutUrl = await startTrackedCreatorPlanCheckout({
       tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
       user: { id: user.id, email: user.email },
       plan,

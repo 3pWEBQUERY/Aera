@@ -139,7 +139,7 @@ export async function POST(
   if (target.kind === "dm") {
     const message = await insertDirectMessage(tenant.id, target.conversationId, user.id, body);
     if (!message) return jsonError("validation", "Message must not be empty.", 400);
-    publish(chatChannel(tenant.id, "dm", target.conversationId), { message });
+    await publish(chatChannel(tenant.id, "dm", target.conversationId), { message });
     const [dto] = await chatMessageDtos(tenant.id, [message], user.id);
     return jsonOk({ message: dto });
   }
@@ -170,7 +170,7 @@ export async function POST(
     target.settings.maxMessageLength,
   );
   if (!message) return jsonError("validation", "Message must not be empty.", 400);
-  publish(chatChannel(tenant.id, "space", target.spaceId), { message });
+  await publish(chatChannel(tenant.id, "space", target.spaceId), { message });
   const [dto] = await chatMessageDtos(tenant.id, [message], user.id);
   return jsonOk({ message: dto });
 }

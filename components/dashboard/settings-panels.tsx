@@ -330,16 +330,23 @@ export function DangerZone({ slug, name }: { slug: string; name: string }) {
   const router = useRouter();
   const [confirm, setConfirm] = useState("");
   const [busy, setBusy] = useState(false);
+  const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("dashboard.danger");
 
   async function onDelete() {
     if (confirm !== slug) return;
     if (!window.confirm(t("confirmDelete", { name }))) return;
     setBusy(true);
+    setDeleteError(undefined);
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("confirm", confirm);
-    await deleteTenantAction(fd);
+    const result = await deleteTenantAction(fd);
+    if (result.error) {
+      setDeleteError(result.error);
+      setBusy(false);
+      return;
+    }
     router.push("/dashboard");
   }
 
@@ -350,6 +357,7 @@ export function DangerZone({ slug, name }: { slug: string; name: string }) {
         {t("desc")}
       </p>
       <div className="mt-6 rounded-xl border border-red-200 bg-red-50/40 p-5">
+        <FormError message={deleteError} />
         <p className="font-medium text-red-700">{t("deleteCommunity")}</p>
         <p className="mt-1 text-sm text-slate-600">
           {t("deleteDesc")}

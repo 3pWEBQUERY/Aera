@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { cn } from "@/lib/utils";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { Icon, type IconName } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -39,6 +40,12 @@ export function Sheet({
   const t = useTranslations("uiMigration.dashboard");
   const [mounted, setMounted] = useState(open);
   const [shown, setShown] = useState(false);
+  const titleId = useId();
+  const subtitleId = useId();
+  const dialogRef = useModalAccessibility<HTMLDivElement>({
+    open: mounted,
+    onClose,
+  });
 
   // WICHTIG: Das Sheet wird per Portal nach <body> gerendert. Ein Vorfahre mit
   // backdrop-filter/transform (z. B. der sticky Community-Header) würde sonst
@@ -72,14 +79,12 @@ export function Sheet({
 
   useEffect(() => {
     if (!mounted) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = previousOverflow;
     };
-  }, [mounted, onClose]);
+  }, [mounted]);
 
   const anchor = <span ref={anchorRef} hidden />;
   if (!mounted || typeof document === "undefined") return anchor;
@@ -97,6 +102,12 @@ export function Sheet({
             )}
           />
           <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            aria-describedby={subtitle ? subtitleId : undefined}
+            tabIndex={-1}
             className={cn(
               "absolute flex flex-col bg-white transition-transform duration-300 ease-out will-change-transform",
               variant === "bottom"
@@ -123,11 +134,12 @@ export function Sheet({
                   </span>
                 )}
                 <div>
-                  <p className="text-sm font-semibold text-slate-900">{title}</p>
-                  {subtitle && <p className="text-xs text-slate-400">{subtitle}</p>}
+                  <h2 id={titleId} className="text-sm font-semibold text-slate-900">{title}</h2>
+                  {subtitle && <p id={subtitleId} className="text-xs text-slate-400">{subtitle}</p>}
                 </div>
               </div>
               <button
+                type="button"
                 onClick={onClose}
                 aria-label={t("close")}
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"

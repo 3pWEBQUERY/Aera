@@ -21,7 +21,7 @@ export default async function ExportPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant } = await requireTenantAdmin(slug, "OWNER");
   const t = tenant.id;
   const tr = await getTranslations("dashboard.export");
   const locale = await getLocale();

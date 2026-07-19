@@ -1,13 +1,18 @@
 import "server-only";
+import { createHash } from "node:crypto";
 import { headers } from "next/headers";
+import type Redis from "ioredis";
+import { getRedisCommandClient, isRedisConfigured } from "./redis";
+import { logOperationalEvent } from "./observability";
 
 /**
  * Fixed-Window-Rate-Limiter mit zwei Backends:
  *
- * - **Redis** (wenn `REDIS_URL` gesetzt): prozess- und instanzübergreifend —
- *   produktionsreif für horizontale Skalierung. INCR + PEXPIRE, fail-open:
- *   Wenn Redis nicht erreichbar ist, wird der Request durchgelassen (Ausfall
- *   der Rate-Limits darf nie Login/Signup lahmlegen) und der Fehler geloggt.
+ * - **Redis** (wenn `REDIS_URL` gesetzt): prozess- und instanzübergreifend.
+ *   Ein Lua-Skript erhöht den Zähler und setzt die TTL atomar.
+ * - **Degraded**: Wenn ein konfiguriertes Redis vorübergehend ausfällt, greift
+ *   ein konservativer In-Memory-Limiter mit halbem Kontingent. Der Schutz ist
+ *   damit instanzlokal, aber niemals vollständig fail-open.
  * - **In-Memory** (Fallback ohne `REDIS_URL`): wie bisher, per Prozess.
  *
  * API ist async — Aufrufer verwenden `await rateLimit(...)`.
@@ -21,62 +26,67 @@ function memoryRateLimit(key: string, limit: number, windowMs: number): boolean 
   const bucket = buckets.get(key);
   if (!bucket || bucket.resetAt <= now) {
     buckets.set(key, { count: 1, resetAt: now + windowMs });
+    cleanupMemoryBuckets(now);
     return true;
   }
   bucket.count += 1;
-  // Opportunistic cleanup so the map cannot grow unbounded.
-  if (buckets.size > 10_000) {
-    for (const [k, b] of buckets) if (b.resetAt <= now) buckets.delete(k);
-  }
+  cleanupMemoryBuckets(now);
   return bucket.count <= limit;
 }
 
-// ---------------------------------------------------------------- Redis
-type RedisLike = {
-  incr(key: string): Promise<number>;
-  pexpire(key: string, ms: number): Promise<number>;
-};
-
-const g = globalThis as unknown as { __aeraRedis?: RedisLike | null };
-
-async function getRedis(): Promise<RedisLike | null> {
-  if (g.__aeraRedis !== undefined) return g.__aeraRedis;
-  const url = process.env.REDIS_URL;
-  if (!url) {
-    g.__aeraRedis = null;
-    return null;
+function cleanupMemoryBuckets(now: number): void {
+  // Opportunistic cleanup so the map cannot grow without bound. If more than
+  // 10k live buckets remain, evict oldest entries until the hard cap is met.
+  if (buckets.size <= 10_000) return;
+  for (const [key, bucket] of buckets) {
+    if (bucket.resetAt <= now) buckets.delete(key);
   }
-  try {
-    // Lazy import: ohne REDIS_URL wird ioredis nie geladen.
-    const { default: Redis } = await import("ioredis");
-    const client = new Redis(url, {
-      maxRetriesPerRequest: 1,
-      enableOfflineQueue: false,
-    });
-    client.on("error", (e: Error) => {
-      console.error("Redis (rate-limit) error:", e.message);
-    });
-    g.__aeraRedis = client as unknown as RedisLike;
-  } catch (e) {
-    console.error("Redis init failed — falling back to in-memory rate limits:", e);
-    g.__aeraRedis = null;
+  if (buckets.size <= 10_000) return;
+  const overflow = buckets.size - 10_000;
+  let removed = 0;
+  for (const key of buckets.keys()) {
+    buckets.delete(key);
+    removed += 1;
+    if (removed >= overflow) break;
   }
-  return g.__aeraRedis;
 }
 
+// ---------------------------------------------------------------- Redis
+const RATE_LIMIT_SCRIPT = `
+local count = redis.call("INCR", KEYS[1])
+local ttl = redis.call("PTTL", KEYS[1])
+if count == 1 or ttl < 0 then
+  redis.call("PEXPIRE", KEYS[1], ARGV[1])
+end
+return count
+`;
+
 async function redisRateLimit(
-  redis: RedisLike,
-  key: string,
+  redis: Redis,
+  keyHash: string,
   limit: number,
   windowMs: number,
 ): Promise<boolean> {
-  const redisKey = `rl:${key}`;
-  const count = await redis.incr(redisKey);
-  if (count === 1) {
-    // Erstes Ereignis im Fenster -> Ablauf setzen.
-    await redis.pexpire(redisKey, windowMs);
+  const redisKey = `aera:rl:v1:${keyHash}`;
+  const result = await redis.eval(RATE_LIMIT_SCRIPT, 1, redisKey, windowMs);
+  const count = Number(result);
+  if (!Number.isSafeInteger(count) || count < 1) {
+    throw new Error("invalid_redis_rate_limit_result");
   }
   return count <= limit;
+}
+
+const rateLimitState = globalThis as unknown as {
+  __aeraRateLimitLastRedisErrorAt?: number;
+};
+
+function logDegradedMode(): void {
+  const now = Date.now();
+  if (now - (rateLimitState.__aeraRateLimitLastRedisErrorAt ?? 0) < 30_000) return;
+  rateLimitState.__aeraRateLimitLastRedisErrorAt = now;
+  logOperationalEvent("error", "rate_limit_redis_degraded", {
+    fallback: "conservative-local-throttling",
+  });
 }
 
 // ---------------------------------------------------------------- API
@@ -85,17 +95,44 @@ export async function rateLimit(
   limit: number,
   windowMs: number,
 ): Promise<boolean> {
-  const redis = await getRedis();
+  if (
+    !key ||
+    !Number.isSafeInteger(limit) ||
+    limit < 1 ||
+    !Number.isSafeInteger(windowMs) ||
+    windowMs < 1
+  ) {
+    throw new Error("Invalid rate-limit configuration");
+  }
+  // Fixed-size, non-identifying keys avoid putting IP addresses/user IDs into
+  // Redis and bound memory use even for hostile forwarding headers.
+  const keyHash = createHash("sha256").update(key).digest("hex");
+
+  const redis = await getRedisCommandClient();
   if (redis) {
     try {
-      return await redisRateLimit(redis, key, limit, windowMs);
-    } catch (e) {
-      // Fail-open: Verfügbarkeit schlägt Drosselung.
-      console.error("Redis rate-limit failed (fail-open):", (e as Error).message);
-      return true;
+      return await redisRateLimit(redis, keyHash, limit, windowMs);
+    } catch {
+      logDegradedMode();
+      return memoryRateLimit(
+        `degraded:${keyHash}`,
+        Math.max(1, Math.ceil(limit / 2)),
+        windowMs,
+      );
     }
   }
-  return memoryRateLimit(key, limit, windowMs);
+
+  // Missing Redis is the expected local-development mode. In production the
+  // central environment validator rejects this deployment before serving.
+  if (isRedisConfigured()) {
+    logDegradedMode();
+    return memoryRateLimit(
+      `degraded:${keyHash}`,
+      Math.max(1, Math.ceil(limit / 2)),
+      windowMs,
+    );
+  }
+  return memoryRateLimit(keyHash, limit, windowMs);
 }
 
 /** Best-effort client IP for rate-limit keys. */

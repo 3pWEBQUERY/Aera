@@ -1,11 +1,11 @@
 import "server-only";
-import { randomUUID } from "crypto";
 import prisma from "./prisma";
 import { uniqueChildSlug } from "./slug";
 import { writeAudit } from "./audit";
 import { geminiRawMetered, aiLanguageInstruction, type GeminiContent, type GeminiPart, type GeminiTool } from "./ai";
 import { formatPrice } from "./utils";
-import { uploadObject, isAllowedImage, extensionFor } from "./storage";
+import { isAllowedImage } from "./storage";
+import { persistVerifiedBufferUpload } from "./secure-upload";
 import {
   releaseCreditReservation,
   reserveCredit,
@@ -27,21 +27,15 @@ async function persistAssistantImage(
   data: string,
 ): Promise<string> {
   const bytes = Buffer.from(data, "base64");
-  const key = `tenants/${tenantId}/assistant-image/${randomUUID()}.${extensionFor(mimeType)}`;
-  const url = await uploadObject({ key, body: bytes, contentType: mimeType });
-  await prisma.storageObject.create({
-    data: {
-      tenantId,
-      ownerId,
-      key,
-      url,
-      purpose: "assistant-image",
-      contentType: mimeType,
-      sizeBytes: bytes.length,
-      visibility: "PUBLIC",
-    },
+  const stored = await persistVerifiedBufferUpload({
+    tenantId,
+    ownerId,
+    purpose: "assistant-image",
+    contentType: mimeType,
+    bytes,
+    visibility: "PUBLIC",
   });
-  return url;
+  return stored.url;
 }
 
 /** History text for the model: unwrap JSON user messages that carry attachments. */

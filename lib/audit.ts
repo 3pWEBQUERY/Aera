@@ -1,5 +1,5 @@
 import "server-only";
-import prisma from "./prisma";
+import { systemPrisma as prisma } from "./prisma";
 import { randomUUID } from "node:crypto";
 
 export async function writeAudit(input: {
@@ -12,6 +12,9 @@ export async function writeAudit(input: {
 }): Promise<void> {
   try {
     const metadata = JSON.stringify(input.metadata ?? {});
+    // Audit writes intentionally use the privileged client. aera_app has no
+    // EXECUTE grant on the SECURITY DEFINER function, so tenant-scoped SQL can
+    // neither forge platform events nor impersonate another actor.
     await prisma.$queryRaw`
       SELECT aera_write_audit(
         ${randomUUID()},

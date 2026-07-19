@@ -14,6 +14,8 @@ import { PushSettings } from "@/components/push-settings";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { getTranslations, getLocale } from "next-intl/server";
 import { env, features } from "@/lib/env";
+import { DataPrivacySettings } from "@/components/community/data-privacy-settings";
+import { setNewsletterConsentAction } from "@/app/actions/newsletter";
 
 export async function generateMetadata() {
   const t = await getTranslations("account");
@@ -82,7 +84,18 @@ export default async function MemberAccountPage({
       ...(from ? { from } : {}),
     }).toString()}`.replace(/\?$/, "");
 
-  const [memberships, subscriptions, stats, orders, comments, chatMessages, ownTenants, staffCount] =
+  const [
+    memberships,
+    subscriptions,
+    stats,
+    orders,
+    comments,
+    chatMessages,
+    ownTenants,
+    staffCount,
+    newsletterConsents,
+    emailSuppressions,
+  ] =
     await Promise.all([
       prisma.membership.findMany({
         where: { userId: user!.id, status: "ACTIVE" },
@@ -123,15 +136,42 @@ export default async function MemberAccountPage({
           tenant: { select: { name: true, slug: true } },
         },
       }),
-      prisma.tenant.count({ where: { ownerId: user!.id } }),
+      prisma.tenant.count({
+        where: {
+          ownerId: user!.id,
+          status: "ACTIVE",
+          memberships: {
+            some: { userId: user!.id, role: "OWNER", status: "ACTIVE" },
+          },
+        },
+      }),
       prisma.membership.count({
-        where: { userId: user!.id, role: { in: ["OWNER", "ADMIN", "MODERATOR"] } },
+        where: {
+          userId: user!.id,
+          status: "ACTIVE",
+          role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+          tenant: { status: "ACTIVE" },
+        },
+      }),
+      prisma.newsletterConsent.findMany({
+        where: { userId: user!.id },
+        select: { tenantId: true, email: true, status: true },
+      }),
+      prisma.emailSuppression.findMany({
+        where: { userId: user!.id, liftedAt: null },
+        select: { tenantId: true, reason: true },
       }),
     ]);
 
   const isCreator = ownTenants > 0 || staffCount > 0;
   const subByTenant = new Map(subscriptions.map((s) => [s.tenantId, s]));
   const statsByTenant = new Map(stats.map((s) => [s.tenantId, s]));
+  const newsletterByTenant = new Map(newsletterConsents.map((c) => [c.tenantId, c]));
+  const suppressedTenants = new Set(
+    emailSuppressions
+      .filter((s) => s.reason !== "UNSUBSCRIBED")
+      .map((s) => s.tenantId),
+  );
   const purchases = orders.filter((o) => o.status === "PAID" && o.productId);
   // Avatar uploads run through a community — use the first one the member is in.
   const uploadSlug = memberships[0]?.tenant.slug ?? null;
@@ -248,6 +288,29 @@ export default async function MemberAccountPage({
                 <LocaleSwitcher />
               </div>
             </section>
+            <section className="rounded-2xl border border-[#161613]/10 bg-white p-6 md:col-span-2">
+              <SectionHead eyebrow={t("privacyEyebrow")} title={t("privacyTitle")} />
+              <p className="mt-2 text-sm leading-6 text-[#161613]/60">
+                {t("privacyText")}
+              </p>
+              <div className="mt-5">
+                <DataPrivacySettings
+                  email={user.email}
+                  labels={{
+                    exportButton: t("privacyExportButton"),
+                    deleteButton: t("privacyDeleteButton"),
+                    deleteHint: t("privacyDeleteHint"),
+                    confirmationLabel: t("privacyConfirmationLabel"),
+                    passwordLabel: t("currentPassword"),
+                    deleting: t("privacyDeleting"),
+                    failed: t("privacyDeleteFailed"),
+                    blockedOwned: t("privacyDeleteBlockedOwned"),
+                    blockedPending: t("privacyDeleteBlockedPending"),
+                    invalidPassword: t("privacyDeleteInvalidPassword"),
+                  }}
+                />
+              </div>
+            </section>
           </div>
         ) : (
           <>
@@ -269,6 +332,11 @@ export default async function MemberAccountPage({
                   {memberships.map((m) => {
                     const sub = subByTenant.get(m.tenantId);
                     const st = statsByTenant.get(m.tenantId);
+                    const newsletter = newsletterByTenant.get(m.tenantId);
+                    const newsletterActive =
+                      newsletter?.status === "OPTED_IN" &&
+                      newsletter.email.trim().toLowerCase() === user!.email.trim().toLowerCase();
+                    const newsletterSuppressed = suppressedTenants.has(m.tenantId);
                     return (
                       <div
                         key={m.id}
@@ -315,6 +383,34 @@ export default async function MemberAccountPage({
                             {sub.cancelAtPeriodEnd && ` · ${t("subEndsPeriod")}`}
                           </p>
                         )}
+                        <div className="mt-4 rounded-xl bg-[#161613]/[0.035] p-3">
+                          <p className="text-xs font-semibold text-[#161613]/75">
+                            {t("newsletterTitle")}
+                          </p>
+                          <p className="mt-1 text-xs leading-5 text-[#161613]/50">
+                            {newsletterSuppressed
+                              ? t("newsletterSuppressed")
+                              : newsletterActive
+                                ? t("newsletterActive")
+                                : t("newsletterInactive")}
+                          </p>
+                          {!newsletterSuppressed && <form action={setNewsletterConsentAction} className="mt-2">
+                            <input type="hidden" name="tenantId" value={m.tenantId} />
+                            <input
+                              type="hidden"
+                              name="intent"
+                              value={newsletterActive ? "withdraw" : "opt-in"}
+                            />
+                            <button
+                              type="submit"
+                              className="text-xs font-semibold text-[#161613] underline underline-offset-4"
+                            >
+                              {newsletterActive
+                                ? t("newsletterWithdraw")
+                                : t("newsletterOptIn")}
+                            </button>
+                          </form>}
+                        </div>
                         <div className="mt-4 flex flex-wrap gap-2">
                           <Link
                             href={`/c/${m.tenant.slug}`}

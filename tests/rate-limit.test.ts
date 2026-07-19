@@ -1,18 +1,24 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { rateLimit } from "@/lib/rate-limit";
+import { createHash } from "node:crypto";
 
-type G = { __aeraRedis?: unknown };
-const g = globalThis as unknown as G;
+const redisMocks = vi.hoisted(() => ({
+  getRedisCommandClient: vi.fn(),
+  isRedisConfigured: vi.fn(),
+}));
+
+vi.mock("@/lib/redis", () => redisMocks);
+
+import { rateLimit } from "@/lib/rate-limit";
 
 describe("rateLimit (in-memory backend)", () => {
   beforeEach(() => {
-    // Kein Redis -> Memory-Pfad (Cache der Backend-Wahl zurücksetzen).
-    g.__aeraRedis = null;
+    redisMocks.getRedisCommandClient.mockResolvedValue(null);
+    redisMocks.isRedisConfigured.mockReturnValue(false);
     vi.useFakeTimers();
   });
   afterEach(() => {
     vi.useRealTimers();
-    delete g.__aeraRedis;
+    vi.clearAllMocks();
   });
 
   it("allows up to the limit and blocks beyond it", async () => {
@@ -32,41 +38,61 @@ describe("rateLimit (in-memory backend)", () => {
   });
 
   it("tracks separate keys independently", async () => {
-    expect(await rateLimit("a", 1, 60_000)).toBe(true);
-    expect(await rateLimit("b", 1, 60_000)).toBe(true);
-    expect(await rateLimit("a", 1, 60_000)).toBe(false);
-    expect(await rateLimit("b", 1, 60_000)).toBe(false);
+    const suffix = Math.random();
+    expect(await rateLimit(`a:${suffix}`, 1, 60_000)).toBe(true);
+    expect(await rateLimit(`b:${suffix}`, 1, 60_000)).toBe(true);
+    expect(await rateLimit(`a:${suffix}`, 1, 60_000)).toBe(false);
+    expect(await rateLimit(`b:${suffix}`, 1, 60_000)).toBe(false);
   });
 });
 
 describe("rateLimit (redis backend)", () => {
+  beforeEach(() => {
+    redisMocks.isRedisConfigured.mockReturnValue(true);
+  });
   afterEach(() => {
-    delete g.__aeraRedis;
+    vi.restoreAllMocks();
+    vi.clearAllMocks();
   });
 
-  it("uses INCR + PEXPIRE and enforces the limit", async () => {
+  it("uses an atomic Lua counter and enforces the limit", async () => {
     let count = 0;
-    const incr = vi.fn(async () => ++count);
-    const pexpire = vi.fn(async () => 1);
-    g.__aeraRedis = { incr, pexpire };
+    const evalCommand = vi.fn(async (..._args: unknown[]) => ++count);
+    redisMocks.getRedisCommandClient.mockResolvedValue({ eval: evalCommand });
 
     expect(await rateLimit("rkey", 2, 60_000)).toBe(true);
     expect(await rateLimit("rkey", 2, 60_000)).toBe(true);
     expect(await rateLimit("rkey", 2, 60_000)).toBe(false);
 
-    expect(incr).toHaveBeenCalledWith("rl:rkey");
-    // PEXPIRE nur beim ersten Ereignis des Fensters.
-    expect(pexpire).toHaveBeenCalledTimes(1);
-    expect(pexpire).toHaveBeenCalledWith("rl:rkey", 60_000);
+    expect(evalCommand).toHaveBeenCalledTimes(3);
+    expect(evalCommand.mock.calls[0]?.[1]).toBe(1);
+    expect(evalCommand.mock.calls[0]?.[2]).toBe(
+      `aera:rl:v1:${createHash("sha256").update("rkey").digest("hex")}`,
+    );
+    expect(evalCommand.mock.calls[0]?.[3]).toBe(60_000);
   });
 
-  it("fails open when redis errors (availability over throttling)", async () => {
-    g.__aeraRedis = {
-      incr: vi.fn(async () => {
+  it("degrades to a conservative local limit instead of failing open", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    redisMocks.getRedisCommandClient.mockResolvedValue({
+      eval: vi.fn(async () => {
         throw new Error("connection lost");
       }),
-      pexpire: vi.fn(),
-    };
-    expect(await rateLimit("rkey", 1, 60_000)).toBe(true);
+    });
+    const key = `degraded:${Math.random()}`;
+
+    // Half of the configured limit (ceil(3 / 2)) is available per instance.
+    expect(await rateLimit(key, 3, 60_000)).toBe(true);
+    expect(await rateLimit(key, 3, 60_000)).toBe(true);
+    expect(await rateLimit(key, 3, 60_000)).toBe(false);
+  });
+
+  it("also throttles locally when a configured client cannot initialize", async () => {
+    vi.spyOn(console, "error").mockImplementation(() => {});
+    redisMocks.getRedisCommandClient.mockResolvedValue(null);
+    const key = `missing-client:${Math.random()}`;
+
+    expect(await rateLimit(key, 2, 60_000)).toBe(true);
+    expect(await rateLimit(key, 2, 60_000)).toBe(false);
   });
 });

@@ -15,7 +15,7 @@ export interface TestResult {
  */
 export async function testStripeAction(_prev: TestResult, fd: FormData): Promise<TestResult> {
   const slug = String(fd.get("tenant"));
-  await requireTenantAdmin(slug); // only staff may probe the key
+  await requireTenantAdmin(slug, "OWNER");
   const t = await getTranslations("dashboard.settings.stripeTest");
 
   const key = env.STRIPE_SECRET_KEY;

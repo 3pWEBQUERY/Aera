@@ -4,8 +4,8 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { joinCommunityAction } from "@/app/actions/engage";
 import { MemberSignupForm } from "@/components/forms/auth-forms";
-import { Button } from "@/components/ui/button";
-import { Pill } from "@/components/ui/misc";
+import { PurchaseSubmitButton } from "@/components/community/purchase-submit-button";
+import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { Icon } from "@/components/dashboard/icons";
 import { cn, formatPrice } from "@/lib/utils";
 
@@ -39,6 +39,7 @@ export default async function JoinPage({
   const { tenant, user, ctx } = community;
   const t = await getTranslations("community.joinPage");
   const tSafety = await getTranslations("billingSafety");
+  const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
   const currentTierId = ctx.membership?.status === "ACTIVE" ? ctx.membership.tierId : null;
 
@@ -103,6 +104,14 @@ export default async function JoinPage({
           className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800"
         >
           {tSafety("activeSubscriptionError")}
+        </p>
+      )}
+      {error === "legal-consent" && (
+        <p
+          role="alert"
+          className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800"
+        >
+          {tLegal("requiredError")}
         </p>
       )}
 
@@ -201,8 +210,22 @@ export default async function JoinPage({
                 <input type="hidden" name="tenant" value={slug} />
                 <input type="hidden" name="tierId" value={tier.id} />
                 {refCode && <input type="hidden" name="ref" value={refCode} />}
-                <Button
+                {user && !isCurrent && (
+                  <label className="mb-4 flex cursor-pointer items-start gap-2.5 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600">
+                    <input
+                      name="newsletterOptIn"
+                      type="checkbox"
+                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-slate-900 focus:ring-[var(--brand-ring)]"
+                    />
+                    <span>{t("newsletterOptInLabel", { name: tenant.name })}</span>
+                  </label>
+                )}
+                {tier.priceCents > 0 && (
+                  <ImmediateAccessConsent className="mb-3" />
+                )}
+                <PurchaseSubmitButton
                   variant={tier.priceCents > 0 ? "primary" : "secondary"}
+                  size="md"
                   className="w-full rounded-full"
                   disabled={isCurrent || switchBlocked}
                 >
@@ -215,7 +238,7 @@ export default async function JoinPage({
                       : tier.priceCents > 0
                         ? t("ctaJoin")
                         : t("ctaJoinFree")}
-                </Button>
+                </PurchaseSubmitButton>
               </form>
 
               {benefits.length > 0 && (

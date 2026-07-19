@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Icon } from "@/components/dashboard/icons";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 
 const links = [
   { href: "/home", key: "navDiscover" },
@@ -18,6 +19,10 @@ export function MarketingMobileNav({ loggedIn }: { loggedIn: boolean }) {
   const t = useTranslations("marketing");
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const dialogRef = useModalAccessibility<HTMLDivElement>({
+    open,
+    onClose: () => setOpen(false),
+  });
 
   // Close after navigating.
   useEffect(() => {
@@ -42,8 +47,15 @@ export function MarketingMobileNav({ loggedIn }: { loggedIn: boolean }) {
             className="fixed inset-0 z-40 bg-black/50"
             onClick={() => setOpen(false)}
           />
-          <nav className="absolute inset-x-0 top-full z-50 border-b border-white/10 bg-[#161613] px-5 py-3 shadow-xl">
-            <div className="grid gap-1">
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("menuOpen")}
+            tabIndex={-1}
+            className="absolute inset-x-0 top-full z-50 border-b border-white/10 bg-[#161613] px-5 py-3 shadow-xl"
+          >
+            <nav aria-label={t("menuOpen")} className="grid gap-1">
               {links.map((l) => (
                 <Link
                   key={l.href}
@@ -63,8 +75,8 @@ export function MarketingMobileNav({ loggedIn }: { loggedIn: boolean }) {
                   {t("login")}
                 </Link>
               )}
-            </div>
-          </nav>
+            </nav>
+          </div>
         </>
       )}
     </div>

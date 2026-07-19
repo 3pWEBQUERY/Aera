@@ -2,7 +2,7 @@ import "server-only";
 import { createHash } from "crypto";
 import { SignJWT, jwtVerify } from "jose";
 import { env } from "./env";
-import prisma from "./prisma";
+import { systemPrisma as prisma } from "./prisma";
 import type { User } from "@/app/generated/prisma/client";
 
 /**
@@ -47,7 +47,7 @@ export async function verifyAccountToken(
     const { payload } = await jwtVerify(token, secret);
     if (payload.purpose !== purpose || typeof payload.sub !== "string") return null;
     const user = await prisma.user.findUnique({ where: { id: payload.sub } });
-    if (!user) return null;
+    if (!user || user.accountStatus !== "ACTIVE") return null;
     if (payload.fp !== fingerprint(user.passwordHash)) return null; // already used
     return user;
   } catch {

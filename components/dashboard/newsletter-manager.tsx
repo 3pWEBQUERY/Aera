@@ -27,6 +27,7 @@ export interface CampaignRowData {
   segmentName: string | null;
   recipientCount: number;
   sentAt: string | Date | null;
+  scheduledAt: string | Date | null;
 }
 export interface SegmentData {
   id: string;
@@ -44,6 +45,15 @@ const statusCls: Record<string, string> = {
   SENDING: "bg-amber-100 text-amber-700",
   SENT: "bg-green-100 text-green-700",
 };
+
+function toDatetimeLocal(value: string | Date | null): string {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
+    .toISOString()
+    .slice(0, 16);
+}
 
 export function NewsletterManager({
   slug,
@@ -119,6 +129,9 @@ export function NewsletterManager({
                   </div>
                   <p className="mt-0.5 text-sm text-slate-400">
                     {c.segmentName ?? t("allActiveMembers")}
+                    {c.status === "SCHEDULED" && c.scheduledAt
+                      ? ` · ${formatDateTime(c.scheduledAt, locale)}`
+                      : ""}
                     {sent || sending ? ` · ${t("recipientsCount", { count: c.recipientCount })}${c.sentAt ? ` · ${formatDateTime(c.sentAt, locale)}` : ""}` : ""}
                   </p>
                 </div>
@@ -193,7 +206,26 @@ function CampaignForm({
   const isEdit = !!campaign;
   const [state, action, pending] = useActionState(isEdit ? updateCampaignAction : createCampaignAction, initial);
   const [deleting, setDeleting] = useState(false);
+  const [timezoneOffset, setTimezoneOffset] = useState(0);
+  const [scheduledAt, setScheduledAt] = useState("");
   const t = useTranslations("dashboard.newsletter");
+  const tStatus = useTranslations("dashboard.newsletter.status");
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      const initialDate = campaign?.scheduledAt ? new Date(campaign.scheduledAt) : new Date();
+      setTimezoneOffset(initialDate.getTimezoneOffset());
+      setScheduledAt(toDatetimeLocal(campaign?.scheduledAt ?? null));
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [campaign?.scheduledAt]);
+
+  function onScheduleChange(value: string) {
+    setScheduledAt(value);
+    const selected = value ? new Date(value) : new Date();
+    if (!Number.isNaN(selected.getTime())) {
+      setTimezoneOffset(selected.getTimezoneOffset());
+    }
+  }
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -212,6 +244,7 @@ function CampaignForm({
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
+      <input type="hidden" name="timezoneOffset" value={timezoneOffset} />
       {isEdit && <input type="hidden" name="campaignId" value={campaign!.id} />}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
@@ -232,6 +265,16 @@ function CampaignForm({
           <div>
             <Label htmlFor="nf-body">{t("contentLabel")}</Label>
             <Textarea id="nf-body" name="body" rows={8} required defaultValue={campaign?.body} placeholder={t("contentPlaceholder")} />
+          </div>
+          <div>
+            <Label htmlFor="nf-scheduled">{tStatus("SCHEDULED")}</Label>
+            <Input
+              id="nf-scheduled"
+              name="scheduledAt"
+              type="datetime-local"
+              value={scheduledAt}
+              onChange={(event) => onScheduleChange(event.target.value)}
+            />
           </div>
           {isEdit && (
             <div className="border-t border-slate-100 pt-5">

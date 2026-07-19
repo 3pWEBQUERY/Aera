@@ -5,6 +5,7 @@ import {
   setCommunityCoverAction,
   removeCommunityCoverAction,
 } from "@/app/actions/cover";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -33,22 +34,21 @@ export function CoverUpload({
     setError(null);
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      fd.set("tenant", tenant);
-      fd.set("purpose", "community-cover");
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok || !json.url) {
-        setError(json.error ?? t("uploadFailed"));
-      } else {
-        setUrl(json.url);
-        const afd = new FormData();
-        afd.set("tenant", tenant);
-        startTransition(() => setCommunityCoverAction(afd));
-      }
-    } catch {
-      setError(t("uploadFailed"));
+      const uploadedUrl = await uploadMediaFile({
+        file,
+        tenant,
+        purpose: "community-cover",
+      });
+      setUrl(uploadedUrl);
+      const afd = new FormData();
+      afd.set("tenant", tenant);
+      startTransition(() => setCommunityCoverAction(afd));
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof UploadError
+          ? uploadError.message
+          : t("uploadFailed"),
+      );
     } finally {
       setUploading(false);
     }

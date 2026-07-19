@@ -1,0 +1,115 @@
+import { describe, expect, it } from "vitest";
+import {
+  EnvironmentValidationError,
+  validateEnvironment,
+  type EnvironmentSource,
+} from "@/lib/env-validation";
+
+const validProduction = {
+  DATABASE_URL: "postgresql://aera:strong-db-password@db.railway.internal:5432/aera",
+  AUTH_SECRET: "auth-secret-with-more-than-thirty-two-random-characters",
+  AERA_DATA_ENCRYPTION_KEYS: "current:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  CRON_SECRET: "cron-secret-with-more-than-thirty-two-random-characters",
+  NEXT_PUBLIC_ROOT_DOMAIN: "aera.so",
+  APP_URL: "https://aera.so",
+  DOMAIN_RESOLVER_ORIGIN: "http://aera.railway.internal",
+  AERA_PLATFORM_FEE_PERCENT: "5",
+  STRIPE_SECRET_KEY: "sk_live_ci_12345678901234567890",
+  STRIPE_WEBHOOK_SECRET: "whsec_12345678901234567890",
+  NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: "pk_live_ci_12345678901234567890",
+  STRIPE_CREATOR_STARTER_PRICE_ID: "price_Starter123",
+  STRIPE_CREATOR_PRO_PRICE_ID: "price_Pro123",
+  STRIPE_CREATOR_SCALE_PRICE_ID: "price_Scale123",
+  RESEND_API_KEY: "re_ci_12345678901234567890",
+  RESEND_WEBHOOK_SECRET: "whsec_ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789",
+  EMAIL_FROM: "Aera <noreply@aera.so>",
+  S3_ENDPOINT: "https://storage.railway.app",
+  S3_BUCKET: "aera-private",
+  S3_ACCESS_KEY_ID: "ci-access-key",
+  S3_SECRET_ACCESS_KEY: "ci-secret-access-key-value",
+  REDIS_URL: "redis://default:secret@redis.railway.internal:6379",
+  CLAMAV_HOST: "clamav.railway.internal",
+  CLAMAV_PORT: "3310",
+} satisfies EnvironmentSource;
+
+describe("production environment validation", () => {
+  it("accepts a complete production configuration", () => {
+    expect(() => validateEnvironment(validProduction, "production")).not.toThrow();
+    expect(() =>
+      validateEnvironment(
+        { ...validProduction, STRIPE_SECRET_KEY: "rk_live_ci_12345678901234567890" },
+        "production",
+      ),
+    ).not.toThrow();
+  });
+
+  it("collects all missing launch-critical variables", () => {
+    try {
+      validateEnvironment({}, "production");
+      throw new Error("expected validation error");
+    } catch (error) {
+      expect(error).toBeInstanceOf(EnvironmentValidationError);
+      const issues = (error as EnvironmentValidationError).issues.join("\n");
+      expect(issues).toContain("DATABASE_URL");
+      expect(issues).toContain("REDIS_URL");
+      expect(issues).toContain("STRIPE_WEBHOOK_SECRET");
+      expect(issues).toContain("CLAMAV_HOST");
+    }
+  });
+
+  it("rejects localhost and insecure public production origins", () => {
+    expect(() =>
+      validateEnvironment(
+        {
+          ...validProduction,
+          APP_URL: "http://localhost:3000",
+          DOMAIN_RESOLVER_ORIGIN: "http://public.example.net",
+        },
+        "production",
+      ),
+    ).toThrow(/APP_URL: must use https/);
+  });
+
+  it("rejects malformed keyrings, numbers and partial optional groups", () => {
+    expect(() =>
+      validateEnvironment(
+        {
+          ...validProduction,
+          AERA_DATA_ENCRYPTION_KEYS: "current:not-base64",
+          AERA_PLATFORM_FEE_PERCENT: "NaN",
+          CLAMAV_PORT: "70000",
+          NEXT_PUBLIC_VAPID_PUBLIC_KEY: "only-one-half",
+        },
+        "production",
+      ),
+    ).toThrow(/AERA_DATA_ENCRYPTION_KEYS/);
+  });
+
+  it("never includes secret values in validation errors", () => {
+    const leaked = "super-sensitive-value-that-must-never-be-logged";
+    try {
+      validateEnvironment({ ...validProduction, AUTH_SECRET: leaked, REDIS_URL: leaked }, "production");
+      throw new Error("expected validation error");
+    } catch (error) {
+      expect(String(error)).not.toContain(leaked);
+      expect(String(error)).toContain("REDIS_URL");
+    }
+  });
+
+  it("keeps integrations optional in development but rejects partial groups", () => {
+    expect(() => validateEnvironment({}, "development")).not.toThrow();
+    expect(() =>
+      validateEnvironment(
+        {
+          NEXT_PUBLIC_ROOT_DOMAIN: "localhost",
+          APP_URL: "http://localhost:3000",
+          DOMAIN_RESOLVER_ORIGIN: "http://localhost:3000",
+        },
+        "development",
+      ),
+    ).not.toThrow();
+    expect(() =>
+      validateEnvironment({ STRIPE_SECRET_KEY: "sk_test_1234567890123456" }, "development"),
+    ).toThrow(/STRIPE_WEBHOOK_SECRET/);
+  });
+});
