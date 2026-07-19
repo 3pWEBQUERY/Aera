@@ -1294,7 +1294,20 @@
       "loading": "載入中……",
       "linkPlaceholder": "https://…",
       "applyLink": "加入連結",
-      "cancel": "取消"
+      "cancel": "取消",
+      "divider": "分隔線",
+      "emoji": "表情符號",
+      "record": "錄製影片",
+      "recStart": "開始錄製",
+      "recStop": "停止錄製",
+      "recInsert": "插入",
+      "recRetake": "重新錄製",
+      "recDenied": "無法存取相機。請在瀏覽器中允許存取。",
+      "recUnsupported": "此瀏覽器不支援影片錄製。",
+      "recPrep": "正在準備相機…",
+      "paragraph": "段落",
+      "attach": "附加檔案",
+      "file": "檔案"
     },
     "links": {
       "badge": "連結",

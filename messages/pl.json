@@ -1294,7 +1294,20 @@
       "loading": "Ładowanie…",
       "linkPlaceholder": "https://…",
       "applyLink": "Dodaj link",
-      "cancel": "Anuluj"
+      "cancel": "Anuluj",
+      "divider": "Separator",
+      "emoji": "Emoji",
+      "record": "Nagraj wideo",
+      "recStart": "Rozpocznij nagrywanie",
+      "recStop": "Zatrzymaj nagrywanie",
+      "recInsert": "Wstaw",
+      "recRetake": "Nagraj ponownie",
+      "recDenied": "Brak dostępu do kamery. Zezwól na dostęp w przeglądarce.",
+      "recUnsupported": "Ta przeglądarka nie obsługuje nagrywania wideo.",
+      "recPrep": "Przygotowywanie kamery…",
+      "paragraph": "Akapit",
+      "attach": "Załącz plik",
+      "file": "Plik"
     },
     "links": {
       "badge": "Linki",

@@ -1294,7 +1294,20 @@
       "loading": "加载中……",
       "linkPlaceholder": "https://…",
       "applyLink": "添加链接",
-      "cancel": "取消"
+      "cancel": "取消",
+      "divider": "分隔线",
+      "emoji": "表情",
+      "record": "录制视频",
+      "recStart": "开始录制",
+      "recStop": "停止录制",
+      "recInsert": "插入",
+      "recRetake": "重新录制",
+      "recDenied": "无法访问摄像头。请在浏览器中允许访问。",
+      "recUnsupported": "此浏览器不支持视频录制。",
+      "recPrep": "正在准备摄像头…",
+      "paragraph": "段落",
+      "attach": "附加文件",
+      "file": "文件"
     },
     "links": {
       "badge": "链接",

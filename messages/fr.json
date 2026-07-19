@@ -1294,7 +1294,20 @@
       "loading": "Chargement…",
       "linkPlaceholder": "https://…",
       "applyLink": "Lier",
-      "cancel": "Annuler"
+      "cancel": "Annuler",
+      "divider": "Séparateur",
+      "emoji": "Emoji",
+      "record": "Enregistrer une vidéo",
+      "recStart": "Démarrer l’enregistrement",
+      "recStop": "Arrêter l’enregistrement",
+      "recInsert": "Insérer",
+      "recRetake": "Recommencer",
+      "recDenied": "Accès à la caméra impossible. Autorisez l’accès dans votre navigateur.",
+      "recUnsupported": "L’enregistrement vidéo n’est pas pris en charge par ce navigateur.",
+      "recPrep": "Préparation de la caméra…",
+      "paragraph": "Paragraphe",
+      "attach": "Joindre un fichier",
+      "file": "Fichier"
     },
     "links": {
       "badge": "Liens",

@@ -1294,7 +1294,20 @@
       "loading": "불러오는 중…",
       "linkPlaceholder": "https://…",
       "applyLink": "링크",
-      "cancel": "취소"
+      "cancel": "취소",
+      "divider": "구분선",
+      "emoji": "이모지",
+      "record": "동영상 녹화",
+      "recStart": "녹화 시작",
+      "recStop": "녹화 중지",
+      "recInsert": "삽입",
+      "recRetake": "다시 녹화",
+      "recDenied": "카메라에 접근할 수 없습니다. 브라우저에서 접근을 허용해 주세요.",
+      "recUnsupported": "이 브라우저는 동영상 녹화를 지원하지 않습니다.",
+      "recPrep": "카메라 준비 중…",
+      "paragraph": "단락",
+      "attach": "파일 첨부",
+      "file": "파일"
     },
     "links": {
       "badge": "링크",

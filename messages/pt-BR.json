@@ -1294,7 +1294,20 @@
       "loading": "Carregando…",
       "linkPlaceholder": "https://…",
       "applyLink": "Vincular",
-      "cancel": "Cancelar"
+      "cancel": "Cancelar",
+      "divider": "Divisória",
+      "emoji": "Emoji",
+      "record": "Gravar vídeo",
+      "recStart": "Iniciar gravação",
+      "recStop": "Parar gravação",
+      "recInsert": "Inserir",
+      "recRetake": "Gravar novamente",
+      "recDenied": "Não foi possível acessar a câmera. Permita o acesso no navegador.",
+      "recUnsupported": "A gravação de vídeo não é compatível com este navegador.",
+      "recPrep": "Preparando a câmera…",
+      "paragraph": "Parágrafo",
+      "attach": "Anexar arquivo",
+      "file": "Arquivo"
     },
     "links": {
       "badge": "Links",

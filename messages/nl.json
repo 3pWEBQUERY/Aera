@@ -1294,7 +1294,20 @@
       "loading": "Laden…",
       "linkPlaceholder": "https://…",
       "applyLink": "Koppelen",
-      "cancel": "Annuleren"
+      "cancel": "Annuleren",
+      "divider": "Scheidingslijn",
+      "emoji": "Emoji",
+      "record": "Video opnemen",
+      "recStart": "Opname starten",
+      "recStop": "Opname stoppen",
+      "recInsert": "Invoegen",
+      "recRetake": "Opnieuw opnemen",
+      "recDenied": "Geen toegang tot de camera. Sta toegang toe in je browser.",
+      "recUnsupported": "Video-opname wordt niet ondersteund in deze browser.",
+      "recPrep": "Camera voorbereiden…",
+      "paragraph": "Alinea",
+      "attach": "Bestand bijvoegen",
+      "file": "Bestand"
     },
     "links": {
       "badge": "Links",

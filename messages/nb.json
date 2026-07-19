@@ -1294,7 +1294,20 @@
       "loading": "Laster…",
       "linkPlaceholder": "https://…",
       "applyLink": "Lenke",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "divider": "Skillelinje",
+      "emoji": "Emoji",
+      "record": "Ta opp video",
+      "recStart": "Start opptak",
+      "recStop": "Stopp opptak",
+      "recInsert": "Sett inn",
+      "recRetake": "Ta opp på nytt",
+      "recDenied": "Får ikke tilgang til kameraet. Tillat tilgang i nettleseren.",
+      "recUnsupported": "Videoopptak støttes ikke i denne nettleseren.",
+      "recPrep": "Forbereder kamera…",
+      "paragraph": "Avsnitt",
+      "attach": "Legg ved fil",
+      "file": "Fil"
     },
     "links": {
       "badge": "Lenker",

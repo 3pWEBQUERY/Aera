@@ -1294,7 +1294,20 @@
       "loading": "Laddar…",
       "linkPlaceholder": "https://…",
       "applyLink": "Länka",
-      "cancel": "Avbryt"
+      "cancel": "Avbryt",
+      "divider": "Avdelare",
+      "emoji": "Emoji",
+      "record": "Spela in video",
+      "recStart": "Starta inspelning",
+      "recStop": "Stoppa inspelning",
+      "recInsert": "Infoga",
+      "recRetake": "Spela in igen",
+      "recDenied": "Det gick inte att komma åt kameran. Tillåt åtkomst i webbläsaren.",
+      "recUnsupported": "Videoinspelning stöds inte i den här webbläsaren.",
+      "recPrep": "Förbereder kameran…",
+      "paragraph": "Stycke",
+      "attach": "Bifoga fil",
+      "file": "Fil"
     },
     "links": {
       "badge": "Länkar",

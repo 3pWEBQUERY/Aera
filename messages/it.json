@@ -1294,7 +1294,20 @@
       "loading": "Caricamento…",
       "linkPlaceholder": "https://…",
       "applyLink": "Collega",
-      "cancel": "Annulla"
+      "cancel": "Annulla",
+      "divider": "Separatore",
+      "emoji": "Emoji",
+      "record": "Registra video",
+      "recStart": "Avvia registrazione",
+      "recStop": "Ferma registrazione",
+      "recInsert": "Inserisci",
+      "recRetake": "Registra di nuovo",
+      "recDenied": "Accesso alla fotocamera non disponibile. Consenti l’accesso nel browser.",
+      "recUnsupported": "La registrazione video non è supportata in questo browser.",
+      "recPrep": "Preparazione della fotocamera…",
+      "paragraph": "Paragrafo",
+      "attach": "Allega file",
+      "file": "File"
     },
     "links": {
       "badge": "Link",

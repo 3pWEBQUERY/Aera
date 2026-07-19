@@ -1294,7 +1294,20 @@
       "loading": "Indlæser…",
       "linkPlaceholder": "https://…",
       "applyLink": "Link",
-      "cancel": "Annuller"
+      "cancel": "Annuller",
+      "divider": "Skillelinje",
+      "emoji": "Emoji",
+      "record": "Optag video",
+      "recStart": "Start optagelse",
+      "recStop": "Stop optagelse",
+      "recInsert": "Indsæt",
+      "recRetake": "Optag igen",
+      "recDenied": "Kameraadgang er ikke mulig. Tillad adgang i din browser.",
+      "recUnsupported": "Videooptagelse understøttes ikke i denne browser.",
+      "recPrep": "Forbereder kamera…",
+      "paragraph": "Afsnit",
+      "attach": "Vedhæft fil",
+      "file": "Fil"
     },
     "links": {
       "badge": "Links",
