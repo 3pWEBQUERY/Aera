@@ -1330,7 +1330,8 @@
       "recRetake": "Neu aufnehmen",
       "recDenied": "Kamerazugriff nicht möglich. Bitte erlaube den Zugriff im Browser.",
       "recUnsupported": "Videoaufnahme wird in diesem Browser nicht unterstützt.",
-      "recPrep": "Kamera wird vorbereitet…"
+      "recPrep": "Kamera wird vorbereitet…",
+      "paragraph": "Absatz"
     },
     "live": {
       "subtitle": "Live-Streams und Sitzungen planen und steuern.",

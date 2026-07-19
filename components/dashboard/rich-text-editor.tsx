@@ -24,6 +24,9 @@ const glyphs = {
   link: svg(<>
     <path d="M9 15l6-6" /><path d="M11 6l1-1a3.5 3.5 0 0 1 5 5l-1 1" /><path d="M13 18l-1 1a3.5 3.5 0 0 1-5-5l1-1" />
   </>),
+  paragraph: svg(<>
+    <line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="13" y2="17" />
+  </>),
   divider: svg(<line x1="4" y1="12" x2="20" y2="12" />),
   record: svg(<>
     <rect x="2.5" y="6.5" width="13" height="11" rx="2.5" />
@@ -72,6 +75,11 @@ export function RichTextEditor({
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Slash "/" command menu.
+  const [slashOpen, setSlashOpen] = useState(false);
+  const [slashQuery, setSlashQuery] = useState("");
+  const [slashIndex, setSlashIndex] = useState(0);
+  const [slashPos, setSlashPos] = useState<{ top: number; left: number } | null>(null);
 
   // Seed the editable region once, imperatively. It is intentionally an
   // *uncontrolled* contentEditable: React never manages its children, so the
@@ -152,6 +160,64 @@ export function RichTextEditor({
     }
   }
 
+  function closeSlash() {
+    setSlashOpen(false);
+    setSlashQuery("");
+    setSlashIndex(0);
+  }
+
+  /** After each edit, decide whether a "/…" token under the caret should open
+   *  the command menu, and where. Triggers only at a block start or after
+   *  whitespace, so URLs like https://… never open it. */
+  function updateSlash() {
+    const sel = window.getSelection();
+    if (!sel || !sel.isCollapsed || !sel.rangeCount) return closeSlash();
+    const range = sel.getRangeAt(0);
+    const node = range.startContainer;
+    if (!editorRef.current?.contains(node) || node.nodeType !== Node.TEXT_NODE) {
+      return closeSlash();
+    }
+    const textBefore = (node.textContent ?? "").slice(0, range.startOffset);
+    const slashIdx = textBefore.lastIndexOf("/");
+    if (slashIdx === -1) return closeSlash();
+    const query = textBefore.slice(slashIdx + 1);
+    const before = slashIdx === 0 ? "" : textBefore[slashIdx - 1];
+    if ((before !== "" && !/\s/.test(before)) || /\s/.test(query)) return closeSlash();
+    const rect = range.getBoundingClientRect();
+    setSlashPos({ top: (rect.bottom || rect.top) + 6, left: rect.left });
+    setSlashQuery(query);
+    setSlashIndex(0);
+    setSlashOpen(true);
+  }
+
+  /** Remove the typed "/query" and run the chosen block command. */
+  function applySlash(cmd: Cmd) {
+    const sel = window.getSelection();
+    try {
+      if (sel && sel.isCollapsed && sel.rangeCount) {
+        const range = sel.getRangeAt(0);
+        const node = range.startContainer;
+        if (node.nodeType === Node.TEXT_NODE) {
+          const end = range.startOffset;
+          const start = Math.max(0, end - (slashQuery.length + 1));
+          const del = document.createRange();
+          del.setStart(node, start);
+          del.setEnd(node, end);
+          del.deleteContents();
+          const caret = document.createRange();
+          caret.setStart(node, start);
+          caret.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(caret);
+        }
+      }
+    } catch {
+      editorRef.current?.focus();
+    }
+    closeSlash();
+    cmd.run();
+  }
+
   function insertEmoji(emoji: string) {
     restoreSelection();
     document.execCommand("insertText", false, emoji);
@@ -190,6 +256,15 @@ export function RichTextEditor({
     { icon: glyphs.quote, label: t("quote"), run: () => exec("formatBlock", "<blockquote>") },
     { icon: glyphs.divider, label: t("divider"), run: () => exec("insertHorizontalRule") },
   ];
+
+  // Blocks offered by the "/" menu (Paragraph first, then the block commands).
+  const slashCommands: Cmd[] = [
+    { icon: glyphs.paragraph, label: t("paragraph"), run: () => exec("formatBlock", "<p>") },
+    ...blocks,
+  ];
+  const filteredSlash = slashQuery
+    ? slashCommands.filter((c) => c.label.toLowerCase().includes(slashQuery.toLowerCase()))
+    : slashCommands;
 
   function Btn({ cmd }: { cmd: Cmd }) {
     return (
@@ -353,8 +428,30 @@ export function RichTextEditor({
           ref={editorRef}
           contentEditable
           suppressContentEditableWarning
-          onInput={sync}
-          onBlur={saveSelection}
+          onInput={() => {
+            sync();
+            updateSlash();
+          }}
+          onKeyDown={(e) => {
+            if (!slashOpen || filteredSlash.length === 0) return;
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              setSlashIndex((i) => (i + 1) % filteredSlash.length);
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setSlashIndex((i) => (i - 1 + filteredSlash.length) % filteredSlash.length);
+            } else if (e.key === "Enter" || e.key === "Tab") {
+              e.preventDefault();
+              applySlash(filteredSlash[slashIndex] ?? filteredSlash[0]);
+            } else if (e.key === "Escape") {
+              e.preventDefault();
+              closeSlash();
+            }
+          }}
+          onBlur={() => {
+            saveSelection();
+            closeSlash();
+          }}
           onPaste={(e) => {
             e.preventDefault();
             const text = e.clipboardData.getData("text/plain");
@@ -364,6 +461,28 @@ export function RichTextEditor({
           className="rich-content min-h-[260px] w-full px-4 py-4 text-[15px] leading-relaxed text-slate-800 outline-none"
         />
       </div>
+
+      {/* Slash "/" command menu */}
+      {slashOpen && slashPos && filteredSlash.length > 0 && (
+        <div
+          className="fixed z-[130] w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+          style={{ top: slashPos.top, left: slashPos.left }}
+        >
+          {filteredSlash.map((cmd, i) => (
+            <button
+              key={cmd.label}
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onMouseEnter={() => setSlashIndex(i)}
+              onClick={() => applySlash(cmd)}
+              className={`flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-sm transition ${i === slashIndex ? "bg-slate-100 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}
+            >
+              <span className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-500">{cmd.icon}</span>
+              {cmd.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {error && <p className="border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>}
 
