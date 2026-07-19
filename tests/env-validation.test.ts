@@ -51,6 +51,8 @@ describe("production environment validation", () => {
   it("ships the tools used by Railway pre-deploy and prestart in the runtime image", () => {
     expect(packageJson.scripts?.["db:predeploy"]).toContain("prisma migrate deploy");
     expect(packageJson.scripts?.prestart).toContain("env:check");
+    // Prestart reports issues but must never block the deployment.
+    expect(packageJson.scripts?.prestart).toContain("--report");
     for (const runtimeTool of ["prisma", "tsx"]) {
       expect(packageJson.dependencies?.[runtimeTool]).toBeTruthy();
       expect(packageJson.devDependencies?.[runtimeTool]).toBeUndefined();
@@ -74,6 +76,14 @@ describe("production environment validation", () => {
     expect(() =>
       validateEnvironment(
         { ...minimalProduction, STRIPE_SECRET_KEY: "sk_test_ci_12345678901234567890" },
+        "production",
+      ),
+    ).not.toThrow();
+    // The runtime strips scheme/path/port from the root domain before use,
+    // so the validator must accept the same values the app tolerates.
+    expect(() =>
+      validateEnvironment(
+        { ...minimalProduction, NEXT_PUBLIC_ROOT_DOMAIN: "http://aera.so" },
         "production",
       ),
     ).not.toThrow();

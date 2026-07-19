@@ -160,7 +160,13 @@ export function validateEnvironment(
   validateKeyring(get(source, "AERA_DATA_ENCRYPTION_KEYS"), issues, false);
   requireSecret(source, "CRON_SECRET", 32, issues, false);
 
-  const rootDomain = get(source, "NEXT_PUBLIC_ROOT_DOMAIN").toLowerCase();
+  // Mirror the runtime normalisation in lib/env.ts: the app strips scheme,
+  // path and port before using the value, so a scheme-prefixed variable is
+  // tolerated configuration — not a deployment error.
+  const rootDomain = get(source, "NEXT_PUBLIC_ROOT_DOMAIN")
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/[/:].*$/, "");
   if (!rootDomain) {
     if (strict) issues.push("NEXT_PUBLIC_ROOT_DOMAIN: is required");
   } else if (

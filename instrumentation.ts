@@ -3,14 +3,20 @@ import { reportError } from "@/lib/observability";
 import { validateEnvironment } from "@/lib/env-validation";
 
 export function register(): void {
-  // `prestart` is the primary gate. This second gate protects deployments
-  // started through a custom process manager that bypasses npm lifecycle hooks.
+  // Boot-time report for deployments that bypass npm lifecycle hooks. This
+  // must never crash the server: a running app with loud log lines beats an
+  // opaque crash loop that the platform only reports as "service unavailable".
   if (
     process.env.NEXT_RUNTIME === "nodejs" &&
     process.env.AERA_ENVIRONMENT === "production" &&
     process.env.NEXT_PHASE !== "phase-production-build"
   ) {
-    validateEnvironment(process.env, "production");
+    try {
+      validateEnvironment(process.env, "production");
+    } catch (error) {
+      console.error("[aera] Environment validation reported issues (server continues):");
+      console.error(error instanceof Error ? error.message : String(error));
+    }
   }
 }
 

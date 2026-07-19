@@ -2,13 +2,20 @@
 import { validateEnvironment } from "./env-validation";
 
 // Next evaluates server modules while producing the build. Runtime validation
-// is handled by `prestart`; explicit AERA_ENVIRONMENT=production also protects
-// alternative process managers that invoke the Next server directly.
+// is handled by `prestart`; explicit AERA_ENVIRONMENT=production also covers
+// alternative process managers that invoke the Next server directly. The
+// report must never throw here: this module is imported by nearly every
+// server file, and an import-time crash turns a config nit into a dead app.
 if (
   process.env.AERA_ENVIRONMENT === "production" &&
   process.env.NEXT_PHASE !== "phase-production-build"
 ) {
-  validateEnvironment(process.env, "production");
+  try {
+    validateEnvironment(process.env, "production");
+  } catch (error) {
+    console.error("[aera] Environment validation reported issues (app continues):");
+    console.error(error instanceof Error ? error.message : String(error));
+  }
 }
 
 /**

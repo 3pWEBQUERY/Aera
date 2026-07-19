@@ -18,7 +18,7 @@
     "env:check": "tsx scripts/validate-env.ts --profile=production",
     "env:check:ci": "tsx scripts/validate-env.ts --profile=ci",
     "env:check:development": "tsx scripts/validate-env.ts --profile=development",
-    "prestart": "npm run env:check",
+    "prestart": "npm run env:check -- --report",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
