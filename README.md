@@ -78,6 +78,18 @@ npm run db:test     # legt einen Testuser an, liest ihn, löscht ihn wieder
 | `QA_LOGIN_SECRET` | nur lokal/CI | 32+ Zeichen; QA-Login bleibt in Production immer deaktiviert |
 | `OPENAI_API_KEY` | — | hebt KI von Keyword- auf Embedding-Modell |
 
+Den Verschlüsselungs-Keyring als vollständigen Wert erzeugen und inklusive
+abschließendem `=` in Railway übernehmen:
+
+```bash
+printf 'current:'; openssl rand -base64 32
+```
+
+Ein Eintrag hat das Format `key-id:base64-key`. Der Base64-Teil muss exakt
+32 Zufallsbytes dekodieren; gewöhnliche Passwörter oder Railway-Zufallsstrings
+sind dafür nicht geeignet. Bei einer Rotation steht der neue Schlüssel zuerst,
+ältere Schlüssel bleiben durch Kommas getrennt dahinter verfügbar.
+
 KI und Web-Push bleiben optional. Die launchkritischen Produktionspfade sind
 fail-closed: echte
 Zahlungen benötigen Stripe + Webhook, persistierte Secrets benötigen den
@@ -330,7 +342,7 @@ Produktionsabhängigkeiten mit `npm audit --audit-level=high`.
 ## Status der Verifikation
 
 - ✅ ESLint und TypeScript: 0 blockierende Fehler.
-- ✅ Vitest: 427/427 Tests erfolgreich.
+- ✅ Vitest: 428/428 Tests erfolgreich.
 - ✅ Playwright: 5/5 Chromium-E2E-Flows erfolgreich.
 - ✅ `next build`: erfolgreich kompiliert, alle Routen & Proxy erzeugt.
 - ✅ Railway PostgreSQL: 63/63 Migrationen angewendet; 71 RLS-Policies,

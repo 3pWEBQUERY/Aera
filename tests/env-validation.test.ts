@@ -85,6 +85,16 @@ describe("production environment validation", () => {
     ).toThrow(/AERA_DATA_ENCRYPTION_KEYS/);
   });
 
+  it("uses the same padded canonical base64 format as runtime encryption", () => {
+    const unpadded = validProduction.AERA_DATA_ENCRYPTION_KEYS.replace(/=+$/, "");
+    expect(() =>
+      validateEnvironment(
+        { ...validProduction, AERA_DATA_ENCRYPTION_KEYS: unpadded },
+        "production",
+      ),
+    ).toThrow(/canonical base64 for 32 bytes/);
+  });
+
   it("never includes secret values in validation errors", () => {
     const leaked = "super-sensitive-value-that-must-never-be-logged";
     try {

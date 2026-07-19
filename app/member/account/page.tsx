@@ -239,16 +239,13 @@ export default async function MemberAccountPage({
                 {t("profileText")}
               </p>
               <div className="mt-6">
-                {uploadSlug ? (
-                  <MemberProfileForm
-                    slug={uploadSlug}
-                    path={backHref}
-                    user={{ name: user!.name, avatarUrl: user!.avatarUrl }}
-                  />
-                ) : (
-                  <p className="rounded-2xl border border-dashed border-[#161613]/20 px-4 py-6 text-center text-sm text-[#161613]/50">
-                    {t("joinFirst")}
-                  </p>
+                <MemberProfileForm
+                  slug={uploadSlug}
+                  path={backHref}
+                  user={{ name: user!.name, avatarUrl: user!.avatarUrl }}
+                />
+                {!uploadSlug && (
+                  <p className="mt-3 text-xs text-[#161613]/45">{t("joinFirst")}</p>
                 )}
               </div>
             </section>

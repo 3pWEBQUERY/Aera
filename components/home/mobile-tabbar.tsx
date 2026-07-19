@@ -115,9 +115,9 @@ export function MobileTabbar({
         <Tab href="/start" icon="plus" label={t("create")} />
         {user ? (
           <Tab
-            href="/dashboard"
+            href="/member/account?from=/home"
             label={t("account")}
-            active={pathname === "/dashboard"}
+            active={pathname.startsWith("/member/account")}
           >
             <span className="flex h-[22px] w-[22px] items-center justify-center overflow-hidden rounded-full bg-[#ece7dc] text-[9px] font-bold text-[#161613] ring-1 ring-[#161613]/10">
               {user.avatarUrl ? (

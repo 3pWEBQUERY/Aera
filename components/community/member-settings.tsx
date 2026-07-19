@@ -46,7 +46,9 @@ export function MemberProfileForm({
   path,
   user,
 }: {
-  slug: string;
+  /** Community used to route the avatar upload. Null = no community yet;
+   * the photo uploader is hidden but the name stays editable. */
+  slug: string | null;
   path: string;
   user: { name: string; avatarUrl: string | null };
 }) {
@@ -58,15 +60,17 @@ export function MemberProfileForm({
     <form action={action} className="space-y-5">
       <input type="hidden" name="path" value={path} />
       <FormError message={state.error} />
-      <div>
-        <Label>{t("profilePhoto")}</Label>
-        <AvatarUpload
-          tenant={slug}
-          name="avatarUrl"
-          defaultUrl={user.avatarUrl}
-          fallbackName={user.name}
-        />
-      </div>
+      {slug && (
+        <div>
+          <Label>{t("profilePhoto")}</Label>
+          <AvatarUpload
+            tenant={slug}
+            name="avatarUrl"
+            defaultUrl={user.avatarUrl}
+            fallbackName={user.name}
+          />
+        </div>
+      )}
       <div>
         <Label htmlFor="mp-name">{t("name")}</Label>
         <Input

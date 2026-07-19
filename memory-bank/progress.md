@@ -87,7 +87,7 @@ Laut Projekt-Status ist Aera eine **voll funktionsfähige** Anwendung, kein Prot
   auf Sub- und Custom Domains. Accessibility-Basis (Skip-Link, Fokusführung,
   Dialog-Trap, Live-Fehler) und Playwright-CI mit fünf kritischen Browserflows.
   Alle 19 Sprachkataloge enthalten die neuen Rechts-/Einwilligungstexte.
-  427 Vitest- und 5 Playwright-Tests, TypeScript, ESLint und Production-Build
+  428 Vitest- und 5 Playwright-Tests, TypeScript, ESLint und Production-Build
   grün; 63/63 Railway-Migrationen und 71 RLS-Policies verifiziert.
 
 - **11.07.2026 (2)** — Bewegter Hero-Hintergrund: `videos/{1,2,3}.mp4` mit

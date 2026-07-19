@@ -40,12 +40,18 @@ function parseKeyring(raw = process.env.AERA_DATA_ENCRYPTION_KEYS ?? ""): Encryp
     }
     if (ids.has(id)) throw new Error(`Duplicate encryption key id: ${id}`);
     ids.add(id);
-    if (!/^(?:[A-Za-z0-9+/]{4}){10}[A-Za-z0-9+/]{3}=$/.test(encoded)) {
-      throw new Error(`Encryption key ${id} must be canonical base64`);
-    }
     const bytes = Buffer.from(encoded, "base64");
     if (bytes.length !== 32) {
-      throw new Error(`Encryption key ${id} must decode to exactly 32 bytes`);
+      throw new Error(
+        `Encryption key ${id} must decode to exactly 32 bytes ` +
+          "(generate one with: openssl rand -base64 32)",
+      );
+    }
+    // Buffer.from is intentionally lenient and otherwise accepts malformed or
+    // unpadded input. Require the unique standard Base64 representation so a
+    // key accepted by environment validation behaves identically at runtime.
+    if (bytes.toString("base64") !== encoded) {
+      throw new Error(`Encryption key ${id} must be canonical base64`);
     }
     return { id, bytes };
   });

@@ -52,6 +52,10 @@ describe("database secret encryption", () => {
 
   it("rejects malformed and duplicate keyring entries", () => {
     vi.stubEnv("AERA_DATA_ENCRYPTION_KEYS", "current:not-valid-base64");
+    expect(() => encryptSecret("secret")).toThrow("exactly 32 bytes");
+
+    const unpadded = key(5).replace(/=+$/, "");
+    vi.stubEnv("AERA_DATA_ENCRYPTION_KEYS", `current:${unpadded}`);
     expect(() => encryptSecret("secret")).toThrow("canonical base64");
 
     vi.stubEnv(

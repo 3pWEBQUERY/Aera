@@ -95,8 +95,7 @@ function validateKeyring(raw: string, issues: string[], required: boolean): void
     }
     seen.add(id);
     const bytes = Buffer.from(encoded, "base64");
-    const canonical = bytes.toString("base64").replace(/=+$/, "");
-    if (bytes.length !== 32 || canonical !== encoded.replace(/=+$/, "")) {
+    if (bytes.length !== 32 || bytes.toString("base64") !== encoded) {
       issues.push("AERA_DATA_ENCRYPTION_KEYS: every key must be canonical base64 for 32 bytes");
     }
   }
