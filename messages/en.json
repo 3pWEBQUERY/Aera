@@ -1320,7 +1320,17 @@
       "loading": "Loading…",
       "linkPlaceholder": "https://…",
       "applyLink": "Link",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "divider": "Divider",
+      "emoji": "Emoji",
+      "record": "Record video",
+      "recStart": "Start recording",
+      "recStop": "Stop recording",
+      "recInsert": "Insert",
+      "recRetake": "Retake",
+      "recDenied": "Camera access unavailable. Please allow access in your browser.",
+      "recUnsupported": "Video recording isn't supported in this browser.",
+      "recPrep": "Preparing camera…"
     },
     "live": {
       "subtitle": "Schedule and control live streams and sessions.",

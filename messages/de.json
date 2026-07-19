@@ -1320,7 +1320,17 @@
       "loading": "Lädt…",
       "linkPlaceholder": "https://…",
       "applyLink": "Verlinken",
-      "cancel": "Abbrechen"
+      "cancel": "Abbrechen",
+      "divider": "Trennlinie",
+      "emoji": "Emoji",
+      "record": "Video aufnehmen",
+      "recStart": "Aufnahme starten",
+      "recStop": "Aufnahme stoppen",
+      "recInsert": "Einfügen",
+      "recRetake": "Neu aufnehmen",
+      "recDenied": "Kamerazugriff nicht möglich. Bitte erlaube den Zugriff im Browser.",
+      "recUnsupported": "Videoaufnahme wird in diesem Browser nicht unterstützt.",
+      "recPrep": "Kamera wird vorbereitet…"
     },
     "live": {
       "subtitle": "Live-Streams und Sitzungen planen und steuern.",

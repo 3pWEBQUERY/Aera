@@ -24,7 +24,27 @@ const glyphs = {
   link: svg(<>
     <path d="M9 15l6-6" /><path d="M11 6l1-1a3.5 3.5 0 0 1 5 5l-1 1" /><path d="M13 18l-1 1a3.5 3.5 0 0 1-5-5l1-1" />
   </>),
+  divider: svg(<line x1="4" y1="12" x2="20" y2="12" />),
+  record: svg(<>
+    <rect x="2.5" y="6.5" width="13" height="11" rx="2.5" />
+    <path d="M15.5 10.5l6-3.5v10l-6-3.5" />
+    <circle cx="8" cy="12" r="2.6" fill="currentColor" stroke="none" />
+  </>),
 };
+
+/** Compact, curated emoji set for the composer picker (no external dependency). */
+const EMOJIS = [
+  "😀","😃","😄","😁","😆","😅","😂","🤣","🙂","🙃","😉","😊","😇","🥰","😍","🤩",
+  "😘","😗","😚","😋","😛","😜","🤪","😝","🤗","🤭","🤔","🤨","😐","😶","😏","😌",
+  "😔","😪","😴","😒","🙄","😬","🥱","😷","🤒","🤕","🤢","🤮","🥴","😵","🤯","🥶",
+  "🥳","😎","🤓","🧐","😢","😭","😤","😠","😡","🤬","😳","🥺","😱","😨","😰","😥",
+  "👍","👎","👏","🙌","🤝","🙏","💪","👋","✌️","🤞","🤟","🤙","👌","🤌","✋","👆",
+  "👇","👈","👉","💥","🔥","✨","⭐","🌟","💫","💯","✅","❌","⚠️","❓","❗","💤",
+  "❤️","🧡","💛","💚","💙","💜","🖤","🤍","💔","💕","💖","💝","💘","💗","🩷","💌",
+  "🎉","🎊","🎁","🏆","🥇","🎯","🚀","💡","📌","🔗","📎","📷","🎥","🎵","🎶","📣",
+  "☕","🍕","🍔","🍰","🎂","🍺","🥂","🍫","🍎","🌍","☀️","🌙","⚡","🌈","❄️","🌸",
+  "🐶","🐱","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🐵","🦄","🐝","🦋","🌿","🍀","🌵",
+] as const;
 
 type Cmd = { icon: React.ReactNode; label: string; run: () => void };
 
@@ -49,6 +69,8 @@ export function RichTextEditor({
   const [uploading, setUploading] = useState(false);
   const [linkOpen, setLinkOpen] = useState(false);
   const [linkUrl, setLinkUrl] = useState("");
+  const [emojiOpen, setEmojiOpen] = useState(false);
+  const [recordOpen, setRecordOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Seed the editable region once, imperatively. It is intentionally an
@@ -130,6 +152,14 @@ export function RichTextEditor({
     }
   }
 
+  function insertEmoji(emoji: string) {
+    restoreSelection();
+    document.execCommand("insertText", false, emoji);
+    sync();
+    // Keep the caret after the emoji so several can be added in a row.
+    saveSelection();
+  }
+
   function applyLink() {
     const url = linkUrl.trim();
     setLinkOpen(false);
@@ -158,6 +188,7 @@ export function RichTextEditor({
     { icon: glyphs.bullet, label: t("bullet"), run: () => exec("insertUnorderedList") },
     { icon: glyphs.ordered, label: t("ordered"), run: () => exec("insertOrderedList") },
     { icon: glyphs.quote, label: t("quote"), run: () => exec("formatBlock", "<blockquote>") },
+    { icon: glyphs.divider, label: t("divider"), run: () => exec("insertHorizontalRule") },
   ];
 
   function Btn({ cmd }: { cmd: Cmd }) {
@@ -226,6 +257,39 @@ export function RichTextEditor({
           <Icon name="videos" size={15} />
           <span className="text-xs font-medium">{t("video")}</span>
         </button>
+        <button
+          type="button"
+          title={t("record")}
+          aria-label={t("record")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            saveSelection();
+          }}
+          onClick={() => {
+            setEmojiOpen(false);
+            setRecordOpen(true);
+          }}
+          className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
+        >
+          {glyphs.record}
+        </button>
+        <button
+          type="button"
+          title={t("emoji")}
+          aria-label={t("emoji")}
+          aria-expanded={emojiOpen}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            saveSelection();
+          }}
+          onClick={() => {
+            setLinkOpen(false);
+            setEmojiOpen((v) => !v);
+          }}
+          className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 transition hover:bg-white hover:text-slate-900 ${emojiOpen ? "bg-white text-slate-900" : "text-slate-600"}`}
+        >
+          <Icon name="smile" size={16} />
+        </button>
         {uploading && (
           <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-400">
             <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
@@ -260,6 +324,26 @@ export function RichTextEditor({
         </div>
       )}
 
+      {/* Emoji picker */}
+      {emojiOpen && (
+        <div className="border-b border-slate-200 bg-white px-2.5 py-2">
+          <div className="grid max-h-44 grid-cols-8 gap-0.5 overflow-y-auto sm:grid-cols-10">
+            {EMOJIS.map((emoji, i) => (
+              <button
+                key={`${emoji}-${i}`}
+                type="button"
+                aria-label={emoji}
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => insertEmoji(emoji)}
+                className="flex h-8 w-8 items-center justify-center rounded-md text-xl leading-none transition hover:bg-slate-100"
+              >
+                {emoji}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Editor */}
       <div className="relative">
         {isEmpty && (
@@ -283,6 +367,17 @@ export function RichTextEditor({
 
       {error && <p className="border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>}
 
+      {recordOpen && (
+        <RecordVideoModal
+          t={t}
+          onClose={() => setRecordOpen(false)}
+          onInsert={(file) => {
+            setRecordOpen(false);
+            void uploadAndInsert(file, "video");
+          }}
+        />
+      )}
+
       <input
         ref={imgInput}
         type="file"
@@ -305,6 +400,199 @@ export function RichTextEditor({
           if (f) uploadAndInsert(f, "video");
         }}
       />
+    </div>
+  );
+}
+
+type RecordPhase = "prep" | "live" | "recording" | "recorded";
+
+/**
+ * Full-screen camera capture. Records a webm clip via MediaRecorder and hands
+ * the finished file back to the editor, which uploads it like any other video.
+ * The stream is acquired once and every track is stopped on unmount.
+ */
+function RecordVideoModal({
+  t,
+  onClose,
+  onInsert,
+}: {
+  t: ReturnType<typeof useTranslations>;
+  onClose: () => void;
+  onInsert: (file: File) => void;
+}) {
+  const liveRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const [phase, setPhase] = useState<RecordPhase>("prep");
+  const [error, setError] = useState<string | null>(null);
+  const [blob, setBlob] = useState<Blob | null>(null);
+  const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function start() {
+      if (typeof MediaRecorder === "undefined" || !navigator.mediaDevices?.getUserMedia) {
+        setError(t("recUnsupported"));
+        return;
+      }
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (cancelled) {
+          stream.getTracks().forEach((tr) => tr.stop());
+          return;
+        }
+        streamRef.current = stream;
+        if (liveRef.current) {
+          liveRef.current.srcObject = stream;
+          void liveRef.current.play().catch(() => {});
+        }
+        setPhase("live");
+      } catch {
+        if (!cancelled) setError(t("recDenied"));
+      }
+    }
+    void start();
+    return () => {
+      cancelled = true;
+      if (recorderRef.current && recorderRef.current.state === "recording") {
+        recorderRef.current.stop();
+      }
+      streamRef.current?.getTracks().forEach((tr) => tr.stop());
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    setPlaybackUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [blob]);
+
+  function startRec() {
+    const stream = streamRef.current;
+    if (!stream) return;
+    chunksRef.current = [];
+    const preferred = [
+      "video/webm;codecs=vp9,opus",
+      "video/webm;codecs=vp8,opus",
+      "video/webm",
+    ];
+    const mimeType = preferred.find((m) => MediaRecorder.isTypeSupported(m)) ?? "";
+    const rec = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
+    rec.ondataavailable = (e) => {
+      if (e.data.size > 0) chunksRef.current.push(e.data);
+    };
+    rec.onstop = () => {
+      setBlob(new Blob(chunksRef.current, { type: "video/webm" }));
+      setPhase("recorded");
+    };
+    recorderRef.current = rec;
+    rec.start();
+    setPhase("recording");
+  }
+
+  function retake() {
+    setBlob(null);
+    setPlaybackUrl(null);
+    setPhase("live");
+    if (liveRef.current) void liveRef.current.play().catch(() => {});
+  }
+
+  function insert() {
+    if (!blob) return;
+    onInsert(new File([blob], `aufnahme-${Date.now()}.webm`, { type: "video/webm" }));
+  }
+
+  return (
+    <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/60 p-4">
+      <div className="flex w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5">
+          <p className="text-sm font-bold text-slate-900">{t("record")}</p>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("cancel")}
+            className="flex h-8 w-8 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+
+        <div className="relative aspect-video w-full bg-slate-900">
+          <video
+            ref={liveRef}
+            muted
+            autoPlay
+            playsInline
+            className={`h-full w-full object-cover ${phase === "recorded" ? "hidden" : "block"}`}
+          />
+          {phase === "recorded" && playbackUrl && (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video src={playbackUrl} controls playsInline className="h-full w-full object-contain" />
+          )}
+          {phase === "recording" && (
+            <span className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-red-500" />
+              REC
+            </span>
+          )}
+          {phase === "prep" && !error && (
+            <span className="absolute inset-0 flex items-center justify-center text-sm text-white/80">
+              {t("recPrep")}
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 px-5 py-3.5">
+          {error ? (
+            <p className="text-sm text-red-600">{error}</p>
+          ) : (
+            <span className="text-xs text-slate-400" />
+          )}
+          <div className="flex shrink-0 items-center gap-2">
+            {phase === "live" && (
+              <button
+                type="button"
+                onClick={startRec}
+                className="inline-flex items-center gap-2 rounded-full bg-red-600 px-5 py-2 text-sm font-semibold text-white transition hover:bg-red-700"
+              >
+                <span className="h-2.5 w-2.5 rounded-full bg-white" />
+                {t("recStart")}
+              </button>
+            )}
+            {phase === "recording" && (
+              <button
+                type="button"
+                onClick={() => recorderRef.current?.stop()}
+                className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                <span className="h-2.5 w-2.5 rounded-[3px] bg-white" />
+                {t("recStop")}
+              </button>
+            )}
+            {phase === "recorded" && (
+              <>
+                <button
+                  type="button"
+                  onClick={retake}
+                  className="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
+                >
+                  {t("recRetake")}
+                </button>
+                <button
+                  type="button"
+                  onClick={insert}
+                  className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800"
+                >
+                  {t("recInsert")}
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
