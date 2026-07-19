@@ -163,8 +163,13 @@ export function normalizeCronBase(rawValue) {
   const value = rawValue.trim();
   if (!value) throw new Error("CRON_TARGET_URL (or APP_URL) is missing");
   if (value.includes("${{") || value.includes("}}")) {
+    // The value is a URL/template, never a secret — print it so the log
+    // shows exactly which unresolved reference Railway passed through.
     throw new Error(
-      "CRON_TARGET_URL must resolve to one concrete Railway web-service domain",
+      "CRON_TARGET_URL must resolve to one concrete Railway web-service domain " +
+        `(received an unresolved Railway template reference: "${value}" — ` +
+        "check the service name inside ${{…}} or enter the generated " +
+        "*.up.railway.app domain literally, then apply the staged variable change)",
     );
   }
 
@@ -184,7 +189,8 @@ export function normalizeCronBase(rawValue) {
   }
   if (url.hostname.includes("*")) {
     throw new Error(
-      "CRON_TARGET_URL must resolve to one concrete Railway web-service domain",
+      "CRON_TARGET_URL must resolve to one concrete Railway web-service domain " +
+        `(received a wildcard hostname: "${url.hostname}")`,
     );
   }
 
