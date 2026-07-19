@@ -177,6 +177,11 @@ export function AssistantWorkspace({
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
+  // Gates the conversation sidebar's open/close animation. Stays false until
+  // the first conversation load settles, so an account that already has chats
+  // renders the list expanded without an initial slide-in; the first chat
+  // created afterwards animates the sidebar open.
+  const [sidebarAnimReady, setSidebarAnimReady] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Conversation | null>(null);
   const deleteTitleId = useId();
   const deleteDialogRef = useModalAccessibility<HTMLDivElement>({
@@ -240,7 +245,12 @@ export function AssistantWorkspace({
   }, [slug]);
 
   useEffect(() => {
-    void refreshList();
+    void refreshList().finally(() => {
+      // Enable the width animation one frame after the first load lands, so the
+      // initial expanded/collapsed state appears instantly and only later
+      // changes (creating or deleting chats) animate.
+      requestAnimationFrame(() => setSidebarAnimReady(true));
+    });
   }, [refreshList]);
 
   const addFiles = useCallback(
@@ -545,13 +555,25 @@ export function AssistantWorkspace({
   const visible = conversations.filter((c) => c.kind === kindForMode);
   const active = visible.filter((c) => !c.archived);
   const archived = visible.filter((c) => c.archived);
+  // The sidebar only exists once the current mode has at least one conversation.
+  const hasConversations = active.length > 0 || archived.length > 0;
   const activeConvId = mode === "image" ? activeImageId : activeId;
   const empty = messages.length === 0;
 
   return (
     <div className="flex h-full overflow-hidden bg-white">
-      {/* Conversation sidebar — shared by both modes (Chat & Bild) */}
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-slate-200 bg-slate-50/60 md:flex">
+      {/* Conversation sidebar — shared by both modes (Chat & Bild). It collapses
+          to zero width when the current mode has no conversations and animates
+          open the moment the first one is created. */}
+      <div
+        className={cn(
+          "hidden shrink-0 overflow-hidden md:block",
+          sidebarAnimReady && "transition-[width] duration-300 ease-out",
+          hasConversations ? "w-64" : "w-0",
+        )}
+        aria-hidden={!hasConversations}
+      >
+        <aside className="flex h-full w-64 flex-col border-r border-slate-200 bg-slate-50/60">
         <div className="flex items-center justify-between px-4 py-3.5">
           <span className="text-sm font-bold text-slate-900">
             {mode === "image" ? t("imagesTitle") : t("chatsTitle")}
@@ -618,7 +640,8 @@ export function AssistantWorkspace({
             </div>
           )}
         </div>
-      </aside>
+        </aside>
+      </div>
 
       {/* Chat area */}
       <div className="flex min-w-0 flex-1 flex-col">
