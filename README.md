@@ -282,13 +282,19 @@ gesetzt. Railway erlaubt als kürzestes Intervall fünf Minuten:
 ```text
 Schedule: */5 * * * * (UTC)
 Start Command: node scripts/cron.mjs
-Variables: APP_URL, CRON_SECRET
+Variables: CRON_TARGET_URL, CRON_SECRET
 ```
 
+`CRON_TARGET_URL` zeigt als Railway-Referenz direkt auf die generierte
+HTTPS-Domain des Web-Service (zum Beispiel
+`https://${{web.RAILWAY_PUBLIC_DOMAIN}}`). Der Runner fällt aus
+Kompatibilitätsgründen auf `APP_URL` zurück, soll produktiv aber nicht von
+Weiterleitungen oder DNS der Custom Domain abhängen.
+
 Der Runner verarbeitet `posts`, `newsletters`, `webhooks`, `automations`,
-`inventory` und `uploads` und beendet sich anschließend mit einem eindeutigen
-Exit-Code für Railway. Die sechs Jobs laufen parallel unter einer globalen
-50-Sekunden-Deadline. Pro Job schreibt die App einen persistenten Heartbeat in
+`inventory`, `uploads` und `lifecycle` und beendet sich anschließend mit einem
+eindeutigen Exit-Code für Railway. Die sieben Jobs laufen parallel unter einer
+globalen 50-Sekunden-Deadline. Pro Job schreibt die App einen persistenten Heartbeat in
 `CronJobHeartbeat` (Status, letzter Erfolg/Fehler, Dauer und Zähler), sodass
 ausgefallene oder überlappende Läufe in der Datenbank sichtbar bleiben.
 
@@ -310,7 +316,11 @@ Antwort ist immer `no-store`.
 
 Die versionierte App-Konfiguration liegt in `railway.toml`; Railway verwendet
 Railpack, führt die Migration/RLS-Verifikation vor dem Release aus und schaltet
-erst nach erfolgreichem `/api/health/ready` auf die neue Version. Einrichtung:
+erst nach erfolgreichem Prozesscheck unter `/api/health/live` auf die neue
+Version. Der vollständige Abhängigkeitscheck unter `/api/health/ready` bleibt
+dem kontinuierlichen externen Monitoring vorbehalten, damit ein kurzzeitig
+langsamer Redis-, S3- oder ClamAV-Dienst das Web-Deployment nicht blockiert.
+Einrichtung:
 
 1. App-Service im selben Railway-Projekt anlegen (Repo verbinden).
 2. `DATABASE_URL` als Referenz auf die **interne** DB setzen:
@@ -342,7 +352,7 @@ Produktionsabhängigkeiten mit `npm audit --audit-level=high`.
 ## Status der Verifikation
 
 - ✅ ESLint und TypeScript: 0 blockierende Fehler.
-- ✅ Vitest: 428/428 Tests erfolgreich.
+- ✅ Vitest: 434/434 Tests erfolgreich.
 - ✅ Playwright: 5/5 Chromium-E2E-Flows erfolgreich.
 - ✅ `next build`: erfolgreich kompiliert, alle Routen & Proxy erzeugt.
 - ✅ Railway PostgreSQL: 63/63 Migrationen angewendet; 71 RLS-Policies,

@@ -22,10 +22,13 @@ wenn der erste dokumentierte Restore-Drill sie bestätigt hat.
 ## Health und Alarmierung
 
 - `GET /api/health/live` prüft nur, ob der Next.js-Prozess antwortet. Railway
-  darf diesen Endpunkt für einen sehr einfachen Prozesscheck verwenden.
+  verwendet diesen Endpunkt zum Aktivieren eines neuen Deployments. Ungültige
+  Produktionskonfiguration blockiert bereits `prestart`; kurzzeitige Ausfälle
+  von Redis, S3 oder ClamAV blockieren deshalb nicht zusätzlich den Rollout.
 - `GET /api/health` beziehungsweise `/api/health/ready` prüft Konfiguration,
   ausstehende Migrationen, PostgreSQL, Redis, privaten S3-Speicher und ClamAV.
-  In Produktion bedeutet jede fehlende Pflichtabhängigkeit `503`.
+  In Produktion bedeutet jede fehlende Pflichtabhängigkeit `503`. Dieser
+  Endpunkt wird durch den kontinuierlichen externen Monitor geprüft.
 - `GET /api/cron/status` verlangt
   `Authorization: Bearer <CRON_SECRET>`. Er liefert nur aggregierte Backlogs und
   persistierte Job-Heartbeats. Ein fehlgeschlagener, nie gestarteter oder älter
@@ -50,12 +53,15 @@ Bearer-Tokens werden nie in Tickets oder Chat kopiert.
 ## Cron auf Railway
 
 Der Cron-Service verwendet `railway.cron.toml` als Custom Config Path und läuft
-alle fünf Minuten. `APP_URL` muss auf die interne oder öffentliche HTTPS-Origin
-des Web-Service zeigen; `CRON_SECRET` muss in beiden Services identisch sein.
+alle fünf Minuten. `CRON_TARGET_URL` zeigt als Railway-Referenz direkt auf die
+generierte HTTPS-Domain des Web-Service, zum Beispiel
+`https://${{web.RAILWAY_PUBLIC_DOMAIN}}`; damit hängt der Runner nicht von DNS
+oder Weiterleitungen der Custom Domain ab. `CRON_SECRET` muss in beiden Services
+identisch sein.
 Nach dem ersten Lauf prüfen:
 
 ```bash
-curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$APP_URL/api/cron/status"
+curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$CRON_TARGET_URL/api/cron/status"
 ```
 
 Der Runner beendet sich bei einem Jobfehler mit einem Fehlercode. Parallel dazu

@@ -2,19 +2,31 @@
 //
 // Deploy as ONE separate Railway service with a Cron Schedule (every 5 minutes):
 //   Start Command: node scripts/cron.mjs
-//   Variables:     APP_URL (public app domain), CRON_SECRET (same as web service)
+//   Variables:     CRON_TARGET_URL (Railway web-service domain), CRON_SECRET
 //
 // Every endpoint only processes work that is actually due and is idempotent.
 // The calls run in parallel under one global budget so a single slow provider
 // can never turn sequential slow requests into a multi-minute run.
 
-// Accept APP_URL with or without scheme (Railway domains are https-only).
-let base = (process.env.APP_URL ?? "").trim().replace(/\/$/, "");
-if (base && !/^https?:\/\//i.test(base)) base = `https://${base}`;
+import { normalizeCronBase, postCronRequest } from "./cron-http.mjs";
+
+let base = "";
+try {
+  base = normalizeCronBase(
+    process.env.CRON_TARGET_URL?.trim() || process.env.APP_URL || "",
+  );
+} catch (error) {
+  console.error(
+    error instanceof Error ? error.message : "CRON_TARGET_URL is invalid",
+  );
+  process.exit(1);
+}
 const secret = process.env.CRON_SECRET ?? "";
 
 if (!base || secret.length < 32) {
-  console.error("APP_URL and a CRON_SECRET of at least 32 characters must be set.");
+  console.error(
+    "CRON_TARGET_URL (or APP_URL) and a CRON_SECRET of at least 32 characters must be set.",
+  );
   process.exit(1);
 }
 
@@ -47,9 +59,7 @@ function log(level, event, fields = {}) {
 async function runJob(job) {
   const url = `${base}/api/cron/${job}`;
   try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: { authorization: `Bearer ${secret}` },
+    const { response: res, finalUrl, redirects } = await postCronRequest(url, secret, {
       signal: controller.signal,
     });
     const body = (await res.text()).slice(0, 300);
@@ -57,6 +67,8 @@ async function runJob(job) {
       job,
       status: res.status,
       response: body,
+      target: finalUrl.origin,
+      redirects,
     });
     return res.ok;
   } catch (e) {

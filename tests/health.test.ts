@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { readFile } from "node:fs/promises";
 
 const getReadinessSnapshot = vi.fn();
 vi.mock("@/lib/readiness", () => ({ getReadinessSnapshot }));
@@ -48,5 +49,14 @@ describe("health routes", () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({ status: "ok" });
   });
-});
 
+  it("uses dependency-independent liveness for the Railway deployment gate", async () => {
+    const railwayConfig = await readFile(
+      new URL("../railway.toml", import.meta.url),
+      "utf8",
+    );
+
+    expect(railwayConfig).toMatch(/healthcheckPath\s*=\s*"\/api\/health\/live"/);
+    expect(railwayConfig).not.toMatch(/healthcheckPath\s*=\s*"\/api\/health\/ready"/);
+  });
+});
