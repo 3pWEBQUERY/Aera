@@ -67,6 +67,7 @@ import {
   reverseDestinationTransferForRefunds,
   retrieveProductCheckoutSession,
 } from "@/lib/stripe";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const tenant = {
   id: "t1",
@@ -89,7 +90,7 @@ beforeEach(() => {
   stripeMock.priceRetrieve.mockResolvedValue({
     id: "price_pro",
     active: true,
-    currency: "eur",
+    currency: PLATFORM_CURRENCY,
     unit_amount: 4900,
     type: "recurring",
     recurring: { interval: "month", interval_count: 1 },
@@ -257,7 +258,7 @@ describe("creator-plan checkout catalog safety", () => {
     stripeMock.priceRetrieve.mockResolvedValue({
       id: "price_pro",
       active: true,
-      currency: "eur",
+      currency: PLATFORM_CURRENCY,
       unit_amount: 100,
       type: "recurring",
       recurring: { interval: "month", interval_count: 1 },
