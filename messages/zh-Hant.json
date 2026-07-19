@@ -169,7 +169,7 @@
     "nameLabel": "社群名稱",
     "namePlaceholder": "例如 Maker Studio",
     "addressLabel": "位址",
-    "alsoReachable": "也可透過 /c/{slug} 存取",
+    "alsoReachable": "也可透過 {url} 存取",
     "slugFallback": "your-community",
     "taglineLabel": "簡短描述（選填）",
     "taglinePlaceholder": "你的社群是關於什麼的？",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "總覽",
       "welcome": "歡迎回來。這是 {name} 的動態。",
+      "upgrade": {
+        "badge": "免費方案",
+        "title": "為你的社群解鎖更多空間",
+        "description": "升級付費方案，獲得更多每月 AI 點數和儲存空間。",
+        "plans": "Starter · Pro · Scale",
+        "cta": "比較方案"
+      },
       "statMembers": "成員",
       "statActiveSubs": "有效訂閱",
       "statPosts": "貼文",

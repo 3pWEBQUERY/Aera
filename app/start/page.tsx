@@ -21,6 +21,7 @@ export default async function StartPage({
   return (
     <OnboardingWizard
       rootDomain={env.ROOT_DOMAIN}
+      appUrl={env.APP_URL.replace(/\/+$/, "")}
       user={{ name: user.name, avatarUrl: user.avatarUrl }}
       selectedPlan={selectedPlan}
     />

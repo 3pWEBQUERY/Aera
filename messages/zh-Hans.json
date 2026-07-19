@@ -169,7 +169,7 @@
     "nameLabel": "社区名称",
     "namePlaceholder": "例如 Maker Studio",
     "addressLabel": "地址",
-    "alsoReachable": "也可通过 /c/{slug} 访问",
+    "alsoReachable": "也可通过 {url} 访问",
     "slugFallback": "your-community",
     "taglineLabel": "简短描述（可选）",
     "taglinePlaceholder": "你的社区是关于什么的？",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "概览",
       "welcome": "欢迎回来。这是 {name} 的动态。",
+      "upgrade": {
+        "badge": "免费方案",
+        "title": "为你的社区解锁更多空间",
+        "description": "升级付费方案，获得更多每月 AI 点数和存储空间。",
+        "plans": "Starter · Pro · Scale",
+        "cta": "比较方案"
+      },
       "statMembers": "成员",
       "statActiveSubs": "有效订阅",
       "statPosts": "帖子",

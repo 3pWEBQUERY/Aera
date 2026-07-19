@@ -169,7 +169,7 @@
     "nameLabel": "Fellesskapets navn",
     "namePlaceholder": "f.eks. Maker Studio",
     "addressLabel": "Adresse",
-    "alsoReachable": "Også tilgjengelig på /c/{slug}",
+    "alsoReachable": "Også tilgjengelig på {url}",
     "slugFallback": "ditt-fellesskap",
     "taglineLabel": "Kort beskrivelse (valgfritt)",
     "taglinePlaceholder": "Hva handler fellesskapet ditt om?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Oversikt",
       "welcome": "Velkommen tilbake. Her er pulsen til {name}.",
+      "upgrade": {
+        "badge": "Gratisabonnement",
+        "title": "Mer rom for fellesskapet ditt",
+        "description": "Bytt til et betalt abonnement for flere månedlige AI-kreditter og mer lagringsplass.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Sammenlign abonnementer"
+      },
       "statMembers": "Medlemmer",
       "statActiveSubs": "Aktive abonnementer",
       "statPosts": "Innlegg",

@@ -169,7 +169,7 @@
     "nameLabel": "Communityns namn",
     "namePlaceholder": "t.ex. Maker Studio",
     "addressLabel": "Adress",
-    "alsoReachable": "Även nåbar på /c/{slug}",
+    "alsoReachable": "Även nåbar på {url}",
     "slugFallback": "din-community",
     "taglineLabel": "Kort beskrivning (valfritt)",
     "taglinePlaceholder": "Vad handlar din community om?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Översikt",
       "welcome": "Välkommen tillbaka. Här är pulsen för {name}.",
+      "upgrade": {
+        "badge": "Gratisplan",
+        "title": "Mer utrymme för din community",
+        "description": "Byt till en betalplan för fler AI-krediter per månad och mer lagringsutrymme.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Jämför planer"
+      },
       "statMembers": "Medlemmar",
       "statActiveSubs": "Aktiva prenumerationer",
       "statPosts": "Inlägg",

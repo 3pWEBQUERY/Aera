@@ -6,6 +6,8 @@ import { Card, CardBody } from "@/components/ui/card";
 import { formatPrice, timeAgo } from "@/lib/utils";
 import { Avatar } from "@/components/ui/misc";
 import { PlannerUpcoming } from "@/components/dashboard/planner-upcoming";
+import { FreePlanUpgradeBanner } from "@/components/dashboard/free-plan-upgrade-banner";
+import { getOrCreateWallet } from "@/lib/credits";
 
 export default async function OverviewPage({
   params,
@@ -18,7 +20,7 @@ export default async function OverviewPage({
   const td = await getTranslations("dashboard");
   const locale = await getLocale();
 
-  const [members, posts, paidOrders, activeSubs, recentMembers, revenueAgg] =
+  const [members, posts, paidOrders, activeSubs, recentMembers, revenueAgg, wallet] =
     await Promise.all([
       prisma.membership.count({ where: { tenantId: t, status: "ACTIVE" } }),
       prisma.post.count({ where: { tenantId: t } }),
@@ -34,6 +36,7 @@ export default async function OverviewPage({
         where: { tenantId: t, status: "PAID" },
         _sum: { amountCents: true },
       }),
+      getOrCreateWallet(t),
     ]);
 
   const revenue = revenueAgg._sum.amountCents ?? 0;
@@ -48,6 +51,7 @@ export default async function OverviewPage({
 
   return (
     <div>
+      {wallet.plan === "FREE" && <FreePlanUpgradeBanner slug={slug} />}
       <PageHeader
         title={td("overview.title")}
         subtitle={td("overview.welcome", { name: tenant.name })}

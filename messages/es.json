@@ -169,7 +169,7 @@
     "nameLabel": "Nombre de la comunidad",
     "namePlaceholder": "p. ej. Maker Studio",
     "addressLabel": "Dirección",
-    "alsoReachable": "También accesible en /c/{slug}",
+    "alsoReachable": "También accesible en {url}",
     "slugFallback": "tu-comunidad",
     "taglineLabel": "Descripción breve (opcional)",
     "taglinePlaceholder": "¿De qué trata tu comunidad?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Resumen",
       "welcome": "Bienvenido de nuevo. Aquí está el pulso de {name}.",
+      "upgrade": {
+        "badge": "Plan gratuito",
+        "title": "Más espacio para tu comunidad",
+        "description": "Cambia a un plan de pago para obtener más créditos de IA mensuales y espacio de almacenamiento.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Comparar planes"
+      },
       "statMembers": "Miembros",
       "statActiveSubs": "Suscripciones activas",
       "statPosts": "Publicaciones",

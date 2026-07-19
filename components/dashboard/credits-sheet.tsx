@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Sheet } from "./sheet";
 import { Icon, type IconName } from "./icons";
@@ -62,6 +62,7 @@ export function CreditsSheet({
   slug,
   onChanged,
   initialCheckoutError = false,
+  focusPlans = false,
 }: {
   open: boolean;
   onClose: () => void;
@@ -69,10 +70,13 @@ export function CreditsSheet({
   /** Called after balance changes so the header can refresh. */
   onChanged?: (s: CreditSummary) => void;
   initialCheckoutError?: boolean;
+  /** Open the sheet directly at plan selection (for upgrade entry points). */
+  focusPlans?: boolean;
 }) {
   const [summary, setSummary] = useState<CreditSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
+  const plansRef = useRef<HTMLElement>(null);
   const t = useTranslations("dashboard.credits");
   const tSafety = useTranslations("billingSafety");
   const [billingError, setBillingError] = useState<string | null>(() =>
@@ -107,6 +111,14 @@ export function CreditsSheet({
   useEffect(() => {
     if (open) void load();
   }, [open, load]);
+
+  useEffect(() => {
+    if (!open || !focusPlans || !summary) return;
+    const frame = requestAnimationFrame(() => {
+      plansRef.current?.scrollIntoView({ block: "start" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [focusPlans, open, summary]);
 
   const post = useCallback(
     async (body: Record<string, unknown>, busyKey: string) => {
@@ -267,7 +279,7 @@ export function CreditsSheet({
               </section>
 
               {/* Plans */}
-              <section>
+              <section ref={plansRef} className="scroll-mt-6">
                 <SectionTitle icon="tiers" title={t("managePlan")} subtitle={t("moreCreditsMonth")} />
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   {summary.plans.map((plan) => {

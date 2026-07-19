@@ -169,7 +169,7 @@
     "nameLabel": "Nazwa społeczności",
     "namePlaceholder": "np. Maker Studio",
     "addressLabel": "Adres",
-    "alsoReachable": "Dostępna również pod /c/{slug}",
+    "alsoReachable": "Dostępna również pod {url}",
     "slugFallback": "twoja-spolecznosc",
     "taglineLabel": "Krótki opis (opcjonalnie)",
     "taglinePlaceholder": "O czym jest Twoja społeczność?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Przegląd",
       "welcome": "Witaj ponownie. Oto puls {name}.",
+      "upgrade": {
+        "badge": "Plan bezpłatny",
+        "title": "Więcej możliwości dla Twojej społeczności",
+        "description": "Przejdź na płatny plan, aby zyskać więcej miesięcznych kredytów AI i przestrzeni dyskowej.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Porównaj plany"
+      },
       "statMembers": "Członkowie",
       "statActiveSubs": "Aktywne subskrypcje",
       "statPosts": "Wpisy",

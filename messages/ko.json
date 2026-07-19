@@ -169,7 +169,7 @@
     "nameLabel": "커뮤니티 이름",
     "namePlaceholder": "예: Maker Studio",
     "addressLabel": "주소",
-    "alsoReachable": "/c/{slug} 에서도 접근할 수 있습니다",
+    "alsoReachable": "{url} 에서도 접근할 수 있습니다",
     "slugFallback": "your-community",
     "taglineLabel": "간단한 설명(선택)",
     "taglinePlaceholder": "당신의 커뮤니티는 무엇에 관한 것인가요?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "개요",
       "welcome": "다시 오신 것을 환영합니다. {name}의 현황입니다.",
+      "upgrade": {
+        "badge": "무료 요금제",
+        "title": "커뮤니티를 위한 더 넓은 공간",
+        "description": "유료 요금제로 업그레이드하고 매월 더 많은 AI 크레딧과 저장 공간을 이용하세요.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "요금제 비교"
+      },
       "statMembers": "멤버",
       "statActiveSubs": "활성 구독",
       "statPosts": "게시물",

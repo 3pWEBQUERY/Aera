@@ -169,7 +169,7 @@
     "nameLabel": "Naam van de community",
     "namePlaceholder": "bijv. Maker Studio",
     "addressLabel": "Adres",
-    "alsoReachable": "Ook bereikbaar via /c/{slug}",
+    "alsoReachable": "Ook bereikbaar via {url}",
     "slugFallback": "jouw-community",
     "taglineLabel": "Korte beschrijving (optioneel)",
     "taglinePlaceholder": "Waar gaat je community over?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Overzicht",
       "welcome": "Welkom terug. Dit is de pols van {name}.",
+      "upgrade": {
+        "badge": "Gratis abonnement",
+        "title": "Meer ruimte voor je community",
+        "description": "Stap over op een betaald abonnement voor meer maandelijkse AI-credits en opslagruimte.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Abonnementen vergelijken"
+      },
       "statMembers": "Leden",
       "statActiveSubs": "Actieve abonnementen",
       "statPosts": "Berichten",

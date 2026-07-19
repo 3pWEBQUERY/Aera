@@ -34,10 +34,12 @@ function slugify(input: string): string {
 
 export function OnboardingWizard({
   rootDomain,
+  appUrl,
   user,
   selectedPlan,
 }: {
   rootDomain: string;
+  appUrl: string;
   user: { name: string; avatarUrl: string | null };
   selectedPlan: PlanKey;
 }) {
@@ -216,7 +218,9 @@ export function OnboardingWizard({
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-[#161613]/50">
-                    {t("alsoReachable", { slug: effectiveSlug || t("slugFallback") })}
+                    {t("alsoReachable", {
+                      url: `${appUrl}/c/${effectiveSlug || t("slugFallback")}`,
+                    })}
                   </p>
                 </div>
                 <div>

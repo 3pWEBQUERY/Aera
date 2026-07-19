@@ -169,7 +169,7 @@
     "nameLabel": "Назва спільноти",
     "namePlaceholder": "напр. Maker Studio",
     "addressLabel": "Адреса",
-    "alsoReachable": "Також доступно за /c/{slug}",
+    "alsoReachable": "Також доступно за адресою {url}",
     "slugFallback": "vasha-spilnota",
     "taglineLabel": "Короткий опис (необов’язково)",
     "taglinePlaceholder": "Про що ваша спільнота?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Огляд",
       "welcome": "З поверненням. Ось пульс спільноти {name}.",
+      "upgrade": {
+        "badge": "Безкоштовний план",
+        "title": "Більше можливостей для вашої спільноти",
+        "description": "Перейдіть на платний план, щоб отримувати більше AI-кредитів щомісяця та збільшити обсяг сховища.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Порівняти плани"
+      },
       "statMembers": "Учасники",
       "statActiveSubs": "Активні підписки",
       "statPosts": "Дописи",

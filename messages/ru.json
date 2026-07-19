@@ -169,7 +169,7 @@
     "nameLabel": "Название сообщества",
     "namePlaceholder": "напр. Maker Studio",
     "addressLabel": "Адрес",
-    "alsoReachable": "Также доступно по /c/{slug}",
+    "alsoReachable": "Также доступно по адресу {url}",
     "slugFallback": "vashe-soobshchestvo",
     "taglineLabel": "Краткое описание (необязательно)",
     "taglinePlaceholder": "О чём ваше сообщество?",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "Обзор",
       "welcome": "С возвращением. Вот пульс сообщества {name}.",
+      "upgrade": {
+        "badge": "Бесплатный план",
+        "title": "Больше возможностей для вашего сообщества",
+        "description": "Перейдите на платный план, чтобы получать больше AI-кредитов каждый месяц и увеличить объём хранилища.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Сравнить планы"
+      },
       "statMembers": "Участники",
       "statActiveSubs": "Активные подписки",
       "statPosts": "Публикации",

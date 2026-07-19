@@ -169,7 +169,7 @@
     "nameLabel": "コミュニティ名",
     "namePlaceholder": "例：Maker Studio",
     "addressLabel": "アドレス",
-    "alsoReachable": "/c/{slug} でもアクセスできます",
+    "alsoReachable": "{url} でもアクセスできます",
     "slugFallback": "your-community",
     "taglineLabel": "短い説明（任意）",
     "taglinePlaceholder": "あなたのコミュニティは何についてですか？",
@@ -2161,6 +2161,13 @@
     "overview": {
       "title": "概要",
       "welcome": "おかえりなさい。{name} の状況です。",
+      "upgrade": {
+        "badge": "無料プラン",
+        "title": "コミュニティをさらに成長させる",
+        "description": "有料プランに切り替えると、毎月のAIクレジットとストレージ容量が増えます。",
+        "plans": "Starter · Pro · Scale",
+        "cta": "プランを比較"
+      },
       "statMembers": "メンバー",
       "statActiveSubs": "有効なサブスク",
       "statPosts": "投稿",

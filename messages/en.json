@@ -194,7 +194,7 @@
     "nameLabel": "Community name",
     "namePlaceholder": "e.g. Maker Studio",
     "addressLabel": "Address",
-    "alsoReachable": "Also reachable at /c/{slug}",
+    "alsoReachable": "Also reachable at {url}",
     "slugFallback": "your-community",
     "taglineLabel": "Short description (optional)",
     "taglinePlaceholder": "What is your community about?",
@@ -2255,6 +2255,13 @@
     "overview": {
       "title": "Overview",
       "welcome": "Welcome back. Here's the pulse of {name}.",
+      "upgrade": {
+        "badge": "Free plan",
+        "title": "More room for your community",
+        "description": "Move to a paid plan for more monthly AI credits and storage.",
+        "plans": "Starter · Pro · Scale",
+        "cta": "Compare plans"
+      },
       "statMembers": "Members",
       "statActiveSubs": "Active subscriptions",
       "statPosts": "Posts",
