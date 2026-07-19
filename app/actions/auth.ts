@@ -8,6 +8,7 @@ import { loginSchema, signupSchema } from "@/lib/validation";
 import { writeAudit } from "@/lib/audit";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { getErrorTranslator, zodError } from "@/lib/action-errors";
+import { hasCurrentLegalEvidence } from "@/lib/legal-evidence";
 
 export interface AuthState {
   error?: string;
@@ -28,9 +29,22 @@ function safeNext(next: FormDataEntryValue | null, fallback: string): string {
 /** Creators (tenant owners / staff) land in the dashboard, members on Discover. */
 async function homeFor(userId: string): Promise<string> {
   const [ownsTenant, staff] = await Promise.all([
-    prisma.tenant.count({ where: { ownerId: userId } }),
+    prisma.tenant.count({
+      where: {
+        ownerId: userId,
+        status: "ACTIVE",
+        memberships: {
+          some: { userId, role: "OWNER", status: "ACTIVE" },
+        },
+      },
+    }),
     prisma.membership.count({
-      where: { userId, role: { in: ["OWNER", "ADMIN", "MODERATOR"] } },
+      where: {
+        userId,
+        status: "ACTIVE",
+        role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+        tenant: { status: "ACTIVE" },
+      },
     }),
   ]);
   return ownsTenant > 0 || staff > 0 ? "/dashboard" : "/home";
@@ -53,7 +67,13 @@ export async function signupAction(
   if (!parsed.success) {
     return { error: zodError(t, parsed) };
   }
-  const result = await registerUser(parsed.data);
+  if (formData.get("legalAcceptance") !== "on") {
+    return { error: t("termsRequired") };
+  }
+  const result = await registerUser({
+    ...parsed.data,
+    legalAcceptanceSource: "WEB_SIGNUP",
+  });
   if (!result.ok) return { error: t(result.error) };
   await writeAudit({ actorUserId: result.user.id, action: "user.signup" });
   // New accounts are plain members by default — creators opt in via /start.
@@ -83,7 +103,11 @@ export async function loginAction(
       error: result.error ? t(result.error) : undefined,
       needsTotp: result.needsTotp,
     };
-  redirect(safeNext(formData.get("next"), await homeFor(result.user.id)));
+  const destination = safeNext(formData.get("next"), await homeFor(result.user.id));
+  if (!(await hasCurrentLegalEvidence(result.user.id))) {
+    redirect(`/legal/accept?next=${encodeURIComponent(destination)}`);
+  }
+  redirect(destination);
 }
 
 export async function logoutAction(): Promise<void> {

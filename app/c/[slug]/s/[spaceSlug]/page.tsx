@@ -39,6 +39,8 @@ import {
   rsvpEventAction,
   completeLessonAction,
 } from "@/app/actions/engage";
+import { PurchaseSubmitButton } from "@/components/community/purchase-submit-button";
+import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { submitRequestAction, purchaseRequestAction } from "@/app/actions/requests";
 import { reserveBookingAction } from "@/app/actions/booking";
 import { tipAction } from "@/app/actions/tips";
@@ -58,10 +60,11 @@ export default async function SpacePage({
     q?: string;
     page?: string;
     dm?: string;
+    error?: string;
   }>;
 }) {
   const { slug, spaceSlug } = await params;
-  const { sort, open, purchased, q, page, dm } = await searchParams;
+  const { sort, open, purchased, q, page, dm, error } = await searchParams;
   const community = await getCommunityContext(slug);
   if (!community) notFound();
   const { tenant, user, ctx } = community;
@@ -69,6 +72,7 @@ export default async function SpacePage({
   const tType = await getTranslations("community.render.spaceTypeSingular");
   const tPType = await getTranslations("community.render.productTypes");
   const tShop = await getTranslations("community.render.shop");
+  const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
 
   const space = await prisma.space.findFirst({
@@ -106,6 +110,14 @@ export default async function SpacePage({
 
   const header = (
     <div className="mb-6">
+      {error === "legal-consent" && (
+        <p
+          role="alert"
+          className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+        >
+          {tLegal("requiredError")}
+        </p>
+      )}
       <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/45">
         {tType.has(space.type) ? tType(space.type) : tType("fallback")}
       </p>
@@ -578,6 +590,7 @@ export default async function SpacePage({
                           <input type="hidden" name="tenant" value={slug} />
                           <input type="hidden" name="space" value={spaceSlug} />
                           <input type="hidden" name="postId" value={p.id} />
+                          <ImmediateAccessConsent inverse className="mb-2 max-w-xs" />
                           <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#161613] transition hover:bg-white/90 active:scale-[0.99]">
                             <Icon name="lock" size={15} />
                             {t("unlockFor", { price: formatPrice(p.priceCents ?? 0, p.currency ?? "eur", locale) })}
@@ -1358,9 +1371,12 @@ export default async function SpacePage({
                         <form action={purchaseProductAction}>
                           <input type="hidden" name="tenant" value={slug} />
                           <input type="hidden" name="productId" value={p.id} />
-                          <Button size="sm" variant="brand">
+                          {p.priceCents > 0 && p.type !== "PHYSICAL" && (
+                            <ImmediateAccessConsent className="mb-2 max-w-56" />
+                          )}
+                          <PurchaseSubmitButton>
                             {p.priceCents === 0 ? tShop("get") : tShop("buy")}
-                          </Button>
+                          </PurchaseSubmitButton>
                         </form>
                       )}
                     </div>

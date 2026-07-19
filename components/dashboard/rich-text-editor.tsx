@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 
 /* Small inline glyph icons for the formatting toolbar (kept local & crisp). */
 const svg = (d: React.ReactNode) => (
@@ -108,23 +109,22 @@ export function RichTextEditor({
     setError(null);
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      fd.set("tenant", tenant);
-      fd.set("purpose", kind === "image" ? "blog-image" : "blog-video");
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = (await res.json()) as { url?: string; error?: string };
-      if (!res.ok || !json.url) {
-        setError(json.error ?? t("uploadFailed"));
-        return;
-      }
+      const uploadedUrl = await uploadMediaFile({
+        file,
+        tenant,
+        purpose: kind === "image" ? "blog-image" : "blog-video",
+      });
       const media =
         kind === "image"
-          ? `<img src="${json.url}" alt="" />`
-          : `<video src="${json.url}" controls></video>`;
+          ? `<img src="${uploadedUrl}" alt="" />`
+          : `<video src="${uploadedUrl}" controls></video>`;
       insertHtmlAtCaret(`${media}<p><br></p>`);
-    } catch {
-      setError(t("uploadFailed"));
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof UploadError
+          ? uploadError.message
+          : t("uploadFailed"),
+      );
     } finally {
       setUploading(false);
     }

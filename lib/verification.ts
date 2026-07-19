@@ -1,5 +1,5 @@
 import "server-only";
-import prisma from "./prisma";
+import { systemPrisma as prisma } from "./prisma";
 import { features } from "./env";
 import { sendEmail, renderAccountActionHtml } from "./email";
 import { signAccountToken, verifyUrl } from "./tokens";

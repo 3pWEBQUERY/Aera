@@ -10,7 +10,6 @@ import {
   deleteWebhookEndpointAction,
   type DeveloperState,
 } from "@/app/actions/developers";
-import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Card, CardBody } from "@/components/ui/card";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
@@ -36,7 +35,6 @@ export interface DeliveryRow {
 export interface EndpointRow {
   id: string;
   url: string;
-  secret: string;
   events: string[];
   isActive: boolean;
   deliveries: DeliveryRow[];
@@ -219,6 +217,7 @@ function WebhooksSection({
   endpoints: EndpointRow[];
 }) {
   const [state, action, pending] = useActionState(createWebhookEndpointAction, initial);
+  const [copied, setCopied] = useState(false);
   const t = useTranslations("dashboard.developers");
   const tEvents = useTranslations("dashboard.developers.events");
 
@@ -276,6 +275,30 @@ function WebhooksSection({
         </CardBody>
       </Card>
 
+      {state.createdWebhookSecret && (
+        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4">
+          <p className="text-sm font-semibold text-emerald-900">
+            {t("secretLabel")}
+          </p>
+          <div className="mt-2 flex items-center gap-2">
+            <code className="min-w-0 flex-1 truncate rounded-lg bg-white px-3 py-2 text-sm ring-1 ring-emerald-200">
+              {state.createdWebhookSecret}
+            </code>
+            <button
+              type="button"
+              onClick={async () => {
+                await navigator.clipboard.writeText(state.createdWebhookSecret!);
+                setCopied(true);
+                setTimeout(() => setCopied(false), 2000);
+              }}
+              className="inline-flex shrink-0 items-center rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white"
+            >
+              {copied ? t("copied") : t("copy")}
+            </button>
+          </div>
+        </div>
+      )}
+
       {endpoints.length === 0 ? (
         <EmptyState
           title={t("webhooksEmptyTitle")}
@@ -294,7 +317,6 @@ function WebhooksSection({
 }
 
 function EndpointCard({ slug, endpoint }: { slug: string; endpoint: EndpointRow }) {
-  const [showSecret, setShowSecret] = useState(false);
   const t = useTranslations("dashboard.developers");
   const tEvents = useTranslations("dashboard.developers.events");
   const dateFmt = useDateFmt();
@@ -340,20 +362,12 @@ function EndpointCard({ slug, endpoint }: { slug: string; endpoint: EndpointRow 
           </form>
         </div>
 
-        {/* Signing-Secret */}
+        {/* Secrets are only returned once when the endpoint is created. */}
         <div className="mt-3 flex items-center gap-2 text-xs">
           <span className="text-slate-400">{t("secretLabel")}</span>
           <code className="rounded bg-slate-100 px-2 py-1">
-            {showSecret ? endpoint.secret : "whsec_••••••••••••"}
+            whsec_••••••••••••
           </code>
-          <button
-            type="button"
-            onClick={() => setShowSecret((s) => !s)}
-            className="text-slate-400 transition hover:text-slate-700"
-            aria-label={showSecret ? t("hideSecret") : t("showSecret")}
-          >
-            <Icon name={showSecret ? "eyeOff" : "eye"} size={14} />
-          </button>
         </div>
 
         {/* Letzte Zustellungen */}

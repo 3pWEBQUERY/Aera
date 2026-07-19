@@ -137,7 +137,7 @@ export async function POST(
     data: { tenantId: tenant.id, sessionId: session.id, userId: user.id, body },
     include: { user: { select: { id: true, name: true, avatarUrl: true } } },
   });
-  publish(liveChannel(tenant.id, session.id), {
+  await publish(liveChannel(tenant.id, session.id), {
     message: {
       id: message.id,
       body: message.body,

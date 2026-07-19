@@ -54,6 +54,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
+  const t = await getTranslations("uiMigration.frontend.accessibility");
   return (
     <html
       lang={locale}
@@ -61,7 +62,14 @@ export default async function RootLayout({
     >
       <body>
         {/* Messages werden automatisch aus i18n/request.ts geerbt. */}
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <a className="skip-link" href="#main-content">
+            {t("skipToContent")}
+          </a>
+          <div id="main-content" tabIndex={-1}>
+            {children}
+          </div>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

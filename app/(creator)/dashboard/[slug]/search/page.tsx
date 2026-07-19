@@ -20,6 +20,7 @@ export default async function SearchPage({
   const term = (q ?? "").trim();
   const t = tenant.id;
   const tr = await getTranslations("dashboard.search");
+  const tSpaceTypes = await getTranslations("dashboard.spaceTypes");
   const locale = await getLocale();
 
   const contains = { contains: term, mode: "insensitive" as const };
@@ -94,7 +95,7 @@ export default async function SearchPage({
                   <Card className="transition hover:shadow-md">
                     <CardBody className="py-3">
                       <p className="font-medium text-slate-800">{s.name}</p>
-                      <p className="text-xs text-slate-400">{s.type} · /{s.slug}</p>
+                      <p className="text-xs text-slate-400">{tSpaceTypes(`${s.type}.label`)} · /{s.slug}</p>
                     </CardBody>
                   </Card>
                 </Link>

@@ -8,6 +8,9 @@ app/generated
 next-env.d.ts
 .DS_Store
 public/uploads
+backups/
+playwright-report/
+test-results/
 # Stray local artifacts (never source code)
 /private
 *.png

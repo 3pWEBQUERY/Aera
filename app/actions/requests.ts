@@ -20,7 +20,7 @@ const ok: ActionState = { ok: true };
 const devPaymentFallbackAllowed = process.env.NODE_ENV !== "production";
 
 async function tenantBySlug(slug: string) {
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (tenant) setTenantContext(tenant.id);
   return tenant;
 }

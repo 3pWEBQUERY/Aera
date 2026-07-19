@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { isValidCategory } from "@/lib/categories";
@@ -9,6 +9,12 @@ import { normalizeLocale } from "@/i18n/locales";
 import { signAccountToken, resetUrl } from "@/lib/tokens";
 import { tErr } from "@/lib/action-errors";
 import type { Prisma } from "@/app/generated/prisma/client";
+import {
+  assertStripeSubscriptionsInactive,
+  StripeSubscriptionStillActiveError,
+} from "@/lib/stripe-cleanup";
+import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
+import { queueTenantDeletion, queueUserDeletion } from "@/lib/data-lifecycle";
 
 export interface AdminState {
   error?: string;
@@ -42,6 +48,12 @@ export async function adminUpdateTenantAction(
   const categoryRaw = String(fd.get("category") ?? "").trim();
   const category = isValidCategory(categoryRaw) ? categoryRaw : null;
 
+  const statusRaw = String(fd.get("status") ?? "");
+  const status =
+    statusRaw === "ACTIVE" || statusRaw === "SUSPENDED"
+      ? statusRaw
+      : tenant.status;
+
   const domainRaw = String(fd.get("customDomain") || "").trim().toLowerCase();
   const customDomain = /^[a-z0-9.-]{3,255}$/.test(domainRaw) ? domainRaw : null;
 
@@ -54,6 +66,7 @@ export async function adminUpdateTenantAction(
         platformFeePercent: fee,
         customDomain,
         category,
+        status,
       } as unknown as Prisma.TenantUpdateInput,
     });
   } catch (e) {
@@ -65,26 +78,99 @@ export async function adminUpdateTenantAction(
     tenantId: tenant.id,
     actorUserId: admin.id,
     action: "admin.tenant.update",
+    metadata: {
+      previousStatus: tenant.status,
+      status,
+      statusChanged: tenant.status !== status,
+    },
   });
   revalidatePath("/admin/communities");
   revalidatePath(`/c/${tenant.slug}`, "layout");
   return ok;
 }
 
-export async function adminDeleteTenantAction(fd: FormData): Promise<void> {
+export async function adminDeleteTenantAction(fd: FormData): Promise<AdminState> {
   const admin = await requirePlatformAdmin();
   const tenantId = String(fd.get("tenantId"));
   const confirm = String(fd.get("confirm") || "");
   const tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
-  if (!tenant || confirm !== tenant.slug) return;
+  if (!tenant) return { error: await tErr("communityNotFound") };
+  if (confirm !== tenant.slug) return { error: await tErr("tenantDeleteConfirmMismatch") };
 
-  await prisma.tenant.delete({ where: { id: tenant.id } });
+  const [subscriptions, wallet, pendingOrders, pendingBookings, pendingCreatorCheckouts] = await Promise.all([
+    prisma.subscription.findMany({
+      where: { tenantId: tenant.id, stripeSubscriptionId: { not: null } },
+      select: { stripeSubscriptionId: true },
+    }),
+    prisma.aiCreditWallet.findUnique({
+      where: { tenantId: tenant.id },
+      select: { stripeSubscriptionId: true },
+    }),
+    prisma.order.count({ where: { tenantId: tenant.id, status: "PENDING" } }),
+    prisma.bookingReservation.count({
+      where: { tenantId: tenant.id, status: "PENDING" },
+    }),
+    countOpenCreatorCheckouts(tenant.id),
+  ]);
+  if (pendingOrders > 0 || pendingBookings > 0 || pendingCreatorCheckouts > 0) {
+    await writeAudit({
+      actorUserId: admin.id,
+      action: "admin.tenant.delete.blocked",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: {
+        slug: tenant.slug,
+        reason: "pending_payments_or_reservations",
+        pendingOrders,
+        pendingBookings,
+        pendingCreatorCheckouts,
+      },
+    });
+    return { error: await tErr("pendingPaymentsBlockDeletion") };
+  }
+  try {
+    await assertStripeSubscriptionsInactive([
+      ...subscriptions.map((subscription) => subscription.stripeSubscriptionId),
+      wallet?.stripeSubscriptionId ?? null,
+    ]);
+  } catch (error) {
+    await writeAudit({
+      actorUserId: admin.id,
+      action: "admin.tenant.delete.blocked",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: {
+        slug: tenant.slug,
+        reason:
+          error instanceof StripeSubscriptionStillActiveError
+            ? "stripe_subscription_active"
+            : "stripe_verification_failed",
+      },
+    });
+    return {
+      error: await tErr(
+        error instanceof StripeSubscriptionStillActiveError
+          ? "tenantDeleteStripeSubscriptionsActive"
+          : "tenantDeleteStripeCleanupFailed",
+      ),
+    };
+  }
+
+  const deletionJobId = await queueTenantDeletion({
+    tenantId: tenant.id,
+    requestedById: admin.id,
+    label: tenant.slug,
+  });
   await writeAudit({
+    tenantId: tenant.id,
     actorUserId: admin.id,
-    action: "admin.tenant.delete",
-    metadata: { slug: tenant.slug, name: tenant.name },
+    action: "admin.tenant.delete.queued",
+    targetType: "Tenant",
+    targetId: tenant.id,
+    metadata: { slug: tenant.slug, name: tenant.name, deletionJobId },
   });
   revalidatePath("/admin/communities");
+  return ok;
 }
 
 // ------------------------------------------------------------------ Users
@@ -103,7 +189,20 @@ export async function adminUpdateUserAction(
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return { error: await tErr("emailInvalid") };
 
   try {
-    await prisma.user.update({ where: { id: target.id }, data: { name, email } });
+    const emailChanged = email !== target.email;
+    await prisma.user.update({
+      where: { id: target.id },
+      data: {
+        name,
+        email,
+        ...(emailChanged
+          ? {
+              emailVerifiedAt: null,
+              sessionVersion: { increment: 1 },
+            }
+          : {}),
+      },
+    });
   } catch (e) {
     if (prismaCode(e) === "P2002") return { error: await tErr("emailInUse") };
     throw e;
@@ -154,19 +253,35 @@ export async function adminDeleteUserAction(
     return { error: await tErr("userOwnsCommunities", { count: ownedTenants }) };
   }
 
-  try {
-    await prisma.user.delete({ where: { id: target.id } });
-  } catch (e) {
-    if (prismaCode(e) === "P2003") {
-      return { error: await tErr("userHasLinkedData") };
-    }
-    throw e;
+  const [pendingOrders, pendingBookings, pendingCreatorCheckouts] = await Promise.all([
+    prisma.order.count({ where: { userId: target.id, status: "PENDING" } }),
+    prisma.bookingReservation.count({
+      where: { userId: target.id, status: "PENDING" },
+    }),
+    prisma.pendingCreatorCheckout.count({
+      where: {
+        userId: target.id,
+        status: { in: ["CREATING", "OPEN"] },
+        expiresAt: { gt: new Date() },
+      },
+    }),
+  ]);
+  if (pendingOrders || pendingBookings || pendingCreatorCheckouts) {
+    return { error: await tErr("pendingPaymentsBlockDeletion") };
   }
+
+  const deletionJobId = await queueUserDeletion({
+    userId: target.id,
+    requestedById: admin.id,
+    label: target.email,
+  });
 
   await writeAudit({
     actorUserId: admin.id,
-    action: "admin.user.delete",
-    metadata: { email: target.email },
+    action: "admin.user.delete.queued",
+    targetType: "User",
+    targetId: target.id,
+    metadata: { deletionJobId },
   });
   revalidatePath("/admin/users");
   return ok;
@@ -179,8 +294,29 @@ export async function adminDeleteMediaAction(fd: FormData): Promise<void> {
   const object = await prisma.storageObject.findUnique({ where: { id: objectId } });
   if (!object) return;
 
-  // Removing the row makes the file unreachable (the proxy 404s unknown keys).
-  await prisma.storageObject.delete({ where: { id: object.id } });
+  // The row becomes unreachable immediately, while the durable task retries
+  // physical S3 deletion until it succeeds.
+  await systemPrisma.$transaction(async (tx) => {
+    await tx.objectDeletionTask.upsert({
+      where: { key: object.key },
+      create: {
+        tenantId: object.tenantId,
+        key: object.key,
+        reason: "admin_media_deletion",
+      },
+      update: {
+        tenantId: object.tenantId,
+        reason: "admin_media_deletion",
+        status: "PENDING",
+        attempts: 0,
+        nextAttemptAt: new Date(),
+        leaseUntil: null,
+        lastError: null,
+        completedAt: null,
+      },
+    });
+    await tx.storageObject.delete({ where: { id: object.id } });
+  });
   await writeAudit({
     tenantId: object.tenantId,
     actorUserId: admin.id,

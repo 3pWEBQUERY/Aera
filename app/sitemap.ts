@@ -13,6 +13,11 @@ import { env } from "@/lib/env";
 const MAX_TENANTS = 500;
 const MAX_POSTS_PER_TENANT = 200;
 
+// The sitemap depends on live tenant data. Generating it per request keeps the
+// image reproducible and prevents `next build` from reading production data or
+// requiring migrations that are intentionally applied during pre-deploy.
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = env.APP_URL;
 
@@ -30,6 +35,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const tenants = await prisma.tenant.findMany({
+    where: { status: "ACTIVE" },
     orderBy: { createdAt: "asc" },
     take: MAX_TENANTS,
     select: {

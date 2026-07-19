@@ -5,6 +5,9 @@ import {
   PLANS,
   PLAN_ORDER,
   CREDIT_PACKS,
+  creatorPlanSignupHref,
+  creatorPlanStartPath,
+  parsePlanKey,
 } from "@/lib/credit-plans";
 
 describe("creditsForTokens", () => {
@@ -40,5 +43,22 @@ describe("plan catalog", () => {
       expect(pack.credits).toBeGreaterThan(0);
       expect(pack.priceCents).toBeGreaterThan(0);
     }
+  });
+});
+
+describe("public creator-plan intent", () => {
+  it("accepts only catalog plan keys", () => {
+    expect(parsePlanKey("starter")).toBe("STARTER");
+    expect(parsePlanKey(" PRO ")).toBe("PRO");
+    expect(parsePlanKey("price_123")).toBeNull();
+    expect(parsePlanKey("enterprise")).toBeNull();
+    expect(parsePlanKey(null)).toBeNull();
+  });
+
+  it("carries the plan as an encoded same-site onboarding redirect", () => {
+    expect(creatorPlanStartPath("SCALE")).toBe("/start?plan=SCALE");
+    expect(creatorPlanSignupHref("SCALE")).toBe(
+      "/signup?next=%2Fstart%3Fplan%3DSCALE",
+    );
   });
 });

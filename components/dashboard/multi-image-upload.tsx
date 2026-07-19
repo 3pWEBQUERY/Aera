@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -38,26 +39,20 @@ export function MultiImageUpload({
     setError(null);
     setUploading(true);
     const added: string[] = [];
-    try {
-      for (const file of files.slice(0, remaining)) {
-        const fd = new FormData();
-        fd.set("file", file);
-        fd.set("tenant", tenant);
-        fd.set("purpose", purpose);
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const json = (await res.json()) as { url?: string; error?: string };
-        if (!res.ok || !json.url) {
-          setError(json.error ?? t("uploadFailed"));
-          break;
-        }
-        added.push(json.url);
+    for (const file of files.slice(0, remaining)) {
+      try {
+        added.push(await uploadMediaFile({ file, tenant, purpose }));
+      } catch (uploadError) {
+        setError(
+          uploadError instanceof UploadError
+            ? uploadError.message
+            : t("uploadFailed"),
+        );
+        break;
       }
-      if (added.length) setUrls((prev) => [...prev, ...added].slice(0, max));
-    } catch {
-      setError(t("uploadFailed"));
-    } finally {
-      setUploading(false);
     }
+    if (added.length) setUrls((prev) => [...prev, ...added].slice(0, max));
+    setUploading(false);
   }
 
   const removeAt = (i: number) => setUrls((prev) => prev.filter((_, idx) => idx !== i));

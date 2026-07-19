@@ -57,7 +57,7 @@ export async function authenticateApiRequest(
     where: { keyHash: hashApiKey(match[1]) },
     include: { tenant: true },
   });
-  if (!row || row.revokedAt) return null;
+  if (!row || row.revokedAt || row.tenant.status !== "ACTIVE") return null;
 
   // Best effort — ein fehlgeschlagenes Update darf den Request nicht stoppen.
   prisma.apiKey

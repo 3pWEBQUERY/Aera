@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { isBlockedWebhookAddress, validateWebhookUrl } from "@/lib/webhook-url";
+import { __test, isBlockedWebhookAddress, validateWebhookUrl } from "@/lib/webhook-url";
 
 describe("outgoing webhook SSRF protection", () => {
   it.each([
     "127.0.0.1", "10.1.2.3", "169.254.169.254", "172.20.1.1", "192.168.1.1",
     "0.0.0.0", "100.64.0.1", "::1", "fe80::1", "fd00::1", "::ffff:127.0.0.1",
+    "64:ff9b::a9fe:a9fe",
   ])("blocks private address %s", (address) => {
     expect(isBlockedWebhookAddress(address)).toBe(true);
   });
@@ -29,6 +30,20 @@ describe("outgoing webhook SSRF protection", () => {
       lookup: async () => [{ address: "1.1.1.1", family: 4 }],
     });
     expect(result).toEqual({ ok: true, url: "https://hooks.example.com/aera" });
+  });
+
+  it("returns one validated IP for a DNS-pinned connection while retaining SNI", async () => {
+    const result = await __test.resolveWebhookTarget("https://hooks.example.com/aera", {
+      lookup: async () => [{ address: "1.1.1.1", family: 4 }],
+    });
+    expect(result).toMatchObject({
+      ok: true,
+      target: {
+        address: "1.1.1.1",
+        family: 4,
+        servername: "hooks.example.com",
+      },
+    });
   });
 
   it("rejects localhost names, credentials and non-HTTPS production targets", async () => {

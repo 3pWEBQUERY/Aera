@@ -1,6 +1,6 @@
 # Progress — Aera
 
-_Zuletzt aktualisiert: 11. Juli 2026_
+_Zuletzt aktualisiert: 20. Juli 2026_
 
 ## Was funktioniert (implementiert)
 
@@ -76,6 +76,19 @@ Laut Projekt-Status ist Aera eine **voll funktionsfähige** Anwendung, kein Prot
   KI arbeitet keyword-basiert.
 
 ## Meilenstein-Log
+
+- **20.07.2026 — Roadmap Punkt 4 (Recht und Produktqualität):** Separates,
+  nachweisbares Newsletter-Opt-in mit One-Click-Unsubscribe und
+  Bounce-/Complaint-Suppression; versionierte AGB-/Datenschutznachweise und
+  gesonderte Sofortzugangsbestätigung für digitale Käufe; Nutzer- und
+  Tenant-Streaming-Exporte; passwortgeschützte, wiederaufnehmbare Konto- und
+  Community-Löschung inklusive Stripe-, Retention- und S3-Outbox-Phasen sowie
+  automatischem Retention-Purge. Globale Rechts-/Kontopfade funktionieren auch
+  auf Sub- und Custom Domains. Accessibility-Basis (Skip-Link, Fokusführung,
+  Dialog-Trap, Live-Fehler) und Playwright-CI mit fünf kritischen Browserflows.
+  Alle 19 Sprachkataloge enthalten die neuen Rechts-/Einwilligungstexte.
+  428 Vitest- und 5 Playwright-Tests, TypeScript, ESLint und Production-Build
+  grün; 63/63 Railway-Migrationen und 71 RLS-Policies verifiziert.
 
 - **11.07.2026 (2)** — Bewegter Hero-Hintergrund: `videos/{1,2,3}.mp4` mit
   FFmpeg zu WebP-Frame-Sequenzen extrahiert (fps=12, 120 Frames/Clip,

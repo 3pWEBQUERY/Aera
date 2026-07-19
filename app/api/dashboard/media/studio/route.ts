@@ -1,6 +1,4 @@
 import { NextResponse } from "next/server";
-import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
 import { geminiGenerateImage } from "@/lib/ai";
@@ -12,8 +10,13 @@ import {
   reserveCredit,
   settleCreditReservation,
 } from "@/lib/credits";
-import { uploadObject, isAllowedImage, extensionFor } from "@/lib/storage";
+import { isAllowedImage } from "@/lib/storage";
 import { storageAllows } from "@/lib/storage-quota";
+import { magicBytesMatch, MAX_IMAGE_BYTES } from "@/lib/upload-policy";
+import {
+  persistVerifiedBufferUpload,
+  StorageQuotaExceededError,
+} from "@/lib/secure-upload";
 
 interface InputImage {
   mimeType: string;
@@ -27,7 +30,7 @@ const IMAGE_FALLBACK_TOKENS = 1290;
 
 const TOOLS: StudioTool[] = ["create", "edit", "remove-bg", "enhance"];
 
-/** Store a base64 image as a studio result and return url + object id. */
+/** Store a verified base64 image through the same quota/scanning path as uploads. */
 async function persistImage(
   tenantId: string,
   ownerId: string,
@@ -35,21 +38,14 @@ async function persistImage(
   data: string,
 ): Promise<{ id: string; url: string }> {
   const bytes = Buffer.from(data, "base64");
-  const key = `tenants/${tenantId}/studio-image/${randomUUID()}.${extensionFor(mimeType)}`;
-  const url = await uploadObject({ key, body: bytes, contentType: mimeType });
-  const object = await prisma.storageObject.create({
-    data: {
-      tenantId,
-      ownerId,
-      key,
-      url,
-      purpose: "studio-image",
-      contentType: mimeType,
-      sizeBytes: bytes.length,
-      visibility: "PUBLIC",
-    },
+  return persistVerifiedBufferUpload({
+    tenantId,
+    ownerId,
+    purpose: "studio-image",
+    contentType: mimeType,
+    bytes,
+    visibility: "PUBLIC",
   });
-  return { id: object.id, url };
 }
 
 function readImage(raw: unknown): InputImage | { error: string } {
@@ -61,6 +57,16 @@ function readImage(raw: unknown): InputImage | { error: string } {
   }
   if (!data || data.length > MAX_B64_LEN) {
     return { error: "image-too-large" };
+  }
+  if (!/^[A-Za-z0-9+/]*={0,2}$/.test(data) || data.length % 4 === 1) {
+    return { error: "unsupported-image" };
+  }
+  const bytes = Buffer.from(data, "base64");
+  if (bytes.length > MAX_IMAGE_BYTES) {
+    return { error: "image-too-large" };
+  }
+  if (!magicBytesMatch(mimeType, bytes.subarray(0, 4096))) {
+    return { error: "unsupported-image" };
   }
   return { mimeType, data };
 }
@@ -106,8 +112,19 @@ export async function POST(req: Request) {
     if (!quota.ok) {
       return NextResponse.json({ error: "storage-full", storageFull: true }, { status: 413 });
     }
-    const saved = await persistImage(tenant.id, user.id, image.mimeType, image.data);
-    return NextResponse.json({ images: [saved] });
+    try {
+      const saved = await persistImage(tenant.id, user.id, image.mimeType, image.data);
+      return NextResponse.json({ images: [saved] });
+    } catch (error) {
+      if (error instanceof StorageQuotaExceededError) {
+        return NextResponse.json(
+          { error: "storage-full", storageFull: true },
+          { status: 413 },
+        );
+      }
+      console.error("Studio image persistence failed:", error);
+      return NextResponse.json({ error: "persist-failed" }, { status: 500 });
+    }
   }
 
   // ---------------------------------------------- generate (Gemini)
@@ -191,9 +208,13 @@ export async function POST(req: Request) {
       balance,
     });
   } catch (e) {
-    return NextResponse.json(
-      { error: `persist-failed: ${(e as Error).message}` },
-      { status: 500 },
-    );
+    if (e instanceof StorageQuotaExceededError) {
+      return NextResponse.json(
+        { error: "storage-full", storageFull: true },
+        { status: 413 },
+      );
+    }
+    console.error("Generated studio image persistence failed:", e);
+    return NextResponse.json({ error: "persist-failed" }, { status: 500 });
   }
 }

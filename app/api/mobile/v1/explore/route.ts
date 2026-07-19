@@ -28,7 +28,7 @@ async function categoriesInUse(): Promise<Map<string, number>> {
     const rows = await prisma.tenant.groupBy({
       by: ["category"],
       _count: { _all: true },
-      where: { category: { not: null } },
+      where: { category: { not: null }, status: "ACTIVE" },
     });
     const map = new Map<string, number>();
     for (const r of rows) {
@@ -48,13 +48,18 @@ export async function GET(req: Request) {
     categoriesInUse(),
     user
       ? prisma.membership.findMany({
-          where: { userId: user.id, status: "ACTIVE" },
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            tenant: { status: "ACTIVE" },
+          },
           select: { tenantId: true, tenant: { select: { category: true } } },
         })
       : Promise.resolve([]),
     // Beliebteste Communities (Puffer 24: dient als forYou-Fallback und zum
     // Auffüllen von popularWeek).
     prisma.tenant.findMany({
+      where: { status: "ACTIVE" },
       include: COUNT_INCLUDE,
       orderBy: POPULAR_ORDER,
       take: 24,
@@ -87,7 +92,11 @@ export async function GET(req: Request) {
   let forYouRows: TenantWithCount[] = [];
   if (myCategories.length > 0) {
     forYouRows = (await prisma.tenant.findMany({
-      where: { category: { in: myCategories }, id: { notIn: [...myIds] } },
+      where: {
+        category: { in: myCategories },
+        id: { notIn: [...myIds] },
+        status: "ACTIVE",
+      },
       include: COUNT_INCLUDE,
       orderBy: POPULAR_ORDER,
       take: 12,
@@ -102,7 +111,7 @@ export async function GET(req: Request) {
   const weekIds = weekJoins.map((g) => g.tenantId);
   const weekTenants = weekIds.length
     ? ((await prisma.tenant.findMany({
-        where: { id: { in: weekIds } },
+        where: { id: { in: weekIds }, status: "ACTIVE" },
         include: COUNT_INCLUDE,
       })) as TenantWithCount[])
     : [];

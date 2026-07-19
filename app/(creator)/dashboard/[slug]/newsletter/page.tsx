@@ -42,6 +42,7 @@ export default async function NewsletterPage({
     segmentName: c.segment?.name ?? null,
     recipientCount: c.recipientCount,
     sentAt: c.sentAt,
+    scheduledAt: c.scheduledAt,
   }));
   const segments: SegmentData[] = segs;
 

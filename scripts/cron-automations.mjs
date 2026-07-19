@@ -7,18 +7,23 @@
 // Railway erwartet, dass Cron-Prozesse sich beenden — sonst werden
 // Folgeläufe übersprungen. Deshalb hartes Timeout + process.exit.
 
-const base = (process.env.APP_URL ?? "").replace(/\/$/, "");
+let base = (process.env.APP_URL ?? "").trim().replace(/\/$/, "");
+if (base && !/^https?:\/\//i.test(base)) base = `https://${base}`;
 const secret = process.env.CRON_SECRET ?? "";
 
-if (!base || !secret) {
-  console.error("APP_URL und CRON_SECRET müssen gesetzt sein.");
+if (!base || secret.length < 32) {
+  console.error("APP_URL und ein CRON_SECRET mit mindestens 32 Zeichen müssen gesetzt sein.");
   process.exit(1);
 }
 
-const url = `${base}/api/cron/automations?secret=${encodeURIComponent(secret)}`;
+const url = `${base}/api/cron/automations`;
 
 try {
-  const res = await fetch(url, { signal: AbortSignal.timeout(120_000) });
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { authorization: `Bearer ${secret}` },
+    signal: AbortSignal.timeout(50_000),
+  });
   const body = await res.text();
   console.log(`[cron] ${res.status} ${body}`);
   process.exit(res.ok ? 0 : 1);

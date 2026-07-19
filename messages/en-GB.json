@@ -1,4 +1,34 @@
 {
+  "errors": {
+    "termsRequired": "You must accept the Terms and Conditions and acknowledge the Privacy Notice.",
+    "subInvalid": "Invalid subdomain. Use 3–63 lowercase letters, numbers or hyphens (not at the beginning or end).",
+    "subReserved": "This subdomain is reserved. Please choose another.",
+    "subTaken": "This subdomain is already in use.",
+    "defaultTierCantDelete": "The default tier cannot be deleted.",
+    "tierDeleteStripeBlocked": "This tier can only be deleted after Stripe confirms that all linked subscriptions have ended. No data was deleted.",
+    "memberRemoveStripeFailed": "The Stripe subscription could not be ended safely. The member was not removed and no local access was deleted.",
+    "tenantDeleteConfirmMismatch": "The entered community slug does not match.",
+    "tenantDeleteStripeSubscriptionsActive": "The community can only be deleted after all Stripe subscriptions have ended. No data was deleted.",
+    "tenantDeleteStripeCleanupFailed": "Stripe or Connect cleanup failed. The community and its data were not deleted.",
+    "paidTierArchivedInsteadOfDeleted": "The paid tier was safely hidden instead of deleted so open Stripe payments can still be processed correctly.",
+    "pendingPaymentsBlockDeletion": "Deletion is blocked while pending payments or reservations exist. No data was deleted.",
+    "productArchivedBecauseOrdersExist": "The product was hidden instead of deleted because orders reference it. Pending payments can still be processed safely."
+  },
+  "legalPurchase": {
+    "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
+    "requiredError": "Please confirm immediate access before continuing."
+  },
+  "legalReview": {
+    "eyebrow": "Legal",
+    "title": "Review the current terms",
+    "description": "Please review the current Terms and Conditions and Privacy Notice, then confirm before continuing.",
+    "submit": "Confirm and continue",
+    "saving": "Confirming…",
+    "required": "Please accept the Terms and Conditions and acknowledge the Privacy Notice."
+  },
+  "auth": {
+    "legalAcceptance": "I accept the <terms>Terms and Conditions</terms> and acknowledge the <privacy>Privacy Notice</privacy>."
+  },
   "home": {
     "chapters": {
       "c7": {
@@ -15,6 +45,15 @@
     "finaleText": "Start for free, set up spaces, invite members — monetise when you're ready. No credit card required."
   },
   "dashboard": {
+    "settings": {
+      "disconnectBlocked": "Stripe could not be disconnected safely. End all subscriptions first and make sure the Connect account has no outstanding balance or other obligations."
+    },
+    "domain": {
+      "subEditLabel": "Custom subdomain",
+      "subPlaceholder": "your-community",
+      "subHint": "Lowercase letters, numbers and hyphens only (3–63 characters). Your community will be reachable at this address. Leave empty for the default address (your handle).",
+      "subSaved": "Subdomain saved."
+    },
     "media": {
       "openStudio": "Studio",
       "openInStudio": "Edit in Studio",

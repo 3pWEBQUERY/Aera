@@ -40,7 +40,9 @@ export async function POST(req: Request) {
   if ("response" in parsed) return parsed.response;
   const { tenantSlug, jws, kind, refId } = parsed.data;
 
-  const tenant = await prisma.tenant.findUnique({ where: { slug: tenantSlug } });
+  const tenant = await prisma.tenant.findUnique({
+    where: { slug: tenantSlug, status: "ACTIVE" },
+  });
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
 
   let txn;

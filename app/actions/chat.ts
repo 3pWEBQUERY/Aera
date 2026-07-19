@@ -6,9 +6,10 @@ import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { uniqueChildSlug } from "@/lib/slug";
 import { findOrCreateDirect } from "@/lib/chat";
+import { activeRoleAtLeast } from "@/lib/tenant";
 
 async function tenantBySlug(slug: string) {
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (tenant) setTenantContext(tenant.id);
   return tenant;
 }
@@ -21,10 +22,6 @@ async function membership(tenantId: string, userId: string) {
   return prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId, userId } },
   });
-}
-
-function isStaffRole(role: string | undefined): boolean {
-  return role === "OWNER" || role === "ADMIN" || role === "MODERATOR";
 }
 
 // ---------------------------------------------------------------- Start a DM
@@ -40,7 +37,7 @@ export async function startDirectAction(fd: FormData): Promise<void> {
   if (!tenant) redirect(back);
 
   const me = await membership(tenant!.id, user!.id);
-  if (me?.status !== "ACTIVE" && !isStaffRole(me?.role)) redirect(`/c/${slug}/join`);
+  if (me?.status !== "ACTIVE") redirect(`/c/${slug}/join`);
   if (!otherId || otherId === user!.id) redirect(back);
 
   const other = await membership(tenant!.id, otherId);
@@ -65,7 +62,7 @@ export async function createChatGroupAction(fd: FormData): Promise<void> {
   if (!tenant) redirect(back);
 
   const me = await membership(tenant!.id, user!.id);
-  if (!isStaffRole(me?.role)) redirect(back);
+  if (!activeRoleAtLeast(me, "MODERATOR")) redirect(back);
   if (name.length < 2) redirect(back);
 
   const visibility = access === "all" ? "MEMBERS" : "PAID";

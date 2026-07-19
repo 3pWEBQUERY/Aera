@@ -7,6 +7,7 @@ import {
   studioMemberDtos,
   STUDIO_MEMBER_INCLUDE,
 } from "@/lib/mobile/studio";
+import { canManageTenantMembership } from "@/lib/capabilities";
 
 // POST /api/mobile/v1/studio/{slug}/members/{userId} { action } → { member }
 // Effekte gespiegelt aus updateMemberAction (app/actions/dashboard.ts):
@@ -26,7 +27,7 @@ export async function POST(
   const { slug, userId } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant, user } = access;
+  const { tenant, user, role: actorRole } = access;
 
   const parsed = await parseJsonBody(req, schema);
   if ("response" in parsed) return parsed.response;
@@ -36,8 +37,14 @@ export async function POST(
     where: { tenantId_userId: { tenantId: tenant.id, userId } },
   });
   if (!membership) return jsonError("not_found", "Member not found.", 404);
-  if (membership.role === "OWNER") {
-    return jsonError("not_authorized", "The owner cannot be modified.", 403);
+  if (!canManageTenantMembership(actorRole, membership.role)) {
+    return jsonError(
+      "not_authorized",
+      membership.role === "OWNER"
+        ? "The owner cannot be modified."
+        : "Only the owner can modify administrators.",
+      403,
+    );
   }
   if (membership.userId === user.id) {
     return jsonError("not_authorized", "You cannot change your own membership.", 403);

@@ -14,6 +14,7 @@ import { PostTile, type PostTileData } from "@/components/community/post-tile";
 import { PostSlider } from "@/components/community/post-slider";
 import { VideoSlider } from "@/components/community/video-slider";
 import { MediaSlider } from "@/components/community/media-slider";
+import { HScrollRow } from "@/components/community/h-scroll-row";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
 import type { MediaTileData } from "@/components/community/media-tile";
 import { SpaceSlider, type SpaceCardData } from "@/components/community/space-slider";
@@ -81,6 +82,7 @@ export default async function CommunityHome({
   const tRec = await getTranslations("community.render.recTypes");
   const tReason = await getTranslations("community.render.recReason");
   const tPostTile = await getTranslations("community.render.postTile");
+  const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
 
   const [spacesAll, coverUrl, memberCount, postCount, cheapestPaidTier] =
@@ -279,6 +281,7 @@ export default async function CommunityHome({
   const errorMessages: Record<string, string> = {
     checkout: t("errCheckout"),
     "payments-unavailable": t("errPaymentsUnavailable"),
+    "legal-consent": tLegal("requiredError"),
   };
   const shopNotice: ShopNotice = first(sp.purchased)
     ? { kind: "purchased", name: productName(first(sp.purchased)) }
@@ -375,25 +378,26 @@ export default async function CommunityHome({
 
   const podcastSection =
     episodes.length > 0 ? (
-      <section>
-        <div className="mb-4 flex items-end justify-between gap-4">
-          <h2 className="display-serif text-2xl text-[#161613]">{t("podcast")}</h2>
-          {podcastHref && (
+      <HScrollRow
+        title={t("podcast")}
+        action={
+          podcastHref ? (
             <Link
               href={podcastHref}
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[#161613]/70 transition-colors hover:gap-1.5 hover:text-[#161613]"
+              className="hidden items-center gap-1 text-sm font-semibold text-[#161613]/70 transition-colors hover:gap-1.5 hover:text-[#161613] sm:inline-flex"
             >
               {t("allEpisodes")}
               <Icon name="arrowRight" size={15} />
             </Link>
-          )}
-        </div>
-        <div className="space-y-4">
-          {episodes.map((p) => (
-            <article
-              key={p.id}
-              className="rounded-2xl border border-[#161613]/10 bg-white p-5 sm:p-6"
-            >
+          ) : null
+        }
+      >
+        {episodes.map((p) => (
+          <div
+            key={p.id}
+            className="min-w-0 shrink-0 basis-[86%] snap-start sm:basis-[calc(58%-8px)] lg:basis-[calc(46%-11px)]"
+          >
+            <article className="flex h-full flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 sm:p-6">
               <div className="flex items-start gap-4 sm:gap-5">
                 {p.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -424,7 +428,7 @@ export default async function CommunityHome({
               {p.locked ? (
                 <Link
                   href={`/c/${slug}/join`}
-                  className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)]"
+                  className="mt-4 inline-flex items-center gap-2 self-start rounded-full bg-[var(--brand)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)]"
                 >
                   <Icon name="lock" size={14} />
                   {t("listenWithMembership")}
@@ -441,9 +445,9 @@ export default async function CommunityHome({
                 )
               )}
             </article>
-          ))}
-        </div>
-      </section>
+          </div>
+        ))}
+      </HScrollRow>
     ) : null;
   const imagesSection = <MediaSlider title={t("images")} items={mediaPackages} />;
   const spacesSection = <SpaceSlider title={t("discover")} slug={slug} items={spaceCards} />;

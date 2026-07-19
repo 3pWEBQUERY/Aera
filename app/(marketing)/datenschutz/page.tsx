@@ -5,9 +5,6 @@ export const metadata = {
   description: "Datenschutzerklärung für die Nutzung von Aera.so.",
 };
 
-/**
- * Vorlage — vor dem Launch juristisch prüfen lassen und Platzhalter ersetzen.
- */
 export default function DatenschutzPage() {
   return (
     <LegalShell
@@ -46,7 +43,7 @@ export default function DatenschutzPage() {
         <h2>3. Konto und Community-Nutzung</h2>
         <p className="mt-3">
           Bei der Registrierung verarbeiten wir Name, E-Mail-Adresse und ein
-          verschlüsselt gespeichertes Passwort (Art. 6 Abs. 1 lit. b DSGVO —
+          kryptografisch gehashtes Passwort (Art. 6 Abs. 1 lit. b DSGVO —
           Vertragserfüllung). Innerhalb einer Community verarbeiten wir die
           von dir erstellten Inhalte (Beiträge, Kommentare, Nachrichten),
           deine Mitgliedschaften sowie Aktivitätsdaten wie Punkte und
@@ -84,11 +81,22 @@ export default function DatenschutzPage() {
         <p className="mt-3">
           Transaktionale E-Mails (z. B. Passwort-Reset, E-Mail-Bestätigung)
           und Community-Newsletter versenden wir über den Dienstleister
-          Resend, Inc. (USA; EU-Standardvertragsklauseln). Newsletter erhältst
-          du nur als Mitglied der jeweiligen Community und mit bestätigter
-          E-Mail-Adresse; zur Erfolgsmessung verarbeiten wir Zustell-,
-          Öffnungs- und Klick-Ereignisse (Art. 6 Abs. 1 lit. f DSGVO —
-          berechtigtes Interesse an Zustellbarkeit und Missbrauchsvermeidung).
+          Resend, Inc. (USA). Community-Newsletter erhältst du nur, wenn du
+          hierfür eine separate, freiwillige Einwilligung erteilt und deine
+          E-Mail-Adresse bestätigt hast (Art. 6 Abs. 1 lit. a DSGVO). Die
+          Einwilligung ist nicht vorausgewählt, nicht an die Kontoeröffnung
+          gekoppelt und jederzeit im Konto oder über den Abmeldelink jeder
+          Nachricht widerrufbar. Der Widerruf wirkt für die Zukunft und lässt
+          die vorherige Verarbeitung unberührt.
+        </p>
+        <p className="mt-3">
+          Zur Zustellung und Missbrauchsvermeidung verarbeiten wir Versand-,
+          Zustell-, Abmelde-, Bounce- und Beschwerdeereignisse. Dauerhafte
+          Sperreinträge für abgemeldete oder unzustellbare Adressen werden nur
+          aufbewahrt, soweit dies erforderlich ist, um weitere Sendungen zu
+          verhindern. Für Übermittlungen in die USA werden die jeweils
+          erforderlichen Garantien nach Schweizer Datenschutzrecht und, soweit
+          anwendbar, der DSGVO vereinbart.
         </p>
       </section>
 
@@ -119,10 +127,13 @@ export default function DatenschutzPage() {
       <section>
         <h2>7. Hosting und Infrastruktur</h2>
         <p className="mt-3">
-          Die Plattform wird bei Railway Corp. (USA) gehostet; dort liegen
-          Anwendung, Datenbank und Datei-Speicher (Art. 6 Abs. 1 lit. f
-          DSGVO — berechtigtes Interesse an einem sicheren, zuverlässigen
-          Betrieb; EU-Standardvertragsklauseln). Server-Logs (IP-Adresse,
+          Anwendung und Datenbank werden bei Railway Corp. (USA) betrieben;
+          Uploads liegen in einem privat konfigurierten S3-kompatiblen
+          Objektspeicher. Der konkrete Speicherstandort richtet sich nach der
+          für den Produktivbetrieb gewählten Bucket-Region. Rechtsgrundlage
+          ist Art. 6 Abs. 1 lit. b und f DSGVO. Für Empfänger in Staaten ohne
+          anerkannt angemessenes Datenschutzniveau werden die erforderlichen
+          vertraglichen und technischen Garantien eingesetzt. Server-Logs (IP-Adresse,
           Zeitstempel, aufgerufene Ressource) werden zur Absicherung des
           Betriebs kurzzeitig verarbeitet. Sicherheitsrelevante Aktionen
           (z. B. Anmeldungen, Rollenänderungen, Zahlungs-Ereignisse) werden
@@ -160,8 +171,20 @@ export default function DatenschutzPage() {
           personenbezogene Daten gelöscht, soweit keine gesetzlichen
           Aufbewahrungspflichten (z. B. Art. 958f OR — 10 Jahre für
           Buchungsbelege; bzw. §§ 147 AO, 257 HGB, soweit deutsches
-          Steuerrecht anwendbar ist) entgegenstehen. Community-Betreiber können ihre
-          Daten jederzeit vollständig exportieren.
+          Steuerrecht anwendbar ist) entgegenstehen. Daten, die wegen einer
+          Aufbewahrungspflicht nicht sofort gelöscht werden dürfen, werden für
+          andere Zwecke gesperrt. Offene Zahlungen, Rückbuchungen,
+          Sicherheitsvorfälle und Rechtsansprüche können ebenfalls eine
+          begrenzte weitere Speicherung erfordern.
+        </p>
+        <p className="mt-3">
+          Angemeldete Nutzer können ihre bereitgestellten Daten in einem
+          strukturierten, maschinenlesbaren Format exportieren und die
+          Kontolöschung im Konto anstoßen. Creator können zusätzlich ihre
+          Community-Daten im Dashboard exportieren. Dateiinhalte werden bei
+          Löschungen über einen nachverfolgbaren Hintergrundprozess aus dem
+          Objektspeicher entfernt; fehlgeschlagene Löschungen werden erneut
+          versucht und abgeglichen.
         </p>
       </section>
 
@@ -186,6 +209,9 @@ export default function DatenschutzPage() {
         <p className="mt-3">
           Wende dich dazu an{" "}
           <a href="mailto:contact@aera.so">contact@aera.so</a>.
+          Auskunftsanfragen beantworten wir grundsätzlich kostenlos und nach
+          verlässlicher Identitätsprüfung innerhalb der gesetzlichen Fristen;
+          nach Schweizer Recht in der Regel innerhalb von 30 Tagen.
         </p>
       </section>
 
@@ -193,9 +219,14 @@ export default function DatenschutzPage() {
         <h2>12. Verantwortlichkeit der Community-Betreiber</h2>
         <p className="mt-3">
           Soweit Creator innerhalb ihrer Community personenbezogene Daten
-          ihrer Mitglieder verarbeiten (z. B. Newsletter-Segmente), sind sie
-          hierfür datenschutzrechtlich mitverantwortlich. Wir stellen die
-          Plattform als Auftragsverarbeiter im Sinne des Art. 28 DSGVO bereit.
+          ihrer Mitglieder für eigene Zwecke verarbeiten (z. B. eigene
+          Newsletter-Segmente oder Angebote), sind sie für diese Zwecke selbst
+          verantwortlich. Soweit wir Daten ausschließlich nach dokumentierten
+          Weisungen eines Creators verarbeiten, handeln wir als
+          Auftragsverarbeiter. Für plattformeigene Zwecke wie Kontosicherheit,
+          Abrechnung und Missbrauchsabwehr bleiben wir eigenständig
+          verantwortlich. Die konkrete Rollenverteilung richtet sich nach dem
+          jeweiligen Verarbeitungsvorgang und den ergänzenden Vereinbarungen.
         </p>
       </section>
     </LegalShell>

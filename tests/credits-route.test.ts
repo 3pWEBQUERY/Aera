@@ -5,10 +5,11 @@ const mocks = vi.hoisted(() => ({
   getCreditSummary: vi.fn(),
   getOrCreateWallet: vi.fn(),
   updateCreatorSubscription: vi.fn(),
+  endCreatorSubscription: vi.fn(),
   createCreditPackCheckout: vi.fn(),
-  createCreatorPlanCheckout: vi.fn(),
-  cancelSubscriptionAtPeriodEnd: vi.fn(),
-  features: { creatorBilling: false },
+  startTrackedCreatorPlanCheckout: vi.fn(),
+  cancelMembershipStripeSubscription: vi.fn(),
+  features: { creatorBilling: false, stripe: true },
 }));
 
 vi.mock("@/lib/guards", () => ({
@@ -19,6 +20,7 @@ vi.mock("@/lib/credits", () => ({
   getCreditSummary: mocks.getCreditSummary,
   getOrCreateWallet: mocks.getOrCreateWallet,
   updateCreatorSubscription: mocks.updateCreatorSubscription,
+  endCreatorSubscription: mocks.endCreatorSubscription,
   CREDIT_PACKS: [{ id: "pack_5k", credits: 5000, priceCents: 2000 }],
   PLANS: {
     FREE: { key: "FREE", name: "Free", monthlyCredits: 500, priceCents: 0 },
@@ -29,8 +31,12 @@ vi.mock("@/lib/credits", () => ({
 
 vi.mock("@/lib/stripe", () => ({
   createCreditPackCheckout: mocks.createCreditPackCheckout,
-  createCreatorPlanCheckout: mocks.createCreatorPlanCheckout,
-  cancelSubscriptionAtPeriodEnd: mocks.cancelSubscriptionAtPeriodEnd,
+}));
+vi.mock("@/lib/stripe-cleanup", () => ({
+  cancelMembershipStripeSubscription: mocks.cancelMembershipStripeSubscription,
+}));
+vi.mock("@/lib/creator-checkout", () => ({
+  startTrackedCreatorPlanCheckout: mocks.startTrackedCreatorPlanCheckout,
 }));
 
 vi.mock("@/lib/env", () => ({
@@ -52,8 +58,11 @@ beforeEach(() => {
     stripeSubscriptionId: null,
   });
   mocks.createCreditPackCheckout.mockResolvedValue("https://checkout.test/pack");
-  mocks.createCreatorPlanCheckout.mockResolvedValue("https://checkout.test/plan");
-  mocks.cancelSubscriptionAtPeriodEnd.mockResolvedValue(new Date("2026-08-10T00:00:00Z"));
+  mocks.startTrackedCreatorPlanCheckout.mockResolvedValue("https://checkout.test/plan");
+  mocks.cancelMembershipStripeSubscription.mockResolvedValue({
+    mode: "period_end",
+    currentPeriodEnd: new Date("2026-08-10T00:00:00Z"),
+  });
   mocks.features.creatorBilling = false;
 });
 
@@ -62,7 +71,12 @@ describe("dashboard credit billing safety gate", () => {
     const res = await GET(new Request("http://localhost/api/dashboard/assistant/credits?slug=demo"));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({
-      summary: { plan: "FREE", balance: 500, billingEnabled: false },
+      summary: {
+        plan: "FREE",
+        balance: 500,
+        billingEnabled: false,
+        cancellationEnabled: true,
+      },
     });
   });
 
@@ -147,7 +161,7 @@ describe("dashboard credit billing safety gate", () => {
 
     expect(res.status).toBe(409);
     expect(await res.json()).toEqual(expect.objectContaining({ error: "existing_subscription" }));
-    expect(mocks.createCreatorPlanCheckout).not.toHaveBeenCalled();
+    expect(mocks.startTrackedCreatorPlanCheckout).not.toHaveBeenCalled();
   });
 
   it("schedules creator-plan cancellation at the Stripe period end", async () => {
@@ -168,7 +182,7 @@ describe("dashboard credit billing safety gate", () => {
     );
 
     expect(res.status).toBe(200);
-    expect(mocks.cancelSubscriptionAtPeriodEnd).toHaveBeenCalledWith("sub_live");
+    expect(mocks.cancelMembershipStripeSubscription).toHaveBeenCalledWith("sub_live");
     expect(mocks.updateCreatorSubscription).toHaveBeenCalledWith(
       expect.objectContaining({
         stripeSubscriptionId: "sub_live",
@@ -176,5 +190,33 @@ describe("dashboard credit billing safety gate", () => {
         currentPeriodEnd: new Date("2026-08-10T00:00:00Z"),
       }),
     );
+  });
+
+  it("cancels a recovery-state creator subscription immediately", async () => {
+    mocks.features.creatorBilling = true;
+    mocks.getOrCreateWallet.mockResolvedValue({
+      stripeCustomerId: "cus_1",
+      stripeSubscriptionId: "sub_past_due",
+      creatorSubscriptionStatus: "PAST_DUE",
+    });
+    mocks.cancelMembershipStripeSubscription.mockResolvedValue({
+      mode: "immediate",
+      currentPeriodEnd: null,
+    });
+
+    const res = await POST(
+      new Request("http://localhost/api/dashboard/assistant/credits", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ slug: "demo", action: "cancel_plan" }),
+      }),
+    );
+
+    expect(res.status).toBe(200);
+    expect(mocks.endCreatorSubscription).toHaveBeenCalledWith({
+      tenantId: "t1",
+      stripeSubscriptionId: "sub_past_due",
+    });
+    expect(mocks.updateCreatorSubscription).not.toHaveBeenCalled();
   });
 });

@@ -75,6 +75,17 @@ export async function withTenantTransaction<T>(
   });
 }
 
+/**
+ * Tenant transaction for library/background code that receives a tenant id
+ * explicitly and must not rely on a guard having populated AsyncLocalStorage.
+ */
+export function withTenantTransactionFor<T>(
+  tenantId: string,
+  fn: (tx: Prisma.TransactionClient) => Promise<T>,
+): Promise<T> {
+  return tenantALS.run(tenantId, () => withTenantTransaction(fn));
+}
+
 type ExtendedPrismaClient = ReturnType<typeof createClient>;
 
 const globalForPrisma = globalThis as unknown as {
@@ -83,6 +94,11 @@ const globalForPrisma = globalThis as unknown as {
 };
 
 const baseClient = globalForPrisma.prismaBase ?? createBaseClient();
+/**
+ * Explicit privileged client for the small set of global identity/inbox/admin
+ * paths. Tenant feature code must use the extended default client instead.
+ */
+export const systemPrisma = baseClient;
 export const prisma: ExtendedPrismaClient = globalForPrisma.prisma ?? createClient(baseClient);
 
 if (process.env.NODE_ENV !== "production") {

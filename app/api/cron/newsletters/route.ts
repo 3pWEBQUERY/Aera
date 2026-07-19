@@ -1,25 +1,36 @@
-import { NextResponse } from "next/server";
-import { env } from "@/lib/env";
-import { processPendingNewsletterDeliveries } from "@/lib/newsletter-delivery";
+import {
+  dispatchNewsletterCampaigns,
+  processPendingNewsletterDeliveries,
+} from "@/lib/newsletter-delivery";
+import {
+  authorizeCronRequest,
+  cronMethodNotAllowed,
+} from "@/lib/cron-auth";
+import { runCronRoute } from "@/lib/cron-monitor";
 
 /**
- * GET /api/cron/newsletters?secret=<CRON_SECRET>
- * Run every minute. Database leases make parallel scheduler calls safe.
+ * POST /api/cron/newsletters with Authorization: Bearer <CRON_SECRET>.
+ * Run every five minutes. Database leases make parallel scheduler calls safe.
  */
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request) {
-  if (!env.CRON_SECRET) {
-    return NextResponse.json({ error: "cron-disabled" }, { status: 503 });
-  }
-  const url = new URL(req.url);
-  const provided =
-    url.searchParams.get("secret") ??
-    (req.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");
-  if (provided !== env.CRON_SECRET) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+export async function POST(req: Request) {
+  const denied = authorizeCronRequest(req);
+  if (denied) return denied;
 
-  const result = await processPendingNewsletterDeliveries(200);
-  return NextResponse.json({ ok: true, ...result });
+  return runCronRoute("newsletters", async ({ deadlineAt }) => {
+    const campaigns = await dispatchNewsletterCampaigns({ deadlineAt });
+    const deliveries = await processPendingNewsletterDeliveries(200, {
+      deadlineAt,
+    });
+    return {
+      campaignsClaimed: campaigns.claimed,
+      campaignsCompleted: campaigns.completed,
+      campaignQueueErrors: campaigns.failed,
+      recipientsQueued: campaigns.queued,
+      ...deliveries,
+    };
+  });
 }
+
+export const GET = cronMethodNotAllowed;

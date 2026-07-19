@@ -25,14 +25,14 @@ export async function GET(req: Request) {
     if (sub) {
       // Explicit subdomain wins over a same-named slug (squatting-safe).
       const bySub = await prisma.tenant.findFirst({
-        where: { subdomain: sub },
+        where: { subdomain: sub, status: "ACTIVE" },
         select: { slug: true },
       });
       if (bySub) {
         slug = bySub.slug;
       } else {
         const bySlug = await prisma.tenant.findFirst({
-          where: { slug: sub },
+          where: { slug: sub, status: "ACTIVE" },
           select: { slug: true },
         });
         slug = bySlug?.slug ?? null;
@@ -41,7 +41,11 @@ export async function GET(req: Request) {
   } else {
     // Verified custom domains only (phishing/squatting protection).
     const tenant = await prisma.tenant.findFirst({
-      where: { customDomain: host, customDomainVerifiedAt: { not: null } },
+      where: {
+        customDomain: host,
+        customDomainVerifiedAt: { not: null },
+        status: "ACTIVE",
+      },
       select: { slug: true },
     });
     slug = tenant?.slug ?? null;

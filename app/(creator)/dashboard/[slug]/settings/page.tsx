@@ -45,12 +45,12 @@ export default async function SettingsPage({
 
   // Live Stripe Connect status for the connected account (if any).
   const stripeStatus =
-    features.stripe && tenant.stripeAccountId
+    role === "OWNER" && features.stripe && tenant.stripeAccountId
       ? await getConnectStatus(tenant.stripeAccountId)
       : null;
   const stripeReady = !!stripeStatus?.chargesEnabled;
   const stripeLoginUrl =
-    stripeReady && tenant.stripeAccountId
+    role === "OWNER" && stripeReady && tenant.stripeAccountId
       ? await createDashboardLoginLink(tenant.stripeAccountId)
       : null;
 
@@ -92,9 +92,9 @@ export default async function SettingsPage({
       <p className="mt-4 text-xs text-slate-400">
         {t("activeNote")}
       </p>
-      <StripeConnectionTest slug={slug} />
+      {role === "OWNER" && <StripeConnectionTest slug={slug} />}
 
-      <div className="mt-6 border-t border-slate-100 pt-6">
+      {role === "OWNER" && <div className="mt-6 border-t border-slate-100 pt-6">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div>
             <p className="font-medium text-slate-900">{t("stripeConnect")}</p>
@@ -119,6 +119,11 @@ export default async function SettingsPage({
         {connect === "error" && (
           <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
             {t("connectError")}
+          </p>
+        )}
+        {connect === "disconnect-blocked" && (
+          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {t("disconnectBlocked")}
           </p>
         )}
 
@@ -175,7 +180,7 @@ export default async function SettingsPage({
             </p>
           </div>
         )}
-      </div>
+      </div>}
     </section>
   );
 

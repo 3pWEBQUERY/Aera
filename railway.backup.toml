@@ -1,0 +1,9 @@
+# Set this file as the Backup service's custom Config-as-Code path in Railway.
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.backup"
+
+[deploy]
+startCommand = "node scripts/backup-database.mjs --output-dir /tmp/aera-backups"
+cronSchedule = "17 2 * * *"
+restartPolicyType = "NEVER"

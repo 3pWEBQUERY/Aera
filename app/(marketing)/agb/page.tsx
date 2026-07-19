@@ -5,9 +5,6 @@ export const metadata = {
   description: "Allgemeine Geschäftsbedingungen für die Nutzung von Aera.so.",
 };
 
-/**
- * Vorlage — vor dem Launch juristisch prüfen lassen und Platzhalter ersetzen.
- */
 export default function AgbPage() {
   return (
     <LegalShell
@@ -171,12 +168,13 @@ export default function AgbPage() {
         <h2>12. Änderungen dieser AGB</h2>
         <p className="mt-3">
           Wir können diese AGB mit Wirkung für die Zukunft anpassen, soweit
-          dies aus triftigen Gründen (insbesondere Rechtsänderungen oder
-          Funktionserweiterungen) erforderlich ist. Über Änderungen
-          informieren wir mindestens vier Wochen vor Inkrafttreten per
-          E-Mail. Widerspricht der Nutzer nicht innerhalb dieser Frist,
-          gelten die Änderungen als angenommen; hierauf weisen wir in der
-          Änderungsmitteilung gesondert hin.
+          dies wegen Rechtsänderungen, Sicherheitsanforderungen oder einer
+          sachlich erforderlichen Weiterentwicklung der Plattform notwendig
+          ist und das vertragliche Gleichgewicht nicht unangemessen zulasten
+          der Nutzer verschoben wird. Über wesentliche Änderungen informieren
+          wir vor ihrem Inkrafttreten. Soweit eine Änderung eine ausdrückliche
+          Zustimmung erfordert, holen wir diese gesondert ein; bloßes
+          Schweigen gilt dann nicht als Zustimmung.
         </p>
       </section>
 

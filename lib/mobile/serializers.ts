@@ -74,7 +74,7 @@ export async function roleMapFor(
   const unique = [...new Set(userIds)].filter(Boolean);
   if (unique.length === 0) return new Map();
   const rows = await prisma.membership.findMany({
-    where: { tenantId, userId: { in: unique } },
+    where: { tenantId, userId: { in: unique }, status: "ACTIVE" },
     select: { userId: true, role: true },
   });
   return new Map(rows.map((r) => [r.userId, r.role]));

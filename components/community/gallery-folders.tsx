@@ -1,10 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { purchaseMediaPackageAction, purchaseMediaItemAction } from "@/app/actions/engage";
 import { Icon } from "@/components/dashboard/icons";
 import { Pill } from "@/components/ui/misc";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
+import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { formatPrice, cn } from "@/lib/utils";
 
 /**
@@ -179,19 +181,29 @@ function FolderModal({
   const [lightbox, setLightbox] = useState<number | null>(null);
   const t = useTranslations("community.render.gallery");
   const locale = useLocale();
+  const titleId = useId();
+  const dialogRef = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
 
   return (
-    <div className="fixed inset-0 z-[70] flex flex-col bg-white">
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      tabIndex={-1}
+      className="fixed inset-0 z-[70] flex flex-col bg-white"
+    >
       {/* Full-bleed header */}
       <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[#161613]/10 px-4 py-3.5 sm:px-6">
         <div className="min-w-0">
-          <h2 className="truncate text-lg font-bold text-[#161613]">{pkg.title}</h2>
+          <h2 id={titleId} className="truncate text-lg font-bold text-[#161613]">{pkg.title}</h2>
           <p className="text-xs text-[#161613]/50">
             {t("mediaCount", { count: pkg.itemCount })}
             {pkg.priceCents > 0 ? ` · ${formatPrice(pkg.priceCents, "eur", locale)}` : ` · ${t("free")}`}
           </p>
         </div>
         <button
+          type="button"
           onClick={onClose}
           aria-label={t("close")}
           className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
@@ -227,6 +239,7 @@ function FolderModal({
                 <input type="hidden" name="tenant" value={slug} />
                 <input type="hidden" name="space" value={space} />
                 <input type="hidden" name="packageId" value={pkg.id} />
+                <ImmediateAccessConsent className="mb-3" />
                 <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#161613] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.99]">
                   <Icon name="lock" size={16} /> {t("unlockFor", { price: formatPrice(pkg.priceCents, "eur", locale) })}
                 </button>
@@ -255,6 +268,7 @@ function FolderModal({
                         <input type="hidden" name="tenant" value={slug} />
                         <input type="hidden" name="space" value={space} />
                         <input type="hidden" name="itemId" value={it.id} />
+                        <ImmediateAccessConsent inverse className="mb-2 max-w-48" />
                         <button className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-[#161613] transition hover:bg-white/90">
                           {t("unlockFor", { price: formatPrice(it.priceCents ?? 0, "eur", locale) })}
                         </button>
@@ -337,6 +351,8 @@ function Lightbox({
   onClose: () => void;
 }) {
   const t = useTranslations("community.render.gallery");
+  const titleId = useId();
+  const dialogRef = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
   // Only images are opened in the lightbox; keep their original order/indices.
   const item = items[index];
 
@@ -366,7 +382,15 @@ function Lightbox({
   const hasMultiple = imageCount > 1;
 
   return (
-    <div className="fixed inset-0 z-[80] flex flex-col bg-black/95">
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      tabIndex={-1}
+      className="fixed inset-0 z-[80] flex flex-col bg-black/95"
+    >
+      <h2 id={titleId} className="sr-only">{title}</h2>
       {/* Toolbar */}
       <div className="flex shrink-0 items-center justify-end gap-2 px-4 py-3">
         <button

@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import { getReadinessSnapshot } from "@/lib/readiness";
 
-export async function GET() {
-  try {
-    await prisma.$queryRaw`SELECT 1`;
-    return NextResponse.json({ status: "ok", db: "up" });
-  } catch {
-    return NextResponse.json({ status: "degraded", db: "down" }, { status: 503 });
-  }
+export const dynamic = "force-dynamic";
+
+const HEADERS = { "Cache-Control": "no-store, max-age=0" } as const;
+
+export async function GET(): Promise<NextResponse> {
+  const snapshot = await getReadinessSnapshot();
+  return NextResponse.json(snapshot, {
+    status: snapshot.status === "ok" ? 200 : 503,
+    headers: HEADERS,
+  });
 }

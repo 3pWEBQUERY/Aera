@@ -56,6 +56,7 @@ export default async function AdminCommunitiesPage({
     primaryColor: t.primaryColor,
     customDomain: t.customDomain,
     platformFeePercent: t.platformFeePercent,
+    status: t.status,
     // `category` is new in the schema; the generated client may be older.
     category: (t as { category?: string | null }).category ?? null,
     createdAt: t.createdAt.toISOString(),

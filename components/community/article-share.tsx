@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Icon } from "@/components/dashboard/icons";
 
 /** Minimal editorial share row: native share, else copy-to-clipboard. */
 export function ArticleShare({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
+  const t = useTranslations("uiMigration.frontend.articleShare");
 
   async function share() {
     const url = typeof window !== "undefined" ? window.location.href : "";
@@ -24,7 +26,7 @@ export function ArticleShare({ title }: { title: string }) {
 
   return (
     <div className="flex items-center gap-3 text-[#161613]/60">
-      <span className="text-xs font-semibold uppercase tracking-wider">Teilen</span>
+      <span className="text-xs font-semibold uppercase tracking-wider">{t("label")}</span>
       <button
         type="button"
         onClick={share}
@@ -35,7 +37,7 @@ export function ArticleShare({ title }: { title: string }) {
         }`}
       >
         <Icon name={copied ? "check" : "copy"} size={15} />
-        {copied ? "Link kopiert" : "Beitrag teilen"}
+        {copied ? t("copied") : t("share")}
       </button>
     </div>
   );

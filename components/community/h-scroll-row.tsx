@@ -11,9 +11,12 @@ import { cn } from "@/lib/utils";
  */
 export function HScrollRow({
   title,
+  action,
   children,
 }: {
   title: string;
+  /** Optional element shown in the header, left of the prev/next arrows. */
+  action?: ReactNode;
   children: ReactNode;
 }) {
   const scroller = useRef<HTMLDivElement>(null);
@@ -64,7 +67,8 @@ export function HScrollRow({
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
         <h2 className="display-serif text-2xl text-[#161613]">{title}</h2>
-        <div className="flex shrink-0 items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+          {action}
           {arrow(-1, canPrev)}
           {arrow(1, canNext)}
         </div>

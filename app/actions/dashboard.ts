@@ -2,7 +2,11 @@
 
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
+import prisma, {
+  setTenantContext,
+  systemPrisma,
+  withTenantTransaction,
+} from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { uniqueChildSlug } from "@/lib/slug";
 import { nameStatus } from "@/lib/tenant-name";
@@ -19,15 +23,23 @@ import {
 } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
-import { sendEmail, renderCampaignHtml, renderAccountActionHtml } from "@/lib/email";
+import { sendEmail, renderAccountActionHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
 import { features } from "@/lib/env";
 import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
 import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
-import { queueNewsletterCampaign } from "@/lib/newsletter-delivery";
+import { canManageTenantMembership } from "@/lib/capabilities";
+import { queueNewsletterAudienceBatch } from "@/lib/newsletter-delivery";
 import type { Prisma } from "@/app/generated/prisma/client";
 import { getTranslations } from "next-intl/server";
+import {
+  assertStripeSubscriptionsInactive,
+  cancelStripeSubscriptionsImmediately,
+  StripeSubscriptionStillActiveError,
+} from "@/lib/stripe-cleanup";
+import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
+import { queueTenantDeletion } from "@/lib/data-lifecycle";
 
 export interface ActionState {
   error?: string;
@@ -278,32 +290,100 @@ export async function updateTierAction(
   return ok;
 }
 
-export async function deleteTierAction(fd: FormData): Promise<void> {
+export async function deleteTierAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
   const tierId = String(fd.get("tierId"));
   const tier = await prisma.membershipTier.findFirst({
     where: { id: tierId, tenantId: tenant.id },
   });
+  if (!tier) return { error: await tErr("tierNotFound") };
   // The default tier is protected (free joiners rely on it).
-  if (tier && !tier.isDefault) {
-    await prisma.subscription.deleteMany({ where: { tenantId: tenant.id, tierId: tier.id } });
-    await prisma.membership.updateMany({
+  if (tier.isDefault) return { error: await tErr("defaultTierCantDelete") };
+
+  // A Stripe Checkout Session references tierId before a local Subscription
+  // exists. Paid tiers are therefore soft-deleted: keeping the row guarantees
+  // that a late paid webhook can still fulfil the purchase safely.
+  if (tier.priceCents > 0) {
+    await prisma.membershipTier.update({
+      where: { id: tier.id },
+      data: { isPublic: false },
+    });
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "tier.delete.blocked",
+      targetType: "MembershipTier",
+      targetId: tier.id,
+      metadata: { reason: "paid_tier_archived_for_checkout_safety" },
+    });
+    revalidatePath(`/dashboard/${slug}/tiers`);
+    revalidatePath(`/c/${slug}/join`);
+    return { error: await tErr("paidTierArchivedInsteadOfDeleted") };
+  }
+
+  const incompleteLocalSubscriptions = await prisma.subscription.count({
+    where: { tenantId: tenant.id, tierId: tier.id, status: "INCOMPLETE" },
+  });
+  if (incompleteLocalSubscriptions > 0) {
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "tier.delete.blocked",
+      targetType: "MembershipTier",
+      targetId: tier.id,
+      metadata: { reason: "local_subscription_incomplete" },
+    });
+    return { error: await tErr("pendingPaymentsBlockDeletion") };
+  }
+
+  const stripeSubscriptions = await prisma.subscription.findMany({
+    where: {
+      tenantId: tenant.id,
+      tierId: tier.id,
+      stripeSubscriptionId: { not: null },
+    },
+    select: { stripeSubscriptionId: true },
+  });
+  try {
+    // Deleting a tier must not silently terminate customer contracts. Stripe
+    // has to confirm that every historical reference is already terminal.
+    await assertStripeSubscriptionsInactive(
+      stripeSubscriptions.map((subscription) => subscription.stripeSubscriptionId),
+    );
+  } catch (error) {
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "tier.delete.blocked",
+      targetType: "MembershipTier",
+      targetId: tier.id,
+      metadata: {
+        reason:
+          error instanceof StripeSubscriptionStillActiveError
+            ? "stripe_subscription_active"
+            : "stripe_verification_failed",
+      },
+    });
+    return { error: await tErr("tierDeleteStripeBlocked") };
+  }
+
+  await withTenantTransaction(async (tx) => {
+    await tx.subscription.deleteMany({ where: { tenantId: tenant.id, tierId: tier.id } });
+    await tx.membership.updateMany({
       where: { tenantId: tenant.id, tierId: tier.id },
       data: { tierId: null },
     });
-    await prisma.entitlement.deleteMany({
+    await tx.entitlement.deleteMany({
       where: { tenantId: tenant.id, key: tier.entitlementKey },
     });
-    await prisma.membershipTier.delete({ where: { id: tier.id } });
-    await writeAudit({
-      tenantId: tenant.id,
-      action: "tier.delete",
-      targetType: "MembershipTier",
-      targetId: tier.id,
-    });
-  }
+    await tx.membershipTier.delete({ where: { id: tier.id } });
+  });
+  await writeAudit({
+    tenantId: tenant.id,
+    action: "tier.delete",
+    targetType: "MembershipTier",
+    targetId: tier.id,
+  });
   revalidatePath(`/dashboard/${slug}/tiers`);
+  return ok;
 }
 
 // ---------------------------------------------------------------- Products
@@ -443,24 +523,47 @@ export async function updateProductAction(
   return ok;
 }
 
-export async function deleteProductAction(fd: FormData): Promise<void> {
+export async function deleteProductAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
   const productId = String(fd.get("productId"));
   const product = await prisma.product.findFirst({
     where: { id: productId, tenantId: tenant.id },
   });
-  if (product) {
-    await removeFromIndex(tenant.id, "PRODUCT", product.id);
-    await prisma.product.delete({ where: { id: product.id } });
+  if (!product) return { error: await tErr("productNotFound") };
+
+  // Stop new checkouts before inspecting orders. Product checkout creates a
+  // PENDING order before Stripe, so any open Session is now locally visible.
+  await prisma.product.update({
+    where: { id: product.id },
+    data: { isPublished: false },
+  });
+  const linkedOrders = await prisma.order.count({
+    where: { tenantId: tenant.id, productId: product.id },
+  });
+  if (linkedOrders > 0) {
     await writeAudit({
       tenantId: tenant.id,
-      action: "product.delete",
+      action: "product.delete.blocked",
       targetType: "Product",
       targetId: product.id,
+      metadata: { reason: "linked_orders", linkedOrders },
     });
+    revalidatePath(`/dashboard/${slug}/products`);
+    revalidatePath(`/c/${slug}`);
+    return { error: await tErr("productArchivedBecauseOrdersExist") };
   }
+
+  await removeFromIndex(tenant.id, "PRODUCT", product.id);
+  await prisma.product.delete({ where: { id: product.id } });
+  await writeAudit({
+    tenantId: tenant.id,
+    action: "product.delete",
+    targetType: "Product",
+    targetId: product.id,
+  });
   revalidatePath(`/dashboard/${slug}/products`);
+  return ok;
 }
 
 // ---------------------------------------------------------------- Courses
@@ -630,6 +733,27 @@ export async function createEventAction(
 }
 
 // ---------------------------------------------------------------- Newsletter
+function parseCampaignSchedule(fd: FormData): Date | null {
+  const raw = String(fd.get("scheduledAt") || "").trim();
+  if (!raw) return null;
+  const offset = Number(fd.get("timezoneOffset"));
+  // datetime-local deliberately has no zone. Convert the creator's browser
+  // wall-clock value to UTC instead of interpreting it in Railway's timezone.
+  const localMatch = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(raw);
+  let millis: number;
+  if (localMatch && Number.isFinite(offset)) {
+    const [, year, month, day, hour, minute] = localMatch;
+    millis =
+      Date.UTC(+year!, +month! - 1, +day!, +hour!, +minute!) +
+      Math.min(Math.max(offset, -840), 840) * 60_000;
+  } else {
+    millis = Date.parse(raw);
+  }
+  return Number.isFinite(millis) && millis > Date.now() + 60_000
+    ? new Date(millis)
+    : null;
+}
+
 export async function createCampaignAction(
   _p: ActionState,
   fd: FormData,
@@ -643,6 +767,7 @@ export async function createCampaignAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const scheduledAt = parseCampaignSchedule(fd);
 
   await prisma.newsletterCampaign.create({
     data: {
@@ -651,48 +776,12 @@ export async function createCampaignAction(
       body: parsed.data.body,
       segmentId: parsed.data.segmentId || null,
       createdById: user.id,
-      status: "DRAFT",
+      status: scheduledAt ? "SCHEDULED" : "DRAFT",
+      scheduledAt,
     },
   });
   revalidatePath(`/dashboard/${slug}/newsletter`);
   return ok;
-}
-
-/** Resolve recipient userIds for a campaign segment (tenant-scoped). */
-async function segmentRecipients(
-  tenantId: string,
-  segmentId: string | null,
-): Promise<{ id: string; email: string }[]> {
-  let rules: { tierSlug?: string; minPoints?: number } = {};
-  if (segmentId) {
-    const seg = await prisma.segment.findFirst({
-      where: { id: segmentId, tenantId },
-    });
-    rules = (seg?.rules ?? {}) as typeof rules;
-  }
-  const memberships = await prisma.membership.findMany({
-    where: {
-      tenantId,
-      status: "ACTIVE",
-      // Newsletter nur an verifizierte Adressen (Bounce-/Spam-Schutz,
-      // Double-Opt-in). Bestandsnutzer wurden per Migration verifiziert.
-      user: { emailVerifiedAt: { not: null } },
-      ...(rules.tierSlug
-        ? { tier: { slug: rules.tierSlug } }
-        : {}),
-    },
-    include: { user: { select: { id: true, email: true } } },
-  });
-  let recipients = memberships.map((m) => m.user);
-  if (rules.minPoints && rules.minPoints > 0) {
-    const stats = await prisma.memberStats.findMany({
-      where: { tenantId, points: { gte: rules.minPoints } },
-      select: { userId: true },
-    });
-    const allowed = new Set(stats.map((s) => s.userId));
-    recipients = recipients.filter((r) => allowed.has(r.id));
-  }
-  return recipients;
 }
 
 export async function sendCampaignAction(fd: FormData): Promise<void> {
@@ -724,35 +813,32 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
     }
   }
 
-  const recipients = await segmentRecipients(tenant.id, campaign.segmentId);
-
-  const html = renderCampaignHtml({
-    tenantName: tenant.name,
-    primaryColor: tenant.primaryColor,
-    subject: campaign.subject,
-    body: campaign.body,
-    footerLabel: (await getTranslations("uiMigration.emails"))("sentVia"),
-  });
-
-  await queueNewsletterCampaign({
-    tenantId: tenant.id,
-    campaignId: campaign.id,
-    subject: campaign.subject,
-    html,
-    recipients,
-  });
-  await prisma.newsletterCampaign.update({
-    where: { id: campaign.id },
-    data: recipients.length === 0
-      ? { status: "SENT", sentAt: new Date(), recipientCount: 0 }
-      : { recipientCount: recipients.length },
-  });
+  // Snapshot a bounded audience page at a time. Very large sends are resumed
+  // by the newsletter cron from their durable SENDING state instead of loading
+  // every member into one server-action request.
+  const footerLabel = (await getTranslations("uiMigration.emails"))("sentVia");
+  let recipientCount = 0;
+  for (let batch = 0; batch < 4; batch++) {
+    const result = await queueNewsletterAudienceBatch({
+      id: campaign.id,
+      tenantId: tenant.id,
+      subject: campaign.subject,
+      body: campaign.body,
+      segmentId: campaign.segmentId,
+      status: "SENDING",
+      scheduledAt: campaign.scheduledAt,
+      tenant: { name: tenant.name, primaryColor: tenant.primaryColor },
+      footerLabel,
+    });
+    recipientCount = result.total;
+    if (!result.hasMore) break;
+  }
   await writeAudit({
     tenantId: tenant.id,
     action: "campaign.queue",
     targetType: "NewsletterCampaign",
     targetId: campaign.id,
-    metadata: { recipients: recipients.length },
+    metadata: { recipients: recipientCount },
   });
   revalidatePath(`/dashboard/${slug}/newsletter`);
 }
@@ -868,12 +954,19 @@ export async function updateMemberRoleAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const membershipId = String(fd.get("membershipId"));
   const role = String(fd.get("role"));
-  const { tenant } = await requireTenantAdmin(slug, "ADMIN");
+  const { tenant, role: actorRole } = await requireTenantAdmin(slug, "ADMIN");
   if (!["MEMBER", "MODERATOR", "ADMIN"].includes(role)) return;
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, tenantId: tenant.id },
   });
-  if (membership && membership.role !== "OWNER") {
+  if (
+    membership &&
+    canManageTenantMembership(
+      actorRole,
+      membership.role,
+      role as "MEMBER" | "MODERATOR" | "ADMIN",
+    )
+  ) {
     await prisma.membership.update({
       where: { id: membership.id },
       // @ts-expect-error validated string literal
@@ -892,7 +985,7 @@ export async function createMemberAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
 
   const email = String(fd.get("email") || "").trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -902,23 +995,29 @@ export async function createMemberAction(
   const tierId = String(fd.get("tierId") || "");
   const avatar = String(fd.get("avatarUrl") || "");
   if (!ROLES.includes(role)) return { error: await tErr("invalidRole") };
+  if (
+    !canManageTenantMembership(
+      actorRole,
+      "MEMBER",
+      role as "MEMBER" | "MODERATOR" | "ADMIN",
+    )
+  ) {
+    return { error: await tErr("noPermission") };
+  }
 
-  let user = await prisma.user.findUnique({ where: { email } });
+  // Identity lookup/account creation is intentionally global. It uses the
+  // explicit system client; all tenant rows below remain under RLS.
+  let user = await systemPrisma.user.findUnique({ where: { email } });
   let isNewAccount = false;
   if (!user) {
     isNewAccount = true;
-    user = await prisma.user.create({
+    user = await systemPrisma.user.create({
       data: {
         email,
         name: email.split("@")[0],
         passwordHash: await hashPassword(randomUUID()),
         avatarUrl: avatar || null,
       },
-    });
-  } else if (avatar) {
-    user = await prisma.user.update({
-      where: { id: user.id },
-      data: { avatarUrl: avatar },
     });
   }
 
@@ -990,7 +1089,7 @@ export async function updateMemberAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
   const membershipId = String(fd.get("membershipId"));
   const role = String(fd.get("role") || "MEMBER");
   const status = String(fd.get("status") || "ACTIVE");
@@ -1004,18 +1103,72 @@ export async function updateMemberAction(
   });
   if (!membership) return { error: await tErr("memberNotFound") };
   if (membership.role === "OWNER") return { error: await tErr("ownerCantEdit") };
+  if (
+    !canManageTenantMembership(
+      actorRole,
+      membership.role,
+      role as "MEMBER" | "MODERATOR" | "ADMIN",
+    )
+  ) {
+    return { error: await tErr("noPermission") };
+  }
 
   const tier = tierId
     ? await prisma.membershipTier.findFirst({ where: { id: tierId, tenantId: tenant.id } })
     : null;
+  if (tierId && !tier) return { error: await tErr("tierNotFound") };
 
-  await prisma.membership.update({
-    where: { id: membership.id },
-    data: {
-      role: role as "MEMBER" | "MODERATOR" | "ADMIN",
-      status: status as "ACTIVE" | "PENDING" | "BANNED",
-      tierId: tier?.id ?? null,
-    },
+  const billingAccessChanges =
+    membership.tierId !== (tier?.id ?? null) || status !== "ACTIVE";
+  let canceledStripeSubscriptions = 0;
+  if (billingAccessChanges) {
+    const stripeSubscriptions = await prisma.subscription.findMany({
+      where: {
+        tenantId: tenant.id,
+        userId: membership.userId,
+        stripeSubscriptionId: { not: null },
+      },
+      select: { stripeSubscriptionId: true },
+    });
+    try {
+      // Never remove or change paid access locally while an external contract
+      // can continue charging. Tier changes become an explicit manual grant
+      // only after every prior Stripe subscription is terminal.
+      await cancelStripeSubscriptionsImmediately(
+        stripeSubscriptions.map((subscription) => subscription.stripeSubscriptionId),
+      );
+      canceledStripeSubscriptions = stripeSubscriptions.length;
+    } catch {
+      await writeAudit({
+        tenantId: tenant.id,
+        action: "member.update.blocked",
+        targetType: "Membership",
+        targetId: membership.id,
+        metadata: { reason: "stripe_cleanup_failed" },
+      });
+      return { error: await tErr("stripeCancelFailed") };
+    }
+  }
+
+  await withTenantTransaction(async (tx) => {
+    await tx.membership.update({
+      where: { id: membership.id },
+      data: {
+        role: role as "MEMBER" | "MODERATOR" | "ADMIN",
+        status: status as "ACTIVE" | "PENDING" | "BANNED",
+        tierId: tier?.id ?? null,
+      },
+    });
+    if (billingAccessChanges) {
+      await tx.subscription.updateMany({
+        where: {
+          tenantId: tenant.id,
+          userId: membership.userId,
+          status: { not: "CANCELED" },
+        },
+        data: { status: "CANCELED", cancelAtPeriodEnd: false },
+      });
+    }
   });
 
   // Downgrade/switch: drop the previous tier's entitlement so access follows
@@ -1029,15 +1182,28 @@ export async function updateMemberAction(
     });
   }
 
-  const avatar = fd.get("avatarUrl");
-  if (avatar !== null) {
-    await prisma.user.update({
-      where: { id: membership.userId },
-      data: { avatarUrl: String(avatar) || null },
+  // Banned/pending members never retain a tier entitlement, even when the
+  // selected tier itself did not change.
+  if (status !== "ACTIVE" && tier) {
+    await prisma.entitlement.deleteMany({
+      where: {
+        tenantId: tenant.id,
+        userId: membership.userId,
+        key: tier.entitlementKey,
+      },
     });
   }
 
-  if (tier) {
+  const avatar = fd.get("avatarUrl");
+  if (avatar !== null) {
+    await systemPrisma.user.update({
+      where: { id: membership.userId },
+      data: { avatarUrl: String(avatar) || null },
+      select: { id: true },
+    });
+  }
+
+  if (tier && status === "ACTIVE") {
     await grantEntitlement({
       tenantId: tenant.id,
       userId: membership.userId,
@@ -1051,7 +1217,7 @@ export async function updateMemberAction(
     action: "member.update",
     targetType: "Membership",
     targetId: membership.id,
-    metadata: { role, status },
+    metadata: { role, status, canceledStripeSubscriptions },
   });
   revalidatePath(`/dashboard/${slug}/members`);
   return { ok: true };
@@ -1066,23 +1232,27 @@ export async function updateOwnProfileAction(
   const user = await getCurrentUser();
   if (!user) return { error: await tErr("notAuthenticated") };
 
-  const tenant = await prisma.tenant.findUnique({ where: { slug } });
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (!tenant) return { error: await tErr("communityNotFound") };
+  setTenantContext(tenant.id);
   const membership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
   });
-  if (!membership) return { error: await tErr("notMemberOfCommunity") };
+  if (membership?.status !== "ACTIVE") {
+    return { error: await tErr("notMemberOfCommunity") };
+  }
 
   const name = String(fd.get("name") || "").trim();
   if (name.length < 2) return { error: await tErr("enterYourName") };
   const avatar = fd.get("avatarUrl");
 
-  await prisma.user.update({
+  await systemPrisma.user.update({
     where: { id: user.id },
     data: {
       name,
       ...(avatar !== null ? { avatarUrl: String(avatar) || null } : {}),
     },
+    select: { id: true },
   });
   await writeAudit({
     tenantId: tenant.id,
@@ -1094,31 +1264,68 @@ export async function updateOwnProfileAction(
 }
 
 /** Remove a member from the community (membership + tenant entitlements). */
-export async function deleteMemberAction(fd: FormData): Promise<void> {
+export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
   const membershipId = String(fd.get("membershipId"));
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, tenantId: tenant.id },
   });
-  if (membership && membership.role !== "OWNER") {
+  if (!membership) return { error: await tErr("memberNotFound") };
+  if (membership.role === "OWNER") return { error: await tErr("ownerCantEdit") };
+  if (!canManageTenantMembership(actorRole, membership.role)) {
+    return { error: await tErr("noPermission") };
+  }
+
+  const stripeSubscriptions = await prisma.subscription.findMany({
+    where: {
+      tenantId: tenant.id,
+      userId: membership.userId,
+      stripeSubscriptionId: { not: null },
+    },
+    select: { stripeSubscriptionId: true },
+  });
+  try {
+    // Administrative removal is immediate: cancel every remotely referenced
+    // subscription before revoking local access or deleting the membership.
+    await cancelStripeSubscriptionsImmediately(
+      stripeSubscriptions.map((subscription) => subscription.stripeSubscriptionId),
+    );
+  } catch {
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "member.remove.blocked",
+      targetType: "Membership",
+      targetId: membership.id,
+      metadata: { reason: "stripe_cleanup_failed" },
+    });
+    return { error: await tErr("memberRemoveStripeFailed") };
+  }
+
+  await withTenantTransaction(async (tx) => {
+    await tx.subscription.updateMany({
+      where: { tenantId: tenant.id, userId: membership.userId, status: { not: "CANCELED" } },
+      data: { status: "CANCELED", cancelAtPeriodEnd: false },
+    });
     // Only tier/role grants — purchased products stay with the user.
-    await prisma.entitlement.deleteMany({
+    await tx.entitlement.deleteMany({
       where: {
         tenantId: tenant.id,
         userId: membership.userId,
         source: { in: ["TIER", "ROLE"] },
       },
     });
-    await prisma.membership.delete({ where: { id: membership.id } });
-    await writeAudit({
-      tenantId: tenant.id,
-      action: "member.remove",
-      targetType: "Membership",
-      targetId: membership.id,
-    });
-  }
+    await tx.membership.delete({ where: { id: membership.id } });
+  });
+  await writeAudit({
+    tenantId: tenant.id,
+    action: "member.remove",
+    targetType: "Membership",
+    targetId: membership.id,
+    metadata: { stripeSubscriptionsCanceled: stripeSubscriptions.length },
+  });
   revalidatePath(`/dashboard/${slug}/members`);
+  return ok;
 }
 
 // ---------------------------------------------------------------- Branding
@@ -1339,6 +1546,7 @@ export async function updateCampaignAction(
   if (!campaign) return { error: await tErr("campaignNotFound") };
   if (campaign.status === "SENT" || campaign.status === "SENDING")
     return { error: await tErr("sentCampaignReadonly") };
+  const scheduledAt = parseCampaignSchedule(fd);
 
   await prisma.newsletterCampaign.update({
     where: { id: campaign.id },
@@ -1346,6 +1554,8 @@ export async function updateCampaignAction(
       subject: parsed.data.subject,
       body: parsed.data.body,
       segmentId: parsed.data.segmentId || null,
+      scheduledAt,
+      status: scheduledAt ? "SCHEDULED" : "DRAFT",
     },
   });
   revalidatePath(`/dashboard/${slug}/newsletter`);
@@ -1643,7 +1853,7 @@ export async function updateCustomDomainAction(
     if (taken) return { error: await tErr("domainTaken") };
   }
 
-  await prisma.tenant.update({
+  await systemPrisma.tenant.update({
     where: { id: tenant.id },
     data: {
       customDomain: domain || null,
@@ -1676,7 +1886,7 @@ export async function verifyCustomDomainAction(
     return { error: result.detail };
   }
 
-  await prisma.tenant.update({
+  await systemPrisma.tenant.update({
     where: { id: tenant.id },
     data: { customDomainVerifiedAt: new Date() },
   });
@@ -1689,17 +1899,86 @@ export async function verifyCustomDomainAction(
   return ok;
 }
 
-export async function deleteTenantAction(fd: FormData): Promise<void> {
+export async function deleteTenantAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
   const confirm = String(fd.get("confirm") || "").trim();
-  if (confirm !== tenant.slug) return; // safety: must type the exact slug
-  await writeAudit({
-    actorUserId: user.id,
-    action: "tenant.delete",
-    metadata: { slug: tenant.slug, name: tenant.name },
+  if (confirm !== tenant.slug) return { error: await tErr("tenantDeleteConfirmMismatch") };
+
+  const [subscriptions, wallet, pendingOrders, pendingBookings, pendingCreatorCheckouts] = await Promise.all([
+    prisma.subscription.findMany({
+      where: { tenantId: tenant.id, stripeSubscriptionId: { not: null } },
+      select: { stripeSubscriptionId: true },
+    }),
+    prisma.aiCreditWallet.findUnique({
+      where: { tenantId: tenant.id },
+      select: { stripeSubscriptionId: true },
+    }),
+    prisma.order.count({ where: { tenantId: tenant.id, status: "PENDING" } }),
+    prisma.bookingReservation.count({
+      where: { tenantId: tenant.id, status: "PENDING" },
+    }),
+    countOpenCreatorCheckouts(tenant.id),
+  ]);
+  if (pendingOrders > 0 || pendingBookings > 0 || pendingCreatorCheckouts > 0) {
+    await writeAudit({
+      actorUserId: user.id,
+      action: "tenant.delete.blocked",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: {
+        slug: tenant.slug,
+        reason: "pending_payments_or_reservations",
+        pendingOrders,
+        pendingBookings,
+        pendingCreatorCheckouts,
+      },
+    });
+    return { error: await tErr("pendingPaymentsBlockDeletion") };
+  }
+  try {
+    await assertStripeSubscriptionsInactive([
+      ...subscriptions.map((subscription) => subscription.stripeSubscriptionId),
+      wallet?.stripeSubscriptionId ?? null,
+    ]);
+  } catch (error) {
+    await writeAudit({
+      actorUserId: user.id,
+      action: "tenant.delete.blocked",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: {
+        slug: tenant.slug,
+        reason:
+          error instanceof StripeSubscriptionStillActiveError
+            ? "stripe_subscription_active"
+            : "stripe_verification_failed",
+      },
+    });
+    return {
+      error: await tErr(
+        error instanceof StripeSubscriptionStillActiveError
+          ? "tenantDeleteStripeSubscriptionsActive"
+          : "tenantDeleteStripeCleanupFailed",
+      ),
+    };
+  }
+
+  const deletionJobId = await queueTenantDeletion({
+    tenantId: tenant.id,
+    requestedById: user.id,
+    label: tenant.slug,
   });
-  await prisma.tenant.delete({ where: { id: tenant.id } });
+  await writeAudit({
+    tenantId: tenant.id,
+    actorUserId: user.id,
+    action: "tenant.delete.queued",
+    targetType: "Tenant",
+    targetId: tenant.id,
+    metadata: { slug: tenant.slug, name: tenant.name, deletionJobId },
+  });
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return ok;
 }
 
 // ---------------------------------------------------------------- Space content
@@ -2228,13 +2507,13 @@ export async function deleteMediaFolderAction(fd: FormData): Promise<void> {
   });
   if (!folder) return;
 
-  await prisma.$transaction([
-    prisma.storageObject.updateMany({
+  await withTenantTransaction(async (tx) => {
+    await tx.storageObject.updateMany({
       where: { tenantId: tenant.id, folderId: folder.id },
       data: { folderId: null },
-    }),
-    prisma.mediaFolder.delete({ where: { id: folder.id } }),
-  ]);
+    });
+    await tx.mediaFolder.delete({ where: { id: folder.id } });
+  });
   revalidatePath(`/dashboard/${slug}/media`);
 }
 
@@ -2296,7 +2575,29 @@ export async function deleteMediaAction(fd: FormData): Promise<void> {
   });
   if (!object) return;
 
-  await prisma.storageObject.delete({ where: { id: object.id } });
+  await systemPrisma.$transaction(async (tx) => {
+    await tx.objectDeletionTask.upsert({
+      where: { key: object.key },
+      create: {
+        tenantId: tenant.id,
+        key: object.key,
+        reason: "creator_media_deletion",
+      },
+      update: {
+        tenantId: tenant.id,
+        reason: "creator_media_deletion",
+        status: "PENDING",
+        attempts: 0,
+        nextAttemptAt: new Date(),
+        leaseUntil: null,
+        lastError: null,
+        completedAt: null,
+      },
+    });
+    await tx.storageObject.deleteMany({
+      where: { id: object.id, tenantId: tenant.id },
+    });
+  });
   await writeAudit({
     tenantId: tenant.id,
     actorUserId: user.id,

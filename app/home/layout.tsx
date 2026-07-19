@@ -19,7 +19,11 @@ export default async function HomeLayout({
   const memberships: RailMembership[] = user
     ? (
         await prisma.membership.findMany({
-          where: { userId: user.id, status: "ACTIVE" },
+          where: {
+            userId: user.id,
+            status: "ACTIVE",
+            tenant: { status: "ACTIVE" },
+          },
           orderBy: { joinedAt: "desc" },
           take: 8,
           include: {

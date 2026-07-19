@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma from "@/lib/prisma";
+import { systemPrisma } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { tErr } from "@/lib/action-errors";
@@ -17,7 +17,7 @@ export async function updateReferralSettingsAction(
   fd: FormData,
 ): Promise<ReferralSettingsState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, user } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 
   const raw = String(fd.get("referralPercent") ?? "").replace(",", ".");
   const percent = Number(raw);
@@ -25,7 +25,7 @@ export async function updateReferralSettingsAction(
     return { error: await tErr("commissionRange") };
   }
 
-  await prisma.tenant.update({
+  await systemPrisma.tenant.update({
     where: { id: tenant.id },
     data: { referralPercent: percent },
   });

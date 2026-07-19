@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { hashPassword, verifyPassword, getCurrentUser } from "@/lib/auth";
 import { setSessionCookie } from "@/lib/session";
 import { features } from "@/lib/env";
@@ -10,12 +10,29 @@ import { sendEmail, renderAccountActionHtml } from "@/lib/email";
 import { signAccountToken, verifyAccountToken, resetUrl } from "@/lib/tokens";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { writeAudit } from "@/lib/audit";
+import {
+  decryptSecret,
+  encryptSecret,
+  secretNeedsRotation,
+} from "@/lib/secret-encryption";
 import { getErrorTranslator, type ErrorT } from "@/lib/action-errors";
 import { getTranslations } from "next-intl/server";
+import {
+  CURRENT_PRIVACY_VERSION,
+  CURRENT_TERMS_VERSION,
+  LEGAL_DOCUMENT,
+} from "@/lib/legal";
 
 export interface AccountState {
   error?: string;
   ok?: boolean;
+}
+
+function safeNextPath(value: FormDataEntryValue | null, fallback = "/home") {
+  const next = typeof value === "string" ? value : "";
+  return next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
+    ? next
+    : fallback;
 }
 
 const PASSWORD_MIN = 8;
@@ -88,6 +105,9 @@ async function setPasswordWithToken(
   const pwError = validPassword(password, t);
   if (pwError) return { error: pwError };
   if (password !== confirm) return { error: t("passwordsDontMatch") };
+  if (purpose === "invite" && fd.get("legalAcceptance") !== "on") {
+    return { error: t("termsRequired") };
+  }
 
   const user = await verifyAccountToken(token, purpose);
   if (!user) {
@@ -105,6 +125,24 @@ async function setPasswordWithToken(
       // Invites may set the display name (shadow accounts default to the
       // e-mail local part).
       ...(purpose === "invite" && name ? { name: name.slice(0, 80) } : {}),
+      ...(purpose === "invite"
+        ? {
+            legalAcceptances: {
+              create: [
+                {
+                  document: LEGAL_DOCUMENT.terms,
+                  version: CURRENT_TERMS_VERSION,
+                  source: "INVITE_ACCEPTANCE",
+                },
+                {
+                  document: LEGAL_DOCUMENT.privacyNotice,
+                  version: CURRENT_PRIVACY_VERSION,
+                  source: "INVITE_ACCEPTANCE",
+                },
+              ],
+            },
+          }
+        : {}),
     },
   });
   await setSessionCookie({
@@ -204,6 +242,39 @@ export async function acceptInviteAction(
   return setPasswordWithToken("invite", fd, await getErrorTranslator());
 }
 
+/** Records the current contract version without coupling it to marketing. */
+export async function acceptCurrentLegalAction(
+  _p: AccountState,
+  fd: FormData,
+): Promise<AccountState> {
+  const t = await getErrorTranslator();
+  const user = await getCurrentUser();
+  if (!user) return { error: t("notLoggedIn") };
+  if (fd.get("legalAcceptance") !== "on") {
+    return { error: t("termsRequired") };
+  }
+
+  await systemPrisma.legalAcceptance.createMany({
+    data: [
+      {
+        userId: user.id,
+        document: LEGAL_DOCUMENT.terms,
+        version: CURRENT_TERMS_VERSION,
+        source: "VERSION_REVIEW",
+      },
+      {
+        userId: user.id,
+        document: LEGAL_DOCUMENT.privacyNotice,
+        version: CURRENT_PRIVACY_VERSION,
+        source: "VERSION_REVIEW",
+      },
+    ],
+    skipDuplicates: true,
+  });
+  await writeAudit({ actorUserId: user.id, action: "user.legal.accept" });
+  redirect(safeNextPath(fd.get("next")));
+}
+
 // ------------------------------------------------- Zwei-Faktor (TOTP)
 export interface TotpState {
   error?: string;
@@ -229,7 +300,7 @@ export async function startTotpSetupAction(
   const secret = generateTotpSecret();
   await prisma.user.update({
     where: { id: user.id },
-    data: { totpSecret: secret, totpEnabledAt: null },
+    data: { totpSecret: encryptSecret(secret), totpEnabledAt: null },
   });
 
   const otpauth = otpauthUrl(secret, user.email);
@@ -257,13 +328,25 @@ export async function confirmTotpAction(
 
   const { verifyTotp } = await import("@/lib/totp");
   const code = String(fd.get("code") || "");
-  if (!verifyTotp(user.totpSecret, code)) {
+  let totpSecret: string;
+  try {
+    totpSecret = decryptSecret(user.totpSecret);
+  } catch {
+    return { error: t("totpStartFirst") };
+  }
+  if (!verifyTotp(totpSecret, code)) {
     return { error: t("codeInvalidRetry") };
   }
 
   const updatedUser = await prisma.user.update({
     where: { id: user.id },
-    data: { totpEnabledAt: new Date(), sessionVersion: { increment: 1 } },
+    data: {
+      totpEnabledAt: new Date(),
+      sessionVersion: { increment: 1 },
+      ...(secretNeedsRotation(user.totpSecret)
+        ? { totpSecret: encryptSecret(totpSecret) }
+        : {}),
+    },
   });
   await setSessionCookie({
     userId: updatedUser.id,
@@ -292,7 +375,13 @@ export async function disableTotpAction(
 
   const { verifyTotp } = await import("@/lib/totp");
   const code = String(fd.get("code") || "");
-  if (!verifyTotp(user.totpSecret, code)) {
+  let totpSecret: string;
+  try {
+    totpSecret = decryptSecret(user.totpSecret);
+  } catch {
+    return { error: t("codeInvalid") };
+  }
+  if (!verifyTotp(totpSecret, code)) {
     return { error: t("codeInvalid") };
   }
 

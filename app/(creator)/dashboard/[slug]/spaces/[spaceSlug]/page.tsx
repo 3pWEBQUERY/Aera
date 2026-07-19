@@ -210,6 +210,7 @@ export default async function SpaceContentPage({
       segmentName: c.segment?.name ?? null,
       recipientCount: c.recipientCount,
       sentAt: c.sentAt,
+      scheduledAt: c.scheduledAt,
     }));
     const segments: SegmentData[] = segs;
     return <NewsletterManager slug={slug} campaigns={campaigns} segments={segments} tiers={tiers} />;

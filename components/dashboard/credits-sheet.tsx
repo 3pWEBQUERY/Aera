@@ -46,6 +46,7 @@ export interface CreditSummary {
   packs: CreditPack[];
   recent: UsageEntry[];
   billingEnabled: boolean;
+  cancellationEnabled: boolean;
 }
 
 const PLAN_ICON: Record<string, IconName> = {
@@ -60,19 +61,23 @@ export function CreditsSheet({
   onClose,
   slug,
   onChanged,
+  initialCheckoutError = false,
 }: {
   open: boolean;
   onClose: () => void;
   slug: string;
   /** Called after balance changes so the header can refresh. */
   onChanged?: (s: CreditSummary) => void;
+  initialCheckoutError?: boolean;
 }) {
   const [summary, setSummary] = useState<CreditSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
-  const [billingError, setBillingError] = useState<string | null>(null);
   const t = useTranslations("dashboard.credits");
   const tSafety = useTranslations("billingSafety");
+  const [billingError, setBillingError] = useState<string | null>(() =>
+    initialCheckoutError ? tSafety("checkoutFailed") : null,
+  );
   const tpc = useTranslations("community.render.planCard");
   const locale = useLocale();
   const nf = new Intl.NumberFormat(locale);
@@ -326,7 +331,7 @@ export function CreditsSheet({
                         <p className="text-sm text-slate-600">{tSafety("creatorPlanCancelHint")}</p>
                         <button
                           type="button"
-                          disabled={busy !== null || !summary.billingEnabled}
+                          disabled={busy !== null || !summary.cancellationEnabled}
                           onClick={() => post({ action: "cancel_plan" }, "cancel_plan")}
                           className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                         >

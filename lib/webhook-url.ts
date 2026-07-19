@@ -1,6 +1,8 @@
 import "server-only";
 import { lookup as dnsLookup } from "node:dns/promises";
 import { isIP } from "node:net";
+import { request as httpRequest } from "node:http";
+import { request as httpsRequest } from "node:https";
 
 type LookupResult = { address: string; family: number };
 type LookupFn = (hostname: string) => Promise<LookupResult[]>;
@@ -69,6 +71,10 @@ export function isBlockedWebhookAddress(address: string): boolean {
       Number((value >> 8n) & 255n), Number(value & 255n),
     ].join("."));
   }
+  // Only globally routable unicast (2000::/3) is a valid IPv6 webhook
+  // destination. This also rejects discard-only, NAT64 and other special-use
+  // prefixes that could translate an apparently public address internally.
+  if ((value >> 125n) !== 1n) return true;
   return false;
 }
 
@@ -76,10 +82,20 @@ async function defaultLookup(hostname: string): Promise<LookupResult[]> {
   return dnsLookup(hostname, { all: true, verbatim: true });
 }
 
-export async function validateWebhookUrl(
+type ResolvedWebhookTarget = {
+  url: URL;
+  address: string;
+  family: 4 | 6;
+  servername: string | null;
+};
+
+async function resolveWebhookTarget(
   rawUrl: string,
   options: { allowHttp?: boolean; lookup?: LookupFn } = {},
-): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+): Promise<{ ok: true; target: ResolvedWebhookTarget } | { ok: false; error: string }> {
+  if (!rawUrl || rawUrl.length > 2_048) {
+    return { ok: false, error: "Invalid URL" };
+  }
   let url: URL;
   try {
     url = new URL(rawUrl);
@@ -90,7 +106,11 @@ export async function validateWebhookUrl(
     return { ok: false, error: "HTTPS is required" };
   }
   if (url.username || url.password) return { ok: false, error: "URL credentials are not allowed" };
-  const hostname = url.hostname.replace(/^\[|\]$/g, "").toLowerCase();
+  const hostname = url.hostname
+    .replace(/^\[|\]$/g, "")
+    .replace(/\.$/, "")
+    .toLowerCase();
+  url.hostname = hostname;
   if (
     hostname === "localhost" || hostname.endsWith(".localhost") || hostname.endsWith(".local") ||
     hostname.endsWith(".internal") || hostname.endsWith(".home.arpa")
@@ -104,8 +124,106 @@ export async function validateWebhookUrl(
     if (addresses.length === 0 || addresses.some((entry) => isBlockedWebhookAddress(entry.address))) {
       return { ok: false, error: "Private or non-routable addresses are not allowed" };
     }
+    const selected = addresses[0]!;
+    const family = isIP(selected.address);
+    if (family !== 4 && family !== 6) {
+      return { ok: false, error: "Hostname returned an invalid address" };
+    }
+    return {
+      ok: true,
+      target: {
+        url,
+        address: selected.address,
+        family,
+        servername: isIP(hostname) ? null : hostname,
+      },
+    };
   } catch {
     return { ok: false, error: "Hostname could not be resolved" };
   }
-  return { ok: true, url: url.toString() };
 }
+
+export async function validateWebhookUrl(
+  rawUrl: string,
+  options: { allowHttp?: boolean; lookup?: LookupFn } = {},
+): Promise<{ ok: true; url: string } | { ok: false; error: string }> {
+  const resolved = await resolveWebhookTarget(rawUrl, options);
+  return resolved.ok
+    ? { ok: true, url: resolved.target.url.toString() }
+    : resolved;
+}
+
+export interface WebhookPostResult {
+  status: number;
+  ok: boolean;
+  redirected: boolean;
+}
+
+/**
+ * Resolve once, reject every non-public answer, then connect to that exact IP.
+ * The original Host/SNI is retained for virtual hosting and TLS verification.
+ * This closes the DNS-rebinding gap caused by validating and fetching through
+ * two independent DNS resolutions.
+ */
+export async function postWebhookUrl(input: {
+  url: string;
+  headers: Record<string, string>;
+  body: string;
+  timeoutMs: number;
+  allowHttp?: boolean;
+  lookup?: LookupFn;
+}): Promise<WebhookPostResult> {
+  const resolved = await resolveWebhookTarget(input.url, {
+    allowHttp: input.allowHttp,
+    lookup: input.lookup,
+  });
+  if (!resolved.ok) throw new Error(`Blocked webhook URL: ${resolved.error}`);
+
+  const { url, address, family, servername } = resolved.target;
+  const headers: Record<string, string> = {};
+  for (const [name, value] of Object.entries(input.headers)) {
+    const lower = name.toLowerCase();
+    if (["host", "content-length", "transfer-encoding", "connection"].includes(lower)) continue;
+    headers[name] = value;
+  }
+  headers.Host = url.host;
+  headers["Content-Length"] = String(Buffer.byteLength(input.body));
+
+  return new Promise<WebhookPostResult>((resolve, reject) => {
+    const request = (url.protocol === "https:" ? httpsRequest : httpRequest)(
+      {
+        hostname: address,
+        family,
+        port: url.port || undefined,
+        method: "POST",
+        path: `${url.pathname}${url.search}`,
+        headers,
+        // TLS still authenticates the creator-supplied public hostname even
+        // though the TCP connection itself is pinned to the validated IP.
+        ...(url.protocol === "https:" && servername
+          ? { servername }
+          : {}),
+      },
+      (response) => {
+        clearTimeout(timer);
+        response.resume();
+        const status = response.statusCode ?? 0;
+        resolve({
+          status,
+          ok: status >= 200 && status < 300,
+          redirected: status >= 300 && status < 400,
+        });
+      },
+    );
+    const timer = setTimeout(() => {
+      request.destroy(new Error("Webhook request timed out"));
+    }, Math.min(Math.max(input.timeoutMs, 1), 60_000));
+    request.once("error", (error) => {
+      clearTimeout(timer);
+      reject(error);
+    });
+    request.end(input.body);
+  });
+}
+
+export const __test = { resolveWebhookTarget };

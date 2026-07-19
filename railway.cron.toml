@@ -1,0 +1,10 @@
+# Set this file as the Cron service's custom Config-as-Code path in Railway.
+# The web service continues to use /railway.toml.
+[build]
+builder = "RAILPACK"
+buildCommand = "npm run prisma:generate"
+
+[deploy]
+startCommand = "node scripts/cron.mjs"
+cronSchedule = "*/5 * * * *"
+restartPolicyType = "NEVER"

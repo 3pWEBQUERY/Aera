@@ -10,6 +10,14 @@ import { slugify } from "@/lib/utils";
 import { nameStatus } from "@/lib/tenant-name";
 import { writeAudit } from "@/lib/audit";
 import { getErrorTranslator, zodError } from "@/lib/action-errors";
+import { env, features } from "@/lib/env";
+import { getOrCreateWallet } from "@/lib/credits";
+import {
+  PLANS,
+  creatorPlanStartPath,
+  parsePlanKey,
+} from "@/lib/credit-plans";
+import { startTrackedCreatorPlanCheckout } from "@/lib/creator-checkout";
 import {
   SPACE_BLUEPRINTS,
   DEFAULT_SPACE_TYPES,
@@ -56,8 +64,17 @@ export async function createCommunityAction(
   _prev: CommunityState,
   formData: FormData,
 ): Promise<CommunityState> {
-  const user = await requireUser("/start");
+  const requestedPlan = parsePlanKey(formData.get("creatorPlan"));
+  const user = await requireUser(
+    creatorPlanStartPath(requestedPlan ?? "FREE"),
+  );
   const t = await getErrorTranslator();
+  if (!requestedPlan) return { error: t("priceNotAllowed") };
+  const creatorPlan = PLANS[requestedPlan];
+  if (creatorPlan.priceCents > 0 && !features.creatorBilling) {
+    const tBilling = await getTranslations("billingSafety");
+    return { error: tBilling("creditsPausedText") };
+  }
   const parsed = createCommunitySchema.safeParse({
     name: formData.get("name"),
     slug: slugify(String(formData.get("slug") || formData.get("name") || "")),
@@ -168,6 +185,38 @@ export async function createCommunityAction(
     targetId: tenant.id,
     metadata: { slug },
   });
+
+  // Persist the FREE baseline for every tenant. A paid allowance is activated
+  // only after Stripe proves the subscription through the webhook.
+  const wallet = await getOrCreateWallet(tenant.id);
+  if (creatorPlan.priceCents > 0) {
+    const returnUrl = `${env.APP_URL}/dashboard/${encodeURIComponent(slug)}/assistant`;
+    let checkoutUrl: string | null = null;
+    try {
+      checkoutUrl = await startTrackedCreatorPlanCheckout({
+        tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
+        user: { id: user.id, email: user.email },
+        plan: creatorPlan,
+        stripeCustomerId: wallet.stripeCustomerId,
+        successUrl: `${returnUrl}?billing=success`,
+        cancelUrl: `${returnUrl}?billing=canceled`,
+      });
+    } catch (error) {
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: "creator.checkout.failed",
+        targetType: "Tenant",
+        targetId: tenant.id,
+        metadata: {
+          plan: creatorPlan.key,
+          reason: error instanceof Error ? error.message.slice(0, 500) : "unknown",
+        },
+      });
+    }
+    if (checkoutUrl) redirect(checkoutUrl);
+    redirect(`${returnUrl}?billing=checkout-error`);
+  }
 
   redirect(`/dashboard/${slug}`);
 }

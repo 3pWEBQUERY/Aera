@@ -18,6 +18,7 @@ import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Pill, EmptyState, FormError } from "@/components/ui/misc";
 import { cn, formatDateTime } from "@/lib/utils";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 
 export interface MediaFolderData {
   id: string;
@@ -101,20 +102,22 @@ export function MediaLibrary({
     setUploadError(null);
     setUploadState({ done: 0, total: files.length });
     for (let i = 0; i < files.length; i++) {
-      const fd = new FormData();
-      fd.set("file", files[i]);
-      fd.set("tenant", slug);
-      fd.set("purpose", "library");
       try {
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        if (!res.ok) {
-          const j = (await res.json().catch(() => ({}))) as { error?: string };
-          setUploadError(j.error ?? t("uploadFailed", { name: files[i].name }));
-          // Quota errors abort the batch — the rest would fail identically.
-          if (res.status === 413) break;
+        await uploadMediaFile({
+          file: files[i],
+          tenant: slug,
+          purpose: "library",
+        });
+      } catch (uploadError) {
+        setUploadError(
+          uploadError instanceof UploadError
+            ? uploadError.message
+            : t("uploadFailed", { name: files[i].name }),
+        );
+        // Quota errors abort the batch — the rest would fail identically.
+        if (uploadError instanceof UploadError && uploadError.status === 413) {
+          break;
         }
-      } catch {
-        setUploadError(t("uploadFailed", { name: files[i].name }));
       }
       setUploadState({ done: i + 1, total: files.length });
     }

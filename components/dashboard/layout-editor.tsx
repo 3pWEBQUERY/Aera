@@ -15,6 +15,8 @@ import {
 import { Icon, type IconName } from "./icons";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
+import { uploadMediaFile } from "@/lib/client-upload";
+import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import {
   SECTION_CATALOG,
   SECTION_META,
@@ -634,13 +636,14 @@ function LogoUploader({
     if (!file) return;
     setBusy(true);
     try {
-      const fd = new FormData();
-      fd.set("file", file);
-      fd.set("tenant", slug);
-      fd.set("purpose", "logo");
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = (await res.json()) as { url?: string };
-      if (json.url) onChange(json.url);
+      const uploadedUrl = await uploadMediaFile({
+        file,
+        tenant: slug,
+        purpose: "logo",
+      });
+      onChange(uploadedUrl);
+    } catch {
+      // Keep this compact logo control non-disruptive, as before.
     } finally {
       setBusy(false);
     }
@@ -1088,6 +1091,7 @@ function AddNavModal({
   const t = useTranslations("dashboard.layout");
   const tNav = useTranslations("dashboard.layout.navTypes");
   const tVis = useTranslations("dashboard.visibility");
+  const dialogRef = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
 
   const needsUrl = type === "EXTERNAL";
   const needsSpace = type === "SPACE";
@@ -1104,9 +1108,18 @@ function AddNavModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col bg-white">
+    <div
+      ref={dialogRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-navigation-item-title"
+      tabIndex={-1}
+      className="fixed inset-0 z-[60] flex flex-col bg-white"
+    >
       <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
-        <h2 className="text-xl font-bold text-slate-900">{t("addMenuItem")}</h2>
+        <h2 id="add-navigation-item-title" className="text-xl font-bold text-slate-900">
+          {t("addMenuItem")}
+        </h2>
         <button
           type="button"
           onClick={onClose}

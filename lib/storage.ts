@@ -3,7 +3,12 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  HeadBucketCommand,
+  HeadObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsV2Command,
 } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { mkdir, writeFile } from "fs/promises";
 import path from "path";
 import { env, features } from "./env";
@@ -24,9 +29,173 @@ function client(): S3Client {
   return _s3;
 }
 
+/** Lightweight readiness probe for the private object-storage bucket. */
+export async function checkStorageHealth(timeoutMs = 2_500): Promise<boolean> {
+  if (!features.storage) return false;
+  try {
+    await client().send(
+      new HeadBucketCommand({ Bucket: env.S3_BUCKET }),
+      { abortSignal: AbortSignal.timeout(timeoutMs) },
+    );
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Route through our own authenticated proxy so private buckets still work. */
-function proxyUrl(key: string): string {
+export function storageProxyUrl(key: string): string {
   return "/api/media/" + key.split("/").map(encodeURIComponent).join("/");
+}
+
+export interface DirectUploadAuthorization {
+  url: string;
+  headers: Record<string, string>;
+  expiresInSeconds: number;
+}
+
+/** Create a short-lived, checksum-bound browser-to-private-S3 PUT URL. */
+export async function createDirectUploadAuthorization(input: {
+  key: string;
+  contentType: string;
+  sizeBytes: number;
+  checksumSha256: string;
+  reservationId: string;
+}): Promise<DirectUploadAuthorization> {
+  if (!features.storage) {
+    throw new Error("Private object storage is not configured");
+  }
+  const expiresInSeconds = 15 * 60;
+  const headers = {
+    "Content-Type": input.contentType,
+    "x-amz-checksum-sha256": input.checksumSha256,
+    "x-amz-meta-aera-upload-id": input.reservationId,
+  };
+  const command = new PutObjectCommand({
+    Bucket: env.S3_BUCKET,
+    Key: input.key,
+    ContentType: input.contentType,
+    ContentLength: input.sizeBytes,
+    ChecksumSHA256: input.checksumSha256,
+    Metadata: { "aera-upload-id": input.reservationId },
+  });
+  const url = await getSignedUrl(client(), command, {
+    expiresIn: expiresInSeconds,
+    // Keep integrity + reservation binding as signed request headers instead
+    // of hoisting them into a reusable query string.
+    unhoistableHeaders: new Set([
+      "x-amz-checksum-sha256",
+      "x-amz-meta-aera-upload-id",
+    ]),
+  });
+  return { url, headers, expiresInSeconds };
+}
+
+export interface StoredObjectMetadata {
+  sizeBytes: number;
+  contentType: string | null;
+  checksumSha256: string | null;
+  uploadReservationId: string | null;
+}
+
+export async function inspectStoredObject(key: string): Promise<StoredObjectMetadata | null> {
+  if (!features.storage) return null;
+  try {
+    const result = await client().send(
+      new HeadObjectCommand({
+        Bucket: env.S3_BUCKET,
+        Key: key,
+        ChecksumMode: "ENABLED",
+      }),
+    );
+    return {
+      sizeBytes: result.ContentLength ?? -1,
+      contentType: result.ContentType ?? null,
+      checksumSha256: result.ChecksumSHA256 ?? null,
+      uploadReservationId: result.Metadata?.["aera-upload-id"] ?? null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Read only the prefix needed for magic-byte validation. */
+export async function readObjectPrefix(key: string, maxBytes = 4096): Promise<Uint8Array | null> {
+  const object = await getObject(key, `bytes=0-${Math.max(15, maxBytes - 1)}`);
+  if (!object) return null;
+  const reader = object.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (total < maxBytes) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      const remaining = maxBytes - total;
+      const chunk = value.length > remaining ? value.slice(0, remaining) : value;
+      chunks.push(chunk);
+      total += chunk.length;
+    }
+  } finally {
+    await reader.cancel().catch(() => undefined);
+  }
+  const result = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    result.set(chunk, offset);
+    offset += chunk.length;
+  }
+  return result;
+}
+
+export async function deleteObject(key: string): Promise<void> {
+  if (!features.storage) return;
+  await client().send(new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
+}
+
+export interface StoredObjectListItem {
+  key: string;
+  lastModified: Date | null;
+  sizeBytes: number;
+}
+
+export interface StoredObjectListPage {
+  objects: StoredObjectListItem[];
+  continuationToken: string | null;
+}
+
+/**
+ * List one bounded S3 page. Lifecycle workers persist the opaque continuation
+ * token between runs, so even very large tenant prefixes are reconciled
+ * without loading the bucket inventory into memory.
+ */
+export async function listStoredObjectsPage(input: {
+  prefix: string;
+  continuationToken?: string | null;
+  maxKeys?: number;
+}): Promise<StoredObjectListPage> {
+  if (!features.storage) return { objects: [], continuationToken: null };
+  const result = await client().send(
+    new ListObjectsV2Command({
+      Bucket: env.S3_BUCKET,
+      Prefix: input.prefix,
+      ContinuationToken: input.continuationToken ?? undefined,
+      MaxKeys: Math.min(1_000, Math.max(1, input.maxKeys ?? 500)),
+    }),
+  );
+  return {
+    objects: (result.Contents ?? []).flatMap((object) =>
+      object.Key
+        ? [{
+            key: object.Key,
+            lastModified: object.LastModified ?? null,
+            sizeBytes: object.Size ?? 0,
+          }]
+        : [],
+    ),
+    continuationToken: result.IsTruncated
+      ? result.NextContinuationToken ?? null
+      : null,
+  };
 }
 
 /**
@@ -50,7 +219,7 @@ export async function uploadObject(opts: {
         ContentType: opts.contentType,
       }),
     );
-    return proxyUrl(opts.key);
+    return storageProxyUrl(opts.key);
   }
 
   if (process.env.NODE_ENV === "production") {

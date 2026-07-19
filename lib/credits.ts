@@ -1,6 +1,6 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import prisma, { withTenantTransaction } from "./prisma";
+import prisma, { withTenantTransaction, withTenantTransactionFor } from "./prisma";
 import type {
   CreatorPlan,
   AiCreditWallet,
@@ -36,7 +36,7 @@ function addMonths(date: Date, months: number): Date {
   return d;
 }
 
-/** Fetch (or lazily create) the tenant's wallet and roll the period forward. */
+/** Fetch (or lazily create) the tenant's wallet and enforce its billing period. */
 export async function getOrCreateWallet(tenantId: string): Promise<AiCreditWallet> {
   let wallet = await prisma.aiCreditWallet.findUnique({ where: { tenantId } });
   if (!wallet) {
@@ -72,10 +72,25 @@ export async function getOrCreateWallet(tenantId: string): Promise<AiCreditWalle
   return ensurePeriod(wallet);
 }
 
-/** Reset the monthly allowance if the billing period has ended. */
+/**
+ * Free wallets roll forward locally. Paid allowances are never replenished by
+ * the calendar: after their paid period expires they are frozen until Stripe
+ * confirms the next invoice.
+ */
 async function ensurePeriod(wallet: AiCreditWallet): Promise<AiCreditWallet> {
   const now = new Date();
   if (now < wallet.periodEnd) return wallet;
+
+  if (wallet.plan !== "FREE") {
+    await prisma.aiCreditWallet.updateMany({
+      where: { id: wallet.id, periodEnd: { lte: now }, includedRemaining: { gt: 0 } },
+      data: { includedRemaining: 0 },
+    });
+    return (
+      (await prisma.aiCreditWallet.findUnique({ where: { id: wallet.id } })) ??
+      wallet
+    );
+  }
 
   // Advance to the current period (guard against long gaps).
   let periodStart = wallet.periodStart;
@@ -120,15 +135,17 @@ export async function reserveCredit(params: {
 }): Promise<CreditReservation | null> {
   await getOrCreateWallet(params.tenantId);
   const id = randomUUID();
-  const rows = await prisma.$queryRaw<Array<{ reserved: boolean }>>`
-    SELECT aera_reserve_ai_credit(
-      ${id},
-      ${params.tenantId},
-      ${params.userId ?? null},
-      ${params.conversationId ?? null},
-      ${params.kind ?? "assistant_message"}
-    ) AS "reserved"
-  `;
+  const rows = await withTenantTransactionFor(params.tenantId, (tx) =>
+    tx.$queryRaw<Array<{ reserved: boolean }>>`
+      SELECT aera_reserve_ai_credit(
+        ${id},
+        ${params.tenantId},
+        ${params.userId ?? null},
+        ${params.conversationId ?? null},
+        ${params.kind ?? "assistant_message"}
+      ) AS "reserved"
+    `,
+  );
   return rows[0]?.reserved ? { id, tenantId: params.tenantId } : null;
 }
 
@@ -141,17 +158,19 @@ export async function settleCreditReservation(params: {
 }): Promise<{ credits: number }> {
   const requestedCredits = creditsForTokens(params.totalTokens);
   const usageId = randomUUID();
-  const rows = await prisma.$queryRaw<Array<{ charged: number }>>`
-    SELECT aera_settle_ai_credit(
-      ${params.reservation.id},
-      ${params.reservation.tenantId},
-      ${usageId},
-      ${Math.max(0, params.promptTokens)},
-      ${Math.max(0, params.outputTokens)},
-      ${Math.max(0, params.totalTokens)},
-      ${requestedCredits}
-    ) AS "charged"
-  `;
+  const rows = await withTenantTransactionFor(params.reservation.tenantId, (tx) =>
+    tx.$queryRaw<Array<{ charged: number }>>`
+      SELECT aera_settle_ai_credit(
+        ${params.reservation.id},
+        ${params.reservation.tenantId},
+        ${usageId},
+        ${Math.max(0, params.promptTokens)},
+        ${Math.max(0, params.outputTokens)},
+        ${Math.max(0, params.totalTokens)},
+        ${requestedCredits}
+      ) AS "charged"
+    `,
+  );
   return { credits: Number(rows[0]?.charged ?? 0) };
 }
 
@@ -159,12 +178,14 @@ export async function settleCreditReservation(params: {
 export async function releaseCreditReservation(
   reservation: CreditReservation,
 ): Promise<void> {
-  await prisma.$queryRaw<Array<{ released: boolean }>>`
-    SELECT aera_release_ai_credit(
-      ${reservation.id},
-      ${reservation.tenantId}
-    ) AS "released"
-  `;
+  await withTenantTransactionFor(reservation.tenantId, (tx) =>
+    tx.$queryRaw<Array<{ released: boolean }>>`
+      SELECT aera_release_ai_credit(
+        ${reservation.id},
+        ${reservation.tenantId}
+      ) AS "released"
+    `,
+  );
 }
 
 /**
@@ -243,12 +264,14 @@ export async function refundPaidCreditPack(params: {
   tenantId: string;
   stripePaymentIntentId: string;
 }): Promise<{ removedCredits: number }> {
-  const rows = await prisma.$queryRaw<Array<{ removed: number }>>`
-    SELECT aera_refund_ai_credit_purchase(
-      ${params.tenantId},
-      ${params.stripePaymentIntentId}
-    ) AS "removed"
-  `;
+  const rows = await withTenantTransactionFor(params.tenantId, (tx) =>
+    tx.$queryRaw<Array<{ removed: number }>>`
+      SELECT aera_refund_ai_credit_purchase(
+        ${params.tenantId},
+        ${params.stripePaymentIntentId}
+      ) AS "removed"
+    `,
+  );
   return { removedCredits: Number(rows[0]?.removed ?? 0) };
 }
 
@@ -275,22 +298,103 @@ export async function activatePaidCreatorPlan(params: {
   if (existing) return { ok: true, duplicate: true };
 
   const now = new Date();
-  await prisma.aiCreditWallet.update({
-    where: { id: wallet.id },
+  const changed = await prisma.aiCreditWallet.updateMany({
+    where: {
+      id: wallet.id,
+      // Compare against the subscription seen before the uniqueness check.
+      // If invoice.paid associated/refilled this wallet in the meantime, this
+      // Checkout completion must not reset the paid allowance below.
+      stripeSubscriptionId: wallet.stripeSubscriptionId,
+      lastPaidStripeInvoiceId: null,
+      OR: [
+        { creatorSubscriptionStatus: null },
+        { creatorSubscriptionStatus: { not: "ACTIVE" } },
+      ],
+    },
     data: {
       plan: info.key,
       monthlyCredits: info.monthlyCredits,
-      includedRemaining: info.monthlyCredits,
+      // Checkout completion only associates the subscription. The paid
+      // allowance is released by invoice.paid, the authoritative money event.
+      includedRemaining: 0,
       periodStart: now,
       periodEnd: addMonths(now, 1),
       stripeCustomerId: params.stripeCustomerId ?? wallet.stripeCustomerId,
       stripeSubscriptionId: params.stripeSubscriptionId,
-      creatorSubscriptionStatus: "ACTIVE",
+      lastPaidStripeInvoiceId: null,
+      creatorSubscriptionStatus: "INCOMPLETE",
       planCancelAtPeriodEnd: false,
       planCurrentPeriodEnd: null,
     },
   });
-  return { ok: true };
+  return changed.count === 1
+    ? { ok: true }
+    : { ok: true, duplicate: true };
+}
+
+/**
+ * Release one creator-plan allowance after Stripe confirms a paid invoice.
+ * The invoice id and monotonically increasing period end make this safe across
+ * retries and out-of-order webhook delivery.
+ */
+export async function refillCreatorPlanFromPaidInvoice(params: {
+  tenantId: string;
+  plan: CreatorPlan;
+  stripeSubscriptionId: string;
+  stripeInvoiceId: string;
+  stripeCustomerId?: string | null;
+  periodStart: Date;
+  periodEnd: Date;
+}): Promise<{ ok: boolean; refilled: boolean; error?: string }> {
+  const info = PLANS[params.plan];
+  if (!info || info.priceCents <= 0) {
+    return { ok: false, refilled: false, error: "Unbekanntes oder kostenloses Paket." };
+  }
+  if (
+    !Number.isFinite(params.periodStart.getTime()) ||
+    !Number.isFinite(params.periodEnd.getTime()) ||
+    params.periodEnd <= params.periodStart
+  ) {
+    return { ok: false, refilled: false, error: "Ungültiger Stripe-Abrechnungszeitraum." };
+  }
+
+  const wallet = await getOrCreateWallet(params.tenantId);
+  const changed = await prisma.aiCreditWallet.updateMany({
+    where: {
+      id: wallet.id,
+      AND: [
+        {
+          OR: [
+            { stripeSubscriptionId: null },
+            { stripeSubscriptionId: params.stripeSubscriptionId },
+          ],
+        },
+        {
+          OR: [
+            { lastPaidStripeInvoiceId: null },
+            {
+              lastPaidStripeInvoiceId: { not: params.stripeInvoiceId },
+              periodEnd: { lt: params.periodEnd },
+            },
+          ],
+        },
+      ],
+    },
+    data: {
+      plan: info.key,
+      monthlyCredits: info.monthlyCredits,
+      includedRemaining: info.monthlyCredits,
+      periodStart: params.periodStart,
+      periodEnd: params.periodEnd,
+      stripeCustomerId: params.stripeCustomerId ?? wallet.stripeCustomerId,
+      stripeSubscriptionId: params.stripeSubscriptionId,
+      lastPaidStripeInvoiceId: params.stripeInvoiceId,
+      creatorSubscriptionStatus: "ACTIVE",
+      planCancelAtPeriodEnd: false,
+      planCurrentPeriodEnd: params.periodEnd,
+    },
+  });
+  return { ok: true, refilled: changed.count === 1 };
 }
 
 /** Keep the local creator-plan lifecycle in sync with Stripe. */
@@ -310,6 +414,9 @@ export async function updateCreatorSubscription(params: {
       creatorSubscriptionStatus: params.status,
       planCancelAtPeriodEnd: params.cancelAtPeriodEnd,
       planCurrentPeriodEnd: params.currentPeriodEnd,
+      ...(params.status === "ACTIVE" || params.status === "TRIALING"
+        ? {}
+        : { includedRemaining: 0 }),
     },
   });
 }
@@ -333,6 +440,7 @@ export async function endCreatorSubscription(params: {
       periodStart: now,
       periodEnd: addMonths(now, 1),
       stripeSubscriptionId: null,
+      lastPaidStripeInvoiceId: null,
       creatorSubscriptionStatus: "CANCELED",
       planCancelAtPeriodEnd: false,
       planCurrentPeriodEnd: null,

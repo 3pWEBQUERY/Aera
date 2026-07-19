@@ -20,7 +20,12 @@ export async function GET(req: Request) {
   const user = auth.user;
 
   const memberships = await prisma.membership.findMany({
-    where: { userId: user.id, role: { in: ["OWNER", "ADMIN", "MODERATOR"] } },
+    where: {
+      userId: user.id,
+      status: "ACTIVE",
+      role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+      tenant: { status: "ACTIVE" },
+    },
     include: { tenant: true },
     orderBy: { joinedAt: "asc" },
   });

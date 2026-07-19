@@ -9,8 +9,10 @@ import {
   requestPasswordResetAction,
   resetPasswordAction,
   acceptInviteAction,
+  acceptCurrentLegalAction,
   type AccountState,
 } from "@/app/actions/account";
+import { LegalAcceptanceField } from "@/components/forms/auth-forms";
 
 const initial: AccountState = {};
 
@@ -28,11 +30,11 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form action={action} className="space-y-4">
-      <FormError message={state.error} />
+    <form action={action} aria-describedby={state.error ? "forgot-error" : undefined} className="space-y-4">
+      <FormError id="forgot-error" message={state.error} />
       <div>
         <Label htmlFor="fp-email">{tAuth("email")}</Label>
-        <Input id="fp-email" name="email" type="email" autoComplete="email" required autoFocus />
+        <Input id="fp-email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required autoFocus />
       </div>
       <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
         {pending ? t("forgotSending") : t("forgotSubmit")}
@@ -41,7 +43,7 @@ export function ForgotPasswordForm() {
   );
 }
 
-function PasswordFields() {
+function PasswordFields({ invalid = false }: { invalid?: boolean }) {
   const t = useTranslations("uiMigration.auth");
   return (
     <>
@@ -52,6 +54,7 @@ function PasswordFields() {
           name="password"
           type="password"
           autoComplete="new-password"
+          aria-invalid={invalid || undefined}
           minLength={8}
           required
         />
@@ -63,6 +66,7 @@ function PasswordFields() {
           name="confirm"
           type="password"
           autoComplete="new-password"
+          aria-invalid={invalid || undefined}
           minLength={8}
           required
         />
@@ -75,10 +79,10 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const t = useTranslations("uiMigration.auth");
   const [state, action, pending] = useActionState(resetPasswordAction, initial);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} aria-describedby={state.error ? "reset-error" : undefined} className="space-y-4">
       <input type="hidden" name="token" value={token} />
-      <FormError message={state.error} />
-      <PasswordFields />
+      <FormError id="reset-error" message={state.error} />
+      <PasswordFields invalid={Boolean(state.error)} />
       <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
         {pending ? t("savingPassword") : t("setPassword")}
       </Button>
@@ -99,10 +103,10 @@ export function AcceptInviteForm({
   const [state, action, pending] = useActionState(acceptInviteAction, initial);
   const [name, setName] = useState(defaultName);
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} aria-describedby={state.error ? "invite-error" : undefined} className="space-y-4">
       <input type="hidden" name="token" value={token} />
       {next && <input type="hidden" name="next" value={next} />}
-      <FormError message={state.error} />
+      <FormError id="invite-error" message={state.error} />
       <div>
         <Label htmlFor="in-name">{t("yourName")}</Label>
         <Input
@@ -111,12 +115,33 @@ export function AcceptInviteForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           autoComplete="name"
+          aria-invalid={state.error ? true : undefined}
           required
         />
       </div>
-      <PasswordFields />
+      <PasswordFields invalid={Boolean(state.error)} />
+      <LegalAcceptanceField id="invite-legal-acceptance" />
       <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
         {pending ? t("activatingAccount") : t("acceptInvite")}
+      </Button>
+    </form>
+  );
+}
+
+export function CurrentLegalAcceptanceForm({ next }: { next?: string }) {
+  const t = useTranslations("legalReview");
+  const [state, action, pending] = useActionState(acceptCurrentLegalAction, initial);
+  return (
+    <form
+      action={action}
+      aria-describedby={state.error ? "legal-review-error" : undefined}
+      className="space-y-5"
+    >
+      {next && <input type="hidden" name="next" value={next} />}
+      <FormError id="legal-review-error" message={state.error} />
+      <LegalAcceptanceField id="current-legal-acceptance" />
+      <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
+        {pending ? t("saving") : t("submit")}
       </Button>
     </form>
   );

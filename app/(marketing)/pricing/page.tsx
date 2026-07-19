@@ -7,6 +7,7 @@ import {
   PLANS,
   FEATURED_PLAN,
   CREDIT_PACKS,
+  creatorPlanSignupHref,
 } from "@/lib/credit-plans";
 import { formatPrice } from "@/lib/utils";
 
@@ -72,7 +73,7 @@ export default async function PricingPage() {
                   }}
                 >
                   <PillLink
-                    href="/signup?next=/start"
+                    href={creatorPlanSignupHref(key)}
                     tone={featured ? "light" : "outline-dark"}
                     className="w-full"
                   >

@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   const user = await mobileAuth(req);
   const [tenants, myMemberships] = await Promise.all([
     prisma.tenant.findMany({
-      where: { slug: { in: slugs } },
+      where: { slug: { in: slugs }, status: "ACTIVE" },
       include: { _count: { select: { memberships: true } } },
     }),
     user

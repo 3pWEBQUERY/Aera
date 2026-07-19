@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { purchaseProductAction } from "@/app/actions/engage";
+import { PurchaseSubmitButton } from "@/components/community/purchase-submit-button";
+import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Pill } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
@@ -196,12 +198,15 @@ export async function ShopSection({
                     ) : soldOut ? (
                       <Pill className="bg-[#161613]/5 text-[#161613]/60">{t("soldOut")}</Pill>
                     ) : (
-                      <form action={purchaseProductAction}>
+                      <form action={purchaseProductAction} className="max-w-56">
                         <input type="hidden" name="tenant" value={slug} />
                         <input type="hidden" name="productId" value={p.id} />
-                        <Button size="sm" variant="brand">
+                        {!isFree && p.type !== "PHYSICAL" && (
+                          <ImmediateAccessConsent className="mb-2" />
+                        )}
+                        <PurchaseSubmitButton>
                           {isFree ? t("get") : t("buy")}
-                        </Button>
+                        </PurchaseSubmitButton>
                       </form>
                     )}
                   </div>

@@ -122,7 +122,7 @@ export function HomeRail({
         </Link>
         {user ? (
           <Link
-            href="/dashboard"
+            href="/member/account?from=/home"
             aria-label={t("account")}
             className="group relative flex h-11 w-11 items-center justify-center overflow-hidden rounded-full bg-[#ece7dc] text-sm font-bold text-[#161613] ring-1 ring-white/15"
           >

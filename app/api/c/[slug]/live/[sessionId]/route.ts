@@ -45,6 +45,6 @@ export async function POST(
     body,
   );
   if (!message) return NextResponse.json({ error: "empty" }, { status: 400 });
-  publish(liveChannel(r.community.tenant.id, r.sessionId), { message });
+  await publish(liveChannel(r.community.tenant.id, r.sessionId), { message });
   return NextResponse.json({ message });
 }

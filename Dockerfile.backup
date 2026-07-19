@@ -1,0 +1,24 @@
+FROM node:24.14.1-bookworm-slim
+
+# pg_dump must be at least as new as the PostgreSQL server. Railway currently
+# deploys modern Postgres images, so install the pinned v17 client from PGDG.
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends age ca-certificates curl \
+  && install -d /usr/share/postgresql-common/pgdg \
+  && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+    -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+  && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
+    > /etc/apt/sources.list.d/pgdg.list \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends postgresql-client-17 \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts \
+  && npm cache clean --force
+
+COPY --chown=node:node scripts/backup-database.mjs ./scripts/backup-database.mjs
+USER node
+
+CMD ["node", "scripts/backup-database.mjs", "--output-dir", "/tmp/aera-backups"]

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -27,7 +28,7 @@ export function VideoUpload({
     fileRef.current?.click();
   }
 
-  function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
@@ -35,30 +36,23 @@ export function VideoUpload({
     setUploading(true);
     setProgress(0);
 
-    const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/api/upload");
-    xhr.upload.onprogress = (ev) => {
-      if (ev.lengthComputable) setProgress(Math.round((ev.loaded / ev.total) * 100));
-    };
-    xhr.onload = () => {
+    try {
+      const uploadedUrl = await uploadMediaFile({
+        file,
+        tenant,
+        purpose,
+        onProgress: setProgress,
+      });
+      setUrl(uploadedUrl);
+    } catch (uploadError) {
+      setError(
+        uploadError instanceof UploadError
+          ? uploadError.message
+          : t("uploadFailed"),
+      );
+    } finally {
       setUploading(false);
-      try {
-        const j = JSON.parse(xhr.responseText) as { url?: string; error?: string };
-        if (xhr.status >= 200 && xhr.status < 300 && j.url) setUrl(j.url);
-        else setError(j.error ?? t("uploadFailed"));
-      } catch {
-        setError(t("uploadFailed"));
-      }
-    };
-    xhr.onerror = () => {
-      setUploading(false);
-      setError(t("uploadFailed"));
-    };
-    const fd = new FormData();
-    fd.set("file", file);
-    fd.set("tenant", tenant);
-    fd.set("purpose", purpose);
-    xhr.send(fd);
+    }
   }
 
   return (
