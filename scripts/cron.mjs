@@ -8,7 +8,11 @@
 // The calls run in parallel under one global budget so a single slow provider
 // can never turn sequential slow requests into a multi-minute run.
 
-import { normalizeCronBase, postCronRequest } from "./cron-http.mjs";
+import {
+  classifyCronRequestError,
+  normalizeCronBase,
+  postCronRequest,
+} from "./cron-http.mjs";
 
 let base = "";
 try {
@@ -58,23 +62,53 @@ function log(level, event, fields = {}) {
 
 async function runJob(job) {
   const url = `${base}/api/cron/${job}`;
+  const target = new URL(url).origin;
   try {
-    const { response: res, finalUrl, redirects } = await postCronRequest(url, secret, {
-      signal: controller.signal,
-    });
-    const body = (await res.text()).slice(0, 300);
-    log(res.ok ? "info" : "error", "cron_request_completed", {
+    const {
+      response: res,
+      finalUrl,
+      redirects,
+      networkRetries,
+    } = await postCronRequest(url, secret, { signal: controller.signal });
+    let body = "";
+    let responseReadFailure = null;
+    try {
+      body = (await res.text()).slice(0, 300);
+    } catch (error) {
+      responseReadFailure = classifyCronRequestError(error);
+    }
+
+    const succeeded = res.ok && responseReadFailure === null;
+    log(succeeded ? "info" : "error", "cron_request_completed", {
       job,
       status: res.status,
       response: body,
       target: finalUrl.origin,
       redirects,
+      networkRetries,
+      ...(responseReadFailure
+        ? {
+            responseReadError: "response body could not be read",
+            responseNetworkCategory: responseReadFailure.category,
+            responseNetworkCodes: responseReadFailure.codes,
+          }
+        : {}),
     });
-    return res.ok;
+    return succeeded;
   } catch (e) {
+    const diagnosis = classifyCronRequestError(e);
     log("error", "cron_request_failed", {
       job,
-      error: e instanceof Error ? e.message.slice(0, 300) : "request failed",
+      error: controller.signal.aborted
+        ? "global cron deadline exceeded"
+        : diagnosis.category === "unknown"
+          ? "request failed"
+          : "network request failed",
+      target,
+      networkCategory: diagnosis.category,
+      networkCodes: diagnosis.codes,
+      retryable: diagnosis.retryable,
+      deadlineExceeded: controller.signal.aborted,
     });
     return false;
   }

@@ -53,11 +53,27 @@ Bearer-Tokens werden nie in Tickets oder Chat kopiert.
 ## Cron auf Railway
 
 Der Cron-Service verwendet `railway.cron.toml` als Custom Config Path und läuft
-alle fünf Minuten. `CRON_TARGET_URL` zeigt als Railway-Referenz direkt auf die
-generierte HTTPS-Domain des Web-Service, zum Beispiel
-`https://${{web.RAILWAY_PUBLIC_DOMAIN}}`; damit hängt der Runner nicht von DNS
-oder Weiterleitungen der Custom Domain ab. `CRON_SECRET` muss in beiden Services
-identisch sein.
+alle fünf Minuten. `CRON_TARGET_URL` zeigt direkt auf die generierte
+HTTPS-Domain des Web-Service. Im Web-Service muss dafür unter **Public
+Networking** zuerst eine Railway-Domain generiert sein. Im Cron-Service wird
+die dort angezeigte konkrete `https://…up.railway.app`-URL eingetragen und als
+staged change deployt. Alternativ ist
+`https://${{Aera.RAILWAY_PUBLIC_DOMAIN}}` möglich, wenn der Web-Service exakt
+`Aera` heißt und die Variablenvorschau auf eine `*.up.railway.app`-Domain
+auflöst. Keine Wildcard- oder Cron-Service-Domain verwenden. So hängt der
+Runner nicht von DNS oder Weiterleitungen der Custom Domain ab. `CRON_SECRET`
+muss in beiden Services identisch sein.
+
+```text
+CRON_TARGET_URL=https://<generierte-Aera-Domain>.up.railway.app
+CRON_SECRET=${{Aera.CRON_SECRET}}
+```
+
+Beide Services müssen im selben Projekt und Environment liegen. Nicht die
+eigene generierte Domain des Cron-Service und nicht die unpräfixierte
+`${{RAILWAY_PUBLIC_DOMAIN}}` verwenden: Beide zeigen zurück auf den
+kurzlebigen Cron-Container statt auf die Web-App.
+
 Nach dem ersten Lauf prüfen:
 
 ```bash
@@ -67,6 +83,13 @@ curl -fsS -H "Authorization: Bearer $CRON_SECRET" "$CRON_TARGET_URL/api/cron/sta
 Der Runner beendet sich bei einem Jobfehler mit einem Fehlercode. Parallel dazu
 bleibt der Zustand in `CronJobHeartbeat` sichtbar, selbst wenn ein Container
 anschließend neu gestartet wird.
+
+Bei einem Netzwerkfehler protokolliert der Runner ausschließlich die sichere
+Ziel-Origin sowie Kategorie und Fehlercode. `dns/ENOTFOUND` bedeutet meist eine
+falsche oder nicht aufgelöste Zielvariable, `connection/ECONNREFUSED` einen
+fehlenden Listener, `timeout/*` eine Zeitüberschreitung und `tls/*` ein
+Zertifikatsproblem. Nur transiente Netzwerkfehler werden einmal kurz
+wiederholt; Konfigurations-, TLS-, Redirect- und Abbruchfehler nicht.
 
 ## PostgreSQL-Backups
 

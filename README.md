@@ -285,11 +285,27 @@ Start Command: node scripts/cron.mjs
 Variables: CRON_TARGET_URL, CRON_SECRET
 ```
 
-`CRON_TARGET_URL` zeigt als Railway-Referenz direkt auf die generierte
-HTTPS-Domain des Web-Service (zum Beispiel
-`https://${{web.RAILWAY_PUBLIC_DOMAIN}}`). Der Runner fällt aus
+`CRON_TARGET_URL` zeigt direkt auf die generierte HTTPS-Domain des Web-Service.
+Dafür zuerst im Web-Service unter **Public Networking** eine Railway-Domain
+generieren und die dort angezeigte konkrete `https://…up.railway.app`-URL im
+Cron-Service eintragen. Alternativ kann
+`https://${{Aera.RAILWAY_PUBLIC_DOMAIN}}` verwendet werden, wenn der Service
+exakt `Aera` heißt und Railway in der Variablenvorschau tatsächlich eine
+`*.up.railway.app`-Domain anzeigt. Die staged Änderung deployen und keine
+`*.aera.so`-Wildcard oder Domain des Cron-Service eintragen. Der Runner fällt aus
 Kompatibilitätsgründen auf `APP_URL` zurück, soll produktiv aber nicht von
 Weiterleitungen oder DNS der Custom Domain abhängen.
+
+Empfohlene Referenzvariablen im Cron-Service:
+
+```text
+CRON_TARGET_URL=https://<generierte-Aera-Domain>.up.railway.app
+CRON_SECRET=${{Aera.CRON_SECRET}}
+```
+
+`Aera` und Cron müssen im selben Railway-Projekt und Environment liegen. Falls
+die Referenzvariante verwendet wird, darf sie weder auf die eigene Domain des
+Cron-Service noch unpräfixiert auf `${{RAILWAY_PUBLIC_DOMAIN}}` zeigen.
 
 Der Runner verarbeitet `posts`, `newsletters`, `webhooks`, `automations`,
 `inventory`, `uploads` und `lifecycle` und beendet sich anschließend mit einem
@@ -352,7 +368,7 @@ Produktionsabhängigkeiten mit `npm audit --audit-level=high`.
 ## Status der Verifikation
 
 - ✅ ESLint und TypeScript: 0 blockierende Fehler.
-- ✅ Vitest: 436/436 Tests erfolgreich.
+- ✅ Vitest: 441/441 Tests erfolgreich.
 - ✅ Playwright: 5/5 Chromium-E2E-Flows erfolgreich.
 - ✅ `next build`: erfolgreich kompiliert, alle Routen & Proxy erzeugt.
 - ✅ PostgreSQL Fresh-DB-/Bestands-Upgrade: 64/64 Migrationen angewendet; 71 RLS-Policies,
