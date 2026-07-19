@@ -123,9 +123,15 @@ function validateCompleteGroup(
 
 /**
  * Validate an environment without returning or logging any secret values.
- * Production treats every launch-critical integration as mandatory. In local
- * development integrations remain optional, but partially configured groups
- * are rejected so features cannot become half-enabled.
+ *
+ * Contract ("progressive integrations"): only the variables the app cannot
+ * run without at all are hard requirements — the database, the auth secret
+ * and the public origin. Every integration (Stripe, Resend, S3, Redis,
+ * ClamAV, encryption keyring, cron, resolver origin) stays optional in every
+ * profile, exactly like the runtime treats it: absent means the feature is
+ * off. What IS enforced everywhere: configured values must be well-formed,
+ * and grouped integrations must be complete so features cannot become
+ * half-enabled.
  */
 export function validateEnvironment(
   source: EnvironmentSource,
@@ -149,8 +155,10 @@ export function validateEnvironment(
   }
 
   requireSecret(source, "AUTH_SECRET", 32, issues, strict);
-  validateKeyring(get(source, "AERA_DATA_ENCRYPTION_KEYS"), issues, strict);
-  requireSecret(source, "CRON_SECRET", 32, issues, strict);
+  // Optional hardening: features degrade gracefully when these are absent
+  // (TOTP secrets refuse to store, cron endpoints reject requests).
+  validateKeyring(get(source, "AERA_DATA_ENCRYPTION_KEYS"), issues, false);
+  requireSecret(source, "CRON_SECRET", 32, issues, false);
 
   const rootDomain = get(source, "NEXT_PUBLIC_ROOT_DOMAIN").toLowerCase();
   if (!rootDomain) {
@@ -188,7 +196,7 @@ export function validateEnvironment(
     "DOMAIN_RESOLVER_ORIGIN",
     ["https:", "http:"],
     issues,
-    strict,
+    false,
   );
   if (resolver) {
     const privateRailway = resolver.hostname.endsWith(".railway.internal");
@@ -212,34 +220,27 @@ export function validateEnvironment(
     issues.push("AERA_PLATFORM_FEE_PERCENT: must be a number between 0 and 50");
   }
 
-  const stripeKeys = [
-    "STRIPE_SECRET_KEY",
-    "STRIPE_WEBHOOK_SECRET",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
+  // Stripe: the secret key alone enables payments (hosted checkout). The
+  // webhook secret, publishable key and creator-plan price IDs extend it and
+  // are validated when configured; test-mode keys are legitimate everywhere
+  // (a staging deployment is still a "production" profile).
+  const stripeSecret = get(source, "STRIPE_SECRET_KEY");
+  if (stripeSecret && !/^(?:sk|rk)_(?:live|test)_/.test(stripeSecret)) {
+    issues.push("STRIPE_SECRET_KEY: must be a Stripe secret or restricted key");
+  }
+  if (get(source, "STRIPE_WEBHOOK_SECRET")) {
+    requireSecret(source, "STRIPE_WEBHOOK_SECRET", 12, issues, false, "whsec_");
+  }
+  if (get(source, "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY")) {
+    requireSecret(source, "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY", 16, issues, false, "pk_");
+  }
+  const stripePriceKeys = [
     "STRIPE_CREATOR_STARTER_PRICE_ID",
     "STRIPE_CREATOR_PRO_PRICE_ID",
     "STRIPE_CREATOR_SCALE_PRICE_ID",
   ] as const;
-  if (validateCompleteGroup(source, stripeKeys, issues, strict)) {
-    const stripeSecret = requireSecret(source, "STRIPE_SECRET_KEY", 16, issues, true);
-    const validStripeSecret = strict
-      ? /^(?:sk|rk)_live_/.test(stripeSecret)
-      : /^(?:sk|rk)_(?:live|test)_/.test(stripeSecret);
-    if (!validStripeSecret) {
-      issues.push(
-        `STRIPE_SECRET_KEY: must be a ${strict ? "live" : "Stripe"} secret or restricted key`,
-      );
-    }
-    requireSecret(source, "STRIPE_WEBHOOK_SECRET", 12, issues, true, "whsec_");
-    requireSecret(
-      source,
-      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
-      16,
-      issues,
-      true,
-      strict ? "pk_live_" : "pk_",
-    );
-    for (const key of stripeKeys.slice(3)) {
+  if (validateCompleteGroup(source, stripePriceKeys, issues, false)) {
+    for (const key of stripePriceKeys) {
       if (!/^price_[A-Za-z0-9]+$/.test(get(source, key))) {
         issues.push(`${key}: must be a Stripe Price ID`);
       }
@@ -247,21 +248,16 @@ export function validateEnvironment(
   }
 
   const emailKeys = ["RESEND_API_KEY", "EMAIL_FROM"] as const;
-  if (validateCompleteGroup(source, emailKeys, issues, strict)) {
+  if (validateCompleteGroup(source, emailKeys, issues, false)) {
     requireSecret(source, "RESEND_API_KEY", 10, issues, true, "re_");
     const emailFrom = get(source, "EMAIL_FROM");
     const address = /<([^<>]+)>$/.exec(emailFrom)?.[1] ?? emailFrom;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(address)) {
       issues.push("EMAIL_FROM: must contain a valid sender address");
     }
-    requireSecret(
-      source,
-      "RESEND_WEBHOOK_SECRET",
-      20,
-      issues,
-      strict,
-      "whsec_",
-    );
+    if (get(source, "RESEND_WEBHOOK_SECRET")) {
+      requireSecret(source, "RESEND_WEBHOOK_SECRET", 20, issues, false, "whsec_");
+    }
   }
 
   const storageKeys = [
@@ -270,7 +266,7 @@ export function validateEnvironment(
     "S3_ACCESS_KEY_ID",
     "S3_SECRET_ACCESS_KEY",
   ] as const;
-  if (validateCompleteGroup(source, storageKeys, issues, strict)) {
+  if (validateCompleteGroup(source, storageKeys, issues, false)) {
     const storage = parseUrl(source, "S3_ENDPOINT", ["https:", "http:"], issues, true);
     if (
       strict &&
@@ -286,13 +282,11 @@ export function validateEnvironment(
     requireSecret(source, "S3_SECRET_ACCESS_KEY", 16, issues, true);
   }
 
-  const redis = parseUrl(source, "REDIS_URL", ["redis:", "rediss:"], issues, strict);
-  if (redis && strict && !redis.hostname) issues.push("REDIS_URL: must include a host");
+  const redis = parseUrl(source, "REDIS_URL", ["redis:", "rediss:"], issues, false);
+  if (redis && !redis.hostname) issues.push("REDIS_URL: must include a host");
 
   const clamHost = get(source, "CLAMAV_HOST");
-  if (!clamHost) {
-    if (strict) issues.push("CLAMAV_HOST: is required");
-  } else if (!/^[A-Za-z0-9._:-]+$/.test(clamHost) || clamHost.includes("/")) {
+  if (clamHost && (!/^[A-Za-z0-9._:-]+$/.test(clamHost) || clamHost.includes("/"))) {
     issues.push("CLAMAV_HOST: must be a hostname or IP address, not a URL");
   }
   const clamPort = Number(get(source, "CLAMAV_PORT") || "3310");

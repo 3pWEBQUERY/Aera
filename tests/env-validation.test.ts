@@ -6,13 +6,19 @@ import {
   type EnvironmentSource,
 } from "@/lib/env-validation";
 
-const validProduction = {
+/** Core-only production configuration: what a fresh Railway deploy needs. */
+const minimalProduction = {
   DATABASE_URL: "postgresql://aera:strong-db-password@db.railway.internal:5432/aera",
   AUTH_SECRET: "auth-secret-with-more-than-thirty-two-random-characters",
-  AERA_DATA_ENCRYPTION_KEYS: "current:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
-  CRON_SECRET: "cron-secret-with-more-than-thirty-two-random-characters",
   NEXT_PUBLIC_ROOT_DOMAIN: "aera.so",
   APP_URL: "https://aera.so",
+} satisfies EnvironmentSource;
+
+/** Fully integrated production configuration: every optional group complete. */
+const validProduction = {
+  ...minimalProduction,
+  AERA_DATA_ENCRYPTION_KEYS: "current:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+  CRON_SECRET: "cron-secret-with-more-than-thirty-two-random-characters",
   DOMAIN_RESOLVER_ORIGIN: "http://aera.railway.internal",
   AERA_PLATFORM_FEE_PERCENT: "5",
   STRIPE_SECRET_KEY: "sk_live_ci_12345678901234567890",
@@ -61,7 +67,19 @@ describe("production environment validation", () => {
     ).not.toThrow();
   });
 
-  it("collects all missing launch-critical variables", () => {
+  it("accepts a minimal production configuration — integrations are progressive", () => {
+    expect(() => validateEnvironment(minimalProduction, "production")).not.toThrow();
+    // Payments in test mode are a legitimate production-profile setup
+    // (e.g. a staging deployment), and the secret key alone enables them.
+    expect(() =>
+      validateEnvironment(
+        { ...minimalProduction, STRIPE_SECRET_KEY: "sk_test_ci_12345678901234567890" },
+        "production",
+      ),
+    ).not.toThrow();
+  });
+
+  it("hard-requires only the launch-critical core", () => {
     try {
       validateEnvironment({}, "production");
       throw new Error("expected validation error");
@@ -69,9 +87,16 @@ describe("production environment validation", () => {
       expect(error).toBeInstanceOf(EnvironmentValidationError);
       const issues = (error as EnvironmentValidationError).issues.join("\n");
       expect(issues).toContain("DATABASE_URL");
-      expect(issues).toContain("REDIS_URL");
-      expect(issues).toContain("STRIPE_WEBHOOK_SECRET");
-      expect(issues).toContain("CLAMAV_HOST");
+      expect(issues).toContain("AUTH_SECRET");
+      expect(issues).toContain("NEXT_PUBLIC_ROOT_DOMAIN");
+      expect(issues).toContain("APP_URL");
+      // Optional integrations must not block a deployment when absent.
+      expect(issues).not.toContain("REDIS_URL");
+      expect(issues).not.toContain("CLAMAV_HOST");
+      expect(issues).not.toContain("STRIPE_WEBHOOK_SECRET");
+      expect(issues).not.toContain("AERA_DATA_ENCRYPTION_KEYS");
+      expect(issues).not.toContain("CRON_SECRET");
+      expect(issues).not.toContain("DOMAIN_RESOLVER_ORIGIN");
     }
   });
 
@@ -124,7 +149,7 @@ describe("production environment validation", () => {
     }
   });
 
-  it("keeps integrations optional in development but rejects partial groups", () => {
+  it("keeps integrations optional but rejects partial groups", () => {
     expect(() => validateEnvironment({}, "development")).not.toThrow();
     expect(() =>
       validateEnvironment(
@@ -136,8 +161,19 @@ describe("production environment validation", () => {
         "development",
       ),
     ).not.toThrow();
+    // The secret key alone is a valid Stripe setup (hosted checkout)…
     expect(() =>
       validateEnvironment({ STRIPE_SECRET_KEY: "sk_test_1234567890123456" }, "development"),
-    ).toThrow(/STRIPE_WEBHOOK_SECRET/);
+    ).not.toThrow();
+    // …but grouped values must be complete so features cannot half-enable.
+    expect(() =>
+      validateEnvironment(
+        { STRIPE_CREATOR_STARTER_PRICE_ID: "price_Starter123" },
+        "development",
+      ),
+    ).toThrow(/STRIPE_CREATOR_PRO_PRICE_ID/);
+    expect(() =>
+      validateEnvironment({ S3_BUCKET: "aera-private" }, "production"),
+    ).toThrow(/S3_ENDPOINT/);
   });
 });
