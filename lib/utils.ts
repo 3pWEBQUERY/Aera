@@ -1,5 +1,7 @@
 // Small, dependency-free helpers used across the app.
 
+import { PLATFORM_CURRENCY } from "./currency";
+
 export function cn(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }
@@ -19,7 +21,7 @@ export function slugify(input: string): string {
 // `freeLabel` erlaubt es, das "Kostenlos" für den 0-Fall zu lokalisieren.
 export function formatPrice(
   cents: number,
-  currency = "eur",
+  currency: string = PLATFORM_CURRENCY,
   locale = "de",
   freeLabel = "Kostenlos",
 ): string {

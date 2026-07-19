@@ -8,6 +8,7 @@ import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
 import { entitlementKeys, grantEntitlement } from "@/lib/entitlements";
 import { createRequestCheckout, platformFeeCents } from "@/lib/stripe";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { tErr } from "@/lib/action-errors";
 import type { RequestStatus } from "@/app/generated/prisma/client";
@@ -144,7 +145,7 @@ export async function updateRequestAction(
     where: { id: req.id },
     data: {
       ...(status ? { status } : {}),
-      ...(fd.get("priceCents") !== null ? { priceCents } : {}),
+      ...(fd.get("priceCents") !== null ? { priceCents, currency: PLATFORM_CURRENCY } : {}),
       staffNote,
       // A priced request gets a stable entitlement key for its payment.
       ...(status === "PRICED" || (priceCents > 0 && !req.entitlementKey)

@@ -9,6 +9,7 @@ import { Pill } from "@/components/ui/misc";
 import { Popover } from "@/components/ui/popover";
 import { Icon } from "@/components/dashboard/icons";
 import { formatDate } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const statusColor: Record<string, string> = {
   PAID: "bg-green-100 text-green-700",
@@ -78,9 +79,9 @@ export default async function PayoutsPage({
   const count = gross._count;
   const avgCents = count ? Math.round(grossCents / count) : 0;
 
-  // Numeric currency formatter — shows 0 as "0,00 €" (never "Kostenlos"),
-  // which is what financial breakdowns and receipts need.
-  const money = (cents: number, currency = "eur") =>
+  // Numeric currency formatter — shows 0 as "0,00" in the platform currency
+  // (never "Kostenlos"), which is what financial breakdowns and receipts need.
+  const money = (cents: number, currency: string = PLATFORM_CURRENCY) =>
     new Intl.NumberFormat(locale, {
       style: "currency",
       currency: currency.toUpperCase(),

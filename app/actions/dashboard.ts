@@ -8,6 +8,7 @@ import prisma, {
   withTenantTransaction,
 } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { uniqueChildSlug } from "@/lib/slug";
 import { nameStatus } from "@/lib/tenant-name";
 import { indexContent, removeFromIndex } from "@/lib/ai";
@@ -206,6 +207,7 @@ export async function createTierAction(
       coverUrl: String(fd.get("coverUrl") || "") || null,
       isRecommended,
       priceCents: parsed.data.interval === "FREE" ? 0 : parsed.data.priceCents,
+      currency: PLATFORM_CURRENCY,
       interval: parsed.data.interval,
       entitlementKey: `tier:${tierSlug}`,
       isPublic: fd.get("isPublic") !== "false",
@@ -442,6 +444,7 @@ export async function createProductAction(
       slug: productSlug,
       description: parsed.data.description || null,
       priceCents: parsed.data.priceCents,
+      currency: PLATFORM_CURRENCY,
       type: parsed.data.type,
       downloadUrl: parsed.data.downloadUrl || null,
       images,
@@ -1692,6 +1695,7 @@ export async function createMediaPackageAction(
       description: String(fd.get("description") || "") || null,
       coverUrl: coverFrom(items),
       priceCents,
+      currency: PLATFORM_CURRENCY,
       entitlementKey: `media:${pkgSlug}`,
       isPublished: fd.get("isPublished") !== "false",
       availableUntil: parseAvailableUntil(fd.get("availableUntil")),
@@ -1703,6 +1707,7 @@ export async function createMediaPackageAction(
           caption: m.caption || null,
           sortOrder: i,
           priceCents: m.priceCents ?? 0,
+          currency: PLATFORM_CURRENCY,
           isPreview: m.isPreview ?? false,
           teaserUrl: m.teaserUrl ?? null,
         })),
@@ -1768,6 +1773,7 @@ export async function updateMediaPackageAction(
         caption: m.caption || null,
         sortOrder: start + i,
         priceCents: m.priceCents ?? 0,
+        currency: PLATFORM_CURRENCY,
         isPreview: m.isPreview ?? false,
         teaserUrl: m.teaserUrl ?? null,
       })),
@@ -2034,6 +2040,7 @@ export async function createSpacePostAction(
       imageUrl,
       videoUrl,
       priceCents,
+      currency: PLATFORM_CURRENCY,
       teaserUrl,
       scheduledAt: validSchedule,
       // Scheduled posts publish later via /api/cron/posts.

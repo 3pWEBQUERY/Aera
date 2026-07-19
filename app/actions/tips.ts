@@ -7,6 +7,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
 import { createTipCheckout, platformFeeCents } from "@/lib/stripe";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { awardPoints } from "@/lib/gamification";
 
 export interface ActionState {
@@ -51,6 +52,7 @@ export async function tipAction(fd: FormData): Promise<void> {
       spaceId: space.id,
       userId: user!.id,
       amountCents,
+      currency: PLATFORM_CURRENCY,
       message,
       isPublic,
       status: "PENDING",

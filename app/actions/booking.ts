@@ -12,6 +12,7 @@ import {
   retrieveProductCheckoutSession,
 } from "@/lib/stripe";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { tErr } from "@/lib/action-errors";
 
 export interface ActionState {
@@ -64,6 +65,7 @@ export async function createBookingSlotAction(
       startsAt,
       durationMin: Math.max(5, Math.floor(Number(fd.get("durationMin") || 30) || 30)),
       priceCents,
+      currency: PLATFORM_CURRENCY,
       capacity: Math.max(1, Math.floor(Number(fd.get("capacity") || 1) || 1)),
     },
   });

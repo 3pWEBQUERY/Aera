@@ -1,6 +1,7 @@
 import "server-only";
 import Stripe from "stripe";
 import { env, features } from "./env";
+import { PLATFORM_CURRENCY } from "./currency";
 import {
   immediatePerformanceConsentMetadata,
   type ImmediatePerformanceConsent,
@@ -275,7 +276,7 @@ export async function createCreditPackCheckout(args: {
       {
         quantity: 1,
         price_data: {
-          currency: "eur",
+          currency: PLATFORM_CURRENCY,
           unit_amount: pack.priceCents,
           product_data: {
             name: `${tenant.name} — ${pack.credits.toLocaleString("de-DE")} AI-Credits`,
@@ -336,7 +337,7 @@ async function validCreatorCatalogPrice(
     const price = await stripe.prices.retrieve(priceId);
     return (
       price.active &&
-      price.currency === "eur" &&
+      price.currency === PLATFORM_CURRENCY &&
       price.unit_amount === expectedCents &&
       price.type === "recurring" &&
       price.recurring?.interval === "month" &&
@@ -393,7 +394,7 @@ export async function createCreatorPlanCheckoutSession(
         : {
             quantity: 1,
             price_data: {
-              currency: "eur",
+              currency: PLATFORM_CURRENCY,
               unit_amount: plan.priceCents,
               recurring: { interval: "month" },
               product_data: {
