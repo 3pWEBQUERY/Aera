@@ -1331,7 +1331,9 @@
       "recDenied": "Camera access unavailable. Please allow access in your browser.",
       "recUnsupported": "Video recording isn't supported in this browser.",
       "recPrep": "Preparing camera…",
-      "paragraph": "Paragraph"
+      "paragraph": "Paragraph",
+      "attach": "Attach file",
+      "file": "File"
     },
     "live": {
       "subtitle": "Schedule and control live streams and sessions.",

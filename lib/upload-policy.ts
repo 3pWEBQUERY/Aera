@@ -1,7 +1,7 @@
 /** Shared, side-effect-free upload policy used by API routes and tests. */
 
 export type UploadVisibility = "PUBLIC" | "MEMBERS";
-export type UploadKind = "image" | "video" | "audio";
+export type UploadKind = "image" | "video" | "audio" | "file";
 
 export interface UploadPurposePolicy {
   visibility: UploadVisibility;
@@ -13,6 +13,7 @@ const MB = 1024 * 1024;
 export const MAX_IMAGE_BYTES = 5 * MB;
 export const MAX_VIDEO_BYTES = 512 * MB;
 export const MAX_AUDIO_BYTES = 256 * MB;
+export const MAX_FILE_BYTES = 25 * MB;
 
 const image = (visibility: UploadVisibility): UploadPurposePolicy => ({
   visibility,
@@ -37,6 +38,7 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "blog-cover": image("PUBLIC"),
   "blog-image": image("PUBLIC"),
   "blog-video": video("PUBLIC"),
+  "blog-file": { visibility: "PUBLIC", kinds: ["file"], maxBytes: MAX_FILE_BYTES },
   "feed-image": image("PUBLIC"),
   "ppv-teaser": image("PUBLIC"),
   story: image("PUBLIC"),
@@ -94,6 +96,13 @@ const MIME_KIND: Readonly<Record<string, UploadKind>> = {
   "audio/wav": "audio",
   "audio/x-wav": "audio",
   "audio/ogg": "audio",
+  // Documents / attachments. Office formats are ZIP containers (PK signature).
+  "application/pdf": "file",
+  "application/zip": "file",
+  "application/x-zip-compressed": "file",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document": "file",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": "file",
+  "application/vnd.openxmlformats-officedocument.presentationml.presentation": "file",
 };
 
 export function kindForContentType(contentType: string): UploadKind | null {
@@ -163,6 +172,15 @@ export function magicBytesMatch(contentType: string, bytes: Uint8Array): boolean
     case "audio/mp4":
     case "audio/x-m4a":
       return ascii(bytes, 4, 4) === "ftyp";
+    case "application/pdf":
+      return ascii(bytes, 0, 4) === "%PDF";
+    case "application/zip":
+    case "application/x-zip-compressed":
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+    case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+      // ZIP local-file (PK\x03\x04), empty (PK\x05\x06) or spanned (PK\x07\x08).
+      return bytes[0] === 0x50 && bytes[1] === 0x4b && [0x03, 0x05, 0x07].includes(bytes[2]!);
     default:
       return false;
   }

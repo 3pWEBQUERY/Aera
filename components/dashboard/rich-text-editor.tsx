@@ -27,6 +27,7 @@ const glyphs = {
   paragraph: svg(<>
     <line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="13" y2="17" />
   </>),
+  attach: svg(<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />),
   divider: svg(<line x1="4" y1="12" x2="20" y2="12" />),
   record: svg(<>
     <rect x="2.5" y="6.5" width="13" height="11" rx="2.5" />
@@ -67,6 +68,7 @@ export function RichTextEditor({
   const savedRange = useRef<Range | null>(null);
   const imgInput = useRef<HTMLInputElement>(null);
   const vidInput = useRef<HTMLInputElement>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
 
   const [html, setHtml] = useState(defaultHtml);
   const [uploading, setUploading] = useState(false);
@@ -135,20 +137,32 @@ export function RichTextEditor({
     sync();
   }
 
-  async function uploadAndInsert(file: File, kind: "image" | "video") {
+  const escapeHtml = (value: string) =>
+    value
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  async function uploadAndInsert(file: File, kind: "image" | "video" | "file") {
     setError(null);
     setUploading(true);
     try {
-      const uploadedUrl = await uploadMediaFile({
-        file,
-        tenant,
-        purpose: kind === "image" ? "blog-image" : "blog-video",
-      });
-      const media =
-        kind === "image"
-          ? `<img src="${uploadedUrl}" alt="" />`
-          : `<video src="${uploadedUrl}" controls></video>`;
-      insertHtmlAtCaret(`${media}<p><br></p>`);
+      const purpose =
+        kind === "image" ? "blog-image" : kind === "video" ? "blog-video" : "blog-file";
+      const uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
+      if (kind === "file") {
+        const label = escapeHtml(file.name.slice(0, 200)) || t("file");
+        insertHtmlAtCaret(
+          `<p><a href="${uploadedUrl}" target="_blank" rel="noopener noreferrer">📎 ${label}</a></p><p><br></p>`,
+        );
+      } else {
+        const media =
+          kind === "image"
+            ? `<img src="${uploadedUrl}" alt="" />`
+            : `<video src="${uploadedUrl}" controls></video>`;
+        insertHtmlAtCaret(`${media}<p><br></p>`);
+      }
     } catch (uploadError) {
       setError(
         uploadError instanceof UploadError
@@ -331,6 +345,19 @@ export function RichTextEditor({
         >
           <Icon name="videos" size={15} />
           <span className="text-xs font-medium">{t("video")}</span>
+        </button>
+        <button
+          type="button"
+          title={t("attach")}
+          aria-label={t("attach")}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            saveSelection();
+          }}
+          onClick={() => fileInput.current?.click()}
+          className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
+        >
+          {glyphs.attach}
         </button>
         <button
           type="button"
@@ -517,6 +544,17 @@ export function RichTextEditor({
           const f = e.target.files?.[0];
           e.target.value = "";
           if (f) uploadAndInsert(f, "video");
+        }}
+      />
+      <input
+        ref={fileInput}
+        type="file"
+        accept="application/pdf,application/zip,.pdf,.zip,.docx,.xlsx,.pptx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          e.target.value = "";
+          if (f) uploadAndInsert(f, "file");
         }}
       />
     </div>

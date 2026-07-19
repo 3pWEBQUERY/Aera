@@ -1331,7 +1331,9 @@
       "recDenied": "Kamerazugriff nicht möglich. Bitte erlaube den Zugriff im Browser.",
       "recUnsupported": "Videoaufnahme wird in diesem Browser nicht unterstützt.",
       "recPrep": "Kamera wird vorbereitet…",
-      "paragraph": "Absatz"
+      "paragraph": "Absatz",
+      "attach": "Datei anhängen",
+      "file": "Datei"
     },
     "live": {
       "subtitle": "Live-Streams und Sitzungen planen und steuern.",

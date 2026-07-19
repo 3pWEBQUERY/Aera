@@ -11,7 +11,7 @@ export function sanitizeRichHtml(input: string): string {
   if (!input) return "";
   return sanitizeHtml(input, {
     allowedTags: [
-      "p", "br", "strong", "b", "em", "i", "u", "s", "strike",
+      "p", "br", "hr", "strong", "b", "em", "i", "u", "s", "strike",
       "h2", "h3", "ul", "ol", "li", "blockquote", "a",
       "img", "video", "figure", "figcaption", "span", "div",
     ],

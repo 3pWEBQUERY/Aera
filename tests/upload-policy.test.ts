@@ -70,4 +70,32 @@ describe("upload policy", () => {
     expect(magicBytesMatch("video/mp4", mp4)).toBe(true);
     expect(magicBytesMatch("image/jpeg", mp4)).toBe(false);
   });
+  it("accepts PDF and Office/ZIP document attachments, rejects spoofs", () => {
+    const pdf = new TextEncoder().encode("%PDF-1.7\n....");
+    const zip = Uint8Array.from([0x50, 0x4b, 0x03, 0x04, 0, 0, 0, 0, 0, 0, 0, 0]);
+    expect(magicBytesMatch("application/pdf", pdf)).toBe(true);
+    expect(magicBytesMatch("application/zip", zip)).toBe(true);
+    expect(
+      magicBytesMatch(
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        zip,
+      ),
+    ).toBe(true);
+    const fakePdf = new TextEncoder().encode("not a pdf at all here");
+    expect(magicBytesMatch("application/pdf", fakePdf)).toBe(false);
+
+    const attach = validateUploadDeclaration({
+      purpose: "blog-file",
+      contentType: "application/pdf",
+      sizeBytes: 2048,
+    });
+    expect(attach.ok && attach.kind).toBe("file");
+    expect(
+      validateUploadDeclaration({
+        purpose: "blog-image",
+        contentType: "application/pdf",
+        sizeBytes: 2048,
+      }),
+    ).toEqual({ ok: false, error: "type" });
+  });
 });
