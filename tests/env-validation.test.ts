@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   EnvironmentValidationError,
@@ -32,7 +33,24 @@ const validProduction = {
   CLAMAV_PORT: "3310",
 } satisfies EnvironmentSource;
 
+const packageJson = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf8"),
+) as {
+  dependencies?: Record<string, string>;
+  devDependencies?: Record<string, string>;
+  scripts?: Record<string, string>;
+};
+
 describe("production environment validation", () => {
+  it("ships the tools used by Railway pre-deploy and prestart in the runtime image", () => {
+    expect(packageJson.scripts?.["db:predeploy"]).toContain("prisma migrate deploy");
+    expect(packageJson.scripts?.prestart).toContain("env:check");
+    for (const runtimeTool of ["prisma", "tsx"]) {
+      expect(packageJson.dependencies?.[runtimeTool]).toBeTruthy();
+      expect(packageJson.devDependencies?.[runtimeTool]).toBeUndefined();
+    }
+  });
+
   it("accepts a complete production configuration", () => {
     expect(() => validateEnvironment(validProduction, "production")).not.toThrow();
     expect(() =>

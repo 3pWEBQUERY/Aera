@@ -352,7 +352,7 @@ Produktionsabhängigkeiten mit `npm audit --audit-level=high`.
 ## Status der Verifikation
 
 - ✅ ESLint und TypeScript: 0 blockierende Fehler.
-- ✅ Vitest: 435/435 Tests erfolgreich.
+- ✅ Vitest: 436/436 Tests erfolgreich.
 - ✅ Playwright: 5/5 Chromium-E2E-Flows erfolgreich.
 - ✅ `next build`: erfolgreich kompiliert, alle Routen & Proxy erzeugt.
 - ✅ PostgreSQL Fresh-DB-/Bestands-Upgrade: 64/64 Migrationen angewendet; 71 RLS-Policies,

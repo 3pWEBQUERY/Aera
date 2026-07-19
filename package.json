@@ -63,12 +63,14 @@
     "next": "16.2.9",
     "next-intl": "^4.13.1",
     "pg": "^8.16.0",
+    "prisma": "^7.8.0",
     "qrcode": "^1.5.4",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "sanitize-html": "^2.17.5",
     "server-only": "^0.0.1",
     "stripe": "^19.0.0",
+    "tsx": "^4.20.0",
     "web-push": "^3.6.7",
     "zod": "^4.0.0"
   },
@@ -85,9 +87,7 @@
     "@types/web-push": "^3.6.4",
     "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.9",
-    "prisma": "^7.8.0",
     "tailwindcss": "^4.1.0",
-    "tsx": "^4.20.0",
     "typescript": "^5.9.0",
     "vitest": "^3.2.7"
   }
