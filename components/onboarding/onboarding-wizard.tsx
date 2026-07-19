@@ -111,6 +111,13 @@ export function OnboardingWizard({
             <Image src={logoBlack} alt="Aera" priority className="h-7 w-auto" />
           </Link>
           <div className="flex items-center gap-3">
+            <Link
+              href="/home"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+            >
+              <Icon name="close" size={16} />
+              <span className="hidden sm:inline">{t("cancel")}</span>
+            </Link>
             <span className="hidden rounded-full border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
               Aera {PLANS[selectedPlan].name}
             </span>
@@ -384,14 +391,22 @@ export function OnboardingWizard({
 
           {/* Footer */}
           <div className="mt-10 flex items-center justify-between border-t border-[#161613]/10 pt-5">
-            <button
-              type="button"
-              onClick={() => setStep((s) => Math.max(1, s - 1))}
-              disabled={step === 1}
-              className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613] disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {t("back")}
-            </button>
+            {step === 1 ? (
+              <Link
+                href="/home"
+                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+              >
+                {t("cancel")}
+              </Link>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+              >
+                {t("back")}
+              </button>
+            )}
             {step < total ? (
               <button
                 type="button"

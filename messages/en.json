@@ -277,7 +277,8 @@
         "name": "Ads",
         "tagline": "Banners & campaigns"
       }
-    }
+    },
+    "cancel": "Cancel"
   },
   "seed": {
     "tierDescription": "Free access to the community.",

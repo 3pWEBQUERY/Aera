@@ -277,7 +277,8 @@
         "name": "Werbung",
         "tagline": "Banner & Kampagnen"
       }
-    }
+    },
+    "cancel": "Abbrechen"
   },
   "seed": {
     "tierDescription": "Kostenloser Zugang zur Community.",
