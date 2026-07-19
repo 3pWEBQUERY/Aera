@@ -763,7 +763,7 @@ function FolderCard({
         "group relative aspect-[1.04/1] cursor-pointer select-none rounded-[28px]",
         "hover:z-20 focus-within:z-30",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2",
-        active && "ring-2 ring-slate-900 ring-offset-2",
+        active && "ring-2 ring-slate-300 ring-offset-2",
       )}
     >
       {/* Tile background — clipped layer for clean rounded corners + glow. */}
