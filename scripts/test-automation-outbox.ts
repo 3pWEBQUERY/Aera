@@ -30,7 +30,7 @@ async function main() {
          "id", "tenantId", "stepId", "userId", "recipientEmail", "subject", "html",
          "status", "nextAttemptAt", "createdAt", "updatedAt"
        ) VALUES ($1, $2, $3, $4, 'smoke@example.invalid', 'Smoke', '<p>Smoke</p>',
-         'PENDING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+         'PENDING', CURRENT_TIMESTAMP - INTERVAL '1 second', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       [deliveryId, tenantId, stepId, tenant.rows[0]!.ownerId],
     );
 

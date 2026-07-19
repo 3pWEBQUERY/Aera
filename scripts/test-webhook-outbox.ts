@@ -32,7 +32,7 @@ async function main() {
          "id", "tenantId", "endpointId", "eventId", "event", "payload",
          "status", "nextAttemptAt", "createdAt", "updatedAt"
        ) VALUES ($1, $2, $3, $4, 'order.paid', $5::jsonb,
-         'PENDING', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
+         'PENDING', CURRENT_TIMESTAMP - INTERVAL '1 second', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`,
       [deliveryId, tenantId, endpointId, eventId, JSON.stringify({ id: eventId, type: "order.paid", data: {} })],
     );
 

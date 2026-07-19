@@ -19,6 +19,12 @@ const migration = readFileSync(
   "utf8",
 );
 const migrationsDirectory = new URL("../prisma/migrations/", import.meta.url);
+const tenantSubdomainMigrationName = "20260719100000_tenant_subdomain";
+const leastPrivilegeMigrationName = "20260719110000_rls_least_privilege";
+const tenantSubdomainMigration = readFileSync(
+  new URL(`${tenantSubdomainMigrationName}/migration.sql`, migrationsDirectory),
+  "utf8",
+);
 const migrationCorpus = readdirSync(migrationsDirectory)
   .filter(
     (name) =>
@@ -38,6 +44,17 @@ function tenantModelsFromSchema(): string[] {
 }
 
 describe("RLS hardening migration", () => {
+  it("creates Tenant.subdomain before granting column privileges", () => {
+    expect(tenantSubdomainMigrationName < leastPrivilegeMigrationName).toBe(true);
+    expect(tenantSubdomainMigration).toMatch(
+      /ALTER TABLE public\."Tenant"[\s\S]*ADD COLUMN IF NOT EXISTS "subdomain" TEXT/,
+    );
+    expect(tenantSubdomainMigration).toContain(
+      'CREATE UNIQUE INDEX IF NOT EXISTS "Tenant_subdomain_key"',
+    );
+    expect(migration).toContain('"name", "subdomain", "customDomain"');
+  });
+
   it("tracks every current tenantId model", () => {
     expect([...TENANT_RLS_TABLES].sort()).toEqual(tenantModelsFromSchema());
     for (const table of TENANT_RLS_TABLES) {

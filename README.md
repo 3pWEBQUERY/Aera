@@ -352,10 +352,10 @@ Produktionsabhängigkeiten mit `npm audit --audit-level=high`.
 ## Status der Verifikation
 
 - ✅ ESLint und TypeScript: 0 blockierende Fehler.
-- ✅ Vitest: 434/434 Tests erfolgreich.
+- ✅ Vitest: 435/435 Tests erfolgreich.
 - ✅ Playwright: 5/5 Chromium-E2E-Flows erfolgreich.
 - ✅ `next build`: erfolgreich kompiliert, alle Routen & Proxy erzeugt.
-- ✅ Railway PostgreSQL: 63/63 Migrationen angewendet; 71 RLS-Policies,
+- ✅ PostgreSQL Fresh-DB-/Bestands-Upgrade: 64/64 Migrationen angewendet; 71 RLS-Policies,
   Least-Privilege-Grants und Plattform-Audit-Grenze verifiziert.
 - ✅ Produktionsaudit: keine Abhängigkeit mit hoher oder kritischer Severity;
   fünf transitive Hinweise mit mittlerer Severity bleiben für reguläre
