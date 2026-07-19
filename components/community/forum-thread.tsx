@@ -14,6 +14,7 @@ export interface ForumPost {
   id: string;
   title: string | null;
   body: string;
+  bodyHtml: string | null;
   imageUrl: string | null;
   videoUrl: string | null;
   authorName: string;
@@ -84,7 +85,14 @@ export function ForumThread({
             {post.authorName} · {timeAgo(post.createdAt, locale)}
           </p>
           {post.title && <h1 className="display-serif mt-1 text-2xl text-[#161613]">{post.title}</h1>}
-          {post.body && <p className="mt-2 whitespace-pre-wrap text-[15px] text-[#161613]/80">{post.body}</p>}
+          {post.bodyHtml ? (
+            <div
+              className="rich-content mt-2 text-[15px] text-[#161613]/80"
+              dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+            />
+          ) : (
+            post.body && <p className="mt-2 whitespace-pre-wrap text-[15px] text-[#161613]/80">{post.body}</p>
+          )}
           {post.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={post.imageUrl} alt="" className="mt-3 max-h-[28rem] w-full rounded-xl border border-[#161613]/10 object-cover" />

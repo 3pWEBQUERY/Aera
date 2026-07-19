@@ -70,6 +70,7 @@ export default async function PostDetail({
           id: fpost.id,
           title: fpost.title,
           body: fpost.body,
+          bodyHtml: fpost.bodyHtml,
           imageUrl: fpost.imageUrl,
           videoUrl: fpost.videoUrl,
           authorName: fpost.author.name,

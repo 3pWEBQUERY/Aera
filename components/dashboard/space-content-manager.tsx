@@ -243,7 +243,7 @@ function PostForm({
             </div>
           )}
 
-          {ty === "BLOG" ? (
+          {ty === "BLOG" || ty === "FORUM" ? (
             <div>
               <Label>{t("contentLabel")}</Label>
               <RichTextEditor tenant={slug} name="bodyHtml" />
