@@ -44,6 +44,7 @@ import { ImmediateAccessConsent } from "@/components/community/immediate-access-
 import { submitRequestAction, purchaseRequestAction } from "@/app/actions/requests";
 import { reserveBookingAction } from "@/app/actions/booking";
 import { tipAction } from "@/app/actions/tips";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const PRODUCT_TYPES = ["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"];
 const productTypeKey = (type: string) => (PRODUCT_TYPES.includes(type) ? type : "DIGITAL");
@@ -593,7 +594,7 @@ export default async function SpacePage({
                           <ImmediateAccessConsent inverse className="mb-2 max-w-xs" />
                           <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#161613] transition hover:bg-white/90 active:scale-[0.99]">
                             <Icon name="lock" size={15} />
-                            {t("unlockFor", { price: formatPrice(p.priceCents ?? 0, p.currency ?? "eur", locale) })}
+                            {t("unlockFor", { price: formatPrice(p.priceCents ?? 0, p.currency ?? PLATFORM_CURRENCY, locale) })}
                           </button>
                         </form>
                       </div>
@@ -1024,8 +1025,8 @@ export default async function SpacePage({
         {goalCents > 0 && (
           <div className="mb-6 rounded-2xl border border-[#161613]/10 bg-white p-5">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-[#161613]">{formatPrice(raised, "eur", locale)}</span>
-              <span className="text-[#161613]/50">{tTip("goal", { goal: formatPrice(goalCents, "eur", locale) })}</span>
+              <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
+              <span className="text-[#161613]/50">{tTip("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
             </div>
             <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
               <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
@@ -1348,14 +1349,14 @@ export default async function SpacePage({
                         {p.freeShipping
                           ? tShop("freeShipping")
                           : p.stock !== null && p.stock > 0
-                            ? tShop("shippingCostStock", { price: formatPrice(p.shippingCents, "eur", locale), count: p.stock })
-                            : tShop("shippingCost", { price: formatPrice(p.shippingCents, "eur", locale) })}
+                            ? tShop("shippingCostStock", { price: formatPrice(p.shippingCents, PLATFORM_CURRENCY, locale), count: p.stock })
+                            : tShop("shippingCost", { price: formatPrice(p.shippingCents, PLATFORM_CURRENCY, locale) })}
                       </p>
                     )}
 
                     <div className="mt-4 flex items-center justify-between gap-3">
                       <span className="display-serif text-xl text-[#161613]">
-                        {p.priceCents === 0 ? tShop("free") : formatPrice(p.priceCents, "eur", locale)}
+                        {p.priceCents === 0 ? tShop("free") : formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}
                       </span>
                       {isOwned ? (
                         p.downloadUrl ? (

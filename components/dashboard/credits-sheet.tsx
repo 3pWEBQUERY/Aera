@@ -7,6 +7,7 @@ import { Icon, type IconName } from "./icons";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import { PlanCard } from "@/components/pricing/plan-card";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 interface PlanInfo {
   key: string;
@@ -272,7 +273,7 @@ export function CreditsSheet({
                       )}
                       <p className="text-2xl font-bold text-slate-900">{nf.format(p.credits)}</p>
                       <p className="text-xs text-slate-400">{t("credits")}</p>
-                      <p className="mt-3 text-sm font-semibold text-slate-700">{formatPrice(p.priceCents, "eur", locale)}</p>
+                      <p className="mt-3 text-sm font-semibold text-slate-700">{formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}</p>
                       <div className="mt-auto pt-3">
                         <button
                           type="button"

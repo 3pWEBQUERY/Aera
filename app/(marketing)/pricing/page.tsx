@@ -10,6 +10,7 @@ import {
   creatorPlanSignupHref,
 } from "@/lib/credit-plans";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export async function generateMetadata() {
   const t = await getTranslations("uiMigration.auth");
@@ -111,7 +112,7 @@ export default async function PricingPage() {
                       </p>
                     </div>
                     <p className="mt-6 text-sm font-semibold text-[#161613]/80">
-                      {formatPrice(pack.priceCents, "eur", locale)}
+                      {formatPrice(pack.priceCents, PLATFORM_CURRENCY, locale)}
                     </p>
                   </div>
                 </Reveal>

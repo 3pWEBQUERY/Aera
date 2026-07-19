@@ -5,6 +5,7 @@ import { requirePlatformAdmin } from "@/lib/guards";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Avatar, Pill } from "@/components/ui/misc";
 import { formatDate, formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 function Stat({
   icon,
@@ -91,8 +92,8 @@ export default async function AdminOverviewPage() {
         <Stat icon="payouts" label={t("paidOrders")} value={nf.format(orders)} href="/admin/orders" />
         <Stat
           icon="tiers"
-          label={t("revenueWithFee", { fee: formatPrice(revenue._sum.platformFeeCents ?? 0, "eur", locale) })}
-          value={formatPrice(revenue._sum.amountCents ?? 0, "eur", locale)}
+          label={t("revenueWithFee", { fee: formatPrice(revenue._sum.platformFeeCents ?? 0, PLATFORM_CURRENCY, locale) })}
+          value={formatPrice(revenue._sum.amountCents ?? 0, PLATFORM_CURRENCY, locale)}
         />
       </div>
 

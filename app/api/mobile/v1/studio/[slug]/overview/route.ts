@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import { jsonOk } from "@/lib/mobile/api";
 import { requireStudioAccess } from "@/lib/mobile/studio";
 import { excerpt } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 // GET /api/mobile/v1/studio/{slug}/overview → { stats, recentActivity }
 // Kennzahlen gespiegelt aus der Dashboard-Übersicht
@@ -126,7 +127,7 @@ export async function GET(
       comments30d,
       revenueCents30d: revenue30dAgg._sum.amountCents ?? 0,
       revenueCentsTotal: revenueTotalAgg._sum.amountCents ?? 0,
-      currency: latestOrder?.currency ?? "eur",
+      currency: latestOrder?.currency ?? PLATFORM_CURRENCY,
       subscribers,
     },
     recentActivity: activity,

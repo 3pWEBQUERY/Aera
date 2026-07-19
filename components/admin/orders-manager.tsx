@@ -12,6 +12,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Label, Select } from "@/components/ui/field";
 import { formatDateTime, formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface OrderRowData {
   id: string;
@@ -81,13 +82,13 @@ export function OrdersManager({
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <p className="text-2xl font-bold leading-none text-slate-900">
-            {formatPrice(stats.paidAmountCents, "eur", locale)}
+            {formatPrice(stats.paidAmountCents, PLATFORM_CURRENCY, locale)}
           </p>
           <p className="mt-1 text-xs font-medium text-slate-400">{t("revenuePaid")}</p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <p className="text-2xl font-bold leading-none text-slate-900">
-            {formatPrice(stats.paidFeeCents, "eur", locale)}
+            {formatPrice(stats.paidFeeCents, PLATFORM_CURRENCY, locale)}
           </p>
           <p className="mt-1 text-xs font-medium text-slate-400">
             {t("feesPaid")}

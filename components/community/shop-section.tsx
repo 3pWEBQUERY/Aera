@@ -8,6 +8,7 @@ import { Pill } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { ProductCarousel } from "@/components/community/product-carousel";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 type T = Awaited<ReturnType<typeof getTranslations>>;
 
@@ -176,13 +177,13 @@ export async function ShopSection({
                     <p className="mt-2 text-xs text-[#161613]/50">
                       {p.freeShipping
                         ? t("freeShipping")
-                        : t("shippingCost", { price: formatPrice(p.shippingCents, "eur", locale) })}
+                        : t("shippingCost", { price: formatPrice(p.shippingCents, PLATFORM_CURRENCY, locale) })}
                     </p>
                   )}
 
                   <div className="mt-4 flex items-center justify-between gap-3">
                     <span className="display-serif text-xl text-[#161613]">
-                      {isFree ? t("free") : formatPrice(p.priceCents, "eur", locale)}
+                      {isFree ? t("free") : formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}
                     </span>
                     {isOwned ? (
                       p.downloadUrl ? (

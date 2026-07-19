@@ -8,6 +8,7 @@ import { groupStoriesByAuthor } from "@/lib/stories";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { StoryViewer } from "./story-viewer";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface PreviewSpace {
   id: string;
@@ -199,8 +200,8 @@ async function TipsPreview({ slug, tenantId, space, locale }: Props) {
         {goalCents > 0 && (
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-[#161613]">{formatPrice(raised, "eur", locale)}</span>
-              <span className="text-[#161613]/50">{t("goal", { goal: formatPrice(goalCents, "eur", locale) })}</span>
+              <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
+              <span className="text-[#161613]/50">{t("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
             </div>
             <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
               <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />

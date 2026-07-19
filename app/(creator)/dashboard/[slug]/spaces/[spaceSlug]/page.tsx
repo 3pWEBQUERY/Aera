@@ -56,6 +56,7 @@ import {
 } from "@/lib/space-settings";
 import { excerpt } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const POST_TYPES = ["FEED", "VIDEOS", "PODCAST"];
 
@@ -483,7 +484,7 @@ export default async function SpaceContentPage({
         tips={tips}
         totalCents={agg._sum.amountCents ?? 0}
         goalCents={goalCents}
-        currency="eur"
+        currency={PLATFORM_CURRENCY}
       />
     );
   }

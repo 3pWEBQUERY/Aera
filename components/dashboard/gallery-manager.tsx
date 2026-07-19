@@ -18,6 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface GalleryItem {
   id: string;
@@ -188,7 +189,7 @@ function FolderCard({
           )}
           <span className="absolute left-2 top-2 flex items-center gap-1.5">
             {paid ? (
-              <Pill className="bg-slate-900/85 text-white shadow-sm backdrop-blur">{formatPrice(pkg.priceCents, "eur", locale)}</Pill>
+              <Pill className="bg-slate-900/85 text-white shadow-sm backdrop-blur">{formatPrice(pkg.priceCents, PLATFORM_CURRENCY, locale)}</Pill>
             ) : (
               <Pill className="bg-emerald-500/90 text-white shadow-sm backdrop-blur">{t("free")}</Pill>
             )}

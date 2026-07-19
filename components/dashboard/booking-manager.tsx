@@ -12,6 +12,7 @@ import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { PricePointSelect } from "./price-point-select";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface BookingSlotRow {
   id: string;
@@ -80,7 +81,7 @@ export function BookingManager({
                   {t("seats", { taken: s.reservedCount, cap: s.capacity })}
                 </Pill>
                 <span className="text-sm font-semibold text-slate-900">
-                  {s.priceCents === 0 ? t("free") : (s.priceCents / 100).toFixed(2) + " €"}
+                  {s.priceCents === 0 ? t("free") : (s.priceCents / 100).toFixed(2) + " " + PLATFORM_CURRENCY.toUpperCase()}
                 </span>
                 <form action={deleteBookingSlotAction}>
                   <input type="hidden" name="tenant" value={slug} />

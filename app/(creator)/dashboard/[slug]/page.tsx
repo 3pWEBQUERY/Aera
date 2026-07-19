@@ -8,6 +8,7 @@ import { Avatar } from "@/components/ui/misc";
 import { PlannerUpcoming } from "@/components/dashboard/planner-upcoming";
 import { FreePlanUpgradeBanner } from "@/components/dashboard/free-plan-upgrade-banner";
 import { getOrCreateWallet } from "@/lib/credits";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export default async function OverviewPage({
   params,
@@ -46,7 +47,7 @@ export default async function OverviewPage({
     { label: td("overview.statActiveSubs"), value: activeSubs },
     { label: td("overview.statPosts"), value: posts },
     { label: td("overview.statPurchases"), value: paidOrders },
-    { label: td("overview.statRevenue"), value: formatPrice(revenue, "eur", locale) },
+    { label: td("overview.statRevenue"), value: formatPrice(revenue, PLATFORM_CURRENCY, locale) },
   ];
 
   return (

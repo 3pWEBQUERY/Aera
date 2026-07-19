@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { excerpt, formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export default async function SearchPage({
   params,
@@ -134,7 +135,7 @@ export default async function SearchPage({
                     <CardBody className="flex items-center justify-between py-3">
                       <p className="font-medium text-slate-800">{p.name}</p>
                       <span className="text-sm font-semibold text-slate-700">
-                        {formatPrice(p.priceCents, "eur", locale)}
+                        {formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}
                       </span>
                     </CardBody>
                   </Card>

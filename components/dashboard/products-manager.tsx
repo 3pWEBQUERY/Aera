@@ -16,6 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn, formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface ProductRowData {
   id: string;
@@ -316,7 +317,7 @@ function ProductForm({
             <Label htmlFor="pf-price">{t("priceLabel")}</Label>
             {type === "PHYSICAL" ? (
               <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
-                <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">€</span>
+                <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">{PLATFORM_CURRENCY.toUpperCase()}</span>
                 <input
                   id="pf-price"
                   value={price}
@@ -373,7 +374,7 @@ function ProductForm({
                 <div>
                   <Label htmlFor="pf-ship">{t("shipCostLabel")}</Label>
                   <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
-                    <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">€</span>
+                    <span className="bg-slate-50 px-3 py-2 text-sm text-slate-500">{PLATFORM_CURRENCY.toUpperCase()}</span>
                     <input
                       id="pf-ship"
                       value={shippingPrice}

@@ -5,6 +5,7 @@ import { PageHeader } from "@/components/dashboard/page-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { ReferralSettingsForm } from "@/components/dashboard/referral-settings";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export async function generateMetadata() {
   const t = await getTranslations("dashboard.referrals");
@@ -20,7 +21,7 @@ export default async function ReferralsPage({
   const { tenant } = await requireTenantAdmin(slug);
   const t = await getTranslations("dashboard.referrals");
   const locale = await getLocale();
-  const eur = new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" });
+  const eur = new Intl.NumberFormat(locale, { style: "currency", currency: PLATFORM_CURRENCY.toUpperCase() });
   const nf = new Intl.NumberFormat(locale);
   const dateFmt = new Intl.DateTimeFormat(locale, {
     day: "2-digit", month: "2-digit", year: "numeric",

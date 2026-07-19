@@ -1,6 +1,7 @@
 import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface PlanCardLabels {
   locale: string;
@@ -90,7 +91,7 @@ export function PlanCard({
         {priceCents > 0 ? (
           <>
             <span className={cn("font-bold tracking-tight text-slate-900", compact ? "text-2xl sm:text-4xl" : "text-4xl")}>
-              {formatPrice(priceCents, "eur", labels.locale)}
+              {formatPrice(priceCents, PLATFORM_CURRENCY, labels.locale)}
             </span>
             <span className={cn("font-medium text-slate-400", compact ? "text-[10px] sm:text-sm" : "text-sm")}>{labels.perMonth}</span>
           </>

@@ -4,6 +4,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { Icon, type IconName } from "@/components/dashboard/icons";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export async function generateMetadata() {
   const t = await getTranslations("dashboard.analytics");
@@ -70,7 +71,7 @@ export default async function AnalyticsPage({
   const a = await getAnalyticsSummary(tenant.id);
   const t = await getTranslations("dashboard.analytics");
   const locale = await getLocale();
-  const eur = new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" });
+  const eur = new Intl.NumberFormat(locale, { style: "currency", currency: PLATFORM_CURRENCY.toUpperCase() });
   const nf = new Intl.NumberFormat(locale);
   const dateFmt = new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" });
   const money = (cents: number) => eur.format(cents / 100);

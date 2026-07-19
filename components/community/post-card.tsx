@@ -5,6 +5,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { toggleReactionAction, purchasePostAction } from "@/app/actions/engage";
 import { timeAgo, excerpt, formatPrice } from "@/lib/utils";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface PostCardData {
   id: string;
@@ -70,7 +71,7 @@ export function PostCard({
               <ImmediateAccessConsent inverse className="mb-2 max-w-xs" />
               <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#161613] transition hover:bg-white/90 active:scale-[0.99]">
                 <Icon name="lock" size={15} />
-                {t("unlockFor", { price: formatPrice(post.priceCents ?? 0, post.currency ?? "eur", locale) })}
+                {t("unlockFor", { price: formatPrice(post.priceCents ?? 0, post.currency ?? PLATFORM_CURRENCY, locale) })}
               </button>
             </form>
           </div>

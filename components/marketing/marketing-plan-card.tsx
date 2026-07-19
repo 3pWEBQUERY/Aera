@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export interface MarketingPlanLabels {
   locale: string;
@@ -62,7 +63,7 @@ export function MarketingPlanCard({
 
       <div className="mt-6 flex items-baseline gap-2">
         <span className="display-serif text-4xl leading-none">
-          {priceCents > 0 ? formatPrice(priceCents, "eur", labels.locale) : "0 €"}
+          {priceCents > 0 ? formatPrice(priceCents, PLATFORM_CURRENCY, labels.locale) : `0 ${PLATFORM_CURRENCY.toUpperCase()}`}
         </span>
         <span
           className={cn(

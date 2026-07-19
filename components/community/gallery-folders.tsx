@@ -8,6 +8,7 @@ import { Pill } from "@/components/ui/misc";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { formatPrice, cn } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 /**
  * Force a real "save as" dialog. Same-origin proxy URLs (default in this app)
@@ -120,7 +121,7 @@ export function GalleryFolders({
                 {locked && (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[#161613]/40 text-white">
                     <Icon name="lock" size={22} />
-                    <span className="text-sm font-semibold">{formatPrice(p.priceCents, "eur", locale)}</span>
+                    <span className="text-sm font-semibold">{formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}</span>
                   </div>
                 )}
 
@@ -199,7 +200,7 @@ function FolderModal({
           <h2 id={titleId} className="truncate text-lg font-bold text-[#161613]">{pkg.title}</h2>
           <p className="text-xs text-[#161613]/50">
             {t("mediaCount", { count: pkg.itemCount })}
-            {pkg.priceCents > 0 ? ` · ${formatPrice(pkg.priceCents, "eur", locale)}` : ` · ${t("free")}`}
+            {pkg.priceCents > 0 ? ` · ${formatPrice(pkg.priceCents, PLATFORM_CURRENCY, locale)}` : ` · ${t("free")}`}
           </p>
         </div>
         <button
@@ -241,7 +242,7 @@ function FolderModal({
                 <input type="hidden" name="packageId" value={pkg.id} />
                 <ImmediateAccessConsent className="mb-3" />
                 <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#161613] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.99]">
-                  <Icon name="lock" size={16} /> {t("unlockFor", { price: formatPrice(pkg.priceCents, "eur", locale) })}
+                  <Icon name="lock" size={16} /> {t("unlockFor", { price: formatPrice(pkg.priceCents, PLATFORM_CURRENCY, locale) })}
                 </button>
               </form>
             </div>
@@ -270,7 +271,7 @@ function FolderModal({
                         <input type="hidden" name="itemId" value={it.id} />
                         <ImmediateAccessConsent inverse className="mb-2 max-w-48" />
                         <button className="inline-flex items-center gap-1.5 rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-[#161613] transition hover:bg-white/90">
-                          {t("unlockFor", { price: formatPrice(it.priceCents ?? 0, "eur", locale) })}
+                          {t("unlockFor", { price: formatPrice(it.priceCents ?? 0, PLATFORM_CURRENCY, locale) })}
                         </button>
                       </form>
                     )}

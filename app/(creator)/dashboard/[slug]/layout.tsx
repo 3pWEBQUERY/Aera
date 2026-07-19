@@ -7,6 +7,7 @@ import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { MobileDashboardNav } from "@/components/dashboard/mobile-nav";
 import { TopHeader } from "@/components/dashboard/top-header";
 import type { Metadata } from "next";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export async function generateMetadata({
   params,
@@ -58,7 +59,7 @@ export default async function DashboardLayout({
         memberSince: membership.joinedAt.toISOString(),
         tierName: membership.tier?.name ?? null,
         priceCents: membership.tier?.priceCents ?? 0,
-        currency: membership.tier?.currency ?? "eur",
+        currency: membership.tier?.currency ?? PLATFORM_CURRENCY,
         interval: membership.tier?.interval ?? "FREE",
         subStatus: subRow?.status ?? null,
         cancelAtPeriodEnd: subRow?.cancelAtPeriodEnd ?? false,

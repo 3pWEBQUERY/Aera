@@ -8,6 +8,7 @@ import {
   tipPriceOptions,
 } from "@/lib/apple-products";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 type PriceKind = "oneTime" | "subscription" | "tip";
 
@@ -62,7 +63,7 @@ export function PricePointSelect({
     defaultCents > 0 &&
     !options.some((o) => o.cents === defaultCents)
   ) {
-    options.push({ cents: defaultCents, label: formatPrice(defaultCents, "eur", locale) });
+    options.push({ cents: defaultCents, label: formatPrice(defaultCents, PLATFORM_CURRENCY, locale) });
     options.sort((a, b) => a.cents - b.cents);
   }
 
