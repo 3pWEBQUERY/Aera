@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { createCommentAction, type EngageState } from "@/app/actions/engage";
 import { VoteControl } from "./vote-control";
 import { PollBlock, type PollViewData } from "./poll-block";
+import { CoverBanner } from "./cover-banner";
 import { Avatar, FormError } from "@/components/ui/misc";
 import { Textarea } from "@/components/ui/field";
 import { Icon } from "@/components/dashboard/icons";
@@ -64,6 +65,7 @@ export function ForumThread({
   comments,
   isMember,
   poll,
+  cover,
   settings,
 }: {
   slug: string;
@@ -72,6 +74,7 @@ export function ForumThread({
   comments: ForumComment[];
   isMember: boolean;
   poll?: PollViewData | null;
+  cover?: { url: string | null; x: number; y: number; zoom: number } | null;
   settings?: {
     hideMetaInfo: boolean;
     hideLikes: boolean;
@@ -88,6 +91,18 @@ export function ForumThread({
       <Link href={`/c/${slug}/s/${spaceSlug}`} className="text-sm text-[#161613]/60 hover:text-[#161613]">
         ← {t("backToForum")}
       </Link>
+
+      {cover?.url && (
+        <CoverBanner
+          url={cover.url}
+          offsetX={cover.x}
+          offsetY={cover.y}
+          zoom={cover.zoom}
+          aspect="16 / 5"
+          rounded="rounded-2xl"
+          className="border border-[#161613]/10"
+        />
+      )}
 
       <article className="flex gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
         {!settings?.hideLikes && (

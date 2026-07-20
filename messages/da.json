@@ -1042,6 +1042,14 @@
       "save": "Gem"
     },
     "forumMod": {
+      "addCover": "Tilføj cover",
+      "coverUploading": "Uploader…",
+      "coverAdjust": "Juster",
+      "coverRemove": "Fjern cover",
+      "coverTitle": "Vælg coverbillede",
+      "coverHint": "Træk for at flytte",
+      "coverZoom": "Zoom",
+      "coverSave": "Gem ændringer",
       "settings": "Indstillinger",
       "settingsTitle": "Indstillinger",
       "back": "Tilbage",

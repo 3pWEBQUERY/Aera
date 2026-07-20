@@ -1042,6 +1042,14 @@
       "save": "Guardar"
     },
     "forumMod": {
+      "addCover": "Añadir portada",
+      "coverUploading": "Subiendo…",
+      "coverAdjust": "Ajustar",
+      "coverRemove": "Quitar portada",
+      "coverTitle": "Elegir imagen de portada",
+      "coverHint": "Arrastra para reposicionar",
+      "coverZoom": "Zoom",
+      "coverSave": "Guardar cambios",
       "settings": "Ajustes",
       "settingsTitle": "Ajustes",
       "back": "Atrás",

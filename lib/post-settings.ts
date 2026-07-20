@@ -19,6 +19,10 @@ export interface PostSettings {
   hideMetaInfo: boolean;
   hideFromFeatured: boolean;
   disableTruncation: boolean;
+  coverUrl: string | null;
+  coverOffsetX: number;
+  coverOffsetY: number;
+  coverZoom: number;
 }
 
 export const DEFAULT_POST_SETTINGS: PostSettings = {
@@ -30,6 +34,16 @@ export const DEFAULT_POST_SETTINGS: PostSettings = {
   hideMetaInfo: false,
   hideFromFeatured: false,
   disableTruncation: false,
+  coverUrl: null,
+  coverOffsetX: 50,
+  coverOffsetY: 50,
+  coverZoom: 100,
+};
+
+const clampInt = (v: unknown, min: number, max: number, fallback: number): number => {
+  const n = Math.round(Number(v));
+  if (!Number.isFinite(n)) return fallback;
+  return Math.min(max, Math.max(min, n));
 };
 
 /** Normalise a user-typed slug to url-safe lowercase (or null when empty). */
@@ -47,6 +61,8 @@ export function normalizeSlug(raw: string): string | null {
 export function parsePostSettingsForm(fd: FormData): PostSettings {
   const html = String(fd.get("customHtml") || "");
   const sanitized = html.trim() ? sanitizeCustomHtml(html) : "";
+  const rawCover = String(fd.get("coverUrl") || "").trim();
+  const coverUrl = /^https?:\/\//i.test(rawCover) || rawCover.startsWith("/") ? rawCover : null;
   return {
     customSlug: normalizeSlug(String(fd.get("customSlug") || "")),
     customHtml: sanitized || null,
@@ -56,6 +72,10 @@ export function parsePostSettingsForm(fd: FormData): PostSettings {
     hideMetaInfo: fd.get("hideMetaInfo") === "on",
     hideFromFeatured: fd.get("hideFromFeatured") === "on",
     disableTruncation: fd.get("disableTruncation") === "on",
+    coverUrl,
+    coverOffsetX: clampInt(fd.get("coverOffsetX"), 0, 100, 50),
+    coverOffsetY: clampInt(fd.get("coverOffsetY"), 0, 100, 50),
+    coverZoom: clampInt(fd.get("coverZoom"), 100, 300, 100),
   };
 }
 
@@ -85,7 +105,11 @@ export async function savePostSettings(
         "hideLikes" = ${settings.hideLikes},
         "hideMetaInfo" = ${settings.hideMetaInfo},
         "hideFromFeatured" = ${settings.hideFromFeatured},
-        "disableTruncation" = ${settings.disableTruncation}
+        "disableTruncation" = ${settings.disableTruncation},
+        "coverUrl" = ${settings.coverUrl},
+        "coverOffsetX" = ${settings.coverOffsetX},
+        "coverOffsetY" = ${settings.coverOffsetY},
+        "coverZoom" = ${settings.coverZoom}
       WHERE "id" = ${postId} AND "tenantId" = ${tenantId}`;
   } catch {
     // Settings columns not migrated yet — leave the post as-is.
@@ -101,7 +125,28 @@ type SettingsRow = {
   hideMetaInfo: boolean;
   hideFromFeatured: boolean;
   disableTruncation: boolean;
+  coverUrl: string | null;
+  coverOffsetX: number;
+  coverOffsetY: number;
+  coverZoom: number;
 };
+
+function rowToSettings(r: SettingsRow): PostSettings {
+  return {
+    customSlug: r.customSlug ?? null,
+    customHtml: r.customHtml ?? null,
+    hideComments: !!r.hideComments,
+    closeComments: !!r.closeComments,
+    hideLikes: !!r.hideLikes,
+    hideMetaInfo: !!r.hideMetaInfo,
+    hideFromFeatured: !!r.hideFromFeatured,
+    disableTruncation: !!r.disableTruncation,
+    coverUrl: r.coverUrl ?? null,
+    coverOffsetX: r.coverOffsetX ?? 50,
+    coverOffsetY: r.coverOffsetY ?? 50,
+    coverZoom: r.coverZoom ?? 100,
+  };
+}
 
 /** Read a post's settings for rendering (defaults before migration). */
 export async function readPostSettings(
@@ -111,20 +156,12 @@ export async function readPostSettings(
   try {
     const rows = await prisma.$queryRaw<SettingsRow[]>`
       SELECT "customSlug", "customHtml", "hideComments", "closeComments",
-             "hideLikes", "hideMetaInfo", "hideFromFeatured", "disableTruncation"
+             "hideLikes", "hideMetaInfo", "hideFromFeatured", "disableTruncation",
+             "coverUrl", "coverOffsetX", "coverOffsetY", "coverZoom"
       FROM "Post" WHERE "id" = ${postId} AND "tenantId" = ${tenantId} LIMIT 1`;
     const r = rows[0];
     if (!r) return { ...DEFAULT_POST_SETTINGS };
-    return {
-      customSlug: r.customSlug ?? null,
-      customHtml: r.customHtml ?? null,
-      hideComments: !!r.hideComments,
-      closeComments: !!r.closeComments,
-      hideLikes: !!r.hideLikes,
-      hideMetaInfo: !!r.hideMetaInfo,
-      hideFromFeatured: !!r.hideFromFeatured,
-      disableTruncation: !!r.disableTruncation,
-    };
+    return rowToSettings(r);
   } catch {
     return { ...DEFAULT_POST_SETTINGS };
   }
@@ -140,20 +177,12 @@ export async function getPostSettingsForPosts(
   try {
     const rows = await prisma.$queryRaw<(SettingsRow & { id: string })[]>`
       SELECT "id", "customSlug", "customHtml", "hideComments", "closeComments",
-             "hideLikes", "hideMetaInfo", "hideFromFeatured", "disableTruncation"
+             "hideLikes", "hideMetaInfo", "hideFromFeatured", "disableTruncation",
+             "coverUrl", "coverOffsetX", "coverOffsetY", "coverZoom"
       FROM "Post"
       WHERE "tenantId" = ${tenantId} AND "id" IN (${Prisma.join(postIds)})`;
     for (const r of rows) {
-      map.set(r.id, {
-        customSlug: r.customSlug ?? null,
-        customHtml: r.customHtml ?? null,
-        hideComments: !!r.hideComments,
-        closeComments: !!r.closeComments,
-        hideLikes: !!r.hideLikes,
-        hideMetaInfo: !!r.hideMetaInfo,
-        hideFromFeatured: !!r.hideFromFeatured,
-        disableTruncation: !!r.disableTruncation,
-      });
+      map.set(r.id, rowToSettings(r));
     }
   } catch {
     // Settings columns not migrated yet.

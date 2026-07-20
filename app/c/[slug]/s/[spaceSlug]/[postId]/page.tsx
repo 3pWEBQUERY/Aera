@@ -76,6 +76,12 @@ export default async function PostDetail({
         spaceSlug={spaceSlug}
         isMember={ctx.membership?.status === "ACTIVE"}
         poll={poll}
+        cover={{
+          url: settings.coverUrl,
+          x: settings.coverOffsetX,
+          y: settings.coverOffsetY,
+          zoom: settings.coverZoom,
+        }}
         settings={{
           hideMetaInfo: settings.hideMetaInfo,
           hideLikes: settings.hideLikes,

@@ -1042,6 +1042,14 @@
       "save": "Zapisz"
     },
     "forumMod": {
+      "addCover": "Dodaj okładkę",
+      "coverUploading": "Przesyłanie…",
+      "coverAdjust": "Dostosuj",
+      "coverRemove": "Usuń okładkę",
+      "coverTitle": "Wybierz obraz okładki",
+      "coverHint": "Przeciągnij, aby zmienić położenie",
+      "coverZoom": "Powiększenie",
+      "coverSave": "Zapisz zmiany",
       "settings": "Ustawienia",
       "settingsTitle": "Ustawienia",
       "back": "Wstecz",

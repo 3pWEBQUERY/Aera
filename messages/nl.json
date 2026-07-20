@@ -1042,6 +1042,14 @@
       "save": "Opslaan"
     },
     "forumMod": {
+      "addCover": "Omslag toevoegen",
+      "coverUploading": "Uploaden…",
+      "coverAdjust": "Aanpassen",
+      "coverRemove": "Omslag verwijderen",
+      "coverTitle": "Omslagafbeelding kiezen",
+      "coverHint": "Sleep om te verplaatsen",
+      "coverZoom": "Zoom",
+      "coverSave": "Wijzigingen opslaan",
       "settings": "Instellingen",
       "settingsTitle": "Instellingen",
       "back": "Terug",

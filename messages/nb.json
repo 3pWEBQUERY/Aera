@@ -1042,6 +1042,14 @@
       "save": "Lagre"
     },
     "forumMod": {
+      "addCover": "Legg til forside",
+      "coverUploading": "Laster opp…",
+      "coverAdjust": "Juster",
+      "coverRemove": "Fjern forside",
+      "coverTitle": "Velg forsidebilde",
+      "coverHint": "Dra for å flytte",
+      "coverZoom": "Zoom",
+      "coverSave": "Lagre endringer",
       "settings": "Innstillinger",
       "settingsTitle": "Innstillinger",
       "back": "Tilbake",

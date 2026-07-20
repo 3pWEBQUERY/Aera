@@ -855,6 +855,11 @@ model Post {
   hideMetaInfo      Boolean  @default(false)
   hideFromFeatured  Boolean  @default(false)
   disableTruncation Boolean  @default(false)
+  // Cover image (banner) with a stored focal point + zoom for object-cover.
+  coverUrl          String?
+  coverOffsetX      Int      @default(50)
+  coverOffsetY      Int      @default(50)
+  coverZoom         Int      @default(100)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 

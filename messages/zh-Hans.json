@@ -1042,6 +1042,14 @@
       "save": "保存"
     },
     "forumMod": {
+      "addCover": "添加封面",
+      "coverUploading": "上传中…",
+      "coverAdjust": "调整",
+      "coverRemove": "移除封面",
+      "coverTitle": "选择封面图片",
+      "coverHint": "拖动以重新定位",
+      "coverZoom": "缩放",
+      "coverSave": "保存更改",
       "settings": "设置",
       "settingsTitle": "设置",
       "back": "返回",

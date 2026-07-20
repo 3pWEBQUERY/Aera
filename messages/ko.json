@@ -1042,6 +1042,14 @@
       "save": "저장"
     },
     "forumMod": {
+      "addCover": "커버 추가",
+      "coverUploading": "업로드 중…",
+      "coverAdjust": "조정",
+      "coverRemove": "커버 삭제",
+      "coverTitle": "커버 이미지 선택",
+      "coverHint": "드래그하여 위치 조정",
+      "coverZoom": "확대/축소",
+      "coverSave": "변경 사항 저장",
       "settings": "설정",
       "settingsTitle": "설정",
       "back": "뒤로",

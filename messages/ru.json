@@ -1042,6 +1042,14 @@
       "save": "Сохранить"
     },
     "forumMod": {
+      "addCover": "Добавить обложку",
+      "coverUploading": "Загрузка…",
+      "coverAdjust": "Настроить",
+      "coverRemove": "Удалить обложку",
+      "coverTitle": "Выбрать изображение обложки",
+      "coverHint": "Перетащите, чтобы изменить положение",
+      "coverZoom": "Масштаб",
+      "coverSave": "Сохранить изменения",
       "settings": "Настройки",
       "settingsTitle": "Настройки",
       "back": "Назад",

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createSpacePostAction,
@@ -15,9 +15,19 @@ import {
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { RichTextEditor } from "./rich-text-editor";
+import { CoverBanner } from "@/components/community/cover-banner";
+import { uploadMediaFile } from "@/lib/client-upload";
 import { Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
+
+interface CoverState {
+  url: string | null;
+  x: number;
+  y: number;
+  zoom: number;
+}
+const DEFAULT_COVER: CoverState = { url: null, x: 50, y: 50, zoom: 100 };
 
 export interface ModComment {
   id: string;
@@ -42,6 +52,10 @@ export interface ModThread {
   hideMetaInfo?: boolean;
   hideFromFeatured?: boolean;
   disableTruncation?: boolean;
+  coverUrl?: string | null;
+  coverOffsetX?: number;
+  coverOffsetY?: number;
+  coverZoom?: number;
   authorName: string;
   createdAt: string | Date;
   isPinned: boolean;
@@ -85,24 +99,51 @@ export function ForumModerationManager({
   const [editing, setEditing] = useState<ModThread | null>(null);
   const [nonce, setNonce] = useState(0);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [cover, setCover] = useState<CoverState>(DEFAULT_COVER);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [coverBusy, setCoverBusy] = useState(false);
+  const coverInput = useRef<HTMLInputElement>(null);
   const t = useTranslations("dashboard.forumMod");
 
   function openCreate() {
     setNonce((n) => n + 1);
     setEditing(null);
     setSettingsOpen(false);
+    setCropOpen(false);
+    setCover(DEFAULT_COVER);
     setCreateOpen(true);
   }
   function openEdit(thread: ModThread) {
     setNonce((n) => n + 1);
     setCreateOpen(false);
     setSettingsOpen(false);
+    setCropOpen(false);
+    setCover({
+      url: thread.coverUrl ?? null,
+      x: thread.coverOffsetX ?? 50,
+      y: thread.coverOffsetY ?? 50,
+      zoom: thread.coverZoom ?? 100,
+    });
     setEditing(thread);
   }
   function close() {
     setCreateOpen(false);
     setEditing(null);
     setSettingsOpen(false);
+    setCropOpen(false);
+  }
+
+  async function onCoverFile(file: File) {
+    setCoverBusy(true);
+    try {
+      const url = await uploadMediaFile({ file, tenant: slug, purpose: "blog-image" });
+      setCover({ url, x: 50, y: 50, zoom: 100 });
+      setCropOpen(true);
+    } catch {
+      // Upload failed — leave the composer as-is; the button re-enables.
+    } finally {
+      setCoverBusy(false);
+    }
   }
 
   const totalComments = threads.reduce((s, th) => s + th.commentCount, 0);
@@ -173,14 +214,25 @@ export function ForumModerationManager({
         icon="forum"
         headerAction={
           createOpen || editing ? (
-            <button
-              type="button"
-              onClick={() => setSettingsOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
-            >
-              <Icon name="settings" size={16} className="text-slate-400" />
-              {t("settings")}
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => setSettingsOpen(true)}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+              >
+                <Icon name="settings" size={16} className="text-slate-400" />
+                <span className="hidden sm:inline">{t("settings")}</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => coverInput.current?.click()}
+                disabled={coverBusy}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
+              >
+                <Icon name="gallery" size={16} className="text-slate-400" />
+                <span className="hidden sm:inline">{coverBusy ? t("coverUploading") : t("addCover")}</span>
+              </button>
+            </>
           ) : null
         }
       >
@@ -192,9 +244,36 @@ export function ForumModerationManager({
           creator={creator}
           settingsOpen={settingsOpen}
           onCloseSettings={() => setSettingsOpen(false)}
+          cover={cover}
+          onEditCover={() => setCropOpen(true)}
+          onRemoveCover={() => setCover(DEFAULT_COVER)}
           onDone={close}
         />
       </Sheet>
+
+      <input
+        ref={coverInput}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+        className="hidden"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          e.target.value = "";
+          if (f) void onCoverFile(f);
+        }}
+      />
+      {cropOpen && cover.url && (
+        <CoverCropModal
+          t={t}
+          url={cover.url}
+          initial={{ x: cover.x, y: cover.y, zoom: cover.zoom }}
+          onCancel={() => setCropOpen(false)}
+          onSave={(pos) => {
+            setCover((c) => ({ ...c, ...pos }));
+            setCropOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -346,6 +425,9 @@ function ThreadForm({
   creator,
   settingsOpen,
   onCloseSettings,
+  cover,
+  onEditCover,
+  onRemoveCover,
   onDone,
 }: {
   slug: string;
@@ -354,6 +436,9 @@ function ThreadForm({
   creator: { name: string; email: string };
   settingsOpen: boolean;
   onCloseSettings: () => void;
+  cover: CoverState;
+  onEditCover: () => void;
+  onRemoveCover: () => void;
   onDone: () => void;
 }) {
   const isEdit = !!thread;
@@ -375,6 +460,10 @@ function ThreadForm({
           set it (when present) or clear it (when the editor was left empty). */}
       <input type="hidden" name="pollControl" value="1" />
       <input type="hidden" name="settingsControl" value="1" />
+      <input type="hidden" name="coverUrl" value={cover.url ?? ""} />
+      <input type="hidden" name="coverOffsetX" value={cover.x} />
+      <input type="hidden" name="coverOffsetY" value={cover.y} />
+      <input type="hidden" name="coverZoom" value={cover.zoom} />
       {isEdit ? (
         <>
           <input type="hidden" name="postId" value={thread!.id} />
@@ -392,6 +481,30 @@ function ThreadForm({
         placeholder={t("bodyPlaceholder")}
         pollActive={pollActive}
         onPollClick={() => setPollActive((v) => !v)}
+        coverSlot={
+          cover.url ? (
+            <div className="group relative w-full">
+              <CoverBanner url={cover.url} offsetX={cover.x} offsetY={cover.y} zoom={cover.zoom} aspect="16 / 5" />
+              <div className="absolute right-3 top-3 flex gap-1.5 opacity-0 transition group-hover:opacity-100">
+                <button
+                  type="button"
+                  onClick={onEditCover}
+                  className="rounded-lg bg-black/55 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur transition hover:bg-black/70"
+                >
+                  {t("coverAdjust")}
+                </button>
+                <button
+                  type="button"
+                  onClick={onRemoveCover}
+                  aria-label={t("coverRemove")}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-black/55 text-white backdrop-blur transition hover:bg-black/70"
+                >
+                  <Icon name="close" size={15} />
+                </button>
+              </div>
+            </div>
+          ) : null
+        }
         titleSlot={
           <>
             {state.error && (
@@ -686,6 +799,129 @@ function SettingsPanel({
               <p className="mt-1.5 text-xs text-slate-400">{t("customHtmlHint")}</p>
             </div>
           </SettingsSection>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * "Choose cover image" modal: drag the image to reposition the focal point and
+ * use the slider to zoom. The preview mirrors exactly how the cover renders
+ * (object-cover with the same focal point + zoom), so what the creator sets is
+ * what shows everywhere.
+ */
+function CoverCropModal({
+  t,
+  url,
+  initial,
+  onCancel,
+  onSave,
+}: {
+  t: ReturnType<typeof useTranslations>;
+  url: string;
+  initial: { x: number; y: number; zoom: number };
+  onCancel: () => void;
+  onSave: (pos: { x: number; y: number; zoom: number }) => void;
+}) {
+  const [x, setX] = useState(initial.x);
+  const [y, setY] = useState(initial.y);
+  const [zoom, setZoom] = useState(initial.zoom);
+  const frameRef = useRef<HTMLDivElement>(null);
+  const drag = useRef<{ px: number; py: number; sx: number; sy: number } | null>(null);
+
+  function onPointerDown(e: React.PointerEvent<HTMLDivElement>) {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    drag.current = { px: e.clientX, py: e.clientY, sx: x, sy: y };
+  }
+  function onPointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    const d = drag.current;
+    const rect = frameRef.current?.getBoundingClientRect();
+    if (!d || !rect) return;
+    // Dragging the image reveals the opposite side, so the focal point moves
+    // against the drag direction.
+    const dxPct = ((e.clientX - d.px) / rect.width) * 100;
+    const dyPct = ((e.clientY - d.py) / rect.height) * 100;
+    setX(Math.min(100, Math.max(0, d.sx - dxPct)));
+    setY(Math.min(100, Math.max(0, d.sy - dyPct)));
+  }
+  function endDrag() {
+    drag.current = null;
+  }
+
+  return (
+    <div className="fixed inset-0 z-[95] flex items-center justify-center bg-black/60 p-4">
+      <div className="flex w-full max-w-2xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-center justify-between border-b border-slate-200 px-5 py-3.5">
+          <h2 className="text-base font-bold text-slate-900">{t("coverTitle")}</h2>
+          <button
+            type="button"
+            onClick={onCancel}
+            aria-label={t("cancel")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+
+        <div className="p-5">
+          <div
+            ref={frameRef}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            className="relative w-full cursor-grab touch-none overflow-hidden rounded-xl bg-slate-900 active:cursor-grabbing"
+            style={{ aspectRatio: "16 / 7" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={url}
+              alt=""
+              draggable={false}
+              className="pointer-events-none h-full w-full select-none object-cover"
+              style={{
+                objectPosition: `${x}% ${y}%`,
+                transform: zoom > 100 ? `scale(${zoom / 100})` : undefined,
+                transformOrigin: `${x}% ${y}%`,
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0 grid grid-cols-3 grid-rows-3">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <div key={i} className="border border-white/20" />
+              ))}
+            </div>
+          </div>
+          <p className="mt-2 text-center text-xs text-slate-400">{t("coverHint")}</p>
+          <div className="mt-4 flex items-center gap-3">
+            <Icon name="gallery" size={15} className="shrink-0 text-slate-400" />
+            <input
+              type="range"
+              min={100}
+              max={300}
+              value={zoom}
+              onChange={(e) => setZoom(Number(e.target.value))}
+              aria-label={t("coverZoom")}
+              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-full bg-slate-200 accent-slate-900"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-end gap-2.5 border-t border-slate-200 bg-slate-50 px-5 py-3.5">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-xl px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+          >
+            {t("cancel")}
+          </button>
+          <button
+            type="button"
+            onClick={() => onSave({ x, y, zoom })}
+            className="rounded-xl bg-slate-900 px-5 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
+          >
+            {t("coverSave")}
+          </button>
         </div>
       </div>
     </div>

@@ -1042,6 +1042,14 @@
       "save": "Salva"
     },
     "forumMod": {
+      "addCover": "Aggiungi copertina",
+      "coverUploading": "Caricamento…",
+      "coverAdjust": "Regola",
+      "coverRemove": "Rimuovi copertina",
+      "coverTitle": "Scegli immagine di copertina",
+      "coverHint": "Trascina per riposizionare",
+      "coverZoom": "Zoom",
+      "coverSave": "Salva modifiche",
       "settings": "Impostazioni",
       "settingsTitle": "Impostazioni",
       "back": "Indietro",

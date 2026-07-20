@@ -1042,6 +1042,14 @@
       "save": "Spara"
     },
     "forumMod": {
+      "addCover": "Lägg till omslag",
+      "coverUploading": "Laddar upp…",
+      "coverAdjust": "Justera",
+      "coverRemove": "Ta bort omslag",
+      "coverTitle": "Välj omslagsbild",
+      "coverHint": "Dra för att flytta",
+      "coverZoom": "Zoom",
+      "coverSave": "Spara ändringar",
       "settings": "Inställningar",
       "settingsTitle": "Inställningar",
       "back": "Tillbaka",

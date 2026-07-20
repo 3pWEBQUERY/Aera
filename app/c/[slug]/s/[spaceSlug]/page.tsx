@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
+import { getPostSettingsForPosts } from "@/lib/post-settings";
+import { CoverBanner } from "@/components/community/cover-banner";
 import { canAccess } from "@/lib/entitlements";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
@@ -216,6 +218,7 @@ export default async function SpacePage({
       },
     });
     const ids = rawPosts.map((p) => p.id);
+    const forumSettings = await getPostSettingsForPosts(tenant.id, ids);
     const [voteGroups, myVotes] = await Promise.all([
       ids.length
         ? prisma.reaction.groupBy({
@@ -308,12 +311,27 @@ export default async function SpacePage({
                     </h3>
                   </Link>
                   {p.body && p.title && (
-                    <p className="mt-0.5 line-clamp-2 text-sm text-[#161613]/60">{excerpt(p.body, 160)}</p>
+                    <p className={cn("mt-0.5 text-sm text-[#161613]/60", !forumSettings.get(p.id)?.disableTruncation && "line-clamp-2")}>
+                      {forumSettings.get(p.id)?.disableTruncation ? p.body : excerpt(p.body, 160)}
+                    </p>
                   )}
                   <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`} className="mt-2 inline-flex items-center gap-1.5 text-xs font-medium text-[#161613]/60 hover:text-[#161613]">
                     <Icon name="forum" size={14} /> {t("commentsCount", { count: p._count.comments })}
                   </Link>
                 </div>
+                {forumSettings.get(p.id)?.coverUrl && (
+                  <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`} className="hidden shrink-0 self-center sm:block">
+                    <CoverBanner
+                      url={forumSettings.get(p.id)!.coverUrl!}
+                      offsetX={forumSettings.get(p.id)!.coverOffsetX}
+                      offsetY={forumSettings.get(p.id)!.coverOffsetY}
+                      zoom={forumSettings.get(p.id)!.coverZoom}
+                      aspect="16 / 10"
+                      rounded="rounded-lg"
+                      className="w-28 border border-[#161613]/10"
+                    />
+                  </Link>
+                )}
               </article>
             ))}
           </div>

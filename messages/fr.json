@@ -1042,6 +1042,14 @@
       "save": "Enregistrer"
     },
     "forumMod": {
+      "addCover": "Ajouter une couverture",
+      "coverUploading": "Téléversement…",
+      "coverAdjust": "Ajuster",
+      "coverRemove": "Supprimer la couverture",
+      "coverTitle": "Choisir l'image de couverture",
+      "coverHint": "Glissez pour repositionner",
+      "coverZoom": "Zoom",
+      "coverSave": "Enregistrer",
       "settings": "Paramètres",
       "settingsTitle": "Paramètres",
       "back": "Retour",

@@ -1042,6 +1042,14 @@
       "save": "Salvar"
     },
     "forumMod": {
+      "addCover": "Adicionar capa",
+      "coverUploading": "Enviando…",
+      "coverAdjust": "Ajustar",
+      "coverRemove": "Remover capa",
+      "coverTitle": "Escolher imagem de capa",
+      "coverHint": "Arraste para reposicionar",
+      "coverZoom": "Zoom",
+      "coverSave": "Salvar alterações",
       "settings": "Configurações",
       "settingsTitle": "Configurações",
       "back": "Voltar",

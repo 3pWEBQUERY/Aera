@@ -62,6 +62,7 @@ export function RichTextEditor({
   placeholder,
   variant = "boxed",
   titleSlot,
+  coverSlot,
   onPollClick,
   pollActive = false,
 }: {
@@ -79,6 +80,8 @@ export function RichTextEditor({
   variant?: "boxed" | "seamless";
   /** Rendered above the editor body inside the scroll area (seamless only). */
   titleSlot?: React.ReactNode;
+  /** Full-width slot at the very top of the scroll area (seamless only). */
+  coverSlot?: React.ReactNode;
   /** When provided, a poll button appears in the toolbar and calls this. */
   onPollClick?: () => void;
   /** Highlights the poll button while the composer's poll editor is open. */
@@ -659,6 +662,7 @@ export function RichTextEditor({
 
         {/* Document-style writing area (title + body scroll together) */}
         <div className="min-h-0 flex-1 overflow-y-auto">
+          {coverSlot}
           <div className="mx-auto w-full max-w-2xl px-5 py-6 sm:px-8 sm:py-8">
             {titleSlot}
             <div className="relative mt-3">
