@@ -16,7 +16,7 @@ export function sanitizeRichHtml(input: string): string {
       "img", "video", "figure", "figcaption", "span", "div",
     ],
     allowedAttributes: {
-      a: ["href", "target", "rel"],
+      a: ["href", "target", "rel", "data-file"],
       img: ["src", "alt", "width", "height"],
       video: ["src", "controls", "poster", "preload"],
     },

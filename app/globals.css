@@ -321,6 +321,32 @@ body {
   width: 100%;
   background: #000;
 }
+.rich-content hr {
+  height: 0;
+  border: 0;
+  border-top: 1px solid #e2e8f0;
+  margin: 1.75rem 0;
+}
+.rich-content strong,
+.rich-content b {
+  font-weight: 700;
+}
+/* File attachments inserted by the composer (📎 link on its own line). */
+.rich-content a[data-file] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.6rem;
+  background: #f8fafc;
+  text-decoration: none;
+  color: #0f172a;
+  font-weight: 500;
+}
+.rich-content a[data-file]:hover {
+  border-color: var(--brand);
+}
 .rich-content figure {
   margin: 1rem 0;
 }

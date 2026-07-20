@@ -176,7 +176,7 @@ export function RichTextEditor({
       if (kind === "file") {
         const label = escapeHtml(file.name.slice(0, 200)) || t("file");
         insertHtmlAtCaret(
-          `<p><a href="${uploadedUrl}" target="_blank" rel="noopener noreferrer">📎 ${label}</a></p><p><br></p>`,
+          `<p><a href="${uploadedUrl}" target="_blank" rel="noopener noreferrer" data-file="1">📎 ${label}</a></p><p><br></p>`,
         );
       } else {
         const media =
