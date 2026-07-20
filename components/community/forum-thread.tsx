@@ -84,17 +84,20 @@ export function ForumThread({
       <article className="flex gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
         <VoteControl tenant={slug} space={spaceSlug} targetType="post" targetId={post.id} postId={post.id} score={post.score} myVote={post.myVote} />
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-[#161613]/50">
-            {post.authorName} · {timeAgo(post.createdAt, locale)}
-          </p>
-          {post.title && <h1 className="display-serif mt-1 text-2xl text-[#161613]">{post.title}</h1>}
+          <div className="flex items-center gap-2.5">
+            <Avatar name={post.authorName} src={post.authorAvatar} size={38} />
+            <p className="text-xs text-[#161613]/50">
+              <span className="font-semibold text-[#161613]/80">{post.authorName}</span> · {timeAgo(post.createdAt, locale)}
+            </p>
+          </div>
+          {post.title && <h1 className="display-serif mt-3 text-2xl text-[#161613]">{post.title}</h1>}
           {post.bodyHtml ? (
             <div
-              className="rich-content mt-2 text-[15px] text-[#161613]/80"
+              className="rich-content mt-5 text-[15px] text-[#161613]/80"
               dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
             />
           ) : (
-            post.body && <p className="mt-2 whitespace-pre-wrap text-[15px] text-[#161613]/80">{post.body}</p>
+            post.body && <p className="mt-5 whitespace-pre-wrap text-[15px] text-[#161613]/80">{post.body}</p>
           )}
           {post.imageUrl && (
             // eslint-disable-next-line @next/next/no-img-element
@@ -105,7 +108,7 @@ export function ForumThread({
             <video src={post.videoUrl} controls preload="metadata" className="mt-3 w-full rounded-xl border border-[#161613]/10 bg-black" />
           )}
           {poll && (
-            <div className="mt-4">
+            <div className="mt-3">
               <PollBlock slug={slug} space={spaceSlug} postId={post.id} poll={poll} canVote={isMember} />
             </div>
           )}

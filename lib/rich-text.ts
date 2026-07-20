@@ -9,7 +9,7 @@ import sanitizeHtml from "sanitize-html";
  */
 export function sanitizeRichHtml(input: string): string {
   if (!input) return "";
-  return sanitizeHtml(input, {
+  const cleaned = sanitizeHtml(input, {
     allowedTags: [
       "p", "br", "hr", "strong", "b", "em", "i", "u", "s", "strike",
       "h2", "h3", "ul", "ol", "li", "blockquote", "a",
@@ -28,7 +28,26 @@ export function sanitizeRichHtml(input: string): string {
       a: sanitizeHtml.simpleTransform("a", { rel: "noopener noreferrer" }),
     },
     disallowedTagsMode: "discard",
-  }).trim();
+  });
+  return trimRichHtml(cleaned);
+}
+
+/**
+ * Strip empty leading/trailing blocks the contentEditable editor leaves behind
+ * (its seed <p><br></p> and any blank lines the author pressed at the end), so
+ * a post doesn't render a large gap of empty paragraphs before whatever follows.
+ */
+export function trimRichHtml(input: string): string {
+  if (!input) return "";
+  let html = input.trim();
+  const lead = /^\s*<(p|h2|h3|blockquote|div)>(?:\s|&nbsp;|<br\s*\/?>)*<\/\1>\s*/i;
+  const trail = /\s*<(p|h2|h3|blockquote|div)>(?:\s|&nbsp;|<br\s*\/?>)*<\/\1>\s*$/i;
+  let prev = "";
+  while (html !== prev) {
+    prev = html;
+    html = html.replace(lead, "").replace(trail, "");
+  }
+  return html.trim();
 }
 
 /** Best-effort plain-text extraction for excerpts, search and indexing. */

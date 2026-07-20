@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 import { readPostPoll } from "@/lib/polls";
+import { trimRichHtml } from "@/lib/rich-text";
 import { purchasePostAction } from "@/app/actions/engage";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { CommentForm } from "@/components/community/comment-form";
@@ -74,7 +75,7 @@ export default async function PostDetail({
           id: fpost.id,
           title: fpost.title,
           body: fpost.body,
-          bodyHtml: fpost.bodyHtml,
+          bodyHtml: fpost.bodyHtml ? trimRichHtml(fpost.bodyHtml) || null : null,
           imageUrl: fpost.imageUrl,
           videoUrl: fpost.videoUrl,
           authorName: fpost.author.name,
