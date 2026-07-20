@@ -1042,6 +1042,25 @@
       "save": "Opslaan"
     },
     "forumMod": {
+      "settings": "Instellingen",
+      "settingsTitle": "Instellingen",
+      "back": "Terug",
+      "done": "Klaar",
+      "secPublishing": "Publiceren",
+      "customSlug": "Aangepaste URL-slug",
+      "customSlugPlaceholder": "aangepaste-slug",
+      "author": "Auteur",
+      "secEngagement": "Betrokkenheid",
+      "hideComments": "Reacties verbergen",
+      "closeComments": "Reacties sluiten",
+      "hideLikes": "Likes verbergen",
+      "secDisplay": "Weergave en uitgelicht",
+      "hideMetaInfo": "Meta-info verbergen",
+      "hideFromFeatured": "Verbergen uit uitgelichte gebieden",
+      "disableTruncation": "Afkappen uitschakelen",
+      "secAdvanced": "Geavanceerd",
+      "customHtml": "Aangepaste HTML",
+      "customHtmlHint": "Voeg aangepaste HTML onder de post toe. Scripts worden om veiligheidsredenen verwijderd.",
       "pollTitle": "Peiling",
       "pollQuestionPlaceholder": "Stel een vraag…",
       "pollOptionPlaceholder": "Optie",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Reacties zijn gesloten.",
     "pollVoteCta": "Stemmen",
     "pollChangeVote": "Stem wijzigen",
     "pollVotesWord": "stemmen",

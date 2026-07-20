@@ -50,6 +50,39 @@ export function trimRichHtml(input: string): string {
   return html.trim();
 }
 
+/**
+ * Sanitizer for the composer's "Custom HTML" advanced field. More permissive
+ * than the body sanitizer — it allows embeds (iframe), media and layout markup
+ * so developers can drop in widgets — but still strips <script>, event handlers
+ * and other executable vectors. Rendered below the post.
+ */
+export function sanitizeCustomHtml(input: string): string {
+  if (!input) return "";
+  return sanitizeHtml(input, {
+    allowedTags: [
+      ...sanitizeHtml.defaults.allowedTags.filter((t) => t !== "script" && t !== "style"),
+      "img", "figure", "figcaption", "iframe", "video", "audio", "source",
+      "h1", "h2", "span", "section", "hr",
+    ],
+    allowedAttributes: {
+      "*": ["style", "class", "id"],
+      a: ["href", "target", "rel", "name"],
+      img: ["src", "alt", "width", "height", "loading"],
+      iframe: [
+        "src", "width", "height", "allow", "allowfullscreen",
+        "frameborder", "title", "loading", "referrerpolicy",
+      ],
+      video: ["src", "controls", "width", "height", "poster", "preload"],
+      audio: ["src", "controls"],
+      source: ["src", "type"],
+    },
+    allowedSchemes: ["http", "https", "mailto"],
+    allowedSchemesAppliedToAttributes: ["href", "src"],
+    allowProtocolRelative: false,
+    disallowedTagsMode: "discard",
+  }).trim();
+}
+
 /** Best-effort plain-text extraction for excerpts, search and indexing. */
 export function htmlToPlainText(input: string): string {
   if (!input) return "";

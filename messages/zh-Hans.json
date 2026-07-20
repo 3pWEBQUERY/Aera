@@ -1042,6 +1042,25 @@
       "save": "保存"
     },
     "forumMod": {
+      "settings": "设置",
+      "settingsTitle": "设置",
+      "back": "返回",
+      "done": "完成",
+      "secPublishing": "发布",
+      "customSlug": "自定义 URL 别名",
+      "customSlugPlaceholder": "custom-slug",
+      "author": "作者",
+      "secEngagement": "互动",
+      "hideComments": "隐藏评论",
+      "closeComments": "关闭评论",
+      "hideLikes": "隐藏点赞",
+      "secDisplay": "显示与推荐",
+      "hideMetaInfo": "隐藏元信息",
+      "hideFromFeatured": "从推荐区域隐藏",
+      "disableTruncation": "禁用截断",
+      "secAdvanced": "高级",
+      "customHtml": "自定义 HTML",
+      "customHtmlHint": "在帖子下方添加自定义 HTML。出于安全考虑，脚本会被移除。",
       "pollTitle": "投票",
       "pollQuestionPlaceholder": "提出问题…",
       "pollOptionPlaceholder": "选项",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "评论已关闭。",
     "pollVoteCta": "投票",
     "pollChangeVote": "更改投票",
     "pollVotesWord": "票",

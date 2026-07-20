@@ -1042,6 +1042,25 @@
       "save": "Зберегти"
     },
     "forumMod": {
+      "settings": "Налаштування",
+      "settingsTitle": "Налаштування",
+      "back": "Назад",
+      "done": "Готово",
+      "secPublishing": "Публікація",
+      "customSlug": "Власний URL-слаг",
+      "customSlugPlaceholder": "vlasnyi-slug",
+      "author": "Автор",
+      "secEngagement": "Залученість",
+      "hideComments": "Сховати коментарі",
+      "closeComments": "Закрити коментарі",
+      "hideLikes": "Сховати вподобання",
+      "secDisplay": "Показ і рекомендації",
+      "hideMetaInfo": "Сховати метадані",
+      "hideFromFeatured": "Сховати з рекомендованих розділів",
+      "disableTruncation": "Вимкнути скорочення",
+      "secAdvanced": "Розширені",
+      "customHtml": "Власний HTML",
+      "customHtmlHint": "Додайте власний HTML під дописом. Скрипти видаляються з міркувань безпеки.",
       "pollTitle": "Опитування",
       "pollQuestionPlaceholder": "Поставте запитання…",
       "pollOptionPlaceholder": "Варіант",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Коментарі закрито.",
     "pollVoteCta": "Голосувати",
     "pollChangeVote": "Змінити голос",
     "pollVotesWord": "голосів",

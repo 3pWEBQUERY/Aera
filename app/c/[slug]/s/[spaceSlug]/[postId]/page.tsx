@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 import { readPostPoll } from "@/lib/polls";
+import { readPostSettings, resolvePostId } from "@/lib/post-settings";
 import { trimRichHtml } from "@/lib/rich-text";
 import { purchasePostAction } from "@/app/actions/engage";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
@@ -35,10 +36,13 @@ export default async function PostDetail({
   });
   if (!space || !canAccess(space, ctx)) notFound();
 
+  // A post is reachable by its id or its optional custom slug.
+  const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
+
   // ----- Reddit-style forum thread -----
   if (space.type === "FORUM") {
     const fpost = await prisma.post.findFirst({
-      where: { id: postId, tenantId: tenant.id, spaceId: space.id },
+      where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
       include: {
         author: { select: { name: true, avatarUrl: true } },
         _count: { select: { comments: true } },
@@ -64,6 +68,7 @@ export default async function PostDetail({
     for (const v of cMine) if (v.commentId) cMy[v.commentId] = v.type as "UP" | "DOWN";
 
     const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
+    const settings = await readPostSettings(tenant.id, fpost.id);
 
     return (
       <ForumThread
@@ -71,6 +76,13 @@ export default async function PostDetail({
         spaceSlug={spaceSlug}
         isMember={ctx.membership?.status === "ACTIVE"}
         poll={poll}
+        settings={{
+          hideMetaInfo: settings.hideMetaInfo,
+          hideLikes: settings.hideLikes,
+          hideComments: settings.hideComments,
+          closeComments: settings.closeComments,
+          customHtml: settings.customHtml,
+        }}
         post={{
           id: fpost.id,
           title: fpost.title,
@@ -100,7 +112,7 @@ export default async function PostDetail({
   }
 
   const post = await prisma.post.findFirst({
-    where: { id: postId, tenantId: tenant.id, spaceId: space.id },
+    where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
     include: {
       author: { select: { id: true, name: true, avatarUrl: true } },
       _count: { select: { comments: true, reactions: true } },

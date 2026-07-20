@@ -1042,6 +1042,25 @@
       "save": "Salvar"
     },
     "forumMod": {
+      "settings": "Configurações",
+      "settingsTitle": "Configurações",
+      "back": "Voltar",
+      "done": "Concluído",
+      "secPublishing": "Publicação",
+      "customSlug": "Slug de URL personalizado",
+      "customSlugPlaceholder": "slug-personalizado",
+      "author": "Autor",
+      "secEngagement": "Engajamento",
+      "hideComments": "Ocultar comentários",
+      "closeComments": "Fechar comentários",
+      "hideLikes": "Ocultar curtidas",
+      "secDisplay": "Exibição e destaque",
+      "hideMetaInfo": "Ocultar metadados",
+      "hideFromFeatured": "Ocultar das áreas em destaque",
+      "disableTruncation": "Desativar truncamento",
+      "secAdvanced": "Avançado",
+      "customHtml": "HTML personalizado",
+      "customHtmlHint": "Adicione HTML personalizado abaixo do post. Scripts são removidos por segurança.",
       "pollTitle": "Enquete",
       "pollQuestionPlaceholder": "Faça uma pergunta…",
       "pollOptionPlaceholder": "Opção",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Os comentários estão fechados.",
     "pollVoteCta": "Votar",
     "pollChangeVote": "Alterar voto",
     "pollVotesWord": "votos",

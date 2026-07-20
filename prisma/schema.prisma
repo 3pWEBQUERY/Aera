@@ -846,6 +846,15 @@ model Post {
   pollQuestion   String?
   pollOptions    String[]  @default([])
   pollMultiple   Boolean   @default(false)
+  // Per-post settings authored in the composer's "Settings" panel.
+  customSlug        String?
+  customHtml        String?
+  hideComments      Boolean  @default(false)
+  closeComments     Boolean  @default(false)
+  hideLikes         Boolean  @default(false)
+  hideMetaInfo      Boolean  @default(false)
+  hideFromFeatured  Boolean  @default(false)
+  disableTruncation Boolean  @default(false)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
 
@@ -856,6 +865,7 @@ model Post {
   @@index([tenantId, spaceId])
   @@index([tenantId, createdAt])
   @@index([tenantId, authorId])
+  @@unique([tenantId, customSlug])
 }
 
 model Comment {

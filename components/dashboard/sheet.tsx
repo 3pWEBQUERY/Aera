@@ -24,6 +24,7 @@ export function Sheet({
   subtitle,
   icon = "spaces",
   logo,
+  headerAction,
   variant = "full",
   children,
 }: {
@@ -34,6 +35,8 @@ export function Sheet({
   icon?: IconName;
   /** Ersetzt das Icon-Quadrat im Header (z. B. Creator-Logo). */
   logo?: React.ReactNode;
+  /** Rendered in the header, just before the close button. */
+  headerAction?: React.ReactNode;
   variant?: "full" | "bottom";
   children: React.ReactNode;
 }) {
@@ -138,14 +141,17 @@ export function Sheet({
                   {subtitle && <p id={subtitleId} className="text-xs text-slate-400">{subtitle}</p>}
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={onClose}
-                aria-label={t("close")}
-                className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
-              >
-                <Icon name="close" size={20} />
-              </button>
+              <div className="flex items-center gap-1.5">
+                {headerAction}
+                <button
+                  type="button"
+                  onClick={onClose}
+                  aria-label={t("close")}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+                >
+                  <Icon name="close" size={20} />
+                </button>
+              </div>
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col">{children}</div>

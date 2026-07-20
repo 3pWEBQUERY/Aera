@@ -1068,6 +1068,25 @@
       "save": "Speichern"
     },
     "forumMod": {
+      "settings": "Einstellungen",
+      "settingsTitle": "Einstellungen",
+      "back": "Zurück",
+      "done": "Fertig",
+      "secPublishing": "Veröffentlichung",
+      "customSlug": "Eigener URL-Slug",
+      "customSlugPlaceholder": "eigener-slug",
+      "author": "Autor",
+      "secEngagement": "Interaktion",
+      "hideComments": "Kommentare ausblenden",
+      "closeComments": "Kommentare schließen",
+      "hideLikes": "Likes ausblenden",
+      "secDisplay": "Anzeige & Hervorhebung",
+      "hideMetaInfo": "Meta-Infos ausblenden",
+      "hideFromFeatured": "Aus hervorgehobenen Bereichen ausblenden",
+      "disableTruncation": "Kürzung deaktivieren",
+      "secAdvanced": "Erweitert",
+      "customHtml": "Eigenes HTML",
+      "customHtmlHint": "Füge eigenes HTML unter dem Beitrag ein. Skripte werden aus Sicherheitsgründen entfernt.",
       "pollTitle": "Umfrage",
       "pollQuestionPlaceholder": "Frage stellen…",
       "pollOptionPlaceholder": "Antwortoption",
@@ -3085,6 +3104,7 @@
     "typeProduct": "Produkt"
   },
   "spaces": {
+    "commentsClosed": "Kommentare sind geschlossen.",
     "pollVoteCta": "Abstimmen",
     "pollChangeVote": "Auswahl ändern",
     "pollVotesWord": "Stimmen",

@@ -1042,6 +1042,25 @@
       "save": "儲存"
     },
     "forumMod": {
+      "settings": "設定",
+      "settingsTitle": "設定",
+      "back": "返回",
+      "done": "完成",
+      "secPublishing": "發佈",
+      "customSlug": "自訂 URL 代稱",
+      "customSlugPlaceholder": "custom-slug",
+      "author": "作者",
+      "secEngagement": "互動",
+      "hideComments": "隱藏留言",
+      "closeComments": "關閉留言",
+      "hideLikes": "隱藏讚",
+      "secDisplay": "顯示與精選",
+      "hideMetaInfo": "隱藏中繼資訊",
+      "hideFromFeatured": "從精選區域隱藏",
+      "disableTruncation": "停用截斷",
+      "secAdvanced": "進階",
+      "customHtml": "自訂 HTML",
+      "customHtmlHint": "在貼文下方加入自訂 HTML。基於安全考量，指令碼會被移除。",
       "pollTitle": "投票",
       "pollQuestionPlaceholder": "提出問題…",
       "pollOptionPlaceholder": "選項",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "留言已關閉。",
     "pollVoteCta": "投票",
     "pollChangeVote": "更改投票",
     "pollVotesWord": "票",

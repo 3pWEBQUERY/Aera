@@ -1042,6 +1042,25 @@
       "save": "Gem"
     },
     "forumMod": {
+      "settings": "Indstillinger",
+      "settingsTitle": "Indstillinger",
+      "back": "Tilbage",
+      "done": "Færdig",
+      "secPublishing": "Udgivelse",
+      "customSlug": "Brugerdefineret URL-slug",
+      "customSlugPlaceholder": "brugerdefineret-slug",
+      "author": "Forfatter",
+      "secEngagement": "Engagement",
+      "hideComments": "Skjul kommentarer",
+      "closeComments": "Luk kommentarer",
+      "hideLikes": "Skjul likes",
+      "secDisplay": "Visning og fremhævning",
+      "hideMetaInfo": "Skjul metainfo",
+      "hideFromFeatured": "Skjul fra fremhævede områder",
+      "disableTruncation": "Deaktivér forkortelse",
+      "secAdvanced": "Avanceret",
+      "customHtml": "Brugerdefineret HTML",
+      "customHtmlHint": "Tilføj brugerdefineret HTML under indlægget. Scripts fjernes af sikkerhedshensyn.",
       "pollTitle": "Afstemning",
       "pollQuestionPlaceholder": "Stil et spørgsmål…",
       "pollOptionPlaceholder": "Svarmulighed",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Kommentarer er lukket.",
     "pollVoteCta": "Stem",
     "pollChangeVote": "Skift stemme",
     "pollVotesWord": "stemmer",

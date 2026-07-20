@@ -34,6 +34,14 @@ export interface ModThread {
   pollQuestion?: string | null;
   pollOptions?: string[];
   pollMultiple?: boolean;
+  customSlug?: string | null;
+  customHtml?: string | null;
+  hideComments?: boolean;
+  closeComments?: boolean;
+  hideLikes?: boolean;
+  hideMetaInfo?: boolean;
+  hideFromFeatured?: boolean;
+  disableTruncation?: boolean;
   authorName: string;
   createdAt: string | Date;
   isPinned: boolean;
@@ -66,29 +74,35 @@ export function ForumModerationManager({
   slug,
   space,
   threads,
+  creator,
 }: {
   slug: string;
   space: SpaceInfo;
   threads: ModThread[];
+  creator: { name: string; email: string };
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<ModThread | null>(null);
   const [nonce, setNonce] = useState(0);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const t = useTranslations("dashboard.forumMod");
 
   function openCreate() {
     setNonce((n) => n + 1);
     setEditing(null);
+    setSettingsOpen(false);
     setCreateOpen(true);
   }
   function openEdit(thread: ModThread) {
     setNonce((n) => n + 1);
     setCreateOpen(false);
+    setSettingsOpen(false);
     setEditing(thread);
   }
   function close() {
     setCreateOpen(false);
     setEditing(null);
+    setSettingsOpen(false);
   }
 
   const totalComments = threads.reduce((s, th) => s + th.commentCount, 0);
@@ -157,8 +171,29 @@ export function ForumModerationManager({
         title={editing ? t("sheetEdit") : t("sheetCreate")}
         subtitle={space.name}
         icon="forum"
+        headerAction={
+          createOpen || editing ? (
+            <button
+              type="button"
+              onClick={() => setSettingsOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Icon name="settings" size={16} className="text-slate-400" />
+              {t("settings")}
+            </button>
+          ) : null
+        }
       >
-        <ThreadForm key={nonce} slug={slug} space={space} thread={editing ?? undefined} onDone={close} />
+        <ThreadForm
+          key={nonce}
+          slug={slug}
+          space={space}
+          thread={editing ?? undefined}
+          creator={creator}
+          settingsOpen={settingsOpen}
+          onCloseSettings={() => setSettingsOpen(false)}
+          onDone={close}
+        />
       </Sheet>
     </div>
   );
@@ -308,11 +343,17 @@ function ThreadForm({
   slug,
   space,
   thread,
+  creator,
+  settingsOpen,
+  onCloseSettings,
   onDone,
 }: {
   slug: string;
   space: SpaceInfo;
   thread?: ModThread;
+  creator: { name: string; email: string };
+  settingsOpen: boolean;
+  onCloseSettings: () => void;
   onDone: () => void;
 }) {
   const isEdit = !!thread;
@@ -333,6 +374,7 @@ function ThreadForm({
       {/* The forum composer always owns the post's poll, so the action knows to
           set it (when present) or clear it (when the editor was left empty). */}
       <input type="hidden" name="pollControl" value="1" />
+      <input type="hidden" name="settingsControl" value="1" />
       {isEdit ? (
         <>
           <input type="hidden" name="postId" value={thread!.id} />
@@ -393,6 +435,16 @@ function ThreadForm({
           </button>
         </div>
       </div>
+
+      <SettingsPanel
+        t={t}
+        thread={thread}
+        creator={creator}
+        slug={slug}
+        spaceSlug={space.slug}
+        open={settingsOpen}
+        onClose={onCloseSettings}
+      />
     </form>
   );
 }
@@ -490,6 +542,151 @@ function PollEditor({
           />
           {t("pollMultipleLabel")}
         </label>
+      </div>
+    </div>
+  );
+}
+
+function SettingsSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5">
+      <h3 className="mb-4 text-sm font-bold text-slate-900">{title}</h3>
+      <div className="space-y-3.5">{children}</div>
+    </div>
+  );
+}
+
+function SettingsRow({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+      <span className="shrink-0 text-sm text-slate-700">{label}</span>
+      <div className="w-full sm:w-72">{children}</div>
+    </div>
+  );
+}
+
+function SettingsToggle({
+  name,
+  label,
+  defaultChecked,
+}: {
+  name: string;
+  label: string;
+  defaultChecked?: boolean;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-4">
+      <span className="text-sm text-slate-700">{label}</span>
+      <span className="relative inline-flex shrink-0">
+        <input type="checkbox" name={name} defaultChecked={defaultChecked} className="peer sr-only" />
+        <span className="h-5 w-9 rounded-full bg-slate-200 transition peer-checked:bg-slate-900 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-300" />
+        <span className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition peer-checked:translate-x-4" />
+      </span>
+    </label>
+  );
+}
+
+/**
+ * Post-settings screen that slides in over the composer. It lives inside the
+ * form (so its fields submit with the topic) and is only visible when `open`;
+ * when closed it sits off-screen to the right.
+ */
+function SettingsPanel({
+  t,
+  thread,
+  creator,
+  slug,
+  spaceSlug,
+  open,
+  onClose,
+}: {
+  t: ReturnType<typeof useTranslations>;
+  thread?: ModThread;
+  creator: { name: string; email: string };
+  slug: string;
+  spaceSlug: string;
+  open: boolean;
+  onClose: () => void;
+}) {
+  return (
+    <div
+      aria-hidden={!open}
+      className={`fixed inset-0 z-[80] flex flex-col bg-white transition-transform duration-300 ease-out ${open ? "translate-x-0" : "pointer-events-none translate-x-full"}`}
+    >
+      <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-4 sm:px-5">
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("back")}
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <Icon name="chevron" size={20} className="rotate-90" />
+          </button>
+          <h2 className="text-base font-bold text-slate-900">{t("settingsTitle")}</h2>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
+        >
+          {t("done")}
+        </button>
+      </div>
+
+      <div className="min-h-0 flex-1 overflow-y-auto bg-slate-50/60">
+        <div className="mx-auto w-full max-w-xl space-y-5 px-5 py-8 sm:px-6">
+          <SettingsSection title={t("secPublishing")}>
+            <SettingsRow label={t("customSlug")}>
+              <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
+                <span className="whitespace-nowrap bg-slate-50 px-2.5 py-2 text-xs text-slate-400">
+                  /c/{slug}/…/{spaceSlug}/
+                </span>
+                <input
+                  name="customSlug"
+                  defaultValue={thread?.customSlug ?? ""}
+                  placeholder={t("customSlugPlaceholder")}
+                  className="min-w-0 flex-1 bg-white px-2.5 py-2 text-sm outline-none"
+                />
+              </div>
+            </SettingsRow>
+            <SettingsRow label={t("author")}>
+              <div className="truncate rounded-lg border border-slate-200 bg-slate-100 px-3 py-2 text-sm text-slate-600" title={`${creator.name} (${creator.email})`}>
+                {creator.name} ({creator.email})
+              </div>
+            </SettingsRow>
+          </SettingsSection>
+
+          <SettingsSection title={t("secEngagement")}>
+            <SettingsToggle name="hideComments" label={t("hideComments")} defaultChecked={!!thread?.hideComments} />
+            <SettingsToggle name="closeComments" label={t("closeComments")} defaultChecked={!!thread?.closeComments} />
+            <SettingsToggle name="hideLikes" label={t("hideLikes")} defaultChecked={!!thread?.hideLikes} />
+          </SettingsSection>
+
+          <SettingsSection title={t("secDisplay")}>
+            <SettingsToggle name="hideMetaInfo" label={t("hideMetaInfo")} defaultChecked={!!thread?.hideMetaInfo} />
+            <SettingsToggle name="hideFromFeatured" label={t("hideFromFeatured")} defaultChecked={!!thread?.hideFromFeatured} />
+            <SettingsToggle name="disableTruncation" label={t("disableTruncation")} defaultChecked={!!thread?.disableTruncation} />
+          </SettingsSection>
+
+          <SettingsSection title={t("secAdvanced")}>
+            <div>
+              <label htmlFor="ft-customhtml" className="mb-1.5 block text-sm font-medium text-slate-700">
+                {t("customHtml")}
+              </label>
+              <textarea
+                id="ft-customhtml"
+                name="customHtml"
+                defaultValue={thread?.customHtml ?? ""}
+                rows={5}
+                spellCheck={false}
+                placeholder="<!-- Insert your code here -->"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs text-slate-800 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
+              />
+              <p className="mt-1.5 text-xs text-slate-400">{t("customHtmlHint")}</p>
+            </div>
+          </SettingsSection>
+        </div>
       </div>
     </div>
   );

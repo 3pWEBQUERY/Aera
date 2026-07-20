@@ -29,6 +29,7 @@ import { signAccountToken, inviteUrl } from "@/lib/tokens";
 import { features } from "@/lib/env";
 import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
 import { parsePollForm, savePostPoll } from "@/lib/polls";
+import { parsePostSettingsForm, savePostSettings } from "@/lib/post-settings";
 import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
 import { canManageTenantMembership } from "@/lib/capabilities";
@@ -2060,6 +2061,10 @@ export async function createSpacePostAction(
   // Optional poll authored in the composer.
   const poll = parsePollForm(fd);
   if (poll) await savePostPoll(tenant.id, post.id, poll);
+  // Composer "Settings" panel (present only when the forum composer submits it).
+  if (fd.get("settingsControl") === "1") {
+    await savePostSettings(tenant.id, post.id, parsePostSettingsForm(fd));
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "POST",
@@ -2413,6 +2418,9 @@ export async function updatePostAction(
   // The forum composer submits pollControl so the poll is set or cleared here.
   if (fd.get("pollControl") === "1") {
     await savePostPoll(tenant.id, post.id, parsePollForm(fd));
+  }
+  if (fd.get("settingsControl") === "1") {
+    await savePostSettings(tenant.id, post.id, parsePostSettingsForm(fd));
   }
   await indexContent({
     tenantId: tenant.id,

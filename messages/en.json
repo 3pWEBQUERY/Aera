@@ -1068,6 +1068,25 @@
       "save": "Save"
     },
     "forumMod": {
+      "settings": "Settings",
+      "settingsTitle": "Settings",
+      "back": "Back",
+      "done": "Done",
+      "secPublishing": "Publishing",
+      "customSlug": "Custom URL slug",
+      "customSlugPlaceholder": "custom-slug",
+      "author": "Author",
+      "secEngagement": "Engagement",
+      "hideComments": "Hide comments",
+      "closeComments": "Close comments",
+      "hideLikes": "Hide likes",
+      "secDisplay": "Display & featuring",
+      "hideMetaInfo": "Hide meta info",
+      "hideFromFeatured": "Hide from featured areas",
+      "disableTruncation": "Disable truncation",
+      "secAdvanced": "Advanced",
+      "customHtml": "Custom HTML",
+      "customHtmlHint": "Add custom HTML below the post. Scripts are removed for safety.",
       "pollTitle": "Poll",
       "pollQuestionPlaceholder": "Ask a question…",
       "pollOptionPlaceholder": "Option",
@@ -3085,6 +3104,7 @@
     "typeProduct": "Product"
   },
   "spaces": {
+    "commentsClosed": "Comments are closed.",
     "pollVoteCta": "Vote",
     "pollChangeVote": "Change vote",
     "pollVotesWord": "votes",

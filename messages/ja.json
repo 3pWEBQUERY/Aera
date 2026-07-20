@@ -1042,6 +1042,25 @@
       "save": "保存"
     },
     "forumMod": {
+      "settings": "設定",
+      "settingsTitle": "設定",
+      "back": "戻る",
+      "done": "完了",
+      "secPublishing": "公開",
+      "customSlug": "カスタムURLスラッグ",
+      "customSlugPlaceholder": "custom-slug",
+      "author": "作成者",
+      "secEngagement": "エンゲージメント",
+      "hideComments": "コメントを非表示",
+      "closeComments": "コメントを締め切る",
+      "hideLikes": "いいねを非表示",
+      "secDisplay": "表示と注目",
+      "hideMetaInfo": "メタ情報を非表示",
+      "hideFromFeatured": "注目エリアから非表示",
+      "disableTruncation": "省略を無効化",
+      "secAdvanced": "詳細設定",
+      "customHtml": "カスタムHTML",
+      "customHtmlHint": "投稿の下にカスタムHTMLを追加します。安全のためスクリプトは削除されます。",
       "pollTitle": "アンケート",
       "pollQuestionPlaceholder": "質問を入力…",
       "pollOptionPlaceholder": "選択肢",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "コメントは締め切られています。",
     "pollVoteCta": "投票する",
     "pollChangeVote": "投票を変更",
     "pollVotesWord": "票",

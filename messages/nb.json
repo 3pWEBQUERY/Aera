@@ -1042,6 +1042,25 @@
       "save": "Lagre"
     },
     "forumMod": {
+      "settings": "Innstillinger",
+      "settingsTitle": "Innstillinger",
+      "back": "Tilbake",
+      "done": "Ferdig",
+      "secPublishing": "Publisering",
+      "customSlug": "Egendefinert URL-slug",
+      "customSlugPlaceholder": "egendefinert-slug",
+      "author": "Forfatter",
+      "secEngagement": "Engasjement",
+      "hideComments": "Skjul kommentarer",
+      "closeComments": "Lukk kommentarer",
+      "hideLikes": "Skjul liker",
+      "secDisplay": "Visning og fremheving",
+      "hideMetaInfo": "Skjul metainfo",
+      "hideFromFeatured": "Skjul fra fremhevede områder",
+      "disableTruncation": "Deaktiver avkorting",
+      "secAdvanced": "Avansert",
+      "customHtml": "Egendefinert HTML",
+      "customHtmlHint": "Legg til egendefinert HTML under innlegget. Skript fjernes av sikkerhetshensyn.",
       "pollTitle": "Avstemning",
       "pollQuestionPlaceholder": "Still et spørsmål…",
       "pollOptionPlaceholder": "Svaralternativ",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Kommentarene er stengt.",
     "pollVoteCta": "Stem",
     "pollChangeVote": "Endre stemme",
     "pollVotesWord": "stemmer",

@@ -64,6 +64,7 @@ export function ForumThread({
   comments,
   isMember,
   poll,
+  settings,
 }: {
   slug: string;
   spaceSlug: string;
@@ -71,6 +72,13 @@ export function ForumThread({
   comments: ForumComment[];
   isMember: boolean;
   poll?: PollViewData | null;
+  settings?: {
+    hideMetaInfo: boolean;
+    hideLikes: boolean;
+    hideComments: boolean;
+    closeComments: boolean;
+    customHtml: string | null;
+  };
 }) {
   const t = useTranslations("spaces");
   const locale = useLocale();
@@ -82,14 +90,18 @@ export function ForumThread({
       </Link>
 
       <article className="flex gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
-        <VoteControl tenant={slug} space={spaceSlug} targetType="post" targetId={post.id} postId={post.id} score={post.score} myVote={post.myVote} />
+        {!settings?.hideLikes && (
+          <VoteControl tenant={slug} space={spaceSlug} targetType="post" targetId={post.id} postId={post.id} score={post.score} myVote={post.myVote} />
+        )}
         <div className="min-w-0 flex-1">
-          <div className="flex items-center gap-2.5">
-            <Avatar name={post.authorName} src={post.authorAvatar} size={38} />
-            <p className="text-xs text-[#161613]/50">
-              <span className="font-semibold text-[#161613]/80">{post.authorName}</span> · {timeAgo(post.createdAt, locale)}
-            </p>
-          </div>
+          {!settings?.hideMetaInfo && (
+            <div className="flex items-center gap-2.5">
+              <Avatar name={post.authorName} src={post.authorAvatar} size={38} />
+              <p className="text-xs text-[#161613]/50">
+                <span className="font-semibold text-[#161613]/80">{post.authorName}</span> · {timeAgo(post.createdAt, locale)}
+              </p>
+            </div>
+          )}
           {post.title && <h1 className="display-serif mt-3 text-2xl text-[#161613]">{post.title}</h1>}
           {post.bodyHtml ? (
             <div
@@ -112,34 +124,50 @@ export function ForumThread({
               <PollBlock slug={slug} space={spaceSlug} postId={post.id} poll={poll} canVote={isMember} />
             </div>
           )}
-          <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#161613]/60">
-            <Icon name="forum" size={16} /> {t("commentCount", { count: post.commentCount })}
-          </p>
+          {settings?.customHtml && (
+            <div
+              className="rich-content mt-4 text-[15px] text-[#161613]/80"
+              dangerouslySetInnerHTML={{ __html: settings.customHtml }}
+            />
+          )}
+          {!settings?.hideComments && (
+            <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#161613]/60">
+              <Icon name="forum" size={16} /> {t("commentCount", { count: post.commentCount })}
+            </p>
+          )}
         </div>
       </article>
 
-      <div className="rounded-2xl border border-[#161613]/10 bg-white p-4">
-        {isMember ? (
-          <ReplyForm slug={slug} space={spaceSlug} postId={post.id} parentId="" cta={t("commentCta")} />
-        ) : (
-          <p className="text-sm text-[#161613]/60">
-            <Link href={`/login?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}/${post.id}`)}`} className="font-medium text-[color:var(--brand)] hover:underline">
-              {t("loginLink")}
-            </Link>{" "}
-            {t("loginToDiscuss")}
-          </p>
-        )}
-      </div>
+      {!settings?.hideComments && (
+        <>
+          <div className="rounded-2xl border border-[#161613]/10 bg-white p-4">
+            {settings?.closeComments ? (
+              <p className="inline-flex items-center gap-1.5 text-sm text-[#161613]/55">
+                <Icon name="lock" size={15} /> {t("commentsClosed")}
+              </p>
+            ) : isMember ? (
+              <ReplyForm slug={slug} space={spaceSlug} postId={post.id} parentId="" cta={t("commentCta")} />
+            ) : (
+              <p className="text-sm text-[#161613]/60">
+                <Link href={`/login?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}/${post.id}`)}`} className="font-medium text-[color:var(--brand)] hover:underline">
+                  {t("loginLink")}
+                </Link>{" "}
+                {t("loginToDiscuss")}
+              </p>
+            )}
+          </div>
 
-      <div className="space-y-3">
-        {tree.length === 0 ? (
-          <p className="py-6 text-center text-sm text-[#161613]/50">{t("noComments")}</p>
-        ) : (
-          tree.map((node) => (
-            <CommentNode key={node.id} node={node} slug={slug} spaceSlug={spaceSlug} postId={post.id} isMember={isMember} depth={0} />
-          ))
-        )}
-      </div>
+          <div className="space-y-3">
+            {tree.length === 0 ? (
+              <p className="py-6 text-center text-sm text-[#161613]/50">{t("noComments")}</p>
+            ) : (
+              tree.map((node) => (
+                <CommentNode key={node.id} node={node} slug={slug} spaceSlug={spaceSlug} postId={post.id} isMember={isMember} depth={0} />
+              ))
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -1042,6 +1042,25 @@
       "save": "Spara"
     },
     "forumMod": {
+      "settings": "Inställningar",
+      "settingsTitle": "Inställningar",
+      "back": "Tillbaka",
+      "done": "Klar",
+      "secPublishing": "Publicering",
+      "customSlug": "Anpassad URL-slug",
+      "customSlugPlaceholder": "anpassad-slug",
+      "author": "Författare",
+      "secEngagement": "Engagemang",
+      "hideComments": "Dölj kommentarer",
+      "closeComments": "Stäng kommentarer",
+      "hideLikes": "Dölj gilla-markeringar",
+      "secDisplay": "Visning och framhävning",
+      "hideMetaInfo": "Dölj metainfo",
+      "hideFromFeatured": "Dölj från framhävda områden",
+      "disableTruncation": "Inaktivera avkortning",
+      "secAdvanced": "Avancerat",
+      "customHtml": "Anpassad HTML",
+      "customHtmlHint": "Lägg till anpassad HTML under inlägget. Skript tas bort av säkerhetsskäl.",
       "pollTitle": "Omröstning",
       "pollQuestionPlaceholder": "Ställ en fråga…",
       "pollOptionPlaceholder": "Alternativ",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Kommentarerna är stängda.",
     "pollVoteCta": "Rösta",
     "pollChangeVote": "Ändra röst",
     "pollVotesWord": "röster",

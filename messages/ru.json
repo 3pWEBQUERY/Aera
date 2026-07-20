@@ -1042,6 +1042,25 @@
       "save": "Сохранить"
     },
     "forumMod": {
+      "settings": "Настройки",
+      "settingsTitle": "Настройки",
+      "back": "Назад",
+      "done": "Готово",
+      "secPublishing": "Публикация",
+      "customSlug": "Свой URL-слаг",
+      "customSlugPlaceholder": "svoy-slug",
+      "author": "Автор",
+      "secEngagement": "Вовлечённость",
+      "hideComments": "Скрыть комментарии",
+      "closeComments": "Закрыть комментарии",
+      "hideLikes": "Скрыть лайки",
+      "secDisplay": "Отображение и продвижение",
+      "hideMetaInfo": "Скрыть метаданные",
+      "hideFromFeatured": "Скрыть из избранных разделов",
+      "disableTruncation": "Отключить обрезку",
+      "secAdvanced": "Расширенные",
+      "customHtml": "Свой HTML",
+      "customHtmlHint": "Добавьте свой HTML под публикацией. Скрипты удаляются в целях безопасности.",
       "pollTitle": "Опрос",
       "pollQuestionPlaceholder": "Задайте вопрос…",
       "pollOptionPlaceholder": "Вариант",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "Комментарии закрыты.",
     "pollVoteCta": "Голосовать",
     "pollChangeVote": "Изменить голос",
     "pollVotesWord": "голосов",

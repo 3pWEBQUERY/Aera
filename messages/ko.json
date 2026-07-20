@@ -1042,6 +1042,25 @@
       "save": "저장"
     },
     "forumMod": {
+      "settings": "설정",
+      "settingsTitle": "설정",
+      "back": "뒤로",
+      "done": "완료",
+      "secPublishing": "게시",
+      "customSlug": "맞춤 URL 슬러그",
+      "customSlugPlaceholder": "custom-slug",
+      "author": "작성자",
+      "secEngagement": "참여",
+      "hideComments": "댓글 숨기기",
+      "closeComments": "댓글 닫기",
+      "hideLikes": "좋아요 숨기기",
+      "secDisplay": "표시 및 추천",
+      "hideMetaInfo": "메타 정보 숨기기",
+      "hideFromFeatured": "추천 영역에서 숨기기",
+      "disableTruncation": "자르기 비활성화",
+      "secAdvanced": "고급",
+      "customHtml": "맞춤 HTML",
+      "customHtmlHint": "게시물 아래에 맞춤 HTML을 추가합니다. 보안을 위해 스크립트는 제거됩니다.",
       "pollTitle": "투표",
       "pollQuestionPlaceholder": "질문을 입력하세요…",
       "pollOptionPlaceholder": "선택지",
@@ -3054,6 +3073,7 @@
     "en": "English"
   },
   "spaces": {
+    "commentsClosed": "댓글이 마감되었습니다.",
     "pollVoteCta": "투표하기",
     "pollChangeVote": "투표 변경",
     "pollVotesWord": "표",

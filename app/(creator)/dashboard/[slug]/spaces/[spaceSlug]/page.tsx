@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
 import { getPollDraftsForPosts } from "@/lib/polls";
+import { getPostSettingsForPosts } from "@/lib/post-settings";
 import {
   SpaceContentManager,
   type PostItem,
@@ -67,7 +68,7 @@ export default async function SpaceContentPage({
   params: Promise<{ slug: string; spaceSlug: string }>;
 }) {
   const { slug, spaceSlug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { tenantId: tenant.id, slug: spaceSlug },
   });
@@ -117,6 +118,7 @@ export default async function SpaceContentPage({
     });
     const ids = threadRows.map((t) => t.id);
     const pollDrafts = await getPollDraftsForPosts(tenant.id, ids);
+    const postSettings = await getPostSettingsForPosts(tenant.id, ids);
     const groups = ids.length
       ? await prisma.reaction.groupBy({
           by: ["postId", "type"],
@@ -137,6 +139,14 @@ export default async function SpaceContentPage({
       pollQuestion: pollDrafts.get(t.id)?.question ?? null,
       pollOptions: pollDrafts.get(t.id)?.options ?? [],
       pollMultiple: pollDrafts.get(t.id)?.multiple ?? false,
+      customSlug: postSettings.get(t.id)?.customSlug ?? null,
+      customHtml: postSettings.get(t.id)?.customHtml ?? null,
+      hideComments: postSettings.get(t.id)?.hideComments ?? false,
+      closeComments: postSettings.get(t.id)?.closeComments ?? false,
+      hideLikes: postSettings.get(t.id)?.hideLikes ?? false,
+      hideMetaInfo: postSettings.get(t.id)?.hideMetaInfo ?? false,
+      hideFromFeatured: postSettings.get(t.id)?.hideFromFeatured ?? false,
+      disableTruncation: postSettings.get(t.id)?.disableTruncation ?? false,
       authorName: t.author.name,
       createdAt: t.createdAt,
       isPinned: t.isPinned,
@@ -155,6 +165,7 @@ export default async function SpaceContentPage({
         slug={slug}
         space={{ id: space.id, slug: space.slug, name: space.name }}
         threads={threads}
+        creator={{ name: user.name, email: user.email }}
       />
     );
   }
