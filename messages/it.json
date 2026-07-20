@@ -1276,6 +1276,12 @@
       "saving": "Salvataggio…"
     },
     "rte": {
+      "command": "Inserisci blocco",
+      "gif": "Aggiungi GIF",
+      "gifPlaceholder": "Cerca GIF",
+      "gifEmpty": "Nessun GIF trovato",
+      "gifNotConfigured": "La ricerca di GIF non è ancora configurata.",
+      "gifError": "Impossibile caricare i GIF. Riprova.",
       "placeholder": "Scrivi il tuo post… Usa la barra in alto per formattare e inserire media.",
       "uploadFailed": "Caricamento non riuscito.",
       "bold": "Grassetto",

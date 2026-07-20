@@ -88,6 +88,7 @@ export function RichTextEditor({
   const [linkUrl, setLinkUrl] = useState("");
   const [emojiOpen, setEmojiOpen] = useState(false);
   const [recordOpen, setRecordOpen] = useState(false);
+  const [gifOpen, setGifOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   // Slash "/" command menu.
   const [slashOpen, setSlashOpen] = useState(false);
@@ -252,6 +253,24 @@ export function RichTextEditor({
     saveSelection();
   }
 
+  /** Toolbar "+" button: insert a "/" at the caret and force the block menu
+   *  open there — the same menu reachable by typing "/". */
+  function openSlashMenu() {
+    const el = editorRef.current;
+    if (!el) return;
+    el.focus();
+    restoreSelection();
+    document.execCommand("insertText", false, "/");
+    sync();
+    const sel = window.getSelection();
+    if (!sel || !sel.rangeCount) return;
+    const rect = sel.getRangeAt(0).getBoundingClientRect();
+    setSlashPos({ top: (rect.bottom || rect.top) + 6, left: rect.left });
+    setSlashQuery("");
+    setSlashIndex(0);
+    setSlashOpen(true);
+  }
+
   function applyLink() {
     const url = linkUrl.trim();
     setLinkOpen(false);
@@ -318,6 +337,20 @@ export function RichTextEditor({
   // collapse to icon-only so the whole row stays compact at the bottom.
   const toolbarInner = (
     <>
+      <button
+        type="button"
+        title={t("command")}
+        aria-label={t("command")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={openSlashMenu}
+        className={iconBtn}
+      >
+        <Icon name="plus" size={18} />
+      </button>
+      <Divider />
       {marks.map((c) => <Btn key={c.label} cmd={c} />)}
       <Divider />
       {blocks.map((c) => <Btn key={c.label} cmd={c} />)}
@@ -363,6 +396,23 @@ export function RichTextEditor({
       >
         <Icon name="videos" size={seamless ? 17 : 15} />
         {!seamless && <span className="text-xs font-medium">{t("video")}</span>}
+      </button>
+      <button
+        type="button"
+        title={t("gif")}
+        aria-label={t("gif")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => {
+          setLinkOpen(false);
+          setEmojiOpen(false);
+          setGifOpen(true);
+        }}
+        className={seamless ? iconBtn : labelBtn}
+      >
+        <span className="rounded-[4px] border-[1.5px] border-current px-1 text-[9px] font-bold leading-[1.35] tracking-tight">GIF</span>
       </button>
       <button
         type="button"
@@ -569,6 +619,17 @@ export function RichTextEditor({
     />
   );
 
+  const gifModal = gifOpen && (
+    <GifPickerModal
+      t={t}
+      onClose={() => setGifOpen(false)}
+      onSelect={(url) => {
+        setGifOpen(false);
+        insertHtmlAtCaret(`<img src="${escapeHtml(url)}" alt="GIF" /><p><br></p>`);
+      }}
+    />
+  );
+
   if (seamless) {
     return (
       <div className="flex min-h-0 flex-1 flex-col">
@@ -614,6 +675,7 @@ export function RichTextEditor({
 
         {slashMenu}
         {recordModal}
+        {gifModal}
       </div>
     );
   }
@@ -650,6 +712,116 @@ export function RichTextEditor({
       {error && <p className="border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>}
 
       {recordModal}
+      {gifModal}
+    </div>
+  );
+}
+
+type GifItem = { id: string; url: string; preview: string };
+
+/**
+ * GIF search overlay backed by /api/gifs/search (Tenor or Giphy, server-side
+ * key). Selecting a GIF hands its animated URL back to the editor, which
+ * inserts it as an <img>. If no provider key is configured the API returns
+ * { configured: false } and we show a friendly hint instead of results.
+ */
+function GifPickerModal({
+  t,
+  onClose,
+  onSelect,
+}: {
+  t: ReturnType<typeof useTranslations>;
+  onClose: () => void;
+  onSelect: (url: string) => void;
+}) {
+  const [q, setQ] = useState("");
+  const [items, setItems] = useState<GifItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState<"ok" | "unconfigured" | "error">("ok");
+  const [provider, setProvider] = useState<"tenor" | "giphy">("tenor");
+
+  useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    const handle = setTimeout(async () => {
+      try {
+        const res = await fetch(`/api/gifs/search?q=${encodeURIComponent(q)}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (data.configured === false) {
+          setStatus("unconfigured");
+          setItems([]);
+        } else {
+          setStatus("ok");
+          if (data.provider === "giphy" || data.provider === "tenor") setProvider(data.provider);
+          setItems(Array.isArray(data.results) ? data.results : []);
+        }
+      } catch {
+        if (!cancelled) {
+          setStatus("error");
+          setItems([]);
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }, q ? 350 : 0);
+    return () => {
+      cancelled = true;
+      clearTimeout(handle);
+    };
+  }, [q]);
+
+  return (
+    <div className="fixed inset-0 z-[125] flex items-start justify-center bg-black/60 p-4 pt-[7vh]">
+      <div className="flex max-h-[82vh] w-full max-w-lg flex-col overflow-hidden rounded-2xl bg-white shadow-2xl">
+        <div className="flex items-center gap-2 border-b border-slate-200 p-3">
+          <input
+            autoFocus
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={t("gifPlaceholder")}
+            className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
+          />
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("cancel")}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+          >
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+        <div className="min-h-0 flex-1 overflow-y-auto p-3">
+          {loading ? (
+            <div className="flex h-40 items-center justify-center">
+              <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
+            </div>
+          ) : status === "unconfigured" ? (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">{t("gifNotConfigured")}</p>
+          ) : status === "error" ? (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">{t("gifError")}</p>
+          ) : items.length === 0 ? (
+            <p className="px-4 py-10 text-center text-sm text-slate-500">{t("gifEmpty")}</p>
+          ) : (
+            <div className="columns-2 gap-2 sm:columns-3 [&>button]:mb-2">
+              {items.map((g) => (
+                <button
+                  key={g.id}
+                  type="button"
+                  onClick={() => onSelect(g.url)}
+                  className="block w-full overflow-hidden rounded-lg border border-slate-200 bg-slate-50 transition hover:ring-2 hover:ring-violet-400"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={g.preview} alt="" loading="lazy" className="w-full" />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        <div className="shrink-0 border-t border-slate-100 px-3 py-1.5 text-center text-[11px] text-slate-400">
+          {provider === "giphy" ? "Powered by GIPHY" : "Powered by Tenor"}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1276,6 +1276,12 @@
       "saving": "Gemmer…"
     },
     "rte": {
+      "command": "Indsæt blok",
+      "gif": "Tilføj GIF",
+      "gifPlaceholder": "Søg efter GIF'er",
+      "gifEmpty": "Ingen GIF'er fundet",
+      "gifNotConfigured": "GIF-søgning er ikke konfigureret endnu.",
+      "gifError": "Kunne ikke indlæse GIF'er. Prøv igen.",
       "placeholder": "Skriv dit indlæg… Brug bjælken ovenfor til at formatere og indsætte medier.",
       "uploadFailed": "Upload mislykkedes.",
       "bold": "Fed",

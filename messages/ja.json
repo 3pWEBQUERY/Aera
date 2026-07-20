@@ -1276,6 +1276,12 @@
       "saving": "保存中…"
     },
     "rte": {
+      "command": "ブロックを挿入",
+      "gif": "GIFを追加",
+      "gifPlaceholder": "GIFを検索",
+      "gifEmpty": "GIFが見つかりません",
+      "gifNotConfigured": "GIF検索はまだ設定されていません。",
+      "gifError": "GIFを読み込めませんでした。もう一度お試しください。",
       "placeholder": "投稿を書きましょう… 上のバーで書式設定やメディアの挿入ができます。",
       "uploadFailed": "アップロードに失敗しました。",
       "bold": "太字",

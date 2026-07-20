@@ -1302,6 +1302,12 @@
       "saving": "Saving…"
     },
     "rte": {
+      "command": "Insert block",
+      "gif": "Add GIF",
+      "gifPlaceholder": "Search GIFs",
+      "gifEmpty": "No GIFs found",
+      "gifNotConfigured": "GIF search isn't set up yet.",
+      "gifError": "Couldn't load GIFs. Try again.",
       "placeholder": "Write your post… Use the bar above to format and insert media.",
       "uploadFailed": "Upload failed.",
       "bold": "Bold",

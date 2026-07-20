@@ -1276,6 +1276,12 @@
       "saving": "Lagrer…"
     },
     "rte": {
+      "command": "Sett inn blokk",
+      "gif": "Legg til GIF",
+      "gifPlaceholder": "Søk etter GIF-er",
+      "gifEmpty": "Ingen GIF-er funnet",
+      "gifNotConfigured": "GIF-søk er ikke konfigurert ennå.",
+      "gifError": "Kunne ikke laste GIF-er. Prøv igjen.",
       "placeholder": "Skriv innlegget ditt… Bruk linjen over for å formatere og sette inn medier.",
       "uploadFailed": "Opplasting mislyktes.",
       "bold": "Fet",

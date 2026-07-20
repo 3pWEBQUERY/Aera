@@ -1302,6 +1302,12 @@
       "saving": "Wird gespeichert…"
     },
     "rte": {
+      "command": "Block einfügen",
+      "gif": "GIF hinzufügen",
+      "gifPlaceholder": "GIFs suchen",
+      "gifEmpty": "Keine GIFs gefunden",
+      "gifNotConfigured": "Die GIF-Suche ist noch nicht eingerichtet.",
+      "gifError": "GIFs konnten nicht geladen werden. Bitte erneut versuchen.",
       "placeholder": "Schreibe deinen Beitrag… Nutze die Leiste oben zum Formatieren und Medien einzufügen.",
       "uploadFailed": "Upload fehlgeschlagen.",
       "bold": "Fett",

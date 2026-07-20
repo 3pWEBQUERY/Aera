@@ -1276,6 +1276,12 @@
       "saving": "Enregistrement…"
     },
     "rte": {
+      "command": "Insérer un bloc",
+      "gif": "Ajouter un GIF",
+      "gifPlaceholder": "Rechercher des GIF",
+      "gifEmpty": "Aucun GIF trouvé",
+      "gifNotConfigured": "La recherche de GIF n'est pas encore configurée.",
+      "gifError": "Impossible de charger les GIF. Réessayez.",
       "placeholder": "Rédigez votre publication… Utilisez la barre ci-dessus pour mettre en forme et insérer des médias.",
       "uploadFailed": "Échec de l'envoi.",
       "bold": "Gras",

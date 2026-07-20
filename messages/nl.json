@@ -1276,6 +1276,12 @@
       "saving": "Opslaan…"
     },
     "rte": {
+      "command": "Blok invoegen",
+      "gif": "GIF toevoegen",
+      "gifPlaceholder": "GIF's zoeken",
+      "gifEmpty": "Geen GIF's gevonden",
+      "gifNotConfigured": "GIF-zoeken is nog niet ingesteld.",
+      "gifError": "Kan GIF's niet laden. Probeer opnieuw.",
       "placeholder": "Schrijf je bericht… Gebruik de balk hierboven om op te maken en media in te voegen.",
       "uploadFailed": "Uploaden mislukt.",
       "bold": "Vet",

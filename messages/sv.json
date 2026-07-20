@@ -1276,6 +1276,12 @@
       "saving": "Sparar…"
     },
     "rte": {
+      "command": "Infoga block",
+      "gif": "Lägg till GIF",
+      "gifPlaceholder": "Sök GIF-ar",
+      "gifEmpty": "Inga GIF-ar hittades",
+      "gifNotConfigured": "GIF-sökning är inte konfigurerad ännu.",
+      "gifError": "Kunde inte ladda GIF-ar. Försök igen.",
       "placeholder": "Skriv ditt inlägg… Använd raden ovan för att formatera och infoga media.",
       "uploadFailed": "Uppladdning misslyckades.",
       "bold": "Fet",

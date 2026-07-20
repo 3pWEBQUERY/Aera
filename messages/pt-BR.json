@@ -1276,6 +1276,12 @@
       "saving": "Salvando…"
     },
     "rte": {
+      "command": "Inserir bloco",
+      "gif": "Adicionar GIF",
+      "gifPlaceholder": "Buscar GIFs",
+      "gifEmpty": "Nenhum GIF encontrado",
+      "gifNotConfigured": "A busca de GIFs ainda não está configurada.",
+      "gifError": "Não foi possível carregar os GIFs. Tente novamente.",
       "placeholder": "Escreva sua publicação… Use a barra acima para formatar e inserir mídia.",
       "uploadFailed": "Falha no envio.",
       "bold": "Negrito",

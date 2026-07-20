@@ -1276,6 +1276,12 @@
       "saving": "保存中……"
     },
     "rte": {
+      "command": "插入块",
+      "gif": "添加 GIF",
+      "gifPlaceholder": "搜索 GIF",
+      "gifEmpty": "未找到 GIF",
+      "gifNotConfigured": "GIF 搜索尚未设置。",
+      "gifError": "无法加载 GIF，请重试。",
       "placeholder": "撰写你的帖子…… 使用上方工具栏进行格式设置和插入媒体。",
       "uploadFailed": "上传失败。",
       "bold": "加粗",

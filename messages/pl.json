@@ -1276,6 +1276,12 @@
       "saving": "Zapisywanie…"
     },
     "rte": {
+      "command": "Wstaw blok",
+      "gif": "Dodaj GIF",
+      "gifPlaceholder": "Szukaj GIF-ów",
+      "gifEmpty": "Nie znaleziono GIF-ów",
+      "gifNotConfigured": "Wyszukiwanie GIF-ów nie jest jeszcze skonfigurowane.",
+      "gifError": "Nie udało się załadować GIF-ów. Spróbuj ponownie.",
       "placeholder": "Napisz swój wpis… Użyj paska powyżej, aby formatować i wstawiać multimedia.",
       "uploadFailed": "Przesyłanie nie powiodło się.",
       "bold": "Pogrubienie",

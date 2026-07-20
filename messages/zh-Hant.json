@@ -1276,6 +1276,12 @@
       "saving": "儲存中……"
     },
     "rte": {
+      "command": "插入區塊",
+      "gif": "新增 GIF",
+      "gifPlaceholder": "搜尋 GIF",
+      "gifEmpty": "找不到 GIF",
+      "gifNotConfigured": "GIF 搜尋尚未設定。",
+      "gifError": "無法載入 GIF，請重試。",
       "placeholder": "撰寫你的貼文…… 使用上方工具列進行格式設定與插入媒體。",
       "uploadFailed": "上傳失敗。",
       "bold": "粗體",
