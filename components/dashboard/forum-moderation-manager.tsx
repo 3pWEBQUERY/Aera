@@ -14,6 +14,7 @@ import {
 } from "@/app/actions/dashboard";
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
+import { RichTextEditor } from "./rich-text-editor";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
@@ -29,6 +30,7 @@ export interface ModThread {
   id: string;
   title: string | null;
   body: string;
+  bodyHtml?: string | null;
   authorName: string;
   createdAt: string | Date;
   isPinned: boolean;
@@ -43,6 +45,19 @@ interface SpaceInfo {
 }
 
 const initial: ActionState = {};
+
+// Seed the rich editor when editing a legacy thread that only has plain text:
+// escape it and wrap each non-empty line in a paragraph so it renders as HTML.
+function plainToHtml(text: string): string {
+  const escape = (s: string) =>
+    s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const paras = text
+    .split(/\n{2,}/)
+    .map((block) => block.trim())
+    .filter(Boolean)
+    .map((block) => `<p>${escape(block).replace(/\n/g, "<br>")}</p>`);
+  return paras.join("");
+}
 
 export function ForumModerationManager({
   slug,
@@ -323,7 +338,12 @@ function ThreadForm({
           </div>
           <div>
             <Label htmlFor="ft-body">{t("bodyLabel")}</Label>
-            <Textarea id="ft-body" name="body" rows={8} defaultValue={thread?.body ?? ""} placeholder={t("bodyPlaceholder")} />
+            <RichTextEditor
+              tenant={slug}
+              name="bodyHtml"
+              defaultHtml={thread?.bodyHtml || (thread?.body ? plainToHtml(thread.body) : "")}
+              placeholder={t("bodyPlaceholder")}
+            />
           </div>
         </div>
       </div>

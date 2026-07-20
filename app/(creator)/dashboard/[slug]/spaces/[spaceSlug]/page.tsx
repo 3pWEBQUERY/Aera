@@ -131,6 +131,7 @@ export default async function SpaceContentPage({
       id: t.id,
       title: t.title,
       body: t.body,
+      bodyHtml: t.bodyHtml,
       authorName: t.author.name,
       createdAt: t.createdAt,
       isPinned: t.isPinned,
