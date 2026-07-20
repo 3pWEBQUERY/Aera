@@ -28,6 +28,7 @@ import { sendEmail, renderAccountActionHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
 import { features } from "@/lib/env";
 import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
+import { parsePollForm, savePostPoll } from "@/lib/polls";
 import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
 import { canManageTenantMembership } from "@/lib/capabilities";
@@ -2056,6 +2057,9 @@ export async function createSpacePostAction(
       data: { entitlementKey: `${keyPrefix}:${post.id}` },
     });
   }
+  // Optional poll authored in the composer.
+  const poll = parsePollForm(fd);
+  if (poll) await savePostPoll(tenant.id, post.id, poll);
   await indexContent({
     tenantId: tenant.id,
     sourceType: "POST",
@@ -2406,6 +2410,10 @@ export async function updatePostAction(
       ...priceUpdate,
     },
   });
+  // The forum composer submits pollControl so the poll is set or cleared here.
+  if (fd.get("pollControl") === "1") {
+    await savePostPoll(tenant.id, post.id, parsePollForm(fd));
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "POST",

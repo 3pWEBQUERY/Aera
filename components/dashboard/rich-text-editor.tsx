@@ -29,6 +29,9 @@ const glyphs = {
   </>),
   attach: svg(<path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />),
   divider: svg(<line x1="4" y1="12" x2="20" y2="12" />),
+  poll: svg(<>
+    <line x1="6" y1="20" x2="6" y2="12" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="18" y1="20" x2="18" y2="9" />
+  </>),
   record: svg(<>
     <rect x="2.5" y="6.5" width="13" height="11" rx="2.5" />
     <path d="M15.5 10.5l6-3.5v10l-6-3.5" />
@@ -59,6 +62,8 @@ export function RichTextEditor({
   placeholder,
   variant = "boxed",
   titleSlot,
+  onPollClick,
+  pollActive = false,
 }: {
   tenant: string;
   name?: string;
@@ -74,6 +79,10 @@ export function RichTextEditor({
   variant?: "boxed" | "seamless";
   /** Rendered above the editor body inside the scroll area (seamless only). */
   titleSlot?: React.ReactNode;
+  /** When provided, a poll button appears in the toolbar and calls this. */
+  onPollClick?: () => void;
+  /** Highlights the poll button while the composer's poll editor is open. */
+  pollActive?: boolean;
 }) {
   const t = useTranslations("dashboard.rte");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -460,6 +469,19 @@ export function RichTextEditor({
       >
         <Icon name="smile" size={16} />
       </button>
+      {onPollClick && (
+        <button
+          type="button"
+          title={t("poll")}
+          aria-label={t("poll")}
+          aria-pressed={pollActive}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={onPollClick}
+          className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 transition hover:bg-white hover:text-slate-900 ${pollActive ? "bg-white text-violet-600" : "text-slate-600"}`}
+        >
+          {glyphs.poll}
+        </button>
+      )}
       {uploading && (
         <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-400">
           <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />

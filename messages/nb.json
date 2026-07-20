@@ -1042,6 +1042,12 @@
       "save": "Lagre"
     },
     "forumMod": {
+      "pollTitle": "Avstemning",
+      "pollQuestionPlaceholder": "Still et spørsmål…",
+      "pollOptionPlaceholder": "Svaralternativ",
+      "pollAddOption": "Legg til alternativ",
+      "pollMultipleLabel": "Tillat flere svar",
+      "pollRemove": "Fjern avstemning",
       "postingIn": "Publiserer i {space}",
       "badge": "Forum-moderering",
       "subtitle": "Administrer innlegg og kommentarer fra alle medlemmer.",
@@ -1276,6 +1282,7 @@
       "saving": "Lagrer…"
     },
     "rte": {
+      "poll": "Avstemning",
       "command": "Sett inn blokk",
       "gif": "Legg til GIF",
       "gifPlaceholder": "Søk etter GIF-er",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Stem",
+    "pollChangeVote": "Endre stemme",
+    "pollVotesWord": "stemmer",
+    "pollMultipleHint": "Flervalg",
+    "pollShowResults": "Vis resultater",
     "like": "Lik",
     "unlike": "Fjern liker",
     "commentCount": "{count, plural, one {# kommentar} other {# kommentarer}}",

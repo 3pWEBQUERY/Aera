@@ -1042,6 +1042,12 @@
       "save": "Spara"
     },
     "forumMod": {
+      "pollTitle": "Omröstning",
+      "pollQuestionPlaceholder": "Ställ en fråga…",
+      "pollOptionPlaceholder": "Alternativ",
+      "pollAddOption": "Lägg till alternativ",
+      "pollMultipleLabel": "Tillåt flera svar",
+      "pollRemove": "Ta bort omröstning",
       "postingIn": "Publicerar i {space}",
       "badge": "Forummoderering",
       "subtitle": "Hantera inlägg och kommentarer från alla medlemmar.",
@@ -1276,6 +1282,7 @@
       "saving": "Sparar…"
     },
     "rte": {
+      "poll": "Omröstning",
       "command": "Infoga block",
       "gif": "Lägg till GIF",
       "gifPlaceholder": "Sök GIF-ar",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Rösta",
+    "pollChangeVote": "Ändra röst",
+    "pollVotesWord": "röster",
+    "pollMultipleHint": "Flerval",
+    "pollShowResults": "Visa resultat",
     "like": "Gilla",
     "unlike": "Ta bort gillning",
     "commentCount": "{count, plural, one {# kommentar} other {# kommentarer}}",

@@ -1042,6 +1042,12 @@
       "save": "儲存"
     },
     "forumMod": {
+      "pollTitle": "投票",
+      "pollQuestionPlaceholder": "提出問題…",
+      "pollOptionPlaceholder": "選項",
+      "pollAddOption": "新增選項",
+      "pollMultipleLabel": "允許多選",
+      "pollRemove": "移除投票",
       "postingIn": "發佈到 {space}",
       "badge": "論壇管理",
       "subtitle": "管理所有成員的貼文與留言。",
@@ -1276,6 +1282,7 @@
       "saving": "儲存中……"
     },
     "rte": {
+      "poll": "投票",
       "command": "插入區塊",
       "gif": "新增 GIF",
       "gifPlaceholder": "搜尋 GIF",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "投票",
+    "pollChangeVote": "更改投票",
+    "pollVotesWord": "票",
+    "pollMultipleHint": "多選",
+    "pollShowResults": "查看結果",
     "like": "按讚",
     "unlike": "收回讚",
     "commentCount": "{count, plural, other {#則留言}}",

@@ -1042,6 +1042,12 @@
       "save": "保存"
     },
     "forumMod": {
+      "pollTitle": "アンケート",
+      "pollQuestionPlaceholder": "質問を入力…",
+      "pollOptionPlaceholder": "選択肢",
+      "pollAddOption": "選択肢を追加",
+      "pollMultipleLabel": "複数回答を許可",
+      "pollRemove": "アンケートを削除",
       "postingIn": "{space} に投稿",
       "badge": "フォーラムモデレーション",
       "subtitle": "全メンバーの投稿とコメントを管理します。",
@@ -1276,6 +1282,7 @@
       "saving": "保存中…"
     },
     "rte": {
+      "poll": "アンケート",
       "command": "ブロックを挿入",
       "gif": "GIFを追加",
       "gifPlaceholder": "GIFを検索",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "投票する",
+    "pollChangeVote": "投票を変更",
+    "pollVotesWord": "票",
+    "pollMultipleHint": "複数選択",
+    "pollShowResults": "結果を表示",
     "like": "いいね",
     "unlike": "いいねを取り消す",
     "commentCount": "{count, plural, other {コメント #件}}",

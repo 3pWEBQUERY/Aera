@@ -1042,6 +1042,12 @@
       "save": "Opslaan"
     },
     "forumMod": {
+      "pollTitle": "Peiling",
+      "pollQuestionPlaceholder": "Stel een vraag…",
+      "pollOptionPlaceholder": "Optie",
+      "pollAddOption": "Optie toevoegen",
+      "pollMultipleLabel": "Meerdere antwoorden toestaan",
+      "pollRemove": "Peiling verwijderen",
       "postingIn": "Plaatsen in {space}",
       "badge": "Forummoderatie",
       "subtitle": "Beheer berichten en reacties van alle leden.",
@@ -1276,6 +1282,7 @@
       "saving": "Opslaan…"
     },
     "rte": {
+      "poll": "Peiling",
       "command": "Blok invoegen",
       "gif": "GIF toevoegen",
       "gifPlaceholder": "GIF's zoeken",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Stemmen",
+    "pollChangeVote": "Stem wijzigen",
+    "pollVotesWord": "stemmen",
+    "pollMultipleHint": "Meerkeuze",
+    "pollShowResults": "Resultaten tonen",
     "like": "Vind ik leuk",
     "unlike": "Vind ik leuk verwijderen",
     "commentCount": "{count, plural, one {# reactie} other {# reacties}}",

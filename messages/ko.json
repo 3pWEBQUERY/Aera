@@ -1042,6 +1042,12 @@
       "save": "저장"
     },
     "forumMod": {
+      "pollTitle": "투표",
+      "pollQuestionPlaceholder": "질문을 입력하세요…",
+      "pollOptionPlaceholder": "선택지",
+      "pollAddOption": "선택지 추가",
+      "pollMultipleLabel": "복수 응답 허용",
+      "pollRemove": "투표 삭제",
       "postingIn": "{space}에 게시",
       "badge": "포럼 관리",
       "subtitle": "모든 멤버의 게시물과 댓글을 관리하세요.",
@@ -1276,6 +1282,7 @@
       "saving": "저장 중…"
     },
     "rte": {
+      "poll": "투표",
       "command": "블록 삽입",
       "gif": "GIF 추가",
       "gifPlaceholder": "GIF 검색",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "투표하기",
+    "pollChangeVote": "투표 변경",
+    "pollVotesWord": "표",
+    "pollMultipleHint": "복수 선택",
+    "pollShowResults": "결과 보기",
     "like": "좋아요",
     "unlike": "좋아요 취소",
     "commentCount": "{count, plural, other {댓글 #개}}",

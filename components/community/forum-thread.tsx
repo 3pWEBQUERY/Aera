@@ -5,6 +5,7 @@ import { useActionState, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { createCommentAction, type EngageState } from "@/app/actions/engage";
 import { VoteControl } from "./vote-control";
+import { PollBlock, type PollViewData } from "./poll-block";
 import { Avatar, FormError } from "@/components/ui/misc";
 import { Textarea } from "@/components/ui/field";
 import { Icon } from "@/components/dashboard/icons";
@@ -62,12 +63,14 @@ export function ForumThread({
   post,
   comments,
   isMember,
+  poll,
 }: {
   slug: string;
   spaceSlug: string;
   post: ForumPost;
   comments: ForumComment[];
   isMember: boolean;
+  poll?: PollViewData | null;
 }) {
   const t = useTranslations("spaces");
   const locale = useLocale();
@@ -100,6 +103,11 @@ export function ForumThread({
           {post.videoUrl && (
             // eslint-disable-next-line jsx-a11y/media-has-caption
             <video src={post.videoUrl} controls preload="metadata" className="mt-3 w-full rounded-xl border border-[#161613]/10 bg-black" />
+          )}
+          {poll && (
+            <div className="mt-4">
+              <PollBlock slug={slug} space={spaceSlug} postId={post.id} poll={poll} canVote={isMember} />
+            </div>
           )}
           <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#161613]/60">
             <Icon name="forum" size={16} /> {t("commentCount", { count: post.commentCount })}

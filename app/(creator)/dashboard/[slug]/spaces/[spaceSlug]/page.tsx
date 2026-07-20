@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
+import { getPollDraftsForPosts } from "@/lib/polls";
 import {
   SpaceContentManager,
   type PostItem,
@@ -115,6 +116,7 @@ export default async function SpaceContentPage({
       },
     });
     const ids = threadRows.map((t) => t.id);
+    const pollDrafts = await getPollDraftsForPosts(tenant.id, ids);
     const groups = ids.length
       ? await prisma.reaction.groupBy({
           by: ["postId", "type"],
@@ -132,6 +134,9 @@ export default async function SpaceContentPage({
       title: t.title,
       body: t.body,
       bodyHtml: t.bodyHtml,
+      pollQuestion: pollDrafts.get(t.id)?.question ?? null,
+      pollOptions: pollDrafts.get(t.id)?.options ?? [],
+      pollMultiple: pollDrafts.get(t.id)?.multiple ?? false,
       authorName: t.author.name,
       createdAt: t.createdAt,
       isPinned: t.isPinned,

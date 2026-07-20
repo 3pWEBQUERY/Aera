@@ -1042,6 +1042,12 @@
       "save": "Gem"
     },
     "forumMod": {
+      "pollTitle": "Afstemning",
+      "pollQuestionPlaceholder": "Stil et spørgsmål…",
+      "pollOptionPlaceholder": "Svarmulighed",
+      "pollAddOption": "Tilføj mulighed",
+      "pollMultipleLabel": "Tillad flere svar",
+      "pollRemove": "Fjern afstemning",
       "postingIn": "Udgiver i {space}",
       "badge": "Forum-moderation",
       "subtitle": "Administrer indlæg og kommentarer fra alle medlemmer.",
@@ -1276,6 +1282,7 @@
       "saving": "Gemmer…"
     },
     "rte": {
+      "poll": "Afstemning",
       "command": "Indsæt blok",
       "gif": "Tilføj GIF",
       "gifPlaceholder": "Søg efter GIF'er",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Stem",
+    "pollChangeVote": "Skift stemme",
+    "pollVotesWord": "stemmer",
+    "pollMultipleHint": "Flere valg",
+    "pollShowResults": "Vis resultater",
     "like": "Synes godt om",
     "unlike": "Fjern synes godt om",
     "commentCount": "{count, plural, one {# kommentar} other {# kommentarer}}",

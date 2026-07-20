@@ -1042,6 +1042,12 @@
       "save": "Сохранить"
     },
     "forumMod": {
+      "pollTitle": "Опрос",
+      "pollQuestionPlaceholder": "Задайте вопрос…",
+      "pollOptionPlaceholder": "Вариант",
+      "pollAddOption": "Добавить вариант",
+      "pollMultipleLabel": "Разрешить несколько ответов",
+      "pollRemove": "Удалить опрос",
       "postingIn": "Публикация в {space}",
       "badge": "Модерация форума",
       "subtitle": "Управляйте публикациями и комментариями всех участников.",
@@ -1276,6 +1282,7 @@
       "saving": "Сохранение…"
     },
     "rte": {
+      "poll": "Опрос",
       "command": "Вставить блок",
       "gif": "Добавить GIF",
       "gifPlaceholder": "Поиск GIF",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Голосовать",
+    "pollChangeVote": "Изменить голос",
+    "pollVotesWord": "голосов",
+    "pollMultipleHint": "Несколько вариантов",
+    "pollShowResults": "Показать результаты",
     "like": "Нравится",
     "unlike": "Убрать отметку «Нравится»",
     "commentCount": "{count, plural, one {# комментарий} few {# комментария} many {# комментариев} other {# комментария}}",

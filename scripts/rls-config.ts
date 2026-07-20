@@ -73,6 +73,7 @@ export const TENANT_RLS_TABLES = [
   "ReferralConversion",
   "ObjectDeletionTask",
   "StorageReconciliationState",
+  "PollVote",
 ] as const;
 
 /** Tenant tables used by normal request flows. */

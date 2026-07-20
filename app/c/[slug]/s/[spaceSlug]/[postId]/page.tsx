@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
+import { readPostPoll } from "@/lib/polls";
 import { purchasePostAction } from "@/app/actions/engage";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { CommentForm } from "@/components/community/comment-form";
@@ -61,11 +62,14 @@ export default async function PostDetail({
     const cMy: Record<string, "UP" | "DOWN"> = {};
     for (const v of cMine) if (v.commentId) cMy[v.commentId] = v.type as "UP" | "DOWN";
 
+    const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
+
     return (
       <ForumThread
         slug={slug}
         spaceSlug={spaceSlug}
         isMember={ctx.membership?.status === "ACTIVE"}
+        poll={poll}
         post={{
           id: fpost.id,
           title: fpost.title,

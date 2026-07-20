@@ -18,6 +18,7 @@ import { emitWebhookEvent } from "@/lib/webhooks";
 import { resolveReferrer, recordReferralJoin } from "@/lib/referrals";
 import { moderateContent } from "@/lib/moderation";
 import { indexContent } from "@/lib/ai";
+import { castPollVote } from "@/lib/polls";
 import {
   createMediaCheckout,
   createMediaItemCheckout,
@@ -576,6 +577,33 @@ export async function toggleReactionAction(fd: FormData): Promise<void> {
   }
   revalidatePath(`/c/${slug}/s/${post.space.slug}`);
   revalidatePath(`/c/${slug}/s/${post.space.slug}/${postId}`);
+}
+
+export async function votePollAction(fd: FormData): Promise<void> {
+  const slug = String(fd.get("tenant"));
+  const postId = String(fd.get("postId"));
+  const spaceSlug = String(fd.get("space"));
+  const user = await getCurrentUser();
+  if (!user) {
+    redirect(`/login?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}/${postId}`)}`);
+  }
+  const tenant = await tenantBySlug(slug);
+  if (!tenant) return;
+  // Never trust the client space slug: resolve the post + its space server-side.
+  const post = await prisma.post.findFirst({
+    where: { id: postId, tenantId: tenant.id },
+    include: { space: true },
+  });
+  if (!post) return;
+  const ctx = await buildAccessContext(tenant.id, user!.id);
+  if (!canAccess(post.space, ctx)) return;
+  const indices = fd
+    .getAll("optionIndex")
+    .map((v) => Number(v))
+    .filter((n) => Number.isInteger(n));
+  await castPollVote(tenant.id, postId, user!.id, indices);
+  revalidatePath(`/c/${slug}/s/${post.space.slug}/${postId}`);
+  revalidatePath(`/c/${slug}/s/${post.space.slug}`);
 }
 
 // ---------------------------------------------------------------- Events

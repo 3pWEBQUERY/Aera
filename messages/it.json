@@ -1042,6 +1042,12 @@
       "save": "Salva"
     },
     "forumMod": {
+      "pollTitle": "Sondaggio",
+      "pollQuestionPlaceholder": "Fai una domanda…",
+      "pollOptionPlaceholder": "Opzione",
+      "pollAddOption": "Aggiungi opzione",
+      "pollMultipleLabel": "Consenti risposte multiple",
+      "pollRemove": "Rimuovi sondaggio",
       "postingIn": "Pubblicazione in {space}",
       "badge": "Moderazione forum",
       "subtitle": "Gestisci post e commenti di tutti i membri.",
@@ -1276,6 +1282,7 @@
       "saving": "Salvataggio…"
     },
     "rte": {
+      "poll": "Sondaggio",
       "command": "Inserisci blocco",
       "gif": "Aggiungi GIF",
       "gifPlaceholder": "Cerca GIF",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Vota",
+    "pollChangeVote": "Cambia voto",
+    "pollVotesWord": "voti",
+    "pollMultipleHint": "Scelta multipla",
+    "pollShowResults": "Mostra risultati",
     "like": "Mi piace",
     "unlike": "Rimuovi mi piace",
     "commentCount": "{count, plural, one {# commento} other {# commenti}}",

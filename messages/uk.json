@@ -1042,6 +1042,12 @@
       "save": "Зберегти"
     },
     "forumMod": {
+      "pollTitle": "Опитування",
+      "pollQuestionPlaceholder": "Поставте запитання…",
+      "pollOptionPlaceholder": "Варіант",
+      "pollAddOption": "Додати варіант",
+      "pollMultipleLabel": "Дозволити кілька відповідей",
+      "pollRemove": "Видалити опитування",
       "postingIn": "Публікація в {space}",
       "badge": "Модерація форуму",
       "subtitle": "Керуйте дописами та коментарями всіх учасників.",
@@ -1276,6 +1282,7 @@
       "saving": "Збереження…"
     },
     "rte": {
+      "poll": "Опитування",
       "command": "Вставити блок",
       "gif": "Додати GIF",
       "gifPlaceholder": "Пошук GIF",
@@ -3047,6 +3054,11 @@
     "en": "English"
   },
   "spaces": {
+    "pollVoteCta": "Голосувати",
+    "pollChangeVote": "Змінити голос",
+    "pollVotesWord": "голосів",
+    "pollMultipleHint": "Кілька варіантів",
+    "pollShowResults": "Показати результати",
     "like": "Подобається",
     "unlike": "Прибрати вподобання",
     "commentCount": "{count, plural, one {# коментар} few {# коментарі} many {# коментарів} other {# коментаря}}",
