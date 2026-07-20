@@ -1042,6 +1042,7 @@
       "save": "儲存"
     },
     "forumMod": {
+      "postingIn": "發佈到 {space}",
       "badge": "論壇管理",
       "subtitle": "管理所有成員的貼文與留言。",
       "viewForum": "檢視論壇",

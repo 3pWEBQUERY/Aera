@@ -1042,6 +1042,7 @@
       "save": "Spara"
     },
     "forumMod": {
+      "postingIn": "Publicerar i {space}",
       "badge": "Forummoderering",
       "subtitle": "Hantera inlägg och kommentarer från alla medlemmar.",
       "viewForum": "Visa forum",

@@ -1042,6 +1042,7 @@
       "save": "保存"
     },
     "forumMod": {
+      "postingIn": "发布到 {space}",
       "badge": "论坛管理",
       "subtitle": "管理所有成员的帖子和评论。",
       "viewForum": "查看论坛",

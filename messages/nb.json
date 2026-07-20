@@ -1042,6 +1042,7 @@
       "save": "Lagre"
     },
     "forumMod": {
+      "postingIn": "Publiserer i {space}",
       "badge": "Forum-moderering",
       "subtitle": "Administrer innlegg og kommentarer fra alle medlemmer.",
       "viewForum": "Vis forum",

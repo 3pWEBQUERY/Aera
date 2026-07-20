@@ -1042,6 +1042,7 @@
       "save": "Guardar"
     },
     "forumMod": {
+      "postingIn": "Publicando en {space}",
       "badge": "Moderación del foro",
       "subtitle": "Gestiona publicaciones y comentarios de todos los miembros.",
       "viewForum": "Ver foro",

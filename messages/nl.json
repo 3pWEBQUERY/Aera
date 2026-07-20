@@ -1042,6 +1042,7 @@
       "save": "Opslaan"
     },
     "forumMod": {
+      "postingIn": "Plaatsen in {space}",
       "badge": "Forummoderatie",
       "subtitle": "Beheer berichten en reacties van alle leden.",
       "viewForum": "Forum bekijken",

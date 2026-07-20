@@ -1042,6 +1042,7 @@
       "save": "保存"
     },
     "forumMod": {
+      "postingIn": "{space} に投稿",
       "badge": "フォーラムモデレーション",
       "subtitle": "全メンバーの投稿とコメントを管理します。",
       "viewForum": "フォーラムを表示",

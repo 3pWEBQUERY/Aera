@@ -57,11 +57,23 @@ export function RichTextEditor({
   name = "bodyHtml",
   defaultHtml = "",
   placeholder,
+  variant = "boxed",
+  titleSlot,
 }: {
   tenant: string;
   name?: string;
   defaultHtml?: string;
   placeholder?: string;
+  /**
+   * "boxed"    — self-contained bordered card with the toolbar on top
+   *              (used inline in the dashboard forms).
+   * "seamless" — fills its flex parent: a large document-style writing area
+   *              that scrolls, with the toolbar pinned to the bottom. Meant to
+   *              sit inside a full-screen composer sheet.
+   */
+  variant?: "boxed" | "seamless";
+  /** Rendered above the editor body inside the scroll area (seamless only). */
+  titleSlot?: React.ReactNode;
 }) {
   const t = useTranslations("dashboard.rte");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -280,6 +292,12 @@ export function RichTextEditor({
     ? slashCommands.filter((c) => c.label.toLowerCase().includes(slashQuery.toLowerCase()))
     : slashCommands;
 
+  const seamless = variant === "seamless";
+  const iconBtn =
+    "flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900";
+  const labelBtn =
+    "flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-slate-600 transition hover:bg-white hover:text-slate-900";
+
   function Btn({ cmd }: { cmd: Cmd }) {
     return (
       <button
@@ -288,7 +306,7 @@ export function RichTextEditor({
         aria-label={cmd.label}
         onMouseDown={(e) => e.preventDefault()}
         onClick={cmd.run}
-        className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
+        className={iconBtn}
       >
         {cmd.icon}
       </button>
@@ -296,234 +314,214 @@ export function RichTextEditor({
   }
   const Divider = () => <span className="mx-0.5 h-5 w-px shrink-0 self-center bg-slate-200" />;
 
-  return (
-    <div className="overflow-hidden rounded-2xl border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
+  // Shared toolbar contents. In the seamless composer the media buttons
+  // collapse to icon-only so the whole row stays compact at the bottom.
+  const toolbarInner = (
+    <>
+      {marks.map((c) => <Btn key={c.label} cmd={c} />)}
+      <Divider />
+      {blocks.map((c) => <Btn key={c.label} cmd={c} />)}
+      <Divider />
+      <button
+        type="button"
+        title={t("link")}
+        aria-label={t("link")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => setLinkOpen((v) => !v)}
+        className={iconBtn}
+      >
+        {glyphs.link}
+      </button>
+      <Divider />
+      <button
+        type="button"
+        title={t("insertImage")}
+        aria-label={t("insertImage")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => imgInput.current?.click()}
+        className={seamless ? iconBtn : labelBtn}
+      >
+        <Icon name="gallery" size={seamless ? 17 : 15} />
+        {!seamless && <span className="text-xs font-medium">{t("image")}</span>}
+      </button>
+      <button
+        type="button"
+        title={t("insertVideo")}
+        aria-label={t("insertVideo")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => vidInput.current?.click()}
+        className={seamless ? iconBtn : labelBtn}
+      >
+        <Icon name="videos" size={seamless ? 17 : 15} />
+        {!seamless && <span className="text-xs font-medium">{t("video")}</span>}
+      </button>
+      <button
+        type="button"
+        title={t("attach")}
+        aria-label={t("attach")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => fileInput.current?.click()}
+        className={iconBtn}
+      >
+        {glyphs.attach}
+      </button>
+      <button
+        type="button"
+        title={t("record")}
+        aria-label={t("record")}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => {
+          setEmojiOpen(false);
+          setRecordOpen(true);
+        }}
+        className={iconBtn}
+      >
+        {glyphs.record}
+      </button>
+      <button
+        type="button"
+        title={t("emoji")}
+        aria-label={t("emoji")}
+        aria-expanded={emojiOpen}
+        onMouseDown={(e) => {
+          e.preventDefault();
+          saveSelection();
+        }}
+        onClick={() => {
+          setLinkOpen(false);
+          setEmojiOpen((v) => !v);
+        }}
+        className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 transition hover:bg-white hover:text-slate-900 ${emojiOpen ? "bg-white text-slate-900" : "text-slate-600"}`}
+      >
+        <Icon name="smile" size={16} />
+      </button>
+      {uploading && (
+        <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-400">
+          <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
+          {t("loading")}
+        </span>
+      )}
+    </>
+  );
+
+  const linkPanel = (
+    <div className="flex items-center gap-2 bg-white px-3 py-2">
+      <input
+        autoFocus
+        value={linkUrl}
+        onChange={(e) => setLinkUrl(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            applyLink();
+          }
+          if (e.key === "Escape") setLinkOpen(false);
+        }}
+        placeholder={t("linkPlaceholder")}
+        className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
+      />
+      <button type="button" onClick={applyLink} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800">
+        {t("applyLink")}
+      </button>
+      <button type="button" onClick={() => setLinkOpen(false)} className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100">
+        {t("cancel")}
+      </button>
+    </div>
+  );
+
+  const emojiPanel = (
+    <div className="bg-white px-2.5 py-2">
+      <div className="grid max-h-44 grid-cols-8 gap-0.5 overflow-y-auto sm:grid-cols-10">
+        {EMOJIS.map((emoji, i) => (
+          <button
+            key={`${emoji}-${i}`}
+            type="button"
+            aria-label={emoji}
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={() => insertEmoji(emoji)}
+            className="flex h-8 w-8 items-center justify-center rounded-md text-xl leading-none transition hover:bg-slate-100"
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+
+  const slashMenu = slashOpen && slashPos && filteredSlash.length > 0 && (
+    <div
+      className="fixed z-[130] w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
+      style={{ top: slashPos.top, left: slashPos.left }}
+    >
+      {filteredSlash.map((cmd, i) => (
+        <button
+          key={cmd.label}
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onMouseEnter={() => setSlashIndex(i)}
+          onClick={() => applySlash(cmd)}
+          className={`flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-sm transition ${i === slashIndex ? "bg-slate-100 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}
+        >
+          <span className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-500">{cmd.icon}</span>
+          {cmd.label}
+        </button>
+      ))}
+    </div>
+  );
+
+  const editableHandlers = {
+    contentEditable: true,
+    suppressContentEditableWarning: true,
+    onInput: () => {
+      sync();
+      updateSlash();
+    },
+    onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+      if (!slashOpen || filteredSlash.length === 0) return;
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setSlashIndex((i) => (i + 1) % filteredSlash.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setSlashIndex((i) => (i - 1 + filteredSlash.length) % filteredSlash.length);
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault();
+        applySlash(filteredSlash[slashIndex] ?? filteredSlash[0]);
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        closeSlash();
+      }
+    },
+    onBlur: () => {
+      saveSelection();
+      closeSlash();
+    },
+    onPaste: (e: React.ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData("text/plain");
+      document.execCommand("insertText", false, text);
+      sync();
+    },
+  };
+
+  const hiddenInputs = (
+    <>
       <input type="hidden" name={name} value={html} />
-
-      {/* Toolbar */}
-      <div className="flex flex-wrap items-center gap-0.5 border-b border-slate-200 bg-slate-50 px-2 py-1.5">
-        {marks.map((c) => <Btn key={c.label} cmd={c} />)}
-        <Divider />
-        {blocks.map((c) => <Btn key={c.label} cmd={c} />)}
-        <Divider />
-        <button
-          type="button"
-          title={t("link")}
-          aria-label={t("link")}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => setLinkOpen((v) => !v)}
-          className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
-        >
-          {glyphs.link}
-        </button>
-        <Divider />
-        <button
-          type="button"
-          title={t("insertImage")}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => imgInput.current?.click()}
-          className="flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-slate-600 transition hover:bg-white hover:text-slate-900"
-        >
-          <Icon name="gallery" size={15} />
-          <span className="text-xs font-medium">{t("image")}</span>
-        </button>
-        <button
-          type="button"
-          title={t("insertVideo")}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => vidInput.current?.click()}
-          className="flex h-8 shrink-0 items-center gap-1.5 rounded-md px-2 text-slate-600 transition hover:bg-white hover:text-slate-900"
-        >
-          <Icon name="videos" size={15} />
-          <span className="text-xs font-medium">{t("video")}</span>
-        </button>
-        <button
-          type="button"
-          title={t("attach")}
-          aria-label={t("attach")}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => fileInput.current?.click()}
-          className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
-        >
-          {glyphs.attach}
-        </button>
-        <button
-          type="button"
-          title={t("record")}
-          aria-label={t("record")}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => {
-            setEmojiOpen(false);
-            setRecordOpen(true);
-          }}
-          className="flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 text-slate-600 transition hover:bg-white hover:text-slate-900"
-        >
-          {glyphs.record}
-        </button>
-        <button
-          type="button"
-          title={t("emoji")}
-          aria-label={t("emoji")}
-          aria-expanded={emojiOpen}
-          onMouseDown={(e) => {
-            e.preventDefault();
-            saveSelection();
-          }}
-          onClick={() => {
-            setLinkOpen(false);
-            setEmojiOpen((v) => !v);
-          }}
-          className={`flex h-8 min-w-8 shrink-0 items-center justify-center rounded-md px-1.5 transition hover:bg-white hover:text-slate-900 ${emojiOpen ? "bg-white text-slate-900" : "text-slate-600"}`}
-        >
-          <Icon name="smile" size={16} />
-        </button>
-        {uploading && (
-          <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-400">
-            <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
-            {t("loading")}
-          </span>
-        )}
-      </div>
-
-      {/* Link bar */}
-      {linkOpen && (
-        <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-3 py-2">
-          <input
-            autoFocus
-            value={linkUrl}
-            onChange={(e) => setLinkUrl(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                applyLink();
-              }
-              if (e.key === "Escape") setLinkOpen(false);
-            }}
-            placeholder={t("linkPlaceholder")}
-            className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
-          />
-          <button type="button" onClick={applyLink} className="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white hover:bg-slate-800">
-            {t("applyLink")}
-          </button>
-          <button type="button" onClick={() => setLinkOpen(false)} className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100">
-            {t("cancel")}
-          </button>
-        </div>
-      )}
-
-      {/* Emoji picker */}
-      {emojiOpen && (
-        <div className="border-b border-slate-200 bg-white px-2.5 py-2">
-          <div className="grid max-h-44 grid-cols-8 gap-0.5 overflow-y-auto sm:grid-cols-10">
-            {EMOJIS.map((emoji, i) => (
-              <button
-                key={`${emoji}-${i}`}
-                type="button"
-                aria-label={emoji}
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={() => insertEmoji(emoji)}
-                className="flex h-8 w-8 items-center justify-center rounded-md text-xl leading-none transition hover:bg-slate-100"
-              >
-                {emoji}
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Editor */}
-      <div className="relative">
-        {isEmpty && (
-          <p className="pointer-events-none absolute left-4 top-4 text-[15px] text-slate-400">{placeholder ?? t("placeholder")}</p>
-        )}
-        <div
-          ref={editorRef}
-          contentEditable
-          suppressContentEditableWarning
-          onInput={() => {
-            sync();
-            updateSlash();
-          }}
-          onKeyDown={(e) => {
-            if (!slashOpen || filteredSlash.length === 0) return;
-            if (e.key === "ArrowDown") {
-              e.preventDefault();
-              setSlashIndex((i) => (i + 1) % filteredSlash.length);
-            } else if (e.key === "ArrowUp") {
-              e.preventDefault();
-              setSlashIndex((i) => (i - 1 + filteredSlash.length) % filteredSlash.length);
-            } else if (e.key === "Enter" || e.key === "Tab") {
-              e.preventDefault();
-              applySlash(filteredSlash[slashIndex] ?? filteredSlash[0]);
-            } else if (e.key === "Escape") {
-              e.preventDefault();
-              closeSlash();
-            }
-          }}
-          onBlur={() => {
-            saveSelection();
-            closeSlash();
-          }}
-          onPaste={(e) => {
-            e.preventDefault();
-            const text = e.clipboardData.getData("text/plain");
-            document.execCommand("insertText", false, text);
-            sync();
-          }}
-          className="rich-content min-h-[260px] w-full px-4 py-4 text-[15px] leading-relaxed text-slate-800 outline-none"
-        />
-      </div>
-
-      {/* Slash "/" command menu */}
-      {slashOpen && slashPos && filteredSlash.length > 0 && (
-        <div
-          className="fixed z-[130] w-60 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-xl"
-          style={{ top: slashPos.top, left: slashPos.left }}
-        >
-          {filteredSlash.map((cmd, i) => (
-            <button
-              key={cmd.label}
-              type="button"
-              onMouseDown={(e) => e.preventDefault()}
-              onMouseEnter={() => setSlashIndex(i)}
-              onClick={() => applySlash(cmd)}
-              className={`flex w-full items-center gap-2.5 px-3 py-1.5 text-left text-sm transition ${i === slashIndex ? "bg-slate-100 text-slate-900" : "text-slate-600 hover:bg-slate-50"}`}
-            >
-              <span className="flex h-5 w-5 shrink-0 items-center justify-center text-slate-500">{cmd.icon}</span>
-              {cmd.label}
-            </button>
-          ))}
-        </div>
-      )}
-
-      {error && <p className="border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>}
-
-      {recordOpen && (
-        <RecordVideoModal
-          t={t}
-          onClose={() => setRecordOpen(false)}
-          onInsert={(file) => {
-            setRecordOpen(false);
-            void uploadAndInsert(file, "video");
-          }}
-        />
-      )}
-
       <input
         ref={imgInput}
         type="file"
@@ -557,6 +555,101 @@ export function RichTextEditor({
           if (f) uploadAndInsert(f, "file");
         }}
       />
+    </>
+  );
+
+  const recordModal = recordOpen && (
+    <RecordVideoModal
+      t={t}
+      onClose={() => setRecordOpen(false)}
+      onInsert={(file) => {
+        setRecordOpen(false);
+        void uploadAndInsert(file, "video");
+      }}
+    />
+  );
+
+  if (seamless) {
+    return (
+      <div className="flex min-h-0 flex-1 flex-col">
+        {hiddenInputs}
+
+        {/* Document-style writing area (title + body scroll together) */}
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-2xl px-5 py-6 sm:px-8 sm:py-8">
+            {titleSlot}
+            <div className="relative mt-3">
+              {isEmpty && (
+                <p className="pointer-events-none absolute left-0 top-0 text-[17px] text-slate-400">
+                  {placeholder ?? t("placeholder")}
+                </p>
+              )}
+              <div
+                ref={editorRef}
+                {...editableHandlers}
+                className="rich-content min-h-[46vh] w-full text-[17px] leading-relaxed text-slate-800 outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        {error && (
+          <p className="shrink-0 border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>
+        )}
+
+        {/* Link / emoji panels open upward, above the pinned toolbar */}
+        {(linkOpen || emojiOpen) && (
+          <div className="shrink-0 border-t border-slate-200">
+            {linkOpen && linkPanel}
+            {emojiOpen && emojiPanel}
+          </div>
+        )}
+
+        {/* Toolbar pinned to the bottom */}
+        <div className="shrink-0 border-t border-slate-200 bg-white px-3 py-2">
+          <div className="mx-auto flex w-full max-w-2xl flex-wrap items-center gap-0.5">
+            {toolbarInner}
+          </div>
+        </div>
+
+        {slashMenu}
+        {recordModal}
+      </div>
+    );
+  }
+
+  return (
+    <div className="overflow-hidden rounded-2xl border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
+      {hiddenInputs}
+
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-0.5 border-b border-slate-200 bg-slate-50 px-2 py-1.5">
+        {toolbarInner}
+      </div>
+
+      {/* Link bar */}
+      {linkOpen && <div className="border-b border-slate-200">{linkPanel}</div>}
+
+      {/* Emoji picker */}
+      {emojiOpen && <div className="border-b border-slate-200">{emojiPanel}</div>}
+
+      {/* Editor */}
+      <div className="relative">
+        {isEmpty && (
+          <p className="pointer-events-none absolute left-4 top-4 text-[15px] text-slate-400">{placeholder ?? t("placeholder")}</p>
+        )}
+        <div
+          ref={editorRef}
+          {...editableHandlers}
+          className="rich-content min-h-[260px] w-full px-4 py-4 text-[15px] leading-relaxed text-slate-800 outline-none"
+        />
+      </div>
+
+      {slashMenu}
+
+      {error && <p className="border-t border-slate-200 bg-red-50 px-4 py-2 text-xs text-red-600">{error}</p>}
+
+      {recordModal}
     </div>
   );
 }

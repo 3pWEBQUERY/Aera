@@ -1042,6 +1042,7 @@
       "save": "Gem"
     },
     "forumMod": {
+      "postingIn": "Udgiver i {space}",
       "badge": "Forum-moderation",
       "subtitle": "Administrer indlæg og kommentarer fra alle medlemmer.",
       "viewForum": "Vis forum",

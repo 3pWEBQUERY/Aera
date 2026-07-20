@@ -15,7 +15,7 @@ import {
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { RichTextEditor } from "./rich-text-editor";
-import { Input, Label, Textarea } from "@/components/ui/field";
+import { Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
 
@@ -329,29 +329,43 @@ function ThreadForm({
       ) : (
         <input type="hidden" name="spaceId" value={space.id} />
       )}
-      <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
-          <FormError message={state.error} />
-          <div>
-            <Label htmlFor="ft-title">{t("titleLabel")}</Label>
-            <Input id="ft-title" name="title" required defaultValue={thread?.title ?? ""} placeholder={t("titlePlaceholder")} className="text-base" />
-          </div>
-          <div>
-            <Label htmlFor="ft-body">{t("bodyLabel")}</Label>
-            <RichTextEditor
-              tenant={slug}
-              name="bodyHtml"
-              defaultHtml={thread?.bodyHtml || (thread?.body ? plainToHtml(thread.body) : "")}
-              placeholder={t("bodyPlaceholder")}
+
+      <RichTextEditor
+        variant="seamless"
+        tenant={slug}
+        name="bodyHtml"
+        defaultHtml={thread?.bodyHtml || (thread?.body ? plainToHtml(thread.body) : "")}
+        placeholder={t("bodyPlaceholder")}
+        titleSlot={
+          <>
+            {state.error && (
+              <div className="mb-4">
+                <FormError message={state.error} />
+              </div>
+            )}
+            <input
+              name="title"
+              required
+              defaultValue={thread?.title ?? ""}
+              placeholder={t("titlePlaceholder")}
+              aria-label={t("titleLabel")}
+              className="w-full border-0 bg-transparent p-0 text-2xl font-bold leading-tight text-slate-900 outline-none placeholder:text-slate-300 focus:ring-0 sm:text-[28px]"
             />
-          </div>
+          </>
+        }
+      />
+
+      <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-5 py-3.5 sm:px-6">
+        <p className="inline-flex min-w-0 items-center gap-1.5 text-xs text-slate-500">
+          <Icon name="forum" size={14} className="shrink-0 text-slate-400" />
+          <span className="truncate">{t("postingIn", { space: space.name })}</span>
+        </p>
+        <div className="flex shrink-0 items-center gap-2.5">
+          <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
+          <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+            {pending ? t("saving") : isEdit ? t("saveChanges") : t("sheetCreate")}
+          </button>
         </div>
-      </div>
-      <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
-        <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
-          {pending ? t("saving") : isEdit ? t("saveChanges") : t("sheetCreate")}
-        </button>
       </div>
     </form>
   );

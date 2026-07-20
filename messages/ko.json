@@ -1042,6 +1042,7 @@
       "save": "저장"
     },
     "forumMod": {
+      "postingIn": "{space}에 게시",
       "badge": "포럼 관리",
       "subtitle": "모든 멤버의 게시물과 댓글을 관리하세요.",
       "viewForum": "포럼 보기",

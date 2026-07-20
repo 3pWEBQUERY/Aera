@@ -1042,6 +1042,7 @@
       "save": "Zapisz"
     },
     "forumMod": {
+      "postingIn": "Publikowanie w {space}",
       "badge": "Moderacja forum",
       "subtitle": "Zarządzaj wpisami i komentarzami wszystkich członków.",
       "viewForum": "Zobacz forum",
