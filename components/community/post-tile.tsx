@@ -18,6 +18,11 @@ export interface PostTileData {
   /** null for locked posts (same reason) — used as an animated thumbnail. */
   videoUrl: string | null;
   hasVideo: boolean;
+  /** Cover image with focal point + zoom; takes priority over imageUrl. */
+  coverUrl?: string | null;
+  coverOffsetX?: number;
+  coverOffsetY?: number;
+  coverZoom?: number;
   locked: boolean;
   createdAt: Date;
   likes: number;
@@ -64,6 +69,18 @@ function Media({
     <div className={`relative w-full overflow-hidden bg-[#161613]/5 ${large ? "" : "aspect-video"}`}>
       {post.locked ? (
         <LockedTeaser label={memberLabel} />
+      ) : post.coverUrl ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={post.coverUrl}
+          alt=""
+          className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+          style={{
+            objectPosition: `${post.coverOffsetX ?? 50}% ${post.coverOffsetY ?? 50}%`,
+            transform: (post.coverZoom ?? 100) > 100 ? `scale(${(post.coverZoom ?? 100) / 100})` : undefined,
+            transformOrigin: `${post.coverOffsetX ?? 50}% ${post.coverOffsetY ?? 50}%`,
+          }}
+        />
       ) : post.imageUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

@@ -320,7 +320,7 @@ export default async function SpacePage({
                   </Link>
                 </div>
                 {forumSettings.get(p.id)?.coverUrl && (
-                  <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`} className="hidden shrink-0 self-center sm:block">
+                  <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`} className="hidden w-28 shrink-0 self-center sm:block">
                     <CoverBanner
                       url={forumSettings.get(p.id)!.coverUrl!}
                       offsetX={forumSettings.get(p.id)!.coverOffsetX}
@@ -328,7 +328,7 @@ export default async function SpacePage({
                       zoom={forumSettings.get(p.id)!.coverZoom}
                       aspect="16 / 10"
                       rounded="rounded-lg"
-                      className="w-28 border border-[#161613]/10"
+                      className="border border-[#161613]/10"
                     />
                   </Link>
                 )}

@@ -7,6 +7,7 @@ import { getCommunityCoverUrl } from "@/lib/tenant";
 import { isAnnouncementsOnly, activeSpaceAds } from "@/lib/space-settings";
 import { AdsBanner, type AdBannerItem } from "@/components/community/ads-banner";
 import { canAccess } from "@/lib/entitlements";
+import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { displayRecommendations } from "@/lib/ai";
 import { leaderboard } from "@/lib/gamification";
 import { excerpt, formatPrice, timeAgo } from "@/lib/utils";
@@ -166,6 +167,9 @@ export default async function CommunityHome({
       : Promise.resolve([]),
   ]);
 
+  const tileCoverIds = [...recentRaw, ...popularRaw, ...videosRaw, ...episodesRaw].map((p) => p.id);
+  const tileCovers = await getPostSettingsForPosts(tenant.id, tileCoverIds);
+
   const toTile = (p: (typeof recentRaw)[number]): PostTileData & { body: string } => {
     const locked = lockedSpaceIds.has(p.spaceId);
     return {
@@ -174,6 +178,10 @@ export default async function CommunityHome({
       href: locked ? `/c/${slug}/join` : `/c/${slug}/s/${p.space.slug}/${p.id}`,
       imageUrl: locked ? null : p.imageUrl,
       videoUrl: locked ? null : p.videoUrl,
+      coverUrl: locked ? null : (tileCovers.get(p.id)?.coverUrl ?? null),
+      coverOffsetX: tileCovers.get(p.id)?.coverOffsetX ?? 50,
+      coverOffsetY: tileCovers.get(p.id)?.coverOffsetY ?? 50,
+      coverZoom: tileCovers.get(p.id)?.coverZoom ?? 100,
       hasVideo: Boolean(p.videoUrl),
       locked,
       createdAt: p.createdAt,
