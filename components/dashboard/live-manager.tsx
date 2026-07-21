@@ -13,6 +13,7 @@ import {
   detectLivePlatform,
   type LivePlatform,
 } from "@/lib/live-embed";
+import { PlatformIcon, PLATFORM_COLORS } from "./platform-icons";
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
@@ -36,18 +37,6 @@ interface SpaceInfo {
 }
 
 const initial: ActionState = {};
-
-/** Brand accent per platform for the little chip dot. */
-const PLATFORM_DOT: Record<LivePlatform, string> = {
-  twitch: "bg-purple-500",
-  youtube: "bg-red-500",
-  tiktok: "bg-slate-900",
-  kick: "bg-green-500",
-  instagram: "bg-pink-500",
-  chaturbate: "bg-amber-500",
-  vimeo: "bg-sky-500",
-  custom: "bg-slate-400",
-};
 
 export function LiveManager({
   slug,
@@ -122,7 +111,9 @@ export function LiveManager({
                     <p className="truncate font-semibold text-slate-900">{s.title}</p>
                     {info && platform && platform !== "custom" && (
                       <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-600">
-                        <span className={cn("h-1.5 w-1.5 rounded-full", PLATFORM_DOT[platform])} />
+                        <span style={{ color: PLATFORM_COLORS[platform] }} className="flex shrink-0">
+                          <PlatformIcon platform={platform} size={12} />
+                        </span>
                         {info.label}
                       </span>
                     )}
@@ -274,7 +265,12 @@ function LiveForm({
                           : "border-slate-200 text-slate-600 hover:border-slate-400",
                       )}
                     >
-                      <span className={cn("h-2 w-2 rounded-full", PLATFORM_DOT[p.key])} />
+                      <span
+                        className="flex shrink-0"
+                        style={sel ? undefined : { color: PLATFORM_COLORS[p.key] }}
+                      >
+                        <PlatformIcon platform={p.key} size={16} />
+                      </span>
                       {p.key === "custom" ? t("platformOther") : p.label}
                     </button>
                   );
