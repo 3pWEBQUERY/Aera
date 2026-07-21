@@ -33,7 +33,7 @@ export function InviteFriends({ inviteUrl }: { inviteUrl: string }) {
           <button
             type="button"
             onClick={copy}
-            className="shrink-0 rounded-full bg-[var(--brand)] px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90"
+            className="shrink-0 rounded-xl bg-[var(--brand)] px-4 py-2 text-xs font-semibold text-white transition hover:opacity-90"
           >
             {copied ? tCommon("copied") : tCommon("copy")}
           </button>

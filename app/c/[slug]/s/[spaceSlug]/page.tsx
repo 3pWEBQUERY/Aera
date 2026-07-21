@@ -292,7 +292,7 @@ export default async function SpacePage({
           )}
         </div>
         <form method="GET" className="mb-6">
-          <div className="flex items-center gap-2 rounded-full border border-[#161613]/10 bg-white px-4 py-3 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+          <div className="flex items-center gap-2 rounded-xl border border-[#161613]/10 bg-white px-4 py-3 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
             <Icon name="search" size={18} className="shrink-0 text-[#161613]/50" />
             <input
               type="search"

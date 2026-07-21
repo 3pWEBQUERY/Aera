@@ -61,7 +61,7 @@ export function CategoryChips({ active }: { active: string | null }) {
 
   const chipClass = (on: boolean) =>
     cn(
-      "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors duration-200",
+      "inline-flex min-h-10 shrink-0 items-center gap-2 rounded-xl px-4 text-sm font-semibold transition-colors duration-200",
       on
         ? "bg-[#161613] text-white"
         : "border border-[#161613]/10 bg-white text-[#161613]/70 hover:border-[#161613]/35 hover:text-[#161613]",

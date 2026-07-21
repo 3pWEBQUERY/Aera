@@ -31,7 +31,7 @@ export function ForumPostComposer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#161613] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.98]"
+        className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#161613] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.98]"
       >
         <Icon name="plus" size={18} />
         {t("createPost")}

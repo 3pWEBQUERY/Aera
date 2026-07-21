@@ -177,7 +177,7 @@ export default async function DiscoverPage({
               </p>
               <Link
                 href="/start"
-                className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#161613] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#33332e]"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#161613] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#33332e]"
               >
                 <Icon name="plus" size={16} /> {t("startCta")}
               </Link>
@@ -418,7 +418,7 @@ export default async function DiscoverPage({
         </p>
         <Link
           href="/start"
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#161613] transition-colors hover:bg-[#ece7dc]"
+          className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-semibold text-[#161613] transition-colors hover:bg-[#ece7dc]"
         >
           <Icon name="plus" size={16} /> {t("startCta")}
         </Link>
@@ -431,7 +431,7 @@ async function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
   const t = await getTranslations("discover");
   return (
     <form method="GET" action="/home" id="suche" className="max-w-2xl">
-      <div className="flex items-center gap-3 rounded-full border border-[#161613]/20 bg-white py-2 pl-5 pr-2 transition focus-within:border-[#161613]/50 focus-within:ring-2 focus-within:ring-[#161613]/10">
+      <div className="flex items-center gap-3 rounded-xl border border-[#161613]/20 bg-white py-2 pl-5 pr-2 transition focus-within:border-[#161613]/50 focus-within:ring-2 focus-within:ring-[#161613]/10">
         <Icon name="search" size={20} className="shrink-0 text-[#161613]/40" />
         <input
           type="search"
@@ -443,7 +443,7 @@ async function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-full bg-[#161613] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#33332e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30"
+          className="shrink-0 rounded-xl bg-[#161613] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#33332e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30"
         >
           {t("searchSubmit")}
         </button>
