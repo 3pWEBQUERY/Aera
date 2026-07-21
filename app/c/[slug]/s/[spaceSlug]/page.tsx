@@ -26,6 +26,7 @@ import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { cn, formatPrice, formatDateTime, timeAgo, excerpt } from "@/lib/utils";
 import { Icon } from "@/components/dashboard/icons";
 import { SpaceSidebar } from "@/components/community/space-sidebar";
+import { ForumPostComposer } from "@/components/community/forum-post-composer";
 import { ChatThread } from "@/components/community/chat/chat-thread";
 import { ChatHub } from "@/components/community/chat/chat-hub";
 import { LiveRoom } from "@/components/community/live-room";
@@ -75,6 +76,7 @@ export default async function SpacePage({
   const tType = await getTranslations("community.render.spaceTypeSingular");
   const tPType = await getTranslations("community.render.productTypes");
   const tShop = await getTranslations("community.render.shop");
+  const tSidebar = await getTranslations("community.render.sidebar");
   const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
 
@@ -262,14 +264,48 @@ export default async function SpacePage({
     );
 
     return (
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <div className="min-w-0">
-        {header}
-        {isMember && !forumQuery && (
-          <div className="mb-4">
-            <PostComposer slug={slug} space={spaceSlug} withTitle />
-          </div>
+      <>
+        {error === "legal-consent" && (
+          <p
+            role="alert"
+            className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          >
+            {tLegal("requiredError")}
+          </p>
         )}
+        <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/45">
+              {tType.has(space.type) ? tType(space.type) : tType("fallback")}
+            </p>
+            <h1 className="display-serif mt-1.5 text-3xl text-[#161613] sm:text-4xl">
+              {space.name}
+            </h1>
+            {space.description && (
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[#161613]/60">
+                {space.description}
+              </p>
+            )}
+          </div>
+          {isMember && (
+            <ForumPostComposer slug={slug} space={spaceSlug} spaceName={space.name} />
+          )}
+        </div>
+        <form method="GET" className="mb-6">
+          <div className="flex items-center gap-2 rounded-full border border-[#161613]/10 bg-white px-4 py-3 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+            <Icon name="search" size={18} className="shrink-0 text-[#161613]/50" />
+            <input
+              type="search"
+              name="q"
+              defaultValue={forumQuery}
+              placeholder={tSidebar("searchPosts")}
+              aria-label={tSidebar("searchPosts")}
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[#161613]/50"
+            />
+          </div>
+        </form>
+        <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0">
         <div className="mb-3 flex flex-wrap items-center gap-1">
           {tab("top", t("forumPopular"))}
           {tab("new", t("forumNew"))}
@@ -346,8 +382,10 @@ export default async function SpacePage({
           spaceId={space.id}
           isMember={isMember}
           query={forumQuery}
+          hideSearch
         />
-      </div>
+        </div>
+      </>
     );
   }
 

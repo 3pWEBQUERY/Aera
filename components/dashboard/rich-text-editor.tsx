@@ -65,6 +65,7 @@ export function RichTextEditor({
   coverSlot,
   onPollClick,
   pollActive = false,
+  hideUploads = false,
 }: {
   tenant: string;
   name?: string;
@@ -86,6 +87,9 @@ export function RichTextEditor({
   onPollClick?: () => void;
   /** Highlights the poll button while the composer's poll editor is open. */
   pollActive?: boolean;
+  /** Hide media-upload buttons (image/video/attach/record) — e.g. for members
+   *  who may not upload; keeps formatting, emoji, GIF and links. */
+  hideUploads?: boolean;
 }) {
   const t = useTranslations("dashboard.rte");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -381,34 +385,38 @@ export function RichTextEditor({
         {glyphs.link}
       </button>
       <Divider />
-      <button
-        type="button"
-        title={t("insertImage")}
-        aria-label={t("insertImage")}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          saveSelection();
-        }}
-        onClick={() => imgInput.current?.click()}
-        className={seamless ? iconBtn : labelBtn}
-      >
-        <Icon name="gallery" size={seamless ? 17 : 15} />
-        {!seamless && <span className="text-xs font-medium">{t("image")}</span>}
-      </button>
-      <button
-        type="button"
-        title={t("insertVideo")}
-        aria-label={t("insertVideo")}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          saveSelection();
-        }}
-        onClick={() => vidInput.current?.click()}
-        className={seamless ? iconBtn : labelBtn}
-      >
-        <Icon name="videos" size={seamless ? 17 : 15} />
-        {!seamless && <span className="text-xs font-medium">{t("video")}</span>}
-      </button>
+      {!hideUploads && (
+        <>
+          <button
+            type="button"
+            title={t("insertImage")}
+            aria-label={t("insertImage")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveSelection();
+            }}
+            onClick={() => imgInput.current?.click()}
+            className={seamless ? iconBtn : labelBtn}
+          >
+            <Icon name="gallery" size={seamless ? 17 : 15} />
+            {!seamless && <span className="text-xs font-medium">{t("image")}</span>}
+          </button>
+          <button
+            type="button"
+            title={t("insertVideo")}
+            aria-label={t("insertVideo")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveSelection();
+            }}
+            onClick={() => vidInput.current?.click()}
+            className={seamless ? iconBtn : labelBtn}
+          >
+            <Icon name="videos" size={seamless ? 17 : 15} />
+            {!seamless && <span className="text-xs font-medium">{t("video")}</span>}
+          </button>
+        </>
+      )}
       <button
         type="button"
         title={t("gif")}
@@ -426,35 +434,39 @@ export function RichTextEditor({
       >
         <span className="rounded-[4px] border-[1.5px] border-current px-1 text-[9px] font-bold leading-[1.35] tracking-tight">GIF</span>
       </button>
-      <button
-        type="button"
-        title={t("attach")}
-        aria-label={t("attach")}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          saveSelection();
-        }}
-        onClick={() => fileInput.current?.click()}
-        className={iconBtn}
-      >
-        {glyphs.attach}
-      </button>
-      <button
-        type="button"
-        title={t("record")}
-        aria-label={t("record")}
-        onMouseDown={(e) => {
-          e.preventDefault();
-          saveSelection();
-        }}
-        onClick={() => {
-          setEmojiOpen(false);
-          setRecordOpen(true);
-        }}
-        className={iconBtn}
-      >
-        {glyphs.record}
-      </button>
+      {!hideUploads && (
+        <>
+          <button
+            type="button"
+            title={t("attach")}
+            aria-label={t("attach")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveSelection();
+            }}
+            onClick={() => fileInput.current?.click()}
+            className={iconBtn}
+          >
+            {glyphs.attach}
+          </button>
+          <button
+            type="button"
+            title={t("record")}
+            aria-label={t("record")}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              saveSelection();
+            }}
+            onClick={() => {
+              setEmojiOpen(false);
+              setRecordOpen(true);
+            }}
+            className={iconBtn}
+          >
+            {glyphs.record}
+          </button>
+        </>
+      )}
       <button
         type="button"
         title={t("emoji")}

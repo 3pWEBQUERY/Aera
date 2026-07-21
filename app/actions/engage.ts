@@ -19,6 +19,7 @@ import { resolveReferrer, recordReferralJoin } from "@/lib/referrals";
 import { moderateContent } from "@/lib/moderation";
 import { indexContent } from "@/lib/ai";
 import { castPollVote } from "@/lib/polls";
+import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
 import {
   createMediaCheckout,
   createMediaItemCheckout,
@@ -367,28 +368,46 @@ export async function createPostAction(
   const acc = await spaceAccess(tenant.id, spaceSlug, user.id);
   if (!acc.space || !acc.allowed) return { error: t("noAccessSpace") };
 
-  const parsed = postSchema.safeParse({
-    title: fd.get("title") ?? "",
-    body: fd.get("body"),
-  });
-  if (!parsed.success)
-    return { error: zodError(t, parsed) };
+  // The forum popover submits rich `bodyHtml`; the inline feed composer submits
+  // a plain `body` validated by postSchema.
+  const rawHtml = fd.get("bodyHtml");
+  let title: string | null;
+  let bodyText: string;
+  let bodyHtml: string | null = null;
+  if (rawHtml !== null) {
+    title = String(fd.get("title") || "").trim().slice(0, 200) || null;
+    const sanitized = String(rawHtml) ? sanitizeRichHtml(String(rawHtml)) : "";
+    const plain = sanitized ? htmlToPlainText(sanitized) : "";
+    const hasMedia = sanitized ? /<(img|video)/i.test(sanitized) : false;
+    bodyHtml = sanitized && (plain || hasMedia) ? sanitized : null;
+    bodyText = bodyHtml ? plain : "";
+    if (!bodyHtml && !title) return { error: t("contentRequired") };
+  } else {
+    const parsed = postSchema.safeParse({
+      title: fd.get("title") ?? "",
+      body: fd.get("body"),
+    });
+    if (!parsed.success) return { error: zodError(t, parsed) };
+    title = parsed.data.title || null;
+    bodyText = parsed.data.body;
+  }
 
   const post = await prisma.post.create({
     data: {
       tenantId: tenant.id,
       spaceId: acc.space.id,
       authorId: user.id,
-      title: parsed.data.title || null,
-      body: parsed.data.body,
+      title,
+      body: bodyText,
+      bodyHtml,
     },
   });
   await indexContent({
     tenantId: tenant.id,
     sourceType: "POST",
     sourceId: post.id,
-    title: parsed.data.title || undefined,
-    content: parsed.data.body,
+    title: title || undefined,
+    content: bodyText || title || "",
   });
   await awardPoints({
     tenantId: tenant.id,
@@ -404,7 +423,7 @@ export async function createPostAction(
       refType: "Post",
       refId: post.id,
       authorId: user.id,
-      text: [parsed.data.title, parsed.data.body].filter(Boolean).join("\n"),
+      text: [title, bodyText].filter(Boolean).join("\n"),
     });
   }
   revalidatePath(`/c/${slug}/s/${spaceSlug}`);

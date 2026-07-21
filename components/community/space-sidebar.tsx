@@ -18,6 +18,7 @@ export async function SpaceSidebar({
   spaceId,
   isMember,
   query,
+  hideSearch,
 }: {
   tenantId: string;
   tenantName: string;
@@ -26,6 +27,7 @@ export async function SpaceSidebar({
   spaceId: string;
   isMember: boolean;
   query: string;
+  hideSearch?: boolean;
 }) {
   const [popularRaw, products, shopSpace] = await Promise.all([
     prisma.post.findMany({
@@ -58,19 +60,21 @@ export async function SpaceSidebar({
   return (
     <aside className="space-y-5 lg:sticky lg:top-20">
       {/* Post search */}
-      <form method="GET">
-        <div className="flex items-center gap-2 rounded-full border border-[#161613]/10 bg-white px-3.5 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={16} className="shrink-0 text-[#161613]/50" />
-          <input
-            type="search"
-            name="q"
-            defaultValue={query}
-            placeholder={t("searchPosts")}
-            aria-label={t("searchPosts")}
-            className="w-full bg-transparent text-sm outline-none placeholder:text-[#161613]/50"
-          />
-        </div>
-      </form>
+      {!hideSearch && (
+        <form method="GET">
+          <div className="flex items-center gap-2 rounded-full border border-[#161613]/10 bg-white px-3.5 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+            <Icon name="search" size={16} className="shrink-0 text-[#161613]/50" />
+            <input
+              type="search"
+              name="q"
+              defaultValue={query}
+              placeholder={t("searchPosts")}
+              aria-label={t("searchPosts")}
+              className="w-full bg-transparent text-sm outline-none placeholder:text-[#161613]/50"
+            />
+          </div>
+        </form>
+      )}
 
       {/* Membership upsell */}
       {!isMember && (
