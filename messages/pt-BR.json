@@ -2947,7 +2947,11 @@
         "send": "Enviar gorjeta",
         "messagePlaceholder": "Adicione uma mensagem (opcional)",
         "empty": "Ainda sem gorjetas",
-        "emptyHint": "Seja o primeiro a apoiar este criador."
+        "emptyHint": "Seja o primeiro a apoiar este criador.",
+        "sending": "Enviando…",
+        "anonymous": "Enviar anonimamente",
+        "thanks": "Obrigado pelo seu apoio!",
+        "amountError": "Insira um valor entre € 1 e € 1.000."
       },
       "calendar": {
         "untitledPost": "Publicação sem título",

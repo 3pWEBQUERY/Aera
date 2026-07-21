@@ -2947,7 +2947,11 @@
         "send": "チップを送る",
         "messagePlaceholder": "メッセージを追加（任意）",
         "empty": "まだチップはありません",
-        "emptyHint": "このクリエイターを最初に応援しましょう。"
+        "emptyHint": "このクリエイターを最初に応援しましょう。",
+        "sending": "送信中…",
+        "anonymous": "匿名で送る",
+        "thanks": "ご支援ありがとうございます！",
+        "amountError": "1 €から1.000 €の間の金額を入力してください。"
       },
       "calendar": {
         "untitledPost": "無題の投稿",

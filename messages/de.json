@@ -2985,7 +2985,11 @@
         "send": "Trinkgeld senden",
         "messagePlaceholder": "Nachricht hinzufügen (optional)",
         "empty": "Noch keine Trinkgelder",
-        "emptyHint": "Sei der Erste, der diesen Creator unterstützt."
+        "emptyHint": "Sei der Erste, der diesen Creator unterstützt.",
+        "sending": "Senden…",
+        "anonymous": "Anonym senden",
+        "thanks": "Danke für deine Unterstützung!",
+        "amountError": "Bitte gib einen Betrag zwischen 1 € und 1.000 € ein."
       },
       "calendar": {
         "untitledPost": "Beitrag ohne Titel",

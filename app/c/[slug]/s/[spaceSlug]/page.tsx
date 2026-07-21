@@ -46,7 +46,7 @@ import { PurchaseSubmitButton } from "@/components/community/purchase-submit-but
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { submitRequestAction, purchaseRequestAction } from "@/app/actions/requests";
 import { reserveBookingAction } from "@/app/actions/booking";
-import { tipAction } from "@/app/actions/tips";
+import { TipForm } from "@/components/community/tip-form";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const PRODUCT_TYPES = ["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"];
@@ -65,10 +65,11 @@ export default async function SpacePage({
     page?: string;
     dm?: string;
     error?: string;
+    tipped?: string;
   }>;
 }) {
   const { slug, spaceSlug } = await params;
-  const { sort, open, purchased, q, page, dm, error } = await searchParams;
+  const { sort, open, purchased, q, page, dm, error, tipped } = await searchParams;
   const community = await getCommunityContext(slug);
   if (!community) notFound();
   const { tenant, user, ctx } = community;
@@ -1089,33 +1090,23 @@ export default async function SpacePage({
             </div>
           </div>
         )}
-        {isMember && (
-          <form action={tipAction} className="mb-6 rounded-2xl border border-[#161613]/10 bg-white p-5">
-            <input type="hidden" name="tenant" value={slug} />
-            <input type="hidden" name="space" value={spaceSlug} />
-            <div className="flex flex-wrap items-end gap-3">
-              <div className="flex-1">
-                <label className="mb-1 block text-xs font-medium text-[#161613]/60">{tTip("amountLabel")}</label>
-                <input
-                  name="amount"
-                  inputMode="decimal"
-                  required
-                  placeholder="5,00"
-                  className="w-full rounded-lg border border-[#161613]/15 px-3 py-2 text-sm focus:border-[var(--brand)] focus:outline-none"
-                />
-              </div>
-              <button className="inline-flex items-center gap-2 rounded-xl bg-[#161613] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#33332e]">
-                <Icon name="heart" size={15} /> {tTip("send")}
-              </button>
-            </div>
-            <input
-              name="message"
-              maxLength={280}
-              placeholder={tTip("messagePlaceholder")}
-              className="mt-3 w-full rounded-lg border border-[#161613]/15 px-3 py-2 text-sm focus:border-[var(--brand)] focus:outline-none"
-            />
-          </form>
+        {tipped === "1" && (
+          <p
+            role="status"
+            className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
+          >
+            {tTip("thanks")}
+          </p>
         )}
+        {error === "amount" && (
+          <p
+            role="alert"
+            className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+          >
+            {tTip("amountError")}
+          </p>
+        )}
+        {isMember && <TipForm slug={slug} space={spaceSlug} />}
         {tips.length === 0 ? (
           <EmptyState icon="heart" title={tTip("empty")} hint={tTip("emptyHint")} />
         ) : (
@@ -1126,7 +1117,8 @@ export default async function SpacePage({
                 <div className="min-w-0 flex-1">
                   <p className="text-sm">
                     <span className="font-semibold text-[#161613]">{tp.user.name}</span>{" "}
-                    <span className="text-[color:var(--brand)]">{formatPrice(tp.amountCents, tp.currency, locale)}</span>
+                    <span className="text-[color:var(--brand)]">{formatPrice(tp.amountCents, tp.currency, locale)}</span>{" "}
+                    <span className="text-xs font-normal text-[#161613]/45">· {timeAgo(tp.createdAt, locale)}</span>
                   </p>
                   {tp.message && <p className="mt-0.5 text-sm text-[#161613]/70">{tp.message}</p>}
                 </div>

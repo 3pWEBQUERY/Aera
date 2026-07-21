@@ -2947,7 +2947,11 @@
         "send": "Skicka dricks",
         "messagePlaceholder": "Lägg till ett meddelande (valfritt)",
         "empty": "Inga dricks ännu",
-        "emptyHint": "Bli först med att stötta den här skaparen."
+        "emptyHint": "Bli först med att stötta den här skaparen.",
+        "sending": "Skickar…",
+        "anonymous": "Skicka anonymt",
+        "thanks": "Tack för ditt stöd!",
+        "amountError": "Ange ett belopp mellan 1 € och 1 000 €."
       },
       "calendar": {
         "untitledPost": "Inlägg utan titel",

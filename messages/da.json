@@ -2947,7 +2947,11 @@
         "send": "Send tip",
         "messagePlaceholder": "Tilføj en besked (valgfrit)",
         "empty": "Ingen tips endnu",
-        "emptyHint": "Vær den første til at støtte denne creator."
+        "emptyHint": "Vær den første til at støtte denne creator.",
+        "sending": "Sender…",
+        "anonymous": "Send anonymt",
+        "thanks": "Tak for din støtte!",
+        "amountError": "Angiv et beløb mellem 1 € og 1.000 €."
       },
       "calendar": {
         "untitledPost": "Opslag uden titel",

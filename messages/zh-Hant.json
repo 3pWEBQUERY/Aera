@@ -2947,7 +2947,11 @@
         "send": "傳送抖內",
         "messagePlaceholder": "新增訊息（選填）",
         "empty": "尚無抖內",
-        "emptyHint": "成為第一個支持這位創作者的人。"
+        "emptyHint": "成為第一個支持這位創作者的人。",
+        "sending": "傳送中…",
+        "anonymous": "匿名傳送",
+        "thanks": "感謝你的支持！",
+        "amountError": "請輸入 1 € 至 1.000 € 之間的金額。"
       },
       "calendar": {
         "untitledPost": "無標題貼文",

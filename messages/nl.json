@@ -2947,7 +2947,11 @@
         "send": "Fooi sturen",
         "messagePlaceholder": "Voeg een bericht toe (optioneel)",
         "empty": "Nog geen fooien",
-        "emptyHint": "Wees de eerste die deze maker steunt."
+        "emptyHint": "Wees de eerste die deze maker steunt.",
+        "sending": "Versturen…",
+        "anonymous": "Anoniem versturen",
+        "thanks": "Bedankt voor je steun!",
+        "amountError": "Voer een bedrag in tussen € 1 en € 1.000."
       },
       "calendar": {
         "untitledPost": "Bericht zonder titel",

@@ -2947,7 +2947,11 @@
         "send": "팁 보내기",
         "messagePlaceholder": "메시지 추가 (선택)",
         "empty": "아직 팁이 없습니다",
-        "emptyHint": "이 크리에이터를 가장 먼저 후원해 보세요."
+        "emptyHint": "이 크리에이터를 가장 먼저 후원해 보세요.",
+        "sending": "보내는 중…",
+        "anonymous": "익명으로 보내기",
+        "thanks": "후원해 주셔서 감사합니다!",
+        "amountError": "1 €에서 1.000 € 사이의 금액을 입력해 주세요."
       },
       "calendar": {
         "untitledPost": "제목 없는 게시물",

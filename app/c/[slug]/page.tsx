@@ -109,6 +109,7 @@ export default async function CommunityHome({
     (s) => s.type !== "ADS" && !isAnnouncementsOnly(s.settings),
   );
   const adSpaces = spacesAll.filter((s) => s.type === "ADS" && !s.isArchived);
+  const tipsSpace = spaces.find((s) => s.type === "TIPS");
 
   // Articles = feed/forum/blog. Video/podcast spaces are shown separately.
   const ARTICLE_TYPES = ["FEED", "FORUM", "BLOG"];
@@ -635,7 +636,12 @@ export default async function CommunityHome({
           </div>
 
           <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
-            <HeroActions slug={slug} isMember={isMember} isStaff={ctx.isStaff} />
+            <HeroActions
+              slug={slug}
+              isMember={isMember}
+              isStaff={ctx.isStaff}
+              tipsHref={tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null}
+            />
 
             {layoutConfig.header.socials.length > 0 && (
               <div className="flex flex-wrap items-center gap-2.5">

@@ -2947,7 +2947,11 @@
         "send": "Envoyer un pourboire",
         "messagePlaceholder": "Ajouter un message (facultatif)",
         "empty": "Aucun pourboire pour l'instant",
-        "emptyHint": "Soyez le premier à soutenir ce créateur."
+        "emptyHint": "Soyez le premier à soutenir ce créateur.",
+        "sending": "Envoi…",
+        "anonymous": "Envoyer anonymement",
+        "thanks": "Merci pour ton soutien !",
+        "amountError": "Saisis un montant entre 1 € et 1 000 €."
       },
       "calendar": {
         "untitledPost": "Publication sans titre",

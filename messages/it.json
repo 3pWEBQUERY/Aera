@@ -2947,7 +2947,11 @@
         "send": "Invia mancia",
         "messagePlaceholder": "Aggiungi un messaggio (facoltativo)",
         "empty": "Ancora nessuna mancia",
-        "emptyHint": "Sii il primo a sostenere questo creator."
+        "emptyHint": "Sii il primo a sostenere questo creator.",
+        "sending": "Invio…",
+        "anonymous": "Invia in modo anonimo",
+        "thanks": "Grazie per il tuo supporto!",
+        "amountError": "Inserisci un importo tra 1 € e 1.000 €."
       },
       "calendar": {
         "untitledPost": "Post senza titolo",

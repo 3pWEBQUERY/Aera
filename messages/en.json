@@ -2985,7 +2985,11 @@
         "send": "Send tip",
         "messagePlaceholder": "Add a message (optional)",
         "empty": "No tips yet",
-        "emptyHint": "Be the first to support this creator."
+        "emptyHint": "Be the first to support this creator.",
+        "sending": "Sending…",
+        "anonymous": "Send anonymously",
+        "thanks": "Thank you for your support!",
+        "amountError": "Please enter an amount between €1 and €1,000."
       },
       "calendar": {
         "untitledPost": "Untitled post",

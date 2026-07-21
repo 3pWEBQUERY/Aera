@@ -2947,7 +2947,11 @@
         "send": "Enviar propina",
         "messagePlaceholder": "Añade un mensaje (opcional)",
         "empty": "Aún no hay propinas",
-        "emptyHint": "Sé el primero en apoyar a este creador."
+        "emptyHint": "Sé el primero en apoyar a este creador.",
+        "sending": "Enviando…",
+        "anonymous": "Enviar de forma anónima",
+        "thanks": "¡Gracias por tu apoyo!",
+        "amountError": "Introduce un importe entre 1 € y 1.000 €."
       },
       "calendar": {
         "untitledPost": "Publicación sin título",

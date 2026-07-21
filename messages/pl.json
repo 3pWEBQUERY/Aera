@@ -2947,7 +2947,11 @@
         "send": "Wyślij napiwek",
         "messagePlaceholder": "Dodaj wiadomość (opcjonalnie)",
         "empty": "Brak napiwków",
-        "emptyHint": "Bądź pierwszą osobą, która wesprze tego twórcę."
+        "emptyHint": "Bądź pierwszą osobą, która wesprze tego twórcę.",
+        "sending": "Wysyłanie…",
+        "anonymous": "Wyślij anonimowo",
+        "thanks": "Dziękujemy za wsparcie!",
+        "amountError": "Podaj kwotę od 1 € do 1000 €."
       },
       "calendar": {
         "untitledPost": "Post bez tytułu",

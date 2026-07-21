@@ -19,10 +19,12 @@ export function HeroActions({
   slug,
   isMember,
   isStaff,
+  tipsHref,
 }: {
   slug: string;
   isMember: boolean;
   isStaff: boolean;
+  tipsHref?: string | null;
 }) {
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -83,6 +85,15 @@ export function HeroActions({
           className="inline-flex items-center justify-center rounded-full bg-[var(--brand)] px-7 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
         >
           Mitglied werden
+        </Link>
+      )}
+
+      {tipsHref && (
+        <Link
+          href={tipsHref}
+          className="inline-flex items-center gap-2 rounded-xl border border-[#161613]/25 px-5 py-2.5 text-sm font-semibold text-[#161613] transition-colors hover:border-[#161613]/60 hover:bg-[#161613]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30"
+        >
+          <Icon name="heart" size={16} /> Unterstützen
         </Link>
       )}
 
