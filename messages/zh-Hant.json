@@ -2497,7 +2497,18 @@
       "replayHint": "直播結束後作為錄影顯示給成員。",
       "noStart": "未設定開始時間",
       "hasReplay": "有錄影",
-      "entitlementTierHint": "所選等級的成員（以及擁有此金鑰的人）可以觀看。"
+      "entitlementTierHint": "所選等級的成員（以及擁有此金鑰的人）可以觀看。",
+      "helpAria": "顯示嵌入說明",
+      "help": {
+        "twitch": "貼上你的 Twitch 頻道連結（twitch.tv/頻道名）。我們會自動轉換為 Twitch 播放器——你一開播，直播就會在這裡播放。",
+        "youtube": "在 YouTube Studio 開始直播並貼上影片連結。我們會自動嵌入為播放器。重要：需在 YouTube Studio 開啟「允許嵌入」。",
+        "tiktok": "貼上你的 TikTok 直播連結（tiktok.com/@名字/live）。注意：TikTok 沒有官方嵌入播放器，嵌入可能被封鎖。",
+        "kick": "貼上你的 Kick 頻道連結（kick.com/頻道名）。我們會自動轉換為 Kick 播放器。",
+        "instagram": "貼上你的 Instagram 直播連結。注意：Instagram 不官方支援直播嵌入。",
+        "chaturbate": "貼上你的 Chaturbate 房間連結（chaturbate.com/名字）。我們會自動使用房間的嵌入檢視。",
+        "vimeo": "貼上你的 Vimeo 影片或直播連結。我們會自動轉換為 Vimeo 播放器。需在 Vimeo 設定中允許嵌入。",
+        "custom": "貼上任意嵌入/播放器 URL。該 URL 將原樣嵌入，需允許 iframe 嵌入。"
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

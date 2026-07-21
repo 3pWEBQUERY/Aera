@@ -2497,7 +2497,18 @@
       "replayHint": "Mostrato come registrazione dopo la sessione.",
       "noStart": "Nessun orario di inizio",
       "hasReplay": "Registrazione disponibile",
-      "entitlementTierHint": "I membri del livello selezionato (e chi possiede questa chiave) possono guardare."
+      "entitlementTierHint": "I membri del livello selezionato (e chi possiede questa chiave) possono guardare.",
+      "helpAria": "Mostra istruzioni per l'incorporamento",
+      "help": {
+        "twitch": "Incolla il link del tuo canale Twitch (twitch.tv/tuocanale). Lo convertiamo automaticamente nel player Twitch: appena vai in diretta, lo stream appare qui.",
+        "youtube": "Avvia la diretta in YouTube Studio e incolla il link del video. Lo incorporiamo automaticamente. Importante: in YouTube Studio deve essere attivo “Consenti incorporamento”.",
+        "tiktok": "Incolla il link della tua diretta TikTok (tiktok.com/@tuonome/live). Nota: TikTok non offre un player incorporabile ufficiale — l'incorporamento può essere bloccato.",
+        "kick": "Incolla il link del tuo canale Kick (kick.com/tuocanale). Lo convertiamo automaticamente nel player Kick.",
+        "instagram": "Incolla il link della tua diretta Instagram. Nota: Instagram non consente ufficialmente l'incorporamento delle dirette.",
+        "chaturbate": "Incolla il link della tua stanza Chaturbate (chaturbate.com/tuonome). Usiamo automaticamente la vista embed della stanza.",
+        "vimeo": "Incolla il link del tuo video o della diretta Vimeo. Lo convertiamo automaticamente nel player Vimeo. L'incorporamento deve essere consentito nelle impostazioni Vimeo.",
+        "custom": "Incolla qualsiasi URL embed o player. L'URL viene incorporato così com'è e deve consentire l'iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

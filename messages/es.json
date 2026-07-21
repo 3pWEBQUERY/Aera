@@ -2497,7 +2497,18 @@
       "replayHint": "Se muestra como grabación al terminar la sesión.",
       "noStart": "Sin hora de inicio",
       "hasReplay": "Grabación disponible",
-      "entitlementTierHint": "Los miembros del nivel seleccionado (y quienes tengan esta clave) pueden verla."
+      "entitlementTierHint": "Los miembros del nivel seleccionado (y quienes tengan esta clave) pueden verla.",
+      "helpAria": "Mostrar instrucciones de inserción",
+      "help": {
+        "twitch": "Pega el enlace de tu canal de Twitch (twitch.tv/tucanal). Lo convertimos automáticamente en el reproductor de Twitch: en cuanto estés en directo, el stream se verá aquí.",
+        "youtube": "Inicia tu directo en YouTube Studio y pega el enlace del vídeo. Lo insertamos automáticamente como reproductor. Importante: “Permitir inserción” debe estar activado en YouTube Studio.",
+        "tiktok": "Pega el enlace de tu directo de TikTok (tiktok.com/@tunombre/live). Nota: TikTok no ofrece reproductor de inserción oficial; puede bloquearse.",
+        "kick": "Pega el enlace de tu canal de Kick (kick.com/tucanal). Lo convertimos automáticamente en el reproductor de Kick.",
+        "instagram": "Pega el enlace de tu directo de Instagram. Nota: Instagram no permite insertar directos oficialmente; puede bloquearse.",
+        "chaturbate": "Pega el enlace de tu sala de Chaturbate (chaturbate.com/tunombre). Usamos automáticamente la vista de inserción de la sala.",
+        "vimeo": "Pega el enlace de tu vídeo o directo de Vimeo. Lo convertimos automáticamente en el reproductor de Vimeo. La inserción debe estar permitida en los ajustes de Vimeo.",
+        "custom": "Pega cualquier URL de inserción o reproductor. La URL se inserta tal cual y debe permitir la inserción por iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

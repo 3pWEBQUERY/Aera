@@ -2497,7 +2497,18 @@
       "replayHint": "Visas som inspelning efter sessionen.",
       "noStart": "Ingen starttid",
       "hasReplay": "Inspelning tillgänglig",
-      "entitlementTierHint": "Medlemmar på vald nivå (och alla med denna nyckel) kan titta."
+      "entitlementTierHint": "Medlemmar på vald nivå (och alla med denna nyckel) kan titta.",
+      "helpAria": "Visa inbäddningsinstruktioner",
+      "help": {
+        "twitch": "Klistra in länken till din Twitch-kanal (twitch.tv/dinkanal). Vi omvandlar den automatiskt till Twitch-spelaren — när du går live visas streamen här.",
+        "youtube": "Starta din livesändning i YouTube Studio och klistra in videolänken. Vi bäddar in den automatiskt. Viktigt: ”Tillåt inbäddning” måste vara aktiverat i YouTube Studio.",
+        "tiktok": "Klistra in länken till din TikTok-live (tiktok.com/@dittnamn/live). Obs: TikTok saknar officiell embed-spelare — inbäddning kan blockeras.",
+        "kick": "Klistra in länken till din Kick-kanal (kick.com/dinkanal). Vi omvandlar den automatiskt till Kick-spelaren.",
+        "instagram": "Klistra in länken till din Instagram-live. Obs: Instagram tillåter inte officiell inbäddning av livesändningar.",
+        "chaturbate": "Klistra in länken till ditt Chaturbate-rum (chaturbate.com/dittnamn). Vi använder automatiskt rummets embed-vy.",
+        "vimeo": "Klistra in länken till din Vimeo-video eller -livesändning. Vi omvandlar den automatiskt till Vimeo-spelaren. Inbäddning måste vara tillåten i Vimeo-inställningarna.",
+        "custom": "Klistra in valfri embed- eller spelar-URL. URL:en bäddas in som den är och måste tillåta iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

@@ -2497,7 +2497,18 @@
       "replayHint": "Vises som optagelse efter sessionen.",
       "noStart": "Ingen starttid",
       "hasReplay": "Optagelse tilgængelig",
-      "entitlementTierHint": "Medlemmer på det valgte niveau (og alle med denne nøgle) kan se med."
+      "entitlementTierHint": "Medlemmer på det valgte niveau (og alle med denne nøgle) kan se med.",
+      "helpAria": "Vis vejledning til indlejring",
+      "help": {
+        "twitch": "Indsæt linket til din Twitch-kanal (twitch.tv/dinkanal). Vi omdanner det automatisk til Twitch-afspilleren — så snart du går live, kører streamen her.",
+        "youtube": "Start din livestream i YouTube Studio og indsæt videolinket. Vi indlejrer det automatisk. Vigtigt: “Tillad indlejring” skal være aktiveret i YouTube Studio.",
+        "tiktok": "Indsæt linket til din TikTok-live (tiktok.com/@ditnavn/live). Bemærk: TikTok har ingen officiel embed-afspiller — indlejring kan blive blokeret.",
+        "kick": "Indsæt linket til din Kick-kanal (kick.com/dinkanal). Vi omdanner det automatisk til Kick-afspilleren.",
+        "instagram": "Indsæt linket til din Instagram-live. Bemærk: Instagram tillader ikke officiel indlejring af live-videoer.",
+        "chaturbate": "Indsæt linket til dit Chaturbate-rum (chaturbate.com/ditnavn). Vi bruger automatisk rummets embed-visning.",
+        "vimeo": "Indsæt linket til din Vimeo-video eller -livestream. Vi omdanner det automatisk til Vimeo-afspilleren. Indlejring skal være tilladt i Vimeo-indstillingerne.",
+        "custom": "Indsæt en vilkårlig embed- eller afspiller-URL. URL'en indlejres som den er og skal tillade iframe-indlejring."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

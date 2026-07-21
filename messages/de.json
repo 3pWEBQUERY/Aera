@@ -1420,7 +1420,18 @@
       "replayHint": "Wird Mitgliedern nach Ende der Session als Aufzeichnung angezeigt.",
       "noStart": "Keine Startzeit",
       "hasReplay": "Aufzeichnung vorhanden",
-      "entitlementTierHint": "Mitglieder der gewählten Stufe (und alle mit diesem Schlüssel) können zuschauen."
+      "entitlementTierHint": "Mitglieder der gewählten Stufe (und alle mit diesem Schlüssel) können zuschauen.",
+      "helpAria": "Hinweise zum Einbetten anzeigen",
+      "help": {
+        "twitch": "Füge den Link zu deinem Twitch-Kanal ein (twitch.tv/deinkanal). Wir wandeln ihn automatisch in den Twitch-Player um — sobald du auf Twitch live gehst, läuft der Stream direkt hier in deiner Community.",
+        "youtube": "Starte deinen Livestream in YouTube Studio und füge den Video-Link ein (youtube.com/watch?v=… oder youtu.be/…). Wir betten ihn automatisch als Player ein. Wichtig: In YouTube Studio muss „Einbettung zulassen“ aktiviert sein.",
+        "tiktok": "Füge den Link zu deinem TikTok-Live ein (tiktok.com/@deinname/live). Hinweis: TikTok bietet keinen offiziellen Embed-Player — die Einbettung kann von TikTok blockiert werden.",
+        "kick": "Füge den Link zu deinem Kick-Kanal ein (kick.com/deinkanal). Wir wandeln ihn automatisch in den Kick-Player um — sobald du auf Kick live bist, läuft der Stream hier.",
+        "instagram": "Füge den Link zu deinem Instagram-Live ein (instagram.com/deinname/live). Hinweis: Instagram erlaubt kein offizielles Einbetten von Live-Videos — die Einbettung kann blockiert werden.",
+        "chaturbate": "Füge den Link zu deinem Chaturbate-Raum ein (chaturbate.com/deinname). Wir nutzen automatisch die Embed-Ansicht des Raums, damit der Stream direkt hier läuft.",
+        "vimeo": "Füge den Link zu deinem Vimeo-Video oder -Livestream ein (vimeo.com/123456789). Wir wandeln ihn automatisch in den Vimeo-Player um. In den Vimeo-Datenschutz-Einstellungen muss Einbetten erlaubt sein.",
+        "custom": "Füge eine beliebige Embed- oder Player-URL ein, z. B. den iframe-Link deines Streaming-Anbieters. Die URL wird unverändert eingebettet und muss das Einbetten per iframe erlauben."
+      }
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",

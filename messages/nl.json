@@ -2497,7 +2497,18 @@
       "replayHint": "Wordt na afloop als opname getoond.",
       "noStart": "Geen starttijd",
       "hasReplay": "Opname beschikbaar",
-      "entitlementTierHint": "Leden van het gekozen niveau (en iedereen met deze sleutel) kunnen kijken."
+      "entitlementTierHint": "Leden van het gekozen niveau (en iedereen met deze sleutel) kunnen kijken.",
+      "helpAria": "Insluitinstructies tonen",
+      "help": {
+        "twitch": "Plak de link naar je Twitch-kanaal (twitch.tv/jouwkanaal). We zetten hem automatisch om naar de Twitch-speler — zodra je live gaat, speelt de stream hier.",
+        "youtube": "Start je livestream in YouTube Studio en plak de videolink. We sluiten hem automatisch in. Belangrijk: “Insluiten toestaan” moet aanstaan in YouTube Studio.",
+        "tiktok": "Plak de link naar je TikTok-live (tiktok.com/@jouwnaam/live). Let op: TikTok heeft geen officiële embed-speler — insluiten kan geblokkeerd worden.",
+        "kick": "Plak de link naar je Kick-kanaal (kick.com/jouwkanaal). We zetten hem automatisch om naar de Kick-speler.",
+        "instagram": "Plak de link naar je Instagram-live. Let op: Instagram staat het insluiten van lives officieel niet toe.",
+        "chaturbate": "Plak de link naar je Chaturbate-room (chaturbate.com/jouwnaam). We gebruiken automatisch de embed-weergave van de room.",
+        "vimeo": "Plak de link naar je Vimeo-video of -livestream. We zetten hem automatisch om naar de Vimeo-speler. Insluiten moet toegestaan zijn in je Vimeo-instellingen.",
+        "custom": "Plak een willekeurige embed- of speler-URL. De URL wordt ongewijzigd ingesloten en moet iframe-insluiting toestaan."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

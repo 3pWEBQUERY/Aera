@@ -2497,7 +2497,18 @@
       "replayHint": "세션 종료 후 녹화로 표시됩니다.",
       "noStart": "시작 시간 없음",
       "hasReplay": "녹화 있음",
-      "entitlementTierHint": "선택한 등급의 멤버(및 이 키를 가진 사람)가 시청할 수 있습니다."
+      "entitlementTierHint": "선택한 등급의 멤버(및 이 키를 가진 사람)가 시청할 수 있습니다.",
+      "helpAria": "임베드 안내 보기",
+      "help": {
+        "twitch": "Twitch 채널 링크(twitch.tv/채널명)를 붙여넣으세요. 자동으로 Twitch 플레이어로 변환되어, 라이브 시작과 동시에 여기에서 재생됩니다.",
+        "youtube": "YouTube Studio에서 라이브를 시작하고 영상 링크를 붙여넣으세요. 자동으로 플레이어로 삽입됩니다. 중요: YouTube Studio에서 '퍼가기 허용'이 켜져 있어야 합니다.",
+        "tiktok": "TikTok 라이브 링크(tiktok.com/@이름/live)를 붙여넣으세요. 참고: TikTok은 공식 임베드 플레이어가 없어 차단될 수 있습니다.",
+        "kick": "Kick 채널 링크(kick.com/채널명)를 붙여넣으세요. 자동으로 Kick 플레이어로 변환됩니다.",
+        "instagram": "Instagram 라이브 링크를 붙여넣으세요. 참고: Instagram은 라이브 임베드를 공식 지원하지 않습니다.",
+        "chaturbate": "Chaturbate 룸 링크(chaturbate.com/이름)를 붙여넣으세요. 자동으로 룸의 임베드 화면을 사용합니다.",
+        "vimeo": "Vimeo 영상 또는 라이브 링크를 붙여넣으세요. 자동으로 Vimeo 플레이어로 변환됩니다. Vimeo 설정에서 임베드가 허용되어야 합니다.",
+        "custom": "임의의 임베드/플레이어 URL을 붙여넣으세요. URL은 그대로 삽입되며 iframe 임베드를 허용해야 합니다."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

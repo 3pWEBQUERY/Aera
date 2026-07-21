@@ -1420,7 +1420,18 @@
       "replayHint": "Shown to members as the recording after the session ends.",
       "noStart": "No start time",
       "hasReplay": "Recording available",
-      "entitlementTierHint": "Members on the selected tier (and anyone with this key) can watch."
+      "entitlementTierHint": "Members on the selected tier (and anyone with this key) can watch.",
+      "helpAria": "Show embedding instructions",
+      "help": {
+        "twitch": "Paste the link to your Twitch channel (twitch.tv/yourchannel). We automatically convert it into the Twitch player — as soon as you go live on Twitch, the stream plays right here in your community.",
+        "youtube": "Start your livestream in YouTube Studio and paste the video link (youtube.com/watch?v=… or youtu.be/…). We embed it as a player automatically. Important: “Allow embedding” must be enabled in YouTube Studio.",
+        "tiktok": "Paste the link to your TikTok live (tiktok.com/@yourname/live). Note: TikTok offers no official embed player — embedding may be blocked by TikTok.",
+        "kick": "Paste the link to your Kick channel (kick.com/yourchannel). We automatically convert it into the Kick player — once you're live on Kick, the stream plays here.",
+        "instagram": "Paste the link to your Instagram live (instagram.com/yourname/live). Note: Instagram does not officially support embedding live videos — embedding may be blocked.",
+        "chaturbate": "Paste the link to your Chaturbate room (chaturbate.com/yourname). We automatically use the room's embed view so the stream plays right here.",
+        "vimeo": "Paste the link to your Vimeo video or livestream (vimeo.com/123456789). We automatically convert it into the Vimeo player. Embedding must be allowed in your Vimeo privacy settings.",
+        "custom": "Paste any embed or player URL, e.g. the iframe link from your streaming provider. The URL is embedded as-is and must allow iframe embedding."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

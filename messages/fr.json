@@ -2497,7 +2497,18 @@
       "replayHint": "Affiché comme enregistrement après la session.",
       "noStart": "Pas d'heure de début",
       "hasReplay": "Enregistrement disponible",
-      "entitlementTierHint": "Les membres du niveau sélectionné (et toute personne avec cette clé) peuvent regarder."
+      "entitlementTierHint": "Les membres du niveau sélectionné (et toute personne avec cette clé) peuvent regarder.",
+      "helpAria": "Afficher les instructions d'intégration",
+      "help": {
+        "twitch": "Colle le lien de ta chaîne Twitch (twitch.tv/tachaine). Nous le convertissons automatiquement en lecteur Twitch — dès que tu es en direct, le stream s'affiche ici.",
+        "youtube": "Lance ton direct dans YouTube Studio et colle le lien de la vidéo. Nous l'intégrons automatiquement. Important : « Autoriser l'intégration » doit être activé dans YouTube Studio.",
+        "tiktok": "Colle le lien de ton live TikTok (tiktok.com/@tonnom/live). Remarque : TikTok n'offre pas de lecteur intégrable officiel — l'intégration peut être bloquée.",
+        "kick": "Colle le lien de ta chaîne Kick (kick.com/tachaine). Nous le convertissons automatiquement en lecteur Kick.",
+        "instagram": "Colle le lien de ton live Instagram. Remarque : Instagram n'autorise pas officiellement l'intégration des lives.",
+        "chaturbate": "Colle le lien de ta room Chaturbate (chaturbate.com/tonnom). Nous utilisons automatiquement la vue intégrable de la room.",
+        "vimeo": "Colle le lien de ta vidéo ou de ton direct Vimeo. Nous le convertissons automatiquement en lecteur Vimeo. L'intégration doit être autorisée dans les réglages Vimeo.",
+        "custom": "Colle n'importe quelle URL d'intégration ou de lecteur. L'URL est intégrée telle quelle et doit autoriser l'iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

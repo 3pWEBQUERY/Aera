@@ -2497,7 +2497,18 @@
       "replayHint": "Po zakończeniu wyświetlane jako nagranie.",
       "noStart": "Brak godziny rozpoczęcia",
       "hasReplay": "Nagranie dostępne",
-      "entitlementTierHint": "Członkowie wybranego poziomu (i osoby z tym kluczem) mogą oglądać."
+      "entitlementTierHint": "Członkowie wybranego poziomu (i osoby z tym kluczem) mogą oglądać.",
+      "helpAria": "Pokaż instrukcje osadzania",
+      "help": {
+        "twitch": "Wklej link do swojego kanału Twitch (twitch.tv/twojkanal). Automatycznie zamienimy go na odtwarzacz Twitch — gdy zaczniesz transmisję, stream pojawi się tutaj.",
+        "youtube": "Rozpocznij transmisję w YouTube Studio i wklej link do filmu. Osadzimy go automatycznie. Ważne: w YouTube Studio musi być włączone „Zezwalaj na osadzanie”.",
+        "tiktok": "Wklej link do swojej transmisji TikTok (tiktok.com/@nazwa/live). Uwaga: TikTok nie ma oficjalnego odtwarzacza do osadzania — osadzenie może zostać zablokowane.",
+        "kick": "Wklej link do swojego kanału Kick (kick.com/twojkanal). Automatycznie zamienimy go na odtwarzacz Kick.",
+        "instagram": "Wklej link do swojej transmisji Instagram. Uwaga: Instagram oficjalnie nie pozwala na osadzanie transmisji.",
+        "chaturbate": "Wklej link do swojego pokoju Chaturbate (chaturbate.com/nazwa). Automatycznie użyjemy widoku embed pokoju.",
+        "vimeo": "Wklej link do swojego wideo lub transmisji Vimeo. Automatycznie zamienimy go na odtwarzacz Vimeo. Osadzanie musi być dozwolone w ustawieniach Vimeo.",
+        "custom": "Wklej dowolny URL embed lub odtwarzacza. URL zostanie osadzony bez zmian i musi zezwalać na iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

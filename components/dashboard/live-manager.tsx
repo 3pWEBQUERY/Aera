@@ -214,6 +214,7 @@ function LiveForm({
   const [platform, setPlatform] = useState<LivePlatform>(initialPlatform ?? "twitch");
   const [status, setStatus] = useState(session?.status ?? "SCHEDULED");
   const [restricted, setRestricted] = useState(!!session?.requiredEntitlementKey);
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const detected = useMemo(
     () => (streamUrl.trim() ? detectLivePlatform(streamUrl.trim()) : null),
@@ -287,8 +288,52 @@ function LiveForm({
                 })}
               </div>
             </div>
-            <div>
-              <Label htmlFor="lv-stream">{t("streamLabel")}</Label>
+            <div className="relative">
+              <div className="flex items-center gap-1.5">
+                <Label htmlFor="lv-stream">{t("streamLabel")}</Label>
+                <button
+                  type="button"
+                  onClick={() => setHelpOpen((v) => !v)}
+                  aria-label={t("helpAria")}
+                  aria-expanded={helpOpen}
+                  className={cn(
+                    "mb-1 flex h-5 w-5 items-center justify-center rounded-full transition",
+                    helpOpen
+                      ? "bg-slate-900 text-white"
+                      : "text-slate-400 hover:bg-slate-100 hover:text-slate-700",
+                  )}
+                >
+                  <Icon name="info" size={13} />
+                </button>
+              </div>
+              {helpOpen && (
+                <div className="absolute left-0 right-0 top-7 z-20 rounded-xl border border-slate-200 bg-white p-4 shadow-xl">
+                  <div className="flex items-start gap-3">
+                    <span
+                      className="mt-0.5 flex shrink-0"
+                      style={{ color: PLATFORM_COLORS[platform] }}
+                    >
+                      <PlatformIcon platform={platform} size={18} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-semibold text-slate-900">
+                        {platform === "custom" ? t("platformOther") : selectedInfo.label}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-slate-600">
+                        {t(`help.${platform}`)}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setHelpOpen(false)}
+                      aria-label={t("cancel")}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                    >
+                      <Icon name="close" size={15} />
+                    </button>
+                  </div>
+                </div>
+              )}
               <Input
                 id="lv-stream"
                 name="streamUrl"

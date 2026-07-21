@@ -2497,7 +2497,18 @@
       "replayHint": "Exibido como gravação após o término.",
       "noStart": "Sem horário de início",
       "hasReplay": "Gravação disponível",
-      "entitlementTierHint": "Membros do nível selecionado (e quem tiver esta chave) podem assistir."
+      "entitlementTierHint": "Membros do nível selecionado (e quem tiver esta chave) podem assistir.",
+      "helpAria": "Mostrar instruções de incorporação",
+      "help": {
+        "twitch": "Cole o link do seu canal da Twitch (twitch.tv/seucanal). Convertemos automaticamente no player da Twitch — assim que você entrar ao vivo, o stream toca aqui.",
+        "youtube": "Inicie sua live no YouTube Studio e cole o link do vídeo. Incorporamos automaticamente como player. Importante: “Permitir incorporação” deve estar ativado no YouTube Studio.",
+        "tiktok": "Cole o link da sua live no TikTok (tiktok.com/@seunome/live). Obs.: o TikTok não tem player de incorporação oficial — pode ser bloqueado.",
+        "kick": "Cole o link do seu canal Kick (kick.com/seucanal). Convertemos automaticamente no player do Kick.",
+        "instagram": "Cole o link da sua live no Instagram. Obs.: o Instagram não permite oficialmente incorporar lives.",
+        "chaturbate": "Cole o link da sua sala no Chaturbate (chaturbate.com/seunome). Usamos automaticamente a visualização embed da sala.",
+        "vimeo": "Cole o link do seu vídeo ou live no Vimeo. Convertemos automaticamente no player do Vimeo. A incorporação deve estar permitida nas configurações do Vimeo.",
+        "custom": "Cole qualquer URL de embed ou player. A URL é incorporada como está e precisa permitir iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

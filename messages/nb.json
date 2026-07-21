@@ -2497,7 +2497,18 @@
       "replayHint": "Vises som opptak etter økten.",
       "noStart": "Ingen starttid",
       "hasReplay": "Opptak tilgjengelig",
-      "entitlementTierHint": "Medlemmer på valgt nivå (og alle med denne nøkkelen) kan se på."
+      "entitlementTierHint": "Medlemmer på valgt nivå (og alle med denne nøkkelen) kan se på.",
+      "helpAria": "Vis innbyggingsinstruksjoner",
+      "help": {
+        "twitch": "Lim inn lenken til Twitch-kanalen din (twitch.tv/dinkanal). Vi gjør den automatisk om til Twitch-spilleren — når du går live, vises streamen her.",
+        "youtube": "Start livestreamen i YouTube Studio og lim inn videolenken. Vi bygger den inn automatisk. Viktig: «Tillat innebygging» må være aktivert i YouTube Studio.",
+        "tiktok": "Lim inn lenken til TikTok-liven din (tiktok.com/@dittnavn/live). Merk: TikTok har ingen offisiell embed-spiller — innbygging kan bli blokkert.",
+        "kick": "Lim inn lenken til Kick-kanalen din (kick.com/dinkanal). Vi gjør den automatisk om til Kick-spilleren.",
+        "instagram": "Lim inn lenken til Instagram-liven din. Merk: Instagram tillater ikke offisiell innbygging av live-videoer.",
+        "chaturbate": "Lim inn lenken til Chaturbate-rommet ditt (chaturbate.com/dittnavn). Vi bruker automatisk rommets embed-visning.",
+        "vimeo": "Lim inn lenken til Vimeo-videoen eller -streamen din. Vi gjør den automatisk om til Vimeo-spilleren. Innbygging må være tillatt i Vimeo-innstillingene.",
+        "custom": "Lim inn en hvilken som helst embed- eller spiller-URL. URL-en bygges inn som den er og må tillate iframe."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
