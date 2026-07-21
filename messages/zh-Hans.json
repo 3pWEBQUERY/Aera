@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "所有计划",
       "upcomingEmpty": "没有即将到来的计划",
       "upcomingCta": "创建你的第一个计划"
+    },
+    "calendar": {
+      "subtitle": "社区的日程与发布，尽在一处。",
+      "create": "创建日程",
+      "own": "我的日程",
+      "auto": "来自你的空间（自动）",
+      "autoHint": "其他空间的活动、直播和定时发布会自动显示在这里。",
+      "emptyTitle": "暂无日程",
+      "emptyHint": "创建你的第一个日程——活动、直播和定时发布会自动显示。",
+      "sheetCreateTitle": "创建日程",
+      "sheetEditTitle": "编辑日程",
+      "rsvps": "{count} 人报名",
+      "kind": {
+        "event": "活动",
+        "live": "直播",
+        "post": "帖子"
+      }
     }
   },
   "common": {

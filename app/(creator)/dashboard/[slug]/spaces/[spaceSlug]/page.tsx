@@ -36,6 +36,10 @@ import {
   EventsManager,
   type EventRowData,
 } from "@/components/dashboard/events-manager";
+import {
+  CalendarManager,
+  type AggregatedEntry,
+} from "@/components/dashboard/calendar-manager";
 import { AnnouncementsManager } from "@/components/dashboard/announcements-manager";
 import { LinksManager } from "@/components/dashboard/links-manager";
 import { AdsManager } from "@/components/dashboard/ads-manager";
@@ -506,42 +510,64 @@ export default async function SpaceContentPage({
     );
   }
 
-  // ----- Calendar: read-only aggregation overview -----
+  // ----- Calendar: own entries (popover CRUD) + aggregation overview -----
   if (space.type === "CALENDAR") {
     const nowC = new Date();
-    const [events, lives, scheduled] = await Promise.all([
-      prisma.event.findMany({ where: { tenantId: tenant.id, startsAt: { gte: nowC } }, orderBy: { startsAt: "asc" }, take: 50, select: { id: true, title: true, startsAt: true } }),
-      prisma.liveSession.findMany({ where: { tenantId: tenant.id, startsAt: { gte: nowC }, status: { not: "ENDED" } }, orderBy: { startsAt: "asc" }, take: 50, select: { id: true, title: true, startsAt: true } }),
-      prisma.post.findMany({ where: { tenantId: tenant.id, scheduledAt: { not: null, gte: nowC } }, orderBy: { scheduledAt: "asc" }, take: 50, select: { id: true, title: true, scheduledAt: true } }),
+    const [ownRows, events, lives, scheduled] = await Promise.all([
+      prisma.event.findMany({
+        where: { tenantId: tenant.id, spaceId: space.id },
+        orderBy: { startsAt: "asc" },
+        include: { _count: { select: { rsvps: true } } },
+      }),
+      prisma.event.findMany({
+        where: { tenantId: tenant.id, spaceId: { not: space.id }, startsAt: { gte: nowC } },
+        orderBy: { startsAt: "asc" },
+        take: 50,
+        select: { id: true, title: true, startsAt: true },
+      }),
+      prisma.liveSession.findMany({
+        where: { tenantId: tenant.id, startsAt: { gte: nowC }, status: { not: "ENDED" } },
+        orderBy: { startsAt: "asc" },
+        take: 50,
+        select: { id: true, title: true, startsAt: true },
+      }),
+      prisma.post.findMany({
+        where: { tenantId: tenant.id, scheduledAt: { not: null, gte: nowC } },
+        orderBy: { scheduledAt: "asc" },
+        take: 50,
+        select: { id: true, title: true, scheduledAt: true },
+      }),
     ]);
-    const entries = [
-      ...events.map((e) => ({ id: `e-${e.id}`, title: e.title, when: e.startsAt, kind: "event" })),
-      ...lives.map((l) => ({ id: `l-${l.id}`, title: l.title, when: l.startsAt as Date, kind: "live" })),
-      ...scheduled.map((p) => ({ id: `p-${p.id}`, title: p.title ?? "—", when: p.scheduledAt as Date, kind: "post" })),
-    ]
-      .filter((x) => x.when)
-      .sort((a, b) => a.when!.getTime() - b.when!.getTime());
+    const own: EventRowData[] = ownRows.map((e) => ({
+      id: e.id,
+      title: e.title,
+      description: e.description,
+      startsAt: e.startsAt,
+      location: e.location,
+      isOnline: e.isOnline,
+      meetingUrl: e.meetingUrl,
+      coverUrl: e.coverUrl,
+      capacity: e.capacity,
+      rsvpCount: e._count.rsvps,
+    }));
+    const aggregated: AggregatedEntry[] = [
+      ...events.map((e) => ({ id: `e-${e.id}`, title: e.title, when: e.startsAt, kind: "event" as const })),
+      ...lives
+        .filter((l) => l.startsAt)
+        .map((l) => ({ id: `l-${l.id}`, title: l.title, when: l.startsAt as Date, kind: "live" as const })),
+      ...scheduled
+        .filter((post) => post.scheduledAt)
+        .map((post) => ({ id: `p-${post.id}`, title: post.title ?? "—", when: post.scheduledAt as Date, kind: "post" as const })),
+    ].sort((a, b) => new Date(a.when).getTime() - new Date(b.when).getTime());
     return (
-      <div>
-        <div className="mb-6">
-          <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-          <p className="mt-1 text-sm text-slate-500">{space.description ?? ""}</p>
-        </div>
-        {entries.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center text-sm text-slate-400">
-            —
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {entries.map((x) => (
-              <div key={x.id} className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3">
-                <p className="truncate text-sm font-medium text-slate-900">{x.title}</p>
-                <span className="text-xs text-slate-400">{x.when!.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <CalendarManager
+        slug={slug}
+        spaceId={space.id}
+        spaceName={space.name}
+        description={space.description}
+        own={own}
+        aggregated={aggregated}
+      />
     );
   }
 

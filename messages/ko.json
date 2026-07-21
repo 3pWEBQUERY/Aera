@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "모든 플랜",
       "upcomingEmpty": "예정된 플랜 없음",
       "upcomingCta": "첫 플랜 만들기"
+    },
+    "calendar": {
+      "subtitle": "커뮤니티의 일정과 릴리스를 한곳에서.",
+      "create": "일정 만들기",
+      "own": "내 일정",
+      "auto": "스페이스에서 자동 반영",
+      "autoHint": "다른 스페이스의 이벤트, 라이브, 예약 게시물이 자동으로 표시됩니다.",
+      "emptyTitle": "아직 일정이 없습니다",
+      "emptyHint": "첫 일정을 만들어 보세요. 이벤트, 라이브, 예약 게시물은 자동으로 표시됩니다.",
+      "sheetCreateTitle": "일정 만들기",
+      "sheetEditTitle": "일정 수정",
+      "rsvps": "참석 {count}명",
+      "kind": {
+        "event": "이벤트",
+        "live": "라이브",
+        "post": "게시물"
+      }
     }
   },
   "common": {

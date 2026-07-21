@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Alle plannen",
       "upcomingEmpty": "Geen aankomende plannen",
       "upcomingCta": "Maak je eerste plan"
+    },
+    "calendar": {
+      "subtitle": "De data en releases van je community op één plek.",
+      "create": "Afspraak maken",
+      "own": "Eigen afspraken",
+      "auto": "Automatisch uit je spaces",
+      "autoHint": "Events, livestreams en ingeplande berichten uit andere spaces verschijnen hier automatisch.",
+      "emptyTitle": "Nog geen afspraken",
+      "emptyHint": "Maak je eerste afspraak — events, livestreams en ingeplande berichten verschijnen automatisch.",
+      "sheetCreateTitle": "Afspraak maken",
+      "sheetEditTitle": "Afspraak bewerken",
+      "rsvps": "{count} aanmeldingen",
+      "kind": {
+        "event": "Event",
+        "live": "Live",
+        "post": "Bericht"
+      }
     }
   },
   "common": {

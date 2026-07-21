@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "所有計畫",
       "upcomingEmpty": "沒有即將到來的計畫",
       "upcomingCta": "建立你的第一個計畫"
+    },
+    "calendar": {
+      "subtitle": "社群的日程與發佈，一站掌握。",
+      "create": "建立日程",
+      "own": "我的日程",
+      "auto": "來自你的空間（自動）",
+      "autoHint": "其他空間的活動、直播與排程貼文會自動顯示在這裡。",
+      "emptyTitle": "尚無日程",
+      "emptyHint": "建立你的第一個日程——活動、直播與排程貼文會自動顯示。",
+      "sheetCreateTitle": "建立日程",
+      "sheetEditTitle": "編輯日程",
+      "rsvps": "{count} 人報名",
+      "kind": {
+        "event": "活動",
+        "live": "直播",
+        "post": "貼文"
+      }
     }
   },
   "common": {

@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Todos os planos",
       "upcomingEmpty": "Sem próximos planos",
       "upcomingCta": "Crie seu primeiro plano"
+    },
+    "calendar": {
+      "subtitle": "As datas e lançamentos da sua comunidade em um só lugar.",
+      "create": "Criar compromisso",
+      "own": "Seus compromissos",
+      "auto": "Automático dos seus espaços",
+      "autoHint": "Eventos, lives e posts agendados de outros espaços aparecem aqui automaticamente.",
+      "emptyTitle": "Nenhum compromisso ainda",
+      "emptyHint": "Crie seu primeiro compromisso — eventos, lives e posts agendados aparecem automaticamente.",
+      "sheetCreateTitle": "Criar compromisso",
+      "sheetEditTitle": "Editar compromisso",
+      "rsvps": "{count} confirmações",
+      "kind": {
+        "event": "Evento",
+        "live": "Ao vivo",
+        "post": "Post"
+      }
     }
   },
   "common": {

@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "すべてのプラン",
       "upcomingEmpty": "今後のプランはありません",
       "upcomingCta": "最初のプランを作成"
+    },
+    "calendar": {
+      "subtitle": "コミュニティの予定とリリースをひとつの場所で。",
+      "create": "予定を作成",
+      "own": "自分の予定",
+      "auto": "スペースから自動反映",
+      "autoHint": "他のスペースのイベント・ライブ配信・予約投稿は自動的にここに表示されます。",
+      "emptyTitle": "まだ予定がありません",
+      "emptyHint": "最初の予定を作成しましょう。イベントやライブ配信、予約投稿は自動的に表示されます。",
+      "sheetCreateTitle": "予定を作成",
+      "sheetEditTitle": "予定を編集",
+      "rsvps": "参加 {count} 件",
+      "kind": {
+        "event": "イベント",
+        "live": "ライブ",
+        "post": "投稿"
+      }
     }
   },
   "common": {

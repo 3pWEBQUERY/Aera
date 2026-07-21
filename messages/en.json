@@ -2664,6 +2664,23 @@
       "upcomingViewAll": "All plans",
       "upcomingEmpty": "No upcoming plans",
       "upcomingCta": "Create your first plan"
+    },
+    "calendar": {
+      "subtitle": "Your community's dates & releases in one place.",
+      "create": "Create entry",
+      "own": "Your entries",
+      "auto": "Automatically from your spaces",
+      "autoHint": "Events, livestreams and scheduled posts from other spaces show up here automatically.",
+      "emptyTitle": "No entries yet",
+      "emptyHint": "Create your first entry — events, livestreams and scheduled posts from other spaces appear automatically.",
+      "sheetCreateTitle": "Create entry",
+      "sheetEditTitle": "Edit entry",
+      "rsvps": "{count} RSVPs",
+      "kind": {
+        "event": "Event",
+        "live": "Live",
+        "post": "Post"
+      }
     }
   },
   "common": {

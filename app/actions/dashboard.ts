@@ -696,7 +696,7 @@ export async function createEventAction(
   const spaceIdInput = String(fd.get("spaceId") || "");
   let space = spaceIdInput
     ? await prisma.space.findFirst({
-        where: { id: spaceIdInput, tenantId: tenant.id, type: "EVENTS" },
+        where: { id: spaceIdInput, tenantId: tenant.id, type: { in: ["EVENTS", "CALENDAR"] } },
       })
     : await prisma.space.findFirst({ where: { tenantId: tenant.id, type: "EVENTS" } });
   if (!space) {

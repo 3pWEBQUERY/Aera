@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Wszystkie plany",
       "upcomingEmpty": "Brak nadchodzących planów",
       "upcomingCta": "Utwórz swój pierwszy plan"
+    },
+    "calendar": {
+      "subtitle": "Terminy i premiery twojej społeczności w jednym miejscu.",
+      "create": "Utwórz termin",
+      "own": "Twoje terminy",
+      "auto": "Automatycznie z twoich przestrzeni",
+      "autoHint": "Wydarzenia, transmisje i zaplanowane posty z innych przestrzeni pojawiają się tu automatycznie.",
+      "emptyTitle": "Brak terminów",
+      "emptyHint": "Utwórz pierwszy termin — wydarzenia, transmisje i zaplanowane posty pojawią się automatycznie.",
+      "sheetCreateTitle": "Utwórz termin",
+      "sheetEditTitle": "Edytuj termin",
+      "rsvps": "{count} zgłoszeń",
+      "kind": {
+        "event": "Wydarzenie",
+        "live": "Na żywo",
+        "post": "Post"
+      }
     }
   },
   "common": {

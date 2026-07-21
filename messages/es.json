@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Todos los planes",
       "upcomingEmpty": "Sin próximos planes",
       "upcomingCta": "Crea tu primer plan"
+    },
+    "calendar": {
+      "subtitle": "Las fechas y lanzamientos de tu comunidad en un solo lugar.",
+      "create": "Crear cita",
+      "own": "Tus citas",
+      "auto": "Automático desde tus espacios",
+      "autoHint": "Los eventos, directos y publicaciones programadas de otros espacios aparecen aquí automáticamente.",
+      "emptyTitle": "Aún no hay citas",
+      "emptyHint": "Crea tu primera cita: los eventos, directos y publicaciones programadas aparecen automáticamente.",
+      "sheetCreateTitle": "Crear cita",
+      "sheetEditTitle": "Editar cita",
+      "rsvps": "{count} confirmaciones",
+      "kind": {
+        "event": "Evento",
+        "live": "En directo",
+        "post": "Publicación"
+      }
     }
   },
   "common": {

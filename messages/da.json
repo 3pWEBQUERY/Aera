@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Alle planer",
       "upcomingEmpty": "Ingen kommende planer",
       "upcomingCta": "Opret din første plan"
+    },
+    "calendar": {
+      "subtitle": "Din communitys datoer og releases samlet ét sted.",
+      "create": "Opret aftale",
+      "own": "Egne aftaler",
+      "auto": "Automatisk fra dine spaces",
+      "autoHint": "Events, livestreams og planlagte indlæg fra andre spaces vises her automatisk.",
+      "emptyTitle": "Ingen aftaler endnu",
+      "emptyHint": "Opret din første aftale — events, livestreams og planlagte indlæg vises automatisk.",
+      "sheetCreateTitle": "Opret aftale",
+      "sheetEditTitle": "Rediger aftale",
+      "rsvps": "{count} tilmeldinger",
+      "kind": {
+        "event": "Event",
+        "live": "Live",
+        "post": "Indlæg"
+      }
     }
   },
   "common": {

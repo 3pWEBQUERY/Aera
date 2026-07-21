@@ -130,7 +130,7 @@ function Empty({ onCreate }: { onCreate: () => void }) {
   );
 }
 
-function EventForm({
+export function EventForm({
   slug,
   event,
   spaceId,

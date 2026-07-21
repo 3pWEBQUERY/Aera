@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Tous les plans",
       "upcomingEmpty": "Aucun plan à venir",
       "upcomingCta": "Créez votre premier plan"
+    },
+    "calendar": {
+      "subtitle": "Les dates et sorties de ta communauté au même endroit.",
+      "create": "Créer un rendez-vous",
+      "own": "Tes rendez-vous",
+      "auto": "Automatique depuis tes espaces",
+      "autoHint": "Les événements, lives et publications programmées des autres espaces apparaissent ici automatiquement.",
+      "emptyTitle": "Pas encore de rendez-vous",
+      "emptyHint": "Crée ton premier rendez-vous — événements, lives et publications programmées apparaissent automatiquement.",
+      "sheetCreateTitle": "Créer un rendez-vous",
+      "sheetEditTitle": "Modifier le rendez-vous",
+      "rsvps": "{count} inscriptions",
+      "kind": {
+        "event": "Événement",
+        "live": "Live",
+        "post": "Publication"
+      }
     }
   },
   "common": {

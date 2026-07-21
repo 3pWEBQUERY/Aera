@@ -2664,6 +2664,23 @@
       "upcomingViewAll": "Alle Pläne",
       "upcomingEmpty": "Keine anstehenden Pläne",
       "upcomingCta": "Ersten Plan anlegen"
+    },
+    "calendar": {
+      "subtitle": "Termine & Releases deiner Community an einem Ort.",
+      "create": "Termin erstellen",
+      "own": "Eigene Termine",
+      "auto": "Automatisch aus deinen Spaces",
+      "autoHint": "Events, Livestreams und geplante Beiträge aus anderen Spaces erscheinen hier automatisch.",
+      "emptyTitle": "Noch keine Termine",
+      "emptyHint": "Erstelle deinen ersten Termin — Events, Livestreams und geplante Beiträge aus anderen Spaces erscheinen automatisch.",
+      "sheetCreateTitle": "Termin erstellen",
+      "sheetEditTitle": "Termin bearbeiten",
+      "rsvps": "{count} Zusagen",
+      "kind": {
+        "event": "Event",
+        "live": "Live",
+        "post": "Beitrag"
+      }
     }
   },
   "common": {

@@ -2638,6 +2638,23 @@
       "upcomingViewAll": "Alla planer",
       "upcomingEmpty": "Inga kommande planer",
       "upcomingCta": "Skapa din första plan"
+    },
+    "calendar": {
+      "subtitle": "Din communitys datum och släpp på ett ställe.",
+      "create": "Skapa bokning",
+      "own": "Egna bokningar",
+      "auto": "Automatiskt från dina spaces",
+      "autoHint": "Events, livesändningar och schemalagda inlägg från andra spaces visas här automatiskt.",
+      "emptyTitle": "Inga bokningar ännu",
+      "emptyHint": "Skapa din första bokning — events, livesändningar och schemalagda inlägg visas automatiskt.",
+      "sheetCreateTitle": "Skapa bokning",
+      "sheetEditTitle": "Redigera bokning",
+      "rsvps": "{count} anmälningar",
+      "kind": {
+        "event": "Event",
+        "live": "Live",
+        "post": "Inlägg"
+      }
     }
   },
   "common": {
