@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { timeAgo } from "@/lib/utils";
+import { toLiveEmbedUrl } from "@/lib/live-embed";
 
 interface LiveMessage {
   id: string;
@@ -38,7 +39,14 @@ export function LiveRoom({
   const listRef = useRef<HTMLDivElement>(null);
   const seen = useRef(new Set(initialMessages.map((m) => m.id)));
 
-  const playerUrl = status === "ENDED" ? replayUrl : streamUrl ?? replayUrl;
+  const rawPlayerUrl = status === "ENDED" ? replayUrl : streamUrl ?? replayUrl;
+  // Host erst nach dem Mount lesen (hydration-sicher); Twitch braucht ihn als
+  // parent-Parameter. Kanal-/Video-Links werden in Player-Embeds umgewandelt.
+  const [embedHost, setEmbedHost] = useState<string | null>(null);
+  useEffect(() => setEmbedHost(window.location.hostname), []);
+  const playerUrl = rawPlayerUrl
+    ? toLiveEmbedUrl(rawPlayerUrl, embedHost ?? undefined)
+    : rawPlayerUrl;
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
