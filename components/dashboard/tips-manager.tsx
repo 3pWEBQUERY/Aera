@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { saveTipGoalAction, type ActionState } from "@/app/actions/tips";
 import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
@@ -24,8 +24,11 @@ interface SpaceInfo {
 
 const initial: ActionState = {};
 
-function euro(cents: number, currency: string) {
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
+// Explizite Locale statt `undefined`: Server (Node-ICU) und Browser lösen
+// die Default-Locale unterschiedlich auf → Hydration-Mismatch ("8,00 CHF"
+// vs. "CHF 8.00"). Mit der App-Locale rendern beide Seiten identisch.
+function money(cents: number, currency: string, locale: string) {
+  return new Intl.NumberFormat(locale, { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
 }
 
 export function TipsManager({
@@ -44,6 +47,7 @@ export function TipsManager({
   currency: string;
 }) {
   const t = useTranslations("dashboard.tips");
+  const locale = useLocale();
   const [state, action, pending] = useActionState(saveTipGoalAction, initial);
 
   return (
@@ -56,7 +60,7 @@ export function TipsManager({
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{t("totalLabel")}</p>
-          <p className="mt-1 text-2xl font-bold text-slate-900">{euro(totalCents, currency)}</p>
+          <p className="mt-1 text-2xl font-bold text-slate-900">{money(totalCents, currency, locale)}</p>
         </div>
         <form action={action} className="rounded-2xl border border-slate-200 bg-white p-5">
           <input type="hidden" name="tenant" value={slug} />
@@ -88,7 +92,7 @@ export function TipsManager({
                 {tp.message && <p className="truncate text-xs text-slate-500">{tp.message}</p>}
               </div>
               <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-900">
-                <Icon name="heart" size={14} /> {euro(tp.amountCents, tp.currency)}
+                <Icon name="heart" size={14} /> {money(tp.amountCents, tp.currency, locale)}
               </span>
             </div>
           ))}
