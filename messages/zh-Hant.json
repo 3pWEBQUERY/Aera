@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "僅限有權限的成員。",
       "replayHint": "直播結束後作為錄影顯示給成員。",
       "noStart": "未設定開始時間",
-      "hasReplay": "有錄影"
+      "hasReplay": "有錄影",
+      "entitlementTierHint": "所選等級的成員（以及擁有此金鑰的人）可以觀看。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

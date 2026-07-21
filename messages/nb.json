@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Kun medlemmer med tilgang.",
       "replayHint": "Vises som opptak etter økten.",
       "noStart": "Ingen starttid",
-      "hasReplay": "Opptak tilgjengelig"
+      "hasReplay": "Opptak tilgjengelig",
+      "entitlementTierHint": "Medlemmer på valgt nivå (og alle med denne nøkkelen) kan se på."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

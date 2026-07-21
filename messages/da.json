@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Kun medlemmer med adgang.",
       "replayHint": "Vises som optagelse efter sessionen.",
       "noStart": "Ingen starttid",
-      "hasReplay": "Optagelse tilgængelig"
+      "hasReplay": "Optagelse tilgængelig",
+      "entitlementTierHint": "Medlemmer på det valgte niveau (og alle med denne nøgle) kan se med."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

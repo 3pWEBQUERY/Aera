@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Solo membri con accesso.",
       "replayHint": "Mostrato come registrazione dopo la sessione.",
       "noStart": "Nessun orario di inizio",
-      "hasReplay": "Registrazione disponibile"
+      "hasReplay": "Registrazione disponibile",
+      "entitlementTierHint": "I membri del livello selezionato (e chi possiede questa chiave) possono guardare."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

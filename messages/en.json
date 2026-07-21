@@ -1419,7 +1419,8 @@
       "accessKeyDesc": "Only members with matching access.",
       "replayHint": "Shown to members as the recording after the session ends.",
       "noStart": "No start time",
-      "hasReplay": "Recording available"
+      "hasReplay": "Recording available",
+      "entitlementTierHint": "Members on the selected tier (and anyone with this key) can watch."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

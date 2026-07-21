@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Alleen leden met toegang.",
       "replayHint": "Wordt na afloop als opname getoond.",
       "noStart": "Geen starttijd",
-      "hasReplay": "Opname beschikbaar"
+      "hasReplay": "Opname beschikbaar",
+      "entitlementTierHint": "Leden van het gekozen niveau (en iedereen met deze sleutel) kunnen kijken."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

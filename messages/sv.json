@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Endast medlemmar med åtkomst.",
       "replayHint": "Visas som inspelning efter sessionen.",
       "noStart": "Ingen starttid",
-      "hasReplay": "Inspelning tillgänglig"
+      "hasReplay": "Inspelning tillgänglig",
+      "entitlementTierHint": "Medlemmar på vald nivå (och alla med denna nyckel) kan titta."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

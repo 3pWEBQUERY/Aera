@@ -353,10 +353,17 @@ export default async function SpaceContentPage({
 
   // ----- Live: scheduled/live sessions -----
   if (space.type === "LIVE") {
-    const rows = await prisma.liveSession.findMany({
-      where: { tenantId: tenant.id, spaceId: space.id },
-      orderBy: [{ status: "asc" }, { startsAt: "desc" }, { createdAt: "desc" }],
-    });
+    const [rows, tierRows] = await Promise.all([
+      prisma.liveSession.findMany({
+        where: { tenantId: tenant.id, spaceId: space.id },
+        orderBy: [{ status: "asc" }, { startsAt: "desc" }, { createdAt: "desc" }],
+      }),
+      prisma.membershipTier.findMany({
+        where: { tenantId: tenant.id },
+        orderBy: [{ sortOrder: "asc" }, { priceCents: "asc" }],
+        select: { id: true, name: true, entitlementKey: true },
+      }),
+    ]);
     const sessions: LiveSessionRow[] = rows.map((s) => ({
       id: s.id,
       title: s.title,
@@ -371,6 +378,7 @@ export default async function SpaceContentPage({
         slug={slug}
         space={{ id: space.id, slug: space.slug, name: space.name }}
         sessions={sessions}
+        tiers={tierRows.map((tr) => ({ name: tr.name, entitlementKey: tr.entitlementKey }))}
       />
     );
   }

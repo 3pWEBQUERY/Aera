@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "접근 권한이 있는 멤버만.",
       "replayHint": "세션 종료 후 녹화로 표시됩니다.",
       "noStart": "시작 시간 없음",
-      "hasReplay": "녹화 있음"
+      "hasReplay": "녹화 있음",
+      "entitlementTierHint": "선택한 등급의 멤버(및 이 키를 가진 사람)가 시청할 수 있습니다."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

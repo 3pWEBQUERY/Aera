@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Лише учасники з доступом.",
       "replayHint": "Показується як запис після завершення.",
       "noStart": "Без часу початку",
-      "hasReplay": "Є запис"
+      "hasReplay": "Є запис",
+      "entitlementTierHint": "Дивитися можуть учасники обраного рівня (і всі, хто має цей ключ)."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

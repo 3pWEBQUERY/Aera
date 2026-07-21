@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Réservé aux membres avec accès.",
       "replayHint": "Affiché comme enregistrement après la session.",
       "noStart": "Pas d'heure de début",
-      "hasReplay": "Enregistrement disponible"
+      "hasReplay": "Enregistrement disponible",
+      "entitlementTierHint": "Les membres du niveau sélectionné (et toute personne avec cette clé) peuvent regarder."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

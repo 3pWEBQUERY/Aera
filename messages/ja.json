@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "アクセス権のあるメンバーのみ。",
       "replayHint": "終了後に録画としてメンバーに表示されます。",
       "noStart": "開始時刻なし",
-      "hasReplay": "録画あり"
+      "hasReplay": "録画あり",
+      "entitlementTierHint": "選択したプランのメンバー（およびこのキーを持つ人）が視聴できます。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

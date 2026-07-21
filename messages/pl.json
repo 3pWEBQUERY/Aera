@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Tylko członkowie z dostępem.",
       "replayHint": "Po zakończeniu wyświetlane jako nagranie.",
       "noStart": "Brak godziny rozpoczęcia",
-      "hasReplay": "Nagranie dostępne"
+      "hasReplay": "Nagranie dostępne",
+      "entitlementTierHint": "Członkowie wybranego poziomu (i osoby z tym kluczem) mogą oglądać."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

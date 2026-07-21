@@ -38,14 +38,21 @@ interface SpaceInfo {
 
 const initial: ActionState = {};
 
+export interface TierOption {
+  name: string;
+  entitlementKey: string;
+}
+
 export function LiveManager({
   slug,
   space,
   sessions,
+  tiers = [],
 }: {
   slug: string;
   space: SpaceInfo;
   sessions: LiveSessionRow[];
+  tiers?: TierOption[];
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<LiveSessionRow | null>(null);
@@ -166,6 +173,7 @@ export function LiveManager({
           slug={slug}
           space={space}
           session={editing}
+          tiers={tiers}
           onDone={() => setOpen(false)}
         />
       </Sheet>
@@ -185,11 +193,13 @@ function LiveForm({
   slug,
   space,
   session,
+  tiers,
   onDone,
 }: {
   slug: string;
   space: SpaceInfo;
   session: LiveSessionRow | null;
+  tiers: TierOption[];
   onDone: () => void;
 }) {
   const isEdit = !!session;
@@ -365,13 +375,40 @@ function LiveForm({
             {restricted && (
               <div>
                 <Label htmlFor="lv-key">{t("entitlementLabel")}</Label>
-                <Input
-                  id="lv-key"
-                  name="requiredEntitlementKey"
-                  defaultValue={session?.requiredEntitlementKey ?? ""}
-                  placeholder="tier:premium"
-                />
-                <p className="mt-1 text-xs text-slate-400">{t("entitlementHint")}</p>
+                {tiers.length > 0 ? (
+                  <>
+                    <select
+                      id="lv-key"
+                      name="requiredEntitlementKey"
+                      defaultValue={session?.requiredEntitlementKey ?? tiers[0].entitlementKey}
+                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none"
+                    >
+                      {tiers.map((tier) => (
+                        <option key={tier.entitlementKey} value={tier.entitlementKey}>
+                          {tier.name} ({tier.entitlementKey})
+                        </option>
+                      ))}
+                      {/* Bestehenden, nicht mehr existierenden Schlüssel weiter anbieten */}
+                      {session?.requiredEntitlementKey &&
+                        !tiers.some((tier) => tier.entitlementKey === session.requiredEntitlementKey) && (
+                          <option value={session.requiredEntitlementKey}>
+                            {session.requiredEntitlementKey}
+                          </option>
+                        )}
+                    </select>
+                    <p className="mt-1 text-xs text-slate-400">{t("entitlementTierHint")}</p>
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      id="lv-key"
+                      name="requiredEntitlementKey"
+                      defaultValue={session?.requiredEntitlementKey ?? ""}
+                      placeholder="tier:premium"
+                    />
+                    <p className="mt-1 text-xs text-slate-400">{t("entitlementHint")}</p>
+                  </>
+                )}
               </div>
             )}
           </section>

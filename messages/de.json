@@ -1419,7 +1419,8 @@
       "accessKeyDesc": "Nur Mitglieder mit passendem Zugang.",
       "replayHint": "Wird Mitgliedern nach Ende der Session als Aufzeichnung angezeigt.",
       "noStart": "Keine Startzeit",
-      "hasReplay": "Aufzeichnung vorhanden"
+      "hasReplay": "Aufzeichnung vorhanden",
+      "entitlementTierHint": "Mitglieder der gewählten Stufe (und alle mit diesem Schlüssel) können zuschauen."
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",

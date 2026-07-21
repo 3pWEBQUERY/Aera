@@ -2496,7 +2496,8 @@
       "accessKeyDesc": "Solo miembros con acceso.",
       "replayHint": "Se muestra como grabación al terminar la sesión.",
       "noStart": "Sin hora de inicio",
-      "hasReplay": "Grabación disponible"
+      "hasReplay": "Grabación disponible",
+      "entitlementTierHint": "Los miembros del nivel seleccionado (y quienes tengan esta clave) pueden verla."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
