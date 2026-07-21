@@ -2989,7 +2989,8 @@
         "sending": "Senden…",
         "anonymous": "Anonym senden",
         "thanks": "Danke für deine Unterstützung!",
-        "amountError": "Bitte gib einen Betrag zwischen 1 € und 1.000 € ein."
+        "amountError": "Bitte gib einen Betrag zwischen 1 und 1000 ein.",
+        "checkoutError": "Die Zahlung konnte nicht gestartet werden. Bitte versuche es später erneut."
       },
       "calendar": {
         "untitledPost": "Beitrag ohne Titel",

@@ -2951,7 +2951,8 @@
         "sending": "送信中…",
         "anonymous": "匿名で送る",
         "thanks": "ご支援ありがとうございます！",
-        "amountError": "1 €から1.000 €の間の金額を入力してください。"
+        "amountError": "1から1000の間の金額を入力してください。",
+        "checkoutError": "決済を開始できませんでした。後でもう一度お試しください。"
       },
       "calendar": {
         "untitledPost": "無題の投稿",

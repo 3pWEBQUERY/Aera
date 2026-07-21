@@ -2951,7 +2951,8 @@
         "sending": "傳送中…",
         "anonymous": "匿名傳送",
         "thanks": "感謝你的支持！",
-        "amountError": "請輸入 1 € 至 1.000 € 之間的金額。"
+        "amountError": "請輸入 1 至 1000 之間的金額。",
+        "checkoutError": "無法開始付款，請稍後再試。"
       },
       "calendar": {
         "untitledPost": "無標題貼文",

@@ -2989,7 +2989,8 @@
         "sending": "Sending…",
         "anonymous": "Send anonymously",
         "thanks": "Thank you for your support!",
-        "amountError": "Please enter an amount between €1 and €1,000."
+        "amountError": "Please enter an amount between 1 and 1,000.",
+        "checkoutError": "The payment could not be started. Please try again later."
       },
       "calendar": {
         "untitledPost": "Untitled post",

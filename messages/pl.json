@@ -2951,7 +2951,8 @@
         "sending": "Wysyłanie…",
         "anonymous": "Wyślij anonimowo",
         "thanks": "Dziękujemy za wsparcie!",
-        "amountError": "Podaj kwotę od 1 € do 1000 €."
+        "amountError": "Podaj kwotę od 1 do 1000.",
+        "checkoutError": "Nie udało się rozpocząć płatności. Spróbuj ponownie później."
       },
       "calendar": {
         "untitledPost": "Post bez tytułu",

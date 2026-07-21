@@ -2951,7 +2951,8 @@
         "sending": "Skickar…",
         "anonymous": "Skicka anonymt",
         "thanks": "Tack för ditt stöd!",
-        "amountError": "Ange ett belopp mellan 1 € och 1 000 €."
+        "amountError": "Ange ett belopp mellan 1 och 1000.",
+        "checkoutError": "Betalningen kunde inte startas. Försök igen senare."
       },
       "calendar": {
         "untitledPost": "Inlägg utan titel",

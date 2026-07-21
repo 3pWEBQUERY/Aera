@@ -46,7 +46,7 @@ import { PurchaseSubmitButton } from "@/components/community/purchase-submit-but
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { submitRequestAction, purchaseRequestAction } from "@/app/actions/requests";
 import { reserveBookingAction } from "@/app/actions/booking";
-import { TipForm } from "@/components/community/tip-form";
+import { TipsSheet } from "@/components/community/tips-sheet";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const PRODUCT_TYPES = ["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"];
@@ -1054,15 +1054,14 @@ export default async function SpacePage({
     );
   }
 
-  // ----- Tips wall -----
+  // ----- Tips wall (full-screen popover) -----
   if (space.type === "TIPS") {
-    const tTip = await getTranslations("community.render.tips");
     const settingsObj =
       space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
         ? (space.settings as Record<string, unknown>)
         : {};
     const goalCents = Number(settingsObj.tipGoalCents) || 0;
-    const [agg, tips] = await Promise.all([
+    const [agg, tipRows] = await Promise.all([
       prisma.tip.aggregate({
         where: { tenantId: tenant.id, spaceId: space.id, status: "PAID" },
         _sum: { amountCents: true },
@@ -1077,56 +1076,34 @@ export default async function SpacePage({
     const raised = agg._sum.amountCents ?? 0;
     const pct = goalCents > 0 ? Math.min(100, Math.round((raised / goalCents) * 100)) : 0;
     return (
-      <div className="mx-auto max-w-2xl">
-        {header}
-        {goalCents > 0 && (
-          <div className="mb-6 rounded-2xl border border-[#161613]/10 bg-white p-5">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
-              <span className="text-[#161613]/50">{tTip("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
-            </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
-              <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
-            </div>
-          </div>
-        )}
-        {tipped === "1" && (
-          <p
-            role="status"
-            className="mb-4 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800"
-          >
-            {tTip("thanks")}
-          </p>
-        )}
-        {error === "amount" && (
-          <p
-            role="alert"
-            className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
-          >
-            {tTip("amountError")}
-          </p>
-        )}
-        {isMember && <TipForm slug={slug} space={spaceSlug} />}
-        {tips.length === 0 ? (
-          <EmptyState icon="heart" title={tTip("empty")} hint={tTip("emptyHint")} />
-        ) : (
-          <div className="space-y-3">
-            {tips.map((tp) => (
-              <div key={tp.id} className="flex items-start gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
-                <Avatar name={tp.user.name} src={tp.user.avatarUrl} size={36} />
-                <div className="min-w-0 flex-1">
-                  <p className="text-sm">
-                    <span className="font-semibold text-[#161613]">{tp.user.name}</span>{" "}
-                    <span className="text-[color:var(--brand)]">{formatPrice(tp.amountCents, tp.currency, locale)}</span>{" "}
-                    <span className="text-xs font-normal text-[#161613]/45">· {timeAgo(tp.createdAt, locale)}</span>
-                  </p>
-                  {tp.message && <p className="mt-0.5 text-sm text-[#161613]/70">{tp.message}</p>}
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
+      <TipsSheet
+        slug={slug}
+        space={spaceSlug}
+        spaceName={space.name}
+        isMember={isMember}
+        raised={new Intl.NumberFormat(locale, {
+          style: "currency",
+          currency: PLATFORM_CURRENCY.toUpperCase(),
+        }).format(raised / 100)}
+        goal={goalCents > 0 ? formatPrice(goalCents, PLATFORM_CURRENCY, locale) : null}
+        pct={pct}
+        tipped={tipped === "1"}
+        errorKey={
+          error === "amount"
+            ? "amountError"
+            : error === "checkout" || error === "payments-unavailable"
+              ? "checkoutError"
+              : null
+        }
+        tips={tipRows.map((tp) => ({
+          id: tp.id,
+          name: tp.user.name,
+          avatarUrl: tp.user.avatarUrl,
+          amount: formatPrice(tp.amountCents, tp.currency, locale),
+          time: timeAgo(tp.createdAt, locale),
+          message: tp.message,
+        }))}
+      />
     );
   }
 

@@ -2951,7 +2951,8 @@
         "sending": "Envoi…",
         "anonymous": "Envoyer anonymement",
         "thanks": "Merci pour ton soutien !",
-        "amountError": "Saisis un montant entre 1 € et 1 000 €."
+        "amountError": "Saisis un montant entre 1 et 1 000.",
+        "checkoutError": "Le paiement n'a pas pu démarrer. Réessaie plus tard."
       },
       "calendar": {
         "untitledPost": "Publication sans titre",

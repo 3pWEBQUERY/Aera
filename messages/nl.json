@@ -2951,7 +2951,8 @@
         "sending": "Versturen…",
         "anonymous": "Anoniem versturen",
         "thanks": "Bedankt voor je steun!",
-        "amountError": "Voer een bedrag in tussen € 1 en € 1.000."
+        "amountError": "Voer een bedrag in tussen 1 en 1000.",
+        "checkoutError": "De betaling kon niet worden gestart. Probeer het later opnieuw."
       },
       "calendar": {
         "untitledPost": "Bericht zonder titel",

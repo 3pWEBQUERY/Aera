@@ -2951,7 +2951,8 @@
         "sending": "보내는 중…",
         "anonymous": "익명으로 보내기",
         "thanks": "후원해 주셔서 감사합니다!",
-        "amountError": "1 €에서 1.000 € 사이의 금액을 입력해 주세요."
+        "amountError": "1에서 1000 사이의 금액을 입력해 주세요.",
+        "checkoutError": "결제를 시작할 수 없습니다. 나중에 다시 시도해 주세요."
       },
       "calendar": {
         "untitledPost": "제목 없는 게시물",

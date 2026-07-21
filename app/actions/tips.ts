@@ -73,11 +73,14 @@ export async function tipAction(fd: FormData): Promise<void> {
       successUrl: `${env.APP_URL}${back}?tipped=1`,
       cancelUrl: `${env.APP_URL}${back}`,
     });
-    if (!url) {
+    if (url) redirect(url!);
+    // Stripe is configured but checkout could not start (e.g. Connect
+    // onboarding incomplete). In production that is a hard error; locally we
+    // fall through to the dev payment fallback below.
+    if (!devPaymentFallbackAllowed) {
       await prisma.tip.delete({ where: { id: tip.id } });
       redirect(`${back}?error=checkout`);
     }
-    redirect(url!);
   }
 
   if (!devPaymentFallbackAllowed) {

@@ -2951,7 +2951,8 @@
         "sending": "发送中…",
         "anonymous": "匿名发送",
         "thanks": "感谢你的支持！",
-        "amountError": "请输入 1 € 至 1.000 € 之间的金额。"
+        "amountError": "请输入 1 至 1000 之间的金额。",
+        "checkoutError": "无法开始支付，请稍后重试。"
       },
       "calendar": {
         "untitledPost": "无标题帖子",

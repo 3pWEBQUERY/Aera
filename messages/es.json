@@ -2951,7 +2951,8 @@
         "sending": "Enviando…",
         "anonymous": "Enviar de forma anónima",
         "thanks": "¡Gracias por tu apoyo!",
-        "amountError": "Introduce un importe entre 1 € y 1.000 €."
+        "amountError": "Introduce un importe entre 1 y 1000.",
+        "checkoutError": "No se pudo iniciar el pago. Inténtalo de nuevo más tarde."
       },
       "calendar": {
         "untitledPost": "Publicación sin título",
