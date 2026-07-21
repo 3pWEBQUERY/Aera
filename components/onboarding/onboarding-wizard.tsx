@@ -113,15 +113,15 @@ export function OnboardingWizard({
           <div className="flex items-center gap-3">
             <Link
               href="/home"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-sm font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+              className="inline-flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-sm font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
             >
               <Icon name="close" size={16} />
               <span className="hidden sm:inline">{t("cancel")}</span>
             </Link>
-            <span className="hidden rounded-full border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
+            <span className="hidden rounded-lg border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
               Aera {PLANS[selectedPlan].name}
             </span>
-            <span className="hidden rounded-full border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
+            <span className="hidden rounded-lg border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
               {t("stepShort", { step, total })}
             </span>
             <div className="flex items-center gap-2">
@@ -394,7 +394,7 @@ export function OnboardingWizard({
             {step === 1 ? (
               <Link
                 href="/home"
-                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
               >
                 {t("cancel")}
               </Link>
@@ -402,7 +402,7 @@ export function OnboardingWizard({
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(1, s - 1))}
-                className="rounded-full px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
               >
                 {t("back")}
               </button>
@@ -412,7 +412,7 @@ export function OnboardingWizard({
                 type="button"
                 onClick={() => canProceed && setStep((s) => s + 1)}
                 disabled={!canProceed}
-                className="inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
                 style={{ backgroundColor: primary }}
               >
                 {t("next")} <Icon name="chevron" size={16} className="-rotate-90" />
@@ -421,7 +421,7 @@ export function OnboardingWizard({
               <button
                 type="submit"
                 disabled={pending}
-                className="inline-flex min-h-12 items-center gap-2 rounded-full px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:opacity-60"
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:opacity-60"
                 style={{ backgroundColor: primary }}
               >
                 {pending ? t("creating") : t("create")}

@@ -53,7 +53,7 @@ export default async function DashboardIndex() {
               </span>
             </div>
             <form action={logoutAction}>
-              <button className="inline-flex min-h-9 items-center rounded-full border border-[#161613]/15 px-4 text-sm font-semibold text-[#161613]/70 transition hover:border-[#161613]/40 hover:text-[#161613]">
+              <button className="inline-flex min-h-9 items-center rounded-xl border border-[#161613]/15 px-4 text-sm font-semibold text-[#161613]/70 transition hover:border-[#161613]/40 hover:text-[#161613]">
                 {t("logout")}
               </button>
             </form>
