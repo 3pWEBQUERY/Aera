@@ -39,14 +39,12 @@ export function LiveSessionCard({
       href={href}
       style={{
         ["--pf" as string]: pf,
-        ["--pf-soft" as string]: `${pf}59`,
         ["--pf-faint" as string]: `${pf}40`,
       }}
       className={cn(
         "group flex h-full flex-col rounded-2xl border bg-white p-5",
-        "border-[color:var(--pf-faint)] transition-all duration-300 ease-out",
-        "hover:-translate-y-1 hover:border-[color:var(--pf)]",
-        "hover:shadow-[0_18px_40px_-18px_var(--pf-soft)]",
+        "border-[color:var(--pf-faint)] transition-colors duration-200",
+        "hover:border-[color:var(--pf)]",
       )}
     >
       <div className="flex items-center justify-between gap-2">
