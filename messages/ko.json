@@ -2956,7 +2956,11 @@
         "chatTitle": "Live chat",
         "chatEmpty": "No messages yet. Say something!",
         "chatPlaceholder": "Write a message…",
-        "send": "Send"
+        "send": "Send",
+        "fullscreen": "전체 화면",
+        "chatHide": "채팅 숨기기",
+        "chatShow": "채팅 표시",
+        "resizeChat": "채팅 너비 조절"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

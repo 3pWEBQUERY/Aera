@@ -2956,7 +2956,11 @@
         "chatTitle": "Live chat",
         "chatEmpty": "No messages yet. Say something!",
         "chatPlaceholder": "Write a message…",
-        "send": "Send"
+        "send": "Send",
+        "fullscreen": "Tela cheia",
+        "chatHide": "Ocultar chat",
+        "chatShow": "Mostrar chat",
+        "resizeChat": "Ajustar largura do chat"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

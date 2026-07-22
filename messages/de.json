@@ -2790,7 +2790,11 @@
         "chatTitle": "Live-Chat",
         "chatEmpty": "Noch keine Nachrichten. Schreib etwas!",
         "chatPlaceholder": "Nachricht schreiben…",
-        "send": "Senden"
+        "send": "Senden",
+        "fullscreen": "Vollbild",
+        "chatHide": "Chat ausblenden",
+        "chatShow": "Chat einblenden",
+        "resizeChat": "Chatbreite anpassen"
       },
       "requests": {
         "titlePlaceholder": "Worum geht es? (Titel)",

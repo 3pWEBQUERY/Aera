@@ -39,6 +39,74 @@ export function LiveRoom({
   const listRef = useRef<HTMLDivElement>(null);
   const seen = useRef(new Set(initialMessages.map((m) => m.id)));
 
+  // ---- Layout-Steuerung: Chat ein-/ausblenden, Chatbreite ziehen, Vollbild.
+  const playerBoxRef = useRef<HTMLDivElement>(null);
+  const [chatOpen, setChatOpen] = useState(true);
+  const [chatWidth, setChatWidth] = useState(340);
+  const chatWidthRef = useRef(chatWidth);
+  chatWidthRef.current = chatWidth;
+  const CHAT_MIN = 260;
+  const CHAT_MAX = 520;
+
+  // Gemerkte Einstellungen erst nach dem Mount lesen (hydration-sicher).
+  useEffect(() => {
+    try {
+      const w = Number(localStorage.getItem("aera-live-chat-width"));
+      if (w >= CHAT_MIN && w <= CHAT_MAX) setChatWidth(w);
+      if (localStorage.getItem("aera-live-chat-open") === "0") setChatOpen(false);
+    } catch {
+      /* localStorage nicht verfügbar */
+    }
+  }, []);
+
+  const persistLayout = (open: boolean, width: number) => {
+    try {
+      localStorage.setItem("aera-live-chat-open", open ? "1" : "0");
+      localStorage.setItem("aera-live-chat-width", String(width));
+    } catch {
+      /* ignore */
+    }
+  };
+
+  function toggleChat() {
+    setChatOpen((v) => {
+      persistLayout(!v, chatWidthRef.current);
+      return !v;
+    });
+  }
+
+  function startResize(e: React.PointerEvent<HTMLDivElement>) {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startW = chatWidthRef.current;
+    const onMove = (ev: PointerEvent) => {
+      const next = Math.min(CHAT_MAX, Math.max(CHAT_MIN, startW + (startX - ev.clientX)));
+      setChatWidth(next);
+    };
+    const onUp = () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      persistLayout(true, chatWidthRef.current);
+    };
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  }
+
+  function resizeByKey(e: React.KeyboardEvent<HTMLDivElement>) {
+    const delta = e.key === "ArrowLeft" ? 20 : e.key === "ArrowRight" ? -20 : 0;
+    if (!delta) return;
+    e.preventDefault();
+    setChatWidth((w) => {
+      const next = Math.min(CHAT_MAX, Math.max(CHAT_MIN, w + delta));
+      persistLayout(true, next);
+      return next;
+    });
+  }
+
+  function enterFullscreen() {
+    playerBoxRef.current?.requestFullscreen?.().catch(() => undefined);
+  }
+
   const rawPlayerUrl = status === "ENDED" ? replayUrl : streamUrl ?? replayUrl;
   // Host erst nach dem Mount lesen (hydration-sicher); Twitch braucht ihn als
   // parent-Parameter. Kanal-/Video-Links werden in Player-Embeds umgewandelt.
@@ -121,9 +189,35 @@ export function LiveRoom({
   }
 
   return (
-    <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-      <div className="min-w-0">
-        <div className="relative overflow-hidden rounded-2xl border border-[#161613]/10 bg-black" style={{ aspectRatio: "16 / 9" }}>
+    <div
+      style={{ ["--chat-w" as string]: `${chatWidth}px` }}
+      className="flex flex-col gap-5 lg:flex-row lg:items-start"
+    >
+      <div className="min-w-0 flex-1">
+        {/* Steuerleiste: Vollbild + Chat ein-/ausblenden */}
+        <div className="mb-2 flex items-center justify-end gap-1.5">
+          <button
+            type="button"
+            onClick={enterFullscreen}
+            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+          >
+            <Icon name="expand" size={14} /> {t("fullscreen")}
+          </button>
+          <button
+            type="button"
+            onClick={toggleChat}
+            aria-pressed={chatOpen}
+            className="hidden items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613] lg:inline-flex"
+          >
+            <Icon name={chatOpen ? "eyeOff" : "chat"} size={14} />
+            {chatOpen ? t("chatHide") : t("chatShow")}
+          </button>
+        </div>
+        <div
+          ref={playerBoxRef}
+          className="relative overflow-hidden rounded-2xl border border-[#161613]/10 bg-black"
+          style={{ aspectRatio: "16 / 9" }}
+        >
           {playerUrl ? (
             <iframe
               src={playerUrl}
@@ -141,7 +235,28 @@ export function LiveRoom({
         </div>
       </div>
 
-      <aside className="flex h-[70vh] min-h-0 flex-col rounded-2xl border border-[#161613]/10 bg-white">
+      {/* Ziehbarer Trenner: Chatbreite stufenlos anpassen (Pfeiltasten möglich) */}
+      {chatOpen && (
+        <div
+          role="separator"
+          aria-label={t("resizeChat")}
+          aria-orientation="vertical"
+          tabIndex={0}
+          onPointerDown={startResize}
+          onKeyDown={resizeByKey}
+          className="group hidden w-2 shrink-0 cursor-col-resize items-center justify-center self-stretch lg:flex"
+        >
+          <span className="h-16 w-1 rounded-full bg-[#161613]/10 transition group-hover:bg-[#161613]/30 group-focus-visible:bg-[var(--brand)] group-active:bg-[var(--brand)]" />
+        </div>
+      )}
+
+      <aside
+        className={
+          chatOpen
+            ? "flex h-[70vh] min-h-0 flex-col rounded-2xl border border-[#161613]/10 bg-white lg:w-[var(--chat-w)] lg:shrink-0"
+            : "flex h-[70vh] min-h-0 flex-col rounded-2xl border border-[#161613]/10 bg-white lg:hidden"
+        }
+      >
         <div className="border-b border-[#161613]/10 px-4 py-3 text-sm font-semibold text-[#161613]">
           {t("chatTitle")}
         </div>

@@ -2956,7 +2956,11 @@
         "chatTitle": "Live chat",
         "chatEmpty": "No messages yet. Say something!",
         "chatPlaceholder": "Write a message…",
-        "send": "Send"
+        "send": "Send",
+        "fullscreen": "全画面",
+        "chatHide": "チャットを隠す",
+        "chatShow": "チャットを表示",
+        "resizeChat": "チャット幅を調整"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

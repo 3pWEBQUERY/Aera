@@ -2956,7 +2956,11 @@
         "chatTitle": "Live chat",
         "chatEmpty": "No messages yet. Say something!",
         "chatPlaceholder": "Write a message…",
-        "send": "Send"
+        "send": "Send",
+        "fullscreen": "全螢幕",
+        "chatHide": "隱藏聊天",
+        "chatShow": "顯示聊天",
+        "resizeChat": "調整聊天寬度"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

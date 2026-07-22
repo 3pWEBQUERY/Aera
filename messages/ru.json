@@ -2956,7 +2956,11 @@
         "chatTitle": "Live chat",
         "chatEmpty": "No messages yet. Say something!",
         "chatPlaceholder": "Write a message…",
-        "send": "Send"
+        "send": "Send",
+        "fullscreen": "Во весь экран",
+        "chatHide": "Скрыть чат",
+        "chatShow": "Показать чат",
+        "resizeChat": "Изменить ширину чата"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",
