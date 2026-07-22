@@ -2960,7 +2960,10 @@
         "fullscreen": "全画面",
         "chatHide": "チャットを隠す",
         "chatShow": "チャットを表示",
-        "resizeChat": "チャット幅を調整"
+        "resizeChat": "チャット幅を調整",
+        "startsIn": "開始まで {time}",
+        "startsAnyMoment": "まもなく開始…",
+        "daysShort": "日"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

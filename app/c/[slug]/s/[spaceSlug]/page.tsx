@@ -791,6 +791,7 @@ export default async function SpacePage({
             status={activeSession.status}
             streamUrl={activeSession.streamUrl}
             replayUrl={activeSession.replayUrl}
+            startsAt={activeSession.startsAt ? new Date(activeSession.startsAt).toISOString() : null}
             canChat={canChat}
             initialMessages={recent.map((m) => ({
               id: m.id,
@@ -819,6 +820,7 @@ export default async function SpacePage({
                 statusLabel={t(`liveStatus.${s.status}`)}
                 streamUrl={s.streamUrl}
                 startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+                startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
               />
             ))}
           </div>

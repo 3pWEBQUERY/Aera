@@ -2960,7 +2960,10 @@
         "fullscreen": "На весь екран",
         "chatHide": "Сховати чат",
         "chatShow": "Показати чат",
-        "resizeChat": "Змінити ширину чату"
+        "resizeChat": "Змінити ширину чату",
+        "startsIn": "Початок через {time}",
+        "startsAnyMoment": "Ось-ось почнеться…",
+        "daysShort": "д"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

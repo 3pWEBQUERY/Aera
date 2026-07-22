@@ -2794,7 +2794,10 @@
         "fullscreen": "Fullscreen",
         "chatHide": "Hide chat",
         "chatShow": "Show chat",
-        "resizeChat": "Resize chat"
+        "resizeChat": "Resize chat",
+        "startsIn": "Starts in {time}",
+        "startsAnyMoment": "Starting any moment…",
+        "daysShort": "d"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

@@ -2794,7 +2794,10 @@
         "fullscreen": "Vollbild",
         "chatHide": "Chat ausblenden",
         "chatShow": "Chat einblenden",
-        "resizeChat": "Chatbreite anpassen"
+        "resizeChat": "Chatbreite anpassen",
+        "startsIn": "Startet in {time}",
+        "startsAnyMoment": "Beginnt jeden Moment …",
+        "daysShort": "T"
       },
       "requests": {
         "titlePlaceholder": "Worum geht es? (Titel)",

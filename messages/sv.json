@@ -2960,7 +2960,10 @@
         "fullscreen": "Helskärm",
         "chatHide": "Dölj chatt",
         "chatShow": "Visa chatt",
-        "resizeChat": "Justera chattbredd"
+        "resizeChat": "Justera chattbredd",
+        "startsIn": "Börjar om {time}",
+        "startsAnyMoment": "Börjar när som helst…",
+        "daysShort": "d"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

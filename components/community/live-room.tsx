@@ -6,6 +6,7 @@ import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { timeAgo } from "@/lib/utils";
 import { toLiveEmbedUrl } from "@/lib/live-embed";
+import { LiveCountdown } from "./live-countdown";
 
 interface LiveMessage {
   id: string;
@@ -20,6 +21,7 @@ export function LiveRoom({
   status,
   streamUrl,
   replayUrl,
+  startsAt,
   initialMessages,
   canChat,
 }: {
@@ -28,6 +30,7 @@ export function LiveRoom({
   status: "SCHEDULED" | "LIVE" | "ENDED";
   streamUrl: string | null;
   replayUrl: string | null;
+  startsAt?: string | null;
   initialMessages: LiveMessage[];
   canChat: boolean;
 }) {
@@ -230,6 +233,12 @@ export function LiveRoom({
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
               <Icon name="videos" size={30} />
               <span className="text-sm">{status === "SCHEDULED" ? t("notStarted") : t("noStream")}</span>
+              {status === "SCHEDULED" && startsAt && (
+                <LiveCountdown
+                  startsAt={startsAt}
+                  className="mt-1 text-2xl font-semibold text-white"
+                />
+              )}
             </div>
           )}
         </div>

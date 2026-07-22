@@ -2960,7 +2960,10 @@
         "fullscreen": "Fullskjerm",
         "chatHide": "Skjul chat",
         "chatShow": "Vis chat",
-        "resizeChat": "Juster chatbredde"
+        "resizeChat": "Juster chatbredde",
+        "startsIn": "Starter om {time}",
+        "startsAnyMoment": "Starter når som helst…",
+        "daysShort": "d"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

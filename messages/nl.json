@@ -2960,7 +2960,10 @@
         "fullscreen": "Volledig scherm",
         "chatHide": "Chat verbergen",
         "chatShow": "Chat tonen",
-        "resizeChat": "Chatbreedte aanpassen"
+        "resizeChat": "Chatbreedte aanpassen",
+        "startsIn": "Begint over {time}",
+        "startsAnyMoment": "Begint elk moment…",
+        "daysShort": "d"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

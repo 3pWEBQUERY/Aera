@@ -2960,7 +2960,10 @@
         "fullscreen": "Fuld skærm",
         "chatHide": "Skjul chat",
         "chatShow": "Vis chat",
-        "resizeChat": "Tilpas chatbredde"
+        "resizeChat": "Tilpas chatbredde",
+        "startsIn": "Starter om {time}",
+        "startsAnyMoment": "Starter når som helst…",
+        "daysShort": "d"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

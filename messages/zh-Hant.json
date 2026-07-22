@@ -2960,7 +2960,10 @@
         "fullscreen": "全螢幕",
         "chatHide": "隱藏聊天",
         "chatShow": "顯示聊天",
-        "resizeChat": "調整聊天寬度"
+        "resizeChat": "調整聊天寬度",
+        "startsIn": "{time} 後開始",
+        "startsAnyMoment": "即將開始…",
+        "daysShort": "天"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

@@ -4,6 +4,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { PlatformIcon, PLATFORM_COLORS } from "@/components/dashboard/platform-icons";
 import { LIVE_PLATFORMS, detectLivePlatform } from "@/lib/live-embed";
 import { cn } from "@/lib/utils";
+import { LiveCountdown } from "./live-countdown";
 
 /**
  * Gemeinsame Live-Session-Karte für die Community-Startseite (Sektion) und
@@ -17,6 +18,7 @@ export function LiveSessionCard({
   statusLabel,
   streamUrl,
   startsAtLabel,
+  startsAtIso,
 }: {
   href: string;
   title: string;
@@ -24,6 +26,7 @@ export function LiveSessionCard({
   statusLabel: string;
   streamUrl: string | null;
   startsAtLabel: string | null;
+  startsAtIso?: string | null;
 }) {
   const platform = streamUrl ? detectLivePlatform(streamUrl) : null;
   const info =
@@ -66,6 +69,12 @@ export function LiveSessionCard({
       <h3 className="display-serif mt-3 truncate text-xl text-[#161613] transition group-hover:text-[color:var(--brand)]">
         {title}
       </h3>
+      {status === "SCHEDULED" && startsAtIso && (
+        <span className="mt-2 inline-flex items-center gap-1.5 self-start rounded-lg bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold text-[color:var(--brand)]">
+          <Icon name="clock" size={13} />
+          <LiveCountdown startsAt={startsAtIso} />
+        </span>
+      )}
       <div className="mt-2 flex items-center justify-between gap-2 text-xs text-[#161613]/50">
         <span className="inline-flex min-h-4 items-center gap-1.5">
           {startsAtLabel && (

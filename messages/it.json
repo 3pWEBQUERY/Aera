@@ -2960,7 +2960,10 @@
         "fullscreen": "Schermo intero",
         "chatHide": "Nascondi chat",
         "chatShow": "Mostra chat",
-        "resizeChat": "Regola larghezza chat"
+        "resizeChat": "Regola larghezza chat",
+        "startsIn": "Inizia tra {time}",
+        "startsAnyMoment": "Inizia da un momento all'altro…",
+        "daysShort": "g"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

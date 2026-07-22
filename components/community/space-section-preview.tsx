@@ -151,6 +151,7 @@ async function LivePreview({ slug, tenantId, space, locale }: Props) {
               statusLabel={tSpace(`liveStatus.${s.status}`)}
               streamUrl={s.streamUrl}
               startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+              startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
             />
           ))}
         </div>
