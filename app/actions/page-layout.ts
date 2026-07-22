@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { parseLayout } from "@/lib/layout";
@@ -72,6 +73,11 @@ export async function saveLayoutAction(
       layout: layout as unknown as object,
     },
   });
+
+  // Das Live-Vorschau-Cookie überlagert für Staff die gespeicherte Version.
+  // Nach dem Speichern löschen, damit der Creator sofort den DB-Stand sieht
+  // (sonst zeigt /c/{slug} bis zu 15 Minuten den alten Vorschau-Zustand).
+  (await cookies()).delete(`aera_preview_${slug}`);
 
   revalidatePath(`/c/${slug}`, "layout");
   revalidatePath(`/c/${slug}`);

@@ -1694,7 +1694,9 @@
         "EXTERNAL": "Link esterno",
         "RECENTLY_VISITED": "Visitati di recente"
       },
-      "spaceRemoved": "Space rimosso"
+      "spaceRemoved": "Space rimosso",
+      "applyAll": "Applica a tutti i segmenti",
+      "applyAllHint": "Le modifiche valgono per visitatori, membri gratuiti e paganti. Disattiva per progettare ogni segmento separatamente."
     },
     "analytics": {
       "metaTitle": "Statistiche",

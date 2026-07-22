@@ -1694,7 +1694,9 @@
         "EXTERNAL": "외부 링크",
         "RECENTLY_VISITED": "최근 방문"
       },
-      "spaceRemoved": "스페이스가 삭제됨"
+      "spaceRemoved": "스페이스가 삭제됨",
+      "applyAll": "모든 대상에게 적용",
+      "applyAllHint": "변경 사항이 방문자, 무료·유료 멤버 모두에게 적용됩니다. 대상별로 따로 구성하려면 끄세요."
     },
     "analytics": {
       "metaTitle": "통계",

@@ -1694,7 +1694,9 @@
         "EXTERNAL": "外部链接",
         "RECENTLY_VISITED": "最近访问"
       },
-      "spaceRemoved": "空间已删除"
+      "spaceRemoved": "空间已删除",
+      "applyAll": "应用到所有受众",
+      "applyAllHint": "更改同时适用于访客、免费和付费成员。关闭后可分别设计每个受众的页面。"
     },
     "analytics": {
       "metaTitle": "统计",

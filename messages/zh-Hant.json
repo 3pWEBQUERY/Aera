@@ -1694,7 +1694,9 @@
         "EXTERNAL": "外部連結",
         "RECENTLY_VISITED": "最近造訪"
       },
-      "spaceRemoved": "空間已刪除"
+      "spaceRemoved": "空間已刪除",
+      "applyAll": "套用到所有受眾",
+      "applyAllHint": "變更同時適用於訪客、免費與付費成員。關閉後可分別設計每個受眾的頁面。"
     },
     "analytics": {
       "metaTitle": "統計",

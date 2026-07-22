@@ -1819,7 +1819,9 @@
         "EXTERNAL": "Externer Link",
         "RECENTLY_VISITED": "Zuletzt besucht"
       },
-      "spaceRemoved": "Space entfernt"
+      "spaceRemoved": "Space entfernt",
+      "applyAll": "Für alle Zielgruppen übernehmen",
+      "applyAllHint": "Änderungen gelten für Besucher, kostenlose und zahlende Mitglieder gleichermaßen. Deaktivieren, um jede Zielgruppe einzeln zu gestalten."
     },
     "analytics": {
       "metaTitle": "Statistiken",

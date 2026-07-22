@@ -1694,7 +1694,9 @@
         "EXTERNAL": "外部リンク",
         "RECENTLY_VISITED": "最近訪れた"
       },
-      "spaceRemoved": "スペースを削除しました"
+      "spaceRemoved": "スペースを削除しました",
+      "applyAll": "すべての対象者に適用",
+      "applyAllHint": "変更は訪問者・無料メンバー・有料メンバーすべてに適用されます。個別に設定する場合はオフにしてください。"
     },
     "analytics": {
       "metaTitle": "統計",

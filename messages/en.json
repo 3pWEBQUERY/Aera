@@ -1819,7 +1819,9 @@
         "EXTERNAL": "External link",
         "RECENTLY_VISITED": "Recently visited"
       },
-      "spaceRemoved": "Space removed"
+      "spaceRemoved": "Space removed",
+      "applyAll": "Apply to all audiences",
+      "applyAllHint": "Changes apply to visitors, free and paying members alike. Turn off to design each audience separately."
     },
     "analytics": {
       "metaTitle": "Analytics",

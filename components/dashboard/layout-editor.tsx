@@ -100,8 +100,16 @@ export function LayoutEditor({
     initial.sectionsByAudience,
   );
   const sections = sectionsByAudience[audience];
+  // Standard: Änderungen gelten für ALLE Zielgruppen — das entspricht der
+  // Erwartung "meine Seite anpassen". Wer pro Zielgruppe unterschiedliche
+  // Layouts will, schaltet den Haken im Seitenlayout-Panel aus.
+  const [applyAllAudiences, setApplyAllAudiences] = useState(true);
   const setSections = (next: LayoutSection[]) =>
-    setSectionsByAudience((prev) => ({ ...prev, [audience]: next }));
+    setSectionsByAudience((prev) =>
+      applyAllAudiences
+        ? { PUBLIC: next, FREE: next, PAID: next }
+        : { ...prev, [audience]: next },
+    );
   const [nav, setNav] = useState<NavItemConfig[]>(
     initial.nav.length > 0 ? initial.nav : [{ id: uid(), label: t("navTypes.HOME"), type: "HOME" }],
   );
@@ -272,7 +280,14 @@ export function LayoutEditor({
             />
           )}
           {view === "sections" && (
-            <SectionsPanel sections={sections} setSections={setSections} audience={audience} spaces={spaces} />
+            <SectionsPanel
+              sections={sections}
+              setSections={setSections}
+              audience={audience}
+              spaces={spaces}
+              applyAll={applyAllAudiences}
+              setApplyAll={setApplyAllAudiences}
+            />
           )}
           {view === "nav" && <NavPanel nav={nav} setNav={setNav} spaces={spaces} />}
         </aside>
@@ -679,11 +694,15 @@ function SectionsPanel({
   setSections,
   audience,
   spaces,
+  applyAll,
+  setApplyAll,
 }: {
   sections: LayoutSection[];
   setSections: (s: LayoutSection[]) => void;
   audience: Audience;
   spaces: { slug: string; name: string; visibility: string; type: string }[];
+  applyAll: boolean;
+  setApplyAll: (v: boolean) => void;
 }) {
   const [addOpen, setAddOpen] = useState(false);
   const dragIndex = useRef<number | null>(null);
@@ -756,6 +775,19 @@ function SectionsPanel({
       <p className="text-sm text-slate-500">
         {t("sectionsHint")}
       </p>
+
+      <label className="mt-3 flex cursor-pointer items-start gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5">
+        <input
+          type="checkbox"
+          checked={applyAll}
+          onChange={(e) => setApplyAll(e.target.checked)}
+          className="mt-0.5 h-4 w-4 rounded border-slate-300 accent-slate-900"
+        />
+        <span>
+          <span className="block text-sm font-medium text-slate-800">{t("applyAll")}</span>
+          <span className="block text-xs text-slate-400">{t("applyAllHint")}</span>
+        </span>
+      </label>
 
       <div className="mt-4 space-y-2">
         {visible.map((s, i) => (

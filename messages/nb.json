@@ -1694,7 +1694,9 @@
         "EXTERNAL": "Ekstern lenke",
         "RECENTLY_VISITED": "Nylig besøkt"
       },
-      "spaceRemoved": "Space fjernet"
+      "spaceRemoved": "Space fjernet",
+      "applyAll": "Bruk på alle målgrupper",
+      "applyAllHint": "Endringer gjelder besøkende, gratis- og betalende medlemmer. Slå av for å utforme hver målgruppe separat."
     },
     "analytics": {
       "metaTitle": "Statistikk",

@@ -1694,7 +1694,9 @@
         "EXTERNAL": "Enlace externo",
         "RECENTLY_VISITED": "Visitado recientemente"
       },
-      "spaceRemoved": "Space eliminado"
+      "spaceRemoved": "Space eliminado",
+      "applyAll": "Aplicar a todas las audiencias",
+      "applyAllHint": "Los cambios se aplican por igual a visitantes, miembros gratuitos y de pago. Desactívalo para diseñar cada audiencia por separado."
     },
     "analytics": {
       "metaTitle": "Estadísticas",

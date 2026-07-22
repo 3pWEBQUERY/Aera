@@ -1694,7 +1694,9 @@
         "EXTERNAL": "Externe link",
         "RECENTLY_VISITED": "Recent bezocht"
       },
-      "spaceRemoved": "Space verwijderd"
+      "spaceRemoved": "Space verwijderd",
+      "applyAll": "Toepassen op alle doelgroepen",
+      "applyAllHint": "Wijzigingen gelden voor bezoekers, gratis en betalende leden. Zet uit om elke doelgroep apart in te richten."
     },
     "analytics": {
       "metaTitle": "Statistieken",

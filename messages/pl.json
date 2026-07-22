@@ -1694,7 +1694,9 @@
         "EXTERNAL": "Link zewnętrzny",
         "RECENTLY_VISITED": "Ostatnio odwiedzone"
       },
-      "spaceRemoved": "Usunięto space"
+      "spaceRemoved": "Usunięto space",
+      "applyAll": "Zastosuj do wszystkich grup",
+      "applyAllHint": "Zmiany dotyczą odwiedzających oraz członków bezpłatnych i płacących. Wyłącz, aby projektować każdą grupę osobno."
     },
     "analytics": {
       "metaTitle": "Statystyki",
