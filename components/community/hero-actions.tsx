@@ -116,7 +116,7 @@ export function HeroActions({
         {open && (
           <div
             role="menu"
-            className="absolute left-0 top-full z-40 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
+            className="absolute right-0 top-full z-40 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
           >
             {links.map((l) => (
               <Link
