@@ -47,6 +47,7 @@ import { ImmediateAccessConsent } from "@/components/community/immediate-access-
 import { submitRequestAction, purchaseRequestAction } from "@/app/actions/requests";
 import { reserveBookingAction } from "@/app/actions/booking";
 import { TipsSheet } from "@/components/community/tips-sheet";
+import { LiveSessionCard } from "@/components/community/live-session-card";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 const PRODUCT_TYPES = ["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"];
@@ -810,31 +811,15 @@ export default async function SpacePage({
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {sessions.map((s) => (
-              <Link
+              <LiveSessionCard
                 key={s.id}
                 href={`/c/${slug}/s/${spaceSlug}?open=${s.id}`}
-                className="group rounded-2xl border border-[#161613]/10 bg-white p-5 transition hover:border-[#161613]/25 hover:shadow-sm"
-              >
-                <div className="flex items-center gap-2">
-                  <Pill
-                    className={
-                      s.status === "LIVE"
-                        ? "bg-red-500/90 text-white"
-                        : s.status === "SCHEDULED"
-                          ? "bg-slate-100 text-slate-600"
-                          : "bg-[#161613]/5 text-[#161613]/60"
-                    }
-                  >
-                    {t(`liveStatus.${s.status}`)}
-                  </Pill>
-                  {s.startsAt && (
-                    <span className="text-xs text-[#161613]/50">{formatDateTime(s.startsAt, locale)}</span>
-                  )}
-                </div>
-                <h2 className="display-serif mt-3 text-xl text-[#161613] group-hover:text-[color:var(--brand)]">
-                  {s.title}
-                </h2>
-              </Link>
+                title={s.title}
+                status={s.status}
+                statusLabel={t(`liveStatus.${s.status}`)}
+                streamUrl={s.streamUrl}
+                startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+              />
             ))}
           </div>
         )}

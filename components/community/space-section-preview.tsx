@@ -6,6 +6,7 @@ import { formatPrice, formatDateTime } from "@/lib/utils";
 import { parseStorySettings } from "@/lib/space-settings";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { Icon, type IconName } from "@/components/dashboard/icons";
+import { LiveSessionCard } from "./live-session-card";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { StoryViewer } from "./story-viewer";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
@@ -142,29 +143,15 @@ async function LivePreview({ slug, tenantId, space, locale }: Props) {
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
           {sessions.map((s) => (
-            <Link
+            <LiveSessionCard
               key={s.id}
               href={`/c/${slug}/s/${space.slug}?open=${s.id}`}
-              className="group rounded-2xl border border-[#161613]/10 bg-white p-4 transition hover:border-[#161613]/25 hover:shadow-sm"
-            >
-              <div className="flex items-center gap-2">
-                <Pill
-                  className={
-                    s.status === "LIVE"
-                      ? "bg-red-500/90 text-white"
-                      : "bg-[#161613]/5 text-[#161613]/60"
-                  }
-                >
-                  {tSpace(`liveStatus.${s.status}`)}
-                </Pill>
-                {s.startsAt && (
-                  <span className="text-xs text-[#161613]/50">{formatDateTime(s.startsAt, locale)}</span>
-                )}
-              </div>
-              <h3 className="display-serif mt-2 truncate text-lg text-[#161613] group-hover:text-[color:var(--brand)]">
-                {s.title}
-              </h3>
-            </Link>
+              title={s.title}
+              status={s.status}
+              statusLabel={tSpace(`liveStatus.${s.status}`)}
+              streamUrl={s.streamUrl}
+              startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+            />
           ))}
         </div>
       )}
