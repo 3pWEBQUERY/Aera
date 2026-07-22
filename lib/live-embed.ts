@@ -26,7 +26,7 @@ export const LIVE_PLATFORMS: LivePlatformInfo[] = [
   { key: "tiktok", label: "TikTok", domains: ["tiktok.com"], placeholder: "https://tiktok.com/@deinname/live" },
   { key: "kick", label: "Kick", domains: ["kick.com"], placeholder: "https://kick.com/deinkanal" },
   { key: "instagram", label: "Instagram", domains: ["instagram.com"], placeholder: "https://instagram.com/deinname/live" },
-  { key: "chaturbate", label: "Chaturbate", domains: ["chaturbate.com"], placeholder: "https://chaturbate.com/deinname" },
+  { key: "chaturbate", label: "Chaturbate", domains: ["chaturbate.com", "cbxyz.com"], placeholder: "https://chaturbate.com/deinname" },
   { key: "vimeo", label: "Vimeo", domains: ["vimeo.com"], placeholder: "https://vimeo.com/123456789" },
   { key: "custom", label: "", domains: [], placeholder: "https://…" },
 ];
@@ -105,9 +105,21 @@ export function toLiveEmbedUrl(url: string, parentHost?: string): string {
     return `https://player.vimeo.com/video/${seg[0]}`;
   }
 
-  // Chaturbate: room page -> /embed/<room>/.
-  if (host === "chaturbate.com" && seg[0] && seg[0] !== "embed") {
-    return `https://chaturbate.com/embed/${seg[0]}/`;
+  // Chaturbate: Raumseiten und /embed/ verbieten Framing (X-Frame-Options,
+  // Geo-Redirect auf z. B. de.chaturbate.com). Offiziell einbettbar ist der
+  // Affiliate-Player unter cbxyz.com/in/?tour=SHBY&room=<room>.
+  if (host === "chaturbate.com" || host.endsWith(".chaturbate.com") || host === "cbxyz.com") {
+    if (host === "cbxyz.com" && seg[0] === "in") return url;
+    const room = seg[0] === "embed" ? seg[1] : seg[0];
+    if (room && !["in", "tag", "tags", "accounts", "auth"].includes(room)) {
+      const p = new URL("https://cbxyz.com/in/");
+      p.searchParams.set("tour", "SHBY");
+      p.searchParams.set("campaign", "");
+      p.searchParams.set("track", "embed");
+      p.searchParams.set("room", room);
+      p.searchParams.set("bgcolor", "black");
+      return p.toString();
+    }
   }
 
   return url;

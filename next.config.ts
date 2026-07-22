@@ -30,7 +30,7 @@ const contentSecurityPolicy = [
     "https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
     "https://player.kick.com https://kick.com",
     "https://player.vimeo.com",
-    "https://chaturbate.com https://*.chaturbate.com",
+    "https://chaturbate.com https://*.chaturbate.com https://cbxyz.com https://*.cbxyz.com",
     "https://www.tiktok.com https://tiktok.com",
     "https://www.instagram.com https://instagram.com",
   ].join(" "),
