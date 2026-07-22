@@ -32,14 +32,21 @@ export function LiveSessionCard({
   const info =
     platform && platform !== "custom" ? LIVE_PLATFORMS.find((p) => p.key === platform) : null;
   const isLive = status === "LIVE";
+  // Anbieterfarbe steuert Rahmen und Hover-Schatten (Fallback: neutral).
+  const pf = platform && platform !== "custom" ? PLATFORM_COLORS[platform] : "#161613";
   return (
     <Link
       href={href}
+      style={{
+        ["--pf" as string]: pf,
+        ["--pf-soft" as string]: `${pf}59`,
+        ["--pf-faint" as string]: `${pf}40`,
+      }}
       className={cn(
-        "group flex flex-col rounded-2xl border bg-white p-5 transition duration-300 hover:-translate-y-0.5 hover:shadow-md",
-        isLive
-          ? "border-red-200 hover:border-red-300"
-          : "border-[#161613]/10 hover:border-[#161613]/25",
+        "group flex h-full flex-col rounded-2xl border bg-white p-5",
+        "border-[color:var(--pf-faint)] transition-all duration-300 ease-out",
+        "hover:-translate-y-1 hover:border-[color:var(--pf)]",
+        "hover:shadow-[0_18px_40px_-18px_var(--pf-soft)]",
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -75,7 +82,7 @@ export function LiveSessionCard({
           <LiveCountdown startsAt={startsAtIso} />
         </span>
       )}
-      <div className="mt-2 flex items-center justify-between gap-2 text-xs text-[#161613]/50">
+      <div className="mt-auto flex items-center justify-between gap-2 pt-3 text-xs text-[#161613]/50">
         <span className="inline-flex min-h-4 items-center gap-1.5">
           {startsAtLabel && (
             <>

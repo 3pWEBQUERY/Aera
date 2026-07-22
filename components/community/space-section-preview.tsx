@@ -7,6 +7,7 @@ import { parseStorySettings } from "@/lib/space-settings";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { LiveSessionCard } from "./live-session-card";
+import { HScrollRow } from "./h-scroll-row";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { StoryViewer } from "./story-viewer";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
@@ -132,31 +133,45 @@ async function StoriesPreview({ slug, tenantId, space }: Props) {
 
 async function LivePreview({ slug, tenantId, space, locale }: Props) {
   const tSpace = await getTranslations("community.render.space");
-  const sessions = (await listLiveSessions(tenantId, space.id))
-    .filter((s) => s.status !== "ENDED")
-    .slice(0, 4);
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      {sessions.length === 0 ? (
+  const tSpot = await getTranslations("community.render.spotlight");
+  const sessions = (await listLiveSessions(tenantId, space.id)).filter(
+    (s) => s.status !== "ENDED",
+  );
+  if (sessions.length === 0) {
+    return (
+      <section>
+        <Header slug={slug} space={space} />
         <EmptyState icon="videos" title={tSpace("liveNone")} hint={tSpace("liveNoneHint")} />
-      ) : (
-        <div className="grid gap-3 sm:grid-cols-2">
-          {sessions.map((s) => (
-            <LiveSessionCard
-              key={s.id}
-              href={`/c/${slug}/s/${space.slug}?open=${s.id}`}
-              title={s.title}
-              status={s.status}
-              statusLabel={tSpace(`liveStatus.${s.status}`)}
-              streamUrl={s.streamUrl}
-              startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
-              startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
-            />
-          ))}
+      </section>
+    );
+  }
+  return (
+    <HScrollRow
+      title={space.name}
+      action={
+        <Link
+          href={`/c/${slug}/s/${space.slug}`}
+          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[color:var(--brand)] transition hover:gap-1.5"
+        >
+          {tSpot("viewAll")}
+          <Icon name="chevron" size={14} className="-rotate-90" />
+        </Link>
+      }
+    >
+      {sessions.map((s) => (
+        <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
+          <LiveSessionCard
+            href={`/c/${slug}/s/${space.slug}?open=${s.id}`}
+            title={s.title}
+            status={s.status}
+            statusLabel={tSpace(`liveStatus.${s.status}`)}
+            streamUrl={s.streamUrl}
+            startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+            startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
+          />
         </div>
-      )}
-    </section>
+      ))}
+    </HScrollRow>
   );
 }
 
