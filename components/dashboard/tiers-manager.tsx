@@ -41,10 +41,13 @@ export function TiersManager({
   slug,
   tiers,
   stripeReady,
+  showSetupHint = false,
 }: {
   slug: string;
   tiers: TierRowData[];
   stripeReady: boolean;
+  /** Env-Setup-Hinweis (STRIPE_SECRET_KEY) — nur für Plattform-Admins. */
+  showSetupHint?: boolean;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<TierRowData | null>(null);
@@ -71,7 +74,7 @@ export function TiersManager({
         </button>
       </div>
 
-      {!stripeReady && (
+      {!stripeReady && showSetupHint && (
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {t.rich("stripeWarning", { code: (c) => <code>{c}</code> })}
         </div>

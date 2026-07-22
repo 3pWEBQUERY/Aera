@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import prisma from "@/lib/prisma";
 import { features } from "@/lib/env";
 import {
@@ -12,7 +13,7 @@ export default async function ProductsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const rows = await prisma.product.findMany({
     where: { tenantId: tenant.id },
     orderBy: { createdAt: "desc" },
@@ -38,6 +39,11 @@ export default async function ProductsPage({
   }));
 
   return (
-    <ProductsManager slug={slug} products={products} stripeReady={features.marketplacePayments} />
+    <ProductsManager
+      slug={slug}
+      products={products}
+      stripeReady={features.marketplacePayments}
+      showSetupHint={hasPlatformAdminAccess(user)}
+    />
   );
 }

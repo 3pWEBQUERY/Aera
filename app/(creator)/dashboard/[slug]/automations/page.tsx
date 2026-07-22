@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { env, features } from "@/lib/env";
@@ -19,7 +20,9 @@ export default async function AutomationsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
+  // Env-/Deployment-Hinweise sind nur für Plattform-Admins gedacht.
+  const isPlatformAdmin = hasPlatformAdminAccess(user);
   const t = await getTranslations("dashboard.automations");
 
   const rows = await prisma.automationStep.findMany({
@@ -45,7 +48,7 @@ export default async function AutomationsPage({
         title={t("title")}
         subtitle={t("subtitle")}
       />
-      {!cronReady && (
+      {!cronReady && isPlatformAdmin && (
         <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {t.rich("cronWarning", {
             code: (chunks) => (

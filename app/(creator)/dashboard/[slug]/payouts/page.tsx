@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireTenantAdmin } from "@/lib/guards";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma, { withTenantTransactionFor } from "@/lib/prisma";
 import { features } from "@/lib/env";
@@ -24,7 +25,8 @@ export default async function PayoutsPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant, role } = await requireTenantAdmin(slug);
+  const { tenant, role, user } = await requireTenantAdmin(slug);
+  const isPlatformAdmin = hasPlatformAdminAccess(user);
   const t = tenant.id;
   const td = await getTranslations("dashboard.payouts");
   const tStatus = await getTranslations("dashboard.orderStatus");
@@ -280,7 +282,7 @@ export default async function PayoutsPage({
         </div>
       </div>
 
-      {!features.stripe && (
+      {!features.stripe && isPlatformAdmin && (
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {td.rich("stripeWarning", { b: (c) => <strong>{c}</strong> })}
         </div>

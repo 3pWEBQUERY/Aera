@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import prisma from "@/lib/prisma";
 import { features } from "@/lib/env";
 import {
@@ -12,7 +13,7 @@ export default async function TiersPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const rows = await prisma.membershipTier.findMany({
     where: { tenantId: tenant.id },
     orderBy: { sortOrder: "asc" },
@@ -36,5 +37,10 @@ export default async function TiersPage({
     memberCount: t._count.memberships,
   }));
 
-  return <TiersManager slug={slug} tiers={tiers} stripeReady={features.marketplacePayments} />;
+  return <TiersManager
+      slug={slug}
+      tiers={tiers}
+      stripeReady={features.marketplacePayments}
+      showSetupHint={hasPlatformAdminAccess(user)}
+    />;
 }
