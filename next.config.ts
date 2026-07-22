@@ -20,7 +20,20 @@ const contentSecurityPolicy = [
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
   `connect-src 'self' https://api.stripe.com https://*.stripe.com wss:${storageOrigin ? ` ${storageOrigin}` : ""}`,
-  "frame-src 'self' https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com",
+  // Stripe-Checkout + Live-Stream-Player (siehe lib/live-embed.ts). Neue
+  // Streaming-Plattformen müssen hier freigegeben werden, sonst blockiert
+  // die CSP das iframe ("Dieser Inhalt ist blockiert").
+  [
+    "frame-src 'self'",
+    "https://js.stripe.com https://hooks.stripe.com https://checkout.stripe.com",
+    "https://player.twitch.tv",
+    "https://www.youtube.com https://youtube.com https://www.youtube-nocookie.com",
+    "https://player.kick.com https://kick.com",
+    "https://player.vimeo.com",
+    "https://chaturbate.com https://*.chaturbate.com",
+    "https://www.tiktok.com https://tiktok.com",
+    "https://www.instagram.com https://instagram.com",
+  ].join(" "),
   "worker-src 'self' blob:",
   "object-src 'none'",
   "base-uri 'self'",
