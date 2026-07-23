@@ -249,12 +249,12 @@ export default async function MemberAccountPage({
                 )}
               </div>
             </section>
-            <section className="rounded-2xl border border-[#161613]/10 bg-white p-6">
+            <section className="flex flex-col rounded-2xl border border-[#161613]/10 bg-white p-6">
               <SectionHead eyebrow={t("securityEyebrow")} title={t("passwordTitle")} />
               <p className="mt-2 text-sm leading-6 text-[#161613]/60">
                 {t("passwordText")}
               </p>
-              <div className="mt-6">
+              <div className="mt-6 flex flex-1 flex-col">
                 <MemberPasswordForm />
               </div>
             </section>
@@ -268,12 +268,12 @@ export default async function MemberAccountPage({
               </div>
             </section>
             {features.push && (
-              <section className="rounded-2xl border border-[#161613]/10 bg-white p-6">
+              <section className="flex flex-col rounded-2xl border border-[#161613]/10 bg-white p-6">
                 <SectionHead
                   eyebrow={t("notifEyebrow")}
                   title={t("pushTitle")}
                 />
-                <div className="mt-4">
+                <div className="mt-4 flex flex-1 flex-col">
                   <PushSettings vapidPublicKey={env.VAPID_PUBLIC_KEY} />
                 </div>
               </section>

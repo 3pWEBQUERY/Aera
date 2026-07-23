@@ -56,11 +56,11 @@ export function DataPrivacySettings({ email, labels }: DataPrivacySettingsProps)
 
   return (
     <div className="grid gap-5 sm:grid-cols-2">
-      <div className="rounded-xl bg-[#161613]/[0.035] p-4">
+      <div className="flex flex-col rounded-xl bg-[#161613]/[0.035] p-4">
         <a
           href="/api/account/export"
           download
-          className="inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
+          className="mt-auto inline-flex min-h-10 items-center self-start rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
         >
           {labels.exportButton}
         </a>

@@ -123,25 +123,27 @@ export function PushSettings({ vapidPublicKey }: { vapidPublicKey: string }) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="flex flex-1 flex-col gap-3">
       <p className="text-sm text-[#161613]/60">
         {t("pushDesc")}
       </p>
-      {state === "on" ? (
-        <button
-          type="button"
-          onClick={disable}
-          disabled={busy}
-          className="rounded-xl border border-[#161613]/15 px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 disabled:opacity-50"
-        >
-          {busy ? t("pushDeactivating") : t("pushDisable")}
-        </button>
-      ) : (
-        <button type="button" onClick={enable} disabled={busy} className={CTA_CLASS}>
-          {busy ? t("pushActivating") : t("pushEnable")}
-        </button>
-      )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="mt-auto space-y-3">
+        {state === "on" ? (
+          <button
+            type="button"
+            onClick={disable}
+            disabled={busy}
+            className="rounded-xl border border-[#161613]/15 px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 disabled:opacity-50"
+          >
+            {busy ? t("pushDeactivating") : t("pushDisable")}
+          </button>
+        ) : (
+          <button type="button" onClick={enable} disabled={busy} className={CTA_CLASS}>
+            {busy ? t("pushActivating") : t("pushEnable")}
+          </button>
+        )}
+        {error && <p className="text-sm text-red-600">{error}</p>}
+      </div>
     </div>
   );
 }

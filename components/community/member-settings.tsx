@@ -103,7 +103,7 @@ export function MemberPasswordForm() {
   }, [state.ok]);
 
   return (
-    <form ref={formRef} action={action} className="space-y-5">
+    <form ref={formRef} action={action} className="flex flex-1 flex-col gap-5">
       <FormError message={state.error} />
       <div>
         <Label htmlFor="mp-current">{t("currentPassword")}</Label>
@@ -127,7 +127,7 @@ export function MemberPasswordForm() {
         />
         <p className="mt-1 text-xs text-[#161613]/50">{t("passwordHint")}</p>
       </div>
-      <div className="flex items-center gap-3">
+      <div className="mt-auto flex items-center gap-3">
         <button type="submit" className={CTA_CLASS} disabled={pending}>
           {pending ? t("changingPassword") : t("changePassword")}
         </button>
