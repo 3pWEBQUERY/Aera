@@ -82,7 +82,7 @@ export function HeroActions({
       {!isMember && (
         <Link
           href={`/c/${slug}/join`}
-          className="inline-flex items-center justify-center rounded-full bg-[var(--brand)] px-7 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+          className="inline-flex items-center justify-center rounded-xl bg-[var(--brand)] px-7 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--brand-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
         >
           Mitglied werden
         </Link>
