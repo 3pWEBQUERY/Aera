@@ -84,8 +84,15 @@ export default async function JoinPage({
     (popularTier && (countMap.get(popularTier.id) ?? 0) > 0 ? popularTier.id : null);
   const highlightLabel = recommended ? t("recommendedBadge") : t("popularBadge");
 
+  // Im Zwei-Spalten-Layout (Gast: Signup links, Tiers rechts) maximal zwei Karten nebeneinander.
   const cols =
-    tiers.length >= 3 ? "lg:grid-cols-3" : tiers.length === 2 ? "sm:grid-cols-2" : "";
+    tiers.length >= 3
+      ? user
+        ? "lg:grid-cols-3"
+        : "sm:grid-cols-2"
+      : tiers.length === 2
+        ? "sm:grid-cols-2"
+        : "";
 
   return (
     <div className="mx-auto max-w-5xl py-4">
@@ -115,9 +122,17 @@ export default async function JoinPage({
         </p>
       )}
 
+      {/* Gast: Signup links, Mitgliedschaften hochkant rechts daneben. */}
+      <div
+        className={cn(
+          user
+            ? ""
+            : "mx-auto mt-10 grid max-w-5xl items-start gap-8 lg:grid-cols-[minmax(0,400px)_minmax(0,1fr)]",
+        )}
+      >
       {/* Neu hier? Konto + Mitgliedschaft in einem Schritt — direkt beim Creator. */}
       {!user && (
-        <div className="mx-auto mt-10 max-w-md">
+        <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
           <div className="rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7">
             <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
               {t("newEyebrow", { name: tenant.name })}
@@ -151,7 +166,20 @@ export default async function JoinPage({
         </div>
       )}
 
-      <div className={cn("mx-auto mt-10 grid max-w-4xl items-stretch gap-5", cols)}>
+      <div
+        className={cn(
+          "grid items-stretch gap-5",
+          tiers.length === 1
+            ? user
+              ? "mx-auto mt-10 w-full max-w-sm"
+              : "w-full max-w-sm"
+            : user
+              ? "mx-auto mt-10 max-w-4xl"
+              : "",
+          !user && "mt-10 lg:mt-0",
+          cols,
+        )}
+      >
         {tiers.map((tier) => {
           const isCurrent = currentTierId === tier.id;
           const switchBlocked = Boolean(activeStripeSubscription) && Boolean(currentTierId) && !isCurrent;
@@ -226,7 +254,7 @@ export default async function JoinPage({
                 <PurchaseSubmitButton
                   variant={tier.priceCents > 0 ? "primary" : "secondary"}
                   size="md"
-                  className="w-full rounded-full"
+                  className="w-full rounded-xl"
                   disabled={isCurrent || switchBlocked}
                 >
                   {switchBlocked
@@ -283,6 +311,7 @@ export default async function JoinPage({
             </div>
           );
         })}
+      </div>
       </div>
 
       {tiers.length === 0 && (
