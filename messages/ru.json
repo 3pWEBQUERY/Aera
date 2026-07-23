@@ -998,7 +998,27 @@
         "SCHEDULED": "Запланировано",
         "SENDING": "Отправляется",
         "SENT": "Отправлено"
-      }
+      },
+      "sectionContent": "Содержание",
+      "sectionRecipients": "Получатели",
+      "sectionSchedule": "Расписание",
+      "subjectCount": "{count} символов — до 60 тема почти не обрезается",
+      "previewShow": "Показать предпросмотр",
+      "previewHide": "Скрыть предпросмотр",
+      "testSend": "Отправить тест мне",
+      "testSending": "Отправка…",
+      "testSent": "Тестовое письмо отправлено!",
+      "testFailed": "Тест не удался",
+      "recipientsEstimate": "≈ {count} получателей",
+      "recipientsInfo": "Только активные участники с согласием, подтверждённой почтой и без отписки.",
+      "scheduleHint": "Оставьте пустым: кампания останется черновиком, отправите вручную.",
+      "descriptionLabel": "Описание (необязательно)",
+      "activeSinceLabel": "Участник от (дней)",
+      "memberCountBadge": "{count} получателей",
+      "ruleTier": "Уровень: {name}",
+      "ruleMinPoints": "от {count} баллов",
+      "ruleActiveSince": "Участник ≥ {days} дней",
+      "ruleAll": "Все участники"
     },
     "ads": {
       "badge": "Реклама",

@@ -40,6 +40,7 @@ import {
   CalendarManager,
   type AggregatedEntry,
 } from "@/components/dashboard/calendar-manager";
+import { countNewsletterAudience } from "@/lib/newsletter-delivery";
 import { AnnouncementsManager } from "@/components/dashboard/announcements-manager";
 import { LinksManager } from "@/components/dashboard/links-manager";
 import { AdsManager } from "@/components/dashboard/ads-manager";
@@ -216,7 +217,7 @@ export default async function SpaceContentPage({
       prisma.segment.findMany({
         where: { tenantId: tenant.id },
         orderBy: { createdAt: "desc" },
-        select: { id: true, name: true },
+        select: { id: true, name: true, description: true, rules: true },
       }),
       prisma.membershipTier.findMany({
         where: { tenantId: tenant.id },
@@ -234,8 +235,32 @@ export default async function SpaceContentPage({
       sentAt: c.sentAt,
       scheduledAt: c.scheduledAt,
     }));
-    const segments: SegmentData[] = segs;
-    return <NewsletterManager slug={slug} campaigns={campaigns} segments={segments} tiers={tiers} />;
+    // Empfängerzahlen je Segment (und Gesamtzahl) für die Vorschau im UI.
+    const segments: SegmentData[] = await Promise.all(
+      segs.map(async (sg) => {
+        const rules = (sg.rules && typeof sg.rules === "object" && !Array.isArray(sg.rules)
+          ? sg.rules
+          : {}) as SegmentData["rules"];
+        return {
+          id: sg.id,
+          name: sg.name,
+          description: sg.description,
+          rules,
+          count: await countNewsletterAudience(tenant.id, rules),
+        };
+      }),
+    );
+    const allCount = await countNewsletterAudience(tenant.id, {});
+    return (
+      <NewsletterManager
+        slug={slug}
+        tenantName={tenant.name}
+        campaigns={campaigns}
+        segments={segments}
+        tiers={tiers}
+        allCount={allCount}
+      />
+    );
   }
 
   // ----- Blog: manage posts (rich editor) + display settings -----

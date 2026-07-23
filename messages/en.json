@@ -1024,7 +1024,27 @@
         "SCHEDULED": "Scheduled",
         "SENDING": "Sending",
         "SENT": "Sent"
-      }
+      },
+      "sectionContent": "Content",
+      "sectionRecipients": "Recipients",
+      "sectionSchedule": "Schedule",
+      "subjectCount": "{count} characters — under 60 rarely gets truncated",
+      "previewShow": "Show preview",
+      "previewHide": "Hide preview",
+      "testSend": "Send test to me",
+      "testSending": "Sending…",
+      "testSent": "Test email sent!",
+      "testFailed": "Test failed",
+      "recipientsEstimate": "≈ {count} recipients",
+      "recipientsInfo": "Only active members with newsletter consent, a verified email address and no unsubscribe.",
+      "scheduleHint": "Leave empty: the campaign stays a draft and you send it manually.",
+      "descriptionLabel": "Description (optional)",
+      "activeSinceLabel": "Member for (days)",
+      "memberCountBadge": "{count} recipients",
+      "ruleTier": "Tier: {name}",
+      "ruleMinPoints": "{count}+ points",
+      "ruleActiveSince": "Member for ≥ {days} days",
+      "ruleAll": "All members"
     },
     "ads": {
       "badge": "Ads",

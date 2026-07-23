@@ -998,7 +998,27 @@
         "SCHEDULED": "예약됨",
         "SENDING": "보내는 중",
         "SENT": "보냄"
-      }
+      },
+      "sectionContent": "내용",
+      "sectionRecipients": "수신자",
+      "sectionSchedule": "일정",
+      "subjectCount": "{count}자 — 60자 미만이면 잘리는 일이 드뭅니다",
+      "previewShow": "미리보기 표시",
+      "previewHide": "미리보기 숨기기",
+      "testSend": "나에게 테스트 보내기",
+      "testSending": "보내는 중…",
+      "testSent": "테스트 메일을 보냈습니다!",
+      "testFailed": "테스트 실패",
+      "recipientsEstimate": "약 {count}명",
+      "recipientsInfo": "뉴스레터 동의, 이메일 인증을 마치고 수신 거부하지 않은 활성 멤버만.",
+      "scheduleHint": "비워 두면 초안으로 유지되며 직접 발송합니다.",
+      "descriptionLabel": "설명(선택)",
+      "activeSinceLabel": "가입 후 (일)",
+      "memberCountBadge": "{count}명",
+      "ruleTier": "등급: {name}",
+      "ruleMinPoints": "{count}점 이상",
+      "ruleActiveSince": "가입 {days}일 이상",
+      "ruleAll": "모든 멤버"
     },
     "ads": {
       "badge": "광고",

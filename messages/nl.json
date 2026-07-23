@@ -998,7 +998,27 @@
         "SCHEDULED": "Gepland",
         "SENDING": "Wordt verzonden",
         "SENT": "Verzonden"
-      }
+      },
+      "sectionContent": "Inhoud",
+      "sectionRecipients": "Ontvangers",
+      "sectionSchedule": "Planning",
+      "subjectCount": "{count} tekens — onder 60 wordt zelden afgekapt",
+      "previewShow": "Voorbeeld tonen",
+      "previewHide": "Voorbeeld verbergen",
+      "testSend": "Test naar mij sturen",
+      "testSending": "Versturen…",
+      "testSent": "Testmail verstuurd!",
+      "testFailed": "Test mislukt",
+      "recipientsEstimate": "≈ {count} ontvangers",
+      "recipientsInfo": "Alleen actieve leden met toestemming, geverifieerd e-mailadres en zonder afmelding.",
+      "scheduleHint": "Leeg laten: de campagne blijft concept en verstuur je handmatig.",
+      "descriptionLabel": "Beschrijving (optioneel)",
+      "activeSinceLabel": "Lid sinds (dagen)",
+      "memberCountBadge": "{count} ontvangers",
+      "ruleTier": "Niveau: {name}",
+      "ruleMinPoints": "{count}+ punten",
+      "ruleActiveSince": "Lid sinds ≥ {days} dagen",
+      "ruleAll": "Alle leden"
     },
     "ads": {
       "badge": "Advertenties",

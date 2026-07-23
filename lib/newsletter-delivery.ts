@@ -75,9 +75,58 @@ export type DispatchableNewsletterCampaign = {
   footerLabel?: string;
 };
 
-interface AudienceRules {
+export interface AudienceRules {
   tierSlug?: string;
   minPoints?: number;
+  /** Mitglied seit mindestens N Tagen. */
+  activeSinceDays?: number;
+}
+
+function normalizedMinPoints(rules: AudienceRules): number | null {
+  return Number.isFinite(rules.minPoints) && (rules.minPoints ?? 0) > 0
+    ? Math.floor(rules.minPoints!)
+    : null;
+}
+
+function memberSinceDate(rules: AudienceRules): Date | null {
+  const days = Number(rules.activeSinceDays);
+  return Number.isFinite(days) && days > 0
+    ? new Date(Date.now() - Math.floor(days) * 86_400_000)
+    : null;
+}
+
+/**
+ * Zählt die aktuelle Zielgruppe eines Regelwerks (für Vorschau im Dashboard):
+ * Opt-in-Newsletter-Einwilligung, bestätigte E-Mail, aktive Mitgliedschaft,
+ * keine aktive Sperrung — gleiche Prädikate wie der Versand.
+ */
+export async function countNewsletterAudience(
+  tenantId: string,
+  rules: AudienceRules,
+): Promise<number> {
+  const minPoints = normalizedMinPoints(rules);
+  const memberSince = memberSinceDate(rules);
+  return prisma.newsletterConsent.count({
+    where: {
+      tenantId,
+      status: "OPTED_IN",
+      user: {
+        emailVerifiedAt: { not: null },
+        memberships: {
+          some: {
+            tenantId,
+            status: "ACTIVE",
+            ...(rules.tierSlug ? { tier: { slug: rules.tierSlug } } : {}),
+            ...(memberSince ? { joinedAt: { lte: memberSince } } : {}),
+          },
+        },
+        emailSuppressions: { none: { tenantId, liftedAt: null } },
+        ...(minPoints !== null
+          ? { memberStats: { some: { tenantId, points: { gte: minPoints } } } }
+          : {}),
+      },
+    },
+  });
 }
 
 export async function queueNewsletterAudienceBatch(
@@ -91,10 +140,8 @@ export async function queueNewsletterAudienceBatch(
     });
     rules = (segment?.rules ?? {}) as AudienceRules;
   }
-  const minPoints =
-    Number.isFinite(rules.minPoints) && (rules.minPoints ?? 0) > 0
-      ? Math.floor(rules.minPoints!)
-      : null;
+  const minPoints = normalizedMinPoints(rules);
+  const memberSince = memberSinceDate(rules);
   const candidates = await prisma.newsletterConsent.findMany({
     where: {
       tenantId: campaign.tenantId,
@@ -106,6 +153,7 @@ export async function queueNewsletterAudienceBatch(
             tenantId: campaign.tenantId,
             status: "ACTIVE",
             ...(rules.tierSlug ? { tier: { slug: rules.tierSlug } } : {}),
+            ...(memberSince ? { joinedAt: { lte: memberSince } } : {}),
           },
         },
         newsletterDeliveries: { none: { campaignId: campaign.id } },

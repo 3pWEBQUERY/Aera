@@ -998,7 +998,27 @@
         "SCHEDULED": "Schemalagd",
         "SENDING": "Skickas",
         "SENT": "Skickad"
-      }
+      },
+      "sectionContent": "Innehåll",
+      "sectionRecipients": "Mottagare",
+      "sectionSchedule": "Schema",
+      "subjectCount": "{count} tecken — under 60 klipps sällan",
+      "previewShow": "Visa förhandsvisning",
+      "previewHide": "Dölj förhandsvisning",
+      "testSend": "Skicka test till mig",
+      "testSending": "Skickar…",
+      "testSent": "Testmejl skickat!",
+      "testFailed": "Testet misslyckades",
+      "recipientsEstimate": "≈ {count} mottagare",
+      "recipientsInfo": "Endast aktiva medlemmar med samtycke, verifierad e-post och utan avprenumeration.",
+      "scheduleHint": "Lämna tomt: kampanjen förblir utkast och skickas manuellt.",
+      "descriptionLabel": "Beskrivning (valfritt)",
+      "activeSinceLabel": "Medlem i (dagar)",
+      "memberCountBadge": "{count} mottagare",
+      "ruleTier": "Nivå: {name}",
+      "ruleMinPoints": "{count}+ poäng",
+      "ruleActiveSince": "Medlem i ≥ {days} dagar",
+      "ruleAll": "Alla medlemmar"
     },
     "ads": {
       "badge": "Annonser",

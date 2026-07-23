@@ -998,7 +998,27 @@
         "SCHEDULED": "已排期",
         "SENDING": "发送中",
         "SENT": "已发送"
-      }
+      },
+      "sectionContent": "内容",
+      "sectionRecipients": "收件人",
+      "sectionSchedule": "日程",
+      "subjectCount": "{count} 个字符——60 以内很少被截断",
+      "previewShow": "显示预览",
+      "previewHide": "隐藏预览",
+      "testSend": "给我发送测试",
+      "testSending": "发送中…",
+      "testSent": "测试邮件已发送！",
+      "testFailed": "测试失败",
+      "recipientsEstimate": "约 {count} 位收件人",
+      "recipientsInfo": "仅限已同意订阅、邮箱已验证且未退订的活跃成员。",
+      "scheduleHint": "留空：活动保持草稿状态，由你手动发送。",
+      "descriptionLabel": "描述（可选）",
+      "activeSinceLabel": "加入至少（天）",
+      "memberCountBadge": "{count} 位收件人",
+      "ruleTier": "等级：{name}",
+      "ruleMinPoints": "{count} 分以上",
+      "ruleActiveSince": "加入 ≥ {days} 天",
+      "ruleAll": "所有成员"
     },
     "ads": {
       "badge": "广告",

@@ -998,7 +998,27 @@
         "SCHEDULED": "予約済み",
         "SENDING": "送信中",
         "SENT": "送信済み"
-      }
+      },
+      "sectionContent": "内容",
+      "sectionRecipients": "宛先",
+      "sectionSchedule": "スケジュール",
+      "subjectCount": "{count} 文字 — 60文字未満なら省略されにくい",
+      "previewShow": "プレビューを表示",
+      "previewHide": "プレビューを隠す",
+      "testSend": "自分にテスト送信",
+      "testSending": "送信中…",
+      "testSent": "テストメールを送信しました！",
+      "testFailed": "テストに失敗しました",
+      "recipientsEstimate": "約 {count} 名の宛先",
+      "recipientsInfo": "ニュースレター同意・メール認証済みで配信停止していないアクティブメンバーのみ。",
+      "scheduleHint": "空欄の場合は下書きのままとなり、手動で送信します。",
+      "descriptionLabel": "説明（任意）",
+      "activeSinceLabel": "入会からの日数",
+      "memberCountBadge": "{count} 名",
+      "ruleTier": "プラン: {name}",
+      "ruleMinPoints": "{count}ポイント以上",
+      "ruleActiveSince": "入会 {days} 日以上",
+      "ruleAll": "すべてのメンバー"
     },
     "ads": {
       "badge": "広告",

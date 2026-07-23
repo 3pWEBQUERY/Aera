@@ -998,7 +998,27 @@
         "SCHEDULED": "Planlagt",
         "SENDING": "Sendes",
         "SENT": "Sendt"
-      }
+      },
+      "sectionContent": "Indhold",
+      "sectionRecipients": "Modtagere",
+      "sectionSchedule": "Tidsplan",
+      "subjectCount": "{count} tegn — under 60 afkortes sjældent",
+      "previewShow": "Vis forhåndsvisning",
+      "previewHide": "Skjul forhåndsvisning",
+      "testSend": "Send test til mig",
+      "testSending": "Sender…",
+      "testSent": "Test-mail sendt!",
+      "testFailed": "Test mislykkedes",
+      "recipientsEstimate": "≈ {count} modtagere",
+      "recipientsInfo": "Kun aktive medlemmer med nyhedsbrevs-samtykke, bekræftet e-mail og uden afmelding.",
+      "scheduleHint": "Lad stå tomt: kampagnen forbliver kladde, og du sender manuelt.",
+      "descriptionLabel": "Beskrivelse (valgfri)",
+      "activeSinceLabel": "Medlem i (dage)",
+      "memberCountBadge": "{count} modtagere",
+      "ruleTier": "Niveau: {name}",
+      "ruleMinPoints": "{count}+ point",
+      "ruleActiveSince": "Medlem i ≥ {days} dage",
+      "ruleAll": "Alle medlemmer"
     },
     "ads": {
       "badge": "Reklame",

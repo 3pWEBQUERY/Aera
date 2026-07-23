@@ -998,7 +998,27 @@
         "SCHEDULED": "Planlagt",
         "SENDING": "Sendes",
         "SENT": "Sendt"
-      }
+      },
+      "sectionContent": "Innhold",
+      "sectionRecipients": "Mottakere",
+      "sectionSchedule": "Tidsplan",
+      "subjectCount": "{count} tegn — under 60 kuttes sjelden",
+      "previewShow": "Vis forhåndsvisning",
+      "previewHide": "Skjul forhåndsvisning",
+      "testSend": "Send test til meg",
+      "testSending": "Sender…",
+      "testSent": "Test-e-post sendt!",
+      "testFailed": "Test mislyktes",
+      "recipientsEstimate": "≈ {count} mottakere",
+      "recipientsInfo": "Kun aktive medlemmer med samtykke, bekreftet e-post og uten avmelding.",
+      "scheduleHint": "La stå tomt: kampanjen forblir utkast og sendes manuelt.",
+      "descriptionLabel": "Beskrivelse (valgfritt)",
+      "activeSinceLabel": "Medlem i (dager)",
+      "memberCountBadge": "{count} mottakere",
+      "ruleTier": "Nivå: {name}",
+      "ruleMinPoints": "{count}+ poeng",
+      "ruleActiveSince": "Medlem i ≥ {days} dager",
+      "ruleAll": "Alle medlemmer"
     },
     "ads": {
       "badge": "Annonser",

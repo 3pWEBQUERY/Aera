@@ -998,7 +998,27 @@
         "SCHEDULED": "Programmata",
         "SENDING": "In invio",
         "SENT": "Inviata"
-      }
+      },
+      "sectionContent": "Contenuto",
+      "sectionRecipients": "Destinatari",
+      "sectionSchedule": "Pianificazione",
+      "subjectCount": "{count} caratteri — sotto i 60 raramente viene troncato",
+      "previewShow": "Mostra anteprima",
+      "previewHide": "Nascondi anteprima",
+      "testSend": "Inviami un test",
+      "testSending": "Invio…",
+      "testSent": "E-mail di test inviata!",
+      "testFailed": "Test non riuscito",
+      "recipientsEstimate": "≈ {count} destinatari",
+      "recipientsInfo": "Solo membri attivi con consenso, e-mail verificata e senza disiscrizione.",
+      "scheduleHint": "Lascia vuoto: la campagna resta bozza e la invii manualmente.",
+      "descriptionLabel": "Descrizione (facoltativa)",
+      "activeSinceLabel": "Membro da (giorni)",
+      "memberCountBadge": "{count} destinatari",
+      "ruleTier": "Livello: {name}",
+      "ruleMinPoints": "{count}+ punti",
+      "ruleActiveSince": "Membro da ≥ {days} giorni",
+      "ruleAll": "Tutti i membri"
     },
     "ads": {
       "badge": "Pubblicità",

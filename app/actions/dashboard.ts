@@ -24,7 +24,7 @@ import {
 } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
-import { sendEmail, renderAccountActionHtml } from "@/lib/email";
+import { sendEmail, renderAccountActionHtml, renderCampaignHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
 import { features } from "@/lib/env";
 import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
@@ -856,19 +856,50 @@ export async function createSegmentAction(
   const { tenant } = await requireTenantAdmin(slug);
   const name = String(fd.get("name") || "").trim();
   if (name.length < 2) return { error: await tErr("nameRequired") };
+  const description = String(fd.get("description") || "").trim().slice(0, 300) || null;
   const tierSlug = String(fd.get("tierSlug") || "");
   const minPoints = Number(fd.get("minPoints") || 0);
+  const activeSinceDays = Number(fd.get("activeSinceDays") || 0);
   await prisma.segment.create({
     data: {
       tenantId: tenant.id,
       name,
+      description,
       rules: {
         ...(tierSlug ? { tierSlug } : {}),
         ...(minPoints > 0 ? { minPoints } : {}),
+        ...(activeSinceDays > 0 ? { activeSinceDays: Math.floor(activeSinceDays) } : {}),
       },
     },
   });
   revalidatePath(`/dashboard/${slug}/newsletter`);
+  return ok;
+}
+
+/** Sendet den aktuellen Kampagnen-Entwurf als Test-E-Mail an den Admin selbst. */
+export async function sendCampaignTestAction(
+  _p: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant, user } = await requireTenantAdmin(slug);
+  const subject = String(fd.get("subject") || "").trim();
+  const body = String(fd.get("body") || "").trim();
+  if (!subject || !body) return { error: await tErr("invalidData") };
+  const footerLabel = (await getTranslations("uiMigration.emails"))("sentVia");
+  const html = renderCampaignHtml({
+    tenantName: tenant.name,
+    primaryColor: tenant.primaryColor,
+    subject,
+    body,
+    footerLabel,
+  });
+  const result = await sendEmail({
+    to: user.email,
+    subject: `[Test] ${subject}`,
+    html,
+  });
+  if (!result.ok) return { error: result.error ?? "send-failed" };
   return ok;
 }
 

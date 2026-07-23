@@ -998,7 +998,27 @@
         "SCHEDULED": "已排程",
         "SENDING": "傳送中",
         "SENT": "已傳送"
-      }
+      },
+      "sectionContent": "內容",
+      "sectionRecipients": "收件人",
+      "sectionSchedule": "日程",
+      "subjectCount": "{count} 個字元——60 以內很少被截斷",
+      "previewShow": "顯示預覽",
+      "previewHide": "隱藏預覽",
+      "testSend": "寄送測試給我",
+      "testSending": "傳送中…",
+      "testSent": "測試郵件已寄出！",
+      "testFailed": "測試失敗",
+      "recipientsEstimate": "約 {count} 位收件人",
+      "recipientsInfo": "僅限已同意訂閱、信箱已驗證且未退訂的活躍成員。",
+      "scheduleHint": "留空：活動維持草稿狀態，由你手動寄送。",
+      "descriptionLabel": "描述（選填）",
+      "activeSinceLabel": "加入至少（天）",
+      "memberCountBadge": "{count} 位收件人",
+      "ruleTier": "等級：{name}",
+      "ruleMinPoints": "{count} 分以上",
+      "ruleActiveSince": "加入 ≥ {days} 天",
+      "ruleAll": "所有成員"
     },
     "ads": {
       "badge": "廣告",

@@ -1024,7 +1024,27 @@
         "SCHEDULED": "Geplant",
         "SENDING": "Wird gesendet",
         "SENT": "Gesendet"
-      }
+      },
+      "sectionContent": "Inhalt",
+      "sectionRecipients": "Empfänger",
+      "sectionSchedule": "Zeitplan",
+      "subjectCount": "{count} Zeichen — unter 60 wird der Betreff selten abgeschnitten",
+      "previewShow": "Vorschau anzeigen",
+      "previewHide": "Vorschau ausblenden",
+      "testSend": "Test an mich senden",
+      "testSending": "Wird gesendet …",
+      "testSent": "Test-E-Mail verschickt!",
+      "testFailed": "Test fehlgeschlagen",
+      "recipientsEstimate": "≈ {count} Empfänger",
+      "recipientsInfo": "Nur aktive Mitglieder mit Newsletter-Einwilligung, bestätigter E-Mail-Adresse und ohne Abmeldung.",
+      "scheduleHint": "Leer lassen: Die Kampagne bleibt Entwurf und du sendest sie manuell.",
+      "descriptionLabel": "Beschreibung (optional)",
+      "activeSinceLabel": "Mitglied seit (Tagen)",
+      "memberCountBadge": "{count} Empfänger",
+      "ruleTier": "Stufe: {name}",
+      "ruleMinPoints": "ab {count} Punkten",
+      "ruleActiveSince": "Mitglied seit ≥ {days} Tagen",
+      "ruleAll": "Alle Mitglieder"
     },
     "ads": {
       "badge": "Werbung",

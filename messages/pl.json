@@ -998,7 +998,27 @@
         "SCHEDULED": "Zaplanowana",
         "SENDING": "Wysyłanie",
         "SENT": "Wysłana"
-      }
+      },
+      "sectionContent": "Treść",
+      "sectionRecipients": "Odbiorcy",
+      "sectionSchedule": "Harmonogram",
+      "subjectCount": "{count} znaków — poniżej 60 temat rzadko jest ucinany",
+      "previewShow": "Pokaż podgląd",
+      "previewHide": "Ukryj podgląd",
+      "testSend": "Wyślij test do mnie",
+      "testSending": "Wysyłanie…",
+      "testSent": "Wysłano e-mail testowy!",
+      "testFailed": "Test nie powiódł się",
+      "recipientsEstimate": "≈ {count} odbiorców",
+      "recipientsInfo": "Tylko aktywni członkowie ze zgodą, potwierdzonym e-mailem i bez wypisania.",
+      "scheduleHint": "Zostaw puste: kampania pozostanie szkicem i wyślesz ją ręcznie.",
+      "descriptionLabel": "Opis (opcjonalnie)",
+      "activeSinceLabel": "Członek od (dni)",
+      "memberCountBadge": "{count} odbiorców",
+      "ruleTier": "Poziom: {name}",
+      "ruleMinPoints": "{count}+ punktów",
+      "ruleActiveSince": "Członek od ≥ {days} dni",
+      "ruleAll": "Wszyscy członkowie"
     },
     "ads": {
       "badge": "Reklamy",

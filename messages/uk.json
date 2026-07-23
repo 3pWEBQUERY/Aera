@@ -998,7 +998,27 @@
         "SCHEDULED": "Заплановано",
         "SENDING": "Надсилається",
         "SENT": "Надіслано"
-      }
+      },
+      "sectionContent": "Зміст",
+      "sectionRecipients": "Отримувачі",
+      "sectionSchedule": "Розклад",
+      "subjectCount": "{count} символів — до 60 тема майже не обрізається",
+      "previewShow": "Показати попередній перегляд",
+      "previewHide": "Сховати попередній перегляд",
+      "testSend": "Надіслати тест мені",
+      "testSending": "Надсилання…",
+      "testSent": "Тестовий лист надіслано!",
+      "testFailed": "Тест не вдався",
+      "recipientsEstimate": "≈ {count} отримувачів",
+      "recipientsInfo": "Лише активні учасники зі згодою, підтвердженою поштою та без відписки.",
+      "scheduleHint": "Залиште порожнім: кампанія лишиться чернеткою, надішлете вручну.",
+      "descriptionLabel": "Опис (необов'язково)",
+      "activeSinceLabel": "Учасник від (днів)",
+      "memberCountBadge": "{count} отримувачів",
+      "ruleTier": "Рівень: {name}",
+      "ruleMinPoints": "від {count} балів",
+      "ruleActiveSince": "Учасник ≥ {days} днів",
+      "ruleAll": "Усі учасники"
     },
     "ads": {
       "badge": "Реклама",
