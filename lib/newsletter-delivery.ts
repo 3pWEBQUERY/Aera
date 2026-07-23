@@ -76,10 +76,10 @@ export type DispatchableNewsletterCampaign = {
 };
 
 export interface AudienceRules {
-  tierSlug?: string;
-  minPoints?: number;
+  tierSlug?: string | null;
+  minPoints?: number | null;
   /** Mitglied seit mindestens N Tagen. */
-  activeSinceDays?: number;
+  activeSinceDays?: number | null;
 }
 
 function normalizedMinPoints(rules: AudienceRules): number | null {

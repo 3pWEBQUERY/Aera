@@ -378,7 +378,7 @@ function CampaignForm({
                 id="nf-seg"
                 name="segmentId"
                 value={segmentId}
-                onChange={(e) => setSegmentId(e.target.value)}
+                onChange={(v) => setSegmentId(v)}
               >
                 <option value="">{t("allActiveMembers")}</option>
                 {segments.map((sg) => (
