@@ -15,7 +15,7 @@ import { Icon } from "@/components/dashboard/icons";
 const initial: TotpState = {};
 
 const CTA_CLASS =
-  "inline-flex min-h-11 items-center justify-center rounded-full px-6 text-sm font-semibold " +
+  "inline-flex min-h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold " +
   "text-white transition-colors duration-200 bg-[var(--brand)] hover:bg-[var(--brand-hover)] " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] " +
   "disabled:cursor-not-allowed disabled:opacity-50";
@@ -66,7 +66,7 @@ export function TotpSettings({ enabled: initiallyEnabled }: { enabled: boolean }
           <button
             type="submit"
             disabled={disabling}
-            className="rounded-full border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+            className="rounded-xl border border-red-200 px-5 py-2.5 text-sm font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
           >
             {disabling ? t("twoFaDisabling") : t("twoFaDisable")}
           </button>

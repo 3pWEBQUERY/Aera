@@ -60,7 +60,7 @@ export function DataPrivacySettings({ email, labels }: DataPrivacySettingsProps)
         <a
           href="/api/account/export"
           download
-          className="inline-flex min-h-10 items-center rounded-full bg-[#161613] px-5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
+          className="inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
         >
           {labels.exportButton}
         </a>
@@ -111,7 +111,7 @@ export function DataPrivacySettings({ email, labels }: DataPrivacySettingsProps)
             confirmation.trim().toLowerCase() !== email.toLowerCase()
           }
           onClick={requestDeletion}
-          className="mt-4 inline-flex min-h-10 items-center rounded-full bg-red-700 px-5 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-40"
+          className="mt-4 inline-flex min-h-10 items-center rounded-xl bg-red-700 px-5 text-sm font-semibold text-white transition hover:bg-red-800 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {pending ? labels.deleting : labels.deleteButton}
         </button>

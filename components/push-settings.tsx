@@ -16,7 +16,7 @@ function urlBase64ToUint8Array(base64: string): Uint8Array {
 type State = "unsupported" | "loading" | "off" | "on" | "denied";
 
 const CTA_CLASS =
-  "inline-flex min-h-11 items-center justify-center rounded-full px-6 text-sm font-semibold " +
+  "inline-flex min-h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold " +
   "text-white transition-colors duration-200 bg-[var(--brand)] hover:bg-[var(--brand-hover)] " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 
@@ -132,7 +132,7 @@ export function PushSettings({ vapidPublicKey }: { vapidPublicKey: string }) {
           type="button"
           onClick={disable}
           disabled={busy}
-          className="rounded-full border border-[#161613]/15 px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 disabled:opacity-50"
+          className="rounded-xl border border-[#161613]/15 px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 disabled:opacity-50"
         >
           {busy ? t("pushDeactivating") : t("pushDisable")}
         </button>

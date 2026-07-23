@@ -188,7 +188,7 @@ export default async function MemberAccountPage({
           <Link
             href={backHref}
             aria-label={t("closeAria")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#161613]/15 text-[#161613]/70 transition hover:border-[#161613]/40 hover:text-[#161613]"
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#161613]/15 text-[#161613]/70 transition hover:border-[#161613]/40 hover:text-[#161613]"
           >
             <Icon name="close" size={18} />
           </Link>
@@ -222,8 +222,8 @@ export default async function MemberAccountPage({
               aria-current={activeTab === tab.key ? "page" : undefined}
               className={
                 activeTab === tab.key
-                  ? "inline-flex min-h-10 items-center rounded-full bg-[#161613] px-5 text-sm font-semibold text-white"
-                  : "inline-flex min-h-10 items-center rounded-full border border-[#161613]/15 px-5 text-sm font-semibold text-[#161613]/60 transition hover:border-[#161613]/40 hover:text-[#161613]"
+                  ? "inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white"
+                  : "inline-flex min-h-10 items-center rounded-xl border border-[#161613]/15 px-5 text-sm font-semibold text-[#161613]/60 transition hover:border-[#161613]/40 hover:text-[#161613]"
               }
             >
               {tab.label}
@@ -411,13 +411,13 @@ export default async function MemberAccountPage({
                         <div className="mt-4 flex flex-wrap gap-2">
                           <Link
                             href={`/c/${m.tenant.slug}`}
-                            className="inline-flex min-h-9 items-center rounded-full bg-[#161613] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#33332e]"
+                            className="inline-flex min-h-9 items-center rounded-xl bg-[#161613] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#33332e]"
                           >
                             {t("toCommunity")}
                           </Link>
                           <Link
                             href={`/c/${m.tenant.slug}/join`}
-                            className="inline-flex min-h-9 items-center rounded-full border border-[#161613]/20 px-4 text-sm font-semibold text-[#161613]/80 transition hover:border-[#161613]/50 hover:text-[#161613]"
+                            className="inline-flex min-h-9 items-center rounded-xl border border-[#161613]/20 px-4 text-sm font-semibold text-[#161613]/80 transition hover:border-[#161613]/50 hover:text-[#161613]"
                           >
                             {t("switchTier")}
                           </Link>
@@ -444,7 +444,7 @@ export default async function MemberAccountPage({
               </div>
               <Link
                 href={isCreator ? "/dashboard" : "/start"}
-                className="mt-5 inline-flex min-h-10 w-fit shrink-0 items-center rounded-full bg-white px-5 text-sm font-semibold text-[#161613] transition-colors hover:bg-[#ece7dc] sm:mt-0"
+                className="mt-5 inline-flex min-h-10 w-fit shrink-0 items-center rounded-xl bg-white px-5 text-sm font-semibold text-[#161613] transition-colors hover:bg-[#ece7dc] sm:mt-0"
               >
                 {isCreator ? t("creatorCtaActive") : t("creatorCtaBecome")}
               </Link>
@@ -476,7 +476,7 @@ export default async function MemberAccountPage({
                       {o.product?.downloadUrl && (
                         <a
                           href={o.product.downloadUrl}
-                          className="inline-flex min-h-9 shrink-0 items-center rounded-full border border-[#161613]/20 px-4 text-sm font-semibold text-[#161613]/80 transition hover:border-[#161613]/50 hover:text-[#161613]"
+                          className="inline-flex min-h-9 shrink-0 items-center rounded-xl border border-[#161613]/20 px-4 text-sm font-semibold text-[#161613]/80 transition hover:border-[#161613]/50 hover:text-[#161613]"
                         >
                           {t("download")}
                         </a>
