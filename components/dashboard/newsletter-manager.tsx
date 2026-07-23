@@ -23,6 +23,7 @@ export interface CampaignRowData {
   id: string;
   subject: string;
   body: string;
+  bodyFormat: string;
   status: string;
   segmentId: string | null;
   segmentName: string | null;
@@ -230,6 +231,9 @@ function CampaignForm({
   const [scheduledAt, setScheduledAt] = useState("");
   const [subject, setSubject] = useState(campaign?.subject ?? "");
   const [body, setBody] = useState(campaign?.body ?? "");
+  const [bodyFormat, setBodyFormat] = useState<"TEXT" | "HTML">(
+    campaign?.bodyFormat === "HTML" ? "HTML" : "TEXT",
+  );
   const [segmentId, setSegmentId] = useState(campaign?.segmentId ?? "");
   const [showPreview, setShowPreview] = useState(false);
   const [testStatus, setTestStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
@@ -278,6 +282,7 @@ function CampaignForm({
     fd.set("tenant", slug);
     fd.set("subject", subject);
     fd.set("body", body);
+    fd.set("bodyFormat", bodyFormat);
     const result = await sendCampaignTestAction(initial, fd);
     setTestStatus(result.ok ? "sent" : "error");
     setTimeout(() => setTestStatus("idle"), 4000);
@@ -286,6 +291,7 @@ function CampaignForm({
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
+      <input type="hidden" name="bodyFormat" value={bodyFormat} />
       <input type="hidden" name="timezoneOffset" value={timezoneOffset} />
       {isEdit && <input type="hidden" name="campaignId" value={campaign!.id} />}
       <div className="flex-1 overflow-y-auto">
@@ -310,16 +316,40 @@ function CampaignForm({
               </p>
             </div>
             <div>
-              <Label htmlFor="nf-body">{t("contentLabel")}</Label>
+              <div className="mb-1 flex items-end justify-between gap-3">
+                <Label htmlFor="nf-body">{t("contentLabel")}</Label>
+                <div className="inline-flex rounded-xl bg-slate-100 p-0.5" role="tablist" aria-label={t("contentLabel")}>
+                  {(["TEXT", "HTML"] as const).map((fmt) => (
+                    <button
+                      key={fmt}
+                      type="button"
+                      role="tab"
+                      aria-selected={bodyFormat === fmt}
+                      onClick={() => setBodyFormat(fmt)}
+                      className={`rounded-[10px] px-3 py-1 text-xs font-semibold transition ${
+                        bodyFormat === fmt
+                          ? "bg-white text-slate-900 shadow-sm"
+                          : "text-slate-500 hover:text-slate-800"
+                      }`}
+                    >
+                      {fmt === "TEXT" ? t("formatText") : t("formatHtml")}
+                    </button>
+                  ))}
+                </div>
+              </div>
               <Textarea
                 id="nf-body"
                 name="body"
-                rows={10}
+                rows={bodyFormat === "HTML" ? 14 : 10}
                 required
                 value={body}
                 onChange={(e) => setBody(e.target.value)}
-                placeholder={t("contentPlaceholder")}
+                placeholder={bodyFormat === "HTML" ? t("htmlPlaceholder") : t("contentPlaceholder")}
+                className={bodyFormat === "HTML" ? "font-mono text-xs leading-5" : undefined}
               />
+              {bodyFormat === "HTML" && (
+                <p className="mt-1 text-xs text-slate-400">{t("htmlHint")}</p>
+              )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <button
@@ -346,7 +376,17 @@ function CampaignForm({
                       : t("testSend")}
               </button>
             </div>
-            {showPreview && (
+            {showPreview && bodyFormat === "HTML" && (
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <iframe
+                  title={t("formatHtml")}
+                  sandbox=""
+                  srcDoc={body}
+                  className="h-96 w-full rounded-xl border border-slate-200 bg-white"
+                />
+              </div>
+            )}
+            {showPreview && bodyFormat !== "HTML" && (
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <div className="mx-auto max-w-md overflow-hidden rounded-xl border border-slate-200 bg-white">
                   <div

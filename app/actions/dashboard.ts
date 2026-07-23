@@ -772,6 +772,7 @@ export async function createCampaignAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   const scheduledAt = parseCampaignSchedule(fd);
 
   await prisma.newsletterCampaign.create({
@@ -779,6 +780,7 @@ export async function createCampaignAction(
       tenantId: tenant.id,
       subject: parsed.data.subject,
       body: parsed.data.body,
+      bodyFormat,
       segmentId: parsed.data.segmentId || null,
       createdById: user.id,
       status: scheduledAt ? "SCHEDULED" : "DRAFT",
@@ -829,6 +831,7 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
       tenantId: tenant.id,
       subject: campaign.subject,
       body: campaign.body,
+      bodyFormat: campaign.bodyFormat,
       segmentId: campaign.segmentId,
       status: "SENDING",
       scheduledAt: campaign.scheduledAt,
@@ -885,6 +888,7 @@ export async function sendCampaignTestAction(
   const { tenant, user } = await requireTenantAdmin(slug);
   const subject = String(fd.get("subject") || "").trim();
   const body = String(fd.get("body") || "").trim();
+  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   if (!subject || !body) return { error: await tErr("invalidData") };
   const footerLabel = (await getTranslations("uiMigration.emails"))("sentVia");
   const html = renderCampaignHtml({
@@ -892,6 +896,7 @@ export async function sendCampaignTestAction(
     primaryColor: tenant.primaryColor,
     subject,
     body,
+    bodyFormat,
     footerLabel,
   });
   const result = await sendEmail({
@@ -1582,6 +1587,7 @@ export async function updateCampaignAction(
   if (!campaign) return { error: await tErr("campaignNotFound") };
   if (campaign.status === "SENT" || campaign.status === "SENDING")
     return { error: await tErr("sentCampaignReadonly") };
+  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   const scheduledAt = parseCampaignSchedule(fd);
 
   await prisma.newsletterCampaign.update({
@@ -1589,6 +1595,7 @@ export async function updateCampaignAction(
     data: {
       subject: parsed.data.subject,
       body: parsed.data.body,
+      bodyFormat,
       segmentId: parsed.data.segmentId || null,
       scheduledAt,
       status: scheduledAt ? "SCHEDULED" : "DRAFT",

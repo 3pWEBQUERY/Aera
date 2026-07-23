@@ -205,6 +205,11 @@ enum CampaignStatus {
   SENT
 }
 
+enum CampaignBodyFormat {
+  TEXT
+  HTML
+}
+
 enum EmailEventType {
   QUEUED
   SENT
@@ -1163,7 +1168,8 @@ model NewsletterCampaign {
   tenantId       String
   tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   subject        String
-  body           String // markdown / html
+  body           String // Text (Absätze) oder kompletter HTML-Code, je nach bodyFormat
+  bodyFormat     CampaignBodyFormat @default(TEXT)
   status         CampaignStatus @default(DRAFT)
   segmentId      String?
   segment        Segment?       @relation(fields: [segmentId], references: [id], onDelete: SetNull)

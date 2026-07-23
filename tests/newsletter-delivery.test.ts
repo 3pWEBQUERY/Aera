@@ -115,6 +115,7 @@ describe("queueNewsletterCampaign", () => {
       tenantId: "t1",
       subject: "Groß",
       body: "Hallo",
+      bodyFormat: "TEXT",
       segmentId: null,
       status: "SENDING",
       scheduledAt: null,

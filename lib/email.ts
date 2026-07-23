@@ -84,7 +84,11 @@ export function renderCampaignHtml(args: {
   subject: string;
   body: string;
   footerLabel?: string;
+  bodyFormat?: "TEXT" | "HTML";
 }): string {
+  // HTML-Kampagnen werden exakt so verwendet, wie der Code eingegeben wurde —
+  // ohne Branding-Rahmen, ohne Escaping, ohne Absatz-Aufteilung.
+  if (args.bodyFormat === "HTML") return args.body;
   const paragraphs = args.body
     .split(/\n{2,}/)
     .map((p) => `<p style="margin:0 0 16px;line-height:1.6;color:#1f2937">${escapeHtml(p)}</p>`)

@@ -38,6 +38,7 @@ export default async function NewsletterPage({
     id: c.id,
     subject: c.subject,
     body: c.body,
+    bodyFormat: c.bodyFormat,
     status: c.status,
     segmentId: c.segmentId,
     segmentName: c.segment?.name ?? null,

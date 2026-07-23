@@ -228,6 +228,7 @@ export default async function SpaceContentPage({
       id: c.id,
       subject: c.subject,
       body: c.body,
+      bodyFormat: c.bodyFormat,
       status: c.status,
       segmentId: c.segmentId,
       segmentName: c.segment?.name ?? null,

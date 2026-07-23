@@ -68,6 +68,7 @@ export type DispatchableNewsletterCampaign = {
   tenantId: string;
   subject: string;
   body: string;
+  bodyFormat: "TEXT" | "HTML";
   segmentId: string | null;
   status: "SCHEDULED" | "SENDING";
   scheduledAt: Date | null;
@@ -182,6 +183,7 @@ export async function queueNewsletterAudienceBatch(
     primaryColor: campaign.tenant.primaryColor,
     subject: campaign.subject,
     body: campaign.body,
+    bodyFormat: campaign.bodyFormat,
     footerLabel: campaign.footerLabel ?? "Aera",
   });
   const queued = await queueNewsletterCampaign({
@@ -248,6 +250,7 @@ export async function dispatchNewsletterCampaigns(
       tenantId: true,
       subject: true,
       body: true,
+      bodyFormat: true,
       segmentId: true,
       status: true,
       scheduledAt: true,
