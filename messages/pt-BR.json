@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "Subdomínio inválido. Use de 3 a 63 letras minúsculas, números ou hífens (não no início nem no final).",
     "subReserved": "Este subdomínio está reservado. Escolha outro.",
-    "subTaken": "Este subdomínio já está em uso."
+    "subTaken": "Este subdomínio já está em uso.",
+    "planSpaceTypeLocked": "Este tipo de space está disponível a partir do pacote {plan}. Faça upgrade para criá-lo.",
+    "planSpaceLimitReached": "Seu pacote {plan} permite {limit} spaces ativos. Faça upgrade para mais espaço.",
+    "planTierLimitReached": "Seu pacote {plan} permite {limit} níveis de associação. Faça upgrade para adicionar mais.",
+    "planFeatureLocked": "Este recurso está disponível a partir do pacote {plan}. Faça upgrade para usá-lo.",
+    "planMemberLimitReached": "Seu pacote {plan} foi feito para {limit} membros ativos. Faça upgrade para continuar crescendo.",
+    "planStaffLimitReached": "Seu pacote {plan} permite {limit} vagas de equipe (admins/moderadores). Faça upgrade para mais."
   },
   "nameStatus": {
     "checking": "Verificando disponibilidade…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "Anúncios",
         "tagline": "Banners e campanhas"
-      }
-    }
+      },
+      "lockedHint": "Disponível a partir do pacote {plan}",
+      "lockedNote": "Formatos bloqueados são liberados em segundos com um upgrade após o lançamento — sua comunidade continua exatamente como está."
+    },
+    "cancel": "Cancel",
+    "promoLabel": "Código promocional (opcional)",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "Recebeu um código de um parceiro ou creator? Sua comunidade já começa no pacote superior — sem precisar de dados de pagamento."
   },
   "seed": {
     "tierDescription": "Acesso gratuito à comunidade.",
@@ -477,7 +489,8 @@
       "posts": "Publicações",
       "orders": "Pedidos",
       "help": "Ajuda",
-      "audit": "Registro de auditoria"
+      "audit": "Registro de auditoria",
+      "codes": "Códigos promocionais"
     },
     "pagination": {
       "prev": "Anterior",
@@ -677,6 +690,69 @@
       "emptyTitle": "Ainda não há entradas",
       "emptyHint": "Ações administrativas e eventos importantes são registrados aqui.",
       "system": "Sistema"
+    },
+    "codes": {
+      "metaTitle": "Códigos promocionais",
+      "title": "Códigos promocionais",
+      "subtitle": "Códigos de convite para influenciadores e parceiros: eles liberam um pacote para uma comunidade sem pagamento.",
+      "statTotal": "Total de códigos",
+      "statActive": "Ativos",
+      "statRedemptions": "Resgates",
+      "createTitle": "Criar novos códigos",
+      "createSubtitle": "Escolha um pacote, defina a quantidade, pronto. Os códigos são gerados aleatoriamente e já valem na hora.",
+      "planLabel": "Pacote",
+      "planHint": {
+        "FREE": "Spaces básicos",
+        "STARTER": "+ loja, chat, estatísticas",
+        "PRO": "+ gamificação, automações",
+        "SCALE": "Tudo, incl. API"
+      },
+      "quantityLabel": "Número de códigos",
+      "quantityHint": "Máx. 50 por lote.",
+      "prefixLabel": "Prefixo (opcional)",
+      "prefixPlaceholder": "ex.: LISA",
+      "prefixHint": "Aparece no início do código — útil para campanhas.",
+      "labelLabel": "Nota interna",
+      "labelPlaceholder": "ex.: Campanha Lisa março",
+      "labelHint": "Visível somente na área administrativa.",
+      "durationLabel": "Duração em dias",
+      "durationHint": "0 = ilimitado (vitalício).",
+      "maxLabel": "Resgates por código",
+      "maxHint": "1 = código pessoal, mais alto = código de campanha.",
+      "expiresLabel": "Resgatável até",
+      "expiresHint": "Vazio = sem prazo.",
+      "createCta": "Criar códigos",
+      "creating": "Criando …",
+      "createdCount": "{count, plural, one {# código criado} other {# códigos criados}}",
+      "copyAll": "Copiar tudo",
+      "copied": "Copiado",
+      "copyCode": "Copiar código",
+      "filter": {
+        "ALL": "Todos",
+        "ACTIVE": "Ativos",
+        "PAUSED": "Pausados",
+        "USED_UP": "Esgotados",
+        "EXPIRED": "Expirados"
+      },
+      "status": {
+        "ACTIVE": "Ativo",
+        "PAUSED": "Pausado",
+        "USED_UP": "Esgotado",
+        "EXPIRED": "Expirado"
+      },
+      "searchPlaceholder": "Buscar código ou nota …",
+      "emptyTitle": "Nenhum código ainda",
+      "emptyText": "Crie seu primeiro código promocional acima.",
+      "pause": "Pausar",
+      "activate": "Ativar",
+      "delete": "Excluir",
+      "usage": "{used} / {max} resgatados",
+      "runtimeDays": "{days} dias de duração",
+      "runtimeLifetime": "Duração ilimitada",
+      "validUntil": "resgatável até {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "Resgatado por:",
+      "footnote": "Um código libera cada comunidade exatamente uma vez. Se uma comunidade já tiver uma assinatura paga, um código nunca a substitui. Pacotes: {plans}."
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "Sua comunidade",
       "openAria": "Abrir navegação",
       "mobileSubtitle": "Navegação do painel",
-      "planner": "Planejador"
+      "planner": "Planejador",
+      "lockedSuffix": "somente no {plan}"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "Ao vivo",
         "post": "Post"
       }
+    },
+    "plans": {
+      "gateEyebrow": "Disponível a partir do",
+      "upgradeCta": "Fazer upgrade para {plan}",
+      "redeemCta": "Resgatar código",
+      "gateFootnote": "Seu pacote atual: {plan} · cancelamento mensal · liberado na hora",
+      "promoActive": "Promoção ativa – {plan}",
+      "promoUntil": "válido até {date}",
+      "promoLifetime": "sem data de expiração",
+      "limits": {
+        "spacesUsed": "{used} de {limit} spaces",
+        "spacesTitle": "Limite de spaces atingido",
+        "spacesText": "Seu pacote {plan} permite {limit} spaces ativos. {next} te dá bem mais espaço.",
+        "membersTitle": "Limite de membros atingido",
+        "membersText": "Seu pacote {plan} foi feito para {limit} membros ativos. Faça upgrade para {next} para que mais pessoas possam entrar."
+      },
+      "redeem": {
+        "title": "Resgatar código promocional",
+        "subtitle": "Recebeu um código de um parceiro ou creator? Libere aqui.",
+        "label": "Seu código",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "O código libera seu pacote na hora — sem precisar de dados de pagamento.",
+        "submit": "Resgatar agora",
+        "submitting": "Resgatando …",
+        "successTitle": "Liberado!",
+        "successText": "Sua comunidade agora está no {plan}.",
+        "successUntil": "Válido até {date}.",
+        "successLifetime": "Sem data de expiração.",
+        "errors": {
+          "invalid": "Esse código não está em um formato válido.",
+          "not_found": "Não conhecemos esse código. Verifique a grafia.",
+          "paused": "Este código está desativado no momento.",
+          "expired": "Este código expirou.",
+          "used_up": "Este código já foi totalmente resgatado.",
+          "already_redeemed": "Esta comunidade já resgatou o código.",
+          "stripe_active": "Esta comunidade tem uma assinatura paga ativa. Cancele-a primeiro ou use o código em outra comunidade.",
+          "not_an_upgrade": "Seu pacote atual já é igual ou superior."
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "Estatísticas e crescimento",
+          "description": "Veja exatamente de onde vêm seus membros, o que os mantém — e o que realmente gera receita.",
+          "b1": "MRR, receita e churn em um único lugar",
+          "b2": "Crescimento de membros ao longo do tempo",
+          "b3": "Principais conteúdos e taxas de engajamento"
+        },
+        "products": {
+          "title": "Vender produtos",
+          "description": "Downloads digitais, produtos físicos e complementos — direto na sua comunidade.",
+          "b1": "Crie produtos ilimitados",
+          "b2": "Downloads digitais com entrega automática",
+          "b3": "Preços em todas as faixas compatíveis com a Apple"
+        },
+        "payouts": {
+          "title": "Vendas e repasses",
+          "description": "Cada pedido, cada repasse, cada taxa — de forma transparente em um só lugar.",
+          "b1": "Pedidos em tempo real",
+          "b2": "Repasses do Stripe à vista",
+          "b3": "Reembolsos e recibos"
+        },
+        "planner": {
+          "title": "Planejador de conteúdo",
+          "description": "Planeje publicações com semanas de antecedência e deixe que elas saiam sozinhas.",
+          "b1": "Calendário editorial em todos os spaces",
+          "b2": "Agende publicações para sair depois",
+          "b3": "Sugestões de AI para o seu plano"
+        },
+        "gamification": {
+          "title": "Gamificação",
+          "description": "Pontos, níveis e emblemas transformam membros quietos em fãs ativos.",
+          "b1": "Defina suas próprias regras de pontos",
+          "b2": "Emblemas e níveis personalizados",
+          "b3": "Ranking para sua comunidade"
+        },
+        "referrals": {
+          "title": "Programa de indicação",
+          "description": "Deixe seus membros trazerem novos membros — com comissão de verdade.",
+          "b1": "Link de convite pessoal por membro",
+          "b2": "Comissão configurável livremente",
+          "b3": "Rastreamento de conversão incluído"
+        },
+        "automations": {
+          "title": "Automações",
+          "description": "A sequência de boas-vindas e a reativação funcionam enquanto você dorme.",
+          "b1": "Sequência de e-mails após a entrada",
+          "b2": "Etapas com atraso (drip)",
+          "b3": "Taxas de entrega e estatísticas"
+        },
+        "export": {
+          "title": "Exportação de dados",
+          "description": "Seus dados são seus — uma exportação completa sempre que você quiser.",
+          "b1": "Membros, pedidos, conteúdos",
+          "b2": "CSV e JSON",
+          "b3": "Backup completo em conformidade com a LGPD"
+        },
+        "mediaStudio": {
+          "title": "Estúdio de mídia com AI",
+          "description": "Capas, banners e artes em segundos — sem precisar de ferramenta de design.",
+          "b1": "Gere imagens a partir de texto",
+          "b2": "Modelos para cursos e publicações",
+          "b3": "Vai direto para sua biblioteca de mídia"
+        },
+        "customDomain": {
+          "title": "Domínio próprio",
+          "description": "Sua comunidade no seu próprio endereço.",
+          "b1": "Conecte seu próprio domínio",
+          "b2": "SSL automático",
+          "b3": "Verificação por DNS"
+        },
+        "developers": {
+          "title": "Desenvolvedores e API",
+          "description": "Conecte a Aera à sua stack — chaves de API, webhooks, controle total.",
+          "b1": "API REST com suas próprias chaves",
+          "b2": "Webhooks para cada evento",
+          "b3": "Logs de entrega e novas tentativas automáticas"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "Cada evento da sua comunidade, em tempo real, no seu sistema.",
+          "b1": "Escolha os eventos que você precisa",
+          "b2": "Entrega assinada",
+          "b3": "Novas tentativas automáticas"
+        }
+      },
+      "statusTitle": "Seu pacote",
+      "statusText": {
+        "FREE": "Você está no pacote gratuito. {next} libera estatísticas, vendas e mais spaces.",
+        "STARTER": "Base sólida. Com {next} vêm gamificação, indicações e automações.",
+        "PRO": "Quase tudo liberado. {next} traz API, webhooks e spaces ilimitados.",
+        "SCALE": "Tudo liberado."
+      },
+      "statusTextMax": "Você está no maior pacote — todas as funções e tipos de space estão liberados.",
+      "quotaSpaces": "Spaces",
+      "quotaMembers": "Membros",
+      "quotaCredits": "Créditos de AI",
+      "unlimited": "ilimitado"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "Criando conta…",
     "totpLabel": "Código do seu app autenticador",
     "totpHint": "Sua conta está protegida com autenticação de dois fatores.",
-    "legalAcceptance": "Aceito os <terms>Termos e Condições</terms> e confirmo que li o <privacy>Aviso de Privacidade</privacy>."
+    "legalAcceptance": "Aceito os <terms>Termos e Condições</terms> e confirmo que li o <privacy>Aviso de Privacidade</privacy>.",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "Confirme seu endereço de e-mail <strong>{email}</strong>.",
@@ -3098,7 +3314,8 @@
       "showMore": "Mostrar mais ({count})",
       "showLess": "Mostrar menos",
       "noTiers": "Esta comunidade ainda não tem assinaturas públicas.",
-      "footnote": "Cancele quando quiser. Pagamentos processados com segurança via Stripe."
+      "footnote": "Cancele quando quiser. Pagamentos processados com segurança via Stripe.",
+      "memberLimitReached": "Esta comunidade não está aceitando novos membros no momento. Tente novamente mais tarde."
     },
     "members": {
       "title": "Membros",
@@ -3410,35 +3627,56 @@
     "footnote": "1 crédito equivale a cerca de 1.000 tokens; uma solicitação típica ao assistente custa de 1 a 3 créditos. Taxas de plataforma sobre a receita da sua comunidade são cobradas à parte — apenas sobre receita real.",
     "plans": {
       "FREE": {
-        "tagline": "Para experimentar",
-        "f1": "500 créditos de IA por mês",
-        "f2": "Assistente de IA para textos e ideias",
-        "f3": "Análises da comunidade",
-        "f4": "Suporte por e-mail"
+        "tagline": "Para começar",
+        "f1": "11 spaces essenciais: feed, fórum, cursos, eventos, blog …",
+        "f2": "Até 5 spaces e 100 membros",
+        "f3": "Associações, mídia e moderação",
+        "f4": "500 créditos de AI por mês"
       },
       "STARTER": {
-        "tagline": "Para uso regular",
-        "f1": "2.500 créditos de IA por mês",
-        "f2": "Tudo do Free",
-        "f3": "Criar spaces com IA",
-        "f4": "Gerar posts e descrições"
+        "tagline": "Quando você quer ganhar dinheiro",
+        "f1": "Tudo do Free",
+        "f2": "Estatísticas, produtos e repasses",
+        "f3": "Loja, chat, gorjetas, calendário e planejador",
+        "f4": "15 spaces · 1.000 membros · 2.500 créditos"
       },
       "PRO": {
         "tagline": "Para criadores ativos",
-        "f1": "12.000 créditos de IA por mês",
-        "f2": "Tudo do Starter",
-        "f3": "Respostas priorizadas",
-        "f4": "Análises avançadas"
+        "f1": "Tudo do Starter",
+        "f2": "Gamificação, indicações e automações",
+        "f3": "Podcast, ao vivo, agendamentos, estúdio de AI, domínio próprio",
+        "f4": "40 spaces · 10.000 membros · 12.000 créditos"
       },
       "SCALE": {
-        "tagline": "Para times e power users",
-        "f1": "50.000 créditos de IA por mês",
-        "f2": "Tudo do Pro",
-        "f3": "Limite máximo de uso",
-        "f4": "Funcionalidade completa"
+        "tagline": "Para times e power creators",
+        "f1": "Tudo do Pro",
+        "f2": "API, webhooks e seus próprios espaços de anúncio",
+        "f3": "Spaces e membros ilimitados",
+        "f4": "500 GB de armazenamento · 50.000 créditos"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "Em detalhes",
+      "title": "O que cada pacote inclui",
+      "subtitle": "Cada linha é um recurso que você pode usar no seu dashboard imediatamente. Nada desaparece quando você muda de pacote — só se adiciona mais.",
+      "spacesGroup": "Tipos de space",
+      "featuresGroup": "Recursos",
+      "limitsGroup": "Limites",
+      "planColumn": "Pacote",
+      "featureColumn": "Recurso",
+      "included": "Incluído",
+      "notIncluded": "Não incluído",
+      "unlimited": "Ilimitado",
+      "limitSpaces": "Spaces ativos",
+      "limitMembers": "Membros ativos",
+      "limitStaff": "Vagas de equipe (admins/moderadores)",
+      "limitTiers": "Níveis de associação",
+      "limitStorage": "Armazenamento de mídia",
+      "limitCredits": "Créditos de AI por mês",
+      "storageValue": "{gb} GB",
+      "note": "Um código promocional de parceiro libera seu pacote na hora — sem precisar de dados de pagamento."
+    }
   },
   "marketing": {
     "navDiscover": "Descobrir",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

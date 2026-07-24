@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { featureBlocked } from "@/lib/plan";
 import prisma from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
@@ -19,6 +20,9 @@ export async function createAutomationStepAction(
 ): Promise<AutomationState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "automations");
+  if (planBlocked) return { error: planBlocked };
 
   const dayOffset = Number(fd.get("dayOffset"));
   const subject = String(fd.get("subject") || "").trim().slice(0, 150);

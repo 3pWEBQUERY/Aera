@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import prisma from "@/lib/prisma";
 import { leaderboard } from "@/lib/gamification";
 import {
@@ -17,6 +18,9 @@ export default async function GamificationPage({
   const { slug } = await params;
   const { tab } = await searchParams;
   const { tenant } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "gamification");
+  if (locked) return locked;
   const [rulesRaw, badgesRaw, board] = await Promise.all([
     prisma.gamificationRule.findMany({
       where: { tenantId: tenant.id },

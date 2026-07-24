@@ -31,6 +31,12 @@ vi.mock("@/lib/webhooks", () => ({
   WEBHOOK_EVENTS: [],
 }));
 vi.mock("@/lib/webhook-url", () => ({ validateWebhookUrl: vi.fn() }));
+// Package gating is covered in tests/plan-gating.test.ts; here every action is
+// assumed to be inside the tenant's package so the role checks stay isolated.
+vi.mock("@/lib/plan", () => ({
+  featureBlocked: vi.fn(async () => null),
+  tenantHasFeature: vi.fn(async () => true),
+}));
 vi.mock("@/lib/secret-encryption", () => ({ encryptSecret: vi.fn() }));
 vi.mock("@/lib/action-errors", () => ({
   tErr: vi.fn(async (key: string) => key),

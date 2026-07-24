@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "子網域無效。請使用 3–63 個小寫字母、數字或連字號（首尾不可為連字號）。",
     "subReserved": "此子網域已被保留。請選擇其他名稱。",
-    "subTaken": "此子網域已被使用。"
+    "subTaken": "此子網域已被使用。",
+    "planSpaceTypeLocked": "此 Space 類型自 {plan} 方案起提供。升級即可建立。",
+    "planSpaceLimitReached": "你的 {plan} 方案最多允許 {limit} 個活躍 Space。升級以取得更多空間。",
+    "planTierLimitReached": "你的 {plan} 方案最多允許 {limit} 個會員等級。升級以新增更多。",
+    "planFeatureLocked": "此功能自 {plan} 方案起提供。升級即可使用。",
+    "planMemberLimitReached": "你的 {plan} 方案最多支援 {limit} 位活躍成員。升級以持續成長。",
+    "planStaffLimitReached": "你的 {plan} 方案最多允許 {limit} 個團隊席位（管理員／版主）。升級以取得更多。"
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "廣告",
         "tagline": "橫幅與活動"
-      }
-    }
+      },
+      "lockedHint": "自 {plan} 方案起提供",
+      "lockedNote": "上線後只需升級即可在幾秒內解鎖被鎖定的格式——你的社群將完整保留現狀。"
+    },
+    "cancel": "Cancel",
+    "promoLabel": "促銷代碼（選填）",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "拿到合作夥伴或創作者提供的代碼了嗎？你的社群將立即以更高階方案啟用——無需提供付款資訊。"
   },
   "seed": {
     "tierDescription": "免費加入社群。",
@@ -477,7 +489,8 @@
       "posts": "貼文",
       "orders": "訂單",
       "help": "說明",
-      "audit": "稽核日誌"
+      "audit": "稽核日誌",
+      "codes": "促銷代碼"
     },
     "pagination": {
       "prev": "上一頁",
@@ -677,6 +690,69 @@
       "emptyTitle": "還沒有項目",
       "emptyHint": "管理操作和重要事件會記錄於此。",
       "system": "系統"
+    },
+    "codes": {
+      "metaTitle": "促銷代碼",
+      "title": "促銷代碼",
+      "subtitle": "給網紅與合作夥伴的邀請代碼：無需付款即可為社群解鎖方案。",
+      "statTotal": "代碼總數",
+      "statActive": "使用中",
+      "statRedemptions": "兌換次數",
+      "createTitle": "建立新代碼",
+      "createSubtitle": "選擇方案、設定數量，完成。代碼隨機產生，即刻生效。",
+      "planLabel": "方案",
+      "planHint": {
+        "FREE": "基本 Space",
+        "STARTER": "+ 商店、聊天、數據分析",
+        "PRO": "+ 遊戲化機制、自動化",
+        "SCALE": "所有功能，含 API"
+      },
+      "quantityLabel": "代碼數量",
+      "quantityHint": "每批次最多 50 組。",
+      "prefixLabel": "前綴（選填）",
+      "prefixPlaceholder": "例如：LISA",
+      "prefixHint": "顯示於代碼開頭，方便用於活動識別。",
+      "labelLabel": "內部備註",
+      "labelPlaceholder": "例如：Lisa 三月活動",
+      "labelHint": "僅在管理後台可見。",
+      "durationLabel": "有效天數",
+      "durationHint": "0 = 無限制（終身）。",
+      "maxLabel": "每組代碼可兌換次數",
+      "maxHint": "1 = 個人專屬代碼，數字越高代表活動代碼。",
+      "expiresLabel": "兌換截止日",
+      "expiresHint": "留空 = 無期限。",
+      "createCta": "建立代碼",
+      "creating": "建立中…",
+      "createdCount": "{count, plural, other {# 組代碼已建立}}",
+      "copyAll": "全部複製",
+      "copied": "已複製",
+      "copyCode": "複製代碼",
+      "filter": {
+        "ALL": "全部",
+        "ACTIVE": "使用中",
+        "PAUSED": "已暫停",
+        "USED_UP": "已用盡",
+        "EXPIRED": "已過期"
+      },
+      "status": {
+        "ACTIVE": "使用中",
+        "PAUSED": "已暫停",
+        "USED_UP": "已用盡",
+        "EXPIRED": "已過期"
+      },
+      "searchPlaceholder": "搜尋代碼或備註…",
+      "emptyTitle": "尚無代碼",
+      "emptyText": "請在上方建立你的第一組促銷代碼。",
+      "pause": "暫停",
+      "activate": "啟用",
+      "delete": "刪除",
+      "usage": "已兌換 {used} / {max}",
+      "runtimeDays": "{days} 天有效期",
+      "runtimeLifetime": "終身有效",
+      "validUntil": "兌換截止 {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "兌換者：",
+      "footnote": "每組代碼僅能為每個社群解鎖一次。若社群已有付費訂閱，代碼絕不會覆蓋它。方案：{plans}。"
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "你的社群",
       "openAria": "開啟導覽",
       "mobileSubtitle": "儀表板導覽",
-      "planner": "規劃器"
+      "planner": "規劃器",
+      "lockedSuffix": "僅限 {plan}"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "直播",
         "post": "貼文"
       }
+    },
+    "plans": {
+      "gateEyebrow": "適用起始方案",
+      "upgradeCta": "升級至 {plan}",
+      "redeemCta": "兌換代碼",
+      "gateFootnote": "你目前的方案：{plan} · 可按月取消 · 即刻解鎖",
+      "promoActive": "促銷方案生效中 – {plan}",
+      "promoUntil": "有效期至 {date}",
+      "promoLifetime": "無到期日",
+      "limits": {
+        "spacesUsed": "{limit} 個 Space 中已使用 {used} 個",
+        "spacesTitle": "已達 Space 數量上限",
+        "spacesText": "你的 {plan} 方案最多允許 {limit} 個活躍 Space。{next} 能為你提供更多空間。",
+        "membersTitle": "已達成員數量上限",
+        "membersText": "你的 {plan} 方案最多支援 {limit} 位活躍成員。升級至 {next}，讓更多人可以持續加入。"
+      },
+      "redeem": {
+        "title": "兌換促銷代碼",
+        "subtitle": "拿到合作夥伴或創作者提供的代碼了嗎？在這裡解鎖。",
+        "label": "你的代碼",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "代碼可立即解鎖你的方案——無需提供付款資訊。",
+        "submit": "立即兌換",
+        "submitting": "兌換中…",
+        "successTitle": "已解鎖！",
+        "successText": "你的社群現已升級至 {plan}。",
+        "successUntil": "有效期至 {date}。",
+        "successLifetime": "無到期日。",
+        "errors": {
+          "invalid": "此代碼格式無效。",
+          "not_found": "查無此代碼，請檢查拼寫是否正確。",
+          "paused": "此代碼目前已停用。",
+          "expired": "此代碼已過期。",
+          "used_up": "此代碼已被完全兌換。",
+          "already_redeemed": "此社群已兌換過此代碼。",
+          "stripe_active": "此社群目前有生效中的付費訂閱。請先取消訂閱，或將此代碼用於其他社群。",
+          "not_an_upgrade": "你目前的方案已相同或更高。"
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "數據分析與成長",
+          "description": "清楚掌握成員來源、留存原因，以及真正帶來收益的關鍵。",
+          "b1": "一覽 MRR、營收與流失率",
+          "b2": "成員成長趨勢",
+          "b3": "熱門內容與互動率"
+        },
+        "products": {
+          "title": "銷售商品",
+          "description": "數位下載、實體商品與加購項目——都在你的社群內完成。",
+          "b1": "建立無限量商品",
+          "b2": "數位下載並自動交付",
+          "b3": "符合 Apple 規範的價格級距"
+        },
+        "payouts": {
+          "title": "銷售與撥款",
+          "description": "每筆訂單、每次撥款、每項費用——全部透明呈現在同一處。",
+          "b1": "即時訂單資訊",
+          "b2": "一覽 Stripe 撥款狀況",
+          "b3": "退款與收據"
+        },
+        "planner": {
+          "title": "內容規劃工具",
+          "description": "提前數週規劃貼文，讓它們自動發佈。",
+          "b1": "跨所有 Space 的編輯行事曆",
+          "b2": "排程貼文於稍後發佈",
+          "b3": "AI 為你的規劃提供建議"
+        },
+        "gamification": {
+          "title": "遊戲化機制",
+          "description": "積分、等級與徽章讓沉默的成員變成活躍粉絲。",
+          "b1": "自訂積分規則",
+          "b2": "自訂徽章與等級",
+          "b3": "社群專屬排行榜"
+        },
+        "referrals": {
+          "title": "推薦計畫",
+          "description": "讓成員為你帶來新成員——並獲得實際佣金。",
+          "b1": "每位成員專屬的邀請連結",
+          "b2": "佣金比例自由設定",
+          "b3": "內建轉換追蹤"
+        },
+        "automations": {
+          "title": "自動化",
+          "description": "歡迎序列與再啟動流程，讓系統在你休息時自動運作。",
+          "b1": "加入後的電子郵件序列",
+          "b2": "延遲觸發步驟（滴灌式）",
+          "b3": "送達率與統計數據"
+        },
+        "export": {
+          "title": "資料匯出",
+          "description": "你的資料歸你所有——隨時匯出完整資料。",
+          "b1": "成員、訂單、內容",
+          "b2": "CSV 與 JSON",
+          "b3": "符合 GDPR 規範的完整備份"
+        },
+        "mediaStudio": {
+          "title": "AI 媒體工作室",
+          "description": "幾秒鐘生成封面、橫幅與美術素材，無需任何設計工具。",
+          "b1": "從文字生成圖片",
+          "b2": "課程與貼文範本",
+          "b3": "直接存入你的媒體庫"
+        },
+        "customDomain": {
+          "title": "自訂網域",
+          "description": "讓社群使用你自己的網址。",
+          "b1": "連接你自己的網域",
+          "b2": "自動 SSL",
+          "b3": "以 DNS 驗證"
+        },
+        "developers": {
+          "title": "開發者與 API",
+          "description": "將 Aera 整合進你的技術架構——API 金鑰、Webhooks，完全掌控。",
+          "b1": "使用專屬金鑰的 REST API",
+          "b2": "每個事件皆可觸發 Webhooks",
+          "b3": "送達紀錄與自動重試"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "社群中的每個事件，即時傳送至你的系統。",
+          "b1": "自由選擇所需事件",
+          "b2": "簽章驗證傳送",
+          "b3": "自動重試"
+        }
+      },
+      "statusTitle": "你的方案",
+      "statusText": {
+        "FREE": "你目前使用免費方案。{next} 可解鎖數據分析、銷售功能與更多 Space。",
+        "STARTER": "穩固的基礎方案。{next} 新增遊戲化機制、推薦計畫與自動化功能。",
+        "PRO": "幾乎所有功能都已解鎖。{next} 將帶來 API、Webhooks 與無限量 Space。",
+        "SCALE": "所有功能皆已解鎖。"
+      },
+      "statusTextMax": "你使用的是最高階方案——所有功能與 Space 類型皆已解鎖。",
+      "quotaSpaces": "Space",
+      "quotaMembers": "成員",
+      "quotaCredits": "AI 額度",
+      "unlimited": "無限量"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "正在建立帳戶…",
     "totpLabel": "驗證器應用程式中的驗證碼",
     "totpHint": "您的帳戶已啟用雙重驗證保護。",
-    "legalAcceptance": "我接受<terms>條款與條件</terms>，並確認已閱讀<privacy>隱私權聲明</privacy>。"
+    "legalAcceptance": "我接受<terms>條款與條件</terms>，並確認已閱讀<privacy>隱私權聲明</privacy>。",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "請確認您的電子郵件地址 <strong>{email}</strong>。",
@@ -3098,7 +3314,8 @@
       "showMore": "查看更多（{count}）",
       "showLess": "收合",
       "noTiers": "此社群尚未有公開的會員方案。",
-      "footnote": "隨時可取消。付款透過 Stripe 安全處理。"
+      "footnote": "隨時可取消。付款透過 Stripe 安全處理。",
+      "memberLimitReached": "此社群目前暫不接受新成員加入，請稍後再試。"
     },
     "members": {
       "title": "成員",
@@ -3410,35 +3627,56 @@
     "footnote": "1 點約等於 1,000 個 token；一次典型的助理請求消耗 1–3 點。社群收入的平台費用另行結算 — 只針對真實收入。",
     "plans": {
       "FREE": {
-        "tagline": "試用體驗",
-        "f1": "每月 500 AI 點數",
-        "f2": "文案與創意 AI 助理",
-        "f3": "社群分析",
-        "f4": "電子郵件支援"
+        "tagline": "輕鬆起步",
+        "f1": "11 種核心 Space：動態消息、論壇、課程、活動、部落格…",
+        "f2": "最多 5 個 Space、100 位成員",
+        "f3": "會員機制、媒體與版務管理",
+        "f4": "每月 500 點 AI 額度"
       },
       "STARTER": {
-        "tagline": "適合日常使用",
-        "f1": "每月 2,500 AI 點數",
-        "f2": "包含 Free 全部功能",
-        "f3": "用 AI 建立空間",
-        "f4": "產生貼文與說明"
+        "tagline": "當你想開始獲利",
+        "f1": "包含 Free 所有功能",
+        "f2": "數據分析、商品與撥款",
+        "f3": "商店、聊天、贊助小費、行事曆與規劃工具",
+        "f4": "15 個 Space · 1,000 位成員 · 2,500 點額度"
       },
       "PRO": {
         "tagline": "適合活躍創作者",
-        "f1": "每月 12,000 AI 點數",
-        "f2": "包含 Starter 全部功能",
-        "f3": "優先回應",
-        "f4": "進階社群分析"
+        "f1": "包含 Starter 所有功能",
+        "f2": "遊戲化機制、推薦計畫與自動化",
+        "f3": "Podcast、直播、預約、AI 工作室、自訂網域",
+        "f4": "40 個 Space · 10,000 位成員 · 12,000 點額度"
       },
       "SCALE": {
-        "tagline": "適合團隊與重度使用者",
-        "f1": "每月 50,000 AI 點數",
-        "f2": "包含 Pro 全部功能",
-        "f3": "最高使用上限",
-        "f4": "全部功能"
+        "tagline": "適合團隊與重度創作者",
+        "f1": "包含 Pro 所有功能",
+        "f2": "API、Webhooks 與專屬廣告版位",
+        "f3": "無限量 Space 與成員",
+        "f4": "500 GB 儲存空間 · 50,000 點額度"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "詳細內容",
+      "title": "各方案包含內容",
+      "subtitle": "每一列都是你能在後台立即使用的功能。切換方案時不會失去任何功能——只會不斷增加。",
+      "spacesGroup": "Space 類型",
+      "featuresGroup": "功能",
+      "limitsGroup": "限制",
+      "planColumn": "方案",
+      "featureColumn": "功能",
+      "included": "已包含",
+      "notIncluded": "未包含",
+      "unlimited": "無限量",
+      "limitSpaces": "活躍 Space",
+      "limitMembers": "活躍成員",
+      "limitStaff": "團隊席位（管理員／版主）",
+      "limitTiers": "會員等級",
+      "limitStorage": "媒體儲存空間",
+      "limitCredits": "每月 AI 額度",
+      "storageValue": "{gb} GB",
+      "note": "合作夥伴的促銷代碼可立即解鎖你的方案——無需提供付款資訊。"
+    }
   },
   "marketing": {
     "navDiscover": "探索",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

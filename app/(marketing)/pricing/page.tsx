@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { MarketingPlanCard } from "@/components/marketing/marketing-plan-card";
 import { PillLink } from "@/components/marketing/pill-link";
+import { PlanCompareTable } from "@/components/marketing/plan-compare-table";
 import { Reveal } from "@/components/marketing/reveal";
 import {
   PLAN_ORDER,
@@ -87,6 +88,9 @@ export default async function PricingPage() {
             );
           })}
         </div>
+
+        {/* Feature-Matrix — identisch mit der Durchsetzung in der App */}
+        <PlanCompareTable />
 
         {/* Credits nachkaufen */}
         <Reveal>

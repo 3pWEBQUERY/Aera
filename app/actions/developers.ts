@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { featureBlocked } from "@/lib/plan";
 import prisma from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { createApiKey, revokeApiKey } from "@/lib/api-keys";
@@ -33,6 +34,9 @@ export async function createApiKeyAction(
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "developers");
+  if (planBlocked) return { error: planBlocked };
 
   const name = String(fd.get("name") || "").trim().slice(0, 60);
   if (name.length < 2) return { error: await tErr("keyName") };
@@ -76,6 +80,9 @@ export async function createWebhookEndpointAction(
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "developers");
+  if (planBlocked) return { error: planBlocked };
 
   const url = String(fd.get("url") || "").trim();
   const checked = await validateWebhookUrl(url, {

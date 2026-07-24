@@ -8,28 +8,9 @@ import { Sheet } from "./sheet";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
-
-const TYPES: { value: string; icon: IconName }[] = [
-  { value: "FEED", icon: "feed" },
-  { value: "FORUM", icon: "forum" },
-  { value: "COURSE", icon: "courses" },
-  { value: "SHOP", icon: "products" },
-  { value: "NEWSLETTER", icon: "newsletter" },
-  { value: "EVENTS", icon: "events" },
-  { value: "BLOG", icon: "blog" },
-  { value: "KNOWLEDGE", icon: "knowledge" },
-  { value: "GALLERY", icon: "gallery" },
-  { value: "VIDEOS", icon: "videos" },
-  { value: "PODCAST", icon: "podcast" },
-  { value: "LINKS", icon: "link" },
-  { value: "ADS", icon: "megaphone" },
-  { value: "LIVE", icon: "videos" },
-  { value: "REQUESTS", icon: "messages" },
-  { value: "BOOKING", icon: "clock" },
-  { value: "STORIES", icon: "sparkles" },
-  { value: "TIPS", icon: "heart" },
-  { value: "CALENDAR", icon: "events" },
-];
+import { SpaceTypePicker } from "./space-type-picker";
+import { CreditsSheet } from "./credits-sheet";
+import type { PlanKey } from "@/lib/plan-features";
 
 const VIS: { value: string; icon: IconName }[] = [
   { value: "PUBLIC", icon: "feed" },
@@ -39,8 +20,15 @@ const VIS: { value: string; icon: IconName }[] = [
 
 const initial: ActionState = {};
 
-export function SpaceCreateOverlay({ slug }: { slug: string }) {
+export function SpaceCreateOverlay({
+  slug,
+  plan,
+}: {
+  slug: string;
+  plan: PlanKey;
+}) {
   const [open, setOpen] = useState(false);
+  const [plansOpen, setPlansOpen] = useState(false);
   const [state, action, pending] = useActionState(createSpaceAction, initial);
   const [type, setType] = useState("FEED");
   const [visibility, setVisibility] = useState("MEMBERS");
@@ -83,30 +71,12 @@ export function SpaceCreateOverlay({ slug }: { slug: string }) {
 
               <div className="mt-8">
                 <p className="mb-3 text-sm font-medium text-slate-700">{t("spaces.typeLabel")}</p>
-                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-                  {TYPES.map((ty) => {
-                    const sel = ty.value === type;
-                    return (
-                      <button
-                        key={ty.value}
-                        type="button"
-                        onClick={() => setType(ty.value)}
-                        className={cn(
-                          "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-colors duration-200",
-                          sel
-                            ? "border-black bg-slate-50"
-                            : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                        )}
-                      >
-                        <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
-                          <Icon name={ty.icon} size={20} />
-                        </span>
-                        <span className="text-sm font-semibold text-slate-900">{t(`spaceTypes.${ty.value}.label`)}</span>
-                        <span className="text-xs leading-tight text-slate-400">{t(`spaceTypes.${ty.value}.desc`)}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <SpaceTypePicker
+                  value={type}
+                  onChange={setType}
+                  plan={plan}
+                  onLocked={() => setPlansOpen(true)}
+                />
               </div>
 
               <div className="mt-8">
@@ -164,6 +134,13 @@ export function SpaceCreateOverlay({ slug }: { slug: string }) {
           </div>
         </form>
       </Sheet>
+
+      <CreditsSheet
+        open={plansOpen}
+        onClose={() => setPlansOpen(false)}
+        slug={slug}
+        focusPlans
+      />
     </>
   );
 }

@@ -15,6 +15,10 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
+import { SpaceTypePicker, SPACE_TYPE_ICON } from "./space-type-picker";
+import { CreditsSheet } from "./credits-sheet";
+import { PLAN_LABEL } from "./plan-badge";
+import { nextPlanAfter, type PlanKey } from "@/lib/plan-features";
 
 export interface SpaceRowData {
   id: string;
@@ -28,38 +32,13 @@ export interface SpaceRowData {
   postCount: number;
 }
 
-const TYPES: { value: string; icon: IconName }[] = [
-  { value: "FEED", icon: "feed" },
-  { value: "FORUM", icon: "forum" },
-  { value: "COURSE", icon: "courses" },
-  { value: "SHOP", icon: "products" },
-  { value: "NEWSLETTER", icon: "newsletter" },
-  { value: "EVENTS", icon: "events" },
-  { value: "BLOG", icon: "blog" },
-  { value: "KNOWLEDGE", icon: "knowledge" },
-  { value: "GALLERY", icon: "gallery" },
-  { value: "VIDEOS", icon: "videos" },
-  { value: "CHAT", icon: "chat" },
-  { value: "PODCAST", icon: "podcast" },
-  { value: "LINKS", icon: "link" },
-  { value: "ADS", icon: "megaphone" },
-  { value: "LIVE", icon: "videos" },
-  { value: "REQUESTS", icon: "messages" },
-  { value: "BOOKING", icon: "clock" },
-  { value: "STORIES", icon: "sparkles" },
-  { value: "TIPS", icon: "heart" },
-  { value: "CALENDAR", icon: "events" },
-];
-
 const VIS: { value: string; icon: IconName }[] = [
   { value: "PUBLIC", icon: "feed" },
   { value: "MEMBERS", icon: "members" },
   { value: "PAID", icon: "lock" },
 ];
 
-const typeIcon: Record<string, IconName> = Object.fromEntries(
-  TYPES.map((t) => [t.value, t.icon]),
-) as Record<string, IconName>;
+const typeIcon = SPACE_TYPE_ICON as Record<string, IconName>;
 const visCls: Record<string, string> = {
   PUBLIC: "bg-green-100 text-green-700",
   MEMBERS: "bg-slate-100 text-slate-600",
@@ -71,16 +50,26 @@ const initial: ActionState = {};
 export function SpacesManager({
   slug,
   spaces,
+  plan,
+  spaceLimit,
 }: {
   slug: string;
   spaces: SpaceRowData[];
+  /** Active creator package — decides which space types may be created. */
+  plan: PlanKey;
+  /** Max. active spaces for this package; null = unlimited. */
+  spaceLimit: number | null;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<SpaceRowData | null>(null);
+  const [plansOpen, setPlansOpen] = useState(false);
   const t = useTranslations("dashboard.spaces");
+  const tp = useTranslations("dashboard.plans");
 
   const active = spaces.filter((s) => !s.isArchived);
   const archived = spaces.filter((s) => s.isArchived);
+  const atLimit = spaceLimit !== null && active.length >= spaceLimit;
+  const upgradePlan = nextPlanAfter(plan);
 
   return (
     <div>
@@ -91,14 +80,48 @@ export function SpacesManager({
             {t("subtitle", { count: active.length })}
           </p>
         </div>
-        <button
-          onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] sm:self-auto"
-        >
-          <Icon name="plus" size={18} />
-          {t("createSpace")}
-        </button>
+        <div className="flex flex-col items-start gap-2 sm:items-end">
+          <button
+            onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
+            className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] sm:self-auto"
+          >
+            <Icon name={atLimit ? "lock" : "plus"} size={18} />
+            {t("createSpace")}
+          </button>
+          {spaceLimit !== null && (
+            <p className="text-xs font-medium text-slate-400">
+              {tp("limits.spacesUsed", { used: active.length, limit: spaceLimit })}
+            </p>
+          )}
+        </div>
       </div>
+
+      {atLimit && upgradePlan && (
+        <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-amber-200 bg-amber-50/70 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white text-amber-600 ring-1 ring-amber-200">
+              <Icon name="lock" size={16} />
+            </span>
+            <div>
+              <p className="text-sm font-semibold text-slate-900">{tp("limits.spacesTitle")}</p>
+              <p className="mt-0.5 text-sm text-slate-600">
+                {tp("limits.spacesText", {
+                  limit: spaceLimit ?? 0,
+                  plan: PLAN_LABEL[plan],
+                  next: PLAN_LABEL[upgradePlan],
+                })}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => setPlansOpen(true)}
+            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:self-auto"
+          >
+            {tp("upgradeCta", { plan: PLAN_LABEL[upgradePlan] })}
+          </button>
+        </div>
+      )}
 
       {spaces.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
@@ -110,7 +133,7 @@ export function SpacesManager({
             {t("emptyText")}
           </p>
           <button
-            onClick={() => setCreateOpen(true)}
+            onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
             className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
             <Icon name="plus" size={18} />
@@ -142,7 +165,7 @@ export function SpacesManager({
         subtitle={t("createSubtitle")}
         icon="spaces"
       >
-        <SpaceForm slug={slug} onDone={() => setCreateOpen(false)} />
+        <SpaceForm slug={slug} plan={plan} onDone={() => setCreateOpen(false)} />
       </Sheet>
 
       <Sheet
@@ -156,11 +179,19 @@ export function SpacesManager({
           <SpaceForm
             key={editing.id}
             slug={slug}
+            plan={plan}
             space={editing}
             onDone={() => setEditing(null)}
           />
         )}
       </Sheet>
+
+      <CreditsSheet
+        open={plansOpen}
+        onClose={() => setPlansOpen(false)}
+        slug={slug}
+        focusPlans
+      />
     </div>
   );
 }
@@ -232,10 +263,12 @@ function Row({
 
 function SpaceForm({
   slug,
+  plan,
   space,
   onDone,
 }: {
   slug: string;
+  plan: PlanKey;
   space?: SpaceRowData;
   onDone: () => void;
 }) {
@@ -249,6 +282,7 @@ function SpaceForm({
   const [visibility, setVisibility] = useState(space?.visibility ?? "MEMBERS");
   const [deleting, setDeleting] = useState(false);
   const [confirmOpen, setConfirmOpen] = useState(false);
+  const [plansOpen, setPlansOpen] = useState(false);
   const confirmTitleId = useId();
   const confirmRef = useModalAccessibility<HTMLDivElement>({
     open: confirmOpen,
@@ -296,31 +330,12 @@ function SpaceForm({
 
           <div className="mt-8">
             <p className="mb-3 text-sm font-medium text-slate-700">{t("spaces.typeLabel")}</p>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {TYPES.map((ty) => {
-                const sel = ty.value === type;
-                return (
-                  <button
-                    key={ty.value}
-                    type="button"
-                    onClick={() => setType(ty.value)}
-                    aria-pressed={sel}
-                    className={cn(
-                      "flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-colors duration-200",
-                      sel
-                        ? "border-black bg-slate-50"
-                        : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
-                    )}
-                  >
-                    <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl transition", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
-                      <Icon name={ty.icon} size={20} />
-                    </span>
-                    <span className="text-sm font-semibold text-slate-900">{t(`spaceTypes.${ty.value}.label`)}</span>
-                    <span className="text-xs leading-tight text-slate-400">{t(`spaceTypes.${ty.value}.desc`)}</span>
-                  </button>
-                );
-              })}
-            </div>
+            <SpaceTypePicker
+              value={type}
+              onChange={setType}
+              plan={plan}
+              onLocked={() => setPlansOpen(true)}
+            />
           </div>
 
           <div className="mt-8">
@@ -451,6 +466,13 @@ function SpaceForm({
           </div>
         </div>
       )}
+
+      <CreditsSheet
+        open={plansOpen}
+        onClose={() => setPlansOpen(false)}
+        slug={slug}
+        focusPlans
+      />
     </form>
   );
 }

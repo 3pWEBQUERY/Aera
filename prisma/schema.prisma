@@ -267,6 +267,15 @@ enum CreatorPlan {
   SCALE
 }
 
+// Where a tenant's current package comes from. PROMO plans are granted by an
+// influencer/partner code and expire on their own schedule; STRIPE plans are
+// owned by the billing webhooks and must never be overwritten by a code.
+enum CreatorPlanSource {
+  DEFAULT
+  STRIPE
+  PROMO
+}
+
 enum CreatorCheckoutStatus {
   CREATING
   OPEN
@@ -341,6 +350,8 @@ model User {
   pendingCreatorCheckouts   PendingCreatorCheckout[]
   legalAcceptances          LegalAcceptance[]
   pollVotes                 PollVote[]
+  promoCodesCreated         PromoCode[]                @relation("PromoCodeAuthor")
+  promoRedemptions          PromoCodeRedemption[]
 }
 
 /// Versioned evidence that a user accepted a contract document or confirmed
@@ -461,6 +472,7 @@ model Tenant {
   emailSuppressions         EmailSuppression[]
   pendingCreatorCheckouts   PendingCreatorCheckout[]
   pollVotes                 PollVote[]
+  promoRedemptions          PromoCodeRedemption[]
 
   @@index([slug])
   @@index([category])
@@ -1827,6 +1839,12 @@ model AiCreditWallet {
   creatorSubscriptionStatus SubscriptionStatus?
   planCancelAtPeriodEnd     Boolean             @default(false)
   planCurrentPeriodEnd      DateTime?
+  /// Origin of `plan`. Promo grants are refilled locally (like FREE) and
+  /// downgraded automatically once `promoExpiresAt` has passed.
+  planSource                CreatorPlanSource   @default(DEFAULT)
+  promoCodeId               String?
+  promoCode                 PromoCode?          @relation(fields: [promoCodeId], references: [id], onDelete: SetNull)
+  promoExpiresAt            DateTime?
   createdAt                 DateTime            @default(now())
   updatedAt                 DateTime            @updatedAt
 }
@@ -2200,4 +2218,69 @@ model PollVote {
   @@unique([postId, userId, optionIndex])
   @@index([tenantId])
   @@index([postId])
+}
+
+// ----------------------------------------------------------------------------
+// Promotion codes — platform-issued invite codes that put a community on a paid
+// creator package without Stripe. Handed to influencers and launch partners.
+//
+// A code is redeemed *per community*: the same code may unlock N communities
+// (`maxRedemptions`), but never the same one twice (`@@unique`). Redeeming
+// never touches a Stripe-owned plan; billing always wins.
+// ----------------------------------------------------------------------------
+model PromoCode {
+  id    String      @id @default(cuid())
+  /// Normalised (uppercase, A-Z/0-9/-) — this is what the creator types in.
+  code  String      @unique
+  plan  CreatorPlan
+  /// Internal note, e.g. the influencer's name or campaign.
+  label String?
+  /// Optional public-facing note shown after a successful redemption.
+  note  String?
+
+  /// Access duration in days from redemption. Null = for as long as the code
+  /// stays active (lifetime grant).
+  durationDays   Int?
+  /// How many communities may redeem this code in total.
+  maxRedemptions Int  @default(1)
+  /// Denormalised counter kept in the same transaction as the redemption row.
+  redemptionCount Int @default(0)
+  /// Code can no longer be redeemed after this moment (existing grants stay).
+  expiresAt      DateTime?
+  isActive       Boolean   @default(true)
+
+  createdById String?
+  createdBy   User?   @relation("PromoCodeAuthor", fields: [createdById], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  redemptions PromoCodeRedemption[]
+  wallets     AiCreditWallet[]
+
+  @@index([isActive, expiresAt])
+  @@index([plan])
+  @@index([createdAt])
+}
+
+model PromoCodeRedemption {
+  id     String    @id @default(cuid())
+  codeId String
+  code   PromoCode @relation(fields: [codeId], references: [id], onDelete: Cascade)
+
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Package the community was on before — enables a clean rollback.
+  planBefore CreatorPlan
+  planAfter  CreatorPlan
+  /// Null = lifetime grant.
+  expiresAt  DateTime?
+  redeemedAt DateTime    @default(now())
+
+  @@unique([codeId, tenantId])
+  @@index([tenantId])
+  @@index([codeId, redeemedAt])
 }

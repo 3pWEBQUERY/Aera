@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { requireTenantAdmin } from "@/lib/guards";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import { getTranslations, getLocale } from "next-intl/server";
@@ -26,6 +27,9 @@ export default async function PayoutsPage({
 }) {
   const { slug } = await params;
   const { tenant, role, user } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "payouts");
+  if (locked) return locked;
   const isPlatformAdmin = hasPlatformAdminAccess(user);
   const t = tenant.id;
   const td = await getTranslations("dashboard.payouts");

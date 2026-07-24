@@ -2,6 +2,11 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import type { PrismaMock } from "./helpers/prisma-mock";
 
 const httpMocks = vi.hoisted(() => ({ postWebhookUrl: vi.fn() }));
+const planMocks = vi.hoisted(() => ({ tenantHasFeature: vi.fn(async () => true) }));
+
+// Webhook delivery is a paid capability; the package check is stubbed here and
+// exercised explicitly in the "package gate" test below.
+vi.mock("@/lib/plan", () => ({ tenantHasFeature: planMocks.tenantHasFeature }));
 
 vi.mock("@/lib/prisma", async () => {
   const { createPrismaMock, prismaMockRef } = await import("./helpers/prisma-mock");
@@ -91,6 +96,13 @@ describe("emitWebhookEvent", () => {
 
   afterEach(() => {
     vi.unstubAllGlobals();
+  });
+
+  it("delivers nothing when the package does not include webhooks", async () => {
+    planMocks.tenantHasFeature.mockResolvedValueOnce(false);
+    await emitWebhookEvent("t1", "member.joined", { a: 1 });
+    expect(prisma.webhookEndpoint.findMany).not.toHaveBeenCalled();
+    expect(httpMocks.postWebhookUrl).not.toHaveBeenCalled();
   });
 
   it("does nothing without subscribed endpoints", async () => {

@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { checkMemberLimit } from "@/lib/plan";
 import { revalidatePath } from "next/cache";
 import prisma, { setTenantContext, withTenantTransaction } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
@@ -132,6 +133,9 @@ export async function memberSignupAction(
     const ref = String(fd.get("ref") || "").trim();
     redirect(`/c/${slug}/join${ref ? `?ref=${encodeURIComponent(ref)}` : ""}`);
   }
+
+  const budget = await checkMemberLimit(tenant.id);
+  if (!budget.allowed) redirect(`/c/${slug}/join?error=member-limit`);
 
   await prisma.membership.create({
     data: {
@@ -271,6 +275,13 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
   // Paid tier, but no working payment path -> only dev may grant for free.
   if (paid && !devPaymentFallbackAllowed) {
     redirect(`/c/${slug}/join?error=payments-unavailable`);
+  }
+
+  // Package cap: a community may only keep growing while its plan allows it.
+  // Existing members (tier switch, re-activation) are never blocked.
+  if (!existing || existing.status !== "ACTIVE") {
+    const budget = await checkMemberLimit(tenant.id);
+    if (!budget.allowed) redirect(`/c/${slug}/join?error=member-limit`);
   }
 
   // Free join, or paid without Stripe (dev only) -> activate immediately.

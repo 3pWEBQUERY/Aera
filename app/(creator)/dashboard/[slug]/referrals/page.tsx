@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -19,6 +20,9 @@ export default async function ReferralsPage({
 }) {
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "referrals");
+  if (locked) return locked;
   const t = await getTranslations("dashboard.referrals");
   const locale = await getLocale();
   const eur = new Intl.NumberFormat(locale, { style: "currency", currency: PLATFORM_CURRENCY.toUpperCase() });

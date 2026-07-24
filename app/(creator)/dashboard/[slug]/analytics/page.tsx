@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { getAnalyticsSummary } from "@/lib/analytics";
 import { getTranslations, getLocale } from "next-intl/server";
 import { PageHeader } from "@/components/dashboard/page-header";
@@ -68,6 +69,9 @@ export default async function AnalyticsPage({
 }) {
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "analytics");
+  if (locked) return locked;
   const a = await getAnalyticsSummary(tenant.id);
   const t = await getTranslations("dashboard.analytics");
   const locale = await getLocale();

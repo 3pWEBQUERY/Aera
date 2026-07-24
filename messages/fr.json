@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "Sous-domaine invalide. Utilisez 3 à 63 lettres minuscules, chiffres ou tirets (pas au début ni à la fin).",
     "subReserved": "Ce sous-domaine est réservé. Choisissez-en un autre.",
-    "subTaken": "Ce sous-domaine est déjà utilisé."
+    "subTaken": "Ce sous-domaine est déjà utilisé.",
+    "planSpaceTypeLocked": "Ce type de space est disponible à partir du forfait {plan}. Fais une mise à niveau pour le créer.",
+    "planSpaceLimitReached": "Ton forfait {plan} autorise {limit} spaces actifs. Fais une mise à niveau pour plus de place.",
+    "planTierLimitReached": "Ton forfait {plan} autorise {limit} paliers d'adhésion. Fais une mise à niveau pour en ajouter.",
+    "planFeatureLocked": "Cette fonctionnalité est disponible à partir du forfait {plan}. Fais une mise à niveau pour l'utiliser.",
+    "planMemberLimitReached": "Ton forfait {plan} est conçu pour {limit} membres actifs. Fais une mise à niveau pour continuer à grandir.",
+    "planStaffLimitReached": "Ton forfait {plan} autorise {limit} places d'équipe (admins/modérateurs). Fais une mise à niveau pour en obtenir plus."
   },
   "nameStatus": {
     "checking": "Vérification de la disponibilité…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "Publicités",
         "tagline": "Bannières et campagnes"
-      }
-    }
+      },
+      "lockedHint": "Disponible à partir du forfait {plan}",
+      "lockedNote": "Les formats verrouillés se débloquent en quelques secondes avec une mise à niveau après le lancement — ta communauté reste exactement telle quelle."
+    },
+    "cancel": "Cancel",
+    "promoLabel": "Code promo (facultatif)",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "Tu as un code d'un partenaire ou d'un créateur ? Ta communauté démarre alors directement dans le forfait supérieur — sans coordonnées de paiement."
   },
   "seed": {
     "tierDescription": "Accès gratuit à la communauté.",
@@ -477,7 +489,8 @@
       "posts": "Publications",
       "orders": "Commandes",
       "help": "Aide",
-      "audit": "Journal d’audit"
+      "audit": "Journal d’audit",
+      "codes": "Codes promo"
     },
     "pagination": {
       "prev": "Précédent",
@@ -677,6 +690,69 @@
       "emptyTitle": "Pas encore d’entrées",
       "emptyHint": "Les actions administratives et les événements importants sont enregistrés ici.",
       "system": "Système"
+    },
+    "codes": {
+      "metaTitle": "Codes promo",
+      "title": "Codes promo",
+      "subtitle": "Codes d'invitation pour influenceurs et partenaires : ils débloquent un forfait pour une communauté sans paiement.",
+      "statTotal": "Codes au total",
+      "statActive": "Actif",
+      "statRedemptions": "Utilisations",
+      "createTitle": "Créer de nouveaux codes",
+      "createSubtitle": "Choisis un forfait, définis la quantité, terminé. Les codes sont générés aléatoirement et valables immédiatement.",
+      "planLabel": "Forfait",
+      "planHint": {
+        "FREE": "Spaces de base",
+        "STARTER": "+ boutique, chat, statistiques",
+        "PRO": "+ gamification, automatisations",
+        "SCALE": "Tout, y compris l'API"
+      },
+      "quantityLabel": "Nombre de codes",
+      "quantityHint": "Max. 50 par lot.",
+      "prefixLabel": "Préfixe (facultatif)",
+      "prefixPlaceholder": "ex. LISA",
+      "prefixHint": "Apparaît au début du code — pratique pour les campagnes.",
+      "labelLabel": "Note interne",
+      "labelPlaceholder": "ex. Campagne Lisa mars",
+      "labelHint": "Visible uniquement dans l'espace admin.",
+      "durationLabel": "Durée en jours",
+      "durationHint": "0 = illimité (à vie).",
+      "maxLabel": "Utilisations par code",
+      "maxHint": "1 = code personnel, plus élevé = code de campagne.",
+      "expiresLabel": "Valable jusqu'au",
+      "expiresHint": "Vide = pas de date limite.",
+      "createCta": "Créer des codes",
+      "creating": "Création en cours …",
+      "createdCount": "{count, plural, one {# code créé} other {# codes créés}}",
+      "copyAll": "Tout copier",
+      "copied": "Copié",
+      "copyCode": "Copier le code",
+      "filter": {
+        "ALL": "Tous",
+        "ACTIVE": "Actif",
+        "PAUSED": "En pause",
+        "USED_UP": "Épuisé",
+        "EXPIRED": "Expiré"
+      },
+      "status": {
+        "ACTIVE": "Actif",
+        "PAUSED": "En pause",
+        "USED_UP": "Épuisé",
+        "EXPIRED": "Expiré"
+      },
+      "searchPlaceholder": "Rechercher un code ou une note …",
+      "emptyTitle": "Aucun code pour l'instant",
+      "emptyText": "Crée ton premier code promo ci-dessus.",
+      "pause": "Mettre en pause",
+      "activate": "Activer",
+      "delete": "Supprimer",
+      "usage": "{used} / {max} utilisés",
+      "runtimeDays": "{days} jours de validité",
+      "runtimeLifetime": "Validité illimitée",
+      "validUntil": "valable jusqu'au {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "Utilisé par :",
+      "footnote": "Un code débloque chaque communauté exactement une fois. Si une communauté a déjà un abonnement payant, un code ne l'écrase jamais. Forfaits : {plans}."
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "Votre communauté",
       "openAria": "Ouvrir la navigation",
       "mobileSubtitle": "Navigation du tableau de bord",
-      "planner": "Planificateur"
+      "planner": "Planificateur",
+      "lockedSuffix": "{plan} uniquement"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "Live",
         "post": "Publication"
       }
+    },
+    "plans": {
+      "gateEyebrow": "Disponible à partir de",
+      "upgradeCta": "Passer à {plan}",
+      "redeemCta": "Utiliser un code",
+      "gateFootnote": "Ton forfait actuel : {plan} · résiliable chaque mois · débloqué immédiatement",
+      "promoActive": "Promotion active – {plan}",
+      "promoUntil": "valable jusqu'au {date}",
+      "promoLifetime": "sans date d'expiration",
+      "limits": {
+        "spacesUsed": "{used} sur {limit} spaces",
+        "spacesTitle": "Limite de spaces atteinte",
+        "spacesText": "Ton forfait {plan} autorise {limit} spaces actifs. Avec {next}, tu obtiens beaucoup plus de place.",
+        "membersTitle": "Limite de membres atteinte",
+        "membersText": "Ton forfait {plan} est conçu pour {limit} membres actifs. Passe à {next} pour continuer à accueillir de nouveaux membres."
+      },
+      "redeem": {
+        "title": "Utiliser un code promo",
+        "subtitle": "Tu as un code d'un partenaire ou d'un créateur ? Débloque-le ici.",
+        "label": "Ton code",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "Le code débloque ton forfait instantanément — sans coordonnées de paiement.",
+        "submit": "Utiliser maintenant",
+        "submitting": "Utilisation en cours …",
+        "successTitle": "Débloqué !",
+        "successText": "Ta communauté fonctionne désormais avec {plan}.",
+        "successUntil": "Valable jusqu'au {date}.",
+        "successLifetime": "Sans date d'expiration.",
+        "errors": {
+          "invalid": "Ce code n'a pas un format valide.",
+          "not_found": "Nous ne connaissons pas ce code. Vérifie l'orthographe.",
+          "paused": "Ce code est actuellement désactivé.",
+          "expired": "Ce code a expiré.",
+          "used_up": "Ce code a déjà été entièrement utilisé.",
+          "already_redeemed": "Cette communauté a déjà utilisé ce code.",
+          "stripe_active": "Cette communauté a un abonnement payant actif. Résilie-le d'abord, ou utilise le code pour une autre communauté.",
+          "not_an_upgrade": "Ton forfait actuel est déjà équivalent ou supérieur."
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "Statistiques et croissance",
+          "description": "Vois exactement d'où viennent tes membres, ce qui les retient — et ce qui rapporte vraiment.",
+          "b1": "MRR, revenus et churn en un coup d'œil",
+          "b2": "Croissance des membres dans le temps",
+          "b3": "Meilleurs contenus et taux d'engagement"
+        },
+        "products": {
+          "title": "Vendre des produits",
+          "description": "Téléchargements numériques, produits physiques et compléments — directement dans ta communauté.",
+          "b1": "Crée des produits en illimité",
+          "b2": "Téléchargements numériques avec livraison automatique",
+          "b3": "Prix conformes à tous les paliers Apple"
+        },
+        "payouts": {
+          "title": "Ventes et versements",
+          "description": "Chaque commande, chaque versement, chaque frais — en toute transparence, au même endroit.",
+          "b1": "Commandes en temps réel",
+          "b2": "Versements Stripe en un coup d'œil",
+          "b3": "Remboursements et reçus"
+        },
+        "planner": {
+          "title": "Planificateur de contenu",
+          "description": "Planifie des publications des semaines à l'avance et laisse-les se publier toutes seules.",
+          "b1": "Calendrier éditorial sur tous les spaces",
+          "b2": "Programme la publication des contenus",
+          "b3": "Suggestions AI pour ton planning"
+        },
+        "gamification": {
+          "title": "Gamification",
+          "description": "Points, niveaux et badges transforment les membres discrets en fans actifs.",
+          "b1": "Définis librement tes règles de points",
+          "b2": "Badges et niveaux personnalisés",
+          "b3": "Classement pour ta communauté"
+        },
+        "referrals": {
+          "title": "Programme de parrainage",
+          "description": "Laisse tes membres amener de nouveaux membres — avec une vraie commission.",
+          "b1": "Lien d'invitation personnel par membre",
+          "b2": "Commission entièrement personnalisable",
+          "b3": "Suivi des conversions inclus"
+        },
+        "automations": {
+          "title": "Automatisations",
+          "description": "La série de bienvenue et la réactivation tournent pendant que tu dors.",
+          "b1": "Séries d'e-mails après l'inscription",
+          "b2": "Étapes différées (drip)",
+          "b3": "Taux de délivrabilité et statistiques"
+        },
+        "export": {
+          "title": "Export de données",
+          "description": "Tes données t'appartiennent — un export complet quand tu le souhaites.",
+          "b1": "Membres, commandes, contenus",
+          "b2": "CSV et JSON",
+          "b3": "Sauvegarde complète conforme RGPD"
+        },
+        "mediaStudio": {
+          "title": "Studio média AI",
+          "description": "Couvertures, bannières et visuels en quelques secondes — sans outil de design.",
+          "b1": "Génère des images à partir de texte",
+          "b2": "Modèles pour cours et publications",
+          "b3": "Arrive directement dans ta médiathèque"
+        },
+        "customDomain": {
+          "title": "Domaine personnalisé",
+          "description": "Ta communauté à ta propre adresse.",
+          "b1": "Connecte ton propre domaine",
+          "b2": "SSL automatique",
+          "b3": "Vérification par DNS"
+        },
+        "developers": {
+          "title": "Développeurs et API",
+          "description": "Connecte Aera à ta stack — clés API, webhooks, contrôle total.",
+          "b1": "API REST avec tes propres clés",
+          "b2": "Webhooks pour chaque événement",
+          "b3": "Journaux de livraison et nouvelles tentatives automatiques"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "Chaque événement de ta communauté, en temps réel, dans ton système.",
+          "b1": "Choisis les événements dont tu as besoin",
+          "b2": "Livraison signée",
+          "b3": "Nouvelles tentatives automatiques"
+        }
+      },
+      "statusTitle": "Ton forfait",
+      "statusText": {
+        "FREE": "Tu utilises Aera gratuitement. Avec {next}, tu débloques les statistiques, les ventes et plus de spaces.",
+        "STARTER": "Une base solide. Avec {next}, tu obtiens la gamification, le parrainage et les automatisations.",
+        "PRO": "Presque tout est débloqué. {next} apporte l'API, les webhooks et des spaces illimités.",
+        "SCALE": "Tout est débloqué."
+      },
+      "statusTextMax": "Tu es sur le plus grand forfait — toutes les fonctionnalités et tous les types de spaces sont débloqués.",
+      "quotaSpaces": "Spaces",
+      "quotaMembers": "Membres",
+      "quotaCredits": "Crédits AI",
+      "unlimited": "illimité"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "Création du compte…",
     "totpLabel": "Code de votre application d'authentification",
     "totpHint": "Votre compte est protégé par l'authentification à deux facteurs.",
-    "legalAcceptance": "J’accepte les <terms>Conditions générales</terms> et confirme avoir pris connaissance de l’<privacy>Avis de confidentialité</privacy>."
+    "legalAcceptance": "J’accepte les <terms>Conditions générales</terms> et confirme avoir pris connaissance de l’<privacy>Avis de confidentialité</privacy>.",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "Veuillez confirmer votre adresse e-mail <strong>{email}</strong>.",
@@ -3098,7 +3314,8 @@
       "showMore": "Afficher plus ({count})",
       "showLess": "Afficher moins",
       "noTiers": "Cette communauté n'a pas encore d'adhésions publiques.",
-      "footnote": "Résiliable à tout moment. Paiements traités en toute sécurité via Stripe."
+      "footnote": "Résiliable à tout moment. Paiements traités en toute sécurité via Stripe.",
+      "memberLimitReached": "Cette communauté n'accepte pas de nouveaux membres pour le moment. Réessaie plus tard."
     },
     "members": {
       "title": "Membres",
@@ -3410,35 +3627,56 @@
     "footnote": "1 crédit correspond à environ 1 000 tokens ; une requête d'assistant typique coûte 1 à 3 crédits. Les frais de plateforme sur vos revenus communautaires sont facturés séparément — uniquement sur les revenus réels.",
     "plans": {
       "FREE": {
-        "tagline": "Pour essayer",
-        "f1": "500 crédits IA par mois",
-        "f2": "Assistant IA pour textes & idées",
-        "f3": "Analyses de communauté",
-        "f4": "Support par e-mail"
+        "tagline": "Pour démarrer",
+        "f1": "11 spaces de base : fil d'actualité, forum, cours, événements, blog …",
+        "f2": "Jusqu'à 5 spaces et 100 membres",
+        "f3": "Adhésions, médias et modération",
+        "f4": "500 crédits AI par mois"
       },
       "STARTER": {
-        "tagline": "Pour un usage régulier",
-        "f1": "2 500 crédits IA par mois",
-        "f2": "Tout de Free",
-        "f3": "Créer des spaces avec l'IA",
-        "f4": "Générer publications & descriptions"
+        "tagline": "Quand tu veux gagner de l'argent",
+        "f1": "Tout ce qui est dans Free",
+        "f2": "Statistiques, produits et versements",
+        "f3": "Boutique, chat, pourboires, calendrier et planificateur",
+        "f4": "15 spaces · 1 000 membres · 2 500 crédits"
       },
       "PRO": {
         "tagline": "Pour les créateurs actifs",
-        "f1": "12 000 crédits IA par mois",
-        "f2": "Tout de Starter",
-        "f3": "Réponses prioritaires",
-        "f4": "Analyses avancées"
+        "f1": "Tout ce qui est dans Starter",
+        "f2": "Gamification, parrainage et automatisations",
+        "f3": "Podcast, live, réservations, studio AI, domaine personnalisé",
+        "f4": "40 spaces · 10 000 membres · 12 000 crédits"
       },
       "SCALE": {
-        "tagline": "Pour équipes & power users",
-        "f1": "50 000 crédits IA par mois",
-        "f2": "Tout de Pro",
-        "f3": "Limite d'usage maximale",
-        "f4": "Toutes les fonctionnalités"
+        "tagline": "Pour les équipes et les créateurs les plus ambitieux",
+        "f1": "Tout ce qui est dans Pro",
+        "f2": "API, webhooks et tes propres espaces publicitaires",
+        "f3": "Spaces et membres illimités",
+        "f4": "500 Go de stockage · 50 000 crédits"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "En détail",
+      "title": "Ce que contient chaque forfait",
+      "subtitle": "Chaque ligne est une fonctionnalité que tu peux utiliser immédiatement dans ton dashboard. Rien ne disparaît quand tu changes de forfait — il y en a simplement plus.",
+      "spacesGroup": "Types de spaces",
+      "featuresGroup": "Fonctionnalités",
+      "limitsGroup": "Limites",
+      "planColumn": "Forfait",
+      "featureColumn": "Fonctionnalité",
+      "included": "Inclus",
+      "notIncluded": "Non inclus",
+      "unlimited": "Illimité",
+      "limitSpaces": "Spaces actifs",
+      "limitMembers": "Membres actifs",
+      "limitStaff": "Places d'équipe (admins/modérateurs)",
+      "limitTiers": "Paliers d'adhésion",
+      "limitStorage": "Stockage média",
+      "limitCredits": "Crédits AI par mois",
+      "storageValue": "{gb} Go",
+      "note": "Un code promo d'un partenaire débloque ton forfait instantanément — sans coordonnées de paiement."
+    }
   },
   "marketing": {
     "navDiscover": "Découvrir",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

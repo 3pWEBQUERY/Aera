@@ -113,6 +113,14 @@ export default async function JoinPage({
           {tSafety("activeSubscriptionError")}
         </p>
       )}
+      {error === "member-limit" && (
+        <p
+          role="alert"
+          className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800"
+        >
+          {t("memberLimitReached")}
+        </p>
+      )}
       {error === "legal-consent" && (
         <p
           role="alert"

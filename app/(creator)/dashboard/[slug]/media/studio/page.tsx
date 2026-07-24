@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
 import { getOrCreateWallet, walletBalance } from "@/lib/credits";
@@ -23,6 +24,9 @@ export default async function MediaStudioPage({
   const { slug } = await params;
   const { image } = await searchParams;
   const { tenant } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "mediaStudio");
+  if (locked) return locked;
 
   // Deep link from the media library: preload this image as the working image.
   const initial = image

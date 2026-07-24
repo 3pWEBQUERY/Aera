@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { tenantHasFeature } from "@/lib/plan";
 import { getCurrentUser } from "@/lib/auth";
 import { systemPrisma, withTenantTransactionFor } from "@/lib/prisma";
 import { activeRoleAtLeast } from "@/lib/tenant";
@@ -36,6 +37,11 @@ export async function GET(
   );
   if (!activeRoleAtLeast(membership, "OWNER")) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+  }
+
+  // Package gate — the /export page is gated, so the download must be too.
+  if (!(await tenantHasFeature(tenant.id, "export"))) {
+    return NextResponse.json({ error: "plan_upgrade_required" }, { status: 402 });
   }
 
   const url = new URL(req.url);

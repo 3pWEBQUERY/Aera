@@ -74,6 +74,7 @@ export const TENANT_RLS_TABLES = [
   "ObjectDeletionTask",
   "StorageReconciliationState",
   "PollVote",
+  "PromoCodeRedemption",
 ] as const;
 
 /** Tenant tables used by normal request flows. */
@@ -82,7 +83,8 @@ export const TENANT_CRUD_TABLES = TENANT_RLS_TABLES.filter(
     table !== "AuditLog" &&
     table !== "StripeWebhookEvent" &&
     table !== "ObjectDeletionTask" &&
-    table !== "StorageReconciliationState",
+    table !== "StorageReconciliationState" &&
+    table !== "PromoCodeRedemption",
 );
 
 /** Audit history is append-only; writes use the explicit privileged client. */
@@ -93,6 +95,7 @@ export const PRIVILEGED_ONLY_TENANT_TABLES = [
   "StripeWebhookEvent",
   "ObjectDeletionTask",
   "StorageReconciliationState",
+  "PromoCodeRedemption",
 ] as const;
 
 /** Non-tenant tables required by tenant-scoped Prisma relations/actions. */

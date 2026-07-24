@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { featureBlocked } from "@/lib/plan";
 import { systemPrisma } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
@@ -18,6 +19,9 @@ export async function updateReferralSettingsAction(
 ): Promise<ReferralSettingsState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "referrals");
+  if (planBlocked) return { error: planBlocked };
 
   const raw = String(fd.get("referralPercent") ?? "").replace(",", ".");
   const percent = Number(raw);

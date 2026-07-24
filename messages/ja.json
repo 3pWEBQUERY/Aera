@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "無効なサブドメインです。3～63文字の小文字、数字、ハイフンを使用してください（先頭と末尾のハイフンは不可）。",
     "subReserved": "このサブドメインは予約されています。別のものを選択してください。",
-    "subTaken": "このサブドメインはすでに使用されています。"
+    "subTaken": "このサブドメインはすでに使用されています。",
+    "planSpaceTypeLocked": "このスペースタイプは{plan}パッケージから利用できます。作成するにはアップグレードしてください。",
+    "planSpaceLimitReached": "{plan}パッケージでは、アクティブなスペースは{limit}個までです。さらに増やすにはアップグレードしてください。",
+    "planTierLimitReached": "{plan}パッケージでは、メンバーシップ階層は{limit}個までです。追加するにはアップグレードしてください。",
+    "planFeatureLocked": "この機能は{plan}パッケージから利用できます。アップグレードしてご利用ください。",
+    "planMemberLimitReached": "{plan}パッケージは、アクティブメンバー{limit}人までに対応しています。さらに成長させるにはアップグレードしてください。",
+    "planStaffLimitReached": "{plan}パッケージでは、チーム枠（管理者/モデレーター）は{limit}人までです。増やすにはアップグレードしてください。"
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "広告",
         "tagline": "バナーとキャンペーン"
-      }
-    }
+      },
+      "lockedHint": "{plan}パッケージから利用可能",
+      "lockedNote": "ロックされているフォーマットは、開設後にアップグレードすれば数秒で解除できます。コミュニティはそのまま維持されます。"
+    },
+    "cancel": "Cancel",
+    "promoLabel": "プロモコード（任意）",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "パートナーやクリエイターからコードをもらいましたか？ コミュニティはすぐに上位パッケージで開始できます — 支払い情報は不要です。"
   },
   "seed": {
     "tierDescription": "コミュニティへの無料アクセス。",
@@ -477,7 +489,8 @@
       "posts": "投稿",
       "orders": "注文",
       "help": "ヘルプ",
-      "audit": "監査ログ"
+      "audit": "監査ログ",
+      "codes": "プロモコード"
     },
     "pagination": {
       "prev": "前へ",
@@ -677,6 +690,69 @@
       "emptyTitle": "まだ項目がありません",
       "emptyHint": "管理操作や重要なイベントはここに記録されます。",
       "system": "システム"
+    },
+    "codes": {
+      "metaTitle": "プロモコード",
+      "title": "プロモコード",
+      "subtitle": "インフルエンサーやパートナー向けの招待コードです。支払いなしでコミュニティのパッケージを有効化できます。",
+      "statTotal": "コード合計",
+      "statActive": "有効",
+      "statRedemptions": "利用回数",
+      "createTitle": "新しいコードを作成",
+      "createSubtitle": "パッケージを選んで数量を設定するだけです。コードはランダムに生成され、即座に有効になります。",
+      "planLabel": "パッケージ",
+      "planHint": {
+        "FREE": "基本スペース",
+        "STARTER": "+ ショップ、チャット、統計",
+        "PRO": "+ ゲーミフィケーション、オートメーション",
+        "SCALE": "APIを含むすべて"
+      },
+      "quantityLabel": "コードの数",
+      "quantityHint": "1回の作成につき最大50件。",
+      "prefixLabel": "プレフィックス（任意）",
+      "prefixPlaceholder": "例: LISA",
+      "prefixHint": "コードの先頭に表示されます — キャンペーンに便利です。",
+      "labelLabel": "内部メモ",
+      "labelPlaceholder": "例: キャンペーン Lisa 3月",
+      "labelHint": "管理画面でのみ表示されます。",
+      "durationLabel": "有効期間（日数）",
+      "durationHint": "0 = 無期限（ライフタイム）。",
+      "maxLabel": "コードごとの利用回数",
+      "maxHint": "1 = 個人用コード、それ以上 = キャンペーン用コード。",
+      "expiresLabel": "利用期限",
+      "expiresHint": "空欄 = 期限なし。",
+      "createCta": "コードを作成",
+      "creating": "作成中…",
+      "createdCount": "{count, plural, other {#件のコードを作成しました}}",
+      "copyAll": "すべてコピー",
+      "copied": "コピーしました",
+      "copyCode": "コードをコピー",
+      "filter": {
+        "ALL": "すべて",
+        "ACTIVE": "有効",
+        "PAUSED": "一時停止中",
+        "USED_UP": "使い切り",
+        "EXPIRED": "期限切れ"
+      },
+      "status": {
+        "ACTIVE": "有効",
+        "PAUSED": "一時停止中",
+        "USED_UP": "使い切り",
+        "EXPIRED": "期限切れ"
+      },
+      "searchPlaceholder": "コードまたはメモを検索…",
+      "emptyTitle": "まだコードがありません",
+      "emptyText": "上で最初のプロモコードを作成しましょう。",
+      "pause": "一時停止",
+      "activate": "有効化",
+      "delete": "削除",
+      "usage": "{used} / {max} 件利用済み",
+      "runtimeDays": "有効期間 {days} 日",
+      "runtimeLifetime": "無期限",
+      "validUntil": "{date} まで利用可能",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "利用者:",
+      "footnote": "コードは各コミュニティにつき一度だけ有効化できます。すでに有料プランを利用しているコミュニティでは、コードによって上書きされることはありません。パッケージ: {plans}。"
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "あなたのコミュニティ",
       "openAria": "ナビゲーションを開く",
       "mobileSubtitle": "ダッシュボードのナビゲーション",
-      "planner": "プランナー"
+      "planner": "プランナー",
+      "lockedSuffix": "{plan} 限定"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "ライブ",
         "post": "投稿"
       }
+    },
+    "plans": {
+      "gateEyebrow": "利用可能なプラン",
+      "upgradeCta": "{plan}にアップグレード",
+      "redeemCta": "コードを利用する",
+      "gateFootnote": "現在のパッケージ: {plan} · 月単位で解約可 · 即時利用開始",
+      "promoActive": "プロモーション適用中 – {plan}",
+      "promoUntil": "{date} まで有効",
+      "promoLifetime": "有効期限なし",
+      "limits": {
+        "spacesUsed": "{limit}個中{used}個のスペース",
+        "spacesTitle": "スペース数の上限に達しました",
+        "spacesText": "{plan}パッケージでは、アクティブなスペースは{limit}個までです。{next}にすると、より多くの余裕が生まれます。",
+        "membersTitle": "メンバー数の上限に達しました",
+        "membersText": "{plan}パッケージは、アクティブメンバー{limit}人までに対応しています。{next}にアップグレードすると、引き続き参加を受け付けられます。"
+      },
+      "redeem": {
+        "title": "プロモコードを利用する",
+        "subtitle": "パートナーやクリエイターからコードをもらいましたか？ ここで有効化できます。",
+        "label": "コード",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "コードを入力すると、支払い情報なしですぐにパッケージが有効になります。",
+        "submit": "今すぐ利用する",
+        "submitting": "処理中…",
+        "successTitle": "有効化しました！",
+        "successText": "コミュニティは現在{plan}で運用されています。",
+        "successUntil": "{date} まで有効です。",
+        "successLifetime": "有効期限なし。",
+        "errors": {
+          "invalid": "そのコードの形式が正しくありません。",
+          "not_found": "このコードは見つかりませんでした。入力内容をご確認ください。",
+          "paused": "このコードは現在無効になっています。",
+          "expired": "このコードは有効期限が切れています。",
+          "used_up": "このコードはすでに利用上限に達しています。",
+          "already_redeemed": "このコミュニティはすでにこのコードを利用済みです。",
+          "stripe_active": "このコミュニティには有効な有料サブスクリプションがあります。先に解約するか、別のコミュニティでこのコードをご利用ください。",
+          "not_an_upgrade": "現在のパッケージはすでに同等以上です。"
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "統計と成長",
+          "description": "メンバーがどこから来て、何が定着させ、実際に収益を生んでいるのかが正確にわかります。",
+          "b1": "MRR、売上、解約率が一目でわかる",
+          "b2": "メンバー数の推移",
+          "b3": "人気コンテンツとエンゲージメント率"
+        },
+        "products": {
+          "title": "商品を販売",
+          "description": "デジタルダウンロード、物販、追加オプションを、コミュニティ内でそのまま販売できます。",
+          "b1": "商品を無制限に作成",
+          "b2": "デジタルダウンロードの自動配信",
+          "b3": "Apple準拠の価格帯にすべて対応"
+        },
+        "payouts": {
+          "title": "売上と入金",
+          "description": "すべての注文、入金、手数料を1か所で透明に把握できます。",
+          "b1": "注文をリアルタイムで確認",
+          "b2": "Stripeの入金状況を一目で確認",
+          "b3": "返金と領収書"
+        },
+        "planner": {
+          "title": "コンテンツプランナー",
+          "description": "数週間先まで投稿を計画し、自動で公開させましょう。",
+          "b1": "全スペース横断の編集カレンダー",
+          "b2": "投稿を予約して後で公開",
+          "b3": "計画に対するAIの提案"
+        },
+        "gamification": {
+          "title": "ゲーミフィケーション",
+          "description": "ポイント、レベル、バッジが、静かなメンバーを熱心なファンに変えます。",
+          "b1": "ポイントルールを自由に設定",
+          "b2": "独自のバッジとレベル",
+          "b3": "コミュニティ向けランキング"
+        },
+        "referrals": {
+          "title": "紹介プログラム",
+          "description": "メンバーが新しいメンバーを連れてくるたびに、実際の報酬を支払えます。",
+          "b1": "メンバーごとの個人招待リンク",
+          "b2": "報酬率を自由に設定可能",
+          "b3": "コンバージョン計測込み"
+        },
+        "automations": {
+          "title": "オートメーション",
+          "description": "ウェルカムシリーズと再活性化施策が、あなたが寝ている間も自動で動きます。",
+          "b1": "参加後のメールシリーズ",
+          "b2": "時間差ステップ（ドリップ配信）",
+          "b3": "配信率と統計"
+        },
+        "export": {
+          "title": "データエクスポート",
+          "description": "データはあなたのものです — いつでも完全にエクスポートできます。",
+          "b1": "メンバー、注文、コンテンツ",
+          "b2": "CSV & JSON",
+          "b3": "GDPR対応の完全バックアップ"
+        },
+        "mediaStudio": {
+          "title": "AI Media Studio",
+          "description": "カバー、バナー、アートワークを数秒で — デザインツールは不要です。",
+          "b1": "テキストから画像を生成",
+          "b2": "コースや投稿用のテンプレート",
+          "b3": "生成した画像はそのままメディアライブラリへ"
+        },
+        "customDomain": {
+          "title": "カスタムドメイン",
+          "description": "コミュニティを独自のアドレスで公開。",
+          "b1": "独自ドメインを接続",
+          "b2": "自動SSL",
+          "b3": "DNSによる認証"
+        },
+        "developers": {
+          "title": "開発者向け & API",
+          "description": "AeraをあなたのスタックにAPIキーやWebhooksで接続し、すべてを自分でコントロールできます。",
+          "b1": "独自キーによるREST API",
+          "b2": "すべてのイベントに対応するWebhooks",
+          "b3": "配信ログと自動リトライ"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "コミュニティ内のあらゆるイベントを、リアルタイムであなたのシステムへ。",
+          "b1": "必要なイベントを自由に選択",
+          "b2": "署名付き配信",
+          "b3": "自動リトライ"
+        }
+      },
+      "statusTitle": "現在のパッケージ",
+      "statusText": {
+        "FREE": "現在Freeパッケージをご利用中です。{next}にすると、統計、売上機能、さらに多くのスペースが使えるようになります。",
+        "STARTER": "しっかりした基盤です。{next}ではゲーミフィケーション、紹介プログラム、オートメーションが追加されます。",
+        "PRO": "ほぼすべての機能が有効です。{next}ではAPI、Webhooks、無制限のスペースが使えます。",
+        "SCALE": "すべての機能が有効です。"
+      },
+      "statusTextMax": "最大のパッケージをご利用中です — すべての機能とスペースタイプが有効になっています。",
+      "quotaSpaces": "スペース",
+      "quotaMembers": "メンバー",
+      "quotaCredits": "AIクレジット",
+      "unlimited": "無制限"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "アカウントを作成中…",
     "totpLabel": "認証アプリのコード",
     "totpHint": "アカウントは二要素認証で保護されています。",
-    "legalAcceptance": "<terms>利用規約</terms>に同意し、<privacy>プライバシー通知</privacy>を確認しました。"
+    "legalAcceptance": "<terms>利用規約</terms>に同意し、<privacy>プライバシー通知</privacy>を確認しました。",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "メールアドレス <strong>{email}</strong> を確認してください。",
@@ -3098,7 +3314,8 @@
       "showMore": "もっと見る（{count}）",
       "showLess": "閉じる",
       "noTiers": "このコミュニティにはまだ公開メンバーシップがありません。",
-      "footnote": "いつでも解約できます。決済は Stripe で安全に処理されます。"
+      "footnote": "いつでも解約できます。決済は Stripe で安全に処理されます。",
+      "memberLimitReached": "このコミュニティは現在新規メンバーを受け付けていません。しばらくしてからもう一度お試しください。"
     },
     "members": {
       "title": "メンバー",
@@ -3410,35 +3627,56 @@
     "footnote": "1 クレジットは約 1,000 トークンに相当し、一般的なアシスタントへのリクエストは 1〜3 クレジットです。コミュニティ売上に対するプラットフォーム手数料は別途請求されます — 実際の売上に対してのみ。",
     "plans": {
       "FREE": {
-        "tagline": "お試しに",
-        "f1": "月 500 AI クレジット",
-        "f2": "文章とアイデアのための AI アシスタント",
-        "f3": "コミュニティ分析",
-        "f4": "メールサポート"
+        "tagline": "まずは始める",
+        "f1": "基本スペース11種類: フィード、フォーラム、コース、イベント、ブログ…",
+        "f2": "スペース最大5個 & メンバー100人まで",
+        "f3": "メンバーシップ、メディア、モデレーション",
+        "f4": "月間500 AIクレジット"
       },
       "STARTER": {
-        "tagline": "日常的な利用に",
-        "f1": "月 2,500 AI クレジット",
-        "f2": "Free のすべて",
-        "f3": "AI でスペースを作成",
-        "f4": "投稿と説明文の生成"
+        "tagline": "収益化したいとき",
+        "f1": "Freeのすべて",
+        "f2": "統計、商品販売 & 入金",
+        "f3": "ショップ、チャット、投げ銭、カレンダー & プランナー",
+        "f4": "15スペース · メンバー1,000人 · 2,500クレジット"
       },
       "PRO": {
         "tagline": "アクティブなクリエイターに",
-        "f1": "月 12,000 AI クレジット",
-        "f2": "Starter のすべて",
-        "f3": "優先レスポンス",
-        "f4": "高度なコミュニティ分析"
+        "f1": "Starterのすべて",
+        "f2": "ゲーミフィケーション、紹介プログラム & オートメーション",
+        "f3": "ポッドキャスト、ライブ、予約、AIスタジオ、カスタムドメイン",
+        "f4": "40スペース · メンバー10,000人 · 12,000クレジット"
       },
       "SCALE": {
-        "tagline": "チームとパワーユーザーに",
-        "f1": "月 50,000 AI クレジット",
-        "f2": "Pro のすべて",
-        "f3": "最大の利用上限",
-        "f4": "全機能"
+        "tagline": "チームとパワークリエイター向け",
+        "f1": "Proのすべて",
+        "f2": "API、Webhooks & 独自広告枠",
+        "f3": "スペース・メンバー数無制限",
+        "f4": "500GBストレージ · 50,000クレジット"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "詳細",
+      "title": "各パッケージに含まれるもの",
+      "subtitle": "各項目はダッシュボードですぐに使える機能です。切り替えても何も失われることはなく、機能が追加されるだけです。",
+      "spacesGroup": "スペースタイプ",
+      "featuresGroup": "機能",
+      "limitsGroup": "上限",
+      "planColumn": "パッケージ",
+      "featureColumn": "機能",
+      "included": "含まれる",
+      "notIncluded": "含まれない",
+      "unlimited": "無制限",
+      "limitSpaces": "アクティブスペース",
+      "limitMembers": "アクティブメンバー",
+      "limitStaff": "チーム枠（管理者/モデレーター）",
+      "limitTiers": "メンバーシップ階層",
+      "limitStorage": "メディアストレージ",
+      "limitCredits": "月間AIクレジット",
+      "storageValue": "{gb} GB",
+      "note": "パートナーのプロモコードを使えば、支払い情報なしですぐにパッケージが有効になります。"
+    }
   },
   "marketing": {
     "navDiscover": "発見",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

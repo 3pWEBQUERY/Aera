@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { tenantHasFeature } from "@/lib/plan";
 import { getLocale } from "next-intl/server";
 import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
@@ -41,6 +42,10 @@ export async function POST(req: Request) {
   const slug = String(body.slug ?? "");
   if (!slug) return NextResponse.json({ error: "missing-slug" }, { status: 400 });
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Package gate — mirrors the paywall on the planner page.
+  if (!(await tenantHasFeature(tenant.id, "planner"))) {
+    return NextResponse.json({ error: "plan_upgrade_required" }, { status: 402 });
+  }
 
   if (!features.gemini) {
     return NextResponse.json({ error: "gemini-off" }, { status: 400 });

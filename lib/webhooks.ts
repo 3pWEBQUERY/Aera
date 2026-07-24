@@ -1,4 +1,5 @@
 import "server-only";
+import { tenantHasFeature } from "./plan";
 import { createHmac, randomBytes, timingSafeEqual } from "crypto";
 import prisma, { withTenantContext } from "./prisma";
 import type { WebhookDelivery, WebhookEndpoint } from "@/app/generated/prisma/client";
@@ -206,6 +207,9 @@ export async function emitWebhookEvent(
   data: Record<string, unknown>,
 ): Promise<void> {
   try {
+    // Package gate: endpoints survive a downgrade (so nothing is lost on an
+    // upgrade back), but deliveries stop until the package covers them again.
+    if (!(await tenantHasFeature(tenantId, "webhooks"))) return;
     const endpoints = await prisma.webhookEndpoint.findMany({
       where: { tenantId, isActive: true, events: { has: event } },
     });

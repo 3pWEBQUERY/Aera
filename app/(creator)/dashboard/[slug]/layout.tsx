@@ -8,6 +8,7 @@ import { MobileDashboardNav } from "@/components/dashboard/mobile-nav";
 import { TopHeader } from "@/components/dashboard/top-header";
 import type { Metadata } from "next";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { getTenantPlan } from "@/lib/plan";
 
 export async function generateMetadata({
   params,
@@ -32,7 +33,7 @@ export default async function DashboardLayout({
 }) {
   const { slug } = await params;
   const { tenant, user } = await requireTenantAdmin(slug);
-  const [tenants, spaces, membership] = await Promise.all([
+  const [tenants, spaces, membership, plan] = await Promise.all([
     userTenants(user.id),
     prisma.space.findMany({
       where: { tenantId: tenant.id, isArchived: false },
@@ -43,6 +44,8 @@ export default async function DashboardLayout({
       where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
       include: { tier: true },
     }),
+    // Drives the lock badges in the navigation.
+    getTenantPlan(tenant.id),
   ]);
 
   // "Mein Abo" sheet data for the user menu.
@@ -92,6 +95,7 @@ export default async function DashboardLayout({
             primaryColor: tenant.primaryColor,
           }}
           spaces={spaces}
+          plan={plan}
         />
       </div>
 
@@ -110,6 +114,7 @@ export default async function DashboardLayout({
                 primaryColor: tenant.primaryColor,
               }}
               spaces={spaces}
+              plan={plan}
             />
           }
         />

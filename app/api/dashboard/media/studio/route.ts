@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { tenantHasFeature } from "@/lib/plan";
 import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
 import { geminiGenerateImage } from "@/lib/ai";
@@ -98,6 +99,10 @@ export async function POST(req: Request) {
   const slug = String(body.slug ?? "");
   if (!slug) return NextResponse.json({ error: "missing-slug" }, { status: 400 });
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Package gate — the /media/studio page is gated, this endpoint must be too.
+  if (!(await tenantHasFeature(tenant.id, "mediaStudio"))) {
+    return NextResponse.json({ error: "plan_upgrade_required" }, { status: 402 });
+  }
 
   const op = String(body.op ?? "");
 

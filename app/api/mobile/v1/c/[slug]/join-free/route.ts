@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { checkMemberLimit } from "@/lib/plan";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
 import { writeAudit } from "@/lib/audit";
 import { emitWebhookEvent } from "@/lib/webhooks";
@@ -44,6 +45,18 @@ export async function POST(
 
   // Aktive Mitglieder mit derselben Stufe: No-op.
   const alreadyOnTier = existing?.status === "ACTIVE" && existing.tierId === tier.id;
+  // Package cap — mirrors the web join flow (app/actions/engage.ts).
+  if (
+    !alreadyOnTier &&
+    existing?.status !== "ACTIVE" &&
+    !(await checkMemberLimit(tenant.id)).allowed
+  ) {
+    return jsonError(
+      "member_limit_reached",
+      "This community is not accepting new members right now.",
+      409,
+    );
+  }
   if (!alreadyOnTier) {
     await prisma.membership.upsert({
       where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },

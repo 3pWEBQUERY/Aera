@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "Ugyldigt subdomæne. Brug 3–63 små bogstaver, tal eller bindestreger (ikke først eller sidst).",
     "subReserved": "Dette subdomæne er reserveret. Vælg et andet.",
-    "subTaken": "Dette subdomæne er allerede optaget."
+    "subTaken": "Dette subdomæne er allerede optaget.",
+    "planSpaceTypeLocked": "Denne space-type er tilgængelig fra {plan}-pakken. Opgradér for at oprette den.",
+    "planSpaceLimitReached": "Din {plan}-pakke tillader {limit} aktive spaces. Opgradér for mere plads.",
+    "planTierLimitReached": "Din {plan}-pakke tillader {limit} medlemskabsniveauer. Opgradér for at tilføje flere.",
+    "planFeatureLocked": "Denne funktion er tilgængelig fra {plan}-pakken. Opgradér for at bruge den.",
+    "planMemberLimitReached": "Din {plan}-pakke er bygget til {limit} aktive medlemmer. Opgradér for at blive ved med at vokse.",
+    "planStaffLimitReached": "Din {plan}-pakke tillader {limit} teampladser (admins/moderatorer). Opgradér for flere."
   },
   "nameStatus": {
     "checking": "Tjekker tilgængelighed…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "Annoncer",
         "tagline": "Bannere & kampagner"
-      }
-    }
+      },
+      "lockedHint": "Tilgængelig fra {plan}-pakken",
+      "lockedNote": "Låste formater låses op på sekunder med en opgradering efter lancering – dit community forbliver præcis, som det er."
+    },
+    "cancel": "Cancel",
+    "promoLabel": "Kampagnekode (valgfrit)",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "Har du en kode fra en partner eller creator? Så starter dit community direkte på den højere pakke – uden betalingsoplysninger."
   },
   "seed": {
     "tierDescription": "Gratis adgang til fællesskabet.",
@@ -477,7 +489,8 @@
       "posts": "Opslag",
       "orders": "Ordrer",
       "help": "Hjælp",
-      "audit": "Revisionslog"
+      "audit": "Revisionslog",
+      "codes": "Kampagnekoder"
     },
     "pagination": {
       "prev": "Tilbage",
@@ -677,6 +690,69 @@
       "emptyTitle": "Endnu ingen poster",
       "emptyHint": "Administrative handlinger og vigtige hændelser logges her.",
       "system": "System"
+    },
+    "codes": {
+      "metaTitle": "Kampagnekoder",
+      "title": "Kampagnekoder",
+      "subtitle": "Invitationskoder til influencere og partnere: de låser en pakke op for et community uden betaling.",
+      "statTotal": "Koder i alt",
+      "statActive": "Aktiv",
+      "statRedemptions": "Indløsninger",
+      "createTitle": "Opret nye koder",
+      "createSubtitle": "Vælg en pakke, angiv antallet, og du er klar. Koderne genereres tilfældigt og er gyldige med det samme.",
+      "planLabel": "Pakke",
+      "planHint": {
+        "FREE": "Basis-spaces",
+        "STARTER": "+ shop, chat, statistik",
+        "PRO": "+ gamification, automatiseringer",
+        "SCALE": "Alt, inkl. API"
+      },
+      "quantityLabel": "Antal koder",
+      "quantityHint": "Maks. 50 pr. omgang.",
+      "prefixLabel": "Præfiks (valgfrit)",
+      "prefixPlaceholder": "f.eks. LISA",
+      "prefixHint": "Vises forrest i koden – praktisk til kampagner.",
+      "labelLabel": "Intern note",
+      "labelPlaceholder": "f.eks. Kampagne Lisa marts",
+      "labelHint": "Kun synlig i adminområdet.",
+      "durationLabel": "Løbetid i dage",
+      "durationHint": "0 = ubegrænset (livstid).",
+      "maxLabel": "Indløsninger pr. kode",
+      "maxHint": "1 = personlig kode, højere = kampagnekode.",
+      "expiresLabel": "Kan indløses til",
+      "expiresHint": "Tomt = ingen frist.",
+      "createCta": "Opret koder",
+      "creating": "Opretter …",
+      "createdCount": "{count, plural, one {# kode oprettet} other {# koder oprettet}}",
+      "copyAll": "Kopiér alle",
+      "copied": "Kopieret",
+      "copyCode": "Kopiér kode",
+      "filter": {
+        "ALL": "Alle",
+        "ACTIVE": "Aktiv",
+        "PAUSED": "Pauset",
+        "USED_UP": "Opbrugt",
+        "EXPIRED": "Udløbet"
+      },
+      "status": {
+        "ACTIVE": "Aktiv",
+        "PAUSED": "Pauset",
+        "USED_UP": "Opbrugt",
+        "EXPIRED": "Udløbet"
+      },
+      "searchPlaceholder": "Søg efter kode eller note …",
+      "emptyTitle": "Ingen koder endnu",
+      "emptyText": "Opret din første kampagnekode ovenfor.",
+      "pause": "Pausér",
+      "activate": "Aktivér",
+      "delete": "Slet",
+      "usage": "{used} / {max} indløst",
+      "runtimeDays": "{days} dages løbetid",
+      "runtimeLifetime": "Ubegrænset løbetid",
+      "validUntil": "kan indløses til {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "Indløst af:",
+      "footnote": "En kode låser en pakke op for hvert community præcis én gang. Har et community allerede et betalt abonnement, overskriver en kode det aldrig. Pakker: {plans}."
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "Dit fællesskab",
       "openAria": "Åbn navigation",
       "mobileSubtitle": "Dashboard-navigation",
-      "planner": "Planlægger"
+      "planner": "Planlægger",
+      "lockedSuffix": "kun med {plan}"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "Live",
         "post": "Indlæg"
       }
+    },
+    "plans": {
+      "gateEyebrow": "Tilgængelig fra",
+      "upgradeCta": "Opgradér til {plan}",
+      "redeemCta": "Indløs kode",
+      "gateFootnote": "Din nuværende pakke: {plan} · opsig månedligt · låses op med det samme",
+      "promoActive": "Kampagne aktiv – {plan}",
+      "promoUntil": "gyldig til {date}",
+      "promoLifetime": "ingen udløbsdato",
+      "limits": {
+        "spacesUsed": "{used} af {limit} spaces",
+        "spacesTitle": "Space-grænse nået",
+        "spacesText": "Din {plan}-pakke tillader {limit} aktive spaces. {next} giver dig markant mere plads.",
+        "membersTitle": "Medlemsgrænse nået",
+        "membersText": "Din {plan}-pakke er bygget til {limit} aktive medlemmer. Opgradér til {next}, så flere kan blive ved med at tilmelde sig."
+      },
+      "redeem": {
+        "title": "Indløs kampagnekode",
+        "subtitle": "Har du en kode fra en partner eller creator? Lås den op her.",
+        "label": "Din kode",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "Koden låser din pakke op med det samme – ingen betalingsoplysninger nødvendige.",
+        "submit": "Indløs nu",
+        "submitting": "Indløser …",
+        "successTitle": "Låst op!",
+        "successText": "Dit community kører nu på {plan}.",
+        "successUntil": "Gyldig til {date}.",
+        "successLifetime": "Ingen udløbsdato.",
+        "errors": {
+          "invalid": "Den kode har ikke et gyldigt format.",
+          "not_found": "Vi kender ikke den kode. Tjek stavemåden.",
+          "paused": "Denne kode er deaktiveret i øjeblikket.",
+          "expired": "Denne kode er udløbet.",
+          "used_up": "Denne kode er allerede fuldt indløst.",
+          "already_redeemed": "Dette community har allerede indløst koden.",
+          "stripe_active": "Dette community har et aktivt betalt abonnement. Opsig det først, eller brug koden til et andet community.",
+          "not_an_upgrade": "Din nuværende pakke er allerede lige så høj eller højere."
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "Statistik & vækst",
+          "description": "Se præcis, hvor dine medlemmer kommer fra, hvad der holder på dem – og hvad der rent faktisk giver indtjening.",
+          "b1": "MRR, omsætning & churn på et øjeblik",
+          "b2": "Medlemsvækst over tid",
+          "b3": "Topindhold & engagementsrater"
+        },
+        "products": {
+          "title": "Sælg produkter",
+          "description": "Digitale downloads, fysiske varer og tilkøb – direkte i dit community.",
+          "b1": "Opret et ubegrænset antal produkter",
+          "b2": "Digitale downloads med automatisk levering",
+          "b3": "Apple-kompatible prispunkter"
+        },
+        "payouts": {
+          "title": "Salg & udbetalinger",
+          "description": "Hver ordre, hver udbetaling, hvert gebyr – gennemsigtigt ét sted.",
+          "b1": "Ordrer i realtid",
+          "b2": "Stripe-udbetalinger på et øjeblik",
+          "b3": "Refusioner & kvitteringer"
+        },
+        "planner": {
+          "title": "Indholdsplanlægger",
+          "description": "Planlæg opslag uger i forvejen, og lad dem udgive sig selv.",
+          "b1": "Redaktionskalender på tværs af alle spaces",
+          "b2": "Planlæg opslag til senere udgivelse",
+          "b3": "AI-forslag til din plan"
+        },
+        "gamification": {
+          "title": "Gamification",
+          "description": "Point, levels og badges gør stille medlemmer til aktive fans.",
+          "b1": "Definér dine egne pointregler",
+          "b2": "Egne badges & levels",
+          "b3": "Leaderboard til dit community"
+        },
+        "referrals": {
+          "title": "Anbefalingsprogram",
+          "description": "Lad dine medlemmer bringe nye medlemmer – med rigtig provision.",
+          "b1": "Personligt invitationslink pr. medlem",
+          "b2": "Provision kan indstilles frit",
+          "b3": "Conversion-tracking inkluderet"
+        },
+        "automations": {
+          "title": "Automatiseringer",
+          "description": "Velkomstserier og genaktivering kører, mens du sover.",
+          "b1": "E-mail-serier efter tilmelding",
+          "b2": "Tidsforskudte trin (drip)",
+          "b3": "Leveringsrater & statistik"
+        },
+        "export": {
+          "title": "Dataeksport",
+          "description": "Dine data er dine – en fuld eksport, når du vil.",
+          "b1": "Medlemmer, ordrer, indhold",
+          "b2": "CSV & JSON",
+          "b3": "GDPR-klar fuld backup"
+        },
+        "mediaStudio": {
+          "title": "AI Media Studio",
+          "description": "Covers, bannere og artwork på sekunder – helt uden designværktøj.",
+          "b1": "Generér billeder ud fra tekst",
+          "b2": "Skabeloner til kurser & opslag",
+          "b3": "Havner direkte i dit mediebibliotek"
+        },
+        "customDomain": {
+          "title": "Eget domæne",
+          "description": "Dit community på din egen adresse.",
+          "b1": "Tilslut dit eget domæne",
+          "b2": "Automatisk SSL",
+          "b3": "DNS-baseret verificering"
+        },
+        "developers": {
+          "title": "Udviklere & API",
+          "description": "Forbind Aera med din stack – API-nøgler, webhooks, fuld kontrol.",
+          "b1": "REST-API med dine egne nøgler",
+          "b2": "Webhooks til hver hændelse",
+          "b3": "Leveringslogs & automatiske gentagelser"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "Hver hændelse i dit community, i realtid, i dit system.",
+          "b1": "Vælg de hændelser, du har brug for",
+          "b2": "Signeret levering",
+          "b3": "Automatiske gentagelser"
+        }
+      },
+      "statusTitle": "Din pakke",
+      "statusText": {
+        "FREE": "Du bruger den gratis pakke. {next} låser statistik, salg og flere spaces op.",
+        "STARTER": "Solidt fundament. Med {next} kommer gamification, anbefalinger og automatiseringer.",
+        "PRO": "Næsten alt er låst op. {next} giver dig API, webhooks og ubegrænsede spaces.",
+        "SCALE": "Alt er låst op."
+      },
+      "statusTextMax": "Du bruger den største pakke – alle funktioner og space-typer er låst op.",
+      "quotaSpaces": "Spaces",
+      "quotaMembers": "Medlemmer",
+      "quotaCredits": "AI-credits",
+      "unlimited": "ubegrænset"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "Opretter konto…",
     "totpLabel": "Kode fra din authenticator-app",
     "totpHint": "Din konto er beskyttet med tofaktorgodkendelse.",
-    "legalAcceptance": "Jeg accepterer <terms>vilkårene og betingelserne</terms> og bekræfter, at jeg har læst <privacy>privatlivsmeddelelsen</privacy>."
+    "legalAcceptance": "Jeg accepterer <terms>vilkårene og betingelserne</terms> og bekræfter, at jeg har læst <privacy>privatlivsmeddelelsen</privacy>.",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "Bekræft venligst din e-mailadresse <strong>{email}</strong>.",
@@ -3098,7 +3314,8 @@
       "showMore": "Vis mere ({count})",
       "showLess": "Vis mindre",
       "noTiers": "Denne community har endnu ingen offentlige medlemskaber.",
-      "footnote": "Opsig når som helst. Betalinger behandles sikkert via Stripe."
+      "footnote": "Opsig når som helst. Betalinger behandles sikkert via Stripe.",
+      "memberLimitReached": "Dette community optager ikke nye medlemmer lige nu. Prøv igen senere."
     },
     "members": {
       "title": "Medlemmer",
@@ -3410,35 +3627,56 @@
     "footnote": "1 credit svarer til cirka 1.000 tokens; en typisk assistent-forespørgsel koster 1–3 credits. Platformgebyrer på din community-omsætning afregnes separat — kun på reel omsætning.",
     "plans": {
       "FREE": {
-        "tagline": "Til at prøve det af",
-        "f1": "500 AI-credits pr. måned",
-        "f2": "AI-assistent til tekster & idéer",
-        "f3": "Community-analyser",
-        "f4": "E-mail-support"
+        "tagline": "For at komme i gang",
+        "f1": "11 grundlæggende spaces: feed, forum, kurser, events, blog …",
+        "f2": "Op til 5 spaces & 100 medlemmer",
+        "f3": "Medlemskaber, medier & moderation",
+        "f4": "500 AI-credits pr. måned"
       },
       "STARTER": {
-        "tagline": "Til regelmæssig brug",
-        "f1": "2.500 AI-credits pr. måned",
-        "f2": "Alt fra Free",
-        "f3": "Opret spaces med AI",
-        "f4": "Generér opslag & beskrivelser"
+        "tagline": "Når du vil tjene penge",
+        "f1": "Alt fra Free",
+        "f2": "Statistik, produkter & udbetalinger",
+        "f3": "Shop, chat, drikkepenge, kalender & planlægger",
+        "f4": "15 spaces · 1.000 medlemmer · 2.500 credits"
       },
       "PRO": {
         "tagline": "Til aktive creators",
-        "f1": "12.000 AI-credits pr. måned",
-        "f2": "Alt fra Starter",
-        "f3": "Prioriterede svar",
-        "f4": "Udvidede community-analyser"
+        "f1": "Alt fra Starter",
+        "f2": "Gamification, anbefalinger & automatiseringer",
+        "f3": "Podcast, live, bookinger, AI-studio, eget domæne",
+        "f4": "40 spaces · 10.000 medlemmer · 12.000 credits"
       },
       "SCALE": {
-        "tagline": "Til teams & power-brugere",
-        "f1": "50.000 AI-credits pr. måned",
-        "f2": "Alt fra Pro",
-        "f3": "Højeste forbrugsgrænse",
-        "f4": "Fuldt funktionsomfang"
+        "tagline": "Til teams & power-creators",
+        "f1": "Alt fra Pro",
+        "f2": "API, webhooks & egne annonceplaceringer",
+        "f3": "Ubegrænsede spaces & medlemmer",
+        "f4": "500 GB lagerplads · 50.000 credits"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "I detaljer",
+      "title": "Hvad hver pakke indeholder",
+      "subtitle": "Hver række er noget, du kan bruge i dit dashboard med det samme. Intet forsvinder, når du skifter — der kommer kun mere til.",
+      "spacesGroup": "Space-typer",
+      "featuresGroup": "Funktioner",
+      "limitsGroup": "Grænser",
+      "planColumn": "Pakke",
+      "featureColumn": "Funktion",
+      "included": "Inkluderet",
+      "notIncluded": "Ikke inkluderet",
+      "unlimited": "Ubegrænset",
+      "limitSpaces": "Aktive spaces",
+      "limitMembers": "Aktive medlemmer",
+      "limitStaff": "Teampladser (admins/moderatorer)",
+      "limitTiers": "Medlemskabsniveauer",
+      "limitStorage": "Medielagerplads",
+      "limitCredits": "AI-credits pr. måned",
+      "storageValue": "{gb} GB",
+      "note": "En kampagnekode fra en partner låser din pakke op med det samme — uden betalingsoplysninger."
+    }
   },
   "marketing": {
     "navDiscover": "Opdag",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

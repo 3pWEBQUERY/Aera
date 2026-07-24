@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
@@ -21,6 +22,9 @@ export default async function AutomationsPage({
 }) {
   const { slug } = await params;
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "automations");
+  if (locked) return locked;
   // Env-/Deployment-Hinweise sind nur für Plattform-Admins gedacht.
   const isPlatformAdmin = hasPlatformAdminAccess(user);
   const t = await getTranslations("dashboard.automations");

@@ -16,7 +16,10 @@ import {
   PLANS,
   creatorPlanStartPath,
   parsePlanKey,
+  type PlanKey,
 } from "@/lib/credit-plans";
+import { PLAN_RANK } from "@/lib/plan-features";
+import { redeemPromoCode } from "@/lib/promo-codes";
 import { startTrackedCreatorPlanCheckout } from "@/lib/creator-checkout";
 import {
   SPACE_BLUEPRINTS,
@@ -24,6 +27,7 @@ import {
   blueprintFor,
   type SpaceCatalogType,
 } from "@/lib/space-catalog";
+import { planAllowsSpaceType } from "@/lib/plan-features";
 
 const HEX = /^#[0-9a-fA-F]{6}$/;
 function safeColor(value: unknown, fallback: string): string {
@@ -39,7 +43,13 @@ function selectedSpaceTypes(raw: unknown): SpaceCatalogType[] {
   } catch {
     list = [];
   }
-  const valid = list.filter((t) => !!blueprintFor(t)) as SpaceCatalogType[];
+  // A brand-new community always starts on FREE — the paid package is only
+  // activated once Stripe (or a promo code) confirms it. Provisioning premium
+  // space types here would hand them out for an abandoned checkout, so the
+  // wizard offers them as locked and they are added after the upgrade.
+  const valid = list.filter(
+    (t) => !!blueprintFor(t) && planAllowsSpaceType("FREE", t),
+  ) as SpaceCatalogType[];
   const unique = Array.from(new Set(valid));
   return unique.length ? unique : [...DEFAULT_SPACE_TYPES];
 }
@@ -189,7 +199,35 @@ export async function createCommunityAction(
   // Persist the FREE baseline for every tenant. A paid allowance is activated
   // only after Stripe proves the subscription through the webhook.
   const wallet = await getOrCreateWallet(tenant.id);
-  if (creatorPlan.priceCents > 0) {
+
+  // Influencer / partner code: applied right after the community exists, so a
+  // creator who arrived through a promo link never sees a payment screen.
+  const rawPromoCode = String(formData.get("promoCode") || "").trim();
+  let promoPlan: string | null = null;
+  if (rawPromoCode) {
+    const redeemed = await redeemPromoCode({
+      rawCode: rawPromoCode,
+      tenantId: tenant.id,
+      userId: user.id,
+    });
+    if (redeemed.ok) {
+      promoPlan = redeemed.plan;
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: "plan.promo.redeem",
+        targetType: "Tenant",
+        targetId: tenant.id,
+        metadata: { plan: redeemed.plan, source: "onboarding" },
+      });
+    }
+  }
+
+  // A code that already unlocked the requested package makes checkout moot.
+  const promoCoversPlan =
+    promoPlan !== null && PLAN_RANK[promoPlan as PlanKey] >= PLAN_RANK[creatorPlan.key];
+
+  if (creatorPlan.priceCents > 0 && !promoCoversPlan) {
     const returnUrl = `${env.APP_URL}/dashboard/${encodeURIComponent(slug)}/assistant`;
     let checkoutUrl: string | null = null;
     try {

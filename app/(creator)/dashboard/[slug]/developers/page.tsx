@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { env } from "@/lib/env";
@@ -21,6 +22,9 @@ export default async function DevelopersPage({
 }) {
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug, "OWNER");
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "developers");
+  if (locked) return locked;
   const t = await getTranslations("dashboard.developers");
 
   const [keysRaw, endpointsRaw] = await Promise.all([

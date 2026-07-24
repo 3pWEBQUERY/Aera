@@ -124,7 +124,13 @@
     "helpAnswerTooLong": "The answer is too long (max. 8000 characters).",
     "subInvalid": "Invalid subdomain. Use 3–63 characters: lowercase letters, numbers and hyphens (not at the start or end).",
     "subReserved": "This subdomain is reserved. Please choose another.",
-    "subTaken": "This subdomain is already taken."
+    "subTaken": "This subdomain is already taken.",
+    "planSpaceTypeLocked": "This space type is available from the {plan} package. Upgrade to create it.",
+    "planSpaceLimitReached": "Your {plan} package allows {limit} active spaces. Upgrade for more room.",
+    "planTierLimitReached": "Your {plan} package allows {limit} membership tiers. Upgrade to add more.",
+    "planFeatureLocked": "This feature is available from the {plan} package. Upgrade to use it.",
+    "planMemberLimitReached": "Your {plan} package is built for {limit} active members. Upgrade to keep growing.",
+    "planStaffLimitReached": "Your {plan} package allows {limit} team seats (admins/moderators). Upgrade for more."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
@@ -276,9 +282,14 @@
       "ADS": {
         "name": "Ads",
         "tagline": "Banners & campaigns"
-      }
+      },
+      "lockedHint": "Available from the {plan} package",
+      "lockedNote": "Locked formats are unlocked in seconds with an upgrade after launch — your community stays exactly as it is."
     },
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "promoLabel": "Promo code (optional)",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "Got a code from a partner or creator? Your community then starts on the higher package right away — no payment details needed."
   },
   "seed": {
     "tierDescription": "Free access to the community.",
@@ -503,7 +514,8 @@
       "posts": "Posts",
       "orders": "Orders",
       "help": "Help",
-      "audit": "Audit log"
+      "audit": "Audit log",
+      "codes": "Promo codes"
     },
     "pagination": {
       "prev": "Previous",
@@ -703,6 +715,69 @@
       "emptyTitle": "No entries yet",
       "emptyHint": "Administrative actions and important events are logged here.",
       "system": "System"
+    },
+    "codes": {
+      "metaTitle": "Promo codes",
+      "title": "Promo codes",
+      "subtitle": "Invite codes for influencers and partners: they unlock a package for a community without payment.",
+      "statTotal": "Codes total",
+      "statActive": "Active",
+      "statRedemptions": "Redemptions",
+      "createTitle": "Create new codes",
+      "createSubtitle": "Pick a package, set the amount, done. Codes are generated randomly and are valid immediately.",
+      "planLabel": "Package",
+      "planHint": {
+        "FREE": "Basic spaces",
+        "STARTER": "+ shop, chat, analytics",
+        "PRO": "+ gamification, automations",
+        "SCALE": "Everything, incl. API"
+      },
+      "quantityLabel": "Number of codes",
+      "quantityHint": "Max. 50 per batch.",
+      "prefixLabel": "Prefix (optional)",
+      "prefixPlaceholder": "e.g. LISA",
+      "prefixHint": "Appears at the front of the code — handy for campaigns.",
+      "labelLabel": "Internal note",
+      "labelPlaceholder": "e.g. Campaign Lisa March",
+      "labelHint": "Only visible in the admin area.",
+      "durationLabel": "Runtime in days",
+      "durationHint": "0 = unlimited (lifetime).",
+      "maxLabel": "Redemptions per code",
+      "maxHint": "1 = personal code, higher = campaign code.",
+      "expiresLabel": "Redeemable until",
+      "expiresHint": "Empty = no deadline.",
+      "createCta": "Create codes",
+      "creating": "Creating …",
+      "createdCount": "{count, plural, one {# code created} other {# codes created}}",
+      "copyAll": "Copy all",
+      "copied": "Copied",
+      "copyCode": "Copy code",
+      "filter": {
+        "ALL": "All",
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "USED_UP": "Used up",
+        "EXPIRED": "Expired"
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "USED_UP": "Used up",
+        "EXPIRED": "Expired"
+      },
+      "searchPlaceholder": "Search code or note …",
+      "emptyTitle": "No codes yet",
+      "emptyText": "Create your first promo code above.",
+      "pause": "Pause",
+      "activate": "Activate",
+      "delete": "Delete",
+      "usage": "{used} / {max} redeemed",
+      "runtimeDays": "{days} days runtime",
+      "runtimeLifetime": "Unlimited runtime",
+      "validUntil": "redeemable until {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "Redeemed by:",
+      "footnote": "A code unlocks each community exactly once. If a community already has a paid subscription, a code never overwrites it. Packages: {plans}."
     }
   },
   "dashboard": {
@@ -2491,7 +2566,8 @@
       "yourCommunity": "Your community",
       "openAria": "Open navigation",
       "mobileSubtitle": "Dashboard navigation",
-      "planner": "Planner"
+      "planner": "Planner",
+      "lockedSuffix": "{plan} only"
     },
     "media": {
       "metaTitle": "Media",
@@ -2737,6 +2813,143 @@
         "live": "Live",
         "post": "Post"
       }
+    },
+    "plans": {
+      "gateEyebrow": "Available from",
+      "upgradeCta": "Upgrade to {plan}",
+      "redeemCta": "Redeem code",
+      "gateFootnote": "Your current package: {plan} · cancel monthly · unlocked instantly",
+      "promoActive": "Promotion active – {plan}",
+      "promoUntil": "valid until {date}",
+      "promoLifetime": "no expiry date",
+      "limits": {
+        "spacesUsed": "{used} of {limit} spaces",
+        "spacesTitle": "Space limit reached",
+        "spacesText": "Your {plan} package allows {limit} active spaces. {next} gives you a lot more room.",
+        "membersTitle": "Member limit reached",
+        "membersText": "Your {plan} package is built for {limit} active members. Upgrade to {next} so people can keep joining."
+      },
+      "redeem": {
+        "title": "Redeem promo code",
+        "subtitle": "Got a code from a partner or creator? Unlock it here.",
+        "label": "Your code",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "The code unlocks your package instantly — no payment details needed.",
+        "submit": "Redeem now",
+        "submitting": "Redeeming …",
+        "successTitle": "Unlocked!",
+        "successText": "Your community now runs on {plan}.",
+        "successUntil": "Valid until {date}.",
+        "successLifetime": "No expiry date.",
+        "errors": {
+          "invalid": "That code is not in a valid format.",
+          "not_found": "We don't know this code. Please check the spelling.",
+          "paused": "This code is currently disabled.",
+          "expired": "This code has expired.",
+          "used_up": "This code has already been fully redeemed.",
+          "already_redeemed": "This community has already redeemed the code.",
+          "stripe_active": "This community has an active paid subscription. Cancel it first, or use the code for another community.",
+          "not_an_upgrade": "Your current package is already the same or higher."
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "Analytics & growth",
+          "description": "See exactly where your members come from, what keeps them — and what actually earns.",
+          "b1": "MRR, revenue & churn at a glance",
+          "b2": "Member growth over time",
+          "b3": "Top content & engagement rates"
+        },
+        "products": {
+          "title": "Sell products",
+          "description": "Digital downloads, physical goods and add-ons — right inside your community.",
+          "b1": "Create unlimited products",
+          "b2": "Digital downloads with automatic delivery",
+          "b3": "Apple-compliant price points"
+        },
+        "payouts": {
+          "title": "Sales & payouts",
+          "description": "Every order, every payout, every fee — transparent in one place.",
+          "b1": "Orders in real time",
+          "b2": "Stripe payouts at a glance",
+          "b3": "Refunds & receipts"
+        },
+        "planner": {
+          "title": "Content planner",
+          "description": "Plan posts weeks ahead and let them publish themselves.",
+          "b1": "Editorial calendar across all spaces",
+          "b2": "Schedule posts to publish later",
+          "b3": "AI suggestions for your plan"
+        },
+        "gamification": {
+          "title": "Gamification",
+          "description": "Points, levels and badges turn quiet members into active fans.",
+          "b1": "Define your own point rules",
+          "b2": "Custom badges & levels",
+          "b3": "Leaderboard for your community"
+        },
+        "referrals": {
+          "title": "Referral programme",
+          "description": "Let your members bring new members — with real commission.",
+          "b1": "Personal invite link per member",
+          "b2": "Commission freely configurable",
+          "b3": "Conversion tracking included"
+        },
+        "automations": {
+          "title": "Automations",
+          "description": "Welcome series and re-activation run while you sleep.",
+          "b1": "Email series after joining",
+          "b2": "Delayed steps (drip)",
+          "b3": "Delivery rates & statistics"
+        },
+        "export": {
+          "title": "Data export",
+          "description": "Your data is yours — a full export whenever you want it.",
+          "b1": "Members, orders, content",
+          "b2": "CSV & JSON",
+          "b3": "GDPR-ready full backup"
+        },
+        "mediaStudio": {
+          "title": "AI media studio",
+          "description": "Covers, banners and artwork in seconds — no design tool needed.",
+          "b1": "Generate images from text",
+          "b2": "Templates for courses & posts",
+          "b3": "Lands straight in your media library"
+        },
+        "customDomain": {
+          "title": "Custom domain",
+          "description": "Your community on your own address.",
+          "b1": "Connect your own domain",
+          "b2": "Automatic SSL",
+          "b3": "DNS-based verification"
+        },
+        "developers": {
+          "title": "Developers & API",
+          "description": "Connect Aera to your stack — API keys, webhooks, full control.",
+          "b1": "REST API with your own keys",
+          "b2": "Webhooks for every event",
+          "b3": "Delivery logs & automatic retries"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "Every event in your community, in real time, in your system.",
+          "b1": "Pick the events you need",
+          "b2": "Signed delivery",
+          "b3": "Automatic retries"
+        }
+      },
+      "statusTitle": "Your package",
+      "statusText": {
+        "FREE": "You're on the free package. {next} unlocks analytics, sales and more spaces.",
+        "STARTER": "Solid base. {next} adds gamification, referrals and automations.",
+        "PRO": "Almost everything unlocked. {next} brings API, webhooks and unlimited spaces.",
+        "SCALE": "Everything unlocked."
+      },
+      "statusTextMax": "You're on the largest package — every feature and space type is unlocked.",
+      "quotaSpaces": "Spaces",
+      "quotaMembers": "Members",
+      "quotaCredits": "AI credits",
+      "unlimited": "unlimited"
     }
   },
   "common": {
@@ -3136,7 +3349,8 @@
       "showMore": "Show more ({count})",
       "showLess": "Show less",
       "noTiers": "This community doesn't have public memberships yet.",
-      "footnote": "Cancel anytime. Payments are processed securely via Stripe."
+      "footnote": "Cancel anytime. Payments are processed securely via Stripe.",
+      "memberLimitReached": "This community is not accepting new members right now. Please try again later."
     },
     "members": {
       "title": "Members",
@@ -3441,35 +3655,56 @@
     "footnote": "1 credit equals roughly 1,000 tokens; a typical assistant request costs 1–3 credits. Platform fees on your community revenue are billed separately — only on real revenue.",
     "plans": {
       "FREE": {
-        "tagline": "For trying things out",
-        "f1": "500 AI credits per month",
-        "f2": "AI assistant for copy & ideas",
-        "f3": "Community analytics",
-        "f4": "Email support"
+        "tagline": "To get going",
+        "f1": "11 core spaces: feed, forum, courses, events, blog …",
+        "f2": "Up to 5 spaces & 100 members",
+        "f3": "Memberships, media & moderation",
+        "f4": "500 AI credits per month"
       },
       "STARTER": {
-        "tagline": "For regular use",
-        "f1": "2,500 AI credits per month",
-        "f2": "Everything in Free",
-        "f3": "Create spaces with AI",
-        "f4": "Generate posts & descriptions"
+        "tagline": "When you want to earn",
+        "f1": "Everything in Free",
+        "f2": "Analytics, products & payouts",
+        "f3": "Shop, chat, tips, calendar & planner",
+        "f4": "15 spaces · 1,000 members · 2,500 credits"
       },
       "PRO": {
         "tagline": "For active creators",
-        "f1": "12,000 AI credits per month",
-        "f2": "Everything in Starter",
-        "f3": "Prioritized responses",
-        "f4": "Advanced community analytics"
+        "f1": "Everything in Starter",
+        "f2": "Gamification, referrals & automations",
+        "f3": "Podcast, live, bookings, AI studio, custom domain",
+        "f4": "40 spaces · 10,000 members · 12,000 credits"
       },
       "SCALE": {
-        "tagline": "For teams & power users",
-        "f1": "50,000 AI credits per month",
-        "f2": "Everything in Pro",
-        "f3": "Highest usage limit",
-        "f4": "Full feature set"
+        "tagline": "For teams & power creators",
+        "f1": "Everything in Pro",
+        "f2": "API, webhooks & your own ad slots",
+        "f3": "Unlimited spaces & members",
+        "f4": "500 GB storage · 50,000 credits"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "In detail",
+      "title": "What each package includes",
+      "subtitle": "Every row is something you can use in your dashboard right away. Nothing disappears when you switch — more simply gets added.",
+      "spacesGroup": "Space types",
+      "featuresGroup": "Features",
+      "limitsGroup": "Limits",
+      "planColumn": "Package",
+      "featureColumn": "Feature",
+      "included": "Included",
+      "notIncluded": "Not included",
+      "unlimited": "Unlimited",
+      "limitSpaces": "Active spaces",
+      "limitMembers": "Active members",
+      "limitStaff": "Team seats (admins/moderators)",
+      "limitTiers": "Membership tiers",
+      "limitStorage": "Media storage",
+      "limitCredits": "AI credits per month",
+      "storageValue": "{gb} GB",
+      "note": "A partner promo code unlocks your package instantly — no payment details needed."
+    }
   },
   "marketing": {
     "navDiscover": "Discover",

@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "Ongeldig subdomein. Gebruik 3–63 kleine letters, cijfers of koppeltekens (niet aan het begin of einde).",
     "subReserved": "Dit subdomein is gereserveerd. Kies een ander.",
-    "subTaken": "Dit subdomein is al in gebruik."
+    "subTaken": "Dit subdomein is al in gebruik.",
+    "planSpaceTypeLocked": "Dit spacetype is beschikbaar vanaf het {plan}-pakket. Upgrade om het aan te maken.",
+    "planSpaceLimitReached": "Je {plan}-pakket biedt ruimte voor {limit} actieve spaces. Upgrade voor meer ruimte.",
+    "planTierLimitReached": "Je {plan}-pakket biedt {limit} lidmaatschapsniveaus. Upgrade om er meer toe te voegen.",
+    "planFeatureLocked": "Deze functie is beschikbaar vanaf het {plan}-pakket. Upgrade om hem te gebruiken.",
+    "planMemberLimitReached": "Je {plan}-pakket is gebouwd voor {limit} actieve leden. Upgrade om te blijven groeien.",
+    "planStaffLimitReached": "Je {plan}-pakket biedt {limit} teamplekken (admins/moderators). Upgrade voor meer."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "Advertenties",
         "tagline": "Banners en campagnes"
-      }
-    }
+      },
+      "lockedHint": "Beschikbaar vanaf het {plan}-pakket",
+      "lockedNote": "Vergrendelde formats schakel je na de lancering in seconden vrij met een upgrade — je community blijft precies zoals hij is."
+    },
+    "cancel": "Cancel",
+    "promoLabel": "Promocode (optioneel)",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "Heb je een code van een partner of creator? Dan start je community meteen in het hogere pakket — zonder betaalgegevens."
   },
   "seed": {
     "tierDescription": "Gratis toegang tot de community.",
@@ -477,7 +489,8 @@
       "posts": "Posts",
       "orders": "Bestellingen",
       "help": "Help",
-      "audit": "Auditlogboek"
+      "audit": "Auditlogboek",
+      "codes": "Promocodes"
     },
     "pagination": {
       "prev": "Vorige",
@@ -677,6 +690,69 @@
       "emptyTitle": "Nog geen vermeldingen",
       "emptyHint": "Administratieve acties en belangrijke gebeurtenissen worden hier vastgelegd.",
       "system": "Systeem"
+    },
+    "codes": {
+      "metaTitle": "Promocodes",
+      "title": "Promocodes",
+      "subtitle": "Uitnodigingscodes voor influencers en partners: ze schakelen een pakket voor een community vrij zonder betaling.",
+      "statTotal": "Codes totaal",
+      "statActive": "Actief",
+      "statRedemptions": "Inwisselingen",
+      "createTitle": "Nieuwe codes aanmaken",
+      "createSubtitle": "Kies een pakket, stel de hoeveelheid in, klaar. Codes worden willekeurig gegenereerd en zijn direct geldig.",
+      "planLabel": "Pakket",
+      "planHint": {
+        "FREE": "Basis-spaces",
+        "STARTER": "+ shop, chat, statistieken",
+        "PRO": "+ gamification, automatiseringen",
+        "SCALE": "Alles, incl. API"
+      },
+      "quantityLabel": "Aantal codes",
+      "quantityHint": "Max. 50 per batch.",
+      "prefixLabel": "Prefix (optioneel)",
+      "prefixPlaceholder": "bijv. LISA",
+      "prefixHint": "Verschijnt vooraan in de code — handig voor campagnes.",
+      "labelLabel": "Interne notitie",
+      "labelPlaceholder": "bijv. Campagne Lisa maart",
+      "labelHint": "Alleen zichtbaar in het adminbeheer.",
+      "durationLabel": "Looptijd in dagen",
+      "durationHint": "0 = onbeperkt (lifetime).",
+      "maxLabel": "Inwisselingen per code",
+      "maxHint": "1 = persoonlijke code, hoger = campagnecode.",
+      "expiresLabel": "Inwisselbaar tot",
+      "expiresHint": "Leeg = geen deadline.",
+      "createCta": "Codes aanmaken",
+      "creating": "Wordt aangemaakt …",
+      "createdCount": "{count, plural, one {# code aangemaakt} other {# codes aangemaakt}}",
+      "copyAll": "Alles kopiëren",
+      "copied": "Gekopieerd",
+      "copyCode": "Code kopiëren",
+      "filter": {
+        "ALL": "Alle",
+        "ACTIVE": "Actief",
+        "PAUSED": "Gepauzeerd",
+        "USED_UP": "Opgebruikt",
+        "EXPIRED": "Verlopen"
+      },
+      "status": {
+        "ACTIVE": "Actief",
+        "PAUSED": "Gepauzeerd",
+        "USED_UP": "Opgebruikt",
+        "EXPIRED": "Verlopen"
+      },
+      "searchPlaceholder": "Zoek code of notitie …",
+      "emptyTitle": "Nog geen codes",
+      "emptyText": "Maak hierboven je eerste promocode aan.",
+      "pause": "Pauzeren",
+      "activate": "Activeren",
+      "delete": "Verwijderen",
+      "usage": "{used} / {max} ingewisseld",
+      "runtimeDays": "{days} dagen looptijd",
+      "runtimeLifetime": "Onbeperkte looptijd",
+      "validUntil": "inwisselbaar tot {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "Ingewisseld door:",
+      "footnote": "Een code schakelt per community precies één keer vrij. Loopt er voor een community al een betaald abonnement, dan wordt dit nooit overschreven door een code. Pakketten: {plans}."
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "Jouw community",
       "openAria": "Navigatie openen",
       "mobileSubtitle": "Dashboardnavigatie",
-      "planner": "Planner"
+      "planner": "Planner",
+      "lockedSuffix": "alleen met {plan}"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "Live",
         "post": "Bericht"
       }
+    },
+    "plans": {
+      "gateEyebrow": "Beschikbaar vanaf",
+      "upgradeCta": "Upgraden naar {plan}",
+      "redeemCta": "Code inwisselen",
+      "gateFootnote": "Je huidige pakket: {plan} · maandelijks opzegbaar · direct vrijgeschakeld",
+      "promoActive": "Promotie actief – {plan}",
+      "promoUntil": "geldig tot {date}",
+      "promoLifetime": "geen vervaldatum",
+      "limits": {
+        "spacesUsed": "{used} van {limit} spaces",
+        "spacesTitle": "Spacelimiet bereikt",
+        "spacesText": "Je {plan}-pakket biedt ruimte voor {limit} actieve spaces. Met {next} krijg je veel meer ruimte.",
+        "membersTitle": "Ledenlimiet bereikt",
+        "membersText": "Je {plan}-pakket is gebouwd voor {limit} actieve leden. Upgrade naar {next} zodat mensen zich kunnen blijven aanmelden."
+      },
+      "redeem": {
+        "title": "Promocode inwisselen",
+        "subtitle": "Heb je een code van een partner of creator? Wissel hem hier in.",
+        "label": "Jouw code",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "De code schakelt je pakket direct vrij — zonder betaalgegevens.",
+        "submit": "Nu inwisselen",
+        "submitting": "Wordt ingewisseld …",
+        "successTitle": "Vrijgeschakeld!",
+        "successText": "Je community draait nu op {plan}.",
+        "successUntil": "Geldig tot {date}.",
+        "successLifetime": "Geen vervaldatum.",
+        "errors": {
+          "invalid": "Deze code heeft geen geldig formaat.",
+          "not_found": "Deze code kennen we niet. Controleer de spelling.",
+          "paused": "Deze code is momenteel uitgeschakeld.",
+          "expired": "Deze code is verlopen.",
+          "used_up": "Deze code is al volledig ingewisseld.",
+          "already_redeemed": "Deze community heeft de code al ingewisseld.",
+          "stripe_active": "Voor deze community loopt al een betaald abonnement. Zeg dit eerst op of gebruik de code voor een andere community.",
+          "not_an_upgrade": "Je huidige pakket is al gelijk aan of hoger dan dit."
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "Statistieken & groei",
+          "description": "Zie precies waar je leden vandaan komen, wat ze bindt — en wat echt omzet oplevert.",
+          "b1": "MRR, omzet & churn in één oogopslag",
+          "b2": "Ledengroei door de tijd heen",
+          "b3": "Topcontent & engagementpercentages"
+        },
+        "products": {
+          "title": "Producten verkopen",
+          "description": "Digitale downloads, fysieke producten en extra's — rechtstreeks in je community.",
+          "b1": "Onbeperkt producten aanmaken",
+          "b2": "Digitale downloads met automatische levering",
+          "b3": "Prijzen op alle Apple-conforme prijspunten"
+        },
+        "payouts": {
+          "title": "Verkopen & uitbetalingen",
+          "description": "Elke bestelling, elke uitbetaling, elke kosten — transparant op één plek.",
+          "b1": "Bestellingen in realtime",
+          "b2": "Stripe-uitbetalingen in één overzicht",
+          "b3": "Terugbetalingen & bonnetjes"
+        },
+        "planner": {
+          "title": "Contentplanner",
+          "description": "Plan posts weken vooruit en laat ze automatisch verschijnen.",
+          "b1": "Redactiekalender voor alle spaces",
+          "b2": "Posts ingepland publiceren",
+          "b3": "AI-suggesties voor je planning"
+        },
+        "gamification": {
+          "title": "Gamification",
+          "description": "Punten, levels en badges maken van stille leden actieve fans.",
+          "b1": "Definieer je eigen puntenregels",
+          "b2": "Eigen badges & levels",
+          "b3": "Ranglijst voor je community"
+        },
+        "referrals": {
+          "title": "Verwijzingsprogramma",
+          "description": "Laat je leden nieuwe leden aanbrengen — met echte commissie.",
+          "b1": "Persoonlijke uitnodigingslink per lid",
+          "b2": "Commissie vrij instelbaar",
+          "b3": "Conversietracking inbegrepen"
+        },
+        "automations": {
+          "title": "Automatiseringen",
+          "description": "Welkomstreeks en reactivering lopen terwijl jij slaapt.",
+          "b1": "E-mailreeksen na aanmelding",
+          "b2": "Vertraagde stappen (drip)",
+          "b3": "Afleverpercentages & statistieken"
+        },
+        "export": {
+          "title": "Data-export",
+          "description": "Jouw data is van jou — een volledige export wanneer je maar wilt.",
+          "b1": "Leden, bestellingen, content",
+          "b2": "CSV & JSON",
+          "b3": "AVG-conforme volledige back-up"
+        },
+        "mediaStudio": {
+          "title": "AI media studio",
+          "description": "Covers, banners en artwork in seconden — zonder ontwerptool.",
+          "b1": "Genereer afbeeldingen uit tekst",
+          "b2": "Sjablonen voor cursussen & posts",
+          "b3": "Komt direct in je mediabibliotheek terecht"
+        },
+        "customDomain": {
+          "title": "Eigen domein",
+          "description": "Jouw community op je eigen adres.",
+          "b1": "Eigen domein verbinden",
+          "b2": "Automatische SSL",
+          "b3": "Verificatie via DNS"
+        },
+        "developers": {
+          "title": "Ontwikkelaars & API",
+          "description": "Verbind Aera met je eigen stack — API-keys, webhooks, volledige controle.",
+          "b1": "REST API met eigen keys",
+          "b2": "Webhooks voor elke gebeurtenis",
+          "b3": "Afleverlogs & automatische retries"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "Elke gebeurtenis in je community, in realtime, in jouw systeem.",
+          "b1": "Kies zelf welke gebeurtenissen je nodig hebt",
+          "b2": "Ondertekende aflevering",
+          "b3": "Automatische herhalingen"
+        }
+      },
+      "statusTitle": "Jouw pakket",
+      "statusText": {
+        "FREE": "Je gebruikt Aera gratis. Met {next} schakel je statistieken, verkopen en meer spaces vrij.",
+        "STARTER": "Sterke basis. Met {next} komen gamification, verwijzingen en automatiseringen erbij.",
+        "PRO": "Bijna alles vrijgeschakeld. {next} brengt API, webhooks en onbeperkte spaces.",
+        "SCALE": "Alles vrijgeschakeld."
+      },
+      "statusTextMax": "Je gebruikt het grootste pakket — alle functies en spacetypes zijn vrijgeschakeld.",
+      "quotaSpaces": "Spaces",
+      "quotaMembers": "Leden",
+      "quotaCredits": "AI-credits",
+      "unlimited": "onbeperkt"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "Account wordt aangemaakt…",
     "totpLabel": "Code uit je authenticator-app",
     "totpHint": "Je account is beveiligd met tweefactorauthenticatie.",
-    "legalAcceptance": "Ik accepteer de <terms>Algemene voorwaarden</terms> en bevestig dat ik de <privacy>Privacyverklaring</privacy> heb gelezen."
+    "legalAcceptance": "Ik accepteer de <terms>Algemene voorwaarden</terms> en bevestig dat ik de <privacy>Privacyverklaring</privacy> heb gelezen.",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "Bevestig je e-mailadres <strong>{email}</strong>.",
@@ -3098,7 +3314,8 @@
       "showMore": "Meer tonen ({count})",
       "showLess": "Minder tonen",
       "noTiers": "Deze community heeft nog geen openbare lidmaatschappen.",
-      "footnote": "Altijd opzegbaar. Betalingen worden veilig verwerkt via Stripe."
+      "footnote": "Altijd opzegbaar. Betalingen worden veilig verwerkt via Stripe.",
+      "memberLimitReached": "Deze community accepteert op dit moment geen nieuwe leden. Probeer het later nog eens."
     },
     "members": {
       "title": "Leden",
@@ -3410,35 +3627,56 @@
     "footnote": "1 credit komt overeen met ongeveer 1.000 tokens; een typische assistent-aanvraag kost 1–3 credits. Platformkosten op je community-omzet worden apart afgerekend — alleen op echte omzet.",
     "plans": {
       "FREE": {
-        "tagline": "Om uit te proberen",
-        "f1": "500 AI-credits per maand",
-        "f2": "AI-assistent voor teksten & ideeën",
-        "f3": "Community-analyses",
-        "f4": "E-mailsupport"
+        "tagline": "Om te beginnen",
+        "f1": "11 basis-spaces: feed, forum, cursussen, events, blog …",
+        "f2": "Tot 5 spaces & 100 leden",
+        "f3": "Lidmaatschappen, media & moderatie",
+        "f4": "500 AI-credits per maand"
       },
       "STARTER": {
-        "tagline": "Voor regelmatig gebruik",
-        "f1": "2.500 AI-credits per maand",
-        "f2": "Alles uit Free",
-        "f3": "Spaces maken met AI",
-        "f4": "Berichten & omschrijvingen genereren"
+        "tagline": "Als je geld wilt verdienen",
+        "f1": "Alles uit Free",
+        "f2": "Statistieken, producten & uitbetalingen",
+        "f3": "Shop, chat, fooien, kalender & planner",
+        "f4": "15 spaces · 1.000 leden · 2.500 credits"
       },
       "PRO": {
         "tagline": "Voor actieve creators",
-        "f1": "12.000 AI-credits per maand",
-        "f2": "Alles uit Starter",
-        "f3": "Geprioriteerde antwoorden",
-        "f4": "Uitgebreide community-analyses"
+        "f1": "Alles uit Starter",
+        "f2": "Gamification, verwijzingen & automatiseringen",
+        "f3": "Podcast, live, boekingen, AI-studio, eigen domein",
+        "f4": "40 spaces · 10.000 leden · 12.000 credits"
       },
       "SCALE": {
-        "tagline": "Voor teams & power users",
-        "f1": "50.000 AI-credits per maand",
-        "f2": "Alles uit Pro",
-        "f3": "Hoogste gebruikslimiet",
-        "f4": "Volledige functionaliteit"
+        "tagline": "Voor teams & power-creators",
+        "f1": "Alles uit Pro",
+        "f2": "API, webhooks & eigen advertentieruimtes",
+        "f3": "Onbeperkt spaces & leden",
+        "f4": "500 GB opslag · 50.000 credits"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "In detail",
+      "title": "Wat elk pakket bevat",
+      "subtitle": "Elke rij is een functie die je meteen in je dashboard kunt gebruiken. Niets verdwijnt als je wisselt — er komt alleen meer bij.",
+      "spacesGroup": "Spacetypes",
+      "featuresGroup": "Functies",
+      "limitsGroup": "Grenzen",
+      "planColumn": "Pakket",
+      "featureColumn": "Functie",
+      "included": "Inbegrepen",
+      "notIncluded": "Niet inbegrepen",
+      "unlimited": "Onbeperkt",
+      "limitSpaces": "Actieve spaces",
+      "limitMembers": "Actieve leden",
+      "limitStaff": "Teamplekken (admins/moderators)",
+      "limitTiers": "Lidmaatschapsniveaus",
+      "limitStorage": "Media-opslag",
+      "limitCredits": "AI-credits per maand",
+      "storageValue": "{gb} GB",
+      "note": "Een promocode van een partner schakelt je pakket direct vrij — zonder betaalgegevens."
+    }
   },
   "marketing": {
     "navDiscover": "Ontdekken",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

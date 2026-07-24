@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import prisma, { withTenantTransaction, withTenantTransactionFor } from "./prisma";
 import type {
   CreatorPlan,
+  CreatorPlanSource,
   AiCreditWallet,
   SubscriptionStatus,
 } from "@/app/generated/prisma/client";
@@ -73,15 +74,48 @@ export async function getOrCreateWallet(tenantId: string): Promise<AiCreditWalle
 }
 
 /**
- * Free wallets roll forward locally. Paid allowances are never replenished by
- * the calendar: after their paid period expires they are frozen until Stripe
- * confirms the next invoice.
+ * A promotion grant ends on its own schedule — no Stripe event will ever
+ * downgrade it, so the wallet does it itself on the next read.
+ */
+async function expirePromoPlan(
+  wallet: AiCreditWallet,
+  now: Date,
+): Promise<AiCreditWallet> {
+  const free = PLANS.FREE;
+  await prisma.aiCreditWallet.updateMany({
+    where: { id: wallet.id, planSource: "PROMO", promoExpiresAt: { lte: now } },
+    data: {
+      plan: free.key,
+      monthlyCredits: free.monthlyCredits,
+      includedRemaining: Math.min(wallet.includedRemaining, free.monthlyCredits),
+      planSource: "DEFAULT",
+      promoCodeId: null,
+      promoExpiresAt: null,
+    },
+  });
+  return (
+    (await prisma.aiCreditWallet.findUnique({ where: { id: wallet.id } })) ?? wallet
+  );
+}
+
+/**
+ * Free and promotion wallets roll forward locally. Paid allowances are never
+ * replenished by the calendar: after their paid period expires they are frozen
+ * until Stripe confirms the next invoice.
  */
 async function ensurePeriod(wallet: AiCreditWallet): Promise<AiCreditWallet> {
   const now = new Date();
+
+  // An elapsed promotion is settled before anything else reads the package.
+  if (wallet.planSource === "PROMO" && wallet.promoExpiresAt && wallet.promoExpiresAt <= now) {
+    wallet = await expirePromoPlan(wallet, now);
+  }
+
   if (now < wallet.periodEnd) return wallet;
 
-  if (wallet.plan !== "FREE") {
+  // Nobody invoices a promotion, so it refills on the calendar like FREE.
+  const locallyRefilled = wallet.plan === "FREE" || wallet.planSource === "PROMO";
+  if (!locallyRefilled) {
     await prisma.aiCreditWallet.updateMany({
       where: { id: wallet.id, periodEnd: { lte: now }, includedRemaining: { gt: 0 } },
       data: { includedRemaining: 0 },
@@ -325,6 +359,10 @@ export async function activatePaidCreatorPlan(params: {
       creatorSubscriptionStatus: "INCOMPLETE",
       planCancelAtPeriodEnd: false,
       planCurrentPeriodEnd: null,
+      // Billing now owns this wallet; any promotion grant is superseded.
+      planSource: "STRIPE",
+      promoCodeId: null,
+      promoExpiresAt: null,
     },
   });
   return changed.count === 1
@@ -392,6 +430,9 @@ export async function refillCreatorPlanFromPaidInvoice(params: {
       creatorSubscriptionStatus: "ACTIVE",
       planCancelAtPeriodEnd: false,
       planCurrentPeriodEnd: params.periodEnd,
+      planSource: "STRIPE",
+      promoCodeId: null,
+      promoExpiresAt: null,
     },
   });
   return { ok: true, refilled: changed.count === 1 };
@@ -444,6 +485,9 @@ export async function endCreatorSubscription(params: {
       creatorSubscriptionStatus: "CANCELED",
       planCancelAtPeriodEnd: false,
       planCurrentPeriodEnd: null,
+      planSource: "DEFAULT",
+      promoCodeId: null,
+      promoExpiresAt: null,
     },
   });
 }
@@ -472,6 +516,10 @@ export interface CreditSummary {
   creatorSubscriptionStatus: SubscriptionStatus | null;
   planCancelAtPeriodEnd: boolean;
   planCurrentPeriodEnd: string | null;
+  /** "DEFAULT" | "STRIPE" | "PROMO" — drives the plan badge in the UI. */
+  planSource: CreatorPlanSource;
+  /** Set only for promotion grants with a limited runtime. */
+  promoExpiresAt: string | null;
   plans: PlanInfo[];
   packs: CreditPack[];
   recent: UsageEntry[];
@@ -499,6 +547,8 @@ export async function getCreditSummary(tenantId: string): Promise<CreditSummary>
     creatorSubscriptionStatus: wallet.creatorSubscriptionStatus,
     planCancelAtPeriodEnd: wallet.planCancelAtPeriodEnd,
     planCurrentPeriodEnd: wallet.planCurrentPeriodEnd?.toISOString() ?? null,
+    planSource: wallet.planSource,
+    promoExpiresAt: wallet.promoExpiresAt?.toISOString() ?? null,
     plans: PLAN_ORDER.map((k) => PLANS[k]),
     packs: CREDIT_PACKS,
     recent: recent.map((r) => ({

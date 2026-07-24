@@ -6,7 +6,8 @@ import { Card, CardBody } from "@/components/ui/card";
 import { formatPrice, timeAgo } from "@/lib/utils";
 import { Avatar } from "@/components/ui/misc";
 import { PlannerUpcoming } from "@/components/dashboard/planner-upcoming";
-import { FreePlanUpgradeBanner } from "@/components/dashboard/free-plan-upgrade-banner";
+import { PlanStatusCard } from "@/components/dashboard/plan-status-card";
+import { limitsForPlan, nextPlanAfter } from "@/lib/plan-features";
 import { getOrCreateWallet } from "@/lib/credits";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
@@ -21,7 +22,7 @@ export default async function OverviewPage({
   const td = await getTranslations("dashboard");
   const locale = await getLocale();
 
-  const [members, posts, paidOrders, activeSubs, recentMembers, revenueAgg, wallet] =
+  const [members, posts, paidOrders, activeSubs, recentMembers, revenueAgg, wallet, spaceCount] =
     await Promise.all([
       prisma.membership.count({ where: { tenantId: t, status: "ACTIVE" } }),
       prisma.post.count({ where: { tenantId: t } }),
@@ -38,7 +39,10 @@ export default async function OverviewPage({
         _sum: { amountCents: true },
       }),
       getOrCreateWallet(t),
+      prisma.space.count({ where: { tenantId: t, isArchived: false } }),
     ]);
+
+  const limits = limitsForPlan(wallet.plan);
 
   const revenue = revenueAgg._sum.amountCents ?? 0;
 
@@ -52,7 +56,22 @@ export default async function OverviewPage({
 
   return (
     <div>
-      {wallet.plan === "FREE" && <FreePlanUpgradeBanner slug={slug} />}
+      <PlanStatusCard
+        slug={slug}
+        plan={wallet.plan}
+        nextPlan={nextPlanAfter(wallet.plan)}
+        planSource={wallet.planSource}
+        promoExpiresAt={wallet.promoExpiresAt?.toISOString() ?? null}
+        quotas={[
+          { labelKey: "quotaSpaces", used: spaceCount, limit: limits.maxSpaces },
+          { labelKey: "quotaMembers", used: members, limit: limits.maxMembers },
+          {
+            labelKey: "quotaCredits",
+            used: Math.max(0, wallet.monthlyCredits - wallet.includedRemaining),
+            limit: wallet.monthlyCredits,
+          },
+        ]}
+      />
       <PageHeader
         title={td("overview.title")}
         subtitle={td("overview.welcome", { name: tenant.name })}

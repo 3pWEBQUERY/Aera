@@ -16,6 +16,11 @@ import {
   type SpaceCatalogType,
 } from "@/lib/space-catalog";
 import {
+  minPlanForSpaceType,
+  planAllowsSpaceType,
+} from "@/lib/plan-features";
+import { PLAN_LABEL } from "@/components/dashboard/plan-badge";
+import {
   createCommunityAction,
   type CommunityState,
 } from "@/app/actions/community";
@@ -37,11 +42,14 @@ export function OnboardingWizard({
   appUrl,
   user,
   selectedPlan,
+  initialCode = "",
 }: {
   rootDomain: string;
   appUrl: string;
   user: { name: string; avatarUrl: string | null };
   selectedPlan: PlanKey;
+  /** Prefilled from an influencer link (/start?code=…). */
+  initialCode?: string;
 }) {
   const [state, action, pending] = useActionState(createCommunityAction, initial);
   const t = useTranslations("onboarding");
@@ -57,6 +65,7 @@ export function OnboardingWizard({
   const [accent, setAccent] = useState(ACCENT_PRESETS[0]);
   const [selected, setSelected] = useState<Set<SpaceCatalogType>>(new Set(DEFAULT_SPACE_TYPES));
   const [membershipName, setMembershipName] = useState(t("defaultMembership"));
+  const [promoCode, setPromoCode] = useState(initialCode);
   const [access, setAccess] = useState<"PUBLIC" | "MEMBERS">("PUBLIC");
 
   const effectiveSlug = slugTouched ? slug : slugify(name);
@@ -70,6 +79,8 @@ export function OnboardingWizard({
         : true;
 
   function toggleSpace(t: SpaceCatalogType) {
+    // Premium space types only become selectable once the package is live.
+    if (!planAllowsSpaceType("FREE", t)) return;
     setSelected((prev) => {
       const next = new Set(prev);
       if (next.has(t)) next.delete(t);
@@ -278,22 +289,40 @@ export function OnboardingWizard({
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
                 {SPACE_BLUEPRINTS.map((b) => {
                   const on = selected.has(b.type);
+                  // A new community always starts on Free — premium formats are
+                  // shown as a preview of what the next package adds.
+                  const locked = !planAllowsSpaceType("FREE", b.type);
                   return (
                     <button
                       key={b.type}
                       type="button"
                       onClick={() => toggleSpace(b.type)}
                       aria-pressed={on}
+                      aria-disabled={locked}
+                      title={
+                        locked
+                          ? tSpaces("lockedHint", {
+                              plan: PLAN_LABEL[minPlanForSpaceType(b.type)],
+                            })
+                          : undefined
+                      }
                       className={cn(
                         "group relative flex flex-col items-start rounded-2xl border bg-white p-5 text-left transition duration-200",
-                        on
-                          ? ""
-                          : "border-[#161613]/10 hover:-translate-y-0.5 hover:border-[#161613]/30",
+                        locked
+                          ? "cursor-not-allowed border-dashed border-[#161613]/15 bg-[#161613]/[0.02]"
+                          : on
+                            ? ""
+                            : "border-[#161613]/10 hover:-translate-y-0.5 hover:border-[#161613]/30",
                       )}
-                      style={on ? { borderColor: primary, boxShadow: `0 0 0 1px ${primary}` } : undefined}
+                      style={on && !locked ? { borderColor: primary, boxShadow: `0 0 0 1px ${primary}` } : undefined}
                     >
                       <span className="absolute right-3.5 top-3.5">
-                        {on ? (
+                        {locked ? (
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#161613]/8 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#161613]/55">
+                            <Icon name="lock" size={10} />
+                            {PLAN_LABEL[minPlanForSpaceType(b.type)]}
+                          </span>
+                        ) : on ? (
                           <span className="flex h-5 w-5 items-center justify-center rounded-full text-white" style={{ backgroundColor: primary }}>
                             <Icon name="check" size={13} />
                           </span>
@@ -315,6 +344,9 @@ export function OnboardingWizard({
                     </button>
                   );
                 })}
+                <p className="col-span-full text-xs leading-relaxed text-[#161613]/45">
+                  {tSpaces("lockedNote")}
+                </p>
               </div>
             )}
 
@@ -384,6 +416,24 @@ export function OnboardingWizard({
                     {access === "MEMBERS" ? t("membersOnlyVisible") : t("publicFindable")}
                   </p>
                 </SummaryRow>
+                <div className="rounded-2xl border border-[#161613]/12 bg-white p-5">
+                  <Label htmlFor="ob-code">{t("promoLabel")}</Label>
+                  <input
+                    id="ob-code"
+                    name="promoCode"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+                    autoComplete="off"
+                    autoCapitalize="characters"
+                    spellCheck={false}
+                    maxLength={32}
+                    placeholder={t("promoPlaceholder")}
+                    className="w-full rounded-xl border border-[#161613]/20 px-4 py-3 text-center font-mono text-base font-semibold uppercase tracking-[0.16em] outline-none transition focus:border-[#161613]"
+                  />
+                  <p className="mt-2 text-xs leading-relaxed text-[#161613]/50">
+                    {t("promoHint")}
+                  </p>
+                </div>
                 <FormError id="onboarding-error" message={state.error} />
               </div>
             )}

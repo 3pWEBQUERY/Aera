@@ -4,6 +4,8 @@ import {
   SpacesManager,
   type SpaceRowData,
 } from "@/components/dashboard/spaces-manager";
+import { getTenantPlan } from "@/lib/plan";
+import { limitsForPlan } from "@/lib/plan-features";
 
 export default async function SpacesPage({
   params,
@@ -12,6 +14,7 @@ export default async function SpacesPage({
 }) {
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug);
+  const plan = await getTenantPlan(tenant.id);
   const rows = await prisma.space.findMany({
     where: { tenantId: tenant.id },
     orderBy: { sortOrder: "asc" },
@@ -30,5 +33,12 @@ export default async function SpacesPage({
     postCount: s._count.posts,
   }));
 
-  return <SpacesManager slug={slug} spaces={spaces} />;
+  return (
+    <SpacesManager
+      slug={slug}
+      spaces={spaces}
+      plan={plan}
+      spaceLimit={limitsForPlan(plan).maxSpaces}
+    />
+  );
 }

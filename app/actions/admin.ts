@@ -15,6 +15,13 @@ import {
 } from "@/lib/stripe-cleanup";
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion, queueUserDeletion } from "@/lib/data-lifecycle";
+import { parsePlanKey } from "@/lib/credit-plans";
+import {
+  MAX_BATCH_SIZE,
+  createPromoCodes,
+  deletePromoCode,
+  setPromoCodeActive,
+} from "@/lib/promo-codes";
 
 export interface AdminState {
   error?: string;
@@ -579,4 +586,92 @@ export async function adminMoveHelpArticleAction(fd: FormData): Promise<void> {
     prisma.helpArticle.update({ where: { id: all[target].id }, data: { sortOrder: idx } }),
   ]);
   revalidateHelp();
+}
+
+// ------------------------------------------------------------ Promo codes
+/**
+ * Influencer/partner invite codes. Minting and revoking is platform-admin
+ * territory; redemption lives in app/actions/plan.ts (creator side).
+ */
+export async function adminCreatePromoCodesAction(
+  _p: AdminState,
+  fd: FormData,
+): Promise<AdminState> {
+  const admin = await requirePlatformAdmin();
+
+  const plan = parsePlanKey(fd.get("plan"));
+  // A FREE code could only ever fail with "not_an_upgrade" — refuse to mint it.
+  if (!plan || plan === "FREE") return { error: await tErr("invalidInput") };
+
+  const quantity = clampInt(fd.get("quantity"), 1, MAX_BATCH_SIZE, 1);
+  const maxRedemptions = clampInt(fd.get("maxRedemptions"), 1, 100000, 1);
+  const durationDays = clampInt(fd.get("durationDays"), 0, 3650, 0);
+
+  const expiresRaw = String(fd.get("expiresAt") || "").trim();
+  const expiresAt = expiresRaw ? new Date(expiresRaw) : null;
+  if (expiresAt && Number.isNaN(expiresAt.getTime())) {
+    return { error: await tErr("invalidInput") };
+  }
+
+  const codes = await createPromoCodes({
+    plan,
+    quantity,
+    prefix: String(fd.get("prefix") || "").trim(),
+    label: String(fd.get("label") || "").trim().slice(0, 120) || null,
+    note: String(fd.get("note") || "").trim().slice(0, 300) || null,
+    durationDays: durationDays || null,
+    maxRedemptions,
+    expiresAt,
+    createdById: admin.id,
+  });
+
+  if (codes.length === 0) return { error: await tErr("invalidInput") };
+
+  await writeAudit({
+    actorUserId: admin.id,
+    action: "admin.promo.create",
+    targetType: "PromoCode",
+    metadata: { plan, quantity: codes.length, maxRedemptions, durationDays },
+  });
+  revalidatePath("/admin/codes");
+  // The generated codes are echoed back so the admin can copy them right away.
+  return { ok: true, link: codes.map((c) => c.code).join("\n") };
+}
+
+export async function adminTogglePromoCodeAction(fd: FormData): Promise<void> {
+  const admin = await requirePlatformAdmin();
+  const id = String(fd.get("codeId") || "");
+  const isActive = String(fd.get("isActive") || "") === "true";
+  await setPromoCodeActive(id, isActive);
+  await writeAudit({
+    actorUserId: admin.id,
+    action: isActive ? "admin.promo.activate" : "admin.promo.pause",
+    targetType: "PromoCode",
+    targetId: id,
+  });
+  revalidatePath("/admin/codes");
+}
+
+export async function adminDeletePromoCodeAction(fd: FormData): Promise<void> {
+  const admin = await requirePlatformAdmin();
+  const id = String(fd.get("codeId") || "");
+  await deletePromoCode(id);
+  await writeAudit({
+    actorUserId: admin.id,
+    action: "admin.promo.delete",
+    targetType: "PromoCode",
+    targetId: id,
+  });
+  revalidatePath("/admin/codes");
+}
+
+function clampInt(
+  value: FormDataEntryValue | null,
+  min: number,
+  max: number,
+  fallback: number,
+): number {
+  const parsed = Number.parseInt(String(value ?? ""), 10);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
 }

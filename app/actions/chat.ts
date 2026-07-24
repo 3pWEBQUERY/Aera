@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { tenantAllowsSpaceType, checkSpaceLimit } from "@/lib/plan";
 import { revalidatePath } from "next/cache";
 import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
@@ -64,6 +65,10 @@ export async function createChatGroupAction(fd: FormData): Promise<void> {
   const me = await membership(tenant!.id, user!.id);
   if (!activeRoleAtLeast(me, "MODERATOR")) redirect(back);
   if (name.length < 2) redirect(back);
+
+  // Package gate — a group chat creates a CHAT space, which is not free.
+  if (!(await tenantAllowsSpaceType(tenant!.id, "CHAT"))) redirect(back);
+  if (!(await checkSpaceLimit(tenant!.id)).allowed) redirect(back);
 
   const visibility = access === "all" ? "MEMBERS" : "PAID";
   const requiredEntitlementKey = access === "level" && levelKey ? levelKey : null;

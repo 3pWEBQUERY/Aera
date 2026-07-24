@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { featureBlocked, tenantHasFeature } from "@/lib/plan";
 import prisma, { withTenantTransaction } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
@@ -98,6 +99,9 @@ export async function createContentPlanAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "planner");
+  if (planBlocked) return { error: planBlocked };
   const title = String(fd.get("title") || "").trim().slice(0, 160);
   if (title.length < 2) return { error: "Titel fehlt." };
 
@@ -146,6 +150,9 @@ export async function updateContentPlanAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — a downgraded client keeps working Server Action ids.
+  const planBlocked = await featureBlocked(tenant.id, "planner");
+  if (planBlocked) return { error: planBlocked };
   const planId = String(fd.get("planId"));
   const plan = await prisma.contentPlan.findFirst({ where: { id: planId, tenantId: tenant.id } });
   if (!plan) return { error: "Plan nicht gefunden." };
@@ -203,6 +210,8 @@ export async function deleteContentPlanAction(fd: FormData): Promise<void> {
 export async function setPlanStatusAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — a downgraded client keeps working Server Action ids.
+  if (!(await tenantHasFeature(tenant.id, "planner"))) return;
   const planId = String(fd.get("planId"));
   const status = parseStatus(fd.get("status"));
   await prisma.contentPlan.updateMany({

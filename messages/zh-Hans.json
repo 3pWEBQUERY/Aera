@@ -124,7 +124,13 @@
     "priceNotAllowed": "Please choose an allowed price.",
     "subInvalid": "子域名无效。请使用 3–63 个小写字母、数字或连字符（首尾不能是连字符）。",
     "subReserved": "此子域名已被保留。请选择其他名称。",
-    "subTaken": "此子域名已被使用。"
+    "subTaken": "此子域名已被使用。",
+    "planSpaceTypeLocked": "此版块类型需要 {plan} 套餐及以上版本，升级后即可创建。",
+    "planSpaceLimitReached": "你的 {plan} 套餐支持 {limit} 个活跃版块，升级以获得更多空间。",
+    "planTierLimitReached": "你的 {plan} 套餐支持 {limit} 个会员等级，升级以添加更多。",
+    "planFeatureLocked": "此功能需要 {plan} 套餐及以上版本，升级即可使用。",
+    "planMemberLimitReached": "你的 {plan} 套餐支持 {limit} 名活跃成员，升级以继续增长。",
+    "planStaffLimitReached": "你的 {plan} 套餐支持 {limit} 个团队席位（管理员/版主），升级以获得更多席位。"
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -251,8 +257,14 @@
       "ADS": {
         "name": "广告",
         "tagline": "横幅与活动"
-      }
-    }
+      },
+      "lockedHint": "自 {plan} 套餐起可用",
+      "lockedNote": "已锁定的格式可在启动后通过升级立即解锁——你的社区将保持原样不变。"
+    },
+    "cancel": "Cancel",
+    "promoLabel": "推广代码（可选）",
+    "promoPlaceholder": "AERA-PRO-7K2QX4",
+    "promoHint": "有合作伙伴或创作者提供的代码？你的社区将立即以更高套餐启动——无需填写支付信息。"
   },
   "seed": {
     "tierDescription": "免费加入社区。",
@@ -477,7 +489,8 @@
       "posts": "帖子",
       "orders": "订单",
       "help": "帮助",
-      "audit": "审计日志"
+      "audit": "审计日志",
+      "codes": "推广代码"
     },
     "pagination": {
       "prev": "上一页",
@@ -677,6 +690,69 @@
       "emptyTitle": "还没有条目",
       "emptyHint": "管理操作和重要事件会记录在此处。",
       "system": "系统"
+    },
+    "codes": {
+      "metaTitle": "推广代码",
+      "title": "推广代码",
+      "subtitle": "面向达人和合作伙伴的邀请代码：无需付款即可为社区解锁套餐。",
+      "statTotal": "代码总数",
+      "statActive": "已启用",
+      "statRedemptions": "兑换次数",
+      "createTitle": "创建新代码",
+      "createSubtitle": "选择套餐，设置数量，即可完成。代码随机生成，立即生效。",
+      "planLabel": "套餐",
+      "planHint": {
+        "FREE": "基础版块",
+        "STARTER": "+ 商店、聊天、数据分析",
+        "PRO": "+ 游戏化、自动化",
+        "SCALE": "全部功能，含 API"
+      },
+      "quantityLabel": "代码数量",
+      "quantityHint": "每批最多 50 个。",
+      "prefixLabel": "前缀（可选）",
+      "prefixPlaceholder": "例如：LISA",
+      "prefixHint": "显示在代码开头 — 便于区分活动。",
+      "labelLabel": "内部备注",
+      "labelPlaceholder": "例如：Lisa 三月活动",
+      "labelHint": "仅在管理后台可见。",
+      "durationLabel": "有效期（天）",
+      "durationHint": "0 = 无限期（终身）。",
+      "maxLabel": "每个代码可兑换次数",
+      "maxHint": "1 = 个人代码，大于 1 = 活动代码。",
+      "expiresLabel": "兑换截止日期",
+      "expiresHint": "留空 = 无截止日期。",
+      "createCta": "创建代码",
+      "creating": "正在创建…",
+      "createdCount": "{count, plural, other {# 个代码已创建}}",
+      "copyAll": "复制全部",
+      "copied": "已复制",
+      "copyCode": "复制代码",
+      "filter": {
+        "ALL": "全部",
+        "ACTIVE": "已启用",
+        "PAUSED": "已暂停",
+        "USED_UP": "已用完",
+        "EXPIRED": "已过期"
+      },
+      "status": {
+        "ACTIVE": "已启用",
+        "PAUSED": "已暂停",
+        "USED_UP": "已用完",
+        "EXPIRED": "已过期"
+      },
+      "searchPlaceholder": "搜索代码或备注…",
+      "emptyTitle": "暂无代码",
+      "emptyText": "在上方创建你的第一个推广代码。",
+      "pause": "暂停",
+      "activate": "激活",
+      "delete": "删除",
+      "usage": "已兑换 {used} / {max}",
+      "runtimeDays": "有效期 {days} 天",
+      "runtimeLifetime": "无限期有效",
+      "validUntil": "兑换截止至 {date}",
+      "createdMeta": "{date} · {name}",
+      "redeemedBy": "兑换人：",
+      "footnote": "每个代码仅可为每个社区解锁一次。如果社区已有付费订阅，代码不会覆盖它。套餐：{plans}。"
     }
   },
   "dashboard": {
@@ -2366,7 +2442,8 @@
       "yourCommunity": "你的社区",
       "openAria": "打开导航",
       "mobileSubtitle": "仪表板导航",
-      "planner": "规划器"
+      "planner": "规划器",
+      "lockedSuffix": "仅限 {plan}"
     },
     "media": {
       "metaTitle": "Media",
@@ -2711,6 +2788,143 @@
         "live": "直播",
         "post": "帖子"
       }
+    },
+    "plans": {
+      "gateEyebrow": "所需套餐",
+      "upgradeCta": "升级到 {plan}",
+      "redeemCta": "兑换代码",
+      "gateFootnote": "你当前的套餐：{plan} · 按月可取消 · 即时解锁",
+      "promoActive": "促销已生效 – {plan}",
+      "promoUntil": "有效期至 {date}",
+      "promoLifetime": "无到期日期",
+      "limits": {
+        "spacesUsed": "{limit} 个版块中的 {used} 个",
+        "spacesTitle": "已达版块数量上限",
+        "spacesText": "你的 {plan} 套餐支持 {limit} 个活跃版块。{next} 能为你提供更大空间。",
+        "membersTitle": "已达成员数量上限",
+        "membersText": "你的 {plan} 套餐支持 {limit} 名活跃成员。升级到 {next}，让更多人持续加入。"
+      },
+      "redeem": {
+        "title": "兑换推广代码",
+        "subtitle": "有合作伙伴或创作者提供的代码？在这里解锁。",
+        "label": "你的代码",
+        "placeholder": "AERA-PRO-7K2QX4",
+        "hint": "代码可立即解锁你的套餐——无需填写支付信息。",
+        "submit": "立即兑换",
+        "submitting": "兑换中…",
+        "successTitle": "已解锁！",
+        "successText": "你的社区现已运行在 {plan} 套餐上。",
+        "successUntil": "有效期至 {date}。",
+        "successLifetime": "无到期日期。",
+        "errors": {
+          "invalid": "该代码格式无效。",
+          "not_found": "未找到此代码，请检查拼写是否正确。",
+          "paused": "此代码目前已停用。",
+          "expired": "此代码已过期。",
+          "used_up": "此代码已被兑换完毕。",
+          "already_redeemed": "该社区已兑换过此代码。",
+          "stripe_active": "该社区已有生效的付费订阅。请先取消订阅，或将代码用于其他社区。",
+          "not_an_upgrade": "你当前的套餐已经等于或高于该等级。"
+        }
+      },
+      "features": {
+        "analytics": {
+          "title": "数据分析与增长",
+          "description": "清楚了解你的成员从哪里来、是什么留住了他们——以及真正带来收入的是什么。",
+          "b1": "一目了然的 MRR、营收与流失率",
+          "b2": "成员增长趋势",
+          "b3": "热门内容与互动率"
+        },
+        "products": {
+          "title": "销售商品",
+          "description": "数字下载、实体商品和附加服务——都能在社区内直接售卖。",
+          "b1": "创建不限数量的商品",
+          "b2": "数字下载商品自动交付",
+          "b3": "符合 Apple 规范的价格档位"
+        },
+        "payouts": {
+          "title": "销售与打款",
+          "description": "每一笔订单、每一次打款、每一项费用——一处尽览，公开透明。",
+          "b1": "实时订单",
+          "b2": "一目了然的 Stripe 打款",
+          "b3": "退款与收据"
+        },
+        "planner": {
+          "title": "内容规划器",
+          "description": "提前数周规划帖子，让它们自动发布。",
+          "b1": "覆盖所有版块的内容日历",
+          "b2": "定时发布帖子",
+          "b3": "为你的计划提供 AI 建议"
+        },
+        "gamification": {
+          "title": "游戏化",
+          "description": "积分、等级和徽章，把沉默的成员变成活跃粉丝。",
+          "b1": "自由定义积分规则",
+          "b2": "自定义徽章与等级",
+          "b3": "社区专属排行榜"
+        },
+        "referrals": {
+          "title": "推荐计划",
+          "description": "让成员帮你带来新成员——并获得真实佣金。",
+          "b1": "每位成员专属的邀请链接",
+          "b2": "佣金比例可自由设置",
+          "b3": "内置转化追踪"
+        },
+        "automations": {
+          "title": "自动化",
+          "description": "欢迎序列和唤醒流程，在你休息时自动运行。",
+          "b1": "加入后的邮件序列",
+          "b2": "延时触达（滴灌式）",
+          "b3": "送达率与统计数据"
+        },
+        "export": {
+          "title": "数据导出",
+          "description": "你的数据属于你——随时导出完整备份。",
+          "b1": "成员、订单、内容",
+          "b2": "CSV 与 JSON",
+          "b3": "符合 GDPR 的完整备份"
+        },
+        "mediaStudio": {
+          "title": "AI 媒体工作室",
+          "description": "几秒钟生成封面、横幅和插画——无需设计工具。",
+          "b1": "通过文字生成图片",
+          "b2": "适用于课程与帖子的模板",
+          "b3": "直接存入你的媒体库"
+        },
+        "customDomain": {
+          "title": "自定义域名",
+          "description": "让社区拥有你自己的专属网址。",
+          "b1": "绑定自己的域名",
+          "b2": "自动 SSL",
+          "b3": "基于 DNS 的验证"
+        },
+        "developers": {
+          "title": "开发者与 API",
+          "description": "将 Aera 接入你的技术栈——API 密钥、Webhooks，完全掌控。",
+          "b1": "使用专属密钥的 REST API",
+          "b2": "每个事件都支持 Webhooks",
+          "b3": "投递日志与自动重试"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "社区中的每个事件，实时同步到你的系统。",
+          "b1": "自由选择所需事件",
+          "b2": "签名验证投递",
+          "b3": "自动重试"
+        }
+      },
+      "statusTitle": "你的套餐",
+      "statusText": {
+        "FREE": "你正在使用免费套餐。{next} 可解锁数据分析、销售功能以及更多版块。",
+        "STARTER": "坚实的基础功能。{next} 将新增游戏化、推荐计划和自动化。",
+        "PRO": "几乎所有功能都已解锁。{next} 将带来 API、Webhooks 和无限版块。",
+        "SCALE": "全部功能已解锁。"
+      },
+      "statusTextMax": "你正在使用最高套餐——所有功能和版块类型均已解锁。",
+      "quotaSpaces": "版块",
+      "quotaMembers": "成员",
+      "quotaCredits": "AI 额度",
+      "unlimited": "无限"
     }
   },
   "common": {
@@ -2733,7 +2947,9 @@
     "signingUp": "正在创建账户…",
     "totpLabel": "身份验证器应用中的验证码",
     "totpHint": "您的账户已启用双重验证保护。",
-    "legalAcceptance": "我接受<terms>条款和条件</terms>，并确认已阅读<privacy>隐私声明</privacy>。"
+    "legalAcceptance": "我接受<terms>条款和条件</terms>，并确认已阅读<privacy>隐私声明</privacy>。",
+    "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
   },
   "verifyBanner": {
     "prompt": "请确认您的邮箱地址 <strong>{email}</strong>。",
@@ -3098,7 +3314,8 @@
       "showMore": "查看更多（{count}）",
       "showLess": "收起",
       "noTiers": "该社区还没有公开的会员方案。",
-      "footnote": "随时可取消。付款通过 Stripe 安全处理。"
+      "footnote": "随时可取消。付款通过 Stripe 安全处理。",
+      "memberLimitReached": "该社区目前暂不接受新成员加入，请稍后再试。"
     },
     "members": {
       "title": "成员",
@@ -3410,35 +3627,56 @@
     "footnote": "1 积分约等于 1,000 个 token；一次典型的助手请求消耗 1–3 积分。社区收入的平台费用单独结算 — 只按真实收入收取。",
     "plans": {
       "FREE": {
-        "tagline": "试用体验",
-        "f1": "每月 500 AI 积分",
-        "f2": "文案与创意 AI 助手",
-        "f3": "社区分析",
-        "f4": "邮件支持"
+        "tagline": "轻松起步",
+        "f1": "11 个核心版块：动态、论坛、课程、活动、博客……",
+        "f2": "最多 5 个版块和 100 名成员",
+        "f3": "会员管理、媒体和内容审核",
+        "f4": "每月 500 AI 额度"
       },
       "STARTER": {
-        "tagline": "适合日常使用",
-        "f1": "每月 2,500 AI 积分",
-        "f2": "包含 Free 全部功能",
-        "f3": "用 AI 创建空间",
-        "f4": "生成帖子与描述"
+        "tagline": "当你想要开始变现",
+        "f1": "包含 Free 的全部功能",
+        "f2": "数据分析、商品与打款",
+        "f3": "商店、聊天、打赏、日历与规划器",
+        "f4": "15 个版块 · 1,000 名成员 · 2,500 额度"
       },
       "PRO": {
         "tagline": "适合活跃创作者",
-        "f1": "每月 12,000 AI 积分",
-        "f2": "包含 Starter 全部功能",
-        "f3": "优先响应",
-        "f4": "高级社区分析"
+        "f1": "包含 Starter 的全部功能",
+        "f2": "游戏化、推荐计划与自动化",
+        "f3": "播客、直播、预约、AI 工作室、自定义域名",
+        "f4": "40 个版块 · 10,000 名成员 · 12,000 额度"
       },
       "SCALE": {
-        "tagline": "适合团队与重度用户",
-        "f1": "每月 50,000 AI 积分",
-        "f2": "包含 Pro 全部功能",
-        "f3": "最高使用上限",
-        "f4": "全部功能"
+        "tagline": "面向团队与资深创作者",
+        "f1": "包含 Pro 的全部功能",
+        "f2": "API、Webhooks 与专属广告位",
+        "f3": "无限版块与成员",
+        "f4": "500 GB 存储空间 · 50,000 额度"
       }
     },
-    "storageChip": "{gb} GB media storage"
+    "storageChip": "{gb} GB media storage",
+    "compare": {
+      "eyebrow": "详细信息",
+      "title": "各套餐包含的内容",
+      "subtitle": "每一行都是你可以在控制台中立即使用的功能。切换套餐不会失去任何功能——只会不断增加。",
+      "spacesGroup": "版块类型",
+      "featuresGroup": "功能",
+      "limitsGroup": "限制",
+      "planColumn": "套餐",
+      "featureColumn": "功能",
+      "included": "已包含",
+      "notIncluded": "不包含",
+      "unlimited": "无限",
+      "limitSpaces": "活跃版块",
+      "limitMembers": "活跃成员",
+      "limitStaff": "团队席位（管理员/版主）",
+      "limitTiers": "会员等级",
+      "limitStorage": "媒体存储空间",
+      "limitCredits": "每月 AI 额度",
+      "storageValue": "{gb} GB",
+      "note": "合作伙伴的推广代码可立即解锁你的套餐——无需填写支付信息。"
+    }
   },
   "marketing": {
     "navDiscover": "发现",
@@ -3823,6 +4061,19 @@
         "previous": "Previous",
         "next": "Next",
         "page": "Page {page} of {pageCount}"
+      },
+      "accessibility": {
+        "skipToContent": "Skip to main content"
+      },
+      "notFound": {
+        "title": "Page not found",
+        "text": "This community or page does not exist.",
+        "home": "Back to the home page"
+      },
+      "articleShare": {
+        "label": "Share",
+        "copied": "Link copied",
+        "share": "Share post"
       }
     },
     "legacyForms": {
@@ -3889,7 +4140,27 @@
       "brandingSaved": "Branding saved.",
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
-      "saveBranding": "Save branding"
+      "saveBranding": "Save branding",
+      "feed": "Feed",
+      "forum": "Forum",
+      "shop": "Shop",
+      "newsletter": "Newsletter",
+      "events": "Events",
+      "blog": "Blog",
+      "videos": "Videos",
+      "bundle": "Bundle",
+      "tagline": "Tagline",
+      "logoUrl": "Logo URL"
     }
+  },
+  "unsubscribe": {
+    "eyebrow": "Email preferences",
+    "title": "Unsubscribe from newsletter",
+    "description": "You can unsubscribe from newsletters and marketing emails from {community}.",
+    "confirm": "Unsubscribe now",
+    "pending": "Unsubscribing…",
+    "success": "You will no longer receive newsletters or marketing emails from this community.",
+    "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
+    "home": "Go to the Aera homepage"
   }
 }

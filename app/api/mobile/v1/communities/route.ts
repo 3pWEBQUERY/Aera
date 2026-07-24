@@ -13,6 +13,7 @@ import {
   blueprintFor,
   type SpaceCatalogType,
 } from "@/lib/space-catalog";
+import { planAllowsSpaceType } from "@/lib/plan-features";
 import { jsonError, jsonOk, parseJsonBody, requireMobileAuth } from "@/lib/mobile/api";
 
 // POST /api/mobile/v1/communities → { slug }
@@ -48,7 +49,11 @@ function safeColor(value: unknown, fallback: string): string {
 // Spiegel von app/actions/community.ts#selectedSpaceTypes (JSON-Parsing entfällt,
 // der Body liefert bereits ein String-Array).
 function selectedSpaceTypes(raw: string[] | undefined): SpaceCatalogType[] {
-  const valid = (raw ?? []).filter((t) => !!blueprintFor(t)) as SpaceCatalogType[];
+  // See app/actions/community.ts: a new community is FREE until billing says
+  // otherwise, so only free-package space types may be provisioned here.
+  const valid = (raw ?? []).filter(
+    (t) => !!blueprintFor(t) && planAllowsSpaceType("FREE", t),
+  ) as SpaceCatalogType[];
   const unique = Array.from(new Set(valid));
   return unique.length ? unique : [...DEFAULT_SPACE_TYPES];
 }

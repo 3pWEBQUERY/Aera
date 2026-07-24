@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { setTenantContext } from "./prisma";
 import { authenticateApiRequest } from "./api-keys";
 import { rateLimit } from "./rate-limit";
+import { tenantHasFeature } from "./plan";
 import type { Tenant } from "@/app/generated/prisma/client";
 
 /**
@@ -35,6 +36,19 @@ export async function withApiAuth(
     return NextResponse.json(
       { error: { code: "rate_limited", message: "Too many requests." } },
       { status: 429 },
+    );
+  }
+  // Package gate: keys minted on a higher package must stop working after a
+  // downgrade — otherwise the API is a permanent bypass of the paywall.
+  if (!(await tenantHasFeature(auth.tenant.id, "developers"))) {
+    return NextResponse.json(
+      {
+        error: {
+          code: "plan_upgrade_required",
+          message: "The public API requires a higher creator package.",
+        },
+      },
+      { status: 402 },
     );
   }
   setTenantContext(auth.tenant.id);

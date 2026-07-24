@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { featureGate } from "@/components/dashboard/feature-gate";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import prisma from "@/lib/prisma";
 import { features } from "@/lib/env";
@@ -14,6 +15,9 @@ export default async function ProductsPage({
 }) {
   const { slug } = await params;
   const { tenant, user } = await requireTenantAdmin(slug);
+  // Paywall: the queries below never run for a package without this feature.
+  const locked = await featureGate(tenant.id, slug, "products");
+  if (locked) return locked;
   const rows = await prisma.product.findMany({
     where: { tenantId: tenant.id },
     orderBy: { createdAt: "desc" },

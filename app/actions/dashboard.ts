@@ -13,6 +13,17 @@ import { uniqueChildSlug } from "@/lib/slug";
 import { nameStatus } from "@/lib/tenant-name";
 import { indexContent, removeFromIndex } from "@/lib/ai";
 import { writeAudit } from "@/lib/audit";
+import {
+  getTenantPlan,
+  checkSpaceLimit,
+  checkTierLimit,
+  checkStaffLimit,
+  checkMemberLimit,
+  featureBlocked,
+  tenantHasFeature,
+} from "@/lib/plan";
+import { planAllowsSpaceType, minPlanForSpaceType } from "@/lib/plan-features";
+import { PLANS } from "@/lib/credit-plans";
 import { hashPassword, getCurrentUser } from "@/lib/auth";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
 import {
@@ -70,6 +81,27 @@ export async function createSpaceAction(
   if (!parsed.success)
     return { error: await zodErr(parsed) };
 
+  // ---- Package gate -------------------------------------------------------
+  // Authoritative check: the picker hides locked types, but a hand-crafted
+  // POST must not be able to create a Podcast space on the Free package.
+  const plan = await getTenantPlan(tenant.id);
+  if (!planAllowsSpaceType(plan, parsed.data.type)) {
+    return {
+      error: await tErr("planSpaceTypeLocked", {
+        plan: PLANS[minPlanForSpaceType(parsed.data.type)].name,
+      }),
+    };
+  }
+  const spaceBudget = await checkSpaceLimit(tenant.id);
+  if (!spaceBudget.allowed) {
+    return {
+      error: await tErr("planSpaceLimitReached", {
+        limit: spaceBudget.limit ?? 0,
+        plan: PLANS[plan].name,
+      }),
+    };
+  }
+
   const space = await prisma.space.create({
     data: {
       tenantId: tenant.id,
@@ -102,6 +134,11 @@ export async function toggleSpaceArchiveAction(fd: FormData): Promise<void> {
     where: { id: spaceId, tenantId: tenant.id },
   });
   if (space) {
+    // Un-archiving consumes a slot again — check the budget before it does.
+    if (space.isArchived && !(await checkSpaceLimit(tenant.id)).allowed) {
+      revalidatePath(`/dashboard/${slug}/spaces`);
+      return;
+    }
     await prisma.space.update({
       where: { id: space.id },
       data: { isArchived: !space.isArchived },
@@ -132,6 +169,19 @@ export async function updateSpaceAction(
     where: { id: spaceId, tenantId: tenant.id },
   });
   if (!space) return { error: await tErr("spaceNotFound") };
+
+  // Changing an existing space's type must respect the package too — otherwise
+  // "create a Feed, then switch it to Podcast" would be a free upgrade.
+  if (parsed.data.type !== space.type) {
+    const plan = await getTenantPlan(tenant.id);
+    if (!planAllowsSpaceType(plan, parsed.data.type)) {
+      return {
+        error: await tErr("planSpaceTypeLocked", {
+          plan: PLANS[minPlanForSpaceType(parsed.data.type)].name,
+        }),
+      };
+    }
+  }
 
   // Slug stays stable so existing links keep working.
   await prisma.space.update({
@@ -192,6 +242,16 @@ export async function createTierAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+
+  const tierBudget = await checkTierLimit(tenant.id);
+  if (!tierBudget.allowed) {
+    return {
+      error: await tErr("planTierLimitReached", {
+        limit: tierBudget.limit ?? 0,
+        plan: PLANS[tierBudget.plan].name,
+      }),
+    };
+  }
 
   const baseSlug = slugify(parsed.data.name);
   const exists = await prisma.membershipTier.findFirst({
@@ -427,6 +487,9 @@ export async function createProductAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "products");
+  if (planBlocked) return { error: planBlocked };
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
     description: fd.get("description") ?? "",
@@ -473,6 +536,9 @@ export async function updateProductAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "products");
+  if (planBlocked) return { error: planBlocked };
   const productId = String(fd.get("productId"));
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
@@ -915,6 +981,9 @@ export async function createBadgeAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "gamification");
+  if (planBlocked) return { error: planBlocked };
   const name = String(fd.get("name") || "").trim();
   const type = String(fd.get("type") || "points");
   const threshold = Number(fd.get("threshold") || 0);
@@ -936,6 +1005,8 @@ export async function updateRulePointsAction(fd: FormData): Promise<void> {
   const ruleId = String(fd.get("ruleId"));
   const points = Number(fd.get("points") || 0);
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  if (!(await tenantHasFeature(tenant.id, "gamification"))) return;
   await prisma.gamificationRule.updateMany({
     where: { id: ruleId, tenantId: tenant.id },
     data: { points, isActive: points > 0 },
@@ -958,6 +1029,9 @@ type GTrigger = (typeof GAMIFICATION_TRIGGERS)[number];
 export async function createRuleAction(_p: ActionState, fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "gamification");
+  if (planBlocked) return { error: planBlocked };
   const name = String(fd.get("name") || "").trim();
   const trigger = String(fd.get("trigger") || "");
   const points = Math.max(0, Number(fd.get("points") || 0) || 0);
@@ -1000,6 +1074,16 @@ export async function updateMemberRoleAction(fd: FormData): Promise<void> {
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, tenantId: tenant.id },
   });
+  // Promoting someone to staff consumes a package seat; demoting never does.
+  const promotesToStaff =
+    membership !== null &&
+    membership.role === "MEMBER" &&
+    (role === "ADMIN" || role === "MODERATOR");
+  if (promotesToStaff && !(await checkStaffLimit(tenant.id)).allowed) {
+    revalidatePath(`/dashboard/${slug}/members`);
+    return;
+  }
+
   if (
     membership &&
     canManageTenantMembership(
@@ -1044,6 +1128,29 @@ export async function createMemberAction(
     )
   ) {
     return { error: await tErr("noPermission") };
+  }
+
+  // Package budgets: adding a member consumes a member seat, and an
+  // ADMIN/MODERATOR invite additionally consumes a staff seat.
+  const memberBudget = await checkMemberLimit(tenant.id);
+  if (!memberBudget.allowed) {
+    return {
+      error: await tErr("planMemberLimitReached", {
+        limit: memberBudget.limit ?? 0,
+        plan: PLANS[memberBudget.plan].name,
+      }),
+    };
+  }
+  if (role === "ADMIN" || role === "MODERATOR") {
+    const staffBudget = await checkStaffLimit(tenant.id);
+    if (!staffBudget.allowed) {
+      return {
+        error: await tErr("planStaffLimitReached", {
+          limit: staffBudget.limit ?? 0,
+          plan: PLANS[staffBudget.plan].name,
+        }),
+      };
+    }
   }
 
   // Identity lookup/account creation is intentionally global. It uses the
@@ -1152,6 +1259,22 @@ export async function updateMemberAction(
     )
   ) {
     return { error: await tErr("noPermission") };
+  }
+
+  // Promoting a plain member to staff consumes a package seat.
+  if (
+    membership.role === "MEMBER" &&
+    (role === "ADMIN" || role === "MODERATOR")
+  ) {
+    const staffBudget = await checkStaffLimit(tenant.id);
+    if (!staffBudget.allowed) {
+      return {
+        error: await tErr("planStaffLimitReached", {
+          limit: staffBudget.limit ?? 0,
+          plan: PLANS[staffBudget.plan].name,
+        }),
+      };
+    }
   }
 
   const tier = tierId
@@ -1635,6 +1758,9 @@ export async function updateBadgeAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "gamification");
+  if (planBlocked) return { error: planBlocked };
   const badgeId = String(fd.get("badgeId"));
   const name = String(fd.get("name") || "").trim();
   const type = String(fd.get("type") || "points");
@@ -1883,6 +2009,9 @@ export async function updateCustomDomainAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "customDomain");
+  if (planBlocked) return { error: planBlocked };
   const domain = String(fd.get("customDomain") || "")
     .trim()
     .toLowerCase()
@@ -1922,6 +2051,9 @@ export async function verifyCustomDomainAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
+  // Package gate — server actions stay reachable after a downgrade.
+  const planBlocked = await featureBlocked(tenant.id, "customDomain");
+  if (planBlocked) return { error: planBlocked };
   if (!tenant.customDomain) {
     return { error: await tErr("saveDomainFirst") };
   }

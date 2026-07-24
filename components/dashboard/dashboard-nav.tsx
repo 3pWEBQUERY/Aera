@@ -5,12 +5,21 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
+import { PlanBadge, PLAN_LABEL } from "./plan-badge";
+import {
+  minPlanForFeature,
+  planAllowsFeature,
+  type FeatureKey,
+  type PlanKey,
+} from "@/lib/plan-features";
 
 interface NavItem {
   href: string;
   /** Leaf key within the `dashboard.nav` namespace. */
   labelKey: string;
   icon: IconName;
+  /** Gated behind a package — the entry stays visible, but shows a lock. */
+  feature?: FeatureKey;
 }
 export interface NavSpace {
   slug: string;
@@ -25,7 +34,7 @@ const groupsBefore: { labelKey: string; items: NavItem[] }[] = [
       { href: "", labelKey: "overview", icon: "dashboard" },
       { href: "/spaces", labelKey: "spaces", icon: "spaces" },
       { href: "/media", labelKey: "media", icon: "gallery" },
-      { href: "/planner", labelKey: "planner", icon: "events" },
+      { href: "/planner", labelKey: "planner", icon: "events", feature: "planner" },
       { href: "/members", labelKey: "members", icon: "members" },
       { href: "/moderation", labelKey: "moderation", icon: "alert" },
     ],
@@ -34,8 +43,8 @@ const groupsBefore: { labelKey: string; items: NavItem[] }[] = [
     labelKey: "monetization",
     items: [
       { href: "/tiers", labelKey: "tiers", icon: "tiers" },
-      { href: "/products", labelKey: "products", icon: "products" },
-      { href: "/payouts", labelKey: "payouts", icon: "payouts" },
+      { href: "/products", labelKey: "products", icon: "products", feature: "products" },
+      { href: "/payouts", labelKey: "payouts", icon: "payouts", feature: "payouts" },
     ],
   },
 ];
@@ -43,10 +52,10 @@ const groupsAfter: { labelKey: string; items: NavItem[] }[] = [
   {
     labelKey: "growth",
     items: [
-      { href: "/analytics", labelKey: "analytics", icon: "trendingUp" },
-      { href: "/gamification", labelKey: "gamification", icon: "gamification" },
-      { href: "/referrals", labelKey: "referrals", icon: "megaphone" },
-      { href: "/automations", labelKey: "automations", icon: "clock" },
+      { href: "/analytics", labelKey: "analytics", icon: "trendingUp", feature: "analytics" },
+      { href: "/gamification", labelKey: "gamification", icon: "gamification", feature: "gamification" },
+      { href: "/referrals", labelKey: "referrals", icon: "megaphone", feature: "referrals" },
+      { href: "/automations", labelKey: "automations", icon: "clock", feature: "automations" },
     ],
   },
   {
@@ -54,8 +63,8 @@ const groupsAfter: { labelKey: string; items: NavItem[] }[] = [
     items: [
       { href: "/layout", labelKey: "layout", icon: "layout" },
       { href: "/settings", labelKey: "settings", icon: "settings" },
-      { href: "/developers", labelKey: "developers", icon: "bolt" },
-      { href: "/export", labelKey: "export", icon: "export" },
+      { href: "/developers", labelKey: "developers", icon: "bolt", feature: "developers" },
+      { href: "/export", labelKey: "export", icon: "export", feature: "export" },
     ],
   },
 ];
@@ -87,9 +96,12 @@ const typeIcon: Record<string, IconName> = {
 export function DashboardNav({
   tenant,
   spaces,
+  plan,
 }: {
   tenant: { slug: string; name: string; logoUrl: string | null; primaryColor: string };
   spaces: NavSpace[];
+  /** Active creator package — drives the lock badges. */
+  plan: PlanKey;
 }) {
   const pathname = usePathname();
   const t = useTranslations("dashboard");
@@ -109,17 +121,41 @@ export function DashboardNav({
               it.href === ""
                 ? pathname === base
                 : pathname === href || pathname.startsWith(`${href}/`);
+            // Locked entries stay visible on purpose: seeing what the next
+            // package adds is what makes a creator click it.
+            const locked = it.feature ? !planAllowsFeature(plan, it.feature) : false;
             return (
               <Link
                 key={it.href}
                 href={href}
+                aria-label={
+                  locked && it.feature
+                    ? `${t(`nav.${it.labelKey}`)} — ${t("nav.lockedSuffix", { plan: PLAN_LABEL[minPlanForFeature(it.feature)] })}`
+                    : undefined
+                }
                 className={cn(
                   "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                   active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                 )}
               >
-                <Icon name={it.icon} size={18} className={active ? "text-white" : "text-slate-400 group-hover:text-slate-600"} />
-                {t(`nav.${it.labelKey}`)}
+                <Icon
+                  name={it.icon}
+                  size={18}
+                  className={cn(
+                    "shrink-0",
+                    active ? "text-white" : "text-slate-400 group-hover:text-slate-600",
+                    locked && !active && "text-slate-300",
+                  )}
+                />
+                <span className={cn("min-w-0 flex-1 truncate", locked && !active && "text-slate-400")}>
+                  {t(`nav.${it.labelKey}`)}
+                </span>
+                {locked && it.feature && !active && (
+                  <PlanBadge plan={minPlanForFeature(it.feature)} locked className="shrink-0" />
+                )}
+                {locked && active && (
+                  <Icon name="lock" size={13} className="shrink-0 text-white/70" />
+                )}
               </Link>
             );
           })}

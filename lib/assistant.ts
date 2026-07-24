@@ -1,4 +1,7 @@
 import "server-only";
+import { getTenantPlan, checkSpaceLimit } from "./plan";
+import { planAllowsSpaceType, minPlanForSpaceType } from "./plan-features";
+import { PLANS } from "./credit-plans";
 import prisma from "./prisma";
 import { uniqueChildSlug } from "./slug";
 import { writeAudit } from "./audit";
@@ -156,6 +159,25 @@ async function execTool(
     if (rawName.length < 2) return { label: null, result: { error: "Name zu kurz." } };
     if (!(SPACE_TYPES as readonly string[]).includes(type)) {
       return { label: null, result: { error: `Ungültiger Typ. Erlaubt: ${SPACE_TYPES.join(", ")}` } };
+    }
+    // Package gate — the assistant must not hand out premium space types.
+    const plan = await getTenantPlan(tenant.id);
+    if (!planAllowsSpaceType(plan, type)) {
+      return {
+        label: null,
+        result: {
+          error: `Der Space-Typ ${type} ist erst ab dem Paket ${PLANS[minPlanForSpaceType(type)].name} verfügbar.`,
+        },
+      };
+    }
+    const budget = await checkSpaceLimit(tenant.id);
+    if (!budget.allowed) {
+      return {
+        label: null,
+        result: {
+          error: `Das Paket ${PLANS[plan].name} erlaubt ${budget.limit} aktive Spaces. Bitte upgraden oder einen Space archivieren.`,
+        },
+      };
     }
     const vis = (VISIBILITIES as readonly string[]).includes(visibility) ? visibility : "MEMBERS";
     const slug = await uniqueChildSlug("space", tenant.id, rawName);

@@ -7,6 +7,7 @@ import { Icon, type IconName } from "./icons";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
 import { PlanCard } from "@/components/pricing/plan-card";
+import { RedeemCodeForm } from "./redeem-code-sheet";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 interface PlanInfo {
@@ -43,6 +44,9 @@ export interface CreditSummary {
   creatorSubscriptionStatus: string | null;
   planCancelAtPeriodEnd: boolean;
   planCurrentPeriodEnd: string | null;
+  /** "DEFAULT" | "STRIPE" | "PROMO" */
+  planSource?: string;
+  promoExpiresAt?: string | null;
   plans: PlanInfo[];
   packs: CreditPack[];
   recent: UsageEntry[];
@@ -85,6 +89,7 @@ export function CreditsSheet({
     initialCheckoutError ? tSafety("checkoutFailed") : null,
   );
   const tpc = useTranslations("community.render.planCard");
+  const tPlans = useTranslations("dashboard.plans");
   const locale = useLocale();
   const nf = new Intl.NumberFormat(locale);
   const fmtDate = (iso: string) =>
@@ -233,6 +238,33 @@ export function CreditsSheet({
                   />
                   <Stat label={t("reset")} value={fmtDate(summary.periodEnd)} sub={t("newQuota")} small />
                 </div>
+              </section>
+
+              {/* Promotion code — an influencer's code lands here, and a live
+                  promotion is shown with its end date so nobody is surprised. */}
+              <section className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+                <SectionTitle
+                  icon="sparkles"
+                  title={tPlans("redeem.title")}
+                  subtitle={tPlans("redeem.subtitle")}
+                />
+                {summary.planSource === "PROMO" ? (
+                  <div className="flex flex-wrap items-center gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm text-emerald-800 ring-1 ring-emerald-200">
+                    <Icon name="check" size={16} />
+                    <span className="font-semibold">
+                      {tPlans("promoActive", { plan: summary.planName })}
+                    </span>
+                    <span className="text-emerald-700">
+                      {summary.promoExpiresAt
+                        ? tPlans("promoUntil", { date: fmtDate(summary.promoExpiresAt) })
+                        : tPlans("promoLifetime")}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="mx-auto max-w-md">
+                    <RedeemCodeForm slug={slug} />
+                  </div>
+                )}
               </section>
 
               {!summary.billingEnabled && (
