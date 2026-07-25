@@ -2483,7 +2483,27 @@
       "members": "Membros",
       "spaces": "Spaces",
       "posts": "Publicações",
-      "products": "Produtos"
+      "products": "Produtos",
+      "openAria": "Abrir a busca",
+      "clear": "Limpar o campo",
+      "searching": "Buscando …",
+      "showAll": "Ver todos os {count} resultados",
+      "groups": {
+        "pages": "Áreas",
+        "spaces": "Spaces",
+        "members": "Membros",
+        "posts": "Publicações",
+        "products": "Produtos",
+        "courses": "Cursos",
+        "lessons": "Aulas",
+        "events": "Eventos",
+        "tiers": "Assinaturas",
+        "newsletter": "Newsletter",
+        "knowledge": "Conhecimento",
+        "media": "Mídia",
+        "live": "Ao vivo",
+        "badges": "Selos"
+      }
     },
     "subscription": {
       "title": "Minha assinatura",

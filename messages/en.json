@@ -2607,7 +2607,27 @@
       "members": "Members",
       "spaces": "Spaces",
       "posts": "Posts",
-      "products": "Products"
+      "products": "Products",
+      "openAria": "Open search",
+      "clear": "Clear input",
+      "searching": "Searching …",
+      "showAll": "Show all {count} results",
+      "groups": {
+        "pages": "Areas",
+        "spaces": "Spaces",
+        "members": "Members",
+        "posts": "Posts",
+        "products": "Products",
+        "courses": "Courses",
+        "lessons": "Lessons",
+        "events": "Events",
+        "tiers": "Memberships",
+        "newsletter": "Newsletter",
+        "knowledge": "Knowledge",
+        "media": "Media",
+        "live": "Live",
+        "badges": "Badges"
+      }
     },
     "subscription": {
       "title": "My subscription",

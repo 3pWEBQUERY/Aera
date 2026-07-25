@@ -2483,7 +2483,27 @@
       "members": "成員",
       "spaces": "空間",
       "posts": "貼文",
-      "products": "商品"
+      "products": "商品",
+      "openAria": "開啟搜尋",
+      "clear": "清空輸入",
+      "searching": "正在搜尋 …",
+      "showAll": "查看全部 {count} 筆結果",
+      "groups": {
+        "pages": "版塊",
+        "spaces": "空間",
+        "members": "成員",
+        "posts": "貼文",
+        "products": "商品",
+        "courses": "課程",
+        "lessons": "課時",
+        "events": "活動",
+        "tiers": "會員方案",
+        "newsletter": "電子報",
+        "knowledge": "知識庫",
+        "media": "媒體",
+        "live": "直播",
+        "badges": "徽章"
+      }
     },
     "subscription": {
       "title": "我的訂閱",

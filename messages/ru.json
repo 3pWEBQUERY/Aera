@@ -2483,7 +2483,27 @@
       "members": "Участники",
       "spaces": "Пространства",
       "posts": "Публикации",
-      "products": "Товары"
+      "products": "Товары",
+      "openAria": "Открыть поиск",
+      "clear": "Очистить поле",
+      "searching": "Идёт поиск …",
+      "showAll": "Показать все результаты ({count})",
+      "groups": {
+        "pages": "Разделы",
+        "spaces": "Пространства",
+        "members": "Участники",
+        "posts": "Публикации",
+        "products": "Товары",
+        "courses": "Курсы",
+        "lessons": "Уроки",
+        "events": "События",
+        "tiers": "Подписки",
+        "newsletter": "Рассылка",
+        "knowledge": "База знаний",
+        "media": "Медиа",
+        "live": "Эфир",
+        "badges": "Значки"
+      }
     },
     "subscription": {
       "title": "Моя подписка",

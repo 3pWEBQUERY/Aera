@@ -2607,7 +2607,27 @@
       "members": "Mitglieder",
       "spaces": "Spaces",
       "posts": "Beiträge",
-      "products": "Produkte"
+      "products": "Produkte",
+      "openAria": "Suche öffnen",
+      "clear": "Eingabe löschen",
+      "searching": "Wird gesucht …",
+      "showAll": "Alle {count} Ergebnisse anzeigen",
+      "groups": {
+        "pages": "Bereiche",
+        "spaces": "Spaces",
+        "members": "Mitglieder",
+        "posts": "Beiträge",
+        "products": "Produkte",
+        "courses": "Kurse",
+        "lessons": "Lektionen",
+        "events": "Events",
+        "tiers": "Mitgliedschaften",
+        "newsletter": "Newsletter",
+        "knowledge": "Wissen",
+        "media": "Medien",
+        "live": "Live",
+        "badges": "Abzeichen"
+      }
     },
     "subscription": {
       "title": "Mein Abo",

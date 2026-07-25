@@ -2483,7 +2483,27 @@
       "members": "Medlemmer",
       "spaces": "Spaces",
       "posts": "Indlæg",
-      "products": "Produkter"
+      "products": "Produkter",
+      "openAria": "Åbn søgning",
+      "clear": "Ryd feltet",
+      "searching": "Søger …",
+      "showAll": "Vis alle {count} resultater",
+      "groups": {
+        "pages": "Områder",
+        "spaces": "Spaces",
+        "members": "Medlemmer",
+        "posts": "Indlæg",
+        "products": "Produkter",
+        "courses": "Kurser",
+        "lessons": "Lektioner",
+        "events": "Events",
+        "tiers": "Medlemskaber",
+        "newsletter": "Nyhedsbrev",
+        "knowledge": "Viden",
+        "media": "Medier",
+        "live": "Live",
+        "badges": "Badges"
+      }
     },
     "subscription": {
       "title": "Mit abonnement",

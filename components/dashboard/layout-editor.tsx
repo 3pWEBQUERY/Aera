@@ -15,6 +15,7 @@ import {
 import { Icon, type IconName } from "./icons";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { uploadMediaFile } from "@/lib/client-upload";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import {
@@ -35,28 +36,6 @@ import {
 const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#059669", "#0891b2", "#111827"];
 
 // Space type → icon (matches the Spaces dashboard).
-const SPACE_TYPE_ICON: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  LINKS: "link",
-  ADS: "megaphone",
-  LIVE: "videos",
-  REQUESTS: "messages",
-  BOOKING: "clock",
-  STORIES: "sparkles",
-  TIPS: "heart",
-  CALENDAR: "events",
-};
 
 type View = "hub" | "header" | "sections" | "nav";
 
@@ -762,7 +741,7 @@ function SectionsPanel({
     return tSections(s.type);
   }
   function iconFor(s: LayoutSection): IconName {
-    if (s.type === "SPACE") return SPACE_TYPE_ICON[spaceBySlug.get(s.value ?? "")?.type ?? ""] ?? "spaces";
+    if (s.type === "SPACE") return spaceTypeIcon(spaceBySlug.get(s.value ?? "")?.type ?? "");
     return SECTION_META[s.type].icon;
   }
 
@@ -924,7 +903,7 @@ function AddSectionDropdown({
                   added ? "cursor-default" : "hover:bg-slate-50",
                 )}
               >
-                <Icon name={SPACE_TYPE_ICON[sp.type] ?? "spaces"} size={18} className="text-slate-500" />
+                <Icon name={spaceTypeIcon(sp.type)} size={18} className="text-slate-500" />
                 <span className="flex-1 truncate text-sm font-medium text-slate-800">{sp.name}</span>
                 {added && <span className="shrink-0 text-xs font-medium text-slate-400">{t("added")}</span>}
               </button>
@@ -955,7 +934,7 @@ function NavPanel({
   // SPACE items show the linked space's real type icon; others use the nav-type icon.
   function iconFor(item: NavItemConfig): IconName {
     if (item.type === "SPACE" && item.value) {
-      return SPACE_TYPE_ICON[spaceType.get(item.value) ?? ""] ?? "spaces";
+      return spaceTypeIcon(spaceType.get(item.value) ?? "");
     }
     return NAV_TYPE_ICON[item.type];
   }
@@ -1218,7 +1197,7 @@ function AddNavModal({
                     value: s.slug,
                     label: s.name,
                     hint: tVis(`${s.visibility}.label`),
-                    icon: SPACE_TYPE_ICON[s.type] ?? ("spaces" as IconName),
+                    icon: spaceTypeIcon(s.type),
                   }))}
                 />
               </div>

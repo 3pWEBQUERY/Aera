@@ -2483,7 +2483,27 @@
       "members": "Учасники",
       "spaces": "Простори",
       "posts": "Дописи",
-      "products": "Товари"
+      "products": "Товари",
+      "openAria": "Відкрити пошук",
+      "clear": "Очистити поле",
+      "searching": "Триває пошук …",
+      "showAll": "Показати всі результати ({count})",
+      "groups": {
+        "pages": "Розділи",
+        "spaces": "Простори",
+        "members": "Учасники",
+        "posts": "Публікації",
+        "products": "Товари",
+        "courses": "Курси",
+        "lessons": "Уроки",
+        "events": "Події",
+        "tiers": "Підписки",
+        "newsletter": "Розсилка",
+        "knowledge": "База знань",
+        "media": "Медіа",
+        "live": "Ефір",
+        "badges": "Значки"
+      }
     },
     "subscription": {
       "title": "Моя підписка",

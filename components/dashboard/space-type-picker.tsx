@@ -2,7 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { Icon, type IconName } from "./icons";
+import { SPACE_TYPE_ICON } from "@/lib/dashboard-nav-items";
+import { Icon } from "./icons";
 import { PlanBadge } from "./plan-badge";
 import {
   SPACE_TYPE_KEYS,
@@ -12,29 +13,7 @@ import {
   type SpaceTypeKey,
 } from "@/lib/plan-features";
 
-/** Keep in sync with the nav's `typeIcon` map. */
-export const SPACE_TYPE_ICON: Record<SpaceTypeKey, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  LINKS: "link",
-  ADS: "megaphone",
-  LIVE: "videos",
-  REQUESTS: "messages",
-  BOOKING: "clock",
-  STORIES: "sparkles",
-  TIPS: "heart",
-  CALENDAR: "events",
-};
+export { SPACE_TYPE_ICON } from "@/lib/dashboard-nav-items";
 
 /**
  * Space type grid with package awareness.

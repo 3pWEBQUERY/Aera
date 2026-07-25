@@ -2483,7 +2483,27 @@
       "members": "Medlemmar",
       "spaces": "Spaces",
       "posts": "Inlägg",
-      "products": "Produkter"
+      "products": "Produkter",
+      "openAria": "Öppna sökningen",
+      "clear": "Rensa fältet",
+      "searching": "Söker …",
+      "showAll": "Visa alla {count} träffar",
+      "groups": {
+        "pages": "Områden",
+        "spaces": "Spaces",
+        "members": "Medlemmar",
+        "posts": "Inlägg",
+        "products": "Produkter",
+        "courses": "Kurser",
+        "lessons": "Lektioner",
+        "events": "Event",
+        "tiers": "Medlemskap",
+        "newsletter": "Nyhetsbrev",
+        "knowledge": "Kunskap",
+        "media": "Media",
+        "live": "Live",
+        "badges": "Märken"
+      }
     },
     "subscription": {
       "title": "Min prenumeration",

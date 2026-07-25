@@ -2483,7 +2483,27 @@
       "members": "Membri",
       "spaces": "Space",
       "posts": "Post",
-      "products": "Prodotti"
+      "products": "Prodotti",
+      "openAria": "Apri la ricerca",
+      "clear": "Svuota il campo",
+      "searching": "Ricerca in corso …",
+      "showAll": "Mostra tutti i {count} risultati",
+      "groups": {
+        "pages": "Aree",
+        "spaces": "Spaces",
+        "members": "Membri",
+        "posts": "Post",
+        "products": "Prodotti",
+        "courses": "Corsi",
+        "lessons": "Lezioni",
+        "events": "Eventi",
+        "tiers": "Abbonamenti",
+        "newsletter": "Newsletter",
+        "knowledge": "Conoscenza",
+        "media": "Media",
+        "live": "Live",
+        "badges": "Badge"
+      }
     },
     "subscription": {
       "title": "Il mio abbonamento",

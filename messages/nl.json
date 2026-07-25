@@ -2483,7 +2483,27 @@
       "members": "Leden",
       "spaces": "Spaces",
       "posts": "Berichten",
-      "products": "Producten"
+      "products": "Producten",
+      "openAria": "Zoeken openen",
+      "clear": "Invoer wissen",
+      "searching": "Bezig met zoeken …",
+      "showAll": "Alle {count} resultaten tonen",
+      "groups": {
+        "pages": "Onderdelen",
+        "spaces": "Spaces",
+        "members": "Leden",
+        "posts": "Berichten",
+        "products": "Producten",
+        "courses": "Cursussen",
+        "lessons": "Lessen",
+        "events": "Evenementen",
+        "tiers": "Lidmaatschappen",
+        "newsletter": "Nieuwsbrief",
+        "knowledge": "Kennis",
+        "media": "Media",
+        "live": "Live",
+        "badges": "Badges"
+      }
     },
     "subscription": {
       "title": "Mijn abonnement",

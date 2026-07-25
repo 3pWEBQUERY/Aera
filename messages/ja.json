@@ -2483,7 +2483,27 @@
       "members": "メンバー",
       "spaces": "スペース",
       "posts": "投稿",
-      "products": "商品"
+      "products": "商品",
+      "openAria": "検索を開く",
+      "clear": "入力を消去",
+      "searching": "検索しています …",
+      "showAll": "{count} 件すべてを表示",
+      "groups": {
+        "pages": "メニュー",
+        "spaces": "スペース",
+        "members": "メンバー",
+        "posts": "投稿",
+        "products": "商品",
+        "courses": "コース",
+        "lessons": "レッスン",
+        "events": "イベント",
+        "tiers": "メンバーシップ",
+        "newsletter": "ニュースレター",
+        "knowledge": "ナレッジ",
+        "media": "メディア",
+        "live": "ライブ",
+        "badges": "バッジ"
+      }
     },
     "subscription": {
       "title": "マイサブスク",

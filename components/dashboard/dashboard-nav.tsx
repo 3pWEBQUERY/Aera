@@ -4,101 +4,25 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn, isPathActive } from "@/lib/utils";
-import { Icon, type IconName } from "./icons";
+import {
+  NAV_GROUPS_AFTER,
+  NAV_GROUPS_BEFORE,
+  spaceTypeIcon,
+  type DashboardNavGroup,
+} from "@/lib/dashboard-nav-items";
+import { Icon } from "./icons";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import {
   minPlanForFeature,
   planAllowsFeature,
-  type FeatureKey,
   type PlanKey,
 } from "@/lib/plan-features";
 
-interface NavItem {
-  href: string;
-  /** Leaf key within the `dashboard.nav` namespace. */
-  labelKey: string;
-  icon: IconName;
-  /** Gated behind a package — the entry stays visible, but shows a lock. */
-  feature?: FeatureKey;
-  /**
-   * Nur der Punkt selbst faerbt sich, nicht seine Unterseiten. Fuer /spaces:
-   * die einzelnen Spaces stehen weiter unten mit eigenen Eintraegen in der
-   * Sidebar — ohne das leuchteten auf einer Space-Seite zwei Punkte auf.
-   */
-  exact?: boolean;
-}
 export interface NavSpace {
   slug: string;
   name: string;
   type: string;
 }
-
-const groupsBefore: { labelKey: string; items: NavItem[] }[] = [
-  {
-    labelKey: "manage",
-    items: [
-      { href: "", labelKey: "overview", icon: "dashboard" },
-      { href: "/spaces", labelKey: "spaces", icon: "spaces", exact: true },
-      { href: "/media", labelKey: "media", icon: "gallery" },
-      { href: "/planner", labelKey: "planner", icon: "events", feature: "planner" },
-      { href: "/members", labelKey: "members", icon: "members" },
-      { href: "/moderation", labelKey: "moderation", icon: "alert" },
-    ],
-  },
-  {
-    labelKey: "monetization",
-    items: [
-      { href: "/tiers", labelKey: "tiers", icon: "tiers" },
-      { href: "/products", labelKey: "products", icon: "products", feature: "products" },
-      { href: "/payouts", labelKey: "payouts", icon: "payouts", feature: "payouts" },
-    ],
-  },
-];
-const groupsAfter: { labelKey: string; items: NavItem[] }[] = [
-  {
-    labelKey: "growth",
-    items: [
-      { href: "/analytics", labelKey: "analytics", icon: "trendingUp", feature: "analytics" },
-      { href: "/gamification", labelKey: "gamification", icon: "gamification", feature: "gamification" },
-      { href: "/referrals", labelKey: "referrals", icon: "megaphone", feature: "referrals" },
-      { href: "/automations", labelKey: "automations", icon: "clock", feature: "automations" },
-    ],
-  },
-  {
-    labelKey: "settingsGroup",
-    items: [
-      { href: "/layout", labelKey: "layout", icon: "layout" },
-      { href: "/settings", labelKey: "settings", icon: "settings" },
-      { href: "/seo", labelKey: "seo", icon: "search" },
-      { href: "/developers", labelKey: "developers", icon: "bolt", feature: "developers" },
-      { href: "/export", labelKey: "export", icon: "export", feature: "export" },
-    ],
-  },
-];
-
-// Keep in sync with the "New space" picker (components/dashboard/spaces-manager).
-const typeIcon: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  LINKS: "link",
-  ADS: "megaphone",
-  LIVE: "videos",
-  REQUESTS: "messages",
-  BOOKING: "clock",
-  STORIES: "sparkles",
-  TIPS: "heart",
-  CALENDAR: "events",
-};
 
 export function DashboardNav({
   tenant,
@@ -114,7 +38,7 @@ export function DashboardNav({
   const t = useTranslations("dashboard");
   const base = `/dashboard/${tenant.slug}`;
 
-  function Group({ group }: { group: { labelKey: string; items: NavItem[] } }) {
+  function Group({ group }: { group: DashboardNavGroup }) {
     return (
       <div>
         <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
@@ -173,7 +97,7 @@ export function DashboardNav({
   return (
     <div className="flex h-full w-60 shrink-0 flex-col border-r border-slate-200 bg-white">
       <div className="flex-1 space-y-6 overflow-y-auto px-3 py-5">
-        {groupsBefore.map((g) => (
+        {NAV_GROUPS_BEFORE.map((g) => (
           <Group key={g.labelKey} group={g} />
         ))}
 
@@ -201,7 +125,7 @@ export function DashboardNav({
                       active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900",
                     )}
                   >
-                    <Icon name={typeIcon[s.type] ?? "spaces"} size={18} className={active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600"} />
+                    <Icon name={spaceTypeIcon(s.type)} size={18} className={active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600"} />
                     <span className="truncate">{s.name}</span>
                   </Link>
                 );
@@ -210,7 +134,7 @@ export function DashboardNav({
           </nav>
         </div>
 
-        {groupsAfter.map((g) => (
+        {NAV_GROUPS_AFTER.map((g) => (
           <Group key={g.labelKey} group={g} />
         ))}
       </div>

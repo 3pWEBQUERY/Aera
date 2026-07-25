@@ -2483,7 +2483,27 @@
       "members": "成员",
       "spaces": "空间",
       "posts": "帖子",
-      "products": "商品"
+      "products": "商品",
+      "openAria": "打开搜索",
+      "clear": "清空输入",
+      "searching": "正在搜索 …",
+      "showAll": "查看全部 {count} 条结果",
+      "groups": {
+        "pages": "版块",
+        "spaces": "空间",
+        "members": "成员",
+        "posts": "帖子",
+        "products": "商品",
+        "courses": "课程",
+        "lessons": "课时",
+        "events": "活动",
+        "tiers": "会员方案",
+        "newsletter": "邮件通讯",
+        "knowledge": "知识库",
+        "media": "媒体",
+        "live": "直播",
+        "badges": "徽章"
+      }
     },
     "subscription": {
       "title": "我的订阅",
