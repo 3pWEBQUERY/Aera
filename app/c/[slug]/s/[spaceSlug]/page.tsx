@@ -161,7 +161,7 @@ export default async function SpacePage({
                   href={l.url}
                   target={external ? "_blank" : undefined}
                   rel={external ? "noopener noreferrer" : undefined}
-                  className="group flex items-center gap-4 rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+                  className="group flex items-center gap-4 rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
                 >
                   <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[color:var(--brand)]">
                     <Icon name="link" size={19} />

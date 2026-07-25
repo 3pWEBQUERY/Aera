@@ -653,7 +653,7 @@ export default async function CommunityHome({
                     rel="noopener noreferrer"
                     aria-label={SOCIAL_BY_KEY[s.platform]?.label ?? "Link"}
                     title={SOCIAL_BY_KEY[s.platform]?.label ?? "Link"}
-                    className="block overflow-hidden rounded-[11px] ring-1 ring-[#161613]/10 transition hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/40"
+                    className="block overflow-hidden rounded-[11px] ring-1 ring-[#161613]/10 transition hover:ring-[#161613]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/40"
                   >
                     <SocialGlyph platform={s.platform} size={40} />
                   </a>

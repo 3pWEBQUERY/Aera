@@ -84,7 +84,7 @@ export default async function LandingPage() {
               {[...spaceTiles, ...spaceTiles].map((tile, i) => (
                 <div
                   key={`${tile.name}-${i}`}
-                  className={`flex h-44 w-60 shrink-0 flex-col justify-between rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-1.5 sm:h-48 sm:w-64 ${tileTones[i % tileTones.length]}`}
+                  className={`flex h-44 w-60 shrink-0 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md sm:h-48 sm:w-64 ${tileTones[i % tileTones.length]}`}
                 >
                   <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-60">
                     {t("tileBadge")}

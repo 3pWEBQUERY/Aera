@@ -323,7 +323,7 @@ export default async function DiscoverPage({
             <Link
               key={tenant.slug}
               href={`/c/${tenant.slug}`}
-              className="group flex w-[260px] shrink-0 snap-start items-center gap-3.5 rounded-2xl border border-[#161613]/10 bg-white p-4 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25 sm:w-[280px]"
+              className="group flex w-[260px] shrink-0 snap-start items-center gap-3.5 rounded-2xl border border-[#161613]/10 bg-white p-4 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25 sm:w-[280px]"
             >
               {tenant.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
@@ -362,7 +362,7 @@ export default async function DiscoverPage({
               <Link
                 key={c.key}
                 href={`/home?cat=${c.key}`}
-                className={`group flex h-44 flex-col justify-between rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48 ${CATEGORY_TILE_TONES[i % CATEGORY_TILE_TONES.length]}`}
+                className={`group flex h-44 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48 ${CATEGORY_TILE_TONES[i % CATEGORY_TILE_TONES.length]}`}
               >
                 <span className="flex items-start justify-between gap-3">
                   <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-60">

@@ -78,7 +78,7 @@ export default async function DashboardIndex() {
             <Link
               key={tenant.id}
               href={`/dashboard/${tenant.slug}`}
-              className="group flex flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+              className="group flex flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
             >
               <div className="flex items-start justify-between gap-3">
                 <div
@@ -115,7 +115,7 @@ export default async function DashboardIndex() {
           {/* Neue Community */}
           <Link
             href="/start"
-            className="flex min-h-[172px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#161613]/25 p-5 text-[#161613]/45 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/60 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+            className="flex min-h-[172px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#161613]/25 p-5 text-[#161613]/45 transition duration-300 hover:border-[#161613]/60 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full border border-current">
               <Icon name="plus" size={20} />

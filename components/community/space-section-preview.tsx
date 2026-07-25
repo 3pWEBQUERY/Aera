@@ -78,7 +78,7 @@ function SpotlightCard({ slug, space, locked, icon, typeLabel }: Props) {
     <section>
       <Link
         href={href}
-        className="group flex items-center gap-4 rounded-3xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:-translate-y-0.5 hover:border-[#161613]/30 hover:shadow-sm sm:gap-5 sm:p-6"
+        className="group flex items-center gap-4 rounded-3xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm sm:gap-5 sm:p-6"
       >
         <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[var(--brand-soft)] text-[color:var(--brand)]">
           <Icon name={icon} size={24} />

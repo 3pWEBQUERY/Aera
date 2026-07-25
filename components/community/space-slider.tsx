@@ -40,7 +40,7 @@ function SpaceCard({
     <Link
       href={`/c/${slug}/s/${space.slug}`}
       className={cn(
-        "group flex h-44 flex-col justify-between rounded-2xl p-5 transition-transform duration-300 hover:-translate-y-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48",
+        "group flex h-44 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48",
         tone,
       )}
     >

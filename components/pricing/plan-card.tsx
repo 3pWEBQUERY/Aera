@@ -76,7 +76,7 @@ export function PlanCard({
         compact ? "p-3.5 sm:p-6" : "p-6",
         emphasized
           ? "shadow-lg shadow-[var(--brand-ring)] ring-2 ring-[var(--brand)]"
-          : "border border-slate-200 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md",
+          : "border border-slate-200 hover:border-slate-300 hover:shadow-md",
       )}
     >
       {/* Status pill */}

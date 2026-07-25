@@ -127,7 +127,7 @@ export async function ShopSection({
             return (
               <div
                 key={p.id}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-[#161613]/25"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:border-[#161613]/25"
               >
                 <div
                   className="relative w-full overflow-hidden bg-[#161613]/5"

@@ -134,7 +134,7 @@ export function PostTile({
       href={post.href}
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
-      <div className="overflow-hidden rounded-2xl border border-[#161613]/10 transition duration-300 group-hover:-translate-y-1 group-hover:border-[#161613]/25">
+      <div className="overflow-hidden rounded-2xl border border-[#161613]/10 transition duration-300 group-hover:border-[#161613]/25">
         <Media post={post} memberLabel={memberLabel} />
       </div>
       <h3 className="mt-2.5 line-clamp-2 text-sm font-semibold leading-snug text-[#161613]">
@@ -163,7 +163,7 @@ export function VideoTile({
       href={post.href}
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
-      <div className="relative aspect-video overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613] transition duration-300 group-hover:-translate-y-1">
+      <div className="relative aspect-video overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613] transition duration-300 group-hover:border-[#161613]/25">
         {post.locked ? (
           <LockedTeaser label={memberLabel} />
         ) : post.videoUrl ? (
@@ -211,7 +211,7 @@ export function FeaturedPost({
   return (
     <Link
       href={post.href}
-      className="group block overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-[#161613]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25 md:grid md:grid-cols-[1.1fr_1fr]"
+      className="group block overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:border-[#161613]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25 md:grid md:grid-cols-[1.1fr_1fr]"
     >
       <div className="relative aspect-video md:aspect-auto md:min-h-56">
         <Media post={post} large memberLabel={memberLabel} />

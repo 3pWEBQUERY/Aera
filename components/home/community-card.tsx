@@ -20,7 +20,9 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
   return (
     <Link
       href={`/c/${c.slug}`}
-      className="group block overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:-translate-y-1 hover:border-[#161613]/25 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+      // Kein Anheben beim Hover: die Karten stehen im Raster ruhig, das
+      // Feedback kommt allein über Rahmen und Schatten.
+      className="group block overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:border-[#161613]/25 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
       <div className="relative aspect-[3/1] w-full overflow-hidden bg-[#161613]/5">
         {c.coverUrl ? (

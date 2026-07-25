@@ -51,7 +51,7 @@ export function CreatorCard({ c }: { c: CreatorCardData }) {
       href={`/c/${c.slug}`}
       className="group block w-44 shrink-0 focus-visible:outline-none sm:w-48"
     >
-      <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#161613]/10 transition duration-300 group-hover:-translate-y-1 group-hover:border-[#161613]/30 group-focus-visible:ring-2 group-focus-visible:ring-[#161613]/25">
+      <div className="relative aspect-square overflow-hidden rounded-2xl border border-[#161613]/10 transition duration-300 group-hover:border-[#161613]/30 group-focus-visible:ring-2 group-focus-visible:ring-[#161613]/25">
         <CoverArt c={c} />
       </div>
       <p className="mt-2.5 truncate text-sm font-semibold text-[#161613]">

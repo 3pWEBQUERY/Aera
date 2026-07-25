@@ -320,7 +320,7 @@ export function OnboardingWizard({
                           ? "cursor-not-allowed border-dashed border-[#161613]/15 bg-[#161613]/[0.02]"
                           : on
                             ? ""
-                            : "border-[#161613]/10 hover:-translate-y-0.5 hover:border-[#161613]/30",
+                            : "border-[#161613]/10 hover:border-[#161613]/30",
                       )}
                       style={on && !locked ? { borderColor: primary, boxShadow: `0 0 0 1px ${primary}` } : undefined}
                     >
@@ -560,7 +560,7 @@ function AccessCard({
       aria-pressed={active}
       className={cn(
         "flex flex-col items-start rounded-2xl border bg-white p-5 text-left transition duration-200",
-        active ? "" : "border-[#161613]/10 hover:-translate-y-0.5 hover:border-[#161613]/30",
+        active ? "" : "border-[#161613]/10 hover:border-[#161613]/30",
       )}
       style={active ? { borderColor: color, boxShadow: `0 0 0 1px ${color}` } : undefined}
     >

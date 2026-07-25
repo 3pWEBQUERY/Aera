@@ -156,7 +156,7 @@ export default async function HelpCenterPage({
                 <Reveal key={c.id} delay={i * 60}>
                   <a
                     href={`#${c.slug}`}
-                    className="group flex h-full flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:-translate-y-1 hover:border-[#161613]/30"
+                    className="group flex h-full flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm"
                   >
                     <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/60">
                       <Icon name="knowledge" size={18} />

@@ -106,7 +106,7 @@ export default async function PricingPage() {
             <div className="grid gap-3 sm:grid-cols-3">
               {CREDIT_PACKS.map((pack, i) => (
                 <Reveal key={pack.id} delay={i * 90}>
-                  <div className="flex h-full flex-col justify-between rounded-2xl border border-[#161613]/10 bg-white p-5 transition-transform duration-300 hover:-translate-y-1">
+                  <div className="flex h-full flex-col justify-between rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:shadow-md">
                     <div>
                       <p className="display-serif text-3xl">
                         {nf.format(pack.credits)}

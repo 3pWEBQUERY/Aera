@@ -37,7 +37,7 @@ export function MarketingPlanCard({
   return (
     <div
       className={cn(
-        "relative flex h-full flex-col rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1",
+        "relative flex h-full flex-col rounded-2xl p-6 transition duration-300 hover:shadow-md",
         featured
           ? "bg-[#161613] text-white"
           : "border border-[#161613]/10 bg-white text-[#161613]",

@@ -118,7 +118,7 @@ export function StoryViewer({
                 key={g}
                 onClick={() => setPos({ g, i: 0 })}
                 aria-label={grp.authorName}
-                className="group relative h-52 w-32 shrink-0 overflow-hidden rounded-2xl bg-[#161613]/90 ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"
+                className="group relative h-52 w-32 shrink-0 overflow-hidden rounded-2xl bg-[#161613]/90 ring-1 ring-black/5 transition hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand)]"
               >
                 {cover?.imageUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element

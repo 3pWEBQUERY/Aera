@@ -38,7 +38,7 @@ export function MediaTile({ pkg }: { pkg: MediaTileData }) {
       href={pkg.href}
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
-      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613]/5 transition duration-300 group-hover:-translate-y-1 group-hover:border-[#161613]/25">
+      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613]/5 transition duration-300 group-hover:border-[#161613]/25">
         {pkg.spaceLocked ? (
           <>
             <div className="bg-[var(--brand)] absolute inset-0" />
