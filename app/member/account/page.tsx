@@ -233,7 +233,7 @@ export default async function MemberAccountPage({
               aria-current={activeTab === tab.key ? "page" : undefined}
               className={
                 activeTab === tab.key
-                  ? "inline-flex min-h-10 items-center rounded-xl bg-[var(--action)] px-5 text-sm font-semibold text-[var(--action-fg)]"
+                  ? "inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white"
                   : "inline-flex min-h-10 items-center rounded-xl border border-[#161613]/15 px-5 text-sm font-semibold text-[#161613]/60 transition hover:border-[#161613]/40 hover:text-[#161613]"
               }
             >

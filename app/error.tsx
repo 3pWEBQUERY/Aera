@@ -31,7 +31,7 @@ export default function ErrorPage({
         <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <button
             onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-slate-700"
+            className="inline-flex items-center justify-center rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
           >
             Erneut versuchen
           </button>

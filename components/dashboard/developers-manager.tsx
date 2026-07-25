@@ -291,7 +291,7 @@ function WebhooksSection({
                 setCopied(true);
                 setTimeout(() => setCopied(false), 2000);
               }}
-              className="inline-flex shrink-0 items-center rounded-lg bg-[var(--action)] px-3 py-1.5 text-sm font-semibold text-[var(--action-fg)]"
+              className="inline-flex shrink-0 items-center rounded-lg bg-[var(--action)] px-3 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
             >
               {copied ? t("copied") : t("copy")}
             </button>

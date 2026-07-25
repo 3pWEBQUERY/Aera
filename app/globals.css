@@ -20,7 +20,10 @@
      verstellbar ist — vorher lagen zwei Schwarztoene (slate-900 und #161613)
      ueber 144 Stellen verstreut. */
   --action: #d8cfef;
-  --action-hover: #c8bcea;
+  /* Derselbe Ton, nur dunkler (gleicher Farbton und gleiche Saettigung,
+     Helligkeit von 87,5 % auf 80 %) — ein Hover soll den Button nicht
+     umfaerben, sondern nur eindeutig anfassbar machen. */
+  --action-hover: #c1b3e6;
   --action-fg: #161613;
 }
 

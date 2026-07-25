@@ -49,7 +49,7 @@ export default async function DashboardIndex() {
             >
               {t("myAccount")}
               {supportUnread > 0 && (
-                <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--action)] px-1.5 py-0.5 text-[11px] font-bold text-[var(--action-fg)]">
+                <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#161613] px-1.5 py-0.5 text-[11px] font-bold text-white">
                   {supportUnread > 99 ? "99+" : supportUnread}
                 </span>
               )}
