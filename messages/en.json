@@ -131,7 +131,9 @@
     "planFeatureLocked": "This feature is available from the {plan} package. Upgrade to use it.",
     "planMemberLimitReached": "Your {plan} package is built for {limit} active members. Upgrade to keep growing.",
     "planStaffLimitReached": "Your {plan} package allows {limit} team seats (admins/moderators). Upgrade for more.",
-    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set.",
+    "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
+    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
@@ -551,7 +553,8 @@
       "orders": "Orders",
       "help": "Help",
       "audit": "Audit log",
-      "codes": "Promo codes"
+      "codes": "Promo codes",
+      "seo": "SEO"
     },
     "pagination": {
       "prev": "Previous",
@@ -822,6 +825,37 @@
       "createdMeta": "{date} · {name}",
       "redeemedBy": "Redeemed by:",
       "footnote": "A code unlocks each community exactly once. If a community already has a paid subscription, a code never overwrites it. Packages: {plans}."
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "Platform SEO",
+      "subtitle": "Title, description and social image for aera.so. Empty fields use the built-in defaults.",
+      "siteName": "Site name",
+      "siteNameHint": "Used as og:site_name and the application name.",
+      "homeTitle": "Home page title",
+      "homeTitleHint": "The title for aera.so itself.",
+      "titleTemplate": "Title template for sub-pages",
+      "titleTemplateHint": "%s is replaced by the page title, e.g. “Pricing — Aera”.",
+      "description": "Description",
+      "descriptionHint": "The grey text in a search result. 150–160 characters is ideal.",
+      "keywords": "Keywords",
+      "keywordsHint": "Comma separated.",
+      "image": "Social image",
+      "imageHint": "1200×630. Also the fallback for communities without their own image.",
+      "twitter": "X/Twitter handle",
+      "twitterHint": "Used for attribution in the card.",
+      "noindex": "Exclude the entire platform from search engines",
+      "noindexHint": "Emergency brake: robots.txt blocks everything and every page gets noindex.",
+      "noindexActiveTitle": "The platform is excluded from the index",
+      "noindexActiveText": "robots.txt currently forbids all crawling. While this is on, aera.so disappears from Google.",
+      "save": "Save",
+      "saving": "Saving …",
+      "saved": "Saved",
+      "updatedAt": "Last changed {date}",
+      "previewSearch": "Google preview",
+      "previewSocial": "When shared",
+      "effectiveTitle": "Effect",
+      "effectiveText": "Sub-pages get their title from the “{template}” pattern. Communities set their own title and only inherit the social image when they have none."
     }
   },
   "dashboard": {
@@ -2611,7 +2645,8 @@
       "openAria": "Open navigation",
       "mobileSubtitle": "Dashboard navigation",
       "planner": "Planner",
-      "lockedSuffix": "{plan} only"
+      "lockedSuffix": "{plan} only",
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -2994,6 +3029,27 @@
       "quotaMembers": "Members",
       "quotaCredits": "AI credits",
       "unlimited": "unlimited"
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "SEO",
+      "subtitle": "How your community appears on Google and when shared. Empty fields are filled automatically from your community details.",
+      "metaTitleHint": "The blue headline in a search result. Empty = your community name.",
+      "metaDescription": "Description",
+      "metaDescriptionHint": "The grey text below the title. Empty = your onboarding tagline.",
+      "keywords": "Keywords",
+      "keywordsHint": "Comma separated. Empty = derived from name and category.",
+      "image": "Social image",
+      "imageHint": "Shown when shared, ideally 1200×630. Empty = your logo.",
+      "noindex": "Exclude from search engines",
+      "noindexHint": "Sets noindex and removes the community from the sitemap. Existing members can still reach it.",
+      "noindexWarning": "This community is currently not indexed.",
+      "save": "Save",
+      "saving": "Saving …",
+      "saved": "Saved",
+      "previewSearch": "Google preview",
+      "previewSocial": "When shared",
+      "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     }
   },
   "common": {

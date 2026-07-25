@@ -131,7 +131,9 @@
     "planFeatureLocked": "この機能は{plan}パッケージから利用できます。アップグレードしてご利用ください。",
     "planMemberLimitReached": "{plan}パッケージは、アクティブメンバー{limit}人までに対応しています。さらに成長させるにはアップグレードしてください。",
     "planStaffLimitReached": "{plan}パッケージでは、チーム枠（管理者/モデレーター）は{limit}人までです。増やすにはアップグレードしてください。",
-    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set.",
+    "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
+    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes."
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -526,7 +528,8 @@
       "orders": "注文",
       "help": "ヘルプ",
       "audit": "監査ログ",
-      "codes": "プロモコード"
+      "codes": "プロモコード",
+      "seo": "SEO"
     },
     "pagination": {
       "prev": "前へ",
@@ -797,6 +800,37 @@
       "createdMeta": "{date} · {name}",
       "redeemedBy": "利用者:",
       "footnote": "コードは各コミュニティにつき一度だけ有効化できます。すでに有料プランを利用しているコミュニティでは、コードによって上書きされることはありません。パッケージ: {plans}。"
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "Platform SEO",
+      "subtitle": "Title, description and social image for aera.so. Empty fields use the built-in defaults.",
+      "siteName": "Site name",
+      "siteNameHint": "Used as og:site_name and the application name.",
+      "homeTitle": "Home page title",
+      "homeTitleHint": "The title for aera.so itself.",
+      "titleTemplate": "Title template for sub-pages",
+      "titleTemplateHint": "%s is replaced by the page title, e.g. “Pricing — Aera”.",
+      "description": "Description",
+      "descriptionHint": "The grey text in a search result. 150–160 characters is ideal.",
+      "keywords": "Keywords",
+      "keywordsHint": "Comma separated.",
+      "image": "Social image",
+      "imageHint": "1200×630. Also the fallback for communities without their own image.",
+      "twitter": "X/Twitter handle",
+      "twitterHint": "Used for attribution in the card.",
+      "noindex": "Exclude the entire platform from search engines",
+      "noindexHint": "Emergency brake: robots.txt blocks everything and every page gets noindex.",
+      "noindexActiveTitle": "The platform is excluded from the index",
+      "noindexActiveText": "robots.txt currently forbids all crawling. While this is on, aera.so disappears from Google.",
+      "save": "Save",
+      "saving": "Saving …",
+      "saved": "Saved",
+      "updatedAt": "Last changed {date}",
+      "previewSearch": "Google preview",
+      "previewSocial": "When shared",
+      "effectiveTitle": "Effect",
+      "effectiveText": "Sub-pages get their title from the “{template}” pattern. Communities set their own title and only inherit the social image when they have none."
     }
   },
   "dashboard": {
@@ -2487,7 +2521,8 @@
       "openAria": "ナビゲーションを開く",
       "mobileSubtitle": "ダッシュボードのナビゲーション",
       "planner": "プランナー",
-      "lockedSuffix": "{plan} 限定"
+      "lockedSuffix": "{plan} 限定",
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -2969,6 +3004,27 @@
       "quotaMembers": "メンバー",
       "quotaCredits": "AIクレジット",
       "unlimited": "無制限"
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "SEO",
+      "subtitle": "How your community appears on Google and when shared. Empty fields are filled automatically from your community details.",
+      "metaTitleHint": "The blue headline in a search result. Empty = your community name.",
+      "metaDescription": "Description",
+      "metaDescriptionHint": "The grey text below the title. Empty = your onboarding tagline.",
+      "keywords": "Keywords",
+      "keywordsHint": "Comma separated. Empty = derived from name and category.",
+      "image": "Social image",
+      "imageHint": "Shown when shared, ideally 1200×630. Empty = your logo.",
+      "noindex": "Exclude from search engines",
+      "noindexHint": "Sets noindex and removes the community from the sitemap. Existing members can still reach it.",
+      "noindexWarning": "This community is currently not indexed.",
+      "save": "Save",
+      "saving": "Saving …",
+      "saved": "Saved",
+      "previewSearch": "Google preview",
+      "previewSocial": "When shared",
+      "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     }
   },
   "common": {

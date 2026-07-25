@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { buildTenantMetadata, TENANT_SEO_SELECT } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import prisma, { systemPrisma } from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
@@ -41,16 +42,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const tenant = await prisma.tenant.findUnique({
     where: { slug, status: "ACTIVE" },
-    select: { name: true, tagline: true, description: true },
+    select: TENANT_SEO_SELECT,
   });
   if (!tenant) return {};
-  const description =
-    tenant.tagline ?? tenant.description ?? `Community von ${tenant.name}`;
-  return {
-    title: tenant.name,
-    description,
-    openGraph: { title: tenant.name, description },
-  };
+  // Overrides des Creators, sonst aus den Onboarding-Angaben abgeleitet.
+  return buildTenantMetadata(tenant);
 }
 
 export default async function CommunityLayout({

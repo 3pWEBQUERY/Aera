@@ -355,6 +355,7 @@ model User {
   pollVotes                 PollVote[]
   promoCodesCreated         PromoCode[]                @relation("PromoCodeAuthor")
   promoRedemptions          PromoCodeRedemption[]
+  platformSeoEdits          PlatformSeo[]              @relation("PlatformSeoEditor")
 }
 
 /// Versioned evidence that a user accepted a contract document or confirmed
@@ -396,6 +397,16 @@ model Tenant {
   // Community page builder config (sections order/visibility, custom nav, header
   // options). Null = platform defaults. See lib/layout.ts.
   layout Json?
+
+  /// SEO-Overrides des Creators. Alles optional: leer bedeutet "aus den
+  /// Community-Angaben ableiten" (siehe lib/seo.ts), nicht "leer ausliefern".
+  seoTitle       String?
+  seoDescription String?
+  seoKeywords    String?
+  /// Eigenes Social-Bild (1200x630). Leer = Logo, sonst Plattform-Fallback.
+  seoImageUrl    String?
+  /// Community aus Suchmaschinen heraushalten (robots noindex + keine Sitemap).
+  seoNoindex     Boolean @default(false)
 
   platformFeePercent Float        @default(5)
   /// Referral-Programm: Provision (in %) auf bezahlte Käufe geworbener
@@ -2286,4 +2297,26 @@ model PromoCodeRedemption {
   @@unique([codeId, tenantId])
   @@index([tenantId])
   @@index([codeId, redeemedAt])
+}
+
+// ----------------------------------------------------------------------------
+// Plattform-SEO fuer aera.so selbst. Genau eine Zeile (id = "platform"); die
+// Tabelle traegt bewusst keine tenantId, damit sie ausserhalb der Tenant-RLS
+// bleibt und nur ueber den privilegierten Client geschrieben wird.
+// ----------------------------------------------------------------------------
+model PlatformSeo {
+  id            String   @id @default("platform")
+  siteName      String?
+  title         String?
+  /// Muster fuer Unterseiten, z. B. "%s — Aera". %s wird ersetzt.
+  titleTemplate String?
+  description   String?
+  keywords      String?
+  imageUrl      String?
+  twitterHandle String?
+  /// Notbremse: nimmt die gesamte Plattform aus dem Index.
+  noindex       Boolean  @default(false)
+  updatedAt     DateTime @updatedAt
+  updatedById   String?
+  updatedBy     User?    @relation("PlatformSeoEditor", fields: [updatedById], references: [id], onDelete: SetNull)
 }

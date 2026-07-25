@@ -1,7 +1,16 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/lib/env";
+import { getPlatformSeo } from "@/lib/seo";
 
-export default function robots(): MetadataRoute.Robots {
+export default async function robots(): Promise<MetadataRoute.Robots> {
+  const { noindex } = await getPlatformSeo();
+  // Notbremse aus /admin/seo: sperrt die gesamte Plattform aus dem Index.
+  if (noindex) {
+    return {
+      rules: [{ userAgent: "*", disallow: "/" }],
+      sitemap: `${env.APP_URL}/sitemap.xml`,
+    };
+  }
   return {
     rules: [
       {

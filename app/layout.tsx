@@ -3,6 +3,7 @@ import { Inter, Playfair_Display, Lora } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
+import { buildPlatformMetadata } from "@/lib/seo";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,10 +24,11 @@ const lora = Lora({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("uiMigration.auth");
+  // Titel, Beschreibung, OG/Twitter und robots kommen aus /admin/seo; die
+  // App-spezifischen Teile (Manifest, Icons) bleiben hier fest verdrahtet.
+  const platform = await buildPlatformMetadata();
   return {
-    title: t("rootTitle"),
-    description: t("rootDescription"),
+    ...platform,
     manifest: "/manifest.webmanifest",
     icons: {
       icon: [

@@ -63,6 +63,7 @@ const groupsAfter: { labelKey: string; items: NavItem[] }[] = [
     items: [
       { href: "/layout", labelKey: "layout", icon: "layout" },
       { href: "/settings", labelKey: "settings", icon: "settings" },
+      { href: "/seo", labelKey: "seo", icon: "search" },
       { href: "/developers", labelKey: "developers", icon: "bolt", feature: "developers" },
       { href: "/export", labelKey: "export", icon: "export", feature: "export" },
     ],

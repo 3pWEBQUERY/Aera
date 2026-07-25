@@ -131,7 +131,9 @@
     "planFeatureLocked": "Diese Funktion ist ab dem {plan}-Paket verfügbar. Upgrade, um sie zu nutzen.",
     "planMemberLimitReached": "Dein {plan}-Paket ist auf {limit} aktive Mitglieder ausgelegt. Upgrade, um weiter zu wachsen.",
     "planStaffLimitReached": "Dein {plan}-Paket erlaubt {limit} Team-Plätze (Admins/Moderatoren). Upgrade für mehr.",
-    "planStripeActive": "Für diese Community läuft ein aktives Stripe-Abo. Kündige es zuerst, dann lässt sich das Paket setzen."
+    "planStripeActive": "Für diese Community läuft ein aktives Stripe-Abo. Kündige es zuerst, dann lässt sich das Paket setzen.",
+    "seoImageInvalid": "Bitte gib eine gültige Bild-URL an (https://… oder /pfad.png).",
+    "seoTemplateInvalid": "Das Titelmuster muss %s enthalten — dort wird der Seitentitel eingesetzt."
   },
   "legalPurchase": {
     "immediateAccess": "Ich verlange sofortigen Zugang und weiß, dass mein Widerrufsrecht mit Beginn der digitalen Lieferung erlischt. <withdrawal>Details</withdrawal>.",
@@ -551,7 +553,8 @@
       "orders": "Bestellungen",
       "help": "Hilfe",
       "audit": "Audit-Log",
-      "codes": "Promo-Codes"
+      "codes": "Promo-Codes",
+      "seo": "SEO"
     },
     "pagination": {
       "prev": "Zurück",
@@ -822,6 +825,37 @@
       "createdMeta": "{date} · {name}",
       "redeemedBy": "Eingelöst von:",
       "footnote": "Ein Code schaltet je Community genau einmal frei. Läuft für eine Community bereits ein bezahltes Abo, wird es von einem Code nie überschrieben. Pakete: {plans}."
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "SEO der Plattform",
+      "subtitle": "Titel, Beschreibung und Social-Bild für aera.so. Leere Felder nutzen die eingebauten Standardwerte.",
+      "siteName": "Seitenname",
+      "siteNameHint": "Erscheint als og:site_name und im App-Namen.",
+      "homeTitle": "Titel der Startseite",
+      "homeTitleHint": "Der Titel für aera.so selbst.",
+      "titleTemplate": "Titelmuster für Unterseiten",
+      "titleTemplateHint": "%s wird durch den Seitentitel ersetzt, z. B. „Preise — Aera“.",
+      "description": "Beschreibung",
+      "descriptionHint": "Der Grautext im Suchergebnis. 150–160 Zeichen sind ideal.",
+      "keywords": "Schlagwörter",
+      "keywordsHint": "Kommagetrennt.",
+      "image": "Social-Bild",
+      "imageHint": "1200×630. Auch Fallback für Communities ohne eigenes Bild.",
+      "twitter": "X/Twitter-Handle",
+      "twitterHint": "Für die Urheberangabe in der Karte.",
+      "noindex": "Gesamte Plattform aus Suchmaschinen ausschließen",
+      "noindexHint": "Notbremse: robots.txt sperrt alles und jede Seite erhält noindex.",
+      "noindexActiveTitle": "Die Plattform ist aus dem Index ausgeschlossen",
+      "noindexActiveText": "robots.txt verbietet aktuell jedes Crawling. Solange das aktiv ist, verschwindet aera.so aus Google.",
+      "save": "Speichern",
+      "saving": "Wird gespeichert …",
+      "saved": "Gespeichert",
+      "updatedAt": "Zuletzt geändert {date}",
+      "previewSearch": "Google-Vorschau",
+      "previewSocial": "Beim Teilen",
+      "effectiveTitle": "Wirkung",
+      "effectiveText": "Unterseiten erhalten den Titel nach dem Muster „{template}“. Communities überschreiben ihren Titel selbst und erben nur das Social-Bild, wenn sie keins gesetzt haben."
     }
   },
   "dashboard": {
@@ -2611,7 +2645,8 @@
       "openAria": "Navigation öffnen",
       "mobileSubtitle": "Dashboard-Navigation",
       "planner": "Planer",
-      "lockedSuffix": "nur mit {plan}"
+      "lockedSuffix": "nur mit {plan}",
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Medien",
@@ -2994,6 +3029,27 @@
       "quotaMembers": "Mitglieder",
       "quotaCredits": "AI-Credits",
       "unlimited": "unbegrenzt"
+    },
+    "seo": {
+      "metaTitle": "SEO",
+      "title": "SEO",
+      "subtitle": "So erscheint deine Community bei Google und beim Teilen. Leere Felder werden automatisch aus deinen Community-Angaben gefüllt.",
+      "metaTitleHint": "Erscheint als blaue Überschrift im Suchergebnis. Leer = Name deiner Community.",
+      "metaDescription": "Beschreibung",
+      "metaDescriptionHint": "Der Grautext unter dem Titel. Leer = dein Untertitel aus dem Onboarding.",
+      "keywords": "Schlagwörter",
+      "keywordsHint": "Kommagetrennt. Leer = automatisch aus Name und Kategorie.",
+      "image": "Social-Bild",
+      "imageHint": "Beim Teilen sichtbar, ideal 1200×630. Leer = dein Logo.",
+      "noindex": "Aus Suchmaschinen ausschließen",
+      "noindexHint": "Setzt noindex und nimmt die Community aus der Sitemap. Bestehende Mitglieder erreichen sie weiterhin.",
+      "noindexWarning": "Diese Community wird derzeit nicht indexiert.",
+      "save": "Speichern",
+      "saving": "Wird gespeichert …",
+      "saved": "Gespeichert",
+      "previewSearch": "Google-Vorschau",
+      "previewSocial": "Beim Teilen",
+      "derivedNote": "Alles, was du leer lässt, wird aus den Angaben von {name} abgeleitet — du musst hier nichts ausfüllen, damit es funktioniert."
     }
   },
   "common": {

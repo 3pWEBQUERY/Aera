@@ -35,7 +35,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 
   const tenants = await prisma.tenant.findMany({
-    where: { status: "ACTIVE" },
+    // seoNoindex ist die Entscheidung des Creators: wer nicht indexiert werden
+    // will, gehoert auch nicht in die Sitemap — sonst widersprechen sich die
+    // beiden Signale und Google meldet "eingereicht, aber noindex".
+    where: { status: "ACTIVE", seoNoindex: false },
     orderBy: { createdAt: "asc" },
     take: MAX_TENANTS,
     select: {
