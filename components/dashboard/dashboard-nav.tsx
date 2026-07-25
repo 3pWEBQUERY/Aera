@@ -136,7 +136,7 @@ export function DashboardNav({
                 }
                 className={cn(
                   "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                  active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                 )}
               >
                 <Icon
@@ -144,7 +144,7 @@ export function DashboardNav({
                   size={18}
                   className={cn(
                     "shrink-0",
-                    active ? "text-white" : "text-slate-400 group-hover:text-slate-600",
+                    active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600",
                     locked && !active && "text-slate-300",
                   )}
                 />
@@ -193,10 +193,10 @@ export function DashboardNav({
                     href={href}
                     className={cn(
                       "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                      active ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                      active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                     )}
                   >
-                    <Icon name={typeIcon[s.type] ?? "spaces"} size={18} className={active ? "text-white" : "text-slate-400 group-hover:text-slate-600"} />
+                    <Icon name={typeIcon[s.type] ?? "spaces"} size={18} className={active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600"} />
                     <span className="truncate">{s.name}</span>
                   </Link>
                 );

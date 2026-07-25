@@ -59,7 +59,7 @@ export function LinksManager({
     <div>
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="link" size={20} />
           </span>
           <div>

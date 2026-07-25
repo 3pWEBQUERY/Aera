@@ -92,11 +92,11 @@ export function SpaceCreateOverlay({
                         className={cn(
                           "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                           sel
-                            ? "border-black bg-slate-50"
+                            ? "border-[var(--action-strong)] bg-slate-50"
                             : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                         )}
                       >
-                        <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
+                        <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")}>
                           <Icon name={v.icon} size={18} />
                         </span>
                         <span>

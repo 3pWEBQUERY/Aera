@@ -73,7 +73,7 @@ export function BlogManager({
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="blog" size={20} />
           </span>
           <div>
@@ -247,7 +247,7 @@ function Segmented({
             onClick={() => setVal(o.v)}
             className={
               "rounded-xl border px-3 py-2.5 text-sm font-medium transition " +
-              (val === o.v ? "border-slate-900 bg-slate-900 text-white" : "border-slate-200 text-slate-600 hover:bg-slate-50")
+              (val === o.v ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]" : "border-slate-200 text-slate-600 hover:bg-slate-50")
             }
           >
             {o.label}

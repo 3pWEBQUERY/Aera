@@ -71,7 +71,7 @@ export function AdsManager({
     <div>
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="megaphone" size={20} />
           </span>
           <div>
@@ -301,14 +301,14 @@ function AdForm({
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-3.5 text-left transition-colors duration-200",
                       sel
-                        ? "border-black bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
                     <span
                       className={cn(
                         "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition",
-                        sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600",
+                        sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600",
                       )}
                     >
                       <Icon name={mt === "IMAGE" ? "gallery" : "videos"} size={18} />

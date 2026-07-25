@@ -78,7 +78,7 @@ export default async function ExportPage({
   return (
     <div>
       <div className="mb-6 flex items-center gap-3">
-        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+        <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
           <Icon name="export" size={20} />
         </span>
         <div>

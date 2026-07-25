@@ -128,7 +128,7 @@ export function NewsletterManager({
                 onClick={() => editable && setEditing(c)}
                 className={`group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition ${editable ? "cursor-pointer hover:border-slate-300 hover:shadow-sm" : ""}`}
               >
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
                   <Icon name="newsletter" size={20} />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -511,7 +511,7 @@ function SegmentsPanel({
       {/* Basislinie: alle erreichbaren Mitglieder */}
       <div className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
         <div className="flex min-w-0 items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="members" size={16} />
           </span>
           <span className="truncate text-sm font-medium text-slate-800">{t("allActiveMembers")}</span>

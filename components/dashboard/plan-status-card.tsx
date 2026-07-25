@@ -129,7 +129,7 @@ export function PlanStatusCard({
                         ? "bg-slate-200"
                         : tight
                           ? "bg-amber-500"
-                          : "bg-slate-900",
+                          : "bg-[var(--action-strong)]",
                     )}
                     style={{ width: q.limit === null ? "100%" : `${pct}%` }}
                   />

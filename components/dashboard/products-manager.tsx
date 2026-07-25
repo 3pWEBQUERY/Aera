@@ -299,11 +299,11 @@ function ProductForm({
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
-                        ? "border-black bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
-                    <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
+                    <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")}>
                       <Icon name={pt.icon} size={18} />
                     </span>
                     <span>
@@ -364,7 +364,7 @@ function ProductForm({
                       onClick={() => setFreeShipping(o.v)}
                       className={cn(
                         "rounded-2xl border p-3 text-left transition",
-                        sel ? "border-slate-900 bg-white ring-2 ring-slate-900" : "border-slate-200 bg-white hover:border-slate-300",
+                        sel ? "border-[var(--action-strong)] bg-white ring-2 ring-[var(--action-strong)]" : "border-slate-200 bg-white hover:border-slate-300",
                       )}
                     >
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>

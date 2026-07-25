@@ -121,7 +121,7 @@ export function MediaManager({
               aria-current={type === tab.value ? "page" : undefined}
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
                 type === tab.value
-                  ? "bg-slate-900 text-white"
+                  ? "bg-[var(--action)] text-[var(--action-fg)]"
                   : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >

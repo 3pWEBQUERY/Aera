@@ -111,7 +111,7 @@ export function AdsBanner({ ads }: { ads: AdBannerItem[] }) {
               className={cn(
                 "h-1.5 rounded-full transition-all duration-300",
                 i === index % count
-                  ? "w-5 bg-[#161613]"
+                  ? "w-5 bg-[var(--action-strong)]"
                   : "w-1.5 bg-[#161613]/20 hover:bg-[#161613]/40",
               )}
             />

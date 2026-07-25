@@ -73,7 +73,7 @@ export default async function SettingsPage({
       <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
         {integrations.map((it) => (
           <li key={it.name} className="flex items-center gap-3 rounded-xl border border-slate-100 px-3.5 py-3">
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${it.ok ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-400"}`}>
+            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${it.ok ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-400"}`}>
               <Icon name={it.icon} size={18} />
             </span>
             <div className="min-w-0 flex-1">

@@ -85,7 +85,7 @@ export function SpaceTypePicker({
               "relative flex flex-col items-start gap-2 rounded-2xl border p-4 text-left transition-colors duration-200",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
               selected && !locked
-                ? "border-black bg-slate-50"
+                ? "border-[var(--action-strong)] bg-slate-50"
                 : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
               locked && "border-dashed bg-slate-50/60 hover:bg-slate-100/70",
               disabled && "cursor-not-allowed opacity-50",
@@ -100,7 +100,7 @@ export function SpaceTypePicker({
               className={cn(
                 "flex h-10 w-10 items-center justify-center rounded-xl transition",
                 selected && !locked
-                  ? "bg-slate-900 text-white"
+                  ? "bg-[var(--action)] text-[var(--action-fg)]"
                   : locked
                     ? "bg-white text-slate-300 ring-1 ring-slate-200"
                     : "bg-slate-100 text-slate-600",

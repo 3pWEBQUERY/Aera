@@ -173,7 +173,7 @@ export function MultiMediaUpload({
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
               <span className="w-full truncate text-center text-[11px]">{u.name}</span>
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-                <div className="h-full rounded-full bg-slate-900 transition-all" style={{ width: `${u.progress}%` }} />
+                <div className="h-full rounded-full bg-[var(--action-strong)] transition-all" style={{ width: `${u.progress}%` }} />
               </div>
             </div>
           ))}

@@ -109,7 +109,7 @@ export function SpaceContentManager({
     <div>
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name={typeIcon[space.type] ?? "spaces"} size={20} />
           </span>
           <div>
@@ -139,7 +139,7 @@ export function SpaceContentManager({
 
       {link && (
         <Link href={`/dashboard/${slug}${link.href}`} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 hover:shadow-sm">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name={link.icon} size={20} />
           </span>
           <div className="flex-1">

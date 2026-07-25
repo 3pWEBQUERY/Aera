@@ -24,6 +24,10 @@
      Helligkeit von 87,5 % auf 80 %) — ein Hover soll den Button nicht
      umfaerben, sondern nur eindeutig anfassbar machen. */
   --action-hover: #c1b3e6;
+  /* Derselbe Farbton, deutlich dunkler. Fuer alles Duenne — Schalter,
+     Fortschrittsbalken, Auswahlpunkte, Rahmen einer gewaehlten Karte. Der
+     helle Ton verschwindet dort auf weissem Grund. */
+  --action-strong: #9c85d6;
   --action-fg: #161613;
 }
 

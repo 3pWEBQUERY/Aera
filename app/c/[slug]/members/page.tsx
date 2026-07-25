@@ -107,7 +107,7 @@ export default async function CommunityMembers({
                   <div className="flex items-center gap-1.5">
                     <p className="truncate font-semibold text-slate-900">{m.user.name}</p>
                     {isMe && (
-                      <span className="shrink-0 rounded-full bg-slate-900 px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      <span className="shrink-0 rounded-full bg-[var(--action)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--action-fg)]">
                         {t("youBadge")}
                       </span>
                     )}

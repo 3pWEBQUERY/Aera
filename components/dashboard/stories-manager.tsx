@@ -131,7 +131,7 @@ export function StoriesManager({
             className={cn(
               "rounded-full px-3.5 py-1.5 text-sm font-semibold transition",
               tab === tb.key
-                ? "bg-slate-900 text-white"
+                ? "bg-[var(--action)] text-[var(--action-fg)]"
                 : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
             )}
           >
@@ -403,7 +403,7 @@ function StorySettingsForm({
                   className={cn(
                     "rounded-xl border px-3.5 py-2 text-sm font-medium transition",
                     autoplay === sec
-                      ? "border-slate-900 bg-slate-900 text-white"
+                      ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
                       : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
                   )}
                 >

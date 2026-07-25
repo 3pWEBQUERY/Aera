@@ -95,7 +95,7 @@ export function MembersManager({
           <div className="flex flex-wrap items-center gap-2">
             <p className="font-semibold text-slate-900">{m.user.name}</p>
             <Pill className={roleCls[m.role] ?? roleCls.MEMBER}>{tRoles(m.role)}</Pill>
-            {isSelf && <Pill className="bg-slate-900 text-white">{t("you")}</Pill>}
+            {isSelf && <Pill className="bg-[var(--action)] text-[var(--action-fg)]">{t("you")}</Pill>}
             {m.status !== "ACTIVE" && <Pill className={statusCls[m.status] ?? statusCls.ACTIVE}>{tStatus(m.status)}</Pill>}
           </div>
           <p className="mt-0.5 truncate text-sm text-slate-400">

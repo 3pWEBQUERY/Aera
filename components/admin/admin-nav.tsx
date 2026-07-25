@@ -44,14 +44,14 @@ export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
               "flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
               active
-                ? "bg-slate-900 text-white"
+                ? "bg-[var(--action)] text-[var(--action-fg)]"
                 : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
             )}
           >
             <Icon
               name={item.icon}
               size={17}
-              className={cn("shrink-0", active ? "text-white/80" : "text-slate-400")}
+              className={cn("shrink-0", active ? "text-[var(--action-fg)]/70" : "text-slate-400")}
             />
             <span className="min-w-0 flex-1 truncate">{t(item.key)}</span>
             {(badges[item.key] ?? 0) > 0 && (

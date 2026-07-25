@@ -46,7 +46,7 @@ export function LocaleSwitcher() {
                   }
                 >
                   {active && (
-                    <span className="h-2 w-2 rounded-full bg-[#161613]" />
+                    <span className="h-2 w-2 rounded-full bg-[var(--action-strong)]" />
                   )}
                 </span>
                 {/* Runde SVG-Flagge (circle-flags), füllt den Kreis komplett. */}

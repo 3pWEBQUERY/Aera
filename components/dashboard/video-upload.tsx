@@ -75,7 +75,7 @@ export function VideoUpload({
             <span className="font-semibold">{progress}%</span>
           </div>
           <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-slate-200">
-            <div className="h-full rounded-full bg-slate-900 transition-all" style={{ width: `${progress}%` }} />
+            <div className="h-full rounded-full bg-[var(--action-strong)] transition-all" style={{ width: `${progress}%` }} />
           </div>
         </div>
       ) : (

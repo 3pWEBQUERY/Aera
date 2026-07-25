@@ -68,7 +68,7 @@ export function KnowledgeManager({
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="knowledge" size={20} />
           </span>
           <div>
@@ -251,7 +251,7 @@ function SegmentedLayout({ defaultValue }: { defaultValue: "LIST" | "GRID" }) {
             className={
               "flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition " +
               (val === o.v
-                ? "border-slate-900 bg-slate-900 text-white"
+                ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
                 : "border-slate-200 text-slate-600 hover:bg-slate-50")
             }
           >

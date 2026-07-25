@@ -69,7 +69,7 @@ export function GalleryManager({
     <div>
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="gallery" size={20} />
           </span>
           <div>
@@ -217,7 +217,7 @@ function FolderCard({
               {t("mediaCount", { count: pkg.items.length })}
             </p>
           </div>
-          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-slate-900 group-hover:text-white">
+          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-[var(--action)] group-hover:text-[var(--action-fg)]">
             <Icon name="chevron" size={15} className="-rotate-90" />
           </span>
         </div>
@@ -358,7 +358,7 @@ function PackageForm({
                 <span
                   className={
                     "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors " +
-                    (paid ? "bg-slate-900" : "bg-slate-200")
+                    (paid ? "bg-[var(--action-strong)]" : "bg-slate-200")
                   }
                 >
                   <span

@@ -64,7 +64,7 @@ export function AnnouncementsManager({
     <section className={standalone ? undefined : "mb-6 rounded-2xl border border-slate-200 bg-white p-5"}>
       {standalone && (
         <div className="mb-6 flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="megaphone" size={20} />
           </span>
           <div>

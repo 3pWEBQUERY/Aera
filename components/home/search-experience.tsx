@@ -258,7 +258,7 @@ function Chip({
         "inline-flex shrink-0 items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-medium transition",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25",
         active
-          ? "bg-[#161613] text-[#f4f1ea]"
+          ? "bg-[var(--action)] text-[var(--action-fg)]"
           : "bg-white text-[#161613]/70 ring-1 ring-[#161613]/10 hover:bg-[#161613]/5",
       )}
     >

@@ -233,7 +233,7 @@ export default async function MemberAccountPage({
               aria-current={activeTab === tab.key ? "page" : undefined}
               className={
                 activeTab === tab.key
-                  ? "inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white"
+                  ? "inline-flex min-h-10 items-center rounded-xl bg-[var(--action)] px-5 text-sm font-semibold text-[var(--action-fg)]"
                   : "inline-flex min-h-10 items-center rounded-xl border border-[#161613]/15 px-5 text-sm font-semibold text-[#161613]/60 transition hover:border-[#161613]/40 hover:text-[#161613]"
               }
             >
@@ -243,7 +243,7 @@ export default async function MemberAccountPage({
                   className={
                     activeTab === tab.key
                       ? "ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-[11px] font-bold text-[#161613]"
-                      : "ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-[#161613] px-1.5 py-0.5 text-[11px] font-bold text-white"
+                      : "ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--action-strong)] px-1.5 py-0.5 text-[11px] font-bold text-[var(--action-fg)]"
                   }
                 >
                   {tab.badge > 99 ? "99+" : tab.badge}

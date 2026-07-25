@@ -277,7 +277,7 @@ export function MediaStudio({
           >
             <Icon name="chevron" size={18} className="rotate-90" />
           </Link>
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="sparkles" size={17} />
           </span>
           <div className="min-w-0">
@@ -329,7 +329,7 @@ export function MediaStudio({
                   className={cn(
                     "flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition",
                     activeTool
-                      ? "bg-slate-900 text-white"
+                      ? "bg-[var(--action)] text-[var(--action-fg)]"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
                     disabled && "cursor-not-allowed opacity-40",
                   )}
@@ -459,7 +459,7 @@ export function MediaStudio({
                         className={cn(
                           "rounded-full px-3 py-1.5 text-xs font-semibold transition",
                           resizeW === p.w && resizeH === p.h
-                            ? "bg-slate-900 text-white"
+                            ? "bg-[var(--action)] text-[var(--action-fg)]"
                             : "border border-slate-200 text-slate-600 hover:bg-slate-50",
                         )}
                       >

@@ -272,7 +272,7 @@ function LiveForm({
                       className={cn(
                         "inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-sm font-semibold transition",
                         sel
-                          ? "border-slate-900 bg-slate-900 text-white"
+                          ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
                           : "border-slate-200 text-slate-600 hover:border-slate-400",
                       )}
                     >
@@ -299,7 +299,7 @@ function LiveForm({
                   className={cn(
                     "mb-1 flex h-5 w-5 items-center justify-center rounded-full transition",
                     helpOpen
-                      ? "bg-slate-900 text-white"
+                      ? "bg-[var(--action)] text-[var(--action-fg)]"
                       : "text-slate-400 hover:bg-slate-100 hover:text-slate-700",
                   )}
                 >
@@ -397,14 +397,14 @@ function LiveForm({
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
-                        ? "border-slate-900 bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
                     <span
                       className={cn(
                         "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg",
-                        sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600",
+                        sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600",
                       )}
                     >
                       <Icon name={o.icon} size={18} />
@@ -476,7 +476,7 @@ function LiveForm({
                         sel
                           ? s === "LIVE"
                             ? "border-red-600 bg-red-600 text-white"
-                            : "border-slate-900 bg-slate-900 text-white"
+                            : "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
                           : "border-slate-200 text-slate-600 hover:border-slate-400",
                       )}
                     >

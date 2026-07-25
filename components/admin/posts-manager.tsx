@@ -115,7 +115,7 @@ export function PostsManager({
               aria-current={status === tab.value ? "page" : undefined}
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
                 status === tab.value
-                  ? "bg-slate-900 text-white"
+                  ? "bg-[var(--action)] text-[var(--action-fg)]"
                   : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
               }`}
             >
@@ -147,7 +147,7 @@ export function PostsManager({
                   className="h-14 w-14 shrink-0 rounded-lg object-cover"
                 />
               ) : p.hasVideo ? (
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-white">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)]">
                   <Icon name="play" size={20} />
                 </span>
               ) : (

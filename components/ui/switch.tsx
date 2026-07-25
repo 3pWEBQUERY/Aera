@@ -37,7 +37,7 @@ export function Switch({
         onClick={() => setOn((v) => !v)}
         className={cn(
           "relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors",
-          on ? "bg-slate-900" : "bg-slate-200",
+          on ? "bg-[var(--action-strong)]" : "bg-slate-200",
           disabled && "cursor-not-allowed",
         )}
       >

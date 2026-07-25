@@ -22,7 +22,7 @@ function Stat({
 }) {
   const inner = (
     <>
-      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
+      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
         <Icon name={icon} size={18} />
       </span>
       <p className="mt-3 text-2xl font-bold leading-none text-slate-900">{value}</p>
@@ -103,7 +103,7 @@ export default async function AdminOverviewPage() {
         <section className="rounded-2xl border border-slate-200 bg-white">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)]">
                 <Icon name="messages" size={16} />
               </span>
               <h2 className="text-sm font-bold text-slate-900">{ts("title")}</h2>
@@ -182,7 +182,7 @@ export default async function AdminOverviewPage() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={tenant.logoUrl} alt="" className="h-9 w-9 rounded-lg object-cover" />
                 ) : (
-                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-sm font-bold text-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--action)] text-sm font-bold text-[var(--action-fg)]">
                     {tenant.name.charAt(0).toUpperCase()}
                   </span>
                 )}

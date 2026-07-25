@@ -1158,7 +1158,7 @@ function MessageRow({
             className="h-8 w-8 shrink-0 rounded-lg object-cover ring-1 ring-black/5"
           />
         ) : (
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-xs font-semibold text-white ring-1 ring-black/5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-xs font-semibold text-[var(--action-fg)] ring-1 ring-black/5">
             {initial}
           </span>
         )
@@ -1311,7 +1311,7 @@ function ImageMessageRow({
             className="h-8 w-8 shrink-0 rounded-lg object-cover ring-1 ring-black/5"
           />
         ) : (
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-900 text-xs font-semibold text-white ring-1 ring-black/5">
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-xs font-semibold text-[var(--action-fg)] ring-1 ring-black/5">
             {initial}
           </span>
         )

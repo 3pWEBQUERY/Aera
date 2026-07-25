@@ -223,7 +223,7 @@ function Row({
         space.isArchived && "opacity-60",
       )}
     >
-      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-white">
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
         <Icon name={typeIcon[space.type] ?? "spaces"} size={20} />
       </span>
       <div className="min-w-0 flex-1">
@@ -352,11 +352,11 @@ function SpaceForm({
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
-                        ? "border-black bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
-                    <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
+                    <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")}>
                       <Icon name={v.icon} size={18} />
                     </span>
                     <span>

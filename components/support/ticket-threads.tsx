@@ -128,12 +128,12 @@ export function TicketThreads({
                       className={cn(
                         "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-6",
                         m.fromStaff
-                          ? "bg-slate-900 text-white"
+                          ? "bg-[var(--action)] text-[var(--action-fg)]"
                           : "ml-auto bg-white text-slate-800 ring-1 ring-slate-200",
                       )}
                     >
                       <p className="whitespace-pre-line">{m.body}</p>
-                      <p className={cn("mt-1.5 text-[11px]", m.fromStaff ? "text-white/50" : "text-slate-400")}>
+                      <p className={cn("mt-1.5 text-[11px]", m.fromStaff ? "text-[var(--action-fg)]/50" : "text-slate-400")}>
                         {m.fromStaff ? t("fromTeam") : m.authorName || t("fromYou")} · {fmt(m.createdAt)}
                       </p>
                     </div>

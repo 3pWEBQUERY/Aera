@@ -258,7 +258,7 @@ export default async function SpacePage({
         href={`/c/${slug}/s/${spaceSlug}${key === "top" ? "" : `?sort=${key}`}`}
         className={cn(
           "rounded-lg px-3 py-1.5 text-sm font-medium transition",
-          (sort ?? "top") === key ? "bg-[#161613] text-white" : "text-[#161613]/60 hover:bg-[#161613]/5",
+          (sort ?? "top") === key ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-[#161613]/60 hover:bg-[#161613]/5",
         )}
       >
         {label}

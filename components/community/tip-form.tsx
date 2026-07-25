@@ -52,7 +52,7 @@ export function TipForm({ slug, space }: { slug: string; space: string }) {
             className={cn(
               "rounded-xl border px-3.5 py-1.5 text-sm font-semibold transition",
               amount === n.toFixed(2)
-                ? "border-[#161613] bg-[#161613] text-white"
+                ? "border-[#161613] bg-[var(--action)] text-[var(--action-fg)]"
                 : "border-[#161613]/15 text-[#161613]/70 hover:border-[#161613]/40",
             )}
           >

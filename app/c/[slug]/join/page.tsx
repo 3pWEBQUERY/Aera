@@ -212,7 +212,7 @@ export default async function JoinPage({
                 </div>
               )}
               {isCurrent && (
-                <div className="bg-slate-900 px-4 py-1.5 text-center text-xs font-semibold uppercase tracking-wide text-white">
+                <div className="bg-[var(--action)] px-4 py-1.5 text-center text-xs font-semibold uppercase tracking-wide text-[var(--action-fg)]">
                   {t("currentBadge")}
                 </div>
               )}

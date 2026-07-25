@@ -203,10 +203,10 @@ export function EventForm({
                     onClick={() => setOnline(o.v)}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
-                      sel ? "border-black bg-slate-50" : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+                      sel ? "border-[var(--action-strong)] bg-slate-50" : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
-                    <span className={cn("flex h-9 w-9 items-center justify-center rounded-lg", sel ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600")}>
+                    <span className={cn("flex h-9 w-9 items-center justify-center rounded-lg", sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")}>
                       <Icon name={o.icon} size={18} />
                     </span>
                     <span>

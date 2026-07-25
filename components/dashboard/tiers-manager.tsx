@@ -95,7 +95,7 @@ export function TiersManager({
             )}
             <div className="flex flex-1 flex-col p-5 pt-4">
             <div className="flex items-start justify-between gap-2">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 text-white">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
                 <Icon name="tiers" size={20} />
               </span>
               <div className="flex flex-wrap justify-end gap-1.5">
@@ -239,7 +239,7 @@ function TierForm({
                     className={cn(
                       "rounded-2xl border p-4 text-left transition-colors duration-200",
                       sel
-                        ? "border-black bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >

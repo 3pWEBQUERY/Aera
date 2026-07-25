@@ -158,7 +158,7 @@ export function ForumModerationManager({
     <div>
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-900 text-white">
+          <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
             <Icon name="forum" size={20} />
           </span>
           <div>
@@ -692,7 +692,7 @@ function SettingsToggle({
       <span className="text-sm text-slate-700">{label}</span>
       <span className="relative inline-flex shrink-0">
         <input type="checkbox" name={name} defaultChecked={defaultChecked} className="peer sr-only" />
-        <span className="h-5 w-9 rounded-full bg-slate-200 transition peer-checked:bg-slate-900 peer-focus-visible:ring-2 peer-focus-visible:ring-violet-300" />
+        <span className="h-5 w-9 rounded-full bg-slate-200 transition peer-checked:bg-[var(--action-strong)] peer-focus-visible:ring-2 peer-focus-visible:ring-violet-300" />
         <span className="absolute left-0.5 top-0.5 h-4 w-4 rounded-full bg-white shadow-sm transition peer-checked:translate-x-4" />
       </span>
     </label>

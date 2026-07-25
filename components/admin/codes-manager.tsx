@@ -123,7 +123,7 @@ export function PromoCodesManager({
           ] as const
         ).map((s) => (
           <div key={s.key} className="rounded-2xl border border-slate-200 bg-white p-4">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 text-white">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
               <Icon name={s.icon} size={17} />
             </span>
             <p className="mt-3 text-2xl font-bold leading-none text-slate-900">{s.value}</p>
@@ -158,7 +158,7 @@ export function PromoCodesManager({
                       "flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition",
                       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
                       selected
-                        ? "border-slate-900 bg-slate-50"
+                        ? "border-[var(--action-strong)] bg-slate-50"
                         : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
                     )}
                   >
@@ -287,7 +287,7 @@ export function PromoCodesManager({
               className={cn(
                 "rounded-full px-3 py-1.5 text-xs font-semibold transition",
                 filter === f
-                  ? "bg-slate-900 text-white"
+                  ? "bg-[var(--action)] text-[var(--action-fg)]"
                   : "bg-white text-slate-500 ring-1 ring-slate-200 hover:bg-slate-50",
               )}
             >
@@ -331,7 +331,7 @@ export function PromoCodesManager({
                   <Icon
                     name={copied === c.id ? "check" : "copy"}
                     size={14}
-                    className="text-white/60 transition group-hover:text-white"
+                    className="text-[var(--action-fg)]/55 transition group-hover:text-[var(--action-fg)]"
                   />
                 </button>
 
@@ -405,7 +405,7 @@ export function PromoCodesManager({
               {c.maxRedemptions > 1 && (
                 <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
                   <div
-                    className="h-full rounded-full bg-slate-900 transition-all"
+                    className="h-full rounded-full bg-[var(--action-strong)] transition-all"
                     style={{
                       width: `${Math.min(100, Math.round((c.redemptionCount / c.maxRedemptions) * 100))}%`,
                     }}

@@ -222,7 +222,7 @@ export function LayoutEditor({
                 onClick={() => setDevice(d)}
                 className={cn(
                   "flex h-8 w-9 items-center justify-center rounded-md transition",
-                  device === d ? "bg-slate-900 text-white" : "text-slate-500 hover:bg-slate-100",
+                  device === d ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-500 hover:bg-slate-100",
                 )}
                 aria-label={d === "desktop" ? t("desktopPreview") : t("mobilePreview")}
               >
@@ -620,10 +620,10 @@ function Radio({ checked }: { checked: boolean }) {
     <span
       className={cn(
         "flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition",
-        checked ? "border-slate-900" : "border-slate-300",
+        checked ? "border-[var(--action-strong)]" : "border-slate-300",
       )}
     >
-      {checked && <span className="h-2.5 w-2.5 rounded-full bg-slate-900" />}
+      {checked && <span className="h-2.5 w-2.5 rounded-full bg-[var(--action-strong)]" />}
     </span>
   );
 }

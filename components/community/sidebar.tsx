@@ -322,7 +322,7 @@ export function CommunitySidebar({
                     className="flex items-center justify-between gap-3 rounded-xl bg-[#161613]/5 px-4 py-3 text-sm font-bold text-[#161613]"
                   >
                     {isCreator ? t("yourMemberships") : t("yourAccount")}
-                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#161613] text-white">
+                    <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[var(--action-strong)] text-[var(--action-fg)]">
                       <Icon name="check" size={12} />
                     </span>
                   </Link>
