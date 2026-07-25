@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { normalizeHexColor } from "@/lib/color";
 import { Icon } from "@/components/dashboard/icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Avatar, FormError } from "@/components/ui/misc";
@@ -262,8 +263,8 @@ export function OnboardingWizard({
                   <Label htmlFor="ob-desc">{t("descLabel")}</Label>
                   <Textarea id="ob-desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder={t("descPlaceholder")} />
                 </div>
-                <ColorRow label={t("primaryColor")} presets={PRIMARY_PRESETS} value={primary} onChange={setPrimary} customLabel={t("customColor")} />
-                <ColorRow label={t("accentColor")} presets={ACCENT_PRESETS} value={accent} onChange={setAccent} customLabel={t("customColor")} />
+                <ColorRow label={t("primaryColor")} presets={PRIMARY_PRESETS} value={primary} onChange={setPrimary} customLabel={t("customColor")} hexLabel={t("hexLabel")} />
+                <ColorRow label={t("accentColor")} presets={ACCENT_PRESETS} value={accent} onChange={setAccent} customLabel={t("customColor")} hexLabel={t("hexLabel")} />
                 {/* Live preview — flat brand tile, editorial type */}
                 <div className="rounded-2xl border border-[#161613]/10 bg-white p-5">
                   <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
@@ -498,12 +499,14 @@ function ColorRow({
   value,
   onChange,
   customLabel,
+  hexLabel,
 }: {
   label: string;
   presets: string[];
   value: string;
   onChange: (v: string) => void;
   customLabel: string;
+  hexLabel: string;
 }) {
   return (
     <div>
@@ -533,8 +536,57 @@ function ColorRow({
           <Icon name="plus" size={14} />
           <input type="color" value={value} onChange={(e) => onChange(e.target.value)} aria-label={customLabel} className="absolute inset-0 cursor-pointer opacity-0" />
         </label>
+        <HexInput value={value} onChange={onChange} label={hexLabel} />
       </div>
     </div>
+  );
+}
+
+/**
+ * Freies Hex-Feld neben den Vorgaben. Ohne das blieb im Onboarding nur der
+ * System-Farbwaehler — eine Marke hat aber einen festen Code, den man eintippt.
+ */
+function HexInput({
+  value,
+  onChange,
+  label,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  label: string;
+}) {
+  const [draft, setDraft] = useState(value);
+  const parsed = normalizeHexColor(draft);
+
+  // Von aussen gewaehlte Vorgabe uebernehmen, ohne die eigene Eingabe zu stoeren.
+  useEffect(() => {
+    setDraft((d) => (normalizeHexColor(d) === value ? d : value));
+  }, [value]);
+
+  return (
+    <input
+      type="text"
+      value={draft}
+      onChange={(e) => {
+        setDraft(e.target.value);
+        const hex = normalizeHexColor(e.target.value);
+        if (hex) onChange(hex);
+      }}
+      onBlur={() => (parsed ? setDraft(parsed.toUpperCase()) : setDraft(value))}
+      spellCheck={false}
+      autoCapitalize="off"
+      autoCorrect="off"
+      maxLength={32}
+      aria-label={label}
+      aria-invalid={!parsed}
+      placeholder="#6D28D9"
+      className={cn(
+        "h-8 w-32 shrink-0 rounded-full border bg-white px-3 font-mono text-xs outline-none transition",
+        parsed
+          ? "border-[#161613]/15 text-[#161613]/70 focus:border-[#161613]/40"
+          : "border-red-300 text-red-600",
+      )}
+    />
   );
 }
 

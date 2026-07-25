@@ -8,6 +8,7 @@ import { parseLayout } from "@/lib/layout";
 import { nameStatus } from "@/lib/tenant-name";
 import { tErr } from "@/lib/action-errors";
 import { activeRoleAtLeast } from "@/lib/tenant";
+import { safeHexColor } from "@/lib/color";
 
 export interface LayoutState {
   ok?: boolean;
@@ -15,7 +16,7 @@ export interface LayoutState {
 }
 
 function safeColor(v: string, fallback: string): string {
-  return /^#[0-9a-fA-F]{6}$/.test(v) ? v : fallback;
+  return safeHexColor(v, fallback);
 }
 
 /**

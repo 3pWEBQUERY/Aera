@@ -28,11 +28,10 @@ import {
   type SpaceCatalogType,
 } from "@/lib/space-catalog";
 import { planAllowsSpaceType } from "@/lib/plan-features";
+import { safeHexColor } from "@/lib/color";
 
-const HEX = /^#[0-9a-fA-F]{6}$/;
 function safeColor(value: unknown, fallback: string): string {
-  const v = String(value ?? "").trim();
-  return HEX.test(v) ? v.toLowerCase() : fallback;
+  return safeHexColor(value, fallback);
 }
 
 function selectedSpaceTypes(raw: unknown): SpaceCatalogType[] {

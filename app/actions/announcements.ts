@@ -13,12 +13,11 @@ import {
 import { tErr } from "@/lib/action-errors";
 import type { ActionState } from "./dashboard";
 import type { Prisma } from "@/app/generated/prisma/client";
+import { safeHexColor } from "@/lib/color";
 
-const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
 
 function color(v: FormDataEntryValue | null, fallback: string): string {
-  const s = String(v ?? "").trim();
-  return HEX_COLOR.test(s) ? s : fallback;
+  return safeHexColor(v, fallback);
 }
 
 function urlOrNull(v: FormDataEntryValue | null): string | null {

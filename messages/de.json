@@ -322,7 +322,8 @@
     "cancel": "Abbrechen",
     "promoLabel": "Promo-Code (optional)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
-    "promoHint": "Hast du einen Code von einem Partner oder Creator? Dann startet deine Community direkt im höheren Paket – ohne Zahlungsdaten."
+    "promoHint": "Hast du einen Code von einem Partner oder Creator? Dann startet deine Community direkt im höheren Paket – ohne Zahlungsdaten.",
+    "hexLabel": "Eigener Hex-Code"
   },
   "seed": {
     "tierDescription": "Kostenloser Zugang zur Community.",
@@ -1827,7 +1828,9 @@
       "saveBranding": "Branding speichern",
       "pickAria": "{label} wählen",
       "hexAria": "{label} als Hex-Wert",
-      "hexError": "Hex-Format: #RRGGBB"
+      "hexError": "Daraus lässt sich keine Farbe lesen.",
+      "hexHint": "Mit oder ohne #, drei- oder sechsstellig — #6D28D9, 6d28d9, #a1b oder rgb(109, 40, 217).",
+      "contrastWarning": "Auf dieser Farbe steht weiße Schrift. Sie ist so nur schwer lesbar — nimm einen dunkleren Ton."
     },
     "domain": {
       "heading": "Adresse & Domain",

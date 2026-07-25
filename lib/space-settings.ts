@@ -1,3 +1,5 @@
+import { safeHexColor } from "@/lib/color";
+
 // ---------------------------------------------------------------- Announcements
 /**
  * Community-wide announcement banners, stored in the settings JSON of the
@@ -28,10 +30,10 @@ export const ANNOUNCEMENT_DEFAULTS = {
   textColor: "#0f172a",
 };
 
-const HEX_COLOR = /^#[0-9a-fA-F]{6}$/;
+
 
 function safeAnnouncementColor(v: unknown, fallback: string): string {
-  return typeof v === "string" && HEX_COLOR.test(v) ? v : fallback;
+  return safeHexColor(v, fallback);
 }
 
 function safeUrl(v: unknown): string | null {

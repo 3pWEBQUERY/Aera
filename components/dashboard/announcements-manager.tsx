@@ -19,6 +19,7 @@ import {
   type SpaceAnnouncement,
 } from "@/lib/space-settings";
 import { cn, formatDateTime } from "@/lib/utils";
+import { normalizeHexColor } from "@/lib/color";
 
 const initial: ActionState = {};
 
@@ -197,8 +198,6 @@ export function AnnouncementsManager({
   );
 }
 
-const HEX = /^#[0-9a-fA-F]{6}$/;
-
 function ColorInput({
   label,
   name,
@@ -211,11 +210,12 @@ function ColorInput({
   onChange: (v: string) => void;
 }) {
   const [draft, setDraft] = useState(value);
-  const valid = HEX.test(draft);
+  const valid = normalizeHexColor(draft) !== null;
   const t = useTranslations("dashboard.announcements");
   const commit = (v: string) => {
     setDraft(v);
-    if (HEX.test(v)) onChange(v);
+    const hex = normalizeHexColor(v);
+    if (hex) onChange(hex);
   };
   return (
     <div>

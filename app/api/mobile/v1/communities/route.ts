@@ -15,6 +15,7 @@ import {
 } from "@/lib/space-catalog";
 import { planAllowsSpaceType } from "@/lib/plan-features";
 import { jsonError, jsonOk, parseJsonBody, requireMobileAuth } from "@/lib/mobile/api";
+import { safeHexColor } from "@/lib/color";
 
 // POST /api/mobile/v1/communities → { slug }
 // Legt eine neue Community für den eingeloggten Nutzer an (Owner-Membership,
@@ -31,8 +32,10 @@ const bodySchema = z.object({
   tagline: z.string().max(140).optional(),
   description: z.string().max(2000).optional(),
   category: z.string().max(60).optional(),
-  primaryColor: z.string().max(20).optional(),
-  accentColor: z.string().max(20).optional(),
+  // 40 statt 20 Zeichen: seit lib/color.ts wird auch "rgba(109, 40, 217, 0.5)"
+  // akzeptiert, das allein ist schon 22 Zeichen lang.
+  primaryColor: z.string().max(40).optional(),
+  accentColor: z.string().max(40).optional(),
   membershipName: z.string().max(60).optional(),
   visibility: z.enum(["PUBLIC", "MEMBERS"]).optional(),
   spaces: z.array(z.string()).max(SPACE_BLUEPRINTS.length * 2).optional(),
@@ -40,10 +43,9 @@ const bodySchema = z.object({
 });
 
 // Spiegel von app/actions/community.ts#safeColor.
-const HEX = /^#[0-9a-fA-F]{6}$/;
+
 function safeColor(value: unknown, fallback: string): string {
-  const v = String(value ?? "").trim();
-  return HEX.test(v) ? v.toLowerCase() : fallback;
+  return safeHexColor(value, fallback);
 }
 
 // Spiegel von app/actions/community.ts#selectedSpaceTypes (JSON-Parsing entfällt,

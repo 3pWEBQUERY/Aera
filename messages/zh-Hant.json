@@ -297,7 +297,8 @@
     "cancel": "Cancel",
     "promoLabel": "促銷代碼（選填）",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
-    "promoHint": "拿到合作夥伴或創作者提供的代碼了嗎？你的社群將立即以更高階方案啟用——無需提供付款資訊。"
+    "promoHint": "拿到合作夥伴或創作者提供的代碼了嗎？你的社群將立即以更高階方案啟用——無需提供付款資訊。",
+    "hexLabel": "自訂色碼"
   },
   "seed": {
     "tierDescription": "免費加入社群。",
@@ -1703,7 +1704,9 @@
       "saveBranding": "儲存品牌",
       "pickAria": "選擇 {label}",
       "hexAria": "{label} 的十六進位值",
-      "hexError": "十六進位格式：#RRGGBB"
+      "hexError": "這讀不出顏色。",
+      "hexHint": "帶不帶 # 都行，三位或六位皆可——#6D28D9、6d28d9、#a1b 或 rgb(109, 40, 217)。",
+      "contrastWarning": "這個顏色上面是白色文字，會很難辨認——請選擇更深的色調。"
     },
     "domain": {
       "heading": "位址與網域",

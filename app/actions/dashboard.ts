@@ -54,6 +54,7 @@ import {
 } from "@/lib/stripe-cleanup";
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion } from "@/lib/data-lifecycle";
+import { safeHexColor } from "@/lib/color";
 
 export interface ActionState {
   error?: string;
@@ -1493,12 +1494,13 @@ export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
 }
 
 // ---------------------------------------------------------------- Branding
-const BRAND_HEX = /^#[0-9a-fA-F]{6}$/;
-
-/** Only accept #RRGGBB — the values end up in style attributes and emails. */
+/**
+ * Die Werte landen in style-Attributen, E-Mails und OG-Bildern, also wird hier
+ * auf #rrggbb normalisiert — aber grosszuegig gelesen, damit eine Farbe nicht
+ * an ihrer Schreibweise scheitert (siehe lib/color.ts).
+ */
 function safeBrandColor(v: FormDataEntryValue | null, fallback: string): string {
-  const s = String(v ?? "").trim();
-  return BRAND_HEX.test(s) ? s : fallback;
+  return safeHexColor(v, fallback);
 }
 
 export async function updateBrandingAction(

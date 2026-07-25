@@ -13,6 +13,7 @@ import { AvatarUpload } from "./avatar-upload";
 import { CoverUpload } from "./cover-upload";
 import { Icon } from "./icons";
 import { CATEGORIES } from "@/lib/categories";
+import { contrastWithWhite, normalizeHexColor } from "@/lib/color";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
 
@@ -100,7 +101,7 @@ export function BrandingPanel({
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
-            <ColorField label={t("primaryColor")} name="primaryColor" value={primary} onChange={setPrimary} />
+            <ColorField label={t("primaryColor")} name="primaryColor" value={primary} onChange={setPrimary} warnOnWhiteText />
             <ColorField label={t("accentColor")} name="accentColor" value={accent} onChange={setAccent} />
           </div>
         </div>
@@ -150,28 +151,34 @@ export function BrandingPanel({
   );
 }
 
-const HEX_RE = /^#[0-9a-fA-F]{6}$/;
-
 function ColorField({
   label,
   name,
   value,
   onChange,
+  warnOnWhiteText,
 }: {
   label: string;
   name: string;
   value: string;
   onChange: (v: string) => void;
+  /** Auf dieser Farbe steht spaeter weisse Schrift (Header, Beitritts-Button). */
+  warnOnWhiteText?: boolean;
 }) {
-  // Local draft so the hex field is freely editable; only valid hex values
-  // propagate to the picker, preview and submitted form value.
+  // Der Rohtext bleibt stehen, wie er getippt wurde; nur die erkannte Farbe
+  // wandert nach oben. Frueher sprang das Feld beim Verlassen kommentarlos auf
+  // den alten Wert zurueck — das liest sich wie "meine Farbe wird nicht
+  // erkannt", obwohl nur die Schreibweise nicht passte.
   const [draft, setDraft] = useState(value);
-  const valid = HEX_RE.test(draft);
+  const parsed = normalizeHexColor(draft);
   const t = useTranslations("dashboard.branding");
+  const lowContrast =
+    warnOnWhiteText && parsed !== null && contrastWithWhite(parsed) < 3;
 
-  function commit(v: string) {
-    setDraft(v);
-    if (HEX_RE.test(v)) onChange(v);
+  function commit(raw: string) {
+    setDraft(raw);
+    const hex = normalizeHexColor(raw);
+    if (hex) onChange(hex);
   }
 
   return (
@@ -179,14 +186,14 @@ function ColorField({
       <Label>{label}</Label>
       <div
         className={`flex items-center gap-2 rounded-lg border p-1.5 transition focus-within:ring-2 ${
-          valid
+          parsed
             ? "border-slate-300 focus-within:border-[var(--brand)] focus-within:ring-[var(--brand-ring)]"
             : "border-red-300 focus-within:ring-red-100"
         }`}
       >
         <input
           type="color"
-          value={valid ? draft : value}
+          value={parsed ?? value}
           onChange={(e) => commit(e.target.value)}
           aria-label={t("pickAria", { label })}
           className="h-9 w-12 shrink-0 cursor-pointer rounded-md border-0 bg-transparent p-0"
@@ -194,22 +201,29 @@ function ColorField({
         <input
           type="text"
           value={draft}
-          onChange={(e) => {
-            const v = e.target.value.startsWith("#") ? e.target.value : `#${e.target.value}`;
-            commit(v.slice(0, 7));
-          }}
-          onBlur={() => {
-            if (!valid) setDraft(value); // revert invalid input
-          }}
+          onChange={(e) => commit(e.target.value)}
+          // Beim Verlassen nur aufraeumen, nicht verwerfen: aus "6d28d9" wird
+          // "#6D28D9", aus Unsinn bleibt Unsinn stehen, damit man sieht, was
+          // man geschrieben hat.
+          onBlur={() => parsed && setDraft(parsed.toUpperCase())}
           spellCheck={false}
+          autoCapitalize="off"
+          autoCorrect="off"
+          maxLength={32}
           aria-label={t("hexAria", { label })}
-          className="w-full min-w-0 bg-transparent font-mono text-sm uppercase text-slate-600 outline-none placeholder:text-slate-300"
+          aria-invalid={!parsed}
+          className="w-full min-w-0 bg-transparent font-mono text-sm text-slate-600 outline-none placeholder:text-slate-300"
           placeholder="#6D28D9"
         />
         <input type="hidden" name={name} value={value} />
       </div>
-      {!valid && (
+      {parsed ? (
+        <p className="mt-1 text-xs text-slate-400">{t("hexHint")}</p>
+      ) : (
         <p className="mt-1 text-xs text-red-600">{t("hexError")}</p>
+      )}
+      {lowContrast && (
+        <p className="mt-1 text-xs text-amber-600">{t("contrastWarning")}</p>
       )}
     </div>
   );

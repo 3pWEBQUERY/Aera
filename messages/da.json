@@ -297,7 +297,8 @@
     "cancel": "Cancel",
     "promoLabel": "Kampagnekode (valgfrit)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
-    "promoHint": "Har du en kode fra en partner eller creator? Så starter dit community direkte på den højere pakke – uden betalingsoplysninger."
+    "promoHint": "Har du en kode fra en partner eller creator? Så starter dit community direkte på den højere pakke – uden betalingsoplysninger.",
+    "hexLabel": "Egen hex-kode"
   },
   "seed": {
     "tierDescription": "Gratis adgang til fællesskabet.",
@@ -1703,7 +1704,9 @@
       "saveBranding": "Gem branding",
       "pickAria": "Vælg {label}",
       "hexAria": "{label} som hex-værdi",
-      "hexError": "Hex-format: #RRGGBB"
+      "hexError": "Det kan ikke læses som en farve.",
+      "hexHint": "Med eller uden #, tre eller seks tegn — #6D28D9, 6d28d9, #a1b eller rgb(109, 40, 217).",
+      "contrastWarning": "Der står hvid tekst på denne farve. Den er svær at læse — vælg en mørkere tone."
     },
     "domain": {
       "heading": "Adresse & domæne",
