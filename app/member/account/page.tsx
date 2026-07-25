@@ -18,6 +18,7 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { env, features } from "@/lib/env";
 import { DataPrivacySettings } from "@/components/community/data-privacy-settings";
 import { setNewsletterConsentAction } from "@/app/actions/newsletter";
+import { AERA_INK_VARS } from "@/lib/ui-theme";
 
 export async function generateMetadata() {
   const t = await getTranslations("account");
@@ -188,7 +189,7 @@ export default async function MemberAccountPage({
   return (
     <div
       className="fixed inset-0 z-[100] overflow-y-auto bg-[#f4f1ea] text-[#161613]"
-      style={{ "--brand": "#161613" } as React.CSSProperties}
+      style={AERA_INK_VARS}
     >
       {/* Top bar */}
       <header className="sticky top-0 z-10 border-b border-[#161613]/10 bg-[#f4f1ea]/90 backdrop-blur">
@@ -232,7 +233,7 @@ export default async function MemberAccountPage({
               aria-current={activeTab === tab.key ? "page" : undefined}
               className={
                 activeTab === tab.key
-                  ? "inline-flex min-h-10 items-center rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white"
+                  ? "inline-flex min-h-10 items-center rounded-xl bg-[var(--action)] px-5 text-sm font-semibold text-[var(--action-fg)]"
                   : "inline-flex min-h-10 items-center rounded-xl border border-[#161613]/15 px-5 text-sm font-semibold text-[#161613]/60 transition hover:border-[#161613]/40 hover:text-[#161613]"
               }
             >
@@ -446,7 +447,7 @@ export default async function MemberAccountPage({
                         <div className="mt-4 flex flex-wrap gap-2">
                           <Link
                             href={`/c/${m.tenant.slug}`}
-                            className="inline-flex min-h-9 items-center rounded-xl bg-[#161613] px-4 text-sm font-semibold text-white transition-colors hover:bg-[#33332e]"
+                            className="inline-flex min-h-9 items-center rounded-xl bg-[var(--action)] px-4 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
                           >
                             {t("toCommunity")}
                           </Link>

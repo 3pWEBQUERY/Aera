@@ -311,7 +311,7 @@ export function CreditsSheet({
                           type="button"
                           disabled={busy !== null || !summary.billingEnabled}
                           onClick={() => post({ action: "buy", packId: p.id }, `buy_${p.id}`)}
-                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[var(--action)] px-3 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
                         >
                           {!summary.billingEnabled
                             ? tSafety("unavailableAction")
@@ -411,7 +411,7 @@ export function CreditsSheet({
                                   "inline-flex w-full items-center justify-center rounded-xl px-2 py-2.5 text-xs font-semibold transition disabled:cursor-default sm:px-3 sm:text-sm",
                                   current
                                     ? "bg-slate-100 text-slate-400"
-                                    : "bg-slate-900 text-white hover:bg-slate-800 disabled:opacity-50",
+                                    : "bg-[var(--action)] text-[var(--action-fg)] hover:bg-[var(--action-hover)] disabled:opacity-50",
                                 )}
                               >
                                 {!summary.billingEnabled && !current

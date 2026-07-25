@@ -96,7 +96,7 @@ export function HelpManager({
         </div>
         <button
           onClick={() => open({ kind: "category", category: null })}
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
         >
           <Icon name="plus" size={18} />
           {t("createCategory")}
@@ -111,7 +111,7 @@ export function HelpManager({
         >
           <button
             onClick={() => open({ kind: "category", category: null })}
-            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
           >
             <Icon name="plus" size={18} /> {t("createCategory")}
           </button>
@@ -302,7 +302,7 @@ function FormFooter({
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
       >
         {pending ? tc("savingShort") : cta}
       </button>

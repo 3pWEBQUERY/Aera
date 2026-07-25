@@ -173,7 +173,7 @@ export default async function PayoutsPage({
               href={stripeLoginUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--action)] px-3 py-1.5 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
             >
               <Icon name="external" size={14} />
               {td("openStripe")}

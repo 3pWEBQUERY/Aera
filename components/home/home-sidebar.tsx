@@ -134,7 +134,7 @@ export function HomeSidebar({
       <div className="mt-auto space-y-3 border-t border-slate-100 p-2 lg:p-3">
         <Link
           href={loggedIn ? "/dashboard" : "/signup"}
-          className="flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-3 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
+          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-3 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
         >
           <Icon name="plus" size={18} className="shrink-0" />
           <span className="hidden lg:block">{t("create")}</span>

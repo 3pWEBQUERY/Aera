@@ -101,7 +101,7 @@ export function CreatorSlider({
         "flex h-9 w-9 items-center justify-center rounded-full transition",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
         enabled
-          ? "bg-[#161613] text-white hover:bg-[#33332e]"
+          ? "bg-[var(--action)] text-[var(--action-fg)] hover:bg-[var(--action-hover)]"
           : "bg-[#161613]/5 text-[#161613]/25",
       )}
     >

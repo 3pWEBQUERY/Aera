@@ -83,7 +83,7 @@ export function SpacesManager({
         <div className="flex flex-col items-start gap-2 sm:items-end">
           <button
             onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
-            className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] sm:self-auto"
+            className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] sm:self-auto"
           >
             <Icon name={atLimit ? "lock" : "plus"} size={18} />
             {t("createSpace")}
@@ -116,7 +116,7 @@ export function SpacesManager({
           <button
             type="button"
             onClick={() => setPlansOpen(true)}
-            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 sm:self-auto"
+            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] sm:self-auto"
           >
             {tp("upgradeCta", { plan: PLAN_LABEL[upgradePlan] })}
           </button>
@@ -134,7 +134,7 @@ export function SpacesManager({
           </p>
           <button
             onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
           >
             <Icon name="plus" size={18} />
             {t("createSpace")}
@@ -413,7 +413,7 @@ function SpaceForm({
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">
           {t("spaces.cancel")}
         </button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("spaces.saving") : isEdit ? t("spaces.saveChanges") : t("spaces.createSpace")}
         </button>
       </div>

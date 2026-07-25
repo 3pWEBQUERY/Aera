@@ -3,6 +3,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { ForgotPasswordForm } from "@/components/forms/account-forms";
 import logoBkButton from "@/public/logo_bk_button.svg";
+import { AERA_INK_VARS } from "@/lib/ui-theme";
 
 export async function generateMetadata() {
   const t = await getTranslations("uiMigration.auth");
@@ -15,7 +16,7 @@ export default async function ForgotPasswordPage() {
   return (
     <main
       className="min-h-screen bg-[#f4f1ea] text-[#161613]"
-      style={{ "--brand": "#161613" } as React.CSSProperties}
+      style={AERA_INK_VARS}
     >
       <div className="mx-auto flex max-w-md flex-col px-5 pb-24 pt-16 md:pt-20">
         <Link

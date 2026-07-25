@@ -151,7 +151,7 @@ export function GamificationManager({
                         <Input name="points" type="number" defaultValue={r.points} className="w-16 border-0 py-1.5 text-right focus:ring-0" />
                         <span className="pr-2 text-xs font-medium text-slate-400">{t("pts")}</span>
                       </div>
-                      <button aria-label={t("savePointsAria")} className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-900 text-white transition hover:bg-slate-800 active:scale-95">
+                      <button aria-label={t("savePointsAria")} className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-95">
                         <Icon name="check" size={16} />
                       </button>
                     </form>
@@ -374,7 +374,7 @@ function RuleForm({
       </div>
       <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("ruleCreating") : t("addRule")}
         </button>
       </div>
@@ -452,7 +452,7 @@ function BadgeForm({
       </div>
       <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("saving") : isEdit ? t("save") : t("createBadge")}
         </button>
       </div>

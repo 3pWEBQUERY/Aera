@@ -60,7 +60,7 @@ export function DataPrivacySettings({ email, labels }: DataPrivacySettingsProps)
         <a
           href="/api/account/export"
           download
-          className="mt-auto inline-flex min-h-10 items-center self-start rounded-xl bg-[#161613] px-5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
+          className="mt-auto inline-flex min-h-10 items-center self-start rounded-xl bg-[var(--action)] px-5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
         >
           {labels.exportButton}
         </a>

@@ -26,7 +26,7 @@ export function NewsletterUnsubscribeForm({ token }: { token: string }) {
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex min-h-11 items-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white disabled:opacity-60"
+        className="inline-flex min-h-11 items-center rounded-full bg-[var(--action)] px-5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-60"
       >
         {pending ? t("pending") : t("confirm")}
       </button>

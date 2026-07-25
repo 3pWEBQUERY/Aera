@@ -18,11 +18,14 @@ import {
 const initial: AuthState = {};
 const initialEngage: EngageState = {};
 
-/** Pill CTA — follows `--brand`, so it is ink on Aera pages and the
- *  creator's color inside a community. */
+/** Pill CTA. Innerhalb einer Community faellt er auf `--brand` zurueck und
+ *  traegt damit die Farbe des Creators. Auf den Aera-eigenen Seiten (Login,
+ *  Registrierung, Konto) setzt AERA_INK_VARS `--cta-*` auf die Aktionsfarbe —
+ *  dort ist das ein Aktionsbutton und kein Markenbutton. */
 const CTA_CLASS =
   "inline-flex min-h-12 w-full items-center justify-center rounded-xl px-7 text-base font-semibold " +
-  "text-white transition-colors duration-200 bg-[var(--brand)] hover:bg-[var(--brand-hover)] " +
+  "text-[var(--cta-fg,#fff)] transition-colors duration-200 " +
+  "bg-[var(--cta-bg,var(--brand))] hover:bg-[var(--cta-hover,var(--brand-hover))] " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 

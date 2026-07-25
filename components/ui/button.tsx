@@ -6,9 +6,15 @@ type Size = "sm" | "md" | "lg";
 
 // `--brand` defaults to Aera-violet and is overridden per tenant in the
 // community layout, so primary buttons automatically follow the whitelabel.
+// Auf den Aera-eigenen Seiten, die die Tinte als Markenfarbe fahren, setzt
+// AERA_INK_VARS zusaetzlich `--cta-*` — dort ist der gefuellte Button ein
+// Aktionsbutton und traegt die Aktionsfarbe statt der Tinte.
+const filled =
+  "bg-[var(--cta-bg,var(--brand))] text-[var(--cta-fg,#fff)] " +
+  "hover:bg-[var(--cta-hover,var(--brand-hover))]";
 const variants: Record<Variant, string> = {
-  primary: "bg-[var(--brand)] text-white hover:bg-[var(--brand-hover)]",
-  brand: "bg-[var(--brand)] text-white hover:bg-[var(--brand-hover)]",
+  primary: filled,
+  brand: filled,
   secondary: "bg-white text-slate-800 border border-slate-200 hover:bg-slate-50",
   ghost: "text-slate-600 hover:bg-slate-100",
   danger: "bg-red-600 text-white hover:bg-red-700",

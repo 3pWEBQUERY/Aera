@@ -73,7 +73,7 @@ export function PollBlock({
               <div className="flex items-center justify-between pt-1">
                 <button
                   type="submit"
-                  className="rounded-lg bg-[#161613] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#33332e]"
+                  className="rounded-lg bg-[var(--action)] px-4 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
                 >
                   {t("pollVoteCta")}
                 </button>

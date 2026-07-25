@@ -76,7 +76,7 @@ export function CoursesManager({
         </div>
         <button
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] sm:self-auto"
         >
           <Icon name="plus" size={18} />
           {t("create")}
@@ -90,7 +90,7 @@ export function CoursesManager({
           </span>
           <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
           <p className="mt-1 text-sm text-slate-500">{t("emptyHint")}</p>
-          <button onClick={() => setCreateOpen(true)} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+          <button onClick={() => setCreateOpen(true)} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
             <Icon name="plus" size={18} /> {t("create")}
           </button>
         </div>
@@ -303,7 +303,7 @@ function CourseForm({
           {isEdit ? t("close") : t("cancel")}
         </button>
         {!isEdit && (
-          <button type="submit" form={formId} disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+          <button type="submit" form={formId} disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
             {pending ? t("creating") : t("create")}
           </button>
         )}
@@ -368,7 +368,7 @@ function LessonRow({ slug, lesson }: { slug: string; lesson: LessonData }) {
             />
           </div>
           <div className="flex justify-end">
-            <button type="submit" disabled={pending} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">
+            <button type="submit" disabled={pending} className="rounded-lg bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50">
               {pending ? t("lessonSaving") : t("lessonSave")}
             </button>
           </div>

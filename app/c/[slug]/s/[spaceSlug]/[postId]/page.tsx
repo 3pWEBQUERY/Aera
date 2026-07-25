@@ -263,7 +263,7 @@ export default async function PostDetail({
                 <input type="hidden" name="space" value={spaceSlug} />
                 <input type="hidden" name="postId" value={post.id} />
                 <ImmediateAccessConsent className="mb-3" />
-                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#161613] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#33332e] active:scale-[0.99]">
+                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
                   <Icon name="lock" size={16} />
                   {post.priceCents / 100} {post.currency.toUpperCase()}
                 </button>

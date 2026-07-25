@@ -249,7 +249,7 @@ export function LayoutEditor({
             type="submit"
             disabled={pending || nameBlocks}
             title={nameBlocks ? t("nameTaken") : undefined}
-            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50"
+            className="rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
           >
             {pending ? t("saving") : t("save")}
           </button>
@@ -1249,7 +1249,7 @@ function AddNavModal({
           type="button"
           onClick={save}
           disabled={!canSave}
-          className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-40"
+          className="rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-40"
         >
           {t("save")}
         </button>

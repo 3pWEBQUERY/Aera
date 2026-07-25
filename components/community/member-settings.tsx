@@ -15,7 +15,8 @@ const initial: AccountState = {};
 
 const CTA_CLASS =
   "inline-flex min-h-11 items-center justify-center rounded-xl px-6 text-sm font-semibold " +
-  "text-white transition-colors duration-200 bg-[var(--brand)] hover:bg-[var(--brand-hover)] " +
+  "text-[var(--cta-fg,#fff)] transition-colors duration-200 " +
+  "bg-[var(--cta-bg,var(--brand))] hover:bg-[var(--cta-hover,var(--brand-hover))] " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 

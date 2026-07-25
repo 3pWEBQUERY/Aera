@@ -239,7 +239,7 @@ export function PromoCodesManager({
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
             >
               <Icon name="plus" size={17} />
               {pending ? t("creating") : t("createCta")}
@@ -325,7 +325,7 @@ export function PromoCodesManager({
                   type="button"
                   onClick={() => copy(c.code, c.id)}
                   title={t("copyCode")}
-                  className="group inline-flex items-center gap-2 rounded-xl bg-slate-900 px-3 py-2 font-mono text-sm font-bold tracking-wider text-white transition hover:bg-slate-800"
+                  className="group inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-3 py-2 font-mono text-sm font-bold tracking-wider text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
                 >
                   {c.code}
                   <Icon

@@ -298,7 +298,7 @@ export function LiveRoom({
             <button
               type="submit"
               disabled={sending || !draft.trim()}
-              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#161613] text-white transition hover:bg-[#33332e] disabled:opacity-40"
+              className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-40"
               aria-label={t("send")}
             >
               <Icon name="send" size={16} />

@@ -274,7 +274,7 @@ function ReplyForm({
             {t("cancel")}
           </button>
         )}
-        <button type="submit" disabled={pending} className="rounded-lg bg-[#161613] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#33332e] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="rounded-lg bg-[var(--action)] px-4 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50">
           {pending ? t("sending") : cta}
         </button>
       </div>

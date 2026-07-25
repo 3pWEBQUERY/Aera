@@ -15,7 +15,7 @@ function SubmitButton({ label, pendingLabel }: { label: string; pendingLabel: st
   return (
     <button
       disabled={pending}
-      className="inline-flex items-center gap-2 rounded-xl bg-[#161613] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#33332e] disabled:opacity-50"
+      className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
     >
       <Icon name="heart" size={15} /> {pending ? pendingLabel : label}
     </button>

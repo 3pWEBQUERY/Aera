@@ -12,6 +12,16 @@
 :root {
   --brand: #6d28d9;
   --brand-accent: #ec4899;
+
+  /* Aktionsfarbe der gefuellten Buttons in der App. Die beiden Marketing-
+     Seiten (/ und /features) fuehren ihre eigene, schwarze Pille ueber
+     <PillLink tone="dark"> und bleiben davon bewusst unberuehrt.
+     Ein Token statt einer Klasse, damit der Ton an genau einer Stelle
+     verstellbar ist — vorher lagen zwei Schwarztoene (slate-900 und #161613)
+     ueber 144 Stellen verstreut. */
+  --action: #d8cfef;
+  --action-hover: #c8bcea;
+  --action-fg: #161613;
 }
 
 html {

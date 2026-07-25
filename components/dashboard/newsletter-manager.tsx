@@ -95,7 +95,7 @@ export function NewsletterManager({
         </div>
         <button
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 self-start rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
+          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
         >
           <Icon name="plus" size={18} /> {t("createCampaign")}
         </button>
@@ -111,7 +111,7 @@ export function NewsletterManager({
           <p className="mt-1 text-sm text-slate-500">{t("emptyCampaignsHint")}</p>
           <button
             onClick={() => setCreateOpen(true)}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
           >
             <Icon name="plus" size={18} /> {t("createCampaign")}
           </button>
@@ -148,7 +148,7 @@ export function NewsletterManager({
                   <form action={sendCampaignAction} onClick={(e) => e.stopPropagation()}>
                     <input type="hidden" name="tenant" value={slug} />
                     <input type="hidden" name="campaignId" value={c.id} />
-                    <button className="inline-flex items-center gap-1.5 rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                    <button className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--action)] px-3 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
                       <Icon name="newsletter" size={14} /> {t("send")}
                     </button>
                   </form>
@@ -461,7 +461,7 @@ function CampaignForm({
       </div>
       <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("saving") : isEdit ? t("save") : t("saveDraft")}
         </button>
       </div>
@@ -597,7 +597,7 @@ function SegmentsPanel({
           </div>
         </div>
         <div className="flex justify-end">
-          <button type="submit" disabled={pending} className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2">
+          <button type="submit" disabled={pending} className="rounded-lg bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2">
             {pending ? t("creatingSegment") : t("createSegmentBtn")}
           </button>
         </div>
