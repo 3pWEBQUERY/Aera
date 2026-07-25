@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
+import { isPathActive } from "@/lib/utils";
 
 export interface RailCommunity {
   slug: string;
@@ -48,7 +49,7 @@ export function CommunityRail({
       <div className="flex w-full flex-1 flex-col items-center gap-2 overflow-y-auto py-1">
         {communities.map((c) => {
           const active =
-            c.slug === activeSlug || pathname.startsWith(`/dashboard/${c.slug}`);
+            c.slug === activeSlug || isPathActive(pathname, `/dashboard/${c.slug}`);
           return (
             <Link
               key={c.slug}

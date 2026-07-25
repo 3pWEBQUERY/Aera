@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
+import { cn, isPathActive } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import {
@@ -20,6 +20,12 @@ interface NavItem {
   icon: IconName;
   /** Gated behind a package — the entry stays visible, but shows a lock. */
   feature?: FeatureKey;
+  /**
+   * Nur der Punkt selbst faerbt sich, nicht seine Unterseiten. Fuer /spaces:
+   * die einzelnen Spaces stehen weiter unten mit eigenen Eintraegen in der
+   * Sidebar — ohne das leuchteten auf einer Space-Seite zwei Punkte auf.
+   */
+  exact?: boolean;
 }
 export interface NavSpace {
   slug: string;
@@ -32,7 +38,7 @@ const groupsBefore: { labelKey: string; items: NavItem[] }[] = [
     labelKey: "manage",
     items: [
       { href: "", labelKey: "overview", icon: "dashboard" },
-      { href: "/spaces", labelKey: "spaces", icon: "spaces" },
+      { href: "/spaces", labelKey: "spaces", icon: "spaces", exact: true },
       { href: "/media", labelKey: "media", icon: "gallery" },
       { href: "/planner", labelKey: "planner", icon: "events", feature: "planner" },
       { href: "/members", labelKey: "members", icon: "members" },
@@ -117,11 +123,10 @@ export function DashboardNav({
         <nav className="space-y-0.5">
           {group.items.map((it) => {
             const href = base + it.href;
-            // Sub-pages (e.g. /media/studio) keep their section highlighted.
-            const active =
-              it.href === ""
-                ? pathname === base
-                : pathname === href || pathname.startsWith(`${href}/`);
+            // Sub-pages (e.g. /media/studio) keep their section highlighted —
+            // ausser der Eintrag ist als `exact` markiert, weil seine
+            // Unterseiten eigene Eintraege haben.
+            const active = isPathActive(pathname, href, it.href === "" || it.exact);
             // Locked entries stay visible on purpose: seeing what the next
             // package adds is what makes a creator click it.
             const locked = it.feature ? !planAllowsFeature(plan, it.feature) : false;
@@ -186,7 +191,7 @@ export function DashboardNav({
             ) : (
               spaces.map((s) => {
                 const href = `${base}/spaces/${s.slug}`;
-                const active = pathname === href;
+                const active = isPathActive(pathname, href);
                 return (
                   <Link
                     key={s.slug}

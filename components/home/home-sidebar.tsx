@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, isPathActive } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Avatar } from "@/components/ui/misc";
 import { useTranslations } from "next-intl";
@@ -93,7 +93,7 @@ export function HomeSidebar({
           </p>
           <div className="space-y-0.5">
             {communities.map((c) => {
-              const active = pathname.startsWith(`/c/${c.slug}`);
+              const active = isPathActive(pathname, `/c/${c.slug}`);
               return (
                 <Link
                   key={c.slug}

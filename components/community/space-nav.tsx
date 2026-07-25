@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, isPathActive } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 
 const typeIcon: Record<string, IconName> = {
@@ -44,7 +44,7 @@ export function SpaceNav({
       </Link>
       {spaces.map((s) => {
         const href = `/c/${slug}/s/${s.slug}`;
-        const active = pathname.startsWith(href);
+        const active = isPathActive(pathname, href);
         return (
           <Link key={s.slug} href={href} className={itemClass(active)}>
             <Icon
@@ -61,14 +61,14 @@ export function SpaceNav({
       })}
       <Link
         href={`/c/${slug}/leaderboard`}
-        className={itemClass(pathname.startsWith(`/c/${slug}/leaderboard`))}
+        className={itemClass(isPathActive(pathname, `/c/${slug}/leaderboard`))}
       >
         <Icon name="gamification" size={17} className="shrink-0 text-[#161613]/50" />
         Leaderboard
       </Link>
       <Link
         href={`/c/${slug}/members`}
-        className={itemClass(pathname.startsWith(`/c/${slug}/members`))}
+        className={itemClass(isPathActive(pathname, `/c/${slug}/members`))}
       >
         <Icon name="members" size={17} className="shrink-0 text-[#161613]/50" />
         Mitglieder

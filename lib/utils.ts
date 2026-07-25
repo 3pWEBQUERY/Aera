@@ -6,6 +6,22 @@ export function cn(...parts: Array<string | false | null | undefined>): string {
   return parts.filter(Boolean).join(" ");
 }
 
+/**
+ * Ist `href` der gerade offene Pfad?
+ *
+ * `exact` faerbt nur den Punkt selbst — noetig, wenn seine Unterseiten eigene
+ * Eintraege in derselben Navigation haben (z. B. /spaces und die einzelnen
+ * Spaces darunter): sonst leuchten zwei Punkte gleichzeitig.
+ *
+ * Sonst zaehlen Unterseiten mit, aber nur an einer Pfadgrenze. Ein blosses
+ * startsWith wuerde /c/x/s/video auch bei geoeffnetem /c/x/s/videos
+ * hervorheben — Slugs sind haeufig Praefixe voneinander.
+ */
+export function isPathActive(pathname: string, href: string, exact = false): boolean {
+  if (exact) return pathname === href;
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function slugify(input: string): string {
   return input
     .toLowerCase()
