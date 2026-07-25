@@ -4129,7 +4129,21 @@
       "inviteHeading": "Welcome to {community}",
       "inviteBody": "You were invited to “{community}” on Aera. Set a password to activate your account.",
       "inviteCta": "Accept invitation",
-      "inviteHint": "The link is valid for 7 days."
+      "inviteHint": "The link is valid for 7 days.",
+      "supportReplySubject": "Antwoord op je vraag: {subject}",
+      "supportReplyHeading": "We hebben geantwoord",
+      "supportReplyIntro": "Hallo, hier is ons antwoord op je vraag aan de Aera-support.",
+      "supportSubjectLabel": "Onderwerp",
+      "supportReplyCtaMember": "Openen in je account",
+      "supportReplyCtaGuest": "Antwoorden",
+      "supportReplyHintMember": "Je volledige gesprek staat in je account onder „Support“. Daar kun je direct terugschrijven.",
+      "supportReplyHintGuest": "Antwoord alsjeblieft niet rechtstreeks op deze e-mail — die mailbox wordt niet gelezen. Gebruik de knop hierboven om ons opnieuw te bereiken.",
+      "supportInboundSubjectNew": "Nieuw ticket: {subject}",
+      "supportInboundSubjectReply": "Nieuw antwoord: {subject}",
+      "supportInboundHeading": "Bericht van {from}",
+      "supportInboundIntro": "Er wacht een nieuw bericht in de support.",
+      "supportInboundCta": "Openen in admin",
+      "supportInboundHint": "Antwoord alsjeblieft in het adminbereik en niet per mail aan {email} — anders ontbreekt het antwoord in het gesprek."
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",

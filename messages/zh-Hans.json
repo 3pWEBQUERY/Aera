@@ -4129,7 +4129,21 @@
       "inviteHeading": "Welcome to {community}",
       "inviteBody": "You were invited to “{community}” on Aera. Set a password to activate your account.",
       "inviteCta": "Accept invitation",
-      "inviteHint": "The link is valid for 7 days."
+      "inviteHint": "The link is valid for 7 days.",
+      "supportReplySubject": "关于你的咨询的回复：{subject}",
+      "supportReplyHeading": "我们已回复",
+      "supportReplyIntro": "你好，这是我们对你向 Aera 支持团队提出的咨询的回复。",
+      "supportSubjectLabel": "主题",
+      "supportReplyCtaMember": "在账户中打开",
+      "supportReplyCtaGuest": "回复",
+      "supportReplyHintMember": "完整的往来记录在你账户的“支持”中，可以直接在那里回复。",
+      "supportReplyHintGuest": "请不要直接回复这封邮件——该邮箱无人查看。如需再次联系我们，请使用上方按钮。",
+      "supportInboundSubjectNew": "新工单：{subject}",
+      "supportInboundSubjectReply": "新回复：{subject}",
+      "supportInboundHeading": "来自 {from} 的消息",
+      "supportInboundIntro": "支持中有一条新消息。",
+      "supportInboundCta": "在管理后台打开",
+      "supportInboundHint": "请在管理后台回复，而不是发邮件到 {email}——否则回复不会出现在记录里。"
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",

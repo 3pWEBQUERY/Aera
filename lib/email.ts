@@ -131,3 +131,36 @@ export function renderAccountActionHtml(args: {
     <div style="padding:16px 24px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px">${escapeHtml(args.footerLabel)}</div>
   </div></body></html>`;
 }
+
+/**
+ * Support-Antwort. Eigener Renderer statt renderAccountActionHtml: hier ist
+ * die Nachricht selbst der Inhalt, nicht ein Beiwerk zum Button — sie braucht
+ * erhaltene Zeilenumbrueche und eine sichtbare Abgrenzung vom Rahmen.
+ */
+export function renderSupportHtml(args: {
+  heading: string;
+  intro: string;
+  subjectLabel: string;
+  subject: string;
+  message: string;
+  ctaLabel: string;
+  ctaUrl: string;
+  hint: string;
+  footerLabel: string;
+}): string {
+  // Erst escapen, dann Umbrueche zu <br> — nie umgekehrt, sonst waere das
+  // <br> selbst wieder escaped bzw. Fremdtext koennte Markup einschleusen.
+  const message = escapeHtml(args.message).replace(/\r?\n/g, "<br/>");
+  return `<!doctype html><html><body style="margin:0;background:#f3f4f6;padding:24px;font-family:-apple-system,Segoe UI,Roboto,sans-serif">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb">
+    <div style="padding:28px 24px 0;font-weight:700;font-size:20px;color:#0f172a">${escapeHtml(args.heading)}</div>
+    <div style="padding:12px 24px 0;line-height:1.6;color:#1f2937">${escapeHtml(args.intro)}</div>
+    <div style="padding:16px 24px 0;color:#6b7280;font-size:13px">${escapeHtml(args.subjectLabel)} <strong style="color:#0f172a">${escapeHtml(args.subject)}</strong></div>
+    <div style="margin:12px 24px 0;padding:16px 18px;background:#f8fafc;border-left:3px solid #0f172a;border-radius:8px;line-height:1.6;color:#1f2937">${message}</div>
+    <div style="padding:24px">
+      <a href="${escapeHtml(args.ctaUrl)}" style="display:inline-block;background:#0f172a;color:#fff;text-decoration:none;font-weight:600;padding:12px 22px;border-radius:9999px">${escapeHtml(args.ctaLabel)}</a>
+    </div>
+    <div style="padding:0 24px 24px;color:#6b7280;font-size:13px;line-height:1.5">${escapeHtml(args.hint)}</div>
+    <div style="padding:16px 24px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px">${escapeHtml(args.footerLabel)}</div>
+  </div></body></html>`;
+}

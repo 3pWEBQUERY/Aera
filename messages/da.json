@@ -4129,7 +4129,21 @@
       "inviteHeading": "Welcome to {community}",
       "inviteBody": "You were invited to “{community}” on Aera. Set a password to activate your account.",
       "inviteCta": "Accept invitation",
-      "inviteHint": "The link is valid for 7 days."
+      "inviteHint": "The link is valid for 7 days.",
+      "supportReplySubject": "Svar på din henvendelse: {subject}",
+      "supportReplyHeading": "Vi har svaret",
+      "supportReplyIntro": "Hej, her er vores svar på din henvendelse til Aera-supporten.",
+      "supportSubjectLabel": "Emne",
+      "supportReplyCtaMember": "Åbn i din konto",
+      "supportReplyCtaGuest": "Svar",
+      "supportReplyHintMember": "Hele forløbet finder du på din konto under „Support“. Der kan du svare direkte.",
+      "supportReplyHintGuest": "Svar venligst ikke direkte på denne e-mail — postkassen bliver ikke læst. Brug knappen ovenfor for at kontakte os igen.",
+      "supportInboundSubjectNew": "Ny sag: {subject}",
+      "supportInboundSubjectReply": "Nyt svar: {subject}",
+      "supportInboundHeading": "Besked fra {from}",
+      "supportInboundIntro": "Der venter en ny besked i supporten.",
+      "supportInboundCta": "Åbn i admin",
+      "supportInboundHint": "Svar venligst i admin-området og ikke pr. mail til {email} — ellers mangler svaret i forløbet."
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",

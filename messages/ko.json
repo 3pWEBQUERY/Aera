@@ -4129,7 +4129,21 @@
       "inviteHeading": "Welcome to {community}",
       "inviteBody": "You were invited to “{community}” on Aera. Set a password to activate your account.",
       "inviteCta": "Accept invitation",
-      "inviteHint": "The link is valid for 7 days."
+      "inviteHint": "The link is valid for 7 days.",
+      "supportReplySubject": "문의에 대한 답변: {subject}",
+      "supportReplyHeading": "답변을 보냈습니다",
+      "supportReplyIntro": "안녕하세요. Aera 지원팀에 보내신 문의에 대한 답변입니다.",
+      "supportSubjectLabel": "제목",
+      "supportReplyCtaMember": "계정에서 열기",
+      "supportReplyCtaGuest": "답장하기",
+      "supportReplyHintMember": "전체 대화는 계정의 ‘지원’에서 확인할 수 있고, 거기서 바로 답장할 수 있습니다.",
+      "supportReplyHintGuest": "이 메일에는 직접 답장하지 말아 주세요. 해당 사서함은 확인하지 않습니다. 다시 문의하시려면 위 버튼을 이용해 주세요.",
+      "supportInboundSubjectNew": "새 티켓: {subject}",
+      "supportInboundSubjectReply": "새 답장: {subject}",
+      "supportInboundHeading": "{from} 님의 메시지",
+      "supportInboundIntro": "지원함에 새 메시지가 있습니다.",
+      "supportInboundCta": "관리자에서 열기",
+      "supportInboundHint": "{email} 로 메일을 보내지 말고 관리자 화면에서 답변해 주세요. 그렇지 않으면 대화에 남지 않습니다."
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",

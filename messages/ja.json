@@ -4129,7 +4129,21 @@
       "inviteHeading": "Welcome to {community}",
       "inviteBody": "You were invited to “{community}” on Aera. Set a password to activate your account.",
       "inviteCta": "Accept invitation",
-      "inviteHint": "The link is valid for 7 days."
+      "inviteHint": "The link is valid for 7 days.",
+      "supportReplySubject": "お問い合わせへの回答: {subject}",
+      "supportReplyHeading": "回答しました",
+      "supportReplyIntro": "こんにちは。Aera サポートへのお問い合わせに回答いたします。",
+      "supportSubjectLabel": "件名",
+      "supportReplyCtaMember": "アカウントで開く",
+      "supportReplyCtaGuest": "返信する",
+      "supportReplyHintMember": "やり取りの全文はアカウントの「サポート」にあります。そこから直接返信できます。",
+      "supportReplyHintGuest": "このメールには直接返信しないでください。受信箱は確認していません。もう一度ご連絡いただく場合は上のボタンをご利用ください。",
+      "supportInboundSubjectNew": "新しいチケット: {subject}",
+      "supportInboundSubjectReply": "新しい返信: {subject}",
+      "supportInboundHeading": "{from} からのメッセージ",
+      "supportInboundIntro": "サポートに新しいメッセージが届いています。",
+      "supportInboundCta": "管理画面で開く",
+      "supportInboundHint": "返信は {email} へのメールではなく管理画面で行ってください。そうしないと履歴に残りません。"
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",

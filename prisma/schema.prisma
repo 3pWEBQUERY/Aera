@@ -2349,6 +2349,9 @@ model SupportTicket {
   name    String?
   subject String
   status  SupportTicketStatus @default(OPEN)
+  /// Sprache, in der uns die Person geschrieben hat. Ohne dieses Feld liefe
+  /// unsere Antwort in der Sprache des antwortenden Admins hinaus.
+  locale  String?
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

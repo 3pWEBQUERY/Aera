@@ -58,7 +58,12 @@ export async function createTicket(input: {
   name: string | null;
   subject: string;
   body: string;
-}): Promise<{ id: string }> {
+  /**
+   * Sprache des Absenders. Wird beim Anlegen festgehalten, weil unsere Antwort
+   * sonst in der Sprache des antwortenden Admins herausginge.
+   */
+  locale: string | null;
+}): Promise<{ id: string; messageId: string }> {
   const now = new Date();
   const ticket = await systemPrisma.supportTicket.create({
     data: {
@@ -66,6 +71,7 @@ export async function createTicket(input: {
       email: normalizeEmail(input.email),
       name: input.name?.trim().slice(0, 120) || null,
       subject: input.subject.trim().slice(0, SUBJECT_MAX),
+      locale: input.locale,
       lastMessageAt: now,
       messages: {
         create: {
@@ -77,17 +83,22 @@ export async function createTicket(input: {
         },
       },
     },
-    select: { id: true },
+    select: { id: true, messages: { select: { id: true } } },
   });
-  return ticket;
+  return { id: ticket.id, messageId: ticket.messages[0].id };
 }
 
-/** Reply from the member. Reopens the ticket — the ball is back with us. */
+/**
+ * Reply from the member. Reopens the ticket — the ball is back with us.
+ * Gibt die Id der geschriebenen Nachricht zurueck, damit der Aufrufer genau
+ * diese Nachricht per Mail ankuendigen kann (und nicht "die letzte", was bei
+ * zwei gleichzeitigen Antworten die falsche waere).
+ */
 export async function replyAsUser(input: {
   ticketId: string;
   userId: string;
   body: string;
-}): Promise<boolean> {
+}): Promise<{ messageId: string } | null> {
   const now = new Date();
   // Ownership im Where, nicht im Vorher-Check: sonst waere zwischen Pruefung
   // und Schreiben ein Fenster offen.
@@ -95,9 +106,9 @@ export async function replyAsUser(input: {
     where: { id: input.ticketId, userId: input.userId },
     select: { id: true },
   });
-  if (!owned) return false;
+  if (!owned) return null;
 
-  await systemPrisma.$transaction([
+  const [message] = await systemPrisma.$transaction([
     systemPrisma.supportMessage.create({
       data: {
         ticketId: owned.id,
@@ -106,13 +117,14 @@ export async function replyAsUser(input: {
         authorId: input.userId,
         readByUserAt: now,
       },
+      select: { id: true },
     }),
     systemPrisma.supportTicket.update({
       where: { id: owned.id },
       data: { status: "OPEN", lastMessageAt: now },
     }),
   ]);
-  return true;
+  return { messageId: message.id };
 }
 
 /** Reply from the platform team. */
@@ -121,15 +133,15 @@ export async function replyAsStaff(input: {
   staffUserId: string;
   body: string;
   close?: boolean;
-}): Promise<boolean> {
+}): Promise<{ messageId: string } | null> {
   const now = new Date();
   const ticket = await systemPrisma.supportTicket.findUnique({
     where: { id: input.ticketId },
     select: { id: true },
   });
-  if (!ticket) return false;
+  if (!ticket) return null;
 
-  await systemPrisma.$transaction([
+  const [message] = await systemPrisma.$transaction([
     systemPrisma.supportMessage.create({
       data: {
         ticketId: ticket.id,
@@ -138,6 +150,7 @@ export async function replyAsStaff(input: {
         authorId: input.staffUserId,
         readByStaffAt: now,
       },
+      select: { id: true },
     }),
     systemPrisma.supportTicket.update({
       where: { id: ticket.id },
@@ -152,7 +165,7 @@ export async function replyAsStaff(input: {
       data: { readByStaffAt: now },
     }),
   ]);
-  return true;
+  return { messageId: message.id };
 }
 
 export async function setTicketStatus(

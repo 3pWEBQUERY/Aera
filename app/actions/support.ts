@@ -2,11 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
+import { getLocale } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { rateLimit } from "@/lib/rate-limit";
 import { writeAudit } from "@/lib/audit";
 import { tErr } from "@/lib/action-errors";
+import { notifyTeamOfInbound, notifyTicketReply } from "@/lib/support-mail";
 import {
   BODY_MAX,
   SUBJECT_MAX,
@@ -71,6 +73,16 @@ export async function createTicketAction(
     name,
     subject,
     body,
+    // Die Sprache der aktuellen Anfrage — in ihr antworten wir spaeter.
+    locale: await getLocale(),
+  });
+
+  // Nach dem Schreiben, nie davor: ein Ausfall beim Mail-Anbieter darf das
+  // bereits angelegte Ticket nicht zunichtemachen.
+  await notifyTeamOfInbound({
+    ticketId: ticket.id,
+    messageId: ticket.messageId,
+    isNewTicket: true,
   });
 
   await writeAudit({
@@ -105,12 +117,18 @@ export async function replyTicketAction(
 
   // replyAsUser prüft die Zugehörigkeit selbst — ein fremdes Ticket ist von
   // hier aus nicht erreichbar, egal welche id gepostet wird.
-  const ok = await replyAsUser({
+  const reply = await replyAsUser({
     ticketId: String(fd.get("ticketId") || ""),
     userId: user.id,
     body,
   });
-  if (!ok) return { error: await tErr("noAccess") };
+  if (!reply) return { error: await tErr("noAccess") };
+
+  await notifyTeamOfInbound({
+    ticketId: String(fd.get("ticketId") || ""),
+    messageId: reply.messageId,
+    isNewTicket: false,
+  });
 
   revalidatePath("/member/account");
   revalidatePath("/admin/support");
@@ -129,13 +147,20 @@ export async function replyStaffAction(
     return { error: await tErr("supportBodyInvalid") };
   }
 
-  const ok = await replyAsStaff({
+  const reply = await replyAsStaff({
     ticketId: String(fd.get("ticketId") || ""),
     staffUserId: admin.id,
     body,
     close: fd.get("close") === "on",
   });
-  if (!ok) return { error: await tErr("invalidInput") };
+  if (!reply) return { error: await tErr("invalidInput") };
+
+  // Ohne diese Mail erfaehrt vor allem ein Gast nie, dass wir geantwortet
+  // haben — er hat keinen Zugang zum Verlauf in der App.
+  await notifyTicketReply({
+    ticketId: String(fd.get("ticketId") || ""),
+    messageId: reply.messageId,
+  });
 
   await writeAudit({
     actorUserId: admin.id,
