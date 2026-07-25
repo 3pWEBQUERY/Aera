@@ -81,14 +81,20 @@ async function resolveHost(host: string): Promise<string | null> {
   }
 }
 
-const SHARED_PATH_PREFIXES = [
+/**
+ * Paths that must work on EVERY host and are never redirected away:
+ *
+ * - /api, /_next  — community pages fetch these relative; a cross-origin
+ *   redirect would break POSTs and server actions.
+ * - auth routes   — a member joining on a custom domain has to be able to log
+ *   in there; that host needs its own session.
+ * - legal/help    — linked from community footers and embedded in the purchase
+ *   consent flow, where bouncing off-domain mid-checkout would be hostile.
+ * - robots/sitemap/manifest — deliberately per-host.
+ */
+const HOST_NEUTRAL_PREFIXES = [
   "/api",
   "/_next",
-  "/dashboard",
-  "/admin",
-  "/member",
-  "/home",
-  "/start",
   "/login",
   "/signup",
   "/forgot",
@@ -97,8 +103,6 @@ const SHARED_PATH_PREFIXES = [
   "/verify",
   "/legal",
   "/unsubscribe",
-  "/features",
-  "/pricing",
   "/hilfe",
   "/impressum",
   "/agb",
@@ -109,10 +113,42 @@ const SHARED_PATH_PREFIXES = [
   "/sitemap.xml",
 ] as const;
 
-function isSharedPath(pathname: string): boolean {
-  return SHARED_PATH_PREFIXES.some(
+/**
+ * Platform surfaces that belong on the apex. Served on a tenant host they
+ * produce URLs like tenant.aera.so/home whose relative links then keep the
+ * wrong host — which is how /home's "Deine Communities" ended up linking to
+ * tenant.aera.so/c/other. They also duplicate the same content under every
+ * tenant host for search engines.
+ */
+const PLATFORM_ONLY_PREFIXES = [
+  "/home",
+  "/member",
+  "/dashboard",
+  "/admin",
+  "/start",
+  "/features",
+  "/pricing",
+] as const;
+
+function matchesPrefix(
+  pathname: string,
+  prefixes: readonly string[],
+): boolean {
+  return prefixes.some(
     (prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`),
   );
+}
+
+/** The canonical platform origin, from trusted deployment config only. */
+function apexOrigin(): string | null {
+  const configured = (process.env.APP_URL ?? "").trim();
+  if (!configured) return null;
+  try {
+    const url = new URL(configured);
+    return ["http:", "https:"].includes(url.protocol) ? url.origin : null;
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -136,15 +172,19 @@ function isStaticAsset(pathname: string): boolean {
 function rewriteToCommunity(req: NextRequest, slug: string) {
   const rewritten = req.nextUrl.clone();
   const path = req.nextUrl.pathname;
-  const prefix = `/c/${slug}`;
-  // Links inside a community hardcode /c/<slug>/… . When such a request arrives
-  // on a subdomain or custom domain, the path already targets this community —
-  // so do not add a second /c/<slug> prefix (that caused a 404). Both the clean
-  // path (/s/blog) and the prefixed path (/c/<slug>/s/blog) resolve correctly.
-  if (path === prefix || path.startsWith(`${prefix}/`)) {
+
+  // A /c/<slug> path already names the community it wants — on ANY host. Only
+  // host-relative paths (/s/blog, /join, /) belong to the host's community and
+  // need the prefix.
+  //
+  // This used to special-case only the host's own slug, so a link to a
+  // different community from a tenant domain became /c/thegnd/c/visiocom and
+  // 404'd. That is exactly what "Deine Communities" on /home links to, which
+  // made every other community unreachable from a tenant host.
+  if (path === "/c" || path.startsWith("/c/")) {
     rewritten.pathname = path;
   } else {
-    rewritten.pathname = `${prefix}${path === "/" ? "" : path}`;
+    rewritten.pathname = `/c/${slug}${path === "/" ? "" : path}`;
   }
   return NextResponse.rewrite(rewritten);
 }
@@ -172,7 +212,26 @@ export async function proxy(req: NextRequest) {
     hostname === "localhost" ||
     hostname === "127.0.0.1";
 
-  if (isApex || isSharedPath(url.pathname) || isStaticAsset(url.pathname)) {
+  if (isApex) return NextResponse.next();
+
+  if (
+    isStaticAsset(url.pathname) ||
+    matchesPrefix(url.pathname, HOST_NEUTRAL_PREFIXES)
+  ) {
+    return NextResponse.next();
+  }
+
+  // Platform pages belong on the apex. Only safe methods are redirected: a
+  // server action POST bounced cross-origin would fail its Origin check, so
+  // those are left alone rather than turned into a confusing error.
+  if (matchesPrefix(url.pathname, PLATFORM_ONLY_PREFIXES)) {
+    const origin = apexOrigin();
+    if (origin && (req.method === "GET" || req.method === "HEAD")) {
+      return NextResponse.redirect(
+        new URL(`${url.pathname}${url.search}`, origin),
+        308,
+      );
+    }
     return NextResponse.next();
   }
 

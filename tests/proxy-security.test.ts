@@ -129,6 +129,88 @@ describe("host-based proxy security", () => {
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
+  it("keeps an explicit /c/<slug> path pointing at that community, on any host", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse({ slug: "thegnd" })),
+    );
+
+    // Regression: "Deine Communities" links to /c/<other>. On a tenant host this
+    // became /c/thegnd/c/visiocom — a 404 that made every other community
+    // unreachable without manually editing the address bar.
+    const response = await proxy(
+      new NextRequest("https://thegnd.aera.so/c/visiocom", {
+        headers: { host: "thegnd.aera.so" },
+      }),
+    );
+    const rewrite = response.headers.get("x-middleware-rewrite");
+    expect(rewrite).toContain("/c/visiocom");
+    expect(rewrite).not.toContain("/c/thegnd/c/");
+
+    // The host's own community keeps working through both spellings.
+    for (const path of ["/s/blog", "/c/thegnd/s/blog"]) {
+      const res = await proxy(
+        new NextRequest(`https://thegnd.aera.so${path}`, {
+          headers: { host: "thegnd.aera.so" },
+        }),
+      );
+      expect(res.headers.get("x-middleware-rewrite")).toContain("/c/thegnd/s/blog");
+    }
+  });
+
+  it("sends platform pages on a tenant host back to the apex", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ slug: "thegnd" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    for (const path of ["/home", "/member/account", "/dashboard", "/pricing"]) {
+      const response = await proxy(
+        new NextRequest(`https://thegnd.aera.so${path}?from=/home`, {
+          headers: { host: "thegnd.aera.so" },
+        }),
+      );
+      expect(response.status).toBe(308);
+      expect(response.headers.get("location")).toBe(
+        `https://aera.so${path}?from=/home`,
+      );
+    }
+    // A platform page never belongs to a tenant, so it must not cost a lookup.
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("never redirects host-neutral routes away from a community domain", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse({ slug: "safe-community" })),
+    );
+
+    // Auth must stay put: a custom-domain member needs a session for that host.
+    // /api must stay put: a redirect would break POSTs and server actions.
+    for (const path of ["/login", "/signup", "/api/health/live", "/robots.txt"]) {
+      const response = await proxy(
+        new NextRequest(`https://verified-community.example${path}`, {
+          headers: { host: "verified-community.example" },
+        }),
+      );
+      expect(response.status, `${path} must not redirect`).toBe(200);
+      expect(response.headers.get("x-middleware-rewrite")).toBeNull();
+    }
+  });
+
+  it("leaves non-GET requests on the tenant host instead of bouncing them", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(jsonResponse({ slug: "thegnd" })),
+    );
+
+    const response = await proxy(
+      new NextRequest("https://thegnd.aera.so/dashboard", {
+        method: "POST",
+        headers: { host: "thegnd.aera.so" },
+      }),
+    );
+    expect(response.status).toBe(200);
+  });
+
   it("still rewrites actual community content on a verified custom domain", async () => {
     vi.stubGlobal(
       "fetch",
