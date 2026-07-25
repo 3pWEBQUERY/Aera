@@ -86,6 +86,24 @@ body {
   }
 }
 
+/* 404 backdrop: the full-size scene fades over its blurred placeholder. */
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.backdrop-in {
+  animation: backdrop-in 0.7s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .backdrop-in {
+    animation: none;
+  }
+}
+
 /* Soft entrance for header popovers (language switcher & co.). */
 @keyframes popover-in {
   from {
