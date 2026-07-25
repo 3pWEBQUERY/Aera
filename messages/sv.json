@@ -259,7 +259,35 @@
         "tagline": "Banners och kampanjer"
       },
       "lockedHint": "Tillgänglig från paketet {plan}",
-      "lockedNote": "Låsta format låser du upp på sekunder med en uppgradering efter lanseringen — din community förblir precis som den är."
+      "lockedNote": "Låsta format låser du upp på sekunder med en uppgradering efter lanseringen — din community förblir precis som den är.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-timmars ögonblick"
+      },
+      "CHAT": {
+        "name": "Chatt",
+        "tagline": "Grupp- & direktchatt"
+      },
+      "TIPS": {
+        "name": "Tips",
+        "tagline": "Stöd & målframsteg"
+      },
+      "CALENDAR": {
+        "name": "Kalender",
+        "tagline": "Datum & releaser"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & livechatt"
+      },
+      "BOOKING": {
+        "name": "Bokningar",
+        "tagline": "Boka 1:1-tider"
+      },
+      "REQUESTS": {
+        "name": "Önskemål",
+        "tagline": "Önskemål & röstning"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Kampanjkod (valfritt)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Hjälpartiklar och dokumentation.",
       "PODCAST": "Ljudavsnitt att lyssna på — gratis eller exklusiva.",
       "LINKS": "Utvalda länkar till allt som är du.",
-      "ADS": "Dina egna reklambanners för startsidan."
+      "ADS": "Dina egna reklambanners för startsidan.",
+      "STORIES": "Korta inlägg som försvinner efter 24 timmar.",
+      "CHAT": "Livesamtal mellan dina medlemmar.",
+      "TIPS": "Låt din community stötta dig direkt.",
+      "CALENDAR": "Alla datum och releaser på ett ställe.",
+      "LIVE": "Livesändningar med chatt för dina medlemmar.",
+      "BOOKING": "1:1-tider som dina medlemmar bokar själva.",
+      "REQUESTS": "Önskemål och specialförfrågningar från din community."
     }
   },
   "library": {

@@ -259,7 +259,35 @@
         "tagline": "Banners e campanhas"
       },
       "lockedHint": "Disponível a partir do pacote {plan}",
-      "lockedNote": "Formatos bloqueados são liberados em segundos com um upgrade após o lançamento — sua comunidade continua exatamente como está."
+      "lockedNote": "Formatos bloqueados são liberados em segundos com um upgrade após o lançamento — sua comunidade continua exatamente como está.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "Momentos de 24 horas"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Chat em grupo e direto"
+      },
+      "TIPS": {
+        "name": "Gorjetas",
+        "tagline": "Apoio e progresso da meta"
+      },
+      "CALENDAR": {
+        "name": "Calendário",
+        "tagline": "Datas e lançamentos"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Transmissões e chat ao vivo"
+      },
+      "BOOKING": {
+        "name": "Reservas",
+        "tagline": "Agende horários 1:1"
+      },
+      "REQUESTS": {
+        "name": "Pedidos",
+        "tagline": "Pedidos e votação"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Código promocional (opcional)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Artigos de ajuda e documentação.",
       "PODCAST": "Episódios de áudio para ouvir — grátis ou exclusivos.",
       "LINKS": "Links selecionados para tudo o que é você.",
-      "ADS": "Seus próprios banners promocionais para a página inicial."
+      "ADS": "Seus próprios banners promocionais para a página inicial.",
+      "STORIES": "Publicações efêmeras que somem depois de 24 horas.",
+      "CHAT": "Conversa ao vivo entre seus membros.",
+      "TIPS": "Deixe sua comunidade te apoiar diretamente.",
+      "CALENDAR": "Todas as datas e lançamentos em um só lugar.",
+      "LIVE": "Transmissões ao vivo com chat para seus membros.",
+      "BOOKING": "Horários 1:1 que seus membros agendam sozinhos.",
+      "REQUESTS": "Pedidos e solicitações personalizadas da sua comunidade."
     }
   },
   "library": {

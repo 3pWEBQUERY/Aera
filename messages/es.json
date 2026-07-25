@@ -259,7 +259,35 @@
         "tagline": "Banners y campañas"
       },
       "lockedHint": "Disponible a partir del paquete {plan}",
-      "lockedNote": "Los formatos bloqueados se desbloquean en segundos con una mejora tras el lanzamiento; tu comunidad permanece exactamente igual."
+      "lockedNote": "Los formatos bloqueados se desbloquean en segundos con una mejora tras el lanzamiento; tu comunidad permanece exactamente igual.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "Momentos de 24 horas"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Chat grupal y directo"
+      },
+      "TIPS": {
+        "name": "Propinas",
+        "tagline": "Apoyo y progreso de objetivos"
+      },
+      "CALENDAR": {
+        "name": "Calendario",
+        "tagline": "Fechas y estrenos"
+      },
+      "LIVE": {
+        "name": "En vivo",
+        "tagline": "Transmisiones y chat en vivo"
+      },
+      "BOOKING": {
+        "name": "Reservas",
+        "tagline": "Reserva citas 1:1"
+      },
+      "REQUESTS": {
+        "name": "Solicitudes",
+        "tagline": "Peticiones y votación"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Código promocional (opcional)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Artículos de ayuda y documentación.",
       "PODCAST": "Episodios de audio para escuchar — gratis o exclusivos.",
       "LINKS": "Enlaces seleccionados a todo lo tuyo.",
-      "ADS": "Tus propios banners promocionales para la página de inicio."
+      "ADS": "Tus propios banners promocionales para la página de inicio.",
+      "STORIES": "Publicaciones efímeras que desaparecen después de 24 horas.",
+      "CHAT": "Conversación en vivo entre tus miembros.",
+      "TIPS": "Deja que tu comunidad te apoye directamente.",
+      "CALENDAR": "Todas las fechas y estrenos de un vistazo.",
+      "LIVE": "Transmisiones en vivo con chat para tus miembros.",
+      "BOOKING": "Citas 1:1 que tus miembros reservan ellos mismos.",
+      "REQUESTS": "Peticiones y solicitudes personalizadas de tu comunidad."
     }
   },
   "library": {

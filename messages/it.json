@@ -259,7 +259,35 @@
         "tagline": "Banner e campagne"
       },
       "lockedHint": "Disponibile a partire dal pacchetto {plan}",
-      "lockedNote": "I formati bloccati si sbloccano in pochi secondi con un upgrade dopo il lancio — la tua community resta esattamente com'è."
+      "lockedNote": "I formati bloccati si sbloccano in pochi secondi con un upgrade dopo il lancio — la tua community resta esattamente com'è.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "Momenti da 24 ore"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Chat di gruppo e diretta"
+      },
+      "TIPS": {
+        "name": "Mance",
+        "tagline": "Supporto e avanzamento obiettivi"
+      },
+      "CALENDAR": {
+        "name": "Calendario",
+        "tagline": "Date e uscite"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streaming e chat dal vivo"
+      },
+      "BOOKING": {
+        "name": "Prenotazioni",
+        "tagline": "Prenota appuntamenti 1:1"
+      },
+      "REQUESTS": {
+        "name": "Richieste",
+        "tagline": "Desideri e votazioni"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Codice promozionale (opzionale)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Articoli di aiuto e documentazione.",
       "PODCAST": "Episodi audio da ascoltare — gratuiti o esclusivi.",
       "LINKS": "Link selezionati verso tutto ciò che ti riguarda.",
-      "ADS": "I tuoi banner promozionali per la home page."
+      "ADS": "I tuoi banner promozionali per la home page.",
+      "STORIES": "Post effimeri che scompaiono dopo 24 ore.",
+      "CHAT": "Conversazioni dal vivo tra i tuoi membri.",
+      "TIPS": "Lascia che la tua community ti supporti direttamente.",
+      "CALENDAR": "Tutte le date e le uscite a colpo d'occhio.",
+      "LIVE": "Live streaming con chat per i tuoi membri.",
+      "BOOKING": "Appuntamenti 1:1 che i tuoi membri prenotano da soli.",
+      "REQUESTS": "Desideri e richieste personalizzate dalla tua community."
     }
   },
   "library": {

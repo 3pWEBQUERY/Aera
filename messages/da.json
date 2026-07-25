@@ -259,7 +259,35 @@
         "tagline": "Bannere & kampagner"
       },
       "lockedHint": "Tilgængelig fra {plan}-pakken",
-      "lockedNote": "Låste formater låses op på sekunder med en opgradering efter lancering – dit community forbliver præcis, som det er."
+      "lockedNote": "Låste formater låses op på sekunder med en opgradering efter lancering – dit community forbliver præcis, som det er.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-timers øjeblikke"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Gruppe- & direktechat"
+      },
+      "TIPS": {
+        "name": "Tips",
+        "tagline": "Support & målfremskridt"
+      },
+      "CALENDAR": {
+        "name": "Kalender",
+        "tagline": "Datoer & udgivelser"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & livechat"
+      },
+      "BOOKING": {
+        "name": "Bookinger",
+        "tagline": "Book 1:1-tider"
+      },
+      "REQUESTS": {
+        "name": "Ønsker",
+        "tagline": "Ønsker & afstemning"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Kampagnekode (valgfrit)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Hjælpeartikler og dokumentation.",
       "PODCAST": "Lydepisoder at lytte til — gratis eller eksklusive.",
       "LINKS": "Kuraterede links til alt, der hører til dig.",
-      "ADS": "Dine egne reklamebannere til forsiden."
+      "ADS": "Dine egne reklamebannere til forsiden.",
+      "STORIES": "Kortvarige opslag, der forsvinder efter 24 timer.",
+      "CHAT": "Live samtale mellem dine medlemmer.",
+      "TIPS": "Lad din community støtte dig direkte.",
+      "CALENDAR": "Alle datoer og udgivelser på ét sted.",
+      "LIVE": "Livestreams med chat til dine medlemmer.",
+      "BOOKING": "1:1-tider, som dine medlemmer selv booker.",
+      "REQUESTS": "Ønsker og specialforespørgsler fra din community."
     }
   },
   "library": {

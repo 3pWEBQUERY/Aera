@@ -259,7 +259,35 @@
         "tagline": "Banners en campagnes"
       },
       "lockedHint": "Beschikbaar vanaf het {plan}-pakket",
-      "lockedNote": "Vergrendelde formats schakel je na de lancering in seconden vrij met een upgrade — je community blijft precies zoals hij is."
+      "lockedNote": "Vergrendelde formats schakel je na de lancering in seconden vrij met een upgrade — je community blijft precies zoals hij is.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-uursmomenten"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Groeps- & directchat"
+      },
+      "TIPS": {
+        "name": "Tips",
+        "tagline": "Steun & doelvoortgang"
+      },
+      "CALENDAR": {
+        "name": "Kalender",
+        "tagline": "Data & releases"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & livechat"
+      },
+      "BOOKING": {
+        "name": "Boekingen",
+        "tagline": "Boek 1-op-1-afspraken"
+      },
+      "REQUESTS": {
+        "name": "Verzoeken",
+        "tagline": "Wensen & stemmen"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Promocode (optioneel)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Helpartikelen en documentatie.",
       "PODCAST": "Audio-afleveringen om te beluisteren — gratis of exclusief.",
       "LINKS": "Samengestelde links naar alles wat bij je hoort.",
-      "ADS": "Je eigen promobanners voor de startpagina."
+      "ADS": "Je eigen promobanners voor de startpagina.",
+      "STORIES": "Kortstondige posts die na 24 uur verdwijnen.",
+      "CHAT": "Live gesprekken tussen je leden.",
+      "TIPS": "Laat je community je direct steunen.",
+      "CALENDAR": "Alle data en releases in één overzicht.",
+      "LIVE": "Livestreams met chat voor je leden.",
+      "BOOKING": "1-op-1-afspraken die je leden zelf boeken.",
+      "REQUESTS": "Wensen en persoonlijke verzoeken van je community."
     }
   },
   "library": {

@@ -284,7 +284,35 @@
         "tagline": "Banner & Kampagnen"
       },
       "lockedHint": "Verfügbar ab dem {plan}-Paket",
-      "lockedNote": "Gesperrte Formate schaltest du nach dem Start mit einem Upgrade in Sekunden frei – deine Community bleibt dabei bestehen."
+      "lockedNote": "Gesperrte Formate schaltest du nach dem Start mit einem Upgrade in Sekunden frei – deine Community bleibt dabei bestehen.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-Stunden-Momente"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Gruppen- & Direktchat"
+      },
+      "TIPS": {
+        "name": "Trinkgeld",
+        "tagline": "Support & Ziel-Fortschritt"
+      },
+      "CALENDAR": {
+        "name": "Kalender",
+        "tagline": "Termine & Releases"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & Live-Chat"
+      },
+      "BOOKING": {
+        "name": "Buchungen",
+        "tagline": "1:1-Termine buchen"
+      },
+      "REQUESTS": {
+        "name": "Wünsche",
+        "tagline": "Wünsche & Abstimmung"
+      }
     },
     "cancel": "Abbrechen",
     "promoLabel": "Promo-Code (optional)",
@@ -335,7 +363,14 @@
       "KNOWLEDGE": "Hilfe-Artikel und Dokumentation.",
       "PODCAST": "Audio-Episoden zum Anhören — frei oder exklusiv.",
       "LINKS": "Kuratierte Links zu allem, was zu dir gehört.",
-      "ADS": "Eigene Werbebanner für die Startseite."
+      "ADS": "Eigene Werbebanner für die Startseite.",
+      "STORIES": "Kurzlebige Beiträge, die nach 24 Stunden verschwinden.",
+      "CHAT": "Live-Austausch zwischen deinen Mitgliedern.",
+      "TIPS": "Lass deine Community dich direkt unterstützen.",
+      "CALENDAR": "Alle Termine und Releases auf einen Blick.",
+      "LIVE": "Live-Streams mit Chat für deine Mitglieder.",
+      "BOOKING": "1:1-Termine, die deine Mitglieder selbst buchen.",
+      "REQUESTS": "Wünsche und Custom-Anfragen deiner Community."
     }
   },
   "library": {

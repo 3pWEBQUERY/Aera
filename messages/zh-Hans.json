@@ -259,7 +259,35 @@
         "tagline": "横幅与活动"
       },
       "lockedHint": "自 {plan} 套餐起可用",
-      "lockedNote": "已锁定的格式可在启动后通过升级立即解锁——你的社区将保持原样不变。"
+      "lockedNote": "已锁定的格式可在启动后通过升级立即解锁——你的社区将保持原样不变。",
+      "STORIES": {
+        "name": "快拍",
+        "tagline": "24小时瞬间"
+      },
+      "CHAT": {
+        "name": "聊天",
+        "tagline": "群聊和私聊"
+      },
+      "TIPS": {
+        "name": "打赏",
+        "tagline": "支持与目标进度"
+      },
+      "CALENDAR": {
+        "name": "日历",
+        "tagline": "日程与发布"
+      },
+      "LIVE": {
+        "name": "直播",
+        "tagline": "直播与实时聊天"
+      },
+      "BOOKING": {
+        "name": "预约",
+        "tagline": "预约1对1时段"
+      },
+      "REQUESTS": {
+        "name": "心愿",
+        "tagline": "心愿与投票"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "推广代码（可选）",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "帮助文章和文档。",
       "PODCAST": "可收听的音频节目 — 免费或专享。",
       "LINKS": "精选链接，汇集与你相关的一切。",
-      "ADS": "用于首页的专属推广横幅。"
+      "ADS": "用于首页的专属推广横幅。",
+      "STORIES": "24小时后自动消失的动态。",
+      "CHAT": "与成员实时交流。",
+      "TIPS": "让你的社区直接支持你。",
+      "CALENDAR": "一目了然查看所有日程和发布。",
+      "LIVE": "为你的成员提供直播和聊天。",
+      "BOOKING": "成员可自行预约的1对1时段。",
+      "REQUESTS": "来自社区的心愿和定制需求。"
     }
   },
   "library": {

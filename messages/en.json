@@ -284,7 +284,35 @@
         "tagline": "Banners & campaigns"
       },
       "lockedHint": "Available from the {plan} package",
-      "lockedNote": "Locked formats are unlocked in seconds with an upgrade after launch — your community stays exactly as it is."
+      "lockedNote": "Locked formats are unlocked in seconds with an upgrade after launch — your community stays exactly as it is.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-hour moments"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Group & direct chat"
+      },
+      "TIPS": {
+        "name": "Tips",
+        "tagline": "Support & goal progress"
+      },
+      "CALENDAR": {
+        "name": "Calendar",
+        "tagline": "Dates & releases"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & live chat"
+      },
+      "BOOKING": {
+        "name": "Bookings",
+        "tagline": "Book 1:1 slots"
+      },
+      "REQUESTS": {
+        "name": "Requests",
+        "tagline": "Wishes & voting"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Promo code (optional)",
@@ -335,7 +363,14 @@
       "KNOWLEDGE": "Help articles and documentation.",
       "PODCAST": "Audio episodes to listen to — free or exclusive.",
       "LINKS": "Curated links to everything that's you.",
-      "ADS": "Your own promo banners for the home page."
+      "ADS": "Your own promo banners for the home page.",
+      "STORIES": "Short-lived posts that disappear after 24 hours.",
+      "CHAT": "Live conversation between your members.",
+      "TIPS": "Let your community support you directly.",
+      "CALENDAR": "Every date and release at a glance.",
+      "LIVE": "Live streams with chat for your members.",
+      "BOOKING": "1:1 slots your members book themselves.",
+      "REQUESTS": "Wishes and custom requests from your community."
     }
   },
   "library": {

@@ -259,7 +259,35 @@
         "tagline": "Bannières et campagnes"
       },
       "lockedHint": "Disponible à partir du forfait {plan}",
-      "lockedNote": "Les formats verrouillés se débloquent en quelques secondes avec une mise à niveau après le lancement — ta communauté reste exactement telle quelle."
+      "lockedNote": "Les formats verrouillés se débloquent en quelques secondes avec une mise à niveau après le lancement — ta communauté reste exactement telle quelle.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "Moments de 24 heures"
+      },
+      "CHAT": {
+        "name": "Chat",
+        "tagline": "Chat de groupe & privé"
+      },
+      "TIPS": {
+        "name": "Pourboires",
+        "tagline": "Soutien & progression des objectifs"
+      },
+      "CALENDAR": {
+        "name": "Calendrier",
+        "tagline": "Dates & sorties"
+      },
+      "LIVE": {
+        "name": "Live",
+        "tagline": "Streams & chat en direct"
+      },
+      "BOOKING": {
+        "name": "Réservations",
+        "tagline": "Réserve des créneaux 1:1"
+      },
+      "REQUESTS": {
+        "name": "Demandes",
+        "tagline": "Souhaits & votes"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Code promo (facultatif)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Articles d'aide et documentation.",
       "PODCAST": "Épisodes audio à écouter — gratuits ou exclusifs.",
       "LINKS": "Liens sélectionnés vers tout ce qui te représente.",
-      "ADS": "Tes propres bannières promo pour la page d'accueil."
+      "ADS": "Tes propres bannières promo pour la page d'accueil.",
+      "STORIES": "Publications éphémères qui disparaissent après 24 heures.",
+      "CHAT": "Échanges en direct entre tes membres.",
+      "TIPS": "Laisse ta communauté te soutenir directement.",
+      "CALENDAR": "Toutes les dates et sorties en un coup d'œil.",
+      "LIVE": "Streams en direct avec chat pour tes membres.",
+      "BOOKING": "Des créneaux 1:1 que tes membres réservent eux-mêmes.",
+      "REQUESTS": "Souhaits et demandes personnalisées de ta communauté."
     }
   },
   "library": {

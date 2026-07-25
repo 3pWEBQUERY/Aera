@@ -259,7 +259,35 @@
         "tagline": "Banery i kampanie"
       },
       "lockedHint": "Dostępne od pakietu {plan}",
-      "lockedNote": "Zablokowane formaty odblokujesz w kilka sekund dzięki upgrade'owi po starcie — twoja społeczność pozostaje dokładnie taka, jaka jest."
+      "lockedNote": "Zablokowane formaty odblokujesz w kilka sekund dzięki upgrade'owi po starcie — twoja społeczność pozostaje dokładnie taka, jaka jest.",
+      "STORIES": {
+        "name": "Stories",
+        "tagline": "24-godzinne chwile"
+      },
+      "CHAT": {
+        "name": "Czat",
+        "tagline": "Czat grupowy i prywatny"
+      },
+      "TIPS": {
+        "name": "Napiwki",
+        "tagline": "Wsparcie i postęp celu"
+      },
+      "CALENDAR": {
+        "name": "Kalendarz",
+        "tagline": "Terminy i premiery"
+      },
+      "LIVE": {
+        "name": "Na żywo",
+        "tagline": "Transmisje i czat na żywo"
+      },
+      "BOOKING": {
+        "name": "Rezerwacje",
+        "tagline": "Umawiaj spotkania 1:1"
+      },
+      "REQUESTS": {
+        "name": "Prośby",
+        "tagline": "Życzenia i głosowanie"
+      }
     },
     "cancel": "Cancel",
     "promoLabel": "Kod promocyjny (opcjonalnie)",
@@ -310,7 +338,14 @@
       "KNOWLEDGE": "Artykuły pomocy i dokumentacja.",
       "PODCAST": "Odcinki audio do słuchania — darmowe lub ekskluzywne.",
       "LINKS": "Wyselekcjonowane linki do wszystkiego, co Cię dotyczy.",
-      "ADS": "Twoje własne banery promocyjne na stronę główną."
+      "ADS": "Twoje własne banery promocyjne na stronę główną.",
+      "STORIES": "Krótkie posty, które znikają po 24 godzinach.",
+      "CHAT": "Rozmowy na żywo między Twoimi członkami.",
+      "TIPS": "Pozwól swojej społeczności wspierać Cię bezpośrednio.",
+      "CALENDAR": "Wszystkie terminy i premiery w jednym miejscu.",
+      "LIVE": "Transmisje na żywo z czatem dla Twoich członków.",
+      "BOOKING": "Spotkania 1:1, które Twoi członkowie rezerwują sami.",
+      "REQUESTS": "Życzenia i indywidualne prośby od Twojej społeczności."
     }
   },
   "library": {

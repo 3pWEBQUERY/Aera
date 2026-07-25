@@ -78,6 +78,14 @@ export function OnboardingWizard({
         ? selected.size >= 1
         : true;
 
+  // Everything a new (Free) community can pick comes first; the premium
+  // formats follow as locked previews instead of being scattered between them.
+  const availableFirst = [...SPACE_BLUEPRINTS].sort((a, b) => {
+    const la = planAllowsSpaceType("FREE", a.type) ? 0 : 1;
+    const lb = planAllowsSpaceType("FREE", b.type) ? 0 : 1;
+    return la - lb;
+  });
+
   function toggleSpace(t: SpaceCatalogType) {
     // Premium space types only become selectable once the package is live.
     if (!planAllowsSpaceType("FREE", t)) return;
@@ -287,7 +295,7 @@ export function OnboardingWizard({
 
             {step === 3 && (
               <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
-                {SPACE_BLUEPRINTS.map((b) => {
+                {availableFirst.map((b) => {
                   const on = selected.has(b.type);
                   // A new community always starts on Free — premium formats are
                   // shown as a preview of what the next package adds.
