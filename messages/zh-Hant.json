@@ -133,7 +133,9 @@
     "planStaffLimitReached": "你的 {plan} 方案最多允許 {limit} 個團隊席位（管理員／版主）。升級以取得更多。",
     "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set.",
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
-    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes."
+    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
+    "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",
@@ -384,7 +386,27 @@
     "articleCount": "{count, plural, other {# 篇文章}}",
     "contactTitle": "沒找到你需要的內容？",
     "contactText": "直接開始吧——大多數答案都能在你的社群或創作者儀表板中找到。",
-    "contactCta": "免費開始"
+    "contactCta": "免費開始",
+    "contact": {
+      "metaTitle": "Contact",
+      "back": "Back to help",
+      "title": "Write to us",
+      "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
+      "name": "Name",
+      "email": "Email address",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is it about?",
+      "message": "Your message",
+      "messagePlaceholder": "The more concrete, the faster we can help.",
+      "send": "Send message",
+      "sending": "Sending …",
+      "sentTitle": "Received!",
+      "sentCta": "To your requests",
+      "sentTextMember": "We have your request. You will find the thread and our reply in your account under “Support”.",
+      "sentTextGuest": "We have your request and will reply by email.",
+      "footnoteMember": "We reply to the address on your account.",
+      "footnoteGuest": "We use your address only for the reply."
+    }
   },
   "account": {
     "metaTitle": "帳戶",
@@ -499,7 +521,12 @@
     "privacyDeleteFailed": "無法提交刪除要求。",
     "privacyDeleteBlockedOwned": "請先刪除你擁有的社群。",
     "privacyDeleteBlockedPending": "請先處理待付款項或預訂。",
-    "privacyDeleteInvalidPassword": "密碼不正確。"
+    "privacyDeleteInvalidPassword": "密碼不正確。",
+    "tabSupport": "Support",
+    "supportEyebrow": "Support",
+    "supportTitle": "Your requests",
+    "supportText": "Every message to the Aera team in one place. New replies show up here first.",
+    "supportCta": "Write a new request"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -529,7 +556,9 @@
       "help": "說明",
       "audit": "稽核日誌",
       "codes": "促銷代碼",
-      "seo": "SEO"
+      "seo": "SEO",
+      "support": "Support",
+      "unreadAria": "{count} unread"
     },
     "pagination": {
       "prev": "上一頁",
@@ -838,6 +867,20 @@
         "remove": "Remove",
         "failed": "Upload failed."
       }
+    },
+    "support": {
+      "metaTitle": "Support",
+      "title": "Support tickets",
+      "subtitle": "{open} open · {total} in total",
+      "widget": {
+        "title": "New messages",
+        "all": "View all",
+        "status": {
+          "OPEN": "Open",
+          "ANSWERED": "Answered",
+          "CLOSED": "Closed"
+        }
+      }
     }
   },
   "dashboard": {
@@ -850,7 +893,8 @@
       "title": "你的社群。",
       "subtitle": "選擇一個要管理的社群——或建立下一個。",
       "membersCount": "{count, plural, other {# 位成員}}",
-      "newCommunity": "新社群"
+      "newCommunity": "新社群",
+      "myAccount": "My account"
     },
     "assistant": {
       "title": "AI 助理",
@@ -4293,5 +4337,33 @@
     "success": "You will no longer receive newsletters or marketing emails from this community.",
     "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
     "home": "Go to the Aera homepage"
+  },
+  "support": {
+    "status": {
+      "OPEN": "Open",
+      "ANSWERED": "Answered",
+      "CLOSED": "Closed"
+    },
+    "empty": {
+      "user": {
+        "title": "No requests yet",
+        "text": "When you write to us, the whole thread and our replies appear here."
+      },
+      "staff": {
+        "title": "No tickets",
+        "text": "As soon as someone writes through the help page, it lands here."
+      }
+    },
+    "guest": "Guest",
+    "fromTeam": "Aera team",
+    "fromYou": "You",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "replyPlaceholder": "Write a reply …",
+    "reply": "Reply",
+    "sending": "Sending …",
+    "closedHint": "This ticket is closed. Just write to us again if something is still open.",
+    "close": "Close",
+    "reopen": "Reopen",
+    "closeAfterReply": "Close after sending"
   }
 }

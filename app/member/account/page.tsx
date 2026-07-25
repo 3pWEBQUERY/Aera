@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { TicketThreads } from "@/components/support/ticket-threads";
+import { listUserTickets, userUnreadCount, markReadForUser } from "@/lib/support";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
@@ -76,7 +78,14 @@ export default async function MemberAccountPage({
   const locale = await getLocale();
   const nf = new Intl.NumberFormat(locale);
 
-  const activeTab = tab === "einstellungen" ? "einstellungen" : "konto";
+  const activeTab =
+    tab === "einstellungen" ? "einstellungen" : tab === "support" ? "support" : "konto";
+
+  // Erst lesen, dann quittieren: sonst waere beim ersten Rendern schon nichts
+  // mehr als neu markiert und man saehe nie, was dazugekommen ist.
+  const tickets = activeTab === "support" && user ? await listUserTickets(user.id) : [];
+  const supportUnread = user ? await userUnreadCount(user.id) : 0;
+  if (activeTab === "support" && user) await markReadForUser(user.id);
   const backHref = safeFrom(from);
   const withParams = (t?: string) =>
     `/member/account?${new URLSearchParams({
@@ -213,8 +222,9 @@ export default async function MemberAccountPage({
           className="mt-8 flex items-center gap-2 border-b border-[#161613]/10 pb-4"
         >
           {[
-            { key: "konto", label: t("tabAccount"), href: withParams() },
-            { key: "einstellungen", label: t("tabSettings"), href: withParams("einstellungen") },
+            { key: "konto", label: t("tabAccount"), href: withParams(), badge: 0 },
+            { key: "einstellungen", label: t("tabSettings"), href: withParams("einstellungen"), badge: 0 },
+            { key: "support", label: t("tabSupport"), href: withParams("support"), badge: supportUnread },
           ].map((tab) => (
             <Link
               key={tab.key}
@@ -227,11 +237,36 @@ export default async function MemberAccountPage({
               }
             >
               {tab.label}
+              {tab.badge > 0 && (
+                <span
+                  className={
+                    activeTab === tab.key
+                      ? "ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-white px-1.5 py-0.5 text-[11px] font-bold text-[#161613]"
+                      : "ml-2 inline-flex min-w-5 items-center justify-center rounded-full bg-[#161613] px-1.5 py-0.5 text-[11px] font-bold text-white"
+                  }
+                >
+                  {tab.badge > 99 ? "99+" : tab.badge}
+                </span>
+              )}
             </Link>
           ))}
         </nav>
 
-        {activeTab === "einstellungen" ? (
+        {activeTab === "support" ? (
+          <div className="mt-10">
+            <SectionHead eyebrow={t("supportEyebrow")} title={t("supportTitle")} />
+            <p className="mt-2 max-w-xl text-sm leading-6 text-[#161613]/60">
+              {t("supportText")}
+            </p>
+            <div className="mt-6">
+              <TicketThreads
+                tickets={tickets}
+                side="user"
+                emptyCta={{ href: "/hilfe/kontakt", label: t("supportCta") }}
+              />
+            </div>
+          </div>
+        ) : activeTab === "einstellungen" ? (
           <div className="mt-10 grid gap-4 md:grid-cols-2">
             <section className="rounded-2xl border border-[#161613]/10 bg-white p-6">
               <SectionHead eyebrow={t("profileEyebrow")} title={t("profileTitle")} />

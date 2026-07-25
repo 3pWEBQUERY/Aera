@@ -6,6 +6,8 @@ import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Avatar, Pill } from "@/components/ui/misc";
 import { formatDate, formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { systemPrisma } from "@/lib/prisma";
+import { staffUnreadCount } from "@/lib/support";
 
 function Stat({
   icon,
@@ -42,10 +44,11 @@ function Stat({
 export default async function AdminOverviewPage() {
   await requirePlatformAdmin();
   const t = await getTranslations("admin.overview");
+  const ts = await getTranslations("admin.support.widget");
   const locale = await getLocale();
   const nf = new Intl.NumberFormat(locale);
 
-  const [tenants, users, memberships, posts, orders, revenue, latestTenants, latestUsers] =
+  const [tenants, users, memberships, posts, orders, revenue, latestTenants, latestUsers, openTickets, unreadSupport] =
     await Promise.all([
       prisma.tenant.count(),
       prisma.user.count(),
@@ -73,6 +76,16 @@ export default async function AdminOverviewPage() {
         take: 5,
         select: { id: true, name: true, email: true, avatarUrl: true, createdAt: true },
       }),
+      systemPrisma.supportTicket.findMany({
+        where: { status: { not: "CLOSED" } },
+        orderBy: { lastMessageAt: "desc" },
+        take: 5,
+        select: {
+          id: true, subject: true, email: true, name: true,
+          status: true, lastMessageAt: true,
+        },
+      }),
+      staffUnreadCount(),
     ]);
 
   return (
@@ -83,6 +96,60 @@ export default async function AdminOverviewPage() {
           {t("subtitle")}
         </p>
       </div>
+
+      {/* Offene Tickets zuerst: das ist das Einzige auf dieser Seite, das auf
+          eine Reaktion wartet. Zahlen koennen warten, Menschen nicht. */}
+      {openTickets.length > 0 && (
+        <section className="rounded-2xl border border-slate-200 bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-white">
+                <Icon name="messages" size={16} />
+              </span>
+              <h2 className="text-sm font-bold text-slate-900">{ts("title")}</h2>
+              {unreadSupport > 0 && (
+                <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[var(--brand)] px-1.5 py-0.5 text-[11px] font-bold text-white">
+                  {unreadSupport > 99 ? "99+" : unreadSupport}
+                </span>
+              )}
+            </div>
+            <Link
+              href="/admin/support"
+              className="text-sm font-semibold text-slate-500 transition hover:text-slate-900"
+            >
+              {ts("all")}
+            </Link>
+          </div>
+          <ul className="divide-y divide-slate-100">
+            {openTickets.map((ticket) => (
+              <li key={ticket.id}>
+                <Link
+                  href="/admin/support"
+                  className="flex items-center gap-3 px-5 py-3 transition hover:bg-slate-50"
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium text-slate-900">
+                      {ticket.subject}
+                    </span>
+                    <span className="block truncate text-xs text-slate-400">
+                      {ticket.name || ticket.email} · {formatDate(ticket.lastMessageAt, locale)}
+                    </span>
+                  </span>
+                  <Pill
+                    className={
+                      ticket.status === "OPEN"
+                        ? "bg-amber-50 text-amber-700"
+                        : "bg-emerald-50 text-emerald-700"
+                    }
+                  >
+                    {ts(`status.${ticket.status}`)}
+                  </Pill>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
         <Stat icon="spaces" label={t("communities")} value={nf.format(tenants)} href="/admin/communities" />

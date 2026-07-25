@@ -133,7 +133,9 @@
     "planStaffLimitReached": "Tu paquete {plan} permite {limit} puestos de equipo (administradores/moderadores). Mejora tu plan para tener más.",
     "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set.",
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
-    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes."
+    "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
+    "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
   },
   "nameStatus": {
     "checking": "Comprobando disponibilidad…",
@@ -384,7 +386,27 @@
     "articleCount": "{count, plural, one {# artículo} other {# artículos}}",
     "contactTitle": "¿No encontraste lo que buscabas?",
     "contactText": "Solo empieza — encontrarás la mayoría de las respuestas directamente en tu comunidad o en el panel de creador.",
-    "contactCta": "Empezar gratis"
+    "contactCta": "Empezar gratis",
+    "contact": {
+      "metaTitle": "Contact",
+      "back": "Back to help",
+      "title": "Write to us",
+      "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
+      "name": "Name",
+      "email": "Email address",
+      "subject": "Subject",
+      "subjectPlaceholder": "What is it about?",
+      "message": "Your message",
+      "messagePlaceholder": "The more concrete, the faster we can help.",
+      "send": "Send message",
+      "sending": "Sending …",
+      "sentTitle": "Received!",
+      "sentCta": "To your requests",
+      "sentTextMember": "We have your request. You will find the thread and our reply in your account under “Support”.",
+      "sentTextGuest": "We have your request and will reply by email.",
+      "footnoteMember": "We reply to the address on your account.",
+      "footnoteGuest": "We use your address only for the reply."
+    }
   },
   "account": {
     "metaTitle": "Cuenta",
@@ -499,7 +521,12 @@
     "privacyDeleteFailed": "No se pudo programar la eliminación.",
     "privacyDeleteBlockedOwned": "Elimina primero tus comunidades.",
     "privacyDeleteBlockedPending": "Resuelve primero los pagos o reservas pendientes.",
-    "privacyDeleteInvalidPassword": "La contraseña es incorrecta."
+    "privacyDeleteInvalidPassword": "La contraseña es incorrecta.",
+    "tabSupport": "Support",
+    "supportEyebrow": "Support",
+    "supportTitle": "Your requests",
+    "supportText": "Every message to the Aera team in one place. New replies show up here first.",
+    "supportCta": "Write a new request"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -529,7 +556,9 @@
       "help": "Ayuda",
       "audit": "Registro de auditoría",
       "codes": "Códigos promocionales",
-      "seo": "SEO"
+      "seo": "SEO",
+      "support": "Support",
+      "unreadAria": "{count} unread"
     },
     "pagination": {
       "prev": "Anterior",
@@ -838,6 +867,20 @@
         "remove": "Remove",
         "failed": "Upload failed."
       }
+    },
+    "support": {
+      "metaTitle": "Support",
+      "title": "Support tickets",
+      "subtitle": "{open} open · {total} in total",
+      "widget": {
+        "title": "New messages",
+        "all": "View all",
+        "status": {
+          "OPEN": "Open",
+          "ANSWERED": "Answered",
+          "CLOSED": "Closed"
+        }
+      }
     }
   },
   "dashboard": {
@@ -850,7 +893,8 @@
       "title": "Tus comunidades.",
       "subtitle": "Elige una comunidad para gestionarla — o inicia la siguiente.",
       "membersCount": "{count, plural, one {# miembro} other {# miembros}}",
-      "newCommunity": "Nueva comunidad"
+      "newCommunity": "Nueva comunidad",
+      "myAccount": "My account"
     },
     "assistant": {
       "title": "Asistente de IA",
@@ -4293,5 +4337,33 @@
     "success": "You will no longer receive newsletters or marketing emails from this community.",
     "invalid": "This unsubscribe link is invalid. Please open the link from the most recent email you received.",
     "home": "Go to the Aera homepage"
+  },
+  "support": {
+    "status": {
+      "OPEN": "Open",
+      "ANSWERED": "Answered",
+      "CLOSED": "Closed"
+    },
+    "empty": {
+      "user": {
+        "title": "No requests yet",
+        "text": "When you write to us, the whole thread and our replies appear here."
+      },
+      "staff": {
+        "title": "No tickets",
+        "text": "As soon as someone writes through the help page, it lands here."
+      }
+    },
+    "guest": "Guest",
+    "fromTeam": "Aera team",
+    "fromYou": "You",
+    "messageCount": "{count, plural, one {# message} other {# messages}}",
+    "replyPlaceholder": "Write a reply …",
+    "reply": "Reply",
+    "sending": "Sending …",
+    "closedHint": "This ticket is closed. Just write to us again if something is still open.",
+    "close": "Close",
+    "reopen": "Reopen",
+    "closeAfterReply": "Close after sending"
   }
 }

@@ -15,11 +15,19 @@ const items: { href: string; key: string; icon: IconName; exact?: boolean }[] = 
   { href: "/admin/orders", key: "orders", icon: "payouts" },
   { href: "/admin/codes", key: "codes", icon: "sparkles" },
   { href: "/admin/seo", key: "seo", icon: "search" },
+  { href: "/admin/support", key: "support", icon: "messages" },
   { href: "/admin/help", key: "help", icon: "knowledge" },
   { href: "/admin/audit", key: "audit", icon: "clock" },
 ];
 
-export function AdminNav() {
+/**
+ * Zaehler pro Navigationspunkt, Schluessel = item.key.
+ *
+ * Bewusst datengetrieben statt "jeder Punkt bekommt einen Kreis": ein Badge,
+ * der immer 0 zeigt, traegt keine Information und stumpft gegen die ab, die
+ * etwas bedeuten. Neue Zaehler werden hier einfach ergaenzt.
+ */
+export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
   const pathname = usePathname();
   const t = useTranslations("admin.nav");
   return (
@@ -45,7 +53,18 @@ export function AdminNav() {
               size={17}
               className={cn("shrink-0", active ? "text-white/80" : "text-slate-400")}
             />
-            {t(item.key)}
+            <span className="min-w-0 flex-1 truncate">{t(item.key)}</span>
+            {(badges[item.key] ?? 0) > 0 && (
+              <span
+                aria-label={t("unreadAria", { count: badges[item.key]! })}
+                className={cn(
+                  "inline-flex min-w-5 shrink-0 items-center justify-center rounded-full px-1.5 py-0.5 text-[11px] font-bold tabular-nums",
+                  active ? "bg-white text-slate-900" : "bg-[var(--brand)] text-white",
+                )}
+              >
+                {badges[item.key]! > 99 ? "99+" : badges[item.key]}
+              </span>
+            )}
           </Link>
         );
       })}

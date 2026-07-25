@@ -150,6 +150,29 @@ export default async function HelpCenterPage({
         ) : (
           /* ----------------------------------------- Kategorien + Q&A */
           <>
+            {/* Kontakt-Einstieg — bewusst ueber den Kacheln: wer hier landet
+                und nichts findet, soll den Weg zu uns nicht suchen muessen. */}
+            <div className="mb-8 flex flex-col gap-5 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
+              <div className="flex min-w-0 items-start gap-4">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/60">
+                  <Icon name="messages" size={20} />
+                </span>
+                <div className="min-w-0">
+                  <p className="display-serif text-xl leading-tight">{t("contactTitle")}</p>
+                  <p className="mt-1 max-w-xl text-sm leading-6 text-[#161613]/60">
+                    {t("contactText")}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href="/hilfe/kontakt"
+                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[#161613] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#161613]/85 sm:self-auto"
+              >
+                {t("contactCta")}
+                <Icon name="chevron" size={15} className="-rotate-90" />
+              </Link>
+            </div>
+
             {/* Kategorie-Kacheln (Sprungmarken) */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filled.map((c, i) => (

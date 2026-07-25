@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { userUnreadCount } from "@/lib/support";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -20,6 +21,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function DashboardIndex() {
   const user = await requireUser("/dashboard");
   const tenants = await userTenants(user.id);
+  // Antworten des Support-Teams, die dieses Mitglied noch nicht gesehen hat.
+  const supportUnread = await userUnreadCount(user.id);
   if (tenants.length === 0) redirect("/start");
   const t = await getTranslations("dashboard.index");
   const locale = await getLocale();
@@ -42,9 +45,14 @@ export default async function DashboardIndex() {
           <div className="flex items-center gap-3">
             <Link
               href="/member/account?from=/dashboard"
-              className="hidden text-sm font-semibold text-[#161613]/60 transition hover:text-[#161613] sm:inline"
+              className="hidden items-center gap-2 text-sm font-semibold text-[#161613]/60 transition hover:text-[#161613] sm:inline-flex"
             >
-              {t("yourMemberships")}
+              {t("myAccount")}
+              {supportUnread > 0 && (
+                <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-[#161613] px-1.5 py-0.5 text-[11px] font-bold text-white">
+                  {supportUnread > 99 ? "99+" : supportUnread}
+                </span>
+              )}
             </Link>
             <div className="flex items-center gap-2">
               <Avatar name={user.name} src={user.avatarUrl} size={32} />

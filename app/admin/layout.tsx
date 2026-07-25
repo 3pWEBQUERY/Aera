@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { staffUnreadCount } from "@/lib/support";
 import { Avatar } from "@/components/ui/misc";
 
 export const metadata: Metadata = {
@@ -16,6 +17,8 @@ export default async function AdminLayout({
 }) {
   const admin = await requirePlatformAdmin();
   const t = await getTranslations("admin");
+  // Ungelesene Support-Nachrichten treiben den Kreis in der Navigation.
+  const support = await staffUnreadCount();
 
   return (
     <div className="flex min-h-screen bg-slate-50">
@@ -31,7 +34,7 @@ export default async function AdminLayout({
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-2">
-          <AdminNav />
+          <AdminNav badges={{ support }} />
         </div>
         <div className="border-t border-slate-100 p-3">
           <Link

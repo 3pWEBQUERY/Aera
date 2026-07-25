@@ -356,6 +356,8 @@ model User {
   promoCodesCreated         PromoCode[]                @relation("PromoCodeAuthor")
   promoRedemptions          PromoCodeRedemption[]
   platformSeoEdits          PlatformSeo[]              @relation("PlatformSeoEditor")
+  supportTickets            SupportTicket[]            @relation("SupportTicketAuthor")
+  supportMessages           SupportMessage[]           @relation("SupportMessageAuthor")
 }
 
 /// Versioned evidence that a user accepted a contract document or confirmed
@@ -2319,4 +2321,65 @@ model PlatformSeo {
   updatedAt     DateTime @updatedAt
   updatedById   String?
   updatedBy     User?    @relation("PlatformSeoEditor", fields: [updatedById], references: [id], onDelete: SetNull)
+}
+
+// ----------------------------------------------------------------------------
+// Support: Tickets von Besuchern und Mitgliedern an das Plattform-Team.
+//
+// Bewusst ohne tenantId — Support laeuft gegen die Plattform, nicht gegen eine
+// Community. Damit bleibt die Tabelle ausserhalb der Tenant-RLS und wird
+// ausschliesslich privilegiert gelesen und geschrieben.
+// ----------------------------------------------------------------------------
+enum SupportTicketStatus {
+  /// Wartet auf uns.
+  OPEN
+  /// Wir haben geantwortet, Ball liegt beim Absender.
+  ANSWERED
+  CLOSED
+}
+
+model SupportTicket {
+  id      String              @id @default(cuid())
+  /// Gesetzt, wenn beim Absenden jemand eingeloggt war. Nur dann ist der
+  /// Verlauf spaeter unter /member/account einsehbar.
+  userId  String?
+  user    User?               @relation("SupportTicketAuthor", fields: [userId], references: [id], onDelete: SetNull)
+  /// Antwortadresse. Bei Gaesten die einzige Verbindung zum Ticket.
+  email   String
+  name    String?
+  subject String
+  status  SupportTicketStatus @default(OPEN)
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  /// Sortierschluessel der Listen — aktuellste Aktivitaet zuerst.
+  lastMessageAt DateTime @default(now())
+
+  messages SupportMessage[]
+
+  @@index([status, lastMessageAt])
+  @@index([userId, lastMessageAt])
+  @@index([email])
+}
+
+model SupportMessage {
+  id       String        @id @default(cuid())
+  ticketId String
+  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  /// true = vom Plattform-Team. Bestimmt Darstellung UND welche Seite die
+  /// Nachricht als ungelesen zaehlt.
+  fromStaff Boolean      @default(false)
+  authorId  String?
+  author    User?        @relation("SupportMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  body      String
+
+  /// Gelesen-Marken pro Seite. Ungelesen fuer uns = !fromStaff && readByStaffAt
+  /// ist null; ungelesen fuer den Absender spiegelbildlich.
+  readByStaffAt DateTime?
+  readByUserAt  DateTime?
+
+  createdAt DateTime @default(now())
+
+  @@index([ticketId, createdAt])
+  @@index([fromStaff, readByStaffAt])
 }

@@ -133,7 +133,9 @@
     "planStaffLimitReached": "Dein {plan}-Paket erlaubt {limit} Team-Plätze (Admins/Moderatoren). Upgrade für mehr.",
     "planStripeActive": "Für diese Community läuft ein aktives Stripe-Abo. Kündige es zuerst, dann lässt sich das Paket setzen.",
     "seoImageInvalid": "Bitte gib eine gültige Bild-URL an (https://… oder /pfad.png).",
-    "seoTemplateInvalid": "Das Titelmuster muss %s enthalten — dort wird der Seitentitel eingesetzt."
+    "seoTemplateInvalid": "Das Titelmuster muss %s enthalten — dort wird der Seitentitel eingesetzt.",
+    "supportSubjectInvalid": "Bitte gib einen Betreff mit 3 bis 120 Zeichen an.",
+    "supportBodyInvalid": "Bitte schreib uns mindestens ein paar Sätze (max. 5000 Zeichen)."
   },
   "legalPurchase": {
     "immediateAccess": "Ich verlange sofortigen Zugang und weiß, dass mein Widerrufsrecht mit Beginn der digitalen Lieferung erlischt. <withdrawal>Details</withdrawal>.",
@@ -409,7 +411,27 @@
     "articleCount": "{count, plural, one {# Beitrag} other {# Beiträge}}",
     "contactTitle": "Nichts Passendes gefunden?",
     "contactText": "Starte einfach — die meisten Antworten findest du direkt in deiner Community oder im Creator-Dashboard.",
-    "contactCta": "Kostenlos starten"
+    "contactCta": "Kostenlos starten",
+    "contact": {
+      "metaTitle": "Kontakt",
+      "back": "Zurück zur Hilfe",
+      "title": "Schreib uns",
+      "intro": "Beschreib dein Anliegen in ein paar Sätzen. Wir antworten so schnell wir können — im Schnitt innerhalb eines Werktags.",
+      "name": "Name",
+      "email": "E-Mail-Adresse",
+      "subject": "Betreff",
+      "subjectPlaceholder": "Worum geht es?",
+      "message": "Deine Nachricht",
+      "messagePlaceholder": "Je konkreter, desto schneller können wir helfen.",
+      "send": "Nachricht senden",
+      "sending": "Wird gesendet …",
+      "sentTitle": "Angekommen!",
+      "sentCta": "Zu deinen Anfragen",
+      "sentTextMember": "Wir haben deine Anfrage. Den Verlauf und unsere Antwort findest du in deinem Konto unter „Support“.",
+      "sentTextGuest": "Wir haben deine Anfrage und antworten dir per E-Mail.",
+      "footnoteMember": "Wir antworten an deine hinterlegte Adresse.",
+      "footnoteGuest": "Wir nutzen deine Adresse ausschließlich für die Antwort."
+    }
   },
   "account": {
     "metaTitle": "Konto",
@@ -524,7 +546,12 @@
     "privacyDeleteFailed": "Die Löschung konnte nicht eingereiht werden.",
     "privacyDeleteBlockedOwned": "Lösche zuerst deine eigenen Communities.",
     "privacyDeleteBlockedPending": "Kläre zuerst offene Zahlungen oder Reservierungen.",
-    "privacyDeleteInvalidPassword": "Das Passwort ist falsch."
+    "privacyDeleteInvalidPassword": "Das Passwort ist falsch.",
+    "tabSupport": "Support",
+    "supportEyebrow": "Support",
+    "supportTitle": "Deine Anfragen",
+    "supportText": "Alle Nachrichten an das Aera-Team an einem Ort. Neue Antworten siehst du hier zuerst.",
+    "supportCta": "Neue Anfrage schreiben"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -554,7 +581,9 @@
       "help": "Hilfe",
       "audit": "Audit-Log",
       "codes": "Promo-Codes",
-      "seo": "SEO"
+      "seo": "SEO",
+      "support": "Support",
+      "unreadAria": "{count} ungelesen"
     },
     "pagination": {
       "prev": "Zurück",
@@ -863,6 +892,20 @@
         "remove": "Entfernen",
         "failed": "Upload fehlgeschlagen."
       }
+    },
+    "support": {
+      "metaTitle": "Support",
+      "title": "Support-Tickets",
+      "subtitle": "{open} offen · {total} insgesamt",
+      "widget": {
+        "title": "Neue Nachrichten",
+        "all": "Alle ansehen",
+        "status": {
+          "OPEN": "Offen",
+          "ANSWERED": "Beantwortet",
+          "CLOSED": "Geschlossen"
+        }
+      }
     }
   },
   "dashboard": {
@@ -875,7 +918,8 @@
       "title": "Deine Communities.",
       "subtitle": "Wähle eine Community, um sie zu verwalten — oder starte die nächste.",
       "membersCount": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
-      "newCommunity": "Neue Community"
+      "newCommunity": "Neue Community",
+      "myAccount": "Mein Konto"
     },
     "assistant": {
       "title": "AI Assistent",
@@ -4293,5 +4337,33 @@
     "hint": "Gilt für deine Ansicht von Aera auf diesem Gerät.",
     "de": "Deutsch",
     "en": "English"
+  },
+  "support": {
+    "status": {
+      "OPEN": "Offen",
+      "ANSWERED": "Beantwortet",
+      "CLOSED": "Geschlossen"
+    },
+    "empty": {
+      "user": {
+        "title": "Noch keine Anfragen",
+        "text": "Wenn du uns schreibst, findest du hier den ganzen Verlauf und unsere Antworten."
+      },
+      "staff": {
+        "title": "Keine Tickets",
+        "text": "Sobald jemand über die Hilfe-Seite schreibt, landet die Nachricht hier."
+      }
+    },
+    "guest": "Gast",
+    "fromTeam": "Aera-Team",
+    "fromYou": "Du",
+    "messageCount": "{count, plural, one {# Nachricht} other {# Nachrichten}}",
+    "replyPlaceholder": "Antwort schreiben …",
+    "reply": "Antworten",
+    "sending": "Wird gesendet …",
+    "closedHint": "Dieses Ticket ist geschlossen. Schreib uns einfach neu, wenn noch etwas offen ist.",
+    "close": "Schließen",
+    "reopen": "Wieder öffnen",
+    "closeAfterReply": "Nach dem Senden schließen"
   }
 }
