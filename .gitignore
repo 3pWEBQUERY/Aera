@@ -15,3 +15,9 @@ test-results/
 /private
 *.png
 !public/**/*.png
+
+# Lokale Hilfsordner. _to_delete/ enthaelt u. a. eine Datei mit der
+# Produktions-Datenbank-URL inkl. Passwort und darf niemals ins Repo.
+_to_delete/
+# Xcode-Zustand pro Benutzer, kein Quellcode.
+**/xcuserdata/
