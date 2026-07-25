@@ -4061,7 +4061,61 @@
     "finaleB": "Förbli oberoende.",
     "finaleText": "Starta gratis, sätt upp spaces, bjud in medlemmar — tjäna pengar när du är redo. Inget kreditkort krävs.",
     "finaleCtaStart": "Starta gratis nu",
-    "finaleCtaPricing": "Jämför priser"
+    "finaleCtaPricing": "Jämför priser",
+    "compare": {
+      "eyebrow": "I jämförelse",
+      "titleA": "En plats.",
+      "titleB": "I stället för fyra fakturor.",
+      "text": "Medlemskap här, kurser där, nyhetsbrevet någon annanstans och butiken för sig — så ser vardagen ut för de flesta kreatörer. Aera samlar allt under ditt eget varumärke, till ett pris och genom en kassa.",
+      "cta": "Se priser",
+      "colYou": "Aera",
+      "rowBase": "Grundpris per månad",
+      "rowFee": "Andel av dina intäkter",
+      "rowFull": "Full funktionalitet från",
+      "aera": {
+        "base": "0 — gratis att börja",
+        "fee": "5 %",
+        "full": "{pro} per månad"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (nya kreatörer)",
+        "full": "ingår i intäktsandelen"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (betalt årsvis)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % från Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Uppgifter från leverantörernas offentliga prissidor, per juli 2026. Betalningsavgifter (cirka 2,9 % + 0,30) tillkommer hos alla — även hos oss.",
+      "includedTitle": "Ingår i Aera utan tillägg",
+      "included": {
+        "i1": {
+          "title": "20 områden",
+          "text": "Flöde, forum, kurser, nyhetsbrev, event, blogg, kunskap, galleri, video, butik, chatt, podd, live och mer — under samma tak."
+        },
+        "i2": {
+          "title": "Fyra intäktsvägar, en kassa",
+          "text": "Medlemskap, digitala produkter, betalt innehåll och event går genom samma kassa."
+        },
+        "i3": {
+          "title": "Ditt varumärke, din adress",
+          "text": "Egen domän, egna färger, egen logotyp. Dina medlemmar ser dig, inte oss."
+        },
+        "i4": {
+          "title": "Din data förblir din",
+          "text": "Medlemmar, innehåll och intäkter kan exporteras när som helst. Inget avsked med tomma händer."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Jag begär omedelbar åtkomst och förstår att min ångerrätt upphör när den digitala leveransen börjar. <withdrawal>Detaljer</withdrawal>.",

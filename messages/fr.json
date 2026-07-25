@@ -4061,7 +4061,61 @@
     "finaleB": "Restez indépendant.",
     "finaleText": "Démarrez gratuitement, créez vos spaces, invitez des membres — monétisez quand vous êtes prêt. Aucune carte bancaire requise.",
     "finaleCtaStart": "Commencer gratuitement",
-    "finaleCtaPricing": "Comparer les tarifs"
+    "finaleCtaPricing": "Comparer les tarifs",
+    "compare": {
+      "eyebrow": "En comparaison",
+      "titleA": "Un seul endroit.",
+      "titleB": "Au lieu de quatre factures.",
+      "text": "Les abonnements ici, les cours là, la newsletter ailleurs et la boutique encore à part. Aera réunit le tout sous ta propre marque, à un seul prix et via une seule caisse.",
+      "cta": "Voir les prix",
+      "colYou": "Aera",
+      "rowBase": "Prix de base par mois",
+      "rowFee": "Part sur tes revenus",
+      "rowFull": "Fonctionnalités complètes à partir de",
+      "aera": {
+        "base": "0 — début gratuit",
+        "fee": "5 %",
+        "full": "{pro} par mois"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (nouveaux créateurs)",
+        "full": "comprise dans la part sur les revenus"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (facturé à l’année)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % à partir de Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Données des pages tarifaires publiques, à jour en juillet 2026. Les frais du prestataire de paiement (environ 2,9 % + 0,30) s’ajoutent chez tous les acteurs — chez nous aussi.",
+      "includedTitle": "Inclus dans Aera sans supplément",
+      "included": {
+        "i1": {
+          "title": "20 espaces",
+          "text": "Fil, forum, cours, newsletter, événements, blog, savoir, galerie, vidéo, boutique, chat, podcast, live et plus — sous un même toit."
+        },
+        "i2": {
+          "title": "Quatre sources de revenus, une caisse",
+          "text": "Abonnements, produits numériques, contenus payants et événements passent par la même caisse."
+        },
+        "i3": {
+          "title": "Ta marque, ton adresse",
+          "text": "Ton domaine, tes couleurs, ton logo. Tes membres te voient, toi, pas nous."
+        },
+        "i4": {
+          "title": "Tes données restent les tiennes",
+          "text": "Membres, contenus et revenus exportables à tout moment."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Je demande un accès immédiat et reconnais que mon droit de rétractation prend fin au début de la livraison numérique. <withdrawal>Détails</withdrawal>.",

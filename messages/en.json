@@ -4089,7 +4089,61 @@
     "finaleB": "Stay independent.",
     "finaleText": "Start for free, set up spaces, invite members — monetize when you're ready. No credit card required.",
     "finaleCtaStart": "Start for free now",
-    "finaleCtaPricing": "Compare pricing"
+    "finaleCtaPricing": "Compare pricing",
+    "compare": {
+      "eyebrow": "In comparison",
+      "titleA": "One place.",
+      "titleB": "Instead of four invoices.",
+      "text": "Memberships here, courses there, the newsletter somewhere else and the shop separately again — that is the everyday reality for most creators. Aera brings it together under your own brand, at one price and through one checkout.",
+      "cta": "See pricing",
+      "colYou": "Aera",
+      "rowBase": "Base price per month",
+      "rowFee": "Cut of your revenue",
+      "rowFull": "Full feature set from",
+      "aera": {
+        "base": "0 — free to start",
+        "fee": "5%",
+        "full": "{pro} per month"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "$0",
+        "fee": "10% (new creators)",
+        "full": "included in the revenue cut"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "$89 (billed annually)",
+        "fee": "2% (Professional)",
+        "full": "$199 (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "$9 (Hobby)",
+        "fee": "10% · 2.9% from Pro",
+        "full": "$99 (Pro)"
+      },
+      "footnote": "Figures from the providers’ public pricing pages, as of July 2026. Payment processing fees (around 2.9% + 0.30) apply on top with every provider — ours included.",
+      "includedTitle": "Included with Aera at no extra cost",
+      "included": {
+        "i1": {
+          "title": "20 areas",
+          "text": "Feed, forum, courses, newsletter, events, blog, knowledge, gallery, video, shop, chat, podcast, live and more — under one roof."
+        },
+        "i2": {
+          "title": "Four revenue streams, one checkout",
+          "text": "Memberships, digital products, paid content and events all run through the same till."
+        },
+        "i3": {
+          "title": "Your brand, your address",
+          "text": "Your own domain, your own colours, your own logo. Your members see you, not us."
+        },
+        "i4": {
+          "title": "Your data stays yours",
+          "text": "Members, content and revenue exportable at any time. No leaving empty-handed."
+        }
+      }
+    }
   },
   "uiMigration": {
     "auth": {

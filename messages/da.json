@@ -4061,7 +4061,61 @@
     "finaleB": "Forbliv uafhængig.",
     "finaleText": "Start gratis, opsæt spaces, invitér medlemmer — tjen penge, når du er klar. Intet kreditkort påkrævet.",
     "finaleCtaStart": "Start gratis nu",
-    "finaleCtaPricing": "Sammenlign priser"
+    "finaleCtaPricing": "Sammenlign priser",
+    "compare": {
+      "eyebrow": "I sammenligning",
+      "titleA": "Ét sted.",
+      "titleB": "I stedet for fire regninger.",
+      "text": "Medlemskaber her, kurser der, nyhedsbrevet et tredje sted og shoppen for sig — sådan ser hverdagen ud for de fleste creators. Aera samler det hele under dit eget brand, til én pris og gennem én kasse.",
+      "cta": "Se priser",
+      "colYou": "Aera",
+      "rowBase": "Grundpris pr. måned",
+      "rowFee": "Andel af din omsætning",
+      "rowFull": "Fuldt funktionssæt fra",
+      "aera": {
+        "base": "0 — gratis at starte",
+        "fee": "5 %",
+        "full": "{pro} pr. måned"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (nye creators)",
+        "full": "indeholdt i omsætningsandelen"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (betalt årligt)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % fra Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Tal fra udbydernes offentlige prissider, juli 2026. Betalingsgebyrer (omkring 2,9 % + 0,30) kommer oveni hos alle udbydere — også hos os.",
+      "includedTitle": "Med i Aera uden tillæg",
+      "included": {
+        "i1": {
+          "title": "20 områder",
+          "text": "Feed, forum, kurser, nyhedsbrev, events, blog, viden, galleri, video, shop, chat, podcast, live og mere — under samme tag."
+        },
+        "i2": {
+          "title": "Fire indtægtsveje, én kasse",
+          "text": "Medlemskaber, digitale produkter, betalt indhold og events går gennem samme kasse."
+        },
+        "i3": {
+          "title": "Dit brand, din adresse",
+          "text": "Eget domæne, egne farver, eget logo. Dine medlemmer ser dig, ikke os."
+        },
+        "i4": {
+          "title": "Dine data forbliver dine",
+          "text": "Medlemmer, indhold og omsætning kan eksporteres når som helst. Ingen afsked med tomme hænder."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Jeg anmoder om øjeblikkelig adgang og er indforstået med, at min fortrydelsesret bortfalder, når den digitale levering begynder. <withdrawal>Detaljer</withdrawal>.",

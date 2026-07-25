@@ -4061,7 +4061,61 @@
     "finaleB": "Mantente independiente.",
     "finaleText": "Empieza gratis, configura spaces, invita a miembros — monetiza cuando estés listo. No se necesita tarjeta de crédito.",
     "finaleCtaStart": "Empieza gratis ahora",
-    "finaleCtaPricing": "Comparar precios"
+    "finaleCtaPricing": "Comparar precios",
+    "compare": {
+      "eyebrow": "En comparación",
+      "titleA": "Un solo sitio.",
+      "titleB": "En vez de cuatro facturas.",
+      "text": "Las membresías aquí, los cursos allá, la newsletter en otro lado y la tienda aparte. Aera lo reúne todo bajo tu propia marca, con un solo precio y una sola caja.",
+      "cta": "Ver precios",
+      "colYou": "Aera",
+      "rowBase": "Precio base al mes",
+      "rowFee": "Parte de tus ingresos",
+      "rowFull": "Funciones completas desde",
+      "aera": {
+        "base": "0 — empezar es gratis",
+        "fee": "5 %",
+        "full": "{pro} al mes"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (nuevos creadores)",
+        "full": "incluido en la parte de ingresos"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (pago anual)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % desde Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Datos de las páginas de precios públicas, julio de 2026. Las comisiones del proveedor de pagos (alrededor del 2,9 % + 0,30) se suman en todos los casos — también con nosotros.",
+      "includedTitle": "Incluido en Aera sin coste extra",
+      "included": {
+        "i1": {
+          "title": "20 áreas",
+          "text": "Feed, foro, cursos, newsletter, eventos, blog, conocimiento, galería, vídeo, tienda, chat, pódcast, directo y más — bajo el mismo techo."
+        },
+        "i2": {
+          "title": "Cuatro vías de ingresos, una caja",
+          "text": "Membresías, productos digitales, contenido de pago y eventos pasan por la misma caja."
+        },
+        "i3": {
+          "title": "Tu marca, tu dirección",
+          "text": "Tu dominio, tus colores, tu logotipo. Tus miembros te ven a ti, no a nosotros."
+        },
+        "i4": {
+          "title": "Tus datos siguen siendo tuyos",
+          "text": "Miembros, contenidos e ingresos exportables en cualquier momento."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Solicito acceso inmediato y entiendo que mi derecho de desistimiento finaliza cuando comienza la entrega digital. <withdrawal>Detalles</withdrawal>.",

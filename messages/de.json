@@ -4089,7 +4089,61 @@
     "finaleB": "Bleib unabhängig.",
     "finaleText": "Kostenlos starten, Spaces einrichten, Mitglieder einladen — monetarisieren, wenn du bereit bist. Keine Kreditkarte nötig.",
     "finaleCtaStart": "Jetzt kostenlos starten",
-    "finaleCtaPricing": "Preise vergleichen"
+    "finaleCtaPricing": "Preise vergleichen",
+    "compare": {
+      "eyebrow": "Im Vergleich",
+      "titleA": "Ein Ort.",
+      "titleB": "Statt vier Rechnungen.",
+      "text": "Mitgliedschaften hier, Kurse dort, der Newsletter woanders und der Shop noch einmal separat — so sieht der Alltag der meisten Creator aus. Aera bündelt alles unter deiner eigenen Marke, zu einem Preis und über einen Checkout.",
+      "cta": "Preise ansehen",
+      "colYou": "Aera",
+      "rowBase": "Grundpreis pro Monat",
+      "rowFee": "Anteil an deinen Umsätzen",
+      "rowFull": "Voller Funktionsumfang ab",
+      "aera": {
+        "base": "0 — Einstieg kostenlos",
+        "fee": "5 %",
+        "full": "{pro} pro Monat"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (neue Creator)",
+        "full": "im Umsatzanteil enthalten"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (jährlich gezahlt)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % ab Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Angaben der öffentlichen Preisseiten, Stand Juli 2026. Zahlungsgebühren des Zahlungsanbieters (rund 2,9 % + 0,30) fallen bei allen Anbietern zusätzlich an — auch bei uns.",
+      "includedTitle": "Bei Aera ohne Aufpreis dabei",
+      "included": {
+        "i1": {
+          "title": "20 Bereiche",
+          "text": "Feed, Forum, Kurse, Newsletter, Events, Blog, Wissen, Galerie, Video, Shop, Chat, Podcast, Live und mehr — im selben Haus."
+        },
+        "i2": {
+          "title": "Vier Umsatzwege, ein Checkout",
+          "text": "Mitgliedschaften, digitale Produkte, bezahlte Inhalte und Events laufen über dieselbe Kasse."
+        },
+        "i3": {
+          "title": "Deine Marke, deine Adresse",
+          "text": "Eigene Domain, eigene Farben, eigenes Logo. Deine Mitglieder sehen dich, nicht uns."
+        },
+        "i4": {
+          "title": "Deine Daten bleiben deine",
+          "text": "Mitglieder, Inhalte und Umsätze jederzeit exportierbar. Kein Abschied mit leeren Händen."
+        }
+      }
+    }
   },
   "uiMigration": {
     "auth": {

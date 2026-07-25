@@ -4061,7 +4061,61 @@
     "finaleB": "保持獨立。",
     "finaleText": "免費開始、建立空間、邀請成員 — 準備好了再變現。不需要信用卡。",
     "finaleCtaStart": "立即免費開始",
-    "finaleCtaPricing": "比較價格"
+    "finaleCtaPricing": "比較價格",
+    "compare": {
+      "eyebrow": "橫向比較",
+      "titleA": "一個地方。",
+      "titleB": "而不是四張帳單。",
+      "text": "會員在這邊，課程在那邊，電子報在別處，商店又是另一套。Aera 把這一切收在你自己的品牌之下——一個價格，一個結帳流程。",
+      "cta": "查看價格",
+      "colYou": "Aera",
+      "rowBase": "每月基本價格",
+      "rowFee": "從你收入中抽成",
+      "rowFull": "完整功能起價",
+      "aera": {
+        "base": "0 — 免費開始",
+        "fee": "5 %",
+        "full": "每月 {pro}"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 美元",
+        "fee": "10 %（新創作者）",
+        "full": "已含在收入抽成中"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 美元（按年付）",
+        "fee": "2 %（Professional）",
+        "full": "199 美元（Business）"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 美元（Hobby）",
+        "fee": "10 % · Pro 起 2.9 %",
+        "full": "99 美元（Pro）"
+      },
+      "footnote": "資料取自各家公開價格頁，截至 2026 年 7 月。金流服務商的手續費（約 2.9 % + 0.30）在所有平台都要另計——我們也一樣。",
+      "includedTitle": "Aera 已包含，無需加價",
+      "included": {
+        "i1": {
+          "title": "20 個版塊",
+          "text": "動態、論壇、課程、電子報、活動、部落格、知識庫、圖庫、影片、商店、聊天、Podcast、直播等——都在同一處。"
+        },
+        "i2": {
+          "title": "四條收入線，一個結帳",
+          "text": "會員、數位商品、付費內容和活動都走同一個收銀台。"
+        },
+        "i3": {
+          "title": "你的品牌，你的地址",
+          "text": "自有網域、自有配色、自有標誌。成員看到的是你，不是我們。"
+        },
+        "i4": {
+          "title": "資料始終屬於你",
+          "text": "成員、內容與收入隨時可匯出。"
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "我要求立即取得存取權限，並知悉數位內容開始交付後我的撤回權即告終止。<withdrawal>詳情</withdrawal>。",

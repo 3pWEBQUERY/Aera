@@ -4061,7 +4061,61 @@
     "finaleB": "Blijf onafhankelijk.",
     "finaleText": "Gratis starten, spaces inrichten, leden uitnodigen — verdienen wanneer jij er klaar voor bent. Geen creditcard nodig.",
     "finaleCtaStart": "Start nu gratis",
-    "finaleCtaPricing": "Vergelijk prijzen"
+    "finaleCtaPricing": "Vergelijk prijzen",
+    "compare": {
+      "eyebrow": "In vergelijking",
+      "titleA": "Eén plek.",
+      "titleB": "In plaats van vier facturen.",
+      "text": "Lidmaatschappen hier, cursussen daar, de nieuwsbrief ergens anders en de shop nog eens apart — zo ziet de praktijk van de meeste creators eruit. Aera bundelt alles onder je eigen merk, voor één prijs en via één checkout.",
+      "cta": "Prijzen bekijken",
+      "colYou": "Aera",
+      "rowBase": "Basisprijs per maand",
+      "rowFee": "Aandeel in je omzet",
+      "rowFull": "Volledige functieomvang vanaf",
+      "aera": {
+        "base": "0 — gratis beginnen",
+        "fee": "5 %",
+        "full": "{pro} per maand"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "$ 0",
+        "fee": "10 % (nieuwe creators)",
+        "full": "in het omzetaandeel inbegrepen"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "$ 89 (jaarlijks betaald)",
+        "fee": "2 % (Professional)",
+        "full": "$ 199 (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "$ 9 (Hobby)",
+        "fee": "10 % · 2,9 % vanaf Pro",
+        "full": "$ 99 (Pro)"
+      },
+      "footnote": "Cijfers van de openbare prijspagina’s, stand juli 2026. Transactiekosten van de betaalprovider (ongeveer 2,9 % + 0,30) komen bij elke aanbieder bovenop — ook bij ons.",
+      "includedTitle": "Bij Aera zonder meerprijs inbegrepen",
+      "included": {
+        "i1": {
+          "title": "20 onderdelen",
+          "text": "Feed, forum, cursussen, nieuwsbrief, evenementen, blog, kennis, galerij, video, shop, chat, podcast, live en meer — onder één dak."
+        },
+        "i2": {
+          "title": "Vier verdienwegen, één checkout",
+          "text": "Lidmaatschappen, digitale producten, betaalde content en evenementen lopen via dezelfde kassa."
+        },
+        "i3": {
+          "title": "Jouw merk, jouw adres",
+          "text": "Eigen domein, eigen kleuren, eigen logo. Je leden zien jou, niet ons."
+        },
+        "i4": {
+          "title": "Je data blijft van jou",
+          "text": "Leden, content en omzet altijd exporteerbaar. Geen afscheid met lege handen."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Ik verzoek om directe toegang en begrijp dat mijn herroepingsrecht vervalt zodra de digitale levering begint. <withdrawal>Details</withdrawal>.",

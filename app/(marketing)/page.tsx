@@ -1,8 +1,11 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { Reveal } from "@/components/marketing/reveal";
 import { PillLink } from "@/components/marketing/pill-link";
 import { HeroFrameBackground } from "@/components/marketing/hero-frame-background";
 import { FINALE_CLIPS } from "@/components/marketing/hero-clips";
+import { PLANS } from "@/lib/credit-plans";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { formatPrice } from "@/lib/utils";
 
 /* Poster-Kacheln für die Marquee: alle 14 echten Space-Typen (Text-Keys in
    messages/<locale>.json unter home.tiles.*). */
@@ -14,6 +17,13 @@ const TILE_IDS = [
 const CHAPTER_IDS = ["c1", "c2", "c3", "c4", "c5", "c6", "c7"] as const;
 const REVENUE_IDS = ["tiers", "products", "paidAccess", "events"] as const;
 const OWNERSHIP_IDS = ["brand", "address", "data"] as const;
+/* Vergleich: wir zuerst, danach die Anbieter in der Reihenfolge, in der
+   Creator sie ueblicherweise nennen. Die Zahlen stehen in den Katalogen,
+   damit sie ohne Deploy-Diff nachgezogen werden koennen — und weil die
+   Waehrungsangaben je Sprache anders geschrieben werden. */
+const COMPARE_IDS = ["patreon", "circle", "skool"] as const;
+const COMPARE_ROWS = ["base", "fee", "full"] as const;
+const INCLUDED_IDS = ["i1", "i2", "i3", "i4"] as const;
 
 const tileTones = [
   "bg-[#ece7dc] text-[#161613]",
@@ -25,6 +35,10 @@ const tileTones = [
 
 export default async function LandingPage() {
   const t = await getTranslations("home");
+  const locale = await getLocale();
+  // Unser eigener Preis kommt aus dem Katalog, nicht aus einem Text: sonst
+  // stuende auf der Startseite irgendwann etwas anderes als auf /pricing.
+  const proPrice = formatPrice(PLANS.PRO.priceCents, PLATFORM_CURRENCY, locale);
 
   const spaceTiles = TILE_IDS.map((id) => ({
     name: t(`tiles.${id}.name`),
@@ -200,6 +214,116 @@ export default async function LandingPage() {
                 </Reveal>
               ))}
               <div className="border-t border-white/15" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Vergleich — zwischen Monetarisierung (dunkel) und Ownership (creme).
+          Der Lavendelton kommt aus der Kachel-Palette der Marquee und setzt
+          den Bereich sichtbar ab, ohne eine neue Farbe einzufuehren. */}
+      <section className="bg-[#d8d1f0] text-[#241458]">
+        <div className="mx-auto max-w-7xl px-5 py-20 md:py-28">
+          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-16">
+            <div>
+              <Reveal>
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/50 sm:text-sm">
+                  {t("compare.eyebrow")}
+                </p>
+              </Reveal>
+              <Reveal delay={80}>
+                <h2 className="display-serif mt-4 text-4xl leading-[1.08] sm:text-6xl">
+                  {t("compare.titleA")}
+                  <br />
+                  <span className="text-[#241458]/50">{t("compare.titleB")}</span>
+                </h2>
+              </Reveal>
+              <Reveal delay={160}>
+                <p className="mt-8 max-w-md text-lg leading-8 text-[#241458]/75">
+                  {t("compare.text")}
+                </p>
+              </Reveal>
+              <Reveal delay={240}>
+                <div className="mt-8">
+                  <PillLink href="/pricing" tone="outline-dark">
+                    {t("compare.cta")}
+                  </PillLink>
+                </div>
+              </Reveal>
+            </div>
+
+            <div>
+              {/* Aera zuerst und abgesetzt: die eigene Spalte ist die Aussage,
+                  die anderen sind der Massstab. */}
+              <Reveal>
+                <div className="rounded-3xl bg-[#161613] px-6 py-6 text-[#f4f1ea] sm:px-8 sm:py-7">
+                  {/* Dasselbe Vierspaltenraster wie die Zeilen darunter, damit
+                      Werte und Vergleichswerte untereinander stehen. */}
+                  <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-[1fr_1fr_1fr_1fr] sm:items-baseline">
+                    <p className="display-serif text-3xl sm:text-[1.75rem]">{t("compare.colYou")}</p>
+                    {COMPARE_ROWS.map((row) => (
+                      <div key={row}>
+                        <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#f4f1ea]/45">
+                          {t(`compare.row${row === "base" ? "Base" : row === "fee" ? "Fee" : "Full"}`)}
+                        </dt>
+                        <dd className="mt-1 text-base font-semibold leading-6">
+                          {t(`compare.aera.${row}`, { pro: proPrice })}
+                        </dd>
+                      </div>
+                    ))}
+                  </dl>
+                </div>
+              </Reveal>
+
+              <div className="mt-4">
+                {COMPARE_IDS.map((id, i) => (
+                  <Reveal key={id} delay={(i + 1) * 90}>
+                    <div className="grid gap-x-8 gap-y-2 border-t border-[#241458]/20 px-6 py-5 sm:grid-cols-[1fr_1fr_1fr_1fr] sm:items-baseline sm:px-8">
+                      <p className="display-serif text-2xl sm:text-[1.75rem]">
+                        {t(`compare.${id}.name`)}
+                      </p>
+                      {COMPARE_ROWS.map((row) => (
+                        <p key={row} className="text-sm leading-6 text-[#241458]/70">
+                          <span className="mr-1.5 font-semibold uppercase tracking-[0.12em] text-[#241458]/40 sm:hidden">
+                            {t(`compare.row${row === "base" ? "Base" : row === "fee" ? "Fee" : "Full"}`)}:
+                          </span>
+                          {t(`compare.${id}.${row}`)}
+                        </p>
+                      ))}
+                    </div>
+                  </Reveal>
+                ))}
+                <div className="mx-6 border-t border-[#241458]/20 sm:mx-8" />
+              </div>
+
+              <Reveal delay={360}>
+                <p className="mt-5 text-xs leading-5 text-[#241458]/50">
+                  {t("compare.footnote")}
+                </p>
+              </Reveal>
+            </div>
+          </div>
+
+          {/* Was den Unterschied ausmacht — bewusst nur Aussagen ueber uns. */}
+          <div className="mt-16 border-t border-[#241458]/20 pt-12 md:mt-20 md:pt-14">
+            <Reveal>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/50 sm:text-sm">
+                {t("compare.includedTitle")}
+              </p>
+            </Reveal>
+            <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+              {INCLUDED_IDS.map((id, i) => (
+                <Reveal key={id} delay={i * 90}>
+                  <div>
+                    <h3 className="display-serif text-2xl leading-tight sm:text-3xl">
+                      {t(`compare.included.${id}.title`)}
+                    </h3>
+                    <p className="mt-3 text-base leading-7 text-[#241458]/70">
+                      {t(`compare.included.${id}.text`)}
+                    </p>
+                  </div>
+                </Reveal>
+              ))}
             </div>
           </div>
         </div>

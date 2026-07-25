@@ -4061,7 +4061,61 @@
     "finaleB": "Continue independente.",
     "finaleText": "Comece grátis, monte seus spaces, convide membros — monetize quando estiver pronto. Sem cartão de crédito.",
     "finaleCtaStart": "Comece grátis agora",
-    "finaleCtaPricing": "Comparar preços"
+    "finaleCtaPricing": "Comparar preços",
+    "compare": {
+      "eyebrow": "Em comparação",
+      "titleA": "Um só lugar.",
+      "titleB": "Em vez de quatro faturas.",
+      "text": "As assinaturas aqui, os cursos ali, a newsletter em outro lugar e a loja à parte. A Aera reúne tudo sob a sua marca, com um preço só e um checkout só.",
+      "cta": "Ver preços",
+      "colYou": "Aera",
+      "rowBase": "Preço base por mês",
+      "rowFee": "Parte da sua receita",
+      "rowFull": "Recursos completos a partir de",
+      "aera": {
+        "base": "0 — começar é grátis",
+        "fee": "5 %",
+        "full": "{pro} por mês"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "US$ 0",
+        "fee": "10 % (novos criadores)",
+        "full": "incluído na parte da receita"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "US$ 89 (pago anualmente)",
+        "fee": "2 % (Professional)",
+        "full": "US$ 199 (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "US$ 9 (Hobby)",
+        "fee": "10 % · 2,9 % a partir do Pro",
+        "full": "US$ 99 (Pro)"
+      },
+      "footnote": "Dados das páginas públicas de preços, julho de 2026. As taxas do processador de pagamento (cerca de 2,9 % + 0,30) entram por cima em todos — inclusive aqui.",
+      "includedTitle": "Já incluso na Aera, sem custo extra",
+      "included": {
+        "i1": {
+          "title": "20 áreas",
+          "text": "Feed, fórum, cursos, newsletter, eventos, blog, conhecimento, galeria, vídeo, loja, chat, podcast, ao vivo e mais — sob o mesmo teto."
+        },
+        "i2": {
+          "title": "Quatro fontes de receita, um checkout",
+          "text": "Assinaturas, produtos digitais, conteúdo pago e eventos passam pelo mesmo caixa."
+        },
+        "i3": {
+          "title": "Sua marca, seu endereço",
+          "text": "Domínio seu, cores suas, logo seu. Seus membros veem você, não a gente."
+        },
+        "i4": {
+          "title": "Seus dados continuam seus",
+          "text": "Membros, conteúdo e receita exportáveis a qualquer momento."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Solicito acesso imediato e entendo que meu direito de arrependimento termina quando a entrega digital começa. <withdrawal>Detalhes</withdrawal>.",

@@ -4061,7 +4061,61 @@
     "finaleB": "Pozostań niezależny.",
     "finaleText": "Zacznij za darmo, skonfiguruj spaces, zaproś członków — monetyzuj, gdy będziesz gotowy. Karta kredytowa nie jest potrzebna.",
     "finaleCtaStart": "Zacznij teraz za darmo",
-    "finaleCtaPricing": "Porównaj ceny"
+    "finaleCtaPricing": "Porównaj ceny",
+    "compare": {
+      "eyebrow": "Dla porównania",
+      "titleA": "Jedno miejsce.",
+      "titleB": "Zamiast czterech faktur.",
+      "text": "Członkostwa tutaj, kursy tam, newsletter gdzie indziej, a sklep jeszcze osobno. Aera zbiera to wszystko pod Twoją marką — w jednej cenie i przez jedną kasę.",
+      "cta": "Zobacz cennik",
+      "colYou": "Aera",
+      "rowBase": "Cena podstawowa miesięcznie",
+      "rowFee": "Udział w Twoich przychodach",
+      "rowFull": "Pełny zakres funkcji od",
+      "aera": {
+        "base": "0 — start za darmo",
+        "fee": "5 %",
+        "full": "{pro} miesięcznie"
+      },
+      "patreon": {
+        "name": "Patreon",
+        "base": "0 $",
+        "fee": "10 % (nowi twórcy)",
+        "full": "zawarte w udziale w przychodach"
+      },
+      "circle": {
+        "name": "Circle",
+        "base": "89 $ (płatne rocznie)",
+        "fee": "2 % (Professional)",
+        "full": "199 $ (Business)"
+      },
+      "skool": {
+        "name": "Skool",
+        "base": "9 $ (Hobby)",
+        "fee": "10 % · 2,9 % od Pro",
+        "full": "99 $ (Pro)"
+      },
+      "footnote": "Dane z publicznych cenników, stan na lipiec 2026. Prowizje operatora płatności (około 2,9 % + 0,30) dochodzą u każdego dostawcy — u nas też.",
+      "includedTitle": "W Aerze bez dopłat",
+      "included": {
+        "i1": {
+          "title": "20 obszarów",
+          "text": "Feed, forum, kursy, newsletter, wydarzenia, blog, wiedza, galeria, wideo, sklep, czat, podcast, live i więcej — pod jednym dachem."
+        },
+        "i2": {
+          "title": "Cztery źródła przychodu, jedna kasa",
+          "text": "Członkostwa, produkty cyfrowe, płatne treści i wydarzenia przechodzą przez tę samą kasę."
+        },
+        "i3": {
+          "title": "Twoja marka, Twój adres",
+          "text": "Własna domena, własne kolory, własne logo. Członkowie widzą Ciebie, nie nas."
+        },
+        "i4": {
+          "title": "Twoje dane zostają Twoje",
+          "text": "Członków, treści i przychody wyeksportujesz w każdej chwili."
+        }
+      }
+    }
   },
   "legalPurchase": {
     "immediateAccess": "Żądam natychmiastowego dostępu i rozumiem, że moje prawo odstąpienia wygasa z chwilą rozpoczęcia dostarczania treści cyfrowych. <withdrawal>Szczegóły</withdrawal>.",
