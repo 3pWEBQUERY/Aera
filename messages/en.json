@@ -855,7 +855,14 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "effectiveTitle": "Effect",
-      "effectiveText": "Sub-pages get their title from the “{template}” pattern. Communities set their own title and only inherit the social image when they have none."
+      "effectiveText": "Sub-pages get their title from the “{template}” pattern. Communities set their own title and only inherit the social image when they have none.",
+      "upload": {
+        "cta": "Upload image",
+        "hint": "PNG, JPG, WebP or AVIF · ideally 1200×630 · max. 5 MB",
+        "replace": "Replace image",
+        "remove": "Remove",
+        "failed": "Upload failed."
+      }
     }
   },
   "dashboard": {
@@ -3040,7 +3047,7 @@
       "keywords": "Keywords",
       "keywordsHint": "Comma separated. Empty = derived from name and category.",
       "image": "Social image",
-      "imageHint": "Shown when shared, ideally 1200×630. Empty = your logo.",
+      "imageHint": "Shown when shared, ideally 1200×630. Without an image your logo is used.",
       "noindex": "Exclude from search engines",
       "noindexHint": "Sets noindex and removes the community from the sitemap. Existing members can still reach it.",
       "noindexWarning": "This community is currently not indexed.",

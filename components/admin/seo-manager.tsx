@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { updatePlatformSeoAction, type SeoState } from "@/app/actions/seo";
 import { Icon } from "@/components/dashboard/icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
+import { PlatformImageUpload } from "./platform-image-upload";
 import { FormError } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 
@@ -136,17 +137,16 @@ export function PlatformSeoManager({
             <Input id={ids.kw} name="keywords" defaultValue={values.keywords} placeholder={defaults.keywords} />
           </Field>
 
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field id={ids.img} label={t("image")} hint={t("imageHint")}>
-              <Input
-                id={ids.img}
+          <div className="space-y-5">
+            <div>
+              <Label htmlFor={ids.img}>{t("image")}</Label>
+              <PlatformImageUpload
                 name="imageUrl"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder={defaults.imageUrl}
-                inputMode="url"
+                defaultUrl={values.imageUrl}
+                onChange={setImage}
               />
-            </Field>
+              <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("imageHint")}</p>
+            </div>
             <Field id={ids.tw} label={t("twitter")} hint={t("twitterHint")}>
               <Input id={ids.tw} name="twitterHandle" defaultValue={values.twitterHandle} placeholder="@aera" />
             </Field>

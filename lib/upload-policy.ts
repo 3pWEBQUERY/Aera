@@ -49,6 +49,8 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "product-cover": image("PUBLIC"),
   announcement: image("PUBLIC"),
   "community-cover": image("PUBLIC"),
+  // Social-Vorschaubild der Community (og:image), oeffentlich per Definition.
+  "seo-image": image("PUBLIC"),
   "tier-cover": image("PUBLIC"),
   gallery: {
     visibility: "MEMBERS",

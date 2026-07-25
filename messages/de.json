@@ -841,7 +841,7 @@
       "keywords": "Schlagwörter",
       "keywordsHint": "Kommagetrennt.",
       "image": "Social-Bild",
-      "imageHint": "1200×630. Auch Fallback für Communities ohne eigenes Bild.",
+      "imageHint": "1200×630. Dient auch als Fallback für Communities ohne eigenes Bild.",
       "twitter": "X/Twitter-Handle",
       "twitterHint": "Für die Urheberangabe in der Karte.",
       "noindex": "Gesamte Plattform aus Suchmaschinen ausschließen",
@@ -855,7 +855,14 @@
       "previewSearch": "Google-Vorschau",
       "previewSocial": "Beim Teilen",
       "effectiveTitle": "Wirkung",
-      "effectiveText": "Unterseiten erhalten den Titel nach dem Muster „{template}“. Communities überschreiben ihren Titel selbst und erben nur das Social-Bild, wenn sie keins gesetzt haben."
+      "effectiveText": "Unterseiten erhalten den Titel nach dem Muster „{template}“. Communities überschreiben ihren Titel selbst und erben nur das Social-Bild, wenn sie keins gesetzt haben.",
+      "upload": {
+        "cta": "Bild hochladen",
+        "hint": "PNG, JPG, WebP oder AVIF · ideal 1200×630 · max. 5 MB",
+        "replace": "Bild ersetzen",
+        "remove": "Entfernen",
+        "failed": "Upload fehlgeschlagen."
+      }
     }
   },
   "dashboard": {
@@ -3040,7 +3047,7 @@
       "keywords": "Schlagwörter",
       "keywordsHint": "Kommagetrennt. Leer = automatisch aus Name und Kategorie.",
       "image": "Social-Bild",
-      "imageHint": "Beim Teilen sichtbar, ideal 1200×630. Leer = dein Logo.",
+      "imageHint": "Beim Teilen sichtbar, ideal 1200×630. Ohne Bild wird dein Logo verwendet.",
       "noindex": "Aus Suchmaschinen ausschließen",
       "noindexHint": "Setzt noindex und nimmt die Community aus der Sitemap. Bestehende Mitglieder erreichen sie weiterhin.",
       "noindexWarning": "Diese Community wird derzeit nicht indexiert.",

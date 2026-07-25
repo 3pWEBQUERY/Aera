@@ -6,6 +6,7 @@ import { updateTenantSeoAction, type SeoState } from "@/app/actions/seo";
 import { PageHeader } from "./page-header";
 import { Icon } from "./icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
+import { ImageUpload } from "./image-upload";
 import { FormError } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 
@@ -114,16 +115,19 @@ export function SeoManager({
             />
           </Field>
 
-          <Field id={ids.img} label={t("image")} hint={t("imageHint")}>
-            <Input
-              id={ids.img}
+          <div>
+            <Label htmlFor={ids.img}>{t("image")}</Label>
+            {/* Bewusst der vorhandene Tenant-Upload: das Bild gehoert der
+                Community, faellt also unter ihr Kontingent und ihre Mediathek. */}
+            <ImageUpload
+              tenant={slug}
               name="seoImageUrl"
-              value={image}
-              onChange={(e) => setImage(e.target.value)}
-              placeholder="https://… / 1200×630"
-              inputMode="url"
+              purpose="seo-image"
+              defaultUrl={values.seoImageUrl || null}
+              onChange={setImage}
             />
-          </Field>
+            <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("imageHint")}</p>
+          </div>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
             <input
