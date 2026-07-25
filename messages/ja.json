@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "検索",
+      "title": "見つける",
+      "subtitle": "Aeraのすべての公開コミュニティ、投稿、ブログ、講座、イベント、商品を検索できます — 入力するとすぐに結果が表示されます。",
+      "placeholder": "コミュニティ、ブログ、講座、イベント…",
+      "inputLabel": "Aeraを検索",
+      "clear": "検索をクリア",
+      "all": "すべて",
+      "idleTitle": "何をお探しですか？",
+      "idleText": "2文字以上入力してください。結果はすぐに表示されます。",
+      "emptyTitle": "「{query}」に一致する結果はありません",
+      "emptyText": "別のキーワードや短い言葉を試してください。",
+      "errorTitle": "検索を利用できません",
+      "errorText": "問題が発生しました。入力を続けるか、しばらくしてからもう一度お試しください。",
+      "types": {
+        "community": "コミュニティ",
+        "blog": "ブログ",
+        "post": "投稿",
+        "course": "講座",
+        "event": "イベント",
+        "product": "商品",
+        "knowledge": "ナレッジ"
+      }
     }
   },
   "categories": {

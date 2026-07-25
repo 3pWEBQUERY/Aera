@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "Søg",
+      "title": "Oplev",
+      "subtitle": "Gennemsøg alle offentlige communities, indlæg, blogs, kurser, events og produkter på Aera — direkte, mens du skriver.",
+      "placeholder": "Communities, blogs, kurser, events …",
+      "inputLabel": "Søg på Aera",
+      "clear": "Ryd søgning",
+      "all": "Alle",
+      "idleTitle": "Hvad leder du efter?",
+      "idleText": "Skriv mindst to tegn. Resultaterne vises med det samme.",
+      "emptyTitle": "Intet fundet for »{query}«",
+      "emptyText": "Prøv et kortere eller andet søgeord.",
+      "errorTitle": "Søgning utilgængelig",
+      "errorText": "Der gik noget galt. Bliv ved med at skrive, eller prøv igen om lidt.",
+      "types": {
+        "community": "Communities",
+        "blog": "Blogs",
+        "post": "Indlæg",
+        "course": "Kurser",
+        "event": "Events",
+        "product": "Produkter",
+        "knowledge": "Viden"
+      }
     }
   },
   "categories": {

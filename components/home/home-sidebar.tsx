@@ -16,7 +16,7 @@ export interface SidebarCommunity {
 
 const NAV: { href: string; labelKey: "home" | "discover" | "studio"; icon: IconName; exact?: boolean }[] = [
   { href: "/home", labelKey: "home", icon: "home", exact: true },
-  { href: "/home?view=discover", labelKey: "discover", icon: "search" },
+  { href: "/home/search", labelKey: "discover", icon: "search" },
   { href: "/dashboard", labelKey: "studio", icon: "dashboard" },
 ];
 

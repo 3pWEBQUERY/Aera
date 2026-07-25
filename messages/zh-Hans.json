@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "搜索",
+      "title": "发现",
+      "subtitle": "搜索 Aera 上所有公开社区、帖子、博客、课程、活动和产品——输入即时显示结果。",
+      "placeholder": "社区、博客、课程、活动…",
+      "inputLabel": "搜索 Aera",
+      "clear": "清除搜索",
+      "all": "全部",
+      "idleTitle": "你在找什么？",
+      "idleText": "输入至少两个字符，结果会立即显示。",
+      "emptyTitle": "未找到与“{query}”相关的结果",
+      "emptyText": "请尝试更短或不同的关键词。",
+      "errorTitle": "搜索暂不可用",
+      "errorText": "出了点问题，请继续输入或稍后再试。",
+      "types": {
+        "community": "社区",
+        "blog": "博客",
+        "post": "帖子",
+        "course": "课程",
+        "event": "活动",
+        "product": "产品",
+        "knowledge": "知识"
+      }
     }
   },
   "categories": {

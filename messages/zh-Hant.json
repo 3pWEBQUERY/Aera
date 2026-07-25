@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "搜尋",
+      "title": "探索",
+      "subtitle": "搜尋 Aera 上所有公開社群、貼文、部落格、課程、活動與產品——輸入時即時顯示結果。",
+      "placeholder": "社群、部落格、課程、活動…",
+      "inputLabel": "搜尋 Aera",
+      "clear": "清除搜尋",
+      "all": "全部",
+      "idleTitle": "你在找什麼？",
+      "idleText": "請輸入至少兩個字元，結果會立即顯示。",
+      "emptyTitle": "找不到與「{query}」相關的結果",
+      "emptyText": "請嘗試更短或不同的關鍵字。",
+      "errorTitle": "搜尋暫時無法使用",
+      "errorText": "發生問題了，請繼續輸入或稍後再試一次。",
+      "types": {
+        "community": "社群",
+        "blog": "部落格",
+        "post": "貼文",
+        "course": "課程",
+        "event": "活動",
+        "product": "產品",
+        "knowledge": "知識"
+      }
     }
   },
   "categories": {

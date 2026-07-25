@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "Cerca",
+      "title": "Scopri",
+      "subtitle": "Cerca tra tutte le community, i post, i blog, i corsi, gli eventi e i prodotti pubblici su Aera — in tempo reale, mentre digiti.",
+      "placeholder": "Community, blog, corsi, eventi…",
+      "inputLabel": "Cerca su Aera",
+      "clear": "Cancella ricerca",
+      "all": "Tutti",
+      "idleTitle": "Cosa stai cercando?",
+      "idleText": "Digita almeno due caratteri. I risultati appaiono all'istante.",
+      "emptyTitle": "Nessun risultato per «{query}»",
+      "emptyText": "Prova un termine più breve o diverso.",
+      "errorTitle": "Ricerca non disponibile",
+      "errorText": "Qualcosa è andato storto. Continua a digitare o riprova tra poco.",
+      "types": {
+        "community": "Community",
+        "blog": "Blog",
+        "post": "Post",
+        "course": "Corsi",
+        "event": "Eventi",
+        "product": "Prodotti",
+        "knowledge": "Conoscenza"
+      }
     }
   },
   "categories": {

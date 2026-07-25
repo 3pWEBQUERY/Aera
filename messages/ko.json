@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "검색",
+      "title": "둘러보기",
+      "subtitle": "Aera의 모든 공개 커뮤니티, 게시물, 블로그, 강의, 이벤트, 상품을 검색해 보세요 — 입력하는 즉시 결과가 표시됩니다.",
+      "placeholder": "커뮤니티, 블로그, 강의, 이벤트…",
+      "inputLabel": "Aera 검색",
+      "clear": "검색어 지우기",
+      "all": "전체",
+      "idleTitle": "무엇을 찾고 계신가요?",
+      "idleText": "두 글자 이상 입력하세요. 결과가 바로 표시됩니다.",
+      "emptyTitle": "“{query}”에 대한 검색 결과가 없습니다",
+      "emptyText": "더 짧거나 다른 검색어를 시도해 보세요.",
+      "errorTitle": "검색을 사용할 수 없습니다",
+      "errorText": "문제가 발생했습니다. 계속 입력하거나 잠시 후 다시 시도해 주세요.",
+      "types": {
+        "community": "커뮤니티",
+        "blog": "블로그",
+        "post": "게시물",
+        "course": "강의",
+        "event": "이벤트",
+        "product": "상품",
+        "knowledge": "지식"
+      }
     }
   },
   "categories": {

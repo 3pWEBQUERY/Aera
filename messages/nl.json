@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "Zoeken",
+      "title": "Ontdekken",
+      "subtitle": "Doorzoek alle openbare communities, posts, blogs, cursussen, evenementen en producten op Aera — live, terwijl je typt.",
+      "placeholder": "Communities, blogs, cursussen, evenementen…",
+      "inputLabel": "Zoeken op Aera",
+      "clear": "Zoekopdracht wissen",
+      "all": "Alles",
+      "idleTitle": "Waar ben je naar op zoek?",
+      "idleText": "Typ minstens twee tekens. Resultaten verschijnen direct.",
+      "emptyTitle": "Niets gevonden voor “{query}”",
+      "emptyText": "Probeer een kortere of andere zoekterm.",
+      "errorTitle": "Zoeken niet beschikbaar",
+      "errorText": "Er ging iets mis. Blijf typen of probeer het zo weer.",
+      "types": {
+        "community": "Communities",
+        "blog": "Blogs",
+        "post": "Posts",
+        "course": "Cursussen",
+        "event": "Evenementen",
+        "product": "Producten",
+        "knowledge": "Kennis"
+      }
     }
   },
   "categories": {

@@ -83,7 +83,12 @@ export function HomeRail({
       <div className="h-px w-7 shrink-0 bg-white/10" />
 
       <RailIcon href="/home" icon="home" label={t("home")} active={pathname === "/home"} />
-      <RailIcon href="/home#suche" icon="search" label={t("discover")} />
+      <RailIcon
+        href="/home/search"
+        icon="search"
+        label={t("discover")}
+        active={pathname.startsWith("/home/search")}
+      />
       {user && <RailIcon href="/dashboard" icon="dashboard" label={t("myCommunities")} />}
 
       {memberships.length > 0 && (

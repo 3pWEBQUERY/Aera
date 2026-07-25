@@ -3533,6 +3533,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "Search",
+      "title": "Discover",
+      "subtitle": "Search every public community, post, blog, course, event and product on Aera — live, as you type.",
+      "placeholder": "Communities, blogs, courses, events …",
+      "inputLabel": "Search Aera",
+      "clear": "Clear search",
+      "all": "All",
+      "idleTitle": "What are you looking for?",
+      "idleText": "Type at least two characters. Results appear instantly.",
+      "emptyTitle": "Nothing found for “{query}”",
+      "emptyText": "Try a shorter or different term.",
+      "errorTitle": "Search unavailable",
+      "errorText": "Something got in the way. Keep typing or try again in a moment.",
+      "types": {
+        "community": "Communities",
+        "blog": "Blogs",
+        "post": "Posts",
+        "course": "Courses",
+        "event": "Events",
+        "product": "Products",
+        "knowledge": "Knowledge"
+      }
     }
   },
   "categories": {

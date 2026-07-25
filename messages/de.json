@@ -3533,6 +3533,30 @@
       "create": "Erstellen",
       "account": "Profil",
       "login": "Anmelden"
+    },
+    "search": {
+      "metaTitle": "Suche",
+      "title": "Entdecken",
+      "subtitle": "Durchsuche alle öffentlichen Communities, Beiträge, Blogs, Kurse, Events und Produkte auf Aera — live, während du tippst.",
+      "placeholder": "Communities, Blogs, Kurse, Events …",
+      "inputLabel": "Aera durchsuchen",
+      "clear": "Suche leeren",
+      "all": "Alle",
+      "idleTitle": "Wonach suchst du?",
+      "idleText": "Tippe mindestens zwei Zeichen. Die Ergebnisse erscheinen sofort.",
+      "emptyTitle": "Nichts zu „{query}“ gefunden",
+      "emptyText": "Versuch es mit einem kürzeren oder anderen Begriff.",
+      "errorTitle": "Suche nicht erreichbar",
+      "errorText": "Da ist etwas dazwischengekommen. Tippe weiter oder versuch es gleich noch einmal.",
+      "types": {
+        "community": "Communities",
+        "blog": "Blogs",
+        "post": "Beiträge",
+        "course": "Kurse",
+        "event": "Events",
+        "product": "Produkte",
+        "knowledge": "Wissen"
+      }
     }
   },
   "categories": {

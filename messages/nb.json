@@ -3505,6 +3505,30 @@
       "create": "Create",
       "account": "Profile",
       "login": "Log in"
+    },
+    "search": {
+      "metaTitle": "Søk",
+      "title": "Utforsk",
+      "subtitle": "Søk i alle offentlige communities, innlegg, blogger, kurs, arrangementer og produkter på Aera — direkte mens du skriver.",
+      "placeholder": "Communities, blogger, kurs, arrangementer …",
+      "inputLabel": "Søk på Aera",
+      "clear": "Tøm søket",
+      "all": "Alle",
+      "idleTitle": "Hva ser du etter?",
+      "idleText": "Skriv minst to tegn. Resultatene vises umiddelbart.",
+      "emptyTitle": "Fant ingenting for «{query}»",
+      "emptyText": "Prøv et kortere eller annet søkeord.",
+      "errorTitle": "Søk utilgjengelig",
+      "errorText": "Noe gikk galt. Fortsett å skrive, eller prøv igjen om et øyeblikk.",
+      "types": {
+        "community": "Communities",
+        "blog": "Blogger",
+        "post": "Innlegg",
+        "course": "Kurs",
+        "event": "Arrangementer",
+        "product": "Produkter",
+        "knowledge": "Kunnskap"
+      }
     }
   },
   "categories": {

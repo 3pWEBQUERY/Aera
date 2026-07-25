@@ -111,7 +111,7 @@ export function MobileTabbar({
           label={t("home")}
           active={pathname === "/home"}
         />
-        <Tab href="/home#suche" icon="search" label={t("search")} />
+        <Tab href="/home/search" icon="search" label={t("search")} />
         <Tab href="/start" icon="plus" label={t("create")} />
         {user ? (
           <Tab
