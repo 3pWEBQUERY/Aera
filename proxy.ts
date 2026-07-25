@@ -115,6 +115,24 @@ function isSharedPath(pathname: string): boolean {
   );
 }
 
+/**
+ * Everything shipped in public/ — flags, logos, icons, 404 backdrops, sw.js —
+ * must be served as-is on every host.
+ *
+ * Without this the community rewrite turns `tenant.aera.so/flags/de.svg` into
+ * `/c/tenant/flags/de.svg`, which does not exist: every static asset 404s on
+ * subdomains and custom domains while working fine on the apex.
+ *
+ * Matching "the last segment carries a file extension" instead of listing the
+ * asset folders keeps this true for files added later. Community paths never
+ * contain a dot — slugs come from slugify() ([a-z0-9-]) and ids are cuids — so
+ * this cannot swallow real tenant content.
+ */
+function isStaticAsset(pathname: string): boolean {
+  const lastSegment = pathname.slice(pathname.lastIndexOf("/") + 1);
+  return lastSegment.includes(".");
+}
+
 function rewriteToCommunity(req: NextRequest, slug: string) {
   const rewritten = req.nextUrl.clone();
   const path = req.nextUrl.pathname;
@@ -154,7 +172,9 @@ export async function proxy(req: NextRequest) {
     hostname === "localhost" ||
     hostname === "127.0.0.1";
 
-  if (isApex || isSharedPath(url.pathname)) return NextResponse.next();
+  if (isApex || isSharedPath(url.pathname) || isStaticAsset(url.pathname)) {
+    return NextResponse.next();
+  }
 
   // Subdomain of the root domain -> resolve to a community. Matches a tenant
   // by its chosen subdomain OR its slug (default address). A failed resolver

@@ -104,6 +104,31 @@ describe("host-based proxy security", () => {
     expect(response.headers.get("x-middleware-rewrite")).toBeNull();
   });
 
+  it("serves public/ assets untouched on subdomains and custom domains", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(jsonResponse({ slug: "safe-community" }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    // Regression: these used to be rewritten to /c/<slug>/flags/de.svg and 404.
+    for (const [host, path] of [
+      ["thegnd.aera.so", "/flags/de.svg"],
+      ["thegnd.aera.so", "/logo.svg"],
+      ["thegnd.aera.so", "/404/404-1-1920.webp"],
+      ["verified-community.example", "/icon-192.png"],
+      ["verified-community.example", "/sw.js"],
+    ] as const) {
+      const response = await proxy(
+        new NextRequest(`https://${host}${path}`, { headers: { host } }),
+      );
+      expect(
+        response.headers.get("x-middleware-rewrite"),
+        `${host}${path} must not be rewritten`,
+      ).toBeNull();
+      expect(response.status).toBe(200);
+    }
+    // A static asset never needs a tenant, so it must not cost a lookup either.
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("still rewrites actual community content on a verified custom domain", async () => {
     vi.stubGlobal(
       "fetch",
