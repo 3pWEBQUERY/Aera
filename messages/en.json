@@ -130,7 +130,8 @@
     "planTierLimitReached": "Your {plan} package allows {limit} membership tiers. Upgrade to add more.",
     "planFeatureLocked": "This feature is available from the {plan} package. Upgrade to use it.",
     "planMemberLimitReached": "Your {plan} package is built for {limit} active members. Upgrade to keep growing.",
-    "planStaffLimitReached": "Your {plan} package allows {limit} team seats (admins/moderators). Upgrade for more."
+    "planStaffLimitReached": "Your {plan} package allows {limit} team seats (admins/moderators). Upgrade for more.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
@@ -602,7 +603,15 @@
       "dangerDesc": "Permanently deletes the community with all members, content and orders. Enter the slug <code>{slug}</code> to confirm.",
       "confirmSlugAria": "Slug to confirm",
       "deleteConfirm": "Really delete community “{name}” permanently?",
-      "deleteBtn": "Delete community"
+      "deleteBtn": "Delete community",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Users",

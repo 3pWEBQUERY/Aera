@@ -113,8 +113,12 @@ async function ensurePeriod(wallet: AiCreditWallet): Promise<AiCreditWallet> {
 
   if (now < wallet.periodEnd) return wallet;
 
-  // Nobody invoices a promotion, so it refills on the calendar like FREE.
-  const locallyRefilled = wallet.plan === "FREE" || wallet.planSource === "PROMO";
+  // Nobody invoices a promotion or an admin grant, so both refill on the
+  // calendar like FREE. Only Stripe-owned allowances wait for an invoice.
+  const locallyRefilled =
+    wallet.plan === "FREE" ||
+    wallet.planSource === "PROMO" ||
+    wallet.planSource === "MANUAL";
   if (!locallyRefilled) {
     await prisma.aiCreditWallet.updateMany({
       where: { id: wallet.id, periodEnd: { lte: now }, includedRemaining: { gt: 0 } },
@@ -559,4 +563,57 @@ export async function getCreditSummary(tenantId: string): Promise<CreditSummary>
       createdAt: r.createdAt.toISOString(),
     })),
   };
+}
+
+/**
+ * Set a community's package by hand from /admin.
+ *
+ * Refuses while Stripe owns the wallet: that is money the creator actually
+ * pays, and silently replacing it here would desync the subscription from the
+ * plan. Cancel the subscription first, then set the package.
+ *
+ * The grant is marked MANUAL (FREE returns the wallet to the DEFAULT
+ * baseline), so it refills locally and never expires on its own.
+ */
+export async function setCreatorPlanManually(params: {
+  tenantId: string;
+  plan: CreatorPlan;
+}): Promise<{ ok: boolean; reason?: "stripe_active" }> {
+  const info = PLANS[params.plan];
+  const wallet = await getOrCreateWallet(params.tenantId);
+
+  if (
+    wallet.planSource === "STRIPE" &&
+    (wallet.creatorSubscriptionStatus === "ACTIVE" ||
+      wallet.creatorSubscriptionStatus === "TRIALING")
+  ) {
+    return { ok: false, reason: "stripe_active" };
+  }
+
+  if (wallet.plan === params.plan && wallet.planSource !== "STRIPE") {
+    return { ok: true };
+  }
+
+  const now = new Date();
+  await prisma.aiCreditWallet.update({
+    where: { id: wallet.id },
+    data: {
+      plan: info.key,
+      monthlyCredits: info.monthlyCredits,
+      includedRemaining: info.monthlyCredits,
+      periodStart: now,
+      periodEnd: addMonths(now, 1),
+      planSource: params.plan === "FREE" ? "DEFAULT" : "MANUAL",
+      // A leftover subscription id would let a later Stripe webhook match this
+      // wallet and undo the change; the promo fields would do the same.
+      stripeSubscriptionId: null,
+      lastPaidStripeInvoiceId: null,
+      creatorSubscriptionStatus: null,
+      planCancelAtPeriodEnd: false,
+      planCurrentPeriodEnd: null,
+      promoCodeId: null,
+      promoExpiresAt: null,
+    },
+  });
+  return { ok: true };
 }

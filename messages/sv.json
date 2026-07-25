@@ -130,7 +130,8 @@
     "planTierLimitReached": "Ditt {plan}-paket tillåter {limit} medlemskapsnivåer. Uppgradera för att lägga till fler.",
     "planFeatureLocked": "Den här funktionen är tillgänglig från paketet {plan}. Uppgradera för att använda den.",
     "planMemberLimitReached": "Ditt {plan}-paket är byggt för {limit} aktiva medlemmar. Uppgradera för att fortsätta växa.",
-    "planStaffLimitReached": "Ditt {plan}-paket tillåter {limit} teamplatser (admins/moderatorer). Uppgradera för fler."
+    "planStaffLimitReached": "Ditt {plan}-paket tillåter {limit} teamplatser (admins/moderatorer). Uppgradera för fler.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Tar bort community-n med alla medlemmar, innehåll och beställningar permanent. Ange slug-en <code>{slug}</code> för att bekräfta.",
       "confirmSlugAria": "Slug för bekräftelse",
       "deleteConfirm": "Vill du verkligen ta bort community ”{name}” permanent?",
-      "deleteBtn": "Ta bort community"
+      "deleteBtn": "Ta bort community",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Användare",

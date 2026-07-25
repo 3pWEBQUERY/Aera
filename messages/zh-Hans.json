@@ -130,7 +130,8 @@
     "planTierLimitReached": "你的 {plan} 套餐支持 {limit} 个会员等级，升级以添加更多。",
     "planFeatureLocked": "此功能需要 {plan} 套餐及以上版本，升级即可使用。",
     "planMemberLimitReached": "你的 {plan} 套餐支持 {limit} 名活跃成员，升级以继续增长。",
-    "planStaffLimitReached": "你的 {plan} 套餐支持 {limit} 个团队席位（管理员/版主），升级以获得更多席位。"
+    "planStaffLimitReached": "你的 {plan} 套餐支持 {limit} 个团队席位（管理员/版主），升级以获得更多席位。",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -577,7 +578,15 @@
       "dangerDesc": "永久删除该社区及其所有成员、内容和订单。请输入 slug <code>{slug}</code> 以确认。",
       "confirmSlugAria": "用于确认的 slug",
       "deleteConfirm": "确定要永久删除社区“{name}”吗？",
-      "deleteBtn": "删除社区"
+      "deleteBtn": "删除社区",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "用户",

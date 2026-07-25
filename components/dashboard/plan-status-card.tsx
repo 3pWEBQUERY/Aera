@@ -33,7 +33,7 @@ export function PlanStatusCard({
   slug: string;
   plan: PlanKey;
   nextPlan: PlanKey | null;
-  planSource: "DEFAULT" | "STRIPE" | "PROMO";
+  planSource: "DEFAULT" | "STRIPE" | "PROMO" | "MANUAL";
   promoExpiresAt: string | null;
   quotas: Quota[];
 }) {

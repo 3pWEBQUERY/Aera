@@ -130,7 +130,8 @@
     "planTierLimitReached": "Твій пакет {plan} дозволяє {limit} рівнів членства. Онови пакет, щоб додати ще.",
     "planFeatureLocked": "Ця функція доступна з пакету {plan}. Онови пакет, щоб нею користуватися.",
     "planMemberLimitReached": "Твій пакет {plan} розрахований на {limit} активних учасників. Онови пакет, щоб продовжувати зростати.",
-    "planStaffLimitReached": "Твій пакет {plan} дозволяє {limit} місць у команді (адміни/модератори). Онови пакет, щоб отримати більше."
+    "planStaffLimitReached": "Твій пакет {plan} дозволяє {limit} місць у команді (адміни/модератори). Онови пакет, щоб отримати більше.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Перевірка доступності…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Безповоротно видаляє спільноту з усіма учасниками, вмістом і замовленнями. Введіть слаг <code>{slug}</code> для підтвердження.",
       "confirmSlugAria": "Слаг для підтвердження",
       "deleteConfirm": "Справді безповоротно видалити спільноту «{name}»?",
-      "deleteBtn": "Видалити спільноту"
+      "deleteBtn": "Видалити спільноту",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Користувачі",

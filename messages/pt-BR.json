@@ -130,7 +130,8 @@
     "planTierLimitReached": "Seu pacote {plan} permite {limit} níveis de associação. Faça upgrade para adicionar mais.",
     "planFeatureLocked": "Este recurso está disponível a partir do pacote {plan}. Faça upgrade para usá-lo.",
     "planMemberLimitReached": "Seu pacote {plan} foi feito para {limit} membros ativos. Faça upgrade para continuar crescendo.",
-    "planStaffLimitReached": "Seu pacote {plan} permite {limit} vagas de equipe (admins/moderadores). Faça upgrade para mais."
+    "planStaffLimitReached": "Seu pacote {plan} permite {limit} vagas de equipe (admins/moderadores). Faça upgrade para mais.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Verificando disponibilidade…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Exclui a comunidade com todos os membros, conteúdos e pedidos de forma irreversível. Digite o slug <code>{slug}</code> para confirmar.",
       "confirmSlugAria": "Slug para confirmação",
       "deleteConfirm": "Excluir mesmo a comunidade “{name}” de forma irreversível?",
-      "deleteBtn": "Excluir comunidade"
+      "deleteBtn": "Excluir comunidade",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Usuários",

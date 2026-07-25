@@ -42,6 +42,11 @@ export default async function AdminCommunitiesPage({
       include: {
         _count: { select: { memberships: true, posts: true, orders: true } },
         owner: { select: { name: true, email: true } },
+        // Das Paket haengt an der Wallet, nicht am Tenant. Fehlt sie noch
+        // (frisch angelegte Community), gilt FREE.
+        aiCreditWallet: {
+          select: { plan: true, planSource: true, creatorSubscriptionStatus: true },
+        },
       },
     }),
     prisma.tenant.count({ where }),
@@ -65,6 +70,13 @@ export default async function AdminCommunitiesPage({
     members: t._count.memberships,
     posts: t._count.posts,
     orders: t._count.orders,
+    creatorPlan: t.aiCreditWallet?.plan ?? "FREE",
+    planSource: t.aiCreditWallet?.planSource ?? "DEFAULT",
+    // Ein laufendes Stripe-Abo sperrt das Feld: Billing hat Vorrang.
+    billingLocked:
+      t.aiCreditWallet?.planSource === "STRIPE" &&
+      (t.aiCreditWallet?.creatorSubscriptionStatus === "ACTIVE" ||
+        t.aiCreditWallet?.creatorSubscriptionStatus === "TRIALING"),
   }));
 
   return (

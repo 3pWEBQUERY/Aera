@@ -130,7 +130,8 @@
     "planTierLimitReached": "你的 {plan} 方案最多允許 {limit} 個會員等級。升級以新增更多。",
     "planFeatureLocked": "此功能自 {plan} 方案起提供。升級即可使用。",
     "planMemberLimitReached": "你的 {plan} 方案最多支援 {limit} 位活躍成員。升級以持續成長。",
-    "planStaffLimitReached": "你的 {plan} 方案最多允許 {limit} 個團隊席位（管理員／版主）。升級以取得更多。"
+    "planStaffLimitReached": "你的 {plan} 方案最多允許 {limit} 個團隊席位（管理員／版主）。升級以取得更多。",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",
@@ -577,7 +578,15 @@
       "dangerDesc": "永久刪除該社群及其所有成員、內容和訂單。請輸入 slug <code>{slug}</code> 以確認。",
       "confirmSlugAria": "用於確認的 slug",
       "deleteConfirm": "確定要永久刪除社群「{name}」嗎？",
-      "deleteBtn": "刪除社群"
+      "deleteBtn": "刪除社群",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "使用者",

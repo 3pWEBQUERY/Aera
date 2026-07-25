@@ -13,6 +13,9 @@ import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Input, Label, Select } from "@/components/ui/field";
 import { CATEGORIES, categoryByKey } from "@/lib/categories";
 import { formatDate } from "@/lib/utils";
+import { PLAN_ORDER } from "@/lib/credit-plans";
+import { PlanBadge, PLAN_LABEL } from "@/components/dashboard/plan-badge";
+import type { PlanKey } from "@/lib/plan-features";
 
 export interface TenantRow {
   id: string;
@@ -31,6 +34,10 @@ export interface TenantRow {
   members: number;
   posts: number;
   orders: number;
+  creatorPlan: PlanKey;
+  planSource: "DEFAULT" | "STRIPE" | "PROMO" | "MANUAL";
+  /** Stripe besitzt die Wallet — das Paket darf hier nicht gesetzt werden. */
+  billingLocked: boolean;
 }
 
 const initial: AdminState = {};
@@ -127,6 +134,8 @@ export function CommunitiesManager({
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-slate-900">{tn.name}</p>
+                    {/* Paket auf einen Blick — die haeufigste Frage in dieser Liste. */}
+                    <PlanBadge plan={tn.creatorPlan} />
                     <Pill className="bg-slate-100 text-slate-500">
                       {t("membersShort", { count: nf.format(tn.members) })}
                     </Pill>
@@ -281,6 +290,26 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
                   defaultValue={tenant.platformFeePercent}
                 />
               </div>
+            </div>
+            <div>
+              <Label htmlFor="at-plan">{t("plan")}</Label>
+              <Select
+                id="at-plan"
+                name="creatorPlan"
+                defaultValue={tenant.creatorPlan}
+                disabled={tenant.billingLocked}
+              >
+                {PLAN_ORDER.map((p) => (
+                  <option key={p} value={p}>
+                    {PLAN_LABEL[p]}
+                  </option>
+                ))}
+              </Select>
+              <p className="mt-1.5 text-xs text-slate-400">
+                {tenant.billingLocked
+                  ? t("planLockedHint")
+                  : t(`planSourceHint.${tenant.planSource}`)}
+              </p>
             </div>
             <div>
               <Label htmlFor="at-status">{t("status")}</Label>

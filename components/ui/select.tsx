@@ -102,8 +102,16 @@ export function Select({
 
   return (
     <div ref={ref} className={cn("relative", className)}>
+      {/* Ein deaktiviertes Feld darf nichts senden — sonst uebertraegt das
+          versteckte Input weiter einen Wert, obwohl die Bedienung gesperrt ist. */}
       {name && (
-        <input type="hidden" name={name} value={selected} required={required} />
+        <input
+          type="hidden"
+          name={name}
+          value={selected}
+          required={required}
+          disabled={disabled}
+        />
       )}
       <button
         type="button"

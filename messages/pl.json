@@ -130,7 +130,8 @@
     "planTierLimitReached": "Twój pakiet {plan} pozwala na {limit} poziomów członkostwa. Przejdź na wyższy pakiet, aby dodać więcej.",
     "planFeatureLocked": "Ta funkcja jest dostępna od pakietu {plan}. Przejdź na wyższy pakiet, aby jej używać.",
     "planMemberLimitReached": "Twój pakiet {plan} obsługuje {limit} aktywnych członków. Przejdź na wyższy pakiet, aby dalej się rozwijać.",
-    "planStaffLimitReached": "Twój pakiet {plan} pozwala na {limit} miejsc w zespole (administratorzy/moderatorzy). Przejdź na wyższy pakiet, aby zyskać więcej."
+    "planStaffLimitReached": "Twój pakiet {plan} pozwala na {limit} miejsc w zespole (administratorzy/moderatorzy). Przejdź na wyższy pakiet, aby zyskać więcej.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Sprawdzanie dostępności…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Nieodwracalnie usuwa społeczność wraz ze wszystkimi członkami, treściami i zamówieniami. Wpisz slug <code>{slug}</code>, aby potwierdzić.",
       "confirmSlugAria": "Slug do potwierdzenia",
       "deleteConfirm": "Czy na pewno nieodwracalnie usunąć społeczność „{name}”?",
-      "deleteBtn": "Usuń społeczność"
+      "deleteBtn": "Usuń społeczność",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Użytkownicy",

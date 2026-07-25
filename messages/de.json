@@ -130,7 +130,8 @@
     "planTierLimitReached": "Dein {plan}-Paket erlaubt {limit} Mitgliedschafts-Stufen. Upgrade, um weitere anzulegen.",
     "planFeatureLocked": "Diese Funktion ist ab dem {plan}-Paket verfügbar. Upgrade, um sie zu nutzen.",
     "planMemberLimitReached": "Dein {plan}-Paket ist auf {limit} aktive Mitglieder ausgelegt. Upgrade, um weiter zu wachsen.",
-    "planStaffLimitReached": "Dein {plan}-Paket erlaubt {limit} Team-Plätze (Admins/Moderatoren). Upgrade für mehr."
+    "planStaffLimitReached": "Dein {plan}-Paket erlaubt {limit} Team-Plätze (Admins/Moderatoren). Upgrade für mehr.",
+    "planStripeActive": "Für diese Community läuft ein aktives Stripe-Abo. Kündige es zuerst, dann lässt sich das Paket setzen."
   },
   "legalPurchase": {
     "immediateAccess": "Ich verlange sofortigen Zugang und weiß, dass mein Widerrufsrecht mit Beginn der digitalen Lieferung erlischt. <withdrawal>Details</withdrawal>.",
@@ -602,7 +603,15 @@
       "dangerDesc": "Löscht die Community mit allen Mitgliedern, Inhalten und Bestellungen unwiderruflich. Zur Bestätigung den Slug <code>{slug}</code> eingeben.",
       "confirmSlugAria": "Slug zur Bestätigung",
       "deleteConfirm": "Community „{name}“ wirklich unwiderruflich löschen?",
-      "deleteBtn": "Community löschen"
+      "deleteBtn": "Community löschen",
+      "plan": "Paket",
+      "planLockedHint": "Stripe verwaltet dieses Paket. Solange das Abo läuft, lässt es sich hier nicht ändern.",
+      "planSourceHint": {
+        "DEFAULT": "Standard-Paket. Eine Änderung wird als manuelle Vergabe hinterlegt und läuft nicht ab.",
+        "MANUAL": "Manuell vergeben. Läuft nicht ab und wird von einem späteren Stripe-Abo überschrieben.",
+        "PROMO": "Aktuell über einen Promo-Code freigeschaltet. Eine Änderung hier ersetzt diese Vergabe.",
+        "STRIPE": "Zuletzt von Stripe gesetzt, aktuell ohne laufendes Abo. Eine Änderung ist möglich."
+      }
     },
     "users": {
       "title": "Nutzer",

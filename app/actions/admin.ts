@@ -16,6 +16,7 @@ import {
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion, queueUserDeletion } from "@/lib/data-lifecycle";
 import { parsePlanKey } from "@/lib/credit-plans";
+import { getOrCreateWallet, setCreatorPlanManually } from "@/lib/credits";
 import {
   MAX_BATCH_SIZE,
   createPromoCodes,
@@ -63,6 +64,31 @@ export async function adminUpdateTenantAction(
 
   const domainRaw = String(fd.get("customDomain") || "").trim().toLowerCase();
   const customDomain = /^[a-z0-9.-]{3,255}$/.test(domainRaw) ? domainRaw : null;
+
+  // Paket: nur setzen, wenn es sich tatsaechlich aendert. Der Wallet-Schreib-
+  // vorgang setzt das Guthaben zurueck, das soll ein blosses Speichern des
+  // Formulars nicht ausloesen.
+  const requestedPlan = parsePlanKey(fd.get("creatorPlan"));
+  if (requestedPlan) {
+    const walletBefore = await getOrCreateWallet(tenant.id);
+    if (walletBefore.plan !== requestedPlan) {
+      const applied = await setCreatorPlanManually({
+        tenantId: tenant.id,
+        plan: requestedPlan,
+      });
+      if (!applied.ok) {
+        return { error: await tErr("planStripeActive") };
+      }
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: admin.id,
+        action: "admin.tenant.plan",
+        targetType: "Tenant",
+        targetId: tenant.id,
+        metadata: { from: walletBefore.plan, to: requestedPlan },
+      });
+    }
+  }
 
   try {
     await prisma.tenant.update({

@@ -130,7 +130,8 @@
     "planTierLimitReached": "Твой пакет {plan} допускает {limit} уровней подписки. Сделай апгрейд, чтобы добавить ещё.",
     "planFeatureLocked": "Эта функция доступна начиная с пакета {plan}. Сделай апгрейд, чтобы её использовать.",
     "planMemberLimitReached": "Твой пакет {plan} рассчитан на {limit} активных участников. Сделай апгрейд, чтобы продолжать расти.",
-    "planStaffLimitReached": "Твой пакет {plan} допускает {limit} мест в команде (админы/модераторы). Сделай апгрейд, чтобы получить больше."
+    "planStaffLimitReached": "Твой пакет {plan} допускает {limit} мест в команде (админы/модераторы). Сделай апгрейд, чтобы получить больше.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Проверка доступности…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Безвозвратно удаляет сообщество со всеми участниками, контентом и заказами. Введите слаг <code>{slug}</code> для подтверждения.",
       "confirmSlugAria": "Слаг для подтверждения",
       "deleteConfirm": "Действительно безвозвратно удалить сообщество «{name}»?",
-      "deleteBtn": "Удалить сообщество"
+      "deleteBtn": "Удалить сообщество",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Пользователи",

@@ -130,7 +130,8 @@
     "planTierLimitReached": "{plan} 패키지는 멤버십 등급 {limit}개까지 허용해요. 더 추가하려면 업그레이드하세요.",
     "planFeatureLocked": "이 기능은 {plan} 패키지부터 이용할 수 있어요. 사용하려면 업그레이드하세요.",
     "planMemberLimitReached": "{plan} 패키지는 활성 멤버 {limit}명까지 지원해요. 계속 성장하려면 업그레이드하세요.",
-    "planStaffLimitReached": "{plan} 패키지는 팀 좌석(관리자/모더레이터) {limit}개까지 허용해요. 더 필요하면 업그레이드하세요."
+    "planStaffLimitReached": "{plan} 패키지는 팀 좌석(관리자/모더레이터) {limit}개까지 허용해요. 더 필요하면 업그레이드하세요.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "사용 가능 여부 확인 중…",
@@ -577,7 +578,15 @@
       "dangerDesc": "커뮤니티를 모든 회원, 콘텐츠, 주문과 함께 영구적으로 삭제합니다. 확인하려면 슬러그 <code>{slug}</code>를 입력하세요.",
       "confirmSlugAria": "확인용 슬러그",
       "deleteConfirm": "커뮤니티 '{name}'을(를) 정말 영구적으로 삭제할까요?",
-      "deleteBtn": "커뮤니티 삭제"
+      "deleteBtn": "커뮤니티 삭제",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "사용자",

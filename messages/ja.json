@@ -130,7 +130,8 @@
     "planTierLimitReached": "{plan}パッケージでは、メンバーシップ階層は{limit}個までです。追加するにはアップグレードしてください。",
     "planFeatureLocked": "この機能は{plan}パッケージから利用できます。アップグレードしてご利用ください。",
     "planMemberLimitReached": "{plan}パッケージは、アクティブメンバー{limit}人までに対応しています。さらに成長させるにはアップグレードしてください。",
-    "planStaffLimitReached": "{plan}パッケージでは、チーム枠（管理者/モデレーター）は{limit}人までです。増やすにはアップグレードしてください。"
+    "planStaffLimitReached": "{plan}パッケージでは、チーム枠（管理者/モデレーター）は{limit}人までです。増やすにはアップグレードしてください。",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -577,7 +578,15 @@
       "dangerDesc": "コミュニティをすべてのメンバー・コンテンツ・注文とともに完全に削除します。確認のためスラッグ <code>{slug}</code> を入力してください。",
       "confirmSlugAria": "確認用スラッグ",
       "deleteConfirm": "コミュニティ「{name}」を本当に完全に削除しますか？",
-      "deleteBtn": "コミュニティを削除"
+      "deleteBtn": "コミュニティを削除",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "ユーザー",

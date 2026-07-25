@@ -274,6 +274,9 @@ enum CreatorPlanSource {
   DEFAULT
   STRIPE
   PROMO
+  /// Von einem Plattform-Admin vergeben. Wird wie FREE/PROMO lokal
+  /// aufgefuellt (es gibt keine Rechnung) und laeuft nie von selbst ab.
+  MANUAL
 }
 
 enum CreatorCheckoutStatus {

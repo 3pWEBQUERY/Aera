@@ -130,7 +130,8 @@
     "planTierLimitReached": "{plan}-pakken din tillater {limit} medlemskapsnivåer. Oppgrader for å legge til flere.",
     "planFeatureLocked": "Denne funksjonen er tilgjengelig fra {plan}-pakken. Oppgrader for å bruke den.",
     "planMemberLimitReached": "{plan}-pakken din er bygget for {limit} aktive medlemmer. Oppgrader for å fortsette å vokse.",
-    "planStaffLimitReached": "{plan}-pakken din tillater {limit} teamplasser (admins/moderatorer). Oppgrader for flere."
+    "planStaffLimitReached": "{plan}-pakken din tillater {limit} teamplasser (admins/moderatorer). Oppgrader for flere.",
+    "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set."
   },
   "nameStatus": {
     "checking": "Sjekker tilgjengelighet…",
@@ -577,7 +578,15 @@
       "dangerDesc": "Sletter community-en med alle medlemmer, innhold og bestillinger permanent. Skriv inn slug-en <code>{slug}</code> for å bekrefte.",
       "confirmSlugAria": "Slug for bekreftelse",
       "deleteConfirm": "Vil du virkelig slette community «{name}» permanent?",
-      "deleteBtn": "Slett community"
+      "deleteBtn": "Slett community",
+      "plan": "Package",
+      "planLockedHint": "Stripe manages this package. It cannot be changed here while the subscription is active.",
+      "planSourceHint": {
+        "DEFAULT": "Default package. A change is recorded as a manual grant and does not expire.",
+        "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
+        "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
+        "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
+      }
     },
     "users": {
       "title": "Brukere",
