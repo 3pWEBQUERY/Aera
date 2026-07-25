@@ -271,7 +271,7 @@ export function OnboardingWizard({
                   </p>
                   <div className="flex items-center gap-3.5">
                     <span
-                      className="display-serif flex h-12 w-12 items-center justify-center rounded-xl text-xl text-white"
+                      className="display-serif flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl text-white"
                       style={{ backgroundColor: primary }}
                     >
                       {(name || "A").charAt(0).toUpperCase()}
@@ -519,7 +519,7 @@ function ColorRow({
               aria-label={c}
               aria-pressed={on}
               className={cn(
-                "h-8 w-8 rounded-full ring-offset-2 ring-offset-[#f4f1ea] transition",
+                "h-8 w-8 shrink-0 rounded-full ring-offset-2 ring-offset-[#f4f1ea] transition",
                 on ? "ring-2 ring-[#161613]" : "ring-1 ring-[#161613]/10 hover:scale-105",
               )}
               style={{ backgroundColor: c }}
@@ -527,7 +527,7 @@ function ColorRow({
           );
         })}
         <label
-          className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-dashed border-[#161613]/25 text-[#161613]/40 transition hover:border-[#161613]/50 hover:text-[#161613]/70"
+          className="relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-dashed border-[#161613]/25 text-[#161613]/40 transition hover:border-[#161613]/50 hover:text-[#161613]/70"
           title={customLabel}
         >
           <Icon name="plus" size={14} />
