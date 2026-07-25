@@ -288,7 +288,7 @@ export function PromoCodesManager({
                 "rounded-full px-3 py-1.5 text-xs font-semibold transition",
                 filter === f
                   ? "bg-[var(--action)] text-[var(--action-fg)]"
-                  : "bg-white text-slate-500 ring-1 ring-slate-200 hover:bg-slate-50",
+                  : "bg-white text-slate-500 ring-1 ring-slate-200 hover:bg-[var(--action-soft)]",
               )}
             >
               {t(`filter.${f}`)}

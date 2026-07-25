@@ -28,6 +28,10 @@
      Fortschrittsbalken, Auswahlpunkte, Rahmen einer gewaehlten Karte. Der
      helle Ton verschwindet dort auf weissem Grund. */
   --action-strong: #9c85d6;
+  /* Angedeutete Tönung fuer Hover auf Tabs, Navigationspunkten und
+     Auswahlkarten. Der Hover soll den Zielzustand vorwegnehmen, nicht ein
+     neutrales Grau einwerfen. */
+  --action-soft: #e9e5f8;
   --action-fg: #161613;
 }
 

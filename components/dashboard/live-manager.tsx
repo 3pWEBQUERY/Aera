@@ -300,7 +300,7 @@ function LiveForm({
                     "mb-1 flex h-5 w-5 items-center justify-center rounded-full transition",
                     helpOpen
                       ? "bg-[var(--action)] text-[var(--action-fg)]"
-                      : "text-slate-400 hover:bg-slate-100 hover:text-slate-700",
+                      : "text-slate-400 hover:bg-[var(--action-soft)] hover:text-slate-700",
                   )}
                 >
                   <Icon name="info" size={13} />

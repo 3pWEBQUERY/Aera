@@ -222,7 +222,7 @@ export function LayoutEditor({
                 onClick={() => setDevice(d)}
                 className={cn(
                   "flex h-8 w-9 items-center justify-center rounded-md transition",
-                  device === d ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-500 hover:bg-slate-100",
+                  device === d ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-500 hover:bg-[var(--action-soft)]",
                 )}
                 aria-label={d === "desktop" ? t("desktopPreview") : t("mobilePreview")}
               >

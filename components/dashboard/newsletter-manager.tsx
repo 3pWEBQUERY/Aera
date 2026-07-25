@@ -328,8 +328,8 @@ function CampaignForm({
                       onClick={() => setBodyFormat(fmt)}
                       className={`rounded-[10px] px-3 py-1 text-xs font-semibold transition ${
                         bodyFormat === fmt
-                          ? "bg-white text-slate-900 shadow-sm"
-                          : "text-slate-500 hover:text-slate-800"
+                          ? "bg-[var(--action)] text-[var(--action-fg)] shadow-sm"
+                          : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800"
                       }`}
                     >
                       {fmt === "TEXT" ? t("formatText") : t("formatHtml")}

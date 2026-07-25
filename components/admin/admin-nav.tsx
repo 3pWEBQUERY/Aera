@@ -45,7 +45,7 @@ export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
               active
                 ? "bg-[var(--action)] text-[var(--action-fg)]"
-                : "text-slate-600 hover:bg-slate-100 hover:text-slate-900",
+                : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900",
             )}
           >
             <Icon

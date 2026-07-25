@@ -247,7 +247,7 @@ function Segmented({
             onClick={() => setVal(o.v)}
             className={
               "rounded-xl border px-3 py-2.5 text-sm font-medium transition " +
-              (val === o.v ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]" : "border-slate-200 text-slate-600 hover:bg-slate-50")
+              (val === o.v ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]" : "border-slate-200 text-slate-600 hover:bg-[var(--action-soft)]")
             }
           >
             {o.label}

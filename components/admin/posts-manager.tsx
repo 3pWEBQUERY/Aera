@@ -116,7 +116,7 @@ export function PostsManager({
               className={`rounded-full px-3.5 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
                 status === tab.value
                   ? "bg-[var(--action)] text-[var(--action-fg)]"
-                  : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                  : "border border-slate-200 bg-white text-slate-600 hover:bg-[var(--action-soft)]"
               }`}
             >
               {tab.label} ({nf.format(tab.count)})

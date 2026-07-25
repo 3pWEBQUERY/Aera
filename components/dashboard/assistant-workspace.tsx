@@ -1276,8 +1276,8 @@ function ModeSwitch({ mode, onChange, t }: { mode: Mode; onChange: (m: Mode) => 
             className={cn(
               "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition",
               active
-                ? "bg-white text-slate-900 shadow-sm ring-1 ring-slate-200"
-                : "text-slate-500 hover:text-slate-800",
+                ? "bg-[var(--action)] text-[var(--action-fg)] shadow-sm"
+                : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800",
             )}
           >
             <Icon name={it.icon} size={14} />

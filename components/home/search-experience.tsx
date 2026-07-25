@@ -259,7 +259,7 @@ function Chip({
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25",
         active
           ? "bg-[var(--action)] text-[var(--action-fg)]"
-          : "bg-white text-[#161613]/70 ring-1 ring-[#161613]/10 hover:bg-[#161613]/5",
+          : "bg-white text-[#161613]/70 ring-1 ring-[#161613]/10 hover:bg-[var(--action-soft)]",
       )}
     >
       {label}

@@ -198,7 +198,7 @@ export function ChatHub({
                 "rounded-full px-3 py-1.5 text-sm font-medium transition",
                 filter === c.key
                   ? "bg-[var(--action)] text-[var(--action-fg)]"
-                  : "bg-[#161613]/5 text-[#161613]/70 hover:bg-[#161613]/10",
+                  : "bg-[#161613]/5 text-[#161613]/70 hover:bg-[var(--action-soft)]",
               )}
             >
               {c.label}

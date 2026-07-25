@@ -132,7 +132,7 @@ export function StoriesManager({
               "rounded-full px-3.5 py-1.5 text-sm font-semibold transition",
               tab === tb.key
                 ? "bg-[var(--action)] text-[var(--action-fg)]"
-                : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50",
+                : "border border-slate-200 bg-white text-slate-600 hover:bg-[var(--action-soft)]",
             )}
           >
             {tb.label} ({tb.count})
@@ -404,7 +404,7 @@ function StorySettingsForm({
                     "rounded-xl border px-3.5 py-2 text-sm font-medium transition",
                     autoplay === sec
                       ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
-                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50",
+                      : "border-slate-200 bg-white text-slate-700 hover:bg-[var(--action-soft)]",
                   )}
                 >
                   {sec === 0 ? t("autoplayOff") : t("autoplaySeconds", { count: sec })}

@@ -102,10 +102,10 @@ export function SettingsTabs({
                   sel
                     ? s.danger
                       ? "bg-red-50 text-red-700"
-                      : "bg-slate-100 text-slate-900"
+                      : "bg-[var(--action)] text-[var(--action-fg)]"
                     : s.danger
                       ? "text-slate-500 hover:bg-red-50 hover:text-red-700"
-                      : "text-slate-500 hover:bg-slate-50 hover:text-slate-900",
+                      : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-900",
                 )}
               >
                 {s.icon && (
@@ -117,7 +117,7 @@ export function SettingsTabs({
                       sel
                         ? s.danger
                           ? "text-red-500"
-                          : "text-[var(--brand)]"
+                          : "text-[var(--action-fg)]/60"
                         : "text-slate-400",
                     )}
                   />

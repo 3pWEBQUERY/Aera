@@ -252,7 +252,7 @@ function SegmentedLayout({ defaultValue }: { defaultValue: "LIST" | "GRID" }) {
               "flex items-center justify-center gap-2 rounded-xl border px-4 py-3 text-sm font-medium transition " +
               (val === o.v
                 ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
-                : "border-slate-200 text-slate-600 hover:bg-slate-50")
+                : "border-slate-200 text-slate-600 hover:bg-[var(--action-soft)]")
             }
           >
             <Icon name={o.icon} size={16} />
