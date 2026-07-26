@@ -114,9 +114,22 @@ export function HeroActions({
         </button>
 
         {open && (
+          <button
+            type="button"
+            aria-hidden
+            tabIndex={-1}
+            onClick={() => setOpen(false)}
+            className="fixed inset-0 z-40 cursor-default bg-[#161613]/25 sm:hidden"
+          />
+        )}
+        {open && (
           <div
             role="menu"
-            className="absolute right-0 top-full z-40 mt-2 w-60 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
+            // Auf dem Handy ein Blatt am unteren Rand statt eines Dropdowns:
+            // der Knopf steht mitten in der Zeile, ein 240px breites Menue
+            // laeuft von dort aus je nach Ausrichtung links oder rechts aus dem
+            // Bild. Ab sm haengt es wieder rechtsbuendig am Knopf.
+            className="fixed inset-x-3 bottom-3 z-50 w-auto rounded-2xl border border-slate-200 bg-white p-1.5 shadow-2xl sm:absolute sm:inset-x-auto sm:bottom-auto sm:right-0 sm:top-full sm:z-40 sm:mt-2 sm:w-60 sm:rounded-xl sm:shadow-xl"
           >
             {links.map((l) => (
               <Link

@@ -350,17 +350,26 @@ export default async function DiscoverPage({
       )}
 
       {popularClean.length > 0 && (
-        <Section title={t("popularTitle")} hint={t("popularHint")}>
-          <CardGrid items={popularClean.map((row) => toCard(row, covers))} />
-        </Section>
+        <HScrollRow title={t("popularTitle")} hint={t("popularHint")}>
+          {popularClean.map((row) => (
+            <div
+              key={row.slug}
+              className="min-w-0 shrink-0 basis-[85%] snap-start sm:basis-[calc(50%-8px)] lg:basis-[calc(33.333%-11px)] xl:basis-[calc(25%-12px)]"
+            >
+              <CommunityCard community={toCard(row, covers)} />
+            </div>
+          ))}
+        </HScrollRow>
       )}
 
       {used.size > 0 && (
-        <Section title={t("topicsTitle")}>
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {usedCats.map((c, i) => (
+        <HScrollRow title={t("topicsTitle")}>
+          {usedCats.map((c, i) => (
+            <div
+              key={c.key}
+              className="min-w-0 shrink-0 basis-[calc(50%-8px)] snap-start sm:basis-[calc(33.333%-11px)] lg:basis-[calc(25%-12px)]"
+            >
               <Link
-                key={c.key}
                 href={`/home?cat=${c.key}`}
                 className={`group flex h-44 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48 ${CATEGORY_TILE_TONES[i % CATEGORY_TILE_TONES.length]}`}
               >
@@ -383,9 +392,9 @@ export default async function DiscoverPage({
                   </span>
                 </span>
               </Link>
-            ))}
-          </div>
-        </Section>
+            </div>
+          ))}
+        </HScrollRow>
       )}
 
       {/* Top creators per category — horizontal sliders. */}

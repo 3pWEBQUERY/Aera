@@ -13,10 +13,13 @@ import { cn } from "@/lib/utils";
 export function HScrollRow({
   title,
   titleHref,
+  hint,
   action,
   children,
 }: {
   title: string;
+  /** Kleine Zeile ueber der Ueberschrift ("Nach Mitgliedern"). */
+  hint?: string;
   /** Macht die Ueberschrift zum Link auf die Uebersicht (mit Chevron). */
   titleHref?: string;
   /** Optional element shown in the header, left of the prev/next arrows. */
@@ -70,6 +73,12 @@ export function HScrollRow({
   return (
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
+        <div className="min-w-0">
+          {hint && (
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+              {hint}
+            </p>
+          )}
         {titleHref ? (
           <Link
             href={titleHref}
@@ -85,6 +94,7 @@ export function HScrollRow({
         ) : (
           <h2 className="display-serif text-2xl text-[#161613]">{title}</h2>
         )}
+        </div>
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {action}
           {arrow(-1, canPrev)}
