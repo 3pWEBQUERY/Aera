@@ -868,6 +868,11 @@ model Post {
   // Scheduled go-live: when set and in the future the post stays hidden until a
   // cron flips isPublished. Public queries additionally require publishedAt <= now.
   scheduledAt    DateTime?
+  /// Wer den Beitrag lesen darf. PUBLIC = jeder, der den Space sieht;
+  /// MEMBERS = aktive Mitgliedschaft noetig; PAID = bezahlter Zugang noetig.
+  /// Unabhaengig von priceCents: ein Beitrag kann "nur fuer Mitglieder" sein,
+  /// ohne einzeln verkauft zu werden.
+  visibility     Visibility @default(PUBLIC)
   // Pay-per-view / pay-per-post: 0 = free. When > 0 the body/media are gated
   // behind `entitlementKey` (video:{id} for VIDEOS spaces, post:{id} otherwise).
   priceCents     Int       @default(0)

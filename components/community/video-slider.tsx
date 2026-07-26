@@ -23,7 +23,7 @@ export function VideoSlider({
           key={p.id}
           className="min-w-0 shrink-0 basis-[85%] snap-start sm:basis-[calc(50%-8px)] lg:basis-[calc(33.333%-11px)]"
         >
-          <VideoTile post={p} locale={locale} memberLabel={t("becomeMember")} />
+          <VideoTile post={p} locale={locale} memberLabel={t("locked")} />
         </div>
       ))}
     </HScrollRow>

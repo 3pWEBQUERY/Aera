@@ -45,7 +45,7 @@ import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
 import { canManageTenantMembership } from "@/lib/capabilities";
 import { queueNewsletterAudienceBatch } from "@/lib/newsletter-delivery";
-import type { Prisma } from "@/app/generated/prisma/client";
+import type { Prisma, Visibility } from "@/app/generated/prisma/client";
 import { getTranslations } from "next-intl/server";
 import {
   assertStripeSubscriptionsInactive,
@@ -2162,6 +2162,20 @@ export async function deleteTenantAction(fd: FormData): Promise<ActionState> {
 }
 
 // ---------------------------------------------------------------- Space content
+
+/**
+ * Sichtbarkeit aus dem Composer lesen.
+ *
+ * Ein Preis erzwingt PAID — sonst koennte man einen Beitrag verkaufen und ihn
+ * gleichzeitig als oeffentlich markieren, was sich widerspricht. Umgekehrt
+ * darf MEMBERS ohne Preis stehen: "nur fuer Mitglieder" ist keine Bezahlung.
+ */
+function readPostVisibility(fd: FormData, priceCents: number): Visibility {
+  if (priceCents > 0) return "PAID";
+  const raw = String(fd.get("visibility") || "");
+  return raw === "MEMBERS" || raw === "PAID" ? raw : "PUBLIC";
+}
+
 /** Create a post (feed/forum/blog/gallery/video) inside a space — admin side. */
 export async function createSpacePostAction(
   _p: ActionState,
@@ -2195,6 +2209,7 @@ export async function createSpacePostAction(
     return { error: await tErr("priceNotAllowed") };
   }
   const teaserUrl = String(fd.get("teaserUrl") || "") || null;
+  const visibility = readPostVisibility(fd, priceCents);
   // Scheduling: an ISO/`datetime-local` value in the future keeps the post hidden.
   const rawSchedule = String(fd.get("scheduledAt") || "").trim();
   const scheduledDate = rawSchedule ? new Date(rawSchedule) : null;
@@ -2213,6 +2228,7 @@ export async function createSpacePostAction(
       bodyHtml,
       imageUrl,
       videoUrl,
+      visibility,
       priceCents,
       currency: PLATFORM_CURRENCY,
       teaserUrl,
@@ -2573,6 +2589,7 @@ export async function updatePostAction(
     priceUpdate = {
       priceCents,
       entitlementKey: priceCents > 0 ? post.entitlementKey ?? `${prefix}:${post.id}` : null,
+      visibility: readPostVisibility(fd, priceCents),
     };
   }
   await prisma.post.update({

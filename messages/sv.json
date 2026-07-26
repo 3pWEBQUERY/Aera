@@ -1492,7 +1492,32 @@
         "MAGAZINE": "Magasin (hero + rutnät)",
         "GRID": "Rutnät (enhetligt)",
         "LIST": "Lista (rader)"
-      }
+      },
+      "tabContent": "Innehåll",
+      "tabAccess": "Åtkomst",
+      "tabPoll": "Omröstning",
+      "coverHint": "Utan omslagsbild visar kortet titeln i din primärfärg.",
+      "accessLabel": "Vem får läsa inlägget?",
+      "accessPublic": "Offentligt",
+      "accessPublicHint": "Synligt för alla som ser spacet.",
+      "accessMembers": "Endast medlemmar",
+      "accessMembersHint": "Ett aktivt medlemskap krävs. Säljs inte separat.",
+      "accessPaid": "Betalbart",
+      "accessPaidHint": "Säljs separat. Förhandsvisningen syns fortfarande.",
+      "priceLabel": "Pris",
+      "priceHint": "Endast fasta prispunkter, så köpet fungerar även i appen.",
+      "teaserLabel": "Förhandsbild",
+      "teaserHint": "Visas för icke-köpare i stället för innehållet.",
+      "scheduleLabel": "Publicera den",
+      "scheduleHint": "Lämna tomt för att publicera direkt.",
+      "pollAdd": "Lägg till omröstning",
+      "pollAddHint": "Två till tio svar, direkt under inlägget.",
+      "pollTitle": "Omröstning",
+      "pollRemove": "Ta bort",
+      "pollQuestionPlaceholder": "Din fråga …",
+      "pollOptionPlaceholder": "Svar …",
+      "pollAddOption": "Lägg till svar",
+      "pollMultipleLabel": "Tillåt flera val"
     },
     "knowledge": {
       "badge": "Kunskap",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "Bli medlem",
-        "exclusive": "Endast medlemmar"
+        "exclusive": "Endast medlemmar",
+        "locked": "Låst"
       },
       "planCard": {
         "current": "Ditt paket",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "Liknande inlägg",
     "popularPosts": "Populära inlägg",
-    "untitled": "Utan titel"
+    "untitled": "Utan titel",
+    "joinToRead": "Bli medlem för att läsa"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "Låst"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

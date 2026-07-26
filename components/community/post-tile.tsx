@@ -30,28 +30,59 @@ export interface PostTileData {
 }
 
 /**
- * Frosted-glass teaser for gated content. We never render the real media for
- * non-entitled visitors (the media proxy blocks it too), so this is a blurred
- * brand placeholder with a clear "become a member" call to action.
+ * Titelplatte — die Kachel ohne Bild.
+ *
+ * Zwei Faelle teilen sich dieselbe Flaeche: ein gesperrter Beitrag (dessen
+ * Medien wir gar nicht erst ausliefern) und ein Beitrag, fuer den der Creator
+ * kein Titelbild gesetzt hat. Statt einer leeren Farbflaeche traegt sie den
+ * Titel selbst — dadurch ist auch eine bildlose Reihe lesbar.
+ *
+ * Der Ton entsteht aus der Primaerfarbe der Community, aber immer in Richtung
+ * Dunkel gemischt: weisse Schrift muss auf jeder Markenfarbe lesbar bleiben,
+ * auch auf einem hellen Gelb.
  */
-function LockedTeaser({ compact = false, label }: { compact?: boolean; label: string }) {
+const PLATE_STYLE = {
+  backgroundImage:
+    "linear-gradient(135deg," +
+    " color-mix(in oklab, var(--brand) 38%, #1b1520) 0%," +
+    " color-mix(in oklab, var(--brand) 20%, #100d15) 100%)",
+} as const;
+
+function TitlePlate({
+  title,
+  locked,
+  lockedLabel,
+  compact = false,
+}: {
+  title: string;
+  locked: boolean;
+  lockedLabel: string;
+  compact?: boolean;
+}) {
   return (
     <>
-      <div className="bg-[var(--brand)] absolute inset-0" />
-      {/* Milk-glass layer so nothing is clearly recognizable. */}
-      <div className="absolute inset-0 bg-white/10 backdrop-blur-md" />
-      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white">
-        <span
-          className={`flex items-center justify-center rounded-full bg-white/20 ring-1 ring-white/50 backdrop-blur-sm ${
-            compact ? "h-9 w-9" : "h-11 w-11"
+      <div className="absolute inset-0" style={PLATE_STYLE} />
+      <div className={`absolute inset-0 flex flex-col justify-center ${compact ? "p-4" : "p-5 sm:p-6"}`}>
+        {/* Der Titel wird geklammert und laeuft nach unten aus, statt hart
+            abzuschneiden — dieselbe Anmutung wie ein echtes Coverbild. */}
+        <p
+          className={`line-clamp-3 font-semibold leading-tight text-white ${
+            compact ? "text-base" : "text-lg sm:text-xl"
           }`}
+          style={{
+            maskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+            WebkitMaskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+          }}
         >
-          <Icon name="lock" size={compact ? 16 : 20} />
-        </span>
-        <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">
-          {label}
-        </span>
+          {title}
+        </p>
       </div>
+      {locked && (
+        <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/85 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+          <Icon name="lock" size={13} />
+          {lockedLabel}
+        </span>
+      )}
     </>
   );
 }
@@ -68,7 +99,7 @@ function Media({
   return (
     <div className={`relative w-full overflow-hidden bg-[#161613]/5 ${large ? "" : "aspect-video"}`}>
       {post.locked ? (
-        <LockedTeaser label={memberLabel} />
+        <TitlePlate title={post.title} locked lockedLabel={memberLabel} compact={!large} />
       ) : post.coverUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -89,7 +120,7 @@ function Media({
           className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
         />
       ) : (
-        <div className="bg-[var(--brand)] absolute inset-0 opacity-90" />
+        <TitlePlate title={post.title} locked={false} lockedLabel={memberLabel} compact={!large} />
       )}
 
       {post.hasVideo && !post.locked && (
@@ -165,7 +196,7 @@ export function VideoTile({
     >
       <div className="relative aspect-video overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613] transition duration-300 group-hover:border-[#161613]/25">
         {post.locked ? (
-          <LockedTeaser label={memberLabel} />
+          <TitlePlate title={post.title} locked lockedLabel={memberLabel} compact />
         ) : post.videoUrl ? (
           <>
             <video
@@ -183,7 +214,7 @@ export function VideoTile({
             </span>
           </>
         ) : (
-          <div className="bg-[var(--brand)] absolute inset-0" />
+          <TitlePlate title={post.title} locked={false} lockedLabel={memberLabel} compact />
         )}
       </div>
       <h3 className="mt-2.5 line-clamp-2 text-sm font-semibold leading-snug text-[#161613]">

@@ -14,6 +14,8 @@ import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { ImageUpload } from "./image-upload";
 import { RichTextEditor } from "./rich-text-editor";
+import { PricePointSelect } from "./price-point-select";
+import { PollEditor } from "./poll-editor";
 import { Input, Label, Select } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
@@ -28,6 +30,12 @@ export interface BlogAdminPost {
   bodyHtml: string | null;
   createdAt: string | Date;
   authorName: string;
+  visibility: "PUBLIC" | "MEMBERS" | "PAID";
+  priceCents: number;
+  teaserUrl: string | null;
+  pollQuestion: string | null;
+  pollOptions: string[];
+  pollMultiple: boolean;
 }
 interface SpaceInfo {
   id: string;
@@ -194,9 +202,24 @@ function BlogPostForm({
   const isEdit = !!post;
   const [state, action, pending] = useActionState(isEdit ? updatePostAction : createSpacePostAction, initial);
   const t = useTranslations("dashboard.blog");
+  const [tab, setTab] = useState<"content" | "access" | "poll">("content");
+  const [visibility, setVisibility] = useState(post?.visibility ?? "PUBLIC");
+  const [pollActive, setPollActive] = useState(Boolean(post?.pollQuestion));
+  const [pollQuestion, setPollQuestion] = useState(post?.pollQuestion ?? "");
+  const [pollOptions, setPollOptions] = useState<string[]>(
+    post?.pollOptions && post.pollOptions.length >= 2 ? post.pollOptions : ["", ""],
+  );
+  const [pollMultiple, setPollMultiple] = useState(Boolean(post?.pollMultiple));
+
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
+
+  const TABS = [
+    { key: "content" as const, label: t("tabContent"), icon: "blog" as const },
+    { key: "access" as const, label: t("tabAccess"), icon: "lock" as const },
+    { key: "poll" as const, label: t("tabPoll"), icon: "gamification" as const },
+  ];
 
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
@@ -204,20 +227,153 @@ function BlogPostForm({
       <input type="hidden" name="spaceId" value={space.id} />
       <input type="hidden" name="spaceSlug" value={space.slug} />
       {isEdit && <input type="hidden" name="postId" value={post!.id} />}
+      {/* Der Blog-Composer besitzt die Umfrage des Beitrags — daran erkennt die
+          Action, dass eine entfernte Umfrage wirklich geloescht werden soll. */}
+      <input type="hidden" name="pollControl" value="1" />
+      <input type="hidden" name="visibility" value={visibility} />
+
+      {/* Alle Reiter bleiben im DOM: ein ausgehaengter Reiter wuerde seine
+          Felder beim Abschicken nicht mitsenden. */}
+      <div className="border-b border-slate-200 px-6 pt-1">
+        <div role="tablist" aria-label={t("sheetWrite")} className="-mb-px flex gap-1">
+          {TABS.map((tb) => {
+            const on = tab === tb.key;
+            return (
+              <button
+                key={tb.key}
+                type="button"
+                role="tab"
+                aria-selected={on}
+                onClick={() => setTab(tb.key)}
+                className={
+                  "inline-flex items-center gap-2 rounded-t-lg border-b-2 px-3.5 py-2.5 text-sm font-medium transition " +
+                  (on
+                    ? "border-[var(--action-strong)] bg-[var(--action-soft)] text-slate-900"
+                    : "border-transparent text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800")
+                }
+              >
+                <Icon name={tb.icon} size={15} />
+                {tb.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-2xl space-y-5 px-6 py-8">
           <FormError message={state.error} />
-          <div>
-            <Label>{t("coverLabel")}</Label>
-            <ImageUpload tenant={slug} name="imageUrl" purpose="blog-cover" defaultUrl={post?.coverUrl ?? null} />
+
+          <div className={tab === "content" ? "space-y-5" : "hidden"}>
+            <div>
+              <Label>{t("coverLabel")}</Label>
+              <ImageUpload tenant={slug} name="imageUrl" purpose="blog-cover" defaultUrl={post?.coverUrl ?? null} />
+              <p className="mt-1.5 text-xs text-slate-400">{t("coverHint")}</p>
+            </div>
+            <div>
+              <Label htmlFor="bp-title">{t("titleLabel")}</Label>
+              <Input id="bp-title" name="title" required defaultValue={post?.title} placeholder={t("titlePlaceholder")} className="text-base" />
+            </div>
+            <div>
+              <Label>{t("contentLabel")}</Label>
+              <RichTextEditor tenant={slug} name="bodyHtml" defaultHtml={post?.bodyHtml ?? ""} />
+            </div>
           </div>
-          <div>
-            <Label htmlFor="bp-title">{t("titleLabel")}</Label>
-            <Input id="bp-title" name="title" required defaultValue={post?.title} placeholder={t("titlePlaceholder")} className="text-base" />
+
+          <div className={tab === "access" ? "space-y-5" : "hidden"}>
+            <div>
+              <Label>{t("accessLabel")}</Label>
+              <div className="mt-1 grid gap-2 sm:grid-cols-3">
+                {ACCESS_CHOICES.map((c) => {
+                  const on = visibility === c.value;
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setVisibility(c.value)}
+                      aria-pressed={on}
+                      className={
+                        "rounded-2xl border p-4 text-left transition " +
+                        (on
+                          ? "border-[var(--action-strong)] bg-[var(--action-soft)]"
+                          : "border-slate-200 hover:bg-[var(--action-soft)]")
+                      }
+                    >
+                      <span
+                        className={
+                          "flex h-9 w-9 items-center justify-center rounded-lg transition " +
+                          (on ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")
+                        }
+                      >
+                        <Icon name={c.icon} size={17} />
+                      </span>
+                      <span className="mt-3 block text-sm font-semibold text-slate-900">
+                        {t(c.titleKey)}
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">
+                        {t(c.textKey)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Preis und Teaser gehoeren nur zum Einzelverkauf. Sie bleiben im
+                DOM, damit ein versehentlicher Reiterwechsel nichts verwirft —
+                aber die Action ignoriert sie, weil visibility dann nicht PAID
+                ist und priceCents 0 bleibt. */}
+            <div className={visibility === "PAID" ? "space-y-4 rounded-2xl border border-slate-200 p-4" : "hidden"}>
+              <div>
+                <Label htmlFor="bp-price">{t("priceLabel")}</Label>
+                <PricePointSelect
+                  id="bp-price"
+                  name="priceCents"
+                  kind="oneTime"
+                  allowFree
+                  defaultCents={post?.priceCents ?? 0}
+                />
+                <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
+              </div>
+              <div>
+                <Label>{t("teaserLabel")}</Label>
+                <ImageUpload tenant={slug} name="teaserUrl" purpose="ppv-teaser" defaultUrl={post?.teaserUrl ?? null} />
+                <p className="mt-1.5 text-xs text-slate-400">{t("teaserHint")}</p>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="bp-schedule">{t("scheduleLabel")}</Label>
+              <Input id="bp-schedule" name="scheduledAt" type="datetime-local" />
+              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+            </div>
           </div>
-          <div>
-            <Label>{t("contentLabel")}</Label>
-            <RichTextEditor tenant={slug} name="bodyHtml" defaultHtml={post?.bodyHtml ?? ""} />
+
+          <div className={tab === "poll" ? "" : "hidden"}>
+            {pollActive ? (
+              <PollEditor
+                t={t}
+                question={pollQuestion}
+                setQuestion={setPollQuestion}
+                options={pollOptions}
+                setOptions={setPollOptions}
+                multiple={pollMultiple}
+                setMultiple={setPollMultiple}
+                onRemove={() => setPollActive(false)}
+              />
+            ) : (
+              <button
+                type="button"
+                onClick={() => setPollActive(true)}
+                className="flex w-full flex-col items-center gap-2 rounded-2xl border border-dashed border-slate-300 px-6 py-10 text-center transition hover:border-[var(--action-strong)] hover:bg-[var(--action-soft)]"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
+                  <Icon name="gamification" size={20} />
+                </span>
+                <span className="text-sm font-semibold text-slate-900">{t("pollAdd")}</span>
+                <span className="text-xs text-slate-500">{t("pollAddHint")}</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -225,6 +381,12 @@ function BlogPostForm({
     </form>
   );
 }
+
+const ACCESS_CHOICES = [
+  { value: "PUBLIC" as const, icon: "globe" as const, titleKey: "accessPublic", textKey: "accessPublicHint" },
+  { value: "MEMBERS" as const, icon: "members" as const, titleKey: "accessMembers", textKey: "accessMembersHint" },
+  { value: "PAID" as const, icon: "creditCard" as const, titleKey: "accessPaid", textKey: "accessPaidHint" },
+];
 
 function Segmented({
   name,

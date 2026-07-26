@@ -7,6 +7,7 @@ import { getCommunityCoverUrl } from "@/lib/tenant";
 import { isAnnouncementsOnly, activeSpaceAds } from "@/lib/space-settings";
 import { AdsBanner, type AdBannerItem } from "@/components/community/ads-banner";
 import { canAccess } from "@/lib/entitlements";
+import { isPostLocked } from "@/lib/post-access";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { displayRecommendations } from "@/lib/ai";
 import { leaderboard } from "@/lib/gamification";
@@ -172,7 +173,9 @@ export default async function CommunityHome({
   const tileCovers = await getPostSettingsForPosts(tenant.id, tileCoverIds);
 
   const toTile = (p: (typeof recentRaw)[number]): PostTileData & { body: string } => {
-    const locked = lockedSpaceIds.has(p.spaceId);
+    // Zwei Sperren: der Space kann verschlossen sein, und der einzelne
+    // Beitrag kann strenger sein als sein Space.
+    const locked = lockedSpaceIds.has(p.spaceId) || isPostLocked(p, ctx);
     return {
       id: p.id,
       title: p.title || excerpt(p.body, 80) || t("untitled"),
@@ -353,7 +356,7 @@ export default async function CommunityHome({
         <h2 className="display-serif mb-4 text-2xl text-[#161613]">{t("popularPosts")}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {popular.map((p) => (
-            <PostTile key={p.id} post={p} locale={locale} memberLabel={tPostTile("becomeMember")} />
+            <PostTile key={p.id} post={p} locale={locale} memberLabel={tPostTile("locked")} />
           ))}
         </div>
       </section>

@@ -29,6 +29,7 @@ import type {
   SpaceType,
   Tenant,
   User,
+  Visibility,
 } from "@/app/generated/prisma/client";
 
 /**
@@ -332,6 +333,7 @@ export interface PostRow {
   teaserUrl: string | null;
   isPinned: boolean;
   publishedAt: Date;
+  visibility: Visibility;
   priceCents: number;
   currency: string;
   entitlementKey: string | null;
@@ -339,16 +341,10 @@ export interface PostRow {
   _count: { comments: number };
 }
 
-export function isPostLocked(
-  post: { priceCents: number; entitlementKey: string | null },
-  ctx: AccessContext,
-): boolean {
-  return (
-    post.priceCents > 0 &&
-    !ctx.isStaff &&
-    (!post.entitlementKey || !ctx.keys.has(post.entitlementKey))
-  );
-}
+// Die Sperr-Logik liegt in lib/post-access, damit Web und Mobile nicht
+// auseinanderlaufen koennen. Re-Export, weil viele Aufrufer hier importieren.
+import { isPostLocked } from "../post-access";
+export { isPostLocked };
 
 export interface PostEngagement {
   likeCounts: Map<string, number>;

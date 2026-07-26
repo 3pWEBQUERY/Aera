@@ -1,6 +1,7 @@
 import "server-only";
 import prisma from "./prisma";
 import { canAccess, type AccessContext } from "./entitlements";
+import { isPostLocked } from "./post-access";
 import type { Space } from "@/app/generated/prisma/client";
 
 /**
@@ -106,14 +107,18 @@ export async function searchCommunity(
 
   for (const p of posts) {
     if (!spaceAllowed(p.space)) continue;
+    // Der Beitrag kann strenger sein als sein Space. Der Treffer bleibt
+    // sichtbar (der Titel ist die Werbung), aber die Textstelle nicht — sonst
+    // waere die Suche ein Weg, an bezahlten Inhalt zu kommen.
+    const locked = isPostLocked(p, ctx);
     results.push({
       type: "post",
       id: p.id,
-      title: p.title || excerptOf(p.body, query)?.slice(0, 80) || "Beitrag",
-      excerpt: excerptOf(p.body, query),
+      title: p.title || (locked ? "Beitrag" : excerptOf(p.body, query)?.slice(0, 80) || "Beitrag"),
+      excerpt: locked ? null : excerptOf(p.body, query),
       href: `/c/${slug}/s/${p.space.slug}/${p.id}`,
       spaceName: p.space.name,
-      locked: false,
+      locked,
     });
     if (results.length >= PER_TYPE) break;
   }

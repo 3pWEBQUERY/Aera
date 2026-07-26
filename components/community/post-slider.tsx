@@ -28,7 +28,7 @@ export function PostSlider({
           key={p.id}
           className="min-w-0 shrink-0 basis-[85%] snap-start sm:basis-[calc(50%-8px)]"
         >
-          <PostTile post={p} locale={locale} memberLabel={t("becomeMember")} />
+          <PostTile post={p} locale={locale} memberLabel={t("locked")} />
         </div>
       ))}
     </HScrollRow>

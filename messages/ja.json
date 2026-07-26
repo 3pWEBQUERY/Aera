@@ -1492,7 +1492,32 @@
         "MAGAZINE": "マガジン（ヒーロー + グリッド）",
         "GRID": "グリッド（均一）",
         "LIST": "リスト（行）"
-      }
+      },
+      "tabContent": "内容",
+      "tabAccess": "公開範囲",
+      "tabPoll": "アンケート",
+      "coverHint": "カバー画像がない場合、カードはメインカラーの上にタイトルを表示します。",
+      "accessLabel": "この投稿を読めるのは？",
+      "accessPublic": "全員",
+      "accessPublicHint": "スペースを見られる人すべてに表示されます。",
+      "accessMembers": "メンバーのみ",
+      "accessMembersHint": "有効なメンバーシップが必要です。単品販売はしません。",
+      "accessPaid": "有料",
+      "accessPaidHint": "単品で販売します。プレビューは表示されたままです。",
+      "priceLabel": "価格",
+      "priceHint": "固定価格のみ。アプリ内でも購入できるようにするためです。",
+      "teaserLabel": "プレビュー画像",
+      "teaserHint": "未購入の人には内容の代わりにこれを表示します。",
+      "scheduleLabel": "公開日時",
+      "scheduleHint": "空のままにすると、すぐに公開します。",
+      "pollAdd": "アンケートを追加",
+      "pollAddHint": "2〜10 個の選択肢を、投稿のすぐ下に。",
+      "pollTitle": "アンケート",
+      "pollRemove": "削除",
+      "pollQuestionPlaceholder": "質問を入力 …",
+      "pollOptionPlaceholder": "選択肢 …",
+      "pollAddOption": "選択肢を追加",
+      "pollMultipleLabel": "複数選択を許可する"
     },
     "knowledge": {
       "badge": "ナレッジ",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "メンバーになる",
-        "exclusive": "メンバー限定"
+        "exclusive": "メンバー限定",
+        "locked": "ロック中"
       },
       "planCard": {
         "current": "現在のプラン",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "似ている投稿",
     "popularPosts": "人気の投稿",
-    "untitled": "無題"
+    "untitled": "無題",
+    "joinToRead": "読むにはメンバーになる"
   },
   "discover": {
     "eyebrow": "コミュニティ & クリエイター",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "ロック中"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

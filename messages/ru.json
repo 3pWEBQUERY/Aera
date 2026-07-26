@@ -1492,7 +1492,32 @@
         "MAGAZINE": "Журнал (главная + сетка)",
         "GRID": "Сетка (одинаковые)",
         "LIST": "Список (строки)"
-      }
+      },
+      "tabContent": "Содержимое",
+      "tabAccess": "Доступ",
+      "tabPoll": "Опрос",
+      "coverHint": "Без обложки карточка покажет заголовок в вашем основном цвете.",
+      "accessLabel": "Кому доступна публикация?",
+      "accessPublic": "Всем",
+      "accessPublicHint": "Видно каждому, кто видит пространство.",
+      "accessMembers": "Только участникам",
+      "accessMembersHint": "Нужна активная подписка. Отдельно не продаётся.",
+      "accessPaid": "За плату",
+      "accessPaidHint": "Продаётся отдельно. Превью остаётся на виду.",
+      "priceLabel": "Цена",
+      "priceHint": "Только фиксированные цены, иначе покупка не пройдёт в приложении.",
+      "teaserLabel": "Изображение превью",
+      "teaserHint": "Показывается вместо содержимого тем, кто не купил.",
+      "scheduleLabel": "Опубликовать",
+      "scheduleHint": "Оставьте пустым, чтобы опубликовать сразу.",
+      "pollAdd": "Добавить опрос",
+      "pollAddHint": "От двух до десяти ответов, прямо под публикацией.",
+      "pollTitle": "Опрос",
+      "pollRemove": "Убрать",
+      "pollQuestionPlaceholder": "Ваш вопрос …",
+      "pollOptionPlaceholder": "Ответ …",
+      "pollAddOption": "Добавить ответ",
+      "pollMultipleLabel": "Разрешить несколько ответов"
     },
     "knowledge": {
       "badge": "База знаний",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "Стать участником",
-        "exclusive": "Только для участников"
+        "exclusive": "Только для участников",
+        "locked": "Закрыто"
       },
       "planCard": {
         "current": "Ваш тариф",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "Похожие публикации",
     "popularPosts": "Популярные публикации",
-    "untitled": "Без названия"
+    "untitled": "Без названия",
+    "joinToRead": "Стать участником, чтобы читать"
   },
   "discover": {
     "eyebrow": "Сообщества и авторы",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "Закрыто"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

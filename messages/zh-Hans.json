@@ -1492,7 +1492,32 @@
         "MAGAZINE": "杂志（主打 + 网格）",
         "GRID": "网格（统一）",
         "LIST": "列表（行）"
-      }
+      },
+      "tabContent": "内容",
+      "tabAccess": "访问权限",
+      "tabPoll": "投票",
+      "coverHint": "没有封面图时，卡片会在你的主色上显示标题。",
+      "accessLabel": "谁可以阅读这篇帖子？",
+      "accessPublic": "公开",
+      "accessPublicHint": "所有能看到该空间的人都可见。",
+      "accessMembers": "仅会员",
+      "accessMembersHint": "需要有效的会员资格，不单独售卖。",
+      "accessPaid": "付费",
+      "accessPaidHint": "单独售卖，预览仍然可见。",
+      "priceLabel": "价格",
+      "priceHint": "只能选固定价位，这样在 App 内也能完成购买。",
+      "teaserLabel": "预览图",
+      "teaserHint": "向未购买的人展示，代替正文内容。",
+      "scheduleLabel": "发布时间",
+      "scheduleHint": "留空表示立即发布。",
+      "pollAdd": "添加投票",
+      "pollAddHint": "2 到 10 个选项，就在帖子下方。",
+      "pollTitle": "投票",
+      "pollRemove": "移除",
+      "pollQuestionPlaceholder": "你的问题 …",
+      "pollOptionPlaceholder": "选项 …",
+      "pollAddOption": "添加选项",
+      "pollMultipleLabel": "允许多选"
     },
     "knowledge": {
       "badge": "知识库",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "成为会员",
-        "exclusive": "仅限会员"
+        "exclusive": "仅限会员",
+        "locked": "已锁定"
       },
       "planCard": {
         "current": "你的套餐",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "相似帖子",
     "popularPosts": "热门帖子",
-    "untitled": "无标题"
+    "untitled": "无标题",
+    "joinToRead": "成为会员即可阅读"
   },
   "discover": {
     "eyebrow": "社区与创作者",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "已锁定"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

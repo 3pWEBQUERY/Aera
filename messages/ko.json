@@ -1492,7 +1492,32 @@
         "MAGAZINE": "매거진(히어로 + 그리드)",
         "GRID": "그리드(균일)",
         "LIST": "리스트(행)"
-      }
+      },
+      "tabContent": "내용",
+      "tabAccess": "공개 범위",
+      "tabPoll": "투표",
+      "coverHint": "표지 이미지가 없으면 카드가 기본 색상 위에 제목을 보여줍니다.",
+      "accessLabel": "이 게시물은 누가 볼 수 있나요?",
+      "accessPublic": "전체 공개",
+      "accessPublicHint": "스페이스를 볼 수 있는 모든 사람에게 표시됩니다.",
+      "accessMembers": "멤버 전용",
+      "accessMembersHint": "활성 멤버십이 필요합니다. 개별 판매는 하지 않습니다.",
+      "accessPaid": "유료",
+      "accessPaidHint": "개별로 판매합니다. 미리보기는 계속 보입니다.",
+      "priceLabel": "가격",
+      "priceHint": "고정 가격만 가능합니다. 앱에서도 구매가 되도록 하기 위함입니다.",
+      "teaserLabel": "미리보기 이미지",
+      "teaserHint": "구매하지 않은 사람에게 내용 대신 보여 줍니다.",
+      "scheduleLabel": "게시 시각",
+      "scheduleHint": "비워 두면 바로 게시합니다.",
+      "pollAdd": "투표 추가",
+      "pollAddHint": "2~10개의 항목을 게시물 바로 아래에.",
+      "pollTitle": "투표",
+      "pollRemove": "삭제",
+      "pollQuestionPlaceholder": "질문을 입력하세요 …",
+      "pollOptionPlaceholder": "항목 …",
+      "pollAddOption": "항목 추가",
+      "pollMultipleLabel": "복수 선택 허용"
     },
     "knowledge": {
       "badge": "지식",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "멤버 되기",
-        "exclusive": "멤버 전용"
+        "exclusive": "멤버 전용",
+        "locked": "잠김"
       },
       "planCard": {
         "current": "현재 플랜",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "비슷한 게시물",
     "popularPosts": "인기 게시물",
-    "untitled": "제목 없음"
+    "untitled": "제목 없음",
+    "joinToRead": "읽으려면 멤버 되기"
   },
   "discover": {
     "eyebrow": "커뮤니티 & 크리에이터",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "잠김"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

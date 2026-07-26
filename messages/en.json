@@ -1517,7 +1517,32 @@
         "MAGAZINE": "Magazine (hero + grid)",
         "GRID": "Grid (uniform)",
         "LIST": "List (rows)"
-      }
+      },
+      "tabContent": "Content",
+      "tabAccess": "Access",
+      "tabPoll": "Poll",
+      "coverHint": "Without a cover image the card shows the title in your primary colour.",
+      "accessLabel": "Who may read this post?",
+      "accessPublic": "Public",
+      "accessPublicHint": "Visible to everyone who can see the space.",
+      "accessMembers": "Members only",
+      "accessMembersHint": "An active membership is required. Not sold separately.",
+      "accessPaid": "Payable",
+      "accessPaidHint": "Sold individually. The preview stays visible.",
+      "priceLabel": "Price",
+      "priceHint": "Fixed price points only, so the purchase also works in the app.",
+      "teaserLabel": "Preview image",
+      "teaserHint": "Shown to non-buyers instead of the content.",
+      "scheduleLabel": "Publish on",
+      "scheduleHint": "Leave empty to publish right away.",
+      "pollAdd": "Add a poll",
+      "pollAddHint": "Two to ten answers, right below the post.",
+      "pollTitle": "Poll",
+      "pollRemove": "Remove",
+      "pollQuestionPlaceholder": "Your question …",
+      "pollOptionPlaceholder": "Answer …",
+      "pollAddOption": "Add answer",
+      "pollMultipleLabel": "Allow multiple choices"
     },
     "knowledge": {
       "badge": "Knowledge",
@@ -3430,7 +3455,8 @@
       },
       "postTile": {
         "becomeMember": "Become a member",
-        "exclusive": "Members only"
+        "exclusive": "Members only",
+        "locked": "Locked"
       },
       "planCard": {
         "current": "Your plan",
@@ -3629,7 +3655,8 @@
     },
     "similarPosts": "Similar posts",
     "popularPosts": "Popular posts",
-    "untitled": "Untitled"
+    "untitled": "Untitled",
+    "joinToRead": "Become a member to read"
   },
   "discover": {
     "eyebrow": "Communities & creators",
@@ -4332,7 +4359,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "Locked"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

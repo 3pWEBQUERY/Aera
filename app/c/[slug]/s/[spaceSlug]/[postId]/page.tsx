@@ -4,6 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
+import { GATE_SELECT, isPostLocked } from "@/lib/post-access";
 import { readPostPoll } from "@/lib/polls";
 import {
   getPostSettingsForPosts,
@@ -142,11 +143,8 @@ export default async function PostDetail({
     notFound();
   }
 
-  // Pay-per-post gate: withhold body/media from non-buyers.
-  const locked =
-    post.priceCents > 0 &&
-    !isStaff &&
-    (!post.entitlementKey || !ctx.keys.has(post.entitlementKey));
+  // Sperre: Einzelverkauf oder "nur fuer Mitglieder" — siehe lib/post-access.
+  const locked = isPostLocked(post, ctx);
 
   const comments = await prisma.comment.findMany({
     where: { tenantId: tenant.id, postId: post.id },
@@ -204,9 +202,8 @@ export default async function PostDetail({
       body: true,
       imageUrl: true,
       videoUrl: true,
-      priceCents: true,
-      entitlementKey: true,
       createdAt: true,
+      ...GATE_SELECT,
       _count: { select: { reactions: true, comments: true } },
     } as const;
 
@@ -245,10 +242,7 @@ export default async function PostDetail({
     const toTile = (p: (typeof relatedRaw)[number]): PostTileData => {
       // Bezahlte Beitraege bleiben sichtbar, aber verschlossen: der Anreiz
       // liegt genau darin, dass man sieht, was es noch gibt.
-      const tileLocked =
-        p.priceCents > 0 &&
-        !isStaff &&
-        (!p.entitlementKey || !ctx.keys.has(p.entitlementKey));
+      const tileLocked = isPostLocked(p, ctx);
       const cover = relatedCovers.get(p.id);
       return {
         id: p.id,
@@ -327,16 +321,28 @@ export default async function PostDetail({
                 <Icon name="lock" size={22} />
               </span>
               <p className="mt-4 text-sm text-[#161613]/70">{excerpt(post.body, 160)}</p>
-              <form action={purchasePostAction} className="mx-auto mt-5 max-w-xs">
-                <input type="hidden" name="tenant" value={slug} />
-                <input type="hidden" name="space" value={spaceSlug} />
-                <input type="hidden" name="postId" value={post.id} />
-                <ImmediateAccessConsent className="mb-3" />
-                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
-                  <Icon name="lock" size={16} />
-                  {post.priceCents / 100} {post.currency.toUpperCase()}
-                </button>
-              </form>
+              {post.priceCents > 0 ? (
+                <form action={purchasePostAction} className="mx-auto mt-5 max-w-xs">
+                  <input type="hidden" name="tenant" value={slug} />
+                  <input type="hidden" name="space" value={spaceSlug} />
+                  <input type="hidden" name="postId" value={post.id} />
+                  <ImmediateAccessConsent className="mb-3" />
+                  <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
+                    <Icon name="lock" size={16} />
+                    {post.priceCents / 100} {post.currency.toUpperCase()}
+                  </button>
+                </form>
+              ) : (
+                /* Ohne Preis gibt es nichts zu kaufen — dieser Beitrag will eine
+                   Mitgliedschaft. Ein Kauf-Button waere hier eine Sackgasse. */
+                <Link
+                  href={`/c/${slug}/join`}
+                  className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                >
+                  <Icon name="members" size={16} />
+                  {tSpace("joinToRead")}
+                </Link>
+              )}
             </div>
           ) : post.bodyHtml ? (
             <div

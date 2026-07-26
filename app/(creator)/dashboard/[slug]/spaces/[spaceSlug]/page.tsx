@@ -272,6 +272,10 @@ export default async function SpaceContentPage({
       take: 200,
       include: { author: { select: { name: true } } },
     });
+    const blogPollDrafts = await getPollDraftsForPosts(
+      tenant.id,
+      rows.map((p) => p.id),
+    );
     const posts: BlogAdminPost[] = rows.map((p) => ({
       id: p.id,
       title: p.title || excerpt(p.body, 60) || "Ohne Titel",
@@ -280,6 +284,12 @@ export default async function SpaceContentPage({
       bodyHtml: p.bodyHtml,
       createdAt: p.createdAt,
       authorName: p.author.name,
+      visibility: p.visibility,
+      priceCents: p.priceCents,
+      teaserUrl: p.teaserUrl,
+      pollQuestion: blogPollDrafts.get(p.id)?.question ?? null,
+      pollOptions: blogPollDrafts.get(p.id)?.options ?? [],
+      pollMultiple: blogPollDrafts.get(p.id)?.multiple ?? false,
     }));
     return (
       <BlogManager

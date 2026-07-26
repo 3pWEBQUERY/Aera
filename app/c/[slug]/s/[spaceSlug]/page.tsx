@@ -6,6 +6,7 @@ import { getCommunityContext } from "@/lib/guards";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
 import { canAccess } from "@/lib/entitlements";
+import { isPostLocked } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { PostComposer } from "@/components/community/post-composer";
@@ -478,21 +479,26 @@ export default async function SpacePage({
       take: cfg.pageSize > 0 ? perPage : undefined,
       include: {
         author: { select: { name: true, avatarUrl: true } },
-        _count: { select: { comments: true } },
+        _count: { select: { comments: true, reactions: true } },
       },
     });
     const blogPosts: BlogPost[] = raw.map((p) => {
       const words = (p.body || "").trim().split(/\s+/).filter(Boolean).length;
+      const postLocked = isPostLocked(p, ctx);
       return {
         id: p.id,
         title: p.title || excerpt(p.body, 60) || t("untitled"),
-        excerpt: excerpt(p.body, 200),
-        coverUrl: p.imageUrl,
+        // Auszug und Cover eines gesperrten Beitrags gehen gar nicht mit —
+        // der Text ist der Gegenwert, nicht nur eine Anzeigefrage.
+        excerpt: postLocked ? "" : excerpt(p.body, 200),
+        coverUrl: postLocked ? null : p.imageUrl,
         authorName: p.author.name,
         authorAvatar: p.author.avatarUrl,
         createdAt: p.createdAt,
         readMinutes: Math.max(1, Math.round(words / 200)),
         comments: p._count.comments,
+        likes: p._count.reactions,
+        locked: postLocked,
       };
     });
     return (
@@ -542,10 +548,7 @@ export default async function SpacePage({
       },
     });
     const posts: PostCardData[] = raw.map((p) => {
-      const locked =
-        p.priceCents > 0 &&
-        !ctx.isStaff &&
-        (!p.entitlementKey || !ctx.keys.has(p.entitlementKey));
+      const locked = isPostLocked(p, ctx);
       return {
         id: p.id,
         title: p.title,

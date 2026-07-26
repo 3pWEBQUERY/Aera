@@ -1492,7 +1492,32 @@
         "MAGAZINE": "雜誌（主打 + 格狀）",
         "GRID": "格狀（統一）",
         "LIST": "清單（列）"
-      }
+      },
+      "tabContent": "內容",
+      "tabAccess": "存取權限",
+      "tabPoll": "投票",
+      "coverHint": "沒有封面圖時，卡片會在你的主色上顯示標題。",
+      "accessLabel": "誰可以閱讀這篇貼文？",
+      "accessPublic": "公開",
+      "accessPublicHint": "所有能看到該空間的人都看得到。",
+      "accessMembers": "僅會員",
+      "accessMembersHint": "需要有效的會員資格，不單獨販售。",
+      "accessPaid": "付費",
+      "accessPaidHint": "單獨販售，預覽仍然可見。",
+      "priceLabel": "價格",
+      "priceHint": "只能選固定價位，這樣在 App 內也能完成購買。",
+      "teaserLabel": "預覽圖",
+      "teaserHint": "向未購買的人顯示，取代正文內容。",
+      "scheduleLabel": "發布時間",
+      "scheduleHint": "留空表示立即發布。",
+      "pollAdd": "新增投票",
+      "pollAddHint": "2 到 10 個選項，就在貼文下方。",
+      "pollTitle": "投票",
+      "pollRemove": "移除",
+      "pollQuestionPlaceholder": "你的問題 …",
+      "pollOptionPlaceholder": "選項 …",
+      "pollAddOption": "新增選項",
+      "pollMultipleLabel": "允許多選"
     },
     "knowledge": {
       "badge": "知識庫",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "成為會員",
-        "exclusive": "僅限會員"
+        "exclusive": "僅限會員",
+        "locked": "已鎖定"
       },
       "planCard": {
         "current": "你的方案",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "相似貼文",
     "popularPosts": "熱門貼文",
-    "untitled": "無標題"
+    "untitled": "無標題",
+    "joinToRead": "成為會員即可閱讀"
   },
   "discover": {
     "eyebrow": "社群與創作者",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "已鎖定"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

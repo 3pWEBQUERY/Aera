@@ -1492,7 +1492,32 @@
         "MAGAZINE": "Revista (destacado + cuadrícula)",
         "GRID": "Cuadrícula (uniforme)",
         "LIST": "Lista (filas)"
-      }
+      },
+      "tabContent": "Contenido",
+      "tabAccess": "Acceso",
+      "tabPoll": "Encuesta",
+      "coverHint": "Sin imagen de portada la tarjeta muestra el título en tu color principal.",
+      "accessLabel": "¿Quién puede leer esta publicación?",
+      "accessPublic": "Público",
+      "accessPublicHint": "Visible para todos los que vean el space.",
+      "accessMembers": "Solo para miembros",
+      "accessMembersHint": "Hace falta una membresía activa. No se vende por separado.",
+      "accessPaid": "De pago",
+      "accessPaidHint": "Se vende por separado. La vista previa sigue visible.",
+      "priceLabel": "Precio",
+      "priceHint": "Solo precios fijos, para que la compra funcione también en la app.",
+      "teaserLabel": "Imagen de vista previa",
+      "teaserHint": "Se muestra a quien no ha comprado, en lugar del contenido.",
+      "scheduleLabel": "Publicar el",
+      "scheduleHint": "Déjalo vacío para publicar ahora mismo.",
+      "pollAdd": "Añadir encuesta",
+      "pollAddHint": "De dos a diez respuestas, justo bajo la publicación.",
+      "pollTitle": "Encuesta",
+      "pollRemove": "Quitar",
+      "pollQuestionPlaceholder": "Tu pregunta …",
+      "pollOptionPlaceholder": "Respuesta …",
+      "pollAddOption": "Añadir respuesta",
+      "pollMultipleLabel": "Permitir varias opciones"
     },
     "knowledge": {
       "badge": "Conocimiento",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "Hazte miembro",
-        "exclusive": "Solo miembros"
+        "exclusive": "Solo miembros",
+        "locked": "Bloqueado"
       },
       "planCard": {
         "current": "Tu plan",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "Publicaciones similares",
     "popularPosts": "Publicaciones populares",
-    "untitled": "Sin título"
+    "untitled": "Sin título",
+    "joinToRead": "Hazte miembro para leer"
   },
   "discover": {
     "eyebrow": "Comunidades y creadores",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "Bloqueado"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

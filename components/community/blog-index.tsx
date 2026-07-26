@@ -14,25 +14,73 @@ export interface BlogPost {
   createdAt: Date;
   readMinutes: number;
   comments: number;
+  likes: number;
+  /** Bezahlt oder nur fuer Mitglieder — Auszug und Cover bleiben zurueck. */
+  locked: boolean;
 }
 
-function Cover({ url, title, ratio }: { url: string | null; title: string; ratio: string }) {
+/**
+ * Titelplatte fuer Karten ohne Bild.
+ *
+ * Gilt fuer zwei Faelle: der Beitrag ist gesperrt (dann liefern wir das Cover
+ * gar nicht aus) oder der Creator hat keins gesetzt. Der Ton kommt aus der
+ * Primaerfarbe der Community, immer ins Dunkle gemischt — weisse Schrift muss
+ * auch auf einer hellen Markenfarbe lesbar bleiben.
+ */
+const PLATE_STYLE = {
+  backgroundImage:
+    "linear-gradient(135deg," +
+    " color-mix(in oklab, var(--brand) 38%, #1b1520) 0%," +
+    " color-mix(in oklab, var(--brand) 20%, #100d15) 100%)",
+} as const;
+
+function Cover({
+  url,
+  title,
+  ratio,
+  locked,
+  lockedLabel,
+}: {
+  url: string | null;
+  title: string;
+  ratio: string;
+  locked: boolean;
+  lockedLabel: string;
+}) {
   return (
     <div className="relative w-full overflow-hidden bg-[#161613]/5" style={{ aspectRatio: ratio }}>
-      {url ? (
+      {url && !locked ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt={title} className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
       ) : (
-        <div className="bg-[var(--brand)] absolute inset-0 flex items-center justify-center">
-          <span className="text-3xl font-bold text-white/90">{title.charAt(0).toUpperCase()}</span>
-        </div>
+        <>
+          <div className="absolute inset-0" style={PLATE_STYLE} />
+          <div className="absolute inset-0 flex flex-col justify-center p-5 sm:p-6">
+            <p
+              className="line-clamp-3 text-lg font-semibold leading-tight text-white sm:text-xl"
+              style={{
+                maskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+                WebkitMaskImage: "linear-gradient(to bottom, #000 62%, transparent 100%)",
+              }}
+            >
+              {title}
+            </p>
+          </div>
+        </>
+      )}
+      {locked && (
+        <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/85 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+          <Icon name="lock" size={13} />
+          {lockedLabel}
+        </span>
       )}
     </div>
   );
 }
 
 function Meta({ post, cfg, locale, readTime }: { post: BlogPost; cfg: BlogSettings; locale: string; readTime: string }) {
-  if (!cfg.showAuthor && !cfg.showDate && !cfg.showReadTime) return null;
+  const hasNumbers = post.likes > 0 || post.comments > 0;
+  if (!cfg.showAuthor && !cfg.showDate && !cfg.showReadTime && !hasNumbers) return null;
   return (
     <div className="mt-4 flex items-center gap-2 text-xs text-[#161613]/50">
       {cfg.showAuthor && (
@@ -45,6 +93,16 @@ function Meta({ post, cfg, locale, readTime }: { post: BlogPost; cfg: BlogSettin
       {cfg.showDate && <span>{new Intl.DateTimeFormat(locale, { day: "2-digit", month: "2-digit", year: "numeric" }).format(post.createdAt)}</span>}
       {cfg.showDate && cfg.showReadTime && <span aria-hidden>·</span>}
       {cfg.showReadTime && <span>{readTime}</span>}
+      {post.likes > 0 && (
+        <span className="inline-flex items-center gap-1">
+          <Icon name="heart" size={12} /> {post.likes}
+        </span>
+      )}
+      {post.comments > 0 && (
+        <span className="inline-flex items-center gap-1">
+          <Icon name="forum" size={12} /> {post.comments}
+        </span>
+      )}
     </div>
   );
 }
@@ -88,10 +146,10 @@ export async function BlogIndex({
 
   const GridCard = ({ p }: { p: BlogPost }) => (
     <Link key={p.id} href={href(p.id)} className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-md">
-      {cfg.showCover && <Cover url={p.coverUrl} title={p.title} ratio="16 / 9" />}
+      {cfg.showCover && <Cover url={p.coverUrl} title={p.title} ratio="16 / 9" locked={p.locked} lockedLabel={t("locked")} />}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="display-serif text-lg leading-snug text-[#161613]">{p.title}</h3>
-        {cfg.showExcerpt && p.excerpt && (
+        {cfg.showExcerpt && !p.locked && p.excerpt && (
           <p className="mt-2 line-clamp-3 flex-1 text-sm leading-relaxed text-[#161613]/60">{p.excerpt}</p>
         )}
         <Meta post={p} cfg={cfg} locale={locale} readTime={t("readTime", { count: p.readMinutes })} />
@@ -104,13 +162,13 @@ export async function BlogIndex({
       {cfg.showCover && (
         <div className="w-32 shrink-0 sm:w-48">
           <div className="overflow-hidden rounded-xl">
-            <Cover url={p.coverUrl} title={p.title} ratio="16 / 10" />
+            <Cover url={p.coverUrl} title={p.title} ratio="16 / 10" locked={p.locked} lockedLabel={t("locked")} />
           </div>
         </div>
       )}
       <div className="flex min-w-0 flex-1 flex-col justify-center">
         <h3 className="display-serif text-lg leading-snug text-[#161613] sm:text-xl">{p.title}</h3>
-        {cfg.showExcerpt && p.excerpt && (
+        {cfg.showExcerpt && !p.locked && p.excerpt && (
           <p className="mt-1.5 line-clamp-2 text-sm leading-relaxed text-[#161613]/60">{p.excerpt}</p>
         )}
         <Meta post={p} cfg={cfg} locale={locale} readTime={t("readTime", { count: p.readMinutes })} />
@@ -122,13 +180,13 @@ export async function BlogIndex({
     <div className="space-y-8">
       {useHero && (
         <Link href={href(hero.id)} className="group block overflow-hidden rounded-3xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-lg md:grid md:grid-cols-2">
-          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" />}
+          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} />}
           <div className="flex flex-col justify-center p-6 sm:p-8">
             <div className="mb-3">
               <Pill className="bg-[var(--brand-soft)] text-[var(--brand)]">{t("latest")}</Pill>
             </div>
             <h2 className="display-serif text-3xl leading-tight text-[#161613]">{hero.title}</h2>
-            {cfg.showExcerpt && hero.excerpt && (
+            {cfg.showExcerpt && !hero.locked && hero.excerpt && (
               <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-[#161613]/60">{hero.excerpt}</p>
             )}
             <Meta post={hero} cfg={cfg} locale={locale} readTime={t("readTime", { count: hero.readMinutes })} />

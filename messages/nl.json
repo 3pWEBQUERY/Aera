@@ -1492,7 +1492,32 @@
         "MAGAZINE": "Magazine (hero + raster)",
         "GRID": "Raster (gelijkmatig)",
         "LIST": "Lijst (rijen)"
-      }
+      },
+      "tabContent": "Inhoud",
+      "tabAccess": "Toegang",
+      "tabPoll": "Poll",
+      "coverHint": "Zonder omslagafbeelding toont de kaart de titel in je primaire kleur.",
+      "accessLabel": "Wie mag dit bericht lezen?",
+      "accessPublic": "Openbaar",
+      "accessPublicHint": "Zichtbaar voor iedereen die de space kan zien.",
+      "accessMembers": "Alleen voor leden",
+      "accessMembersHint": "Een actief lidmaatschap is nodig. Niet los verkocht.",
+      "accessPaid": "Betaalbaar",
+      "accessPaidHint": "Los te koop. De preview blijft zichtbaar.",
+      "priceLabel": "Prijs",
+      "priceHint": "Alleen vaste prijspunten, zodat de aankoop ook in de app werkt.",
+      "teaserLabel": "Voorbeeldafbeelding",
+      "teaserHint": "Wordt aan niet-kopers getoond in plaats van de inhoud.",
+      "scheduleLabel": "Publiceren op",
+      "scheduleHint": "Laat leeg om direct te publiceren.",
+      "pollAdd": "Poll toevoegen",
+      "pollAddHint": "Twee tot tien antwoorden, direct onder het bericht.",
+      "pollTitle": "Poll",
+      "pollRemove": "Verwijderen",
+      "pollQuestionPlaceholder": "Je vraag …",
+      "pollOptionPlaceholder": "Antwoord …",
+      "pollAddOption": "Antwoord toevoegen",
+      "pollMultipleLabel": "Meerdere keuzes toestaan"
     },
     "knowledge": {
       "badge": "Kennis",
@@ -3354,7 +3379,8 @@
       },
       "postTile": {
         "becomeMember": "Word lid",
-        "exclusive": "Alleen leden"
+        "exclusive": "Alleen leden",
+        "locked": "Vergrendeld"
       },
       "planCard": {
         "current": "Jouw pakket",
@@ -3601,7 +3627,8 @@
     "unlockFor": "Unlock for {price}",
     "similarPosts": "Vergelijkbare posts",
     "popularPosts": "Populaire posts",
-    "untitled": "Zonder titel"
+    "untitled": "Zonder titel",
+    "joinToRead": "Word lid om te lezen"
   },
   "discover": {
     "eyebrow": "Communities & creators",
@@ -4329,7 +4356,8 @@
         "readMore": "Read more",
         "previous": "Previous",
         "next": "Next",
-        "page": "Page {page} of {pageCount}"
+        "page": "Page {page} of {pageCount}",
+        "locked": "Vergrendeld"
       },
       "accessibility": {
         "skipToContent": "Skip to main content"

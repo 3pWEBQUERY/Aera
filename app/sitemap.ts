@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
+import { PUBLIC_POST_WHERE } from "@/lib/post-access";
 import { env } from "@/lib/env";
 
 /**
@@ -74,6 +75,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         tenantId: t.id,
         isPublished: true,
         spaceId: { in: [...publicSpaceIds.keys()] },
+        // Ein Beitrag nur fuer Mitglieder gehoert nicht in die Sitemap — er
+        // waere fuer jeden Besucher, der dem Link folgt, verschlossen.
+        ...PUBLIC_POST_WHERE,
       },
       orderBy: { publishedAt: "desc" },
       take: MAX_POSTS_PER_TENANT,

@@ -1517,7 +1517,32 @@
         "MAGAZINE": "Magazin (Hero + Raster)",
         "GRID": "Raster (gleichmäßig)",
         "LIST": "Liste (Zeilen)"
-      }
+      },
+      "tabContent": "Inhalt",
+      "tabAccess": "Zugang",
+      "tabPoll": "Umfrage",
+      "coverHint": "Ohne Titelbild zeigt die Karte den Titel in deiner Primärfarbe.",
+      "accessLabel": "Wer darf den Beitrag lesen?",
+      "accessPublic": "Öffentlich",
+      "accessPublicHint": "Für alle sichtbar, die den Space sehen.",
+      "accessMembers": "Nur für Mitglieder",
+      "accessMembersHint": "Eine aktive Mitgliedschaft ist nötig. Kein Einzelverkauf.",
+      "accessPaid": "Bezahlbar",
+      "accessPaidHint": "Einzeln kaufbar. Vorschau bleibt sichtbar.",
+      "priceLabel": "Preis",
+      "priceHint": "Nur feste Preispunkte, damit der Kauf auch in der App funktioniert.",
+      "teaserLabel": "Vorschaubild",
+      "teaserHint": "Wird Nicht-Käufern anstelle des Inhalts gezeigt.",
+      "scheduleLabel": "Veröffentlichen am",
+      "scheduleHint": "Leer lassen, um sofort zu veröffentlichen.",
+      "pollAdd": "Umfrage hinzufügen",
+      "pollAddHint": "Zwei bis zehn Antworten, direkt unter dem Beitrag.",
+      "pollTitle": "Umfrage",
+      "pollRemove": "Entfernen",
+      "pollQuestionPlaceholder": "Deine Frage …",
+      "pollOptionPlaceholder": "Antwort …",
+      "pollAddOption": "Antwort hinzufügen",
+      "pollMultipleLabel": "Mehrfachauswahl erlauben"
     },
     "knowledge": {
       "badge": "Wissen",
@@ -3430,7 +3455,8 @@
       },
       "postTile": {
         "becomeMember": "Mitglied werden",
-        "exclusive": "Exklusiv für Mitglieder"
+        "exclusive": "Exklusiv für Mitglieder",
+        "locked": "Gesperrt"
       },
       "planCard": {
         "current": "Dein Paket",
@@ -3629,7 +3655,8 @@
     },
     "similarPosts": "Ähnliche Posts",
     "popularPosts": "Beliebte Posts",
-    "untitled": "Ohne Titel"
+    "untitled": "Ohne Titel",
+    "joinToRead": "Mitglied werden, um zu lesen"
   },
   "discover": {
     "eyebrow": "Communities & Creator",
@@ -4332,7 +4359,8 @@
         "readMore": "Weiterlesen",
         "previous": "Zurück",
         "next": "Weiter",
-        "page": "Seite {page} von {pageCount}"
+        "page": "Seite {page} von {pageCount}",
+        "locked": "Gesperrt"
       },
       "accessibility": {
         "skipToContent": "Zum Hauptinhalt springen"

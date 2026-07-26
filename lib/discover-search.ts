@@ -1,5 +1,6 @@
 import "server-only";
 import prisma from "./prisma";
+import { PUBLIC_POST_WHERE } from "./post-access";
 
 /**
  * Platform-wide discovery search: communities plus their PUBLIC content.
@@ -104,8 +105,9 @@ export async function searchPlatform(
         where: {
           isPublished: true,
           publishedAt: { lte: now },
-          // Pay-per-view posts are excluded outright: their body is the product.
-          priceCents: 0,
+          // Bezahlte und Mitglieder-Beitraege haben ausserhalb der Community
+          // nichts zu suchen — ihr Inhalt ist der Gegenwert.
+          ...PUBLIC_POST_WHERE,
           space: PUBLIC_SPACE,
           OR: [{ title: contains }, { body: contains }],
         },
