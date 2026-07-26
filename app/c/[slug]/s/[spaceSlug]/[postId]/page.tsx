@@ -372,7 +372,12 @@ export default async function PostDetail({
           </div>
         </div>
 
-        {/* Weitere Beitraege aus diesem Space */}
+        {/* Comments */}
+        <div className="mt-12">{commentsBlock}</div>
+
+        {/* Weitere Beitraege aus diesem Space — bewusst unter den Kommentaren:
+            wer bis hierhin gelesen hat, ist mit dem Artikel fertig. Darueber
+            haetten die Reihen die Diskussion nach unten gedrueckt. */}
         {(similarTiles.length > 0 || popularTiles.length > 0) && (
           <div className="mt-14 space-y-12">
             {similarTiles.length > 0 && (
@@ -392,8 +397,6 @@ export default async function PostDetail({
           </div>
         )}
 
-        {/* Comments */}
-        <div className="mt-12">{commentsBlock}</div>
       </article>
     );
   }
