@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "你的問題 …",
       "pollOptionPlaceholder": "選項 …",
       "pollAddOption": "新增選項",
-      "pollMultipleLabel": "允許多選"
+      "pollMultipleLabel": "允許多選",
+      "statusDraft": "未發布",
+      "statusScheduled": "預計於 {date} 發布"
     },
     "knowledge": {
       "badge": "知識庫",

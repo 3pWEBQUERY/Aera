@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "質問を入力 …",
       "pollOptionPlaceholder": "選択肢 …",
       "pollAddOption": "選択肢を追加",
-      "pollMultipleLabel": "複数選択を許可する"
+      "pollMultipleLabel": "複数選択を許可する",
+      "statusDraft": "未公開",
+      "statusScheduled": "{date} に公開予定"
     },
     "knowledge": {
       "badge": "ナレッジ",

@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Din fråga …",
       "pollOptionPlaceholder": "Svar …",
       "pollAddOption": "Lägg till svar",
-      "pollMultipleLabel": "Tillåt flera val"
+      "pollMultipleLabel": "Tillåt flera val",
+      "statusDraft": "Inte publicerat",
+      "statusScheduled": "Planerat till {date}"
     },
     "knowledge": {
       "badge": "Kunskap",

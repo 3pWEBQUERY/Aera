@@ -1542,7 +1542,9 @@
       "pollQuestionPlaceholder": "Deine Frage …",
       "pollOptionPlaceholder": "Antwort …",
       "pollAddOption": "Antwort hinzufügen",
-      "pollMultipleLabel": "Mehrfachauswahl erlauben"
+      "pollMultipleLabel": "Mehrfachauswahl erlauben",
+      "statusDraft": "Nicht veröffentlicht",
+      "statusScheduled": "Geplant für {date}"
     },
     "knowledge": {
       "badge": "Wissen",

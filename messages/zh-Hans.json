@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "你的问题 …",
       "pollOptionPlaceholder": "选项 …",
       "pollAddOption": "添加选项",
-      "pollMultipleLabel": "允许多选"
+      "pollMultipleLabel": "允许多选",
+      "statusDraft": "未发布",
+      "statusScheduled": "计划于 {date} 发布"
     },
     "knowledge": {
       "badge": "知识库",

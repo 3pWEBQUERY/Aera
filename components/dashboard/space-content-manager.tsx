@@ -20,6 +20,7 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
+import { ScheduleField } from "./schedule-field";
 
 /** Resolve the "create" CTA label for a space type (falls back to a generic verb). */
 function useCreateLabel() {
@@ -291,7 +292,7 @@ function PostForm({
           {(ty === "FEED" || ty === "VIDEOS" || ty === "PODCAST" || ty === "BLOG") && (
             <div>
               <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
-              <Input id="sc-schedule" name="scheduledAt" type="datetime-local" />
+              <ScheduleField id="sc-schedule" />
               <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
             </div>
           )}

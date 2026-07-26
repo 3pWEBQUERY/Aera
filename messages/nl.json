@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Je vraag …",
       "pollOptionPlaceholder": "Antwoord …",
       "pollAddOption": "Antwoord toevoegen",
-      "pollMultipleLabel": "Meerdere keuzes toestaan"
+      "pollMultipleLabel": "Meerdere keuzes toestaan",
+      "statusDraft": "Niet gepubliceerd",
+      "statusScheduled": "Gepland voor {date}"
     },
     "knowledge": {
       "badge": "Kennis",

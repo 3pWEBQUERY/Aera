@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Sua pergunta …",
       "pollOptionPlaceholder": "Resposta …",
       "pollAddOption": "Adicionar resposta",
-      "pollMultipleLabel": "Permitir várias escolhas"
+      "pollMultipleLabel": "Permitir várias escolhas",
+      "statusDraft": "Não publicado",
+      "statusScheduled": "Agendado para {date}"
     },
     "knowledge": {
       "badge": "Conhecimento",

@@ -286,6 +286,8 @@ export default async function SpaceContentPage({
       authorName: p.author.name,
       visibility: p.visibility,
       priceCents: p.priceCents,
+      isPublished: p.isPublished,
+      scheduledAt: p.scheduledAt,
       teaserUrl: p.teaserUrl,
       pollQuestion: blogPollDrafts.get(p.id)?.question ?? null,
       pollOptions: blogPollDrafts.get(p.id)?.options ?? [],

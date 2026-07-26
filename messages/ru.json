@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Ваш вопрос …",
       "pollOptionPlaceholder": "Ответ …",
       "pollAddOption": "Добавить ответ",
-      "pollMultipleLabel": "Разрешить несколько ответов"
+      "pollMultipleLabel": "Разрешить несколько ответов",
+      "statusDraft": "Не опубликовано",
+      "statusScheduled": "Запланировано на {date}"
     },
     "knowledge": {
       "badge": "База знаний",

@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "질문을 입력하세요 …",
       "pollOptionPlaceholder": "항목 …",
       "pollAddOption": "항목 추가",
-      "pollMultipleLabel": "복수 선택 허용"
+      "pollMultipleLabel": "복수 선택 허용",
+      "statusDraft": "미게시",
+      "statusScheduled": "{date} 게시 예정"
     },
     "knowledge": {
       "badge": "지식",

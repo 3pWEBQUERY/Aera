@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Dit spørgsmål …",
       "pollOptionPlaceholder": "Svar …",
       "pollAddOption": "Tilføj svar",
-      "pollMultipleLabel": "Tillad flere valg"
+      "pollMultipleLabel": "Tillad flere valg",
+      "statusDraft": "Ikke udgivet",
+      "statusScheduled": "Planlagt til {date}"
     },
     "knowledge": {
       "badge": "Viden",

@@ -16,6 +16,7 @@ import { ImageUpload } from "./image-upload";
 import { RichTextEditor } from "./rich-text-editor";
 import { PricePointSelect } from "./price-point-select";
 import { PollEditor } from "./poll-editor";
+import { ScheduleField } from "./schedule-field";
 import { Input, Label, Select } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
@@ -32,6 +33,9 @@ export interface BlogAdminPost {
   authorName: string;
   visibility: "PUBLIC" | "MEMBERS" | "PAID";
   priceCents: number;
+  /** Nicht veroeffentlicht oder erst fuer spaeter geplant. */
+  isPublished: boolean;
+  scheduledAt: string | Date | null;
   teaserUrl: string | null;
   pollQuestion: string | null;
   pollOptions: string[];
@@ -147,7 +151,26 @@ export function BlogManager({
               </div>
               <button onClick={() => setEditing(p)} className="min-w-0 flex-1 text-left">
                 <p className="truncate font-semibold text-slate-900">{p.title}</p>
-                <p className="text-xs text-slate-400">{p.authorName} · {formatDate(p.createdAt, locale)}</p>
+                {/* Der Zustand gehoert sichtbar in die Liste: ein geplanter oder
+                    unveroeffentlichter Beitrag steht hier, erscheint aber in der
+                    Community nicht — ohne Kennzeichnung sieht das aus, als sei
+                    er verschwunden. */}
+                <p className="mt-0.5 flex flex-wrap items-center gap-1.5">
+                  {!p.isPublished && (
+                    <Pill className="bg-amber-50 text-amber-700 ring-1 ring-amber-200">
+                      {p.scheduledAt ? t("statusScheduled", { date: formatDate(p.scheduledAt, locale) }) : t("statusDraft")}
+                    </Pill>
+                  )}
+                  {p.visibility === "MEMBERS" && (
+                    <Pill className="bg-slate-100 text-slate-600">{t("accessMembers")}</Pill>
+                  )}
+                  {p.priceCents > 0 && (
+                    <Pill className="bg-[var(--action-soft)] text-slate-700">
+                      {t("accessPaid")}
+                    </Pill>
+                  )}
+                </p>
+                <p className="mt-0.5 text-xs text-slate-400">{p.authorName} · {formatDate(p.createdAt, locale)}</p>
                 {p.excerpt && <p className="mt-1 line-clamp-1 text-sm text-slate-500">{p.excerpt}</p>}
               </button>
               <div className="flex shrink-0 items-center gap-1">
@@ -344,7 +367,7 @@ function BlogPostForm({
 
             <div>
               <Label htmlFor="bp-schedule">{t("scheduleLabel")}</Label>
-              <Input id="bp-schedule" name="scheduledAt" type="datetime-local" />
+              <ScheduleField id="bp-schedule" />
               <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
             </div>
           </div>

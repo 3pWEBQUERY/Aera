@@ -1517,7 +1517,9 @@
       "pollQuestionPlaceholder": "Ваше запитання …",
       "pollOptionPlaceholder": "Відповідь …",
       "pollAddOption": "Додати відповідь",
-      "pollMultipleLabel": "Дозволити кілька відповідей"
+      "pollMultipleLabel": "Дозволити кілька відповідей",
+      "statusDraft": "Не опубліковано",
+      "statusScheduled": "Заплановано на {date}"
     },
     "knowledge": {
       "badge": "База знань",
