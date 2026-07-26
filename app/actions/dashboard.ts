@@ -2592,6 +2592,20 @@ export async function updatePostAction(
       visibility: readPostVisibility(fd, priceCents),
     };
   }
+  // Termin: nur anfassen, wenn der Composer das Feld ueberhaupt mitschickt.
+  // Leer heisst "jetzt veroeffentlichen" — sonst gaebe es keinen Weg zurueck
+  // aus einem versehentlich geplanten Beitrag.
+  const rawSchedule = fd.get("scheduledAt");
+  let scheduleUpdate: Record<string, unknown> = {};
+  if (rawSchedule !== null) {
+    const parsed = String(rawSchedule).trim() ? new Date(String(rawSchedule)) : null;
+    const future =
+      parsed && !Number.isNaN(parsed.getTime()) && parsed.getTime() > Date.now() ? parsed : null;
+    scheduleUpdate = future
+      ? { scheduledAt: future, isPublished: false, publishedAt: future }
+      : { scheduledAt: null, isPublished: true };
+  }
+
   await prisma.post.update({
     where: { id: post.id },
     data: {
@@ -2602,6 +2616,7 @@ export async function updatePostAction(
       ...(video !== null ? { videoUrl: String(video) || null } : {}),
       ...(teaser !== null ? { teaserUrl: String(teaser) || null } : {}),
       ...priceUpdate,
+      ...scheduleUpdate,
     },
   });
   // The forum composer submits pollControl so the poll is set or cleared here.

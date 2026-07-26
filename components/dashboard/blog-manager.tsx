@@ -47,6 +47,15 @@ interface SpaceInfo {
   name: string;
 }
 
+
+/** Date → Wert fuer ein datetime-local-Feld (Wanduhrzeit des Browsers). */
+function toLocalInput(value: string | Date | null | undefined): string {
+  if (!value) return "";
+  const d = new Date(value);
+  if (Number.isNaN(d.getTime())) return "";
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 16);
+}
+
 const initial: ActionState = {};
 
 export function BlogManager({
@@ -367,7 +376,7 @@ function BlogPostForm({
 
             <div>
               <Label htmlFor="bp-schedule">{t("scheduleLabel")}</Label>
-              <ScheduleField id="bp-schedule" />
+              <ScheduleField id="bp-schedule" defaultValue={toLocalInput(post?.scheduledAt)} />
               <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
             </div>
           </div>
