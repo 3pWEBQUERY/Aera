@@ -3598,7 +3598,10 @@
       "joinPrompt": "コミュニティに参加して発言しましょう。",
       "joinCta": "参加する"
     },
-    "unlockFor": "Unlock for {price}"
+    "unlockFor": "Unlock for {price}",
+    "similarPosts": "似ている投稿",
+    "popularPosts": "人気の投稿",
+    "untitled": "無題"
   },
   "discover": {
     "eyebrow": "コミュニティ & クリエイター",

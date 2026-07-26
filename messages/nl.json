@@ -3598,7 +3598,10 @@
       "joinPrompt": "Word lid van de community om mee te schrijven.",
       "joinCta": "Word lid"
     },
-    "unlockFor": "Unlock for {price}"
+    "unlockFor": "Unlock for {price}",
+    "similarPosts": "Vergelijkbare posts",
+    "popularPosts": "Populaire posts",
+    "untitled": "Zonder titel"
   },
   "discover": {
     "eyebrow": "Communities & creators",

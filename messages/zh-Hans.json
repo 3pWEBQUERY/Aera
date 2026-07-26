@@ -3598,7 +3598,10 @@
       "joinPrompt": "加入社区即可参与聊天。",
       "joinCta": "加入"
     },
-    "unlockFor": "Unlock for {price}"
+    "unlockFor": "Unlock for {price}",
+    "similarPosts": "相似帖子",
+    "popularPosts": "热门帖子",
+    "untitled": "无标题"
   },
   "discover": {
     "eyebrow": "社区与创作者",

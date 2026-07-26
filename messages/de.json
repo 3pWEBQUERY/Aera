@@ -3626,7 +3626,10 @@
       "sendAria": "Senden",
       "joinPrompt": "Tritt der Community bei, um mitzuschreiben.",
       "joinCta": "Beitreten"
-    }
+    },
+    "similarPosts": "Ähnliche Posts",
+    "popularPosts": "Beliebte Posts",
+    "untitled": "Ohne Titel"
   },
   "discover": {
     "eyebrow": "Communities & Creator",

@@ -5,10 +5,16 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 import { readPostPoll } from "@/lib/polls";
-import { readPostSettings, resolvePostId } from "@/lib/post-settings";
+import {
+  getPostSettingsForPosts,
+  readPostSettings,
+  resolvePostId,
+} from "@/lib/post-settings";
 import { trimRichHtml } from "@/lib/rich-text";
 import { purchasePostAction } from "@/app/actions/engage";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
+import { PostSlider } from "@/components/community/post-slider";
+import type { PostTileData } from "@/components/community/post-tile";
 import { CommentForm } from "@/components/community/comment-form";
 import { ForumThread } from "@/components/community/forum-thread";
 import { ArticleShare } from "@/components/community/article-share";
@@ -182,7 +188,29 @@ export default async function PostDetail({
 
   // ----- Blog: editorial / magazine article layout -----
   if (space.type === "BLOG") {
-    const [authorMembership, relatedRaw] = await Promise.all([
+    const tSpace = await getTranslations("spaces");
+    const RELATED_WHERE = {
+      tenantId: tenant.id,
+      spaceId: space.id,
+      isPublished: true,
+      id: { not: post.id },
+      // Geplante Beitraege gehoeren erst ab ihrem Termin in die Reihen —
+      // sonst verrieten die Kacheln, was noch kommt.
+      ...(isStaff ? {} : { publishedAt: { lte: new Date() } }),
+    } as const;
+    const RELATED_SELECT = {
+      id: true,
+      title: true,
+      body: true,
+      imageUrl: true,
+      videoUrl: true,
+      priceCents: true,
+      entitlementKey: true,
+      createdAt: true,
+      _count: { select: { reactions: true, comments: true } },
+    } as const;
+
+    const [authorMembership, relatedRaw, popularRaw] = await Promise.all([
       prisma.membership.findFirst({
         where: {
           tenantId: tenant.id,
@@ -191,18 +219,59 @@ export default async function PostDetail({
         },
         select: { bio: true, role: true },
       }),
+      // Zwei Reihen aus demselben Space: die neuesten anderen Beitraege und
+      // die mit den meisten Likes. Bewusst nicht gegeneinander entdoppelt —
+      // in einem jungen Blog waere die zweite Reihe sonst immer leer.
       prisma.post.findMany({
-        where: {
-          tenantId: tenant.id,
-          spaceId: space.id,
-          isPublished: true,
-          id: { not: post.id },
-        },
+        where: RELATED_WHERE,
         orderBy: { createdAt: "desc" },
-        take: 2,
-        select: { id: true, title: true, body: true, imageUrl: true },
+        take: 9,
+        select: RELATED_SELECT,
+      }),
+      prisma.post.findMany({
+        where: RELATED_WHERE,
+        orderBy: { reactions: { _count: "desc" } },
+        take: 9,
+        select: RELATED_SELECT,
       }),
     ]);
+
+    // Cover-Bilder liegen in den Post-Settings, nicht auf dem Post.
+    const relatedCovers = await getPostSettingsForPosts(
+      tenant.id,
+      [...relatedRaw, ...popularRaw].map((p) => p.id),
+    );
+
+    const toTile = (p: (typeof relatedRaw)[number]): PostTileData => {
+      // Bezahlte Beitraege bleiben sichtbar, aber verschlossen: der Anreiz
+      // liegt genau darin, dass man sieht, was es noch gibt.
+      const tileLocked =
+        p.priceCents > 0 &&
+        !isStaff &&
+        (!p.entitlementKey || !ctx.keys.has(p.entitlementKey));
+      const cover = relatedCovers.get(p.id);
+      return {
+        id: p.id,
+        title: p.title || excerpt(p.body, 80) || tSpace("untitled"),
+        href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
+        imageUrl: tileLocked ? null : p.imageUrl,
+        videoUrl: tileLocked ? null : p.videoUrl,
+        coverUrl: tileLocked ? null : (cover?.coverUrl ?? null),
+        coverOffsetX: cover?.coverOffsetX ?? 50,
+        coverOffsetY: cover?.coverOffsetY ?? 50,
+        coverZoom: cover?.coverZoom ?? 100,
+        hasVideo: Boolean(p.videoUrl),
+        locked: tileLocked,
+        createdAt: p.createdAt,
+        likes: p._count.reactions,
+        comments: p._count.comments,
+      };
+    };
+
+    const similarTiles = relatedRaw.map(toTile);
+    // Ohne Likes ist "beliebt" eine leere Behauptung — dann faellt die Reihe weg.
+    const popularTiles = popularRaw.map(toTile).filter((p) => p.likes > 0);
+    const spaceHref = `/c/${slug}/s/${spaceSlug}`;
 
     return (
       <article className="mx-auto max-w-3xl">
@@ -297,38 +366,24 @@ export default async function PostDetail({
           </div>
         </div>
 
-        {/* Related posts */}
-        {relatedRaw.length > 0 && (
-          <section className="mt-12">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/50">
-              Ähnliche Beiträge
-            </h2>
-            <div className="mt-4 grid gap-5 sm:grid-cols-2">
-              {relatedRaw.map((r) => (
-                <Link
-                  key={r.id}
-                  href={`/c/${slug}/s/${spaceSlug}/${r.id}`}
-                  className="group block overflow-hidden rounded-xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
-                >
-                  <div className="aspect-[16/9] w-full overflow-hidden bg-[#161613]/5">
-                    {r.imageUrl ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={r.imageUrl}
-                        alt=""
-                        className="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-                      />
-                    ) : (
-                      <div className="bg-[var(--brand)] h-full w-full opacity-90" />
-                    )}
-                  </div>
-                  <p className="blog-title px-4 py-3 text-center text-sm font-semibold uppercase tracking-wide text-[#161613] group-hover:text-[color:var(--brand)]">
-                    {r.title || excerpt(r.body, 60) || "Ohne Titel"}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </section>
+        {/* Weitere Beitraege aus diesem Space */}
+        {(similarTiles.length > 0 || popularTiles.length > 0) && (
+          <div className="mt-14 space-y-12">
+            {similarTiles.length > 0 && (
+              <PostSlider
+                title={tSpace("similarPosts")}
+                titleHref={spaceHref}
+                items={similarTiles}
+              />
+            )}
+            {popularTiles.length > 0 && (
+              <PostSlider
+                title={tSpace("popularPosts")}
+                titleHref={spaceHref}
+                items={popularTiles}
+              />
+            )}
+          </div>
         )}
 
         {/* Comments */}

@@ -3626,7 +3626,10 @@
       "sendAria": "Send",
       "joinPrompt": "Join the community to chime in.",
       "joinCta": "Join"
-    }
+    },
+    "similarPosts": "Similar posts",
+    "popularPosts": "Popular posts",
+    "untitled": "Untitled"
   },
   "discover": {
     "eyebrow": "Communities & creators",

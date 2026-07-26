@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
@@ -11,10 +12,13 @@ import { cn } from "@/lib/utils";
  */
 export function HScrollRow({
   title,
+  titleHref,
   action,
   children,
 }: {
   title: string;
+  /** Macht die Ueberschrift zum Link auf die Uebersicht (mit Chevron). */
+  titleHref?: string;
   /** Optional element shown in the header, left of the prev/next arrows. */
   action?: ReactNode;
   children: ReactNode;
@@ -66,7 +70,21 @@ export function HScrollRow({
   return (
     <section>
       <div className="mb-4 flex items-end justify-between gap-4">
-        <h2 className="display-serif text-2xl text-[#161613]">{title}</h2>
+        {titleHref ? (
+          <Link
+            href={titleHref}
+            className="group inline-flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+          >
+            <h2 className="display-serif text-2xl text-[#161613]">{title}</h2>
+            <Icon
+              name="chevron"
+              size={16}
+              className="-rotate-90 text-[#161613]/40 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
+            />
+          </Link>
+        ) : (
+          <h2 className="display-serif text-2xl text-[#161613]">{title}</h2>
+        )}
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {action}
           {arrow(-1, canPrev)}

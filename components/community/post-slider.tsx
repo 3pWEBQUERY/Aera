@@ -10,9 +10,11 @@ import { HScrollRow } from "./h-scroll-row";
  */
 export function PostSlider({
   title,
+  titleHref,
   items,
 }: {
   title: string;
+  titleHref?: string;
   items: PostTileData[];
 }) {
   const t = useTranslations("community.render.postTile");
@@ -20,7 +22,7 @@ export function PostSlider({
   if (items.length === 0) return null;
 
   return (
-    <HScrollRow title={title}>
+    <HScrollRow title={title} titleHref={titleHref}>
       {items.map((p) => (
         <div
           key={p.id}

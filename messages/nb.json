@@ -3598,7 +3598,10 @@
       "joinPrompt": "Bli med i communityen for å skrive.",
       "joinCta": "Bli med"
     },
-    "unlockFor": "Unlock for {price}"
+    "unlockFor": "Unlock for {price}",
+    "similarPosts": "Lignende innlegg",
+    "popularPosts": "Populære innlegg",
+    "untitled": "Uten tittel"
   },
   "discover": {
     "eyebrow": "Communities & skapere",

@@ -3598,7 +3598,10 @@
       "joinPrompt": "Gå med i communityn för att skriva.",
       "joinCta": "Gå med"
     },
-    "unlockFor": "Unlock for {price}"
+    "unlockFor": "Unlock for {price}",
+    "similarPosts": "Liknande inlägg",
+    "popularPosts": "Populära inlägg",
+    "untitled": "Utan titel"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",
