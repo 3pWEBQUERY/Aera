@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space rimosso",
       "applyAll": "Applica a tutti i segmenti",
-      "applyAllHint": "Le modifiche valgono per visitatori, membri gratuiti e paganti. Disattiva per progettare ogni segmento separatamente."
+      "applyAllHint": "Le modifiche valgono per visitatori, membri gratuiti e paganti. Disattiva per progettare ogni segmento separatamente.",
+      "headerStyle": "Stile dell’intestazione",
+      "headerStyleHint": "Così la tua pagina accoglie i visitatori. L’anteprima mostra subito ogni scelta, con i tuoi contenuti.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Editoriale",
+          "desc": "Copertina incorniciata, nome sotto."
+        },
+        "MOSAIC": {
+          "label": "Mosaico",
+          "desc": "Griglia con le immagini dei tuoi post, nome al centro."
+        },
+        "SPOTLIGHT": {
+          "label": "Riflettore",
+          "desc": "Campo di colore con l’immagine accanto."
+        },
+        "IMMERSIVE": {
+          "label": "A tutta pagina",
+          "desc": "Copertina a tutta larghezza, testo sopra."
+        },
+        "COMPACT": {
+          "label": "Compatta",
+          "desc": "Una riga sottile, il contenuto inizia subito."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistiche",

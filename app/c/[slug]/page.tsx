@@ -18,13 +18,12 @@ import { VideoSlider } from "@/components/community/video-slider";
 import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
+import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
 import type { MediaTileData } from "@/components/community/media-tile";
 import { SpaceSlider, type SpaceCardData } from "@/components/community/space-slider";
 import { ShopSection, type ShopProduct, type ShopNotice } from "@/components/community/shop-section";
-import { HeroActions } from "@/components/community/hero-actions";
 import { parseLayout, orderedSections, audienceFor, type SectionType } from "@/lib/layout";
 import { readPreviewOverride } from "@/lib/preview";
-import { SocialGlyph, SOCIAL_BY_KEY } from "@/components/dashboard/social-icons";
 import { ButtonLink } from "@/components/ui/button";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Icon, type IconName } from "@/components/dashboard/icons";
@@ -339,6 +338,48 @@ export default async function CommunityHome({
   const sectionList = orderedSections(layoutConfig, audience);
   const displayName = preview?.name ?? tenant.name;
 
+  // ------------------------------------------------------------- Kopfzeile
+  // Das Mosaik nimmt Bilder aus freigegebenen Beitraegen — gesperrte bleiben
+  // draussen, sonst waere die Kopfzeile ein Leck.
+  const mosaic: string[] = [];
+  for (const p of [...recent, ...popular, ...videos]) {
+    if (p.locked) continue;
+    const url = p.coverUrl ?? p.imageUrl;
+    if (url && !mosaic.includes(url)) mosaic.push(url);
+    if (mosaic.length === 12) break;
+  }
+  const heroData: CommunityHeroData = {
+    slug,
+    name: displayName,
+    tagline: tenant.tagline ?? tenant.description ?? null,
+    logoUrl: preview?.logoUrl !== undefined ? preview.logoUrl : tenant.logoUrl,
+    // "Profilfoto verwenden" heisst genau das: kein Titelbild. Die Einstellung
+    // gab es schon, gelesen hat sie bisher niemand — die Kopfzeile zeigte das
+    // Titelbild auch dann, wenn der Creator sich dagegen entschieden hatte.
+    coverUrl: layoutConfig.header.mode === "PHOTO" ? null : coverUrl,
+    primaryColor: preview?.primaryColor ?? tenant.primaryColor,
+    memberCount,
+    postCount,
+    priceLabel: cheapestPaidTier
+      ? `${formatPrice(cheapestPaidTier.priceCents, cheapestPaidTier.currency, locale)}${
+          cheapestPaidTier.interval === "MONTH"
+            ? t("perMonth")
+            : cheapestPaidTier.interval === "YEAR"
+              ? t("perYear")
+              : ""
+        }`
+      : null,
+    mosaic,
+    socials: layoutConfig.header.socials,
+    isMember,
+    isStaff: ctx.isStaff,
+    tipsHref: tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null,
+    labels: {
+      posts: t("postsCount", { count: nf.format(postCount) }),
+      members: t("membersCount", { count: memberCount }),
+    },
+  };
+
   const recentSection =
     recent.length === 0 ? (
       <section>
@@ -602,79 +643,7 @@ export default async function CommunityHome({
 
   return (
     <div>
-      {/* -------------------------------- Hero (framed cover, editorial) */}
-      <section className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 sm:pt-6">
-        {/* Titelbild als gerahmter Media-Block statt Vollbild mit Scrim. */}
-        <div className="relative aspect-[5/2] w-full overflow-hidden rounded-3xl sm:aspect-[3/1]">
-          {coverUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={coverUrl}
-              alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-            />
-          ) : (
-            /* Kein Cover: flache Markenfläche mit großer Serif-Initiale. */
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ backgroundColor: tenant.primaryColor }}
-            >
-              <span
-                aria-hidden
-                className="display-serif select-none text-[clamp(96px,20vw,240px)] leading-none text-white/25"
-              >
-                {displayName.charAt(0).toUpperCase()}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Editorial-Kopf unter dem Bild: Text liegt auf der Seite. */}
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 pb-2 pt-6 sm:pt-8">
-          <div className="min-w-0 max-w-2xl">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/50">
-              {t("postsCount", { count: nf.format(postCount) })}
-              <span className="mx-1.5" aria-hidden>·</span>
-              {t("membersCount", { count: memberCount })}
-            </p>
-            <h1 className="display-serif mt-2 text-4xl leading-[1.05] text-[#161613] sm:text-6xl">
-              {displayName}
-            </h1>
-            {(tenant.tagline || tenant.description) && (
-              <p className="mt-3 line-clamp-2 max-w-xl text-base leading-7 text-[#161613]/65">
-                {tenant.tagline ?? tenant.description}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
-            <HeroActions
-              slug={slug}
-              isMember={isMember}
-              isStaff={ctx.isStaff}
-              tipsHref={tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null}
-            />
-
-            {layoutConfig.header.socials.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2.5">
-                {layoutConfig.header.socials.map((s, i) => (
-                  <a
-                    key={i}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={SOCIAL_BY_KEY[s.platform]?.label ?? "Link"}
-                    title={SOCIAL_BY_KEY[s.platform]?.label ?? "Link"}
-                    className="block overflow-hidden rounded-[11px] ring-1 ring-[#161613]/10 transition hover:ring-[#161613]/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/40"
-                  >
-                    <SocialGlyph platform={s.platform} size={40} />
-                  </a>
-                ))}
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
+      <CommunityHero variant={layoutConfig.header.variant} data={heroData} />
 
       {/* ------------------------------------ Paid-tier upsell (full-bleed) */}
       {showUpsell && (

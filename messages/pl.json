@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Usunięto space",
       "applyAll": "Zastosuj do wszystkich grup",
-      "applyAllHint": "Zmiany dotyczą odwiedzających oraz członków bezpłatnych i płacących. Wyłącz, aby projektować każdą grupę osobno."
+      "applyAllHint": "Zmiany dotyczą odwiedzających oraz członków bezpłatnych i płacących. Wyłącz, aby projektować każdą grupę osobno.",
+      "headerStyle": "Styl nagłówka",
+      "headerStyleHint": "Tak Twoja strona wita odwiedzających. Podgląd od razu pokazuje każdy wybór z Twoimi treściami.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Edytorialny",
+          "desc": "Okładka w ramce, nazwa poniżej."
+        },
+        "MOSAIC": {
+          "label": "Mozaika",
+          "desc": "Siatka zdjęć z Twoich wpisów, nazwa na środku."
+        },
+        "SPOTLIGHT": {
+          "label": "Reflektor",
+          "desc": "Płaszczyzna koloru, obraz obok."
+        },
+        "IMMERSIVE": {
+          "label": "Pełna szerokość",
+          "desc": "Okładka na całą szerokość, tekst na niej."
+        },
+        "COMPACT": {
+          "label": "Kompaktowy",
+          "desc": "Jeden wąski pasek, treść zaczyna się od razu."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statystyki",

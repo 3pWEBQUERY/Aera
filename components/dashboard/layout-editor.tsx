@@ -31,6 +31,8 @@ import {
   type SectionType,
   type SocialLink,
   type HeaderMode,
+  type HeaderVariant,
+  HEADER_VARIANTS,
 } from "@/lib/layout";
 
 const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#059669", "#0891b2", "#111827"];
@@ -47,7 +49,7 @@ export interface LayoutEditorInitial {
   coverUrl: string | null;
   sectionsByAudience: SectionsByAudience;
   nav: NavItemConfig[];
-  header: { mode: HeaderMode; socials: SocialLink[] };
+  header: { mode: HeaderMode; variant: HeaderVariant; socials: SocialLink[] };
 }
 
 const initialState: LayoutState = {};
@@ -74,6 +76,7 @@ export function LayoutEditor({
   const [primaryColor, setPrimaryColor] = useState(initial.primaryColor);
   const [description, setDescription] = useState(initial.description ?? "");
   const [mode, setMode] = useState<HeaderMode>(initial.header.mode);
+  const [variant, setVariant] = useState<HeaderVariant>(initial.header.variant);
   const [socials, setSocials] = useState<SocialLink[]>(initial.header.socials);
   const [sectionsByAudience, setSectionsByAudience] = useState<SectionsByAudience>(
     initial.sectionsByAudience,
@@ -110,11 +113,11 @@ export function LayoutEditor({
         logoUrl,
         primaryColor,
         description,
-        header: { mode, socials },
+        header: { mode, variant, socials },
         sectionsByAudience,
         nav,
       }),
-    [name, logoUrl, primaryColor, description, mode, socials, sectionsByAudience, nav],
+    [name, logoUrl, primaryColor, description, mode, variant, socials, sectionsByAudience, nav],
   );
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
@@ -125,12 +128,12 @@ export function LayoutEditor({
         name,
         logoUrl,
         primaryColor,
-        header: { mode, socials },
+        header: { mode, variant, socials },
         sectionsByAudience,
         nav,
         audience,
       }),
-    [name, logoUrl, primaryColor, mode, socials, sectionsByAudience, nav, audience],
+    [name, logoUrl, primaryColor, mode, variant, socials, sectionsByAudience, nav, audience],
   );
 
   const [previewNonce, setPreviewNonce] = useState(0);
@@ -253,6 +256,8 @@ export function LayoutEditor({
               setDescription={setDescription}
               mode={mode}
               setMode={setMode}
+              variant={variant}
+              setVariant={setVariant}
               socials={socials}
               setSocials={setSocials}
               coverUrl={initial.coverUrl}
@@ -379,6 +384,8 @@ function HeaderPanel({
   setDescription,
   mode,
   setMode,
+  variant,
+  setVariant,
   socials,
   setSocials,
   coverUrl,
@@ -395,6 +402,8 @@ function HeaderPanel({
   setDescription: (v: string) => void;
   mode: HeaderMode;
   setMode: (v: HeaderMode) => void;
+  variant: HeaderVariant;
+  setVariant: (v: HeaderVariant) => void;
   socials: SocialLink[];
   setSocials: (v: SocialLink[]) => void;
   coverUrl: string | null;
@@ -423,6 +432,8 @@ function HeaderPanel({
         </div>
         <LogoUploader slug={slug} url={logoUrl} name={name} color={primaryColor} onChange={setLogoUrl} />
       </div>
+
+      <HeaderVariantPicker value={variant} onChange={setVariant} color={primaryColor} />
 
       <div>
         <p className="mb-2 text-sm font-bold text-slate-900">{t("headerOptions")}</p>
@@ -505,6 +516,154 @@ function HeaderPanel({
       </div>
 
       <SocialLinksEditor socials={socials} setSocials={setSocials} />
+    </div>
+  );
+}
+
+/**
+ * Auswahl der Kopfzeile.
+ *
+ * Statt einer Namensliste steht in jeder Kachel eine Skizze des Aufbaus —
+ * gezeichnet aus Flaechen, nicht als Bild: sie traegt die Primaerfarbe der
+ * Community mit und bleibt in jeder Groesse scharf. Die grosse Vorschau
+ * rechts zeigt die Wahl sofort mit den echten Inhalten, die Skizze muss also
+ * nur den Unterschied erkennbar machen.
+ */
+function HeaderVariantPicker({
+  value,
+  onChange,
+  color,
+}: {
+  value: HeaderVariant;
+  onChange: (v: HeaderVariant) => void;
+  color: string;
+}) {
+  const t = useTranslations("dashboard.layout");
+  return (
+    <div>
+      <p className="text-sm font-bold text-slate-900">{t("headerStyle")}</p>
+      <p className="mt-1 text-xs text-slate-400">{t("headerStyleHint")}</p>
+      <div className="mt-3 grid grid-cols-2 gap-2.5">
+        {HEADER_VARIANTS.map((v) => {
+          const active = value === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => onChange(v)}
+              aria-pressed={active}
+              className={cn(
+                "group rounded-2xl border p-2 text-left transition",
+                active
+                  ? "border-[var(--action-strong)] bg-[var(--action-soft)]"
+                  : "border-slate-200 hover:border-slate-300 hover:bg-slate-50",
+              )}
+            >
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <VariantSketch variant={v} color={color} />
+              </div>
+              <span className="mt-2 flex items-center justify-between gap-1 px-0.5">
+                <span className="truncate text-xs font-semibold text-slate-800">
+                  {t(`headerVariants.${v}.label`)}
+                </span>
+                {active && (
+                  <Icon name="check" size={14} className="shrink-0 text-[var(--action-strong)]" />
+                )}
+              </span>
+              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-400">
+                {t(`headerVariants.${v}.desc`)}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Flaechen-Skizze eines Kopfzeilen-Aufbaus (kein Bild, kein Text). */
+function VariantSketch({ variant, color }: { variant: HeaderVariant; color: string }) {
+  const bar = "rounded-full bg-slate-300";
+  const box = "rounded bg-slate-200";
+  if (variant === "MOSAIC") {
+    return (
+      <div className="aspect-[16/11] p-1.5">
+        <div className="grid h-[46%] grid-cols-4 grid-rows-2 gap-[2px]">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <span key={i} className="rounded-[2px]" style={{ backgroundColor: color, opacity: 0.25 + (i % 3) * 0.2 }} />
+          ))}
+        </div>
+        <div className="-mt-2 flex flex-col items-center gap-1">
+          <span className="h-4 w-4 rounded-[5px] ring-2 ring-white" style={{ backgroundColor: color }} />
+          <span className={cn(bar, "h-1.5 w-14")} />
+          <span className={cn(bar, "h-1 w-9 opacity-60")} />
+          <span className="mt-0.5 h-2 w-10 rounded-full" style={{ backgroundColor: color }} />
+        </div>
+      </div>
+    );
+  }
+  if (variant === "SPOTLIGHT") {
+    return (
+      <div className="aspect-[16/11] p-1.5">
+        <div
+          className="flex h-full items-center gap-2 rounded-md p-2"
+          style={{ backgroundImage: `linear-gradient(150deg, ${color} 0%, #1a1420 100%)` }}
+        >
+          <div className="flex flex-1 flex-col gap-1">
+            <span className="h-2 w-12 rounded-full bg-white/85" />
+            <span className="h-1 w-9 rounded-full bg-white/45" />
+            <span className="h-1 w-14 rounded-full bg-white/30" />
+            <span className="mt-1 h-2.5 w-10 rounded-full bg-white" />
+          </div>
+          <span className="h-9 w-9 shrink-0 rounded-md bg-white/25" />
+        </div>
+      </div>
+    );
+  }
+  if (variant === "IMMERSIVE") {
+    return (
+      <div className="aspect-[16/11] p-1.5">
+        <div className="relative h-full overflow-hidden rounded-md" style={{ backgroundColor: color }}>
+          <span className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/70 to-transparent" />
+          <div className="absolute bottom-1.5 left-1.5 flex flex-col gap-1">
+            <span className="h-3 w-3 rounded-[4px] bg-white/85" />
+            <span className="h-2 w-12 rounded-full bg-white/85" />
+            <span className="h-1 w-8 rounded-full bg-white/50" />
+          </div>
+          <span className="absolute bottom-2 right-1.5 h-2.5 w-8 rounded-full bg-white" />
+        </div>
+      </div>
+    );
+  }
+  if (variant === "COMPACT") {
+    return (
+      <div className="aspect-[16/11] p-1.5">
+        <div className="flex items-center gap-2 border-b border-slate-200 pb-2">
+          <span className="h-5 w-5 rounded-[5px]" style={{ backgroundColor: color }} />
+          <span className="flex flex-1 flex-col gap-1">
+            <span className={cn(bar, "h-1.5 w-12")} />
+            <span className={cn(bar, "h-1 w-8 opacity-60")} />
+          </span>
+          <span className="h-2.5 w-7 rounded-full" style={{ backgroundColor: color }} />
+        </div>
+        <div className="mt-2 space-y-1.5">
+          <span className={cn(box, "block h-3 w-full")} />
+          <span className={cn(box, "block h-3 w-full")} />
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="aspect-[16/11] p-1.5">
+      <div className="h-[46%] rounded-md" style={{ backgroundColor: color }} />
+      <div className="mt-2 flex items-end justify-between gap-2">
+        <span className="flex flex-col gap-1">
+          <span className={cn(bar, "h-1 w-8 opacity-60")} />
+          <span className={cn(bar, "h-2 w-16")} />
+          <span className={cn(bar, "h-1 w-12 opacity-60")} />
+        </span>
+        <span className="h-2.5 w-8 shrink-0 rounded-full" style={{ backgroundColor: color }} />
+      </div>
     </div>
   );
 }

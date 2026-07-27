@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space fjernet",
       "applyAll": "Bruk på alle målgrupper",
-      "applyAllHint": "Endringer gjelder besøkende, gratis- og betalende medlemmer. Slå av for å utforme hver målgruppe separat."
+      "applyAllHint": "Endringer gjelder besøkende, gratis- og betalende medlemmer. Slå av for å utforme hver målgruppe separat.",
+      "headerStyle": "Toppfeltstil",
+      "headerStyleHint": "Slik møter siden din besøkende. Forhåndsvisningen viser hvert valg med en gang, med innholdet ditt.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Redaksjonell",
+          "desc": "Innrammet forsidebilde, navnet under."
+        },
+        "MOSAIC": {
+          "label": "Mosaikk",
+          "desc": "Rutenett av innleggsbildene dine, navnet i midten."
+        },
+        "SPOTLIGHT": {
+          "label": "Rampelys",
+          "desc": "Fargeflate med bildet ved siden av."
+        },
+        "IMMERSIVE": {
+          "label": "Full bredde",
+          "desc": "Forsidebilde i full bredde, tekst oppå."
+        },
+        "COMPACT": {
+          "label": "Kompakt",
+          "desc": "Én smal rad, innholdet begynner med en gang."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistikk",

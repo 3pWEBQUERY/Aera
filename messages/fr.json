@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space supprimé",
       "applyAll": "Appliquer à tous les publics",
-      "applyAllHint": "Les modifications s'appliquent aux visiteurs, membres gratuits et payants. Désactive pour concevoir chaque public séparément."
+      "applyAllHint": "Les modifications s'appliquent aux visiteurs, membres gratuits et payants. Désactive pour concevoir chaque public séparément.",
+      "headerStyle": "Style d’en-tête",
+      "headerStyleHint": "C’est ainsi que votre page accueille les visiteurs. L’aperçu montre chaque choix immédiatement, avec votre contenu.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Éditorial",
+          "desc": "Image de couverture encadrée, nom en dessous."
+        },
+        "MOSAIC": {
+          "label": "Mosaïque",
+          "desc": "Grille des images de vos publications, nom centré."
+        },
+        "SPOTLIGHT": {
+          "label": "Pleine lumière",
+          "desc": "Aplat de couleur, image à côté."
+        },
+        "IMMERSIVE": {
+          "label": "Pleine largeur",
+          "desc": "Couverture sur toute la largeur, texte par-dessus."
+        },
+        "COMPACT": {
+          "label": "Compact",
+          "desc": "Une bande étroite, le contenu commence tout de suite."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistiques",

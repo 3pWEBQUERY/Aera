@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "空間已刪除",
       "applyAll": "套用到所有受眾",
-      "applyAllHint": "變更同時適用於訪客、免費與付費成員。關閉後可分別設計每個受眾的頁面。"
+      "applyAllHint": "變更同時適用於訪客、免費與付費成員。關閉後可分別設計每個受眾的頁面。",
+      "headerStyle": "頁首樣式",
+      "headerStyleHint": "這決定訪客第一眼看到的樣子。預覽會立即以你的實際內容呈現每種選擇。",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "雜誌式",
+          "desc": "帶邊框的封面圖，名稱在下方。"
+        },
+        "MOSAIC": {
+          "label": "馬賽克",
+          "desc": "由你的貼文圖片組成的格狀排列，名稱置中。"
+        },
+        "SPOTLIGHT": {
+          "label": "聚光燈",
+          "desc": "色塊與圖片並排。"
+        },
+        "IMMERSIVE": {
+          "label": "滿版",
+          "desc": "封面圖橫跨整個寬度，文字疊在上面。"
+        },
+        "COMPACT": {
+          "label": "精簡",
+          "desc": "只有一條窄列，內容立即開始。"
+        }
+      }
     },
     "analytics": {
       "metaTitle": "統計",

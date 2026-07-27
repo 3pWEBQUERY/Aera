@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "空间已删除",
       "applyAll": "应用到所有受众",
-      "applyAllHint": "更改同时适用于访客、免费和付费成员。关闭后可分别设计每个受众的页面。"
+      "applyAllHint": "更改同时适用于访客、免费和付费成员。关闭后可分别设计每个受众的页面。",
+      "headerStyle": "页眉样式",
+      "headerStyleHint": "这决定访客第一眼看到的样子。预览会立即用你的真实内容呈现每种选择。",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "杂志式",
+          "desc": "带边框的封面图，名称在下方。"
+        },
+        "MOSAIC": {
+          "label": "马赛克",
+          "desc": "由你的帖子图片组成的网格，名称居中。"
+        },
+        "SPOTLIGHT": {
+          "label": "聚光灯",
+          "desc": "色块与图片并排。"
+        },
+        "IMMERSIVE": {
+          "label": "满幅",
+          "desc": "封面图铺满整个宽度，文字压在上面。"
+        },
+        "COMPACT": {
+          "label": "紧凑",
+          "desc": "只有一条窄栏，内容立即开始。"
+        }
+      }
     },
     "analytics": {
       "metaTitle": "统计",

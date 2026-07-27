@@ -57,6 +57,25 @@ export interface NavItemConfig {
 
 export type HeaderMode = "PHOTO" | "COVER";
 
+/**
+ * Ausfuehrung der Kopfzeile auf der Community-Startseite. Fuenf fertige
+ * Zustaende statt eines Baukastens — siehe components/community/community-hero.
+ */
+export type HeaderVariant =
+  | "EDITORIAL"
+  | "MOSAIC"
+  | "SPOTLIGHT"
+  | "IMMERSIVE"
+  | "COMPACT";
+
+export const HEADER_VARIANTS: HeaderVariant[] = [
+  "EDITORIAL",
+  "MOSAIC",
+  "SPOTLIGHT",
+  "IMMERSIVE",
+  "COMPACT",
+];
+
 export interface SocialLink {
   platform: string;
   url: string;
@@ -64,6 +83,7 @@ export interface SocialLink {
 
 export interface LayoutHeader {
   mode: HeaderMode;
+  variant: HeaderVariant;
   socials: SocialLink[];
 }
 
@@ -144,7 +164,9 @@ export function defaultSections(): LayoutSection[] {
 }
 
 export function defaultHeader(): LayoutHeader {
-  return { mode: "COVER", socials: [] };
+  // EDITORIAL ist der Aufbau, den jede bestehende Community heute hat —
+  // ein neuer Standard wuerde tausende Seiten ungefragt umbauen.
+  return { mode: "COVER", variant: "EDITORIAL", socials: [] };
 }
 
 export function defaultSectionsByAudience(): SectionsByAudience {
@@ -236,6 +258,9 @@ export function parseLayout(raw: unknown): LayoutConfig {
   // Header
   const h = asRecord(obj.header);
   const mode: HeaderMode = h.mode === "PHOTO" ? "PHOTO" : "COVER";
+  const variant: HeaderVariant = HEADER_VARIANTS.includes(h.variant as HeaderVariant)
+    ? (h.variant as HeaderVariant)
+    : "EDITORIAL";
   const socials: SocialLink[] = Array.isArray(h.socials)
     ? h.socials
         .map((s) => asRecord(s))
@@ -247,7 +272,7 @@ export function parseLayout(raw: unknown): LayoutConfig {
         .slice(0, 8)
     : [];
 
-  return { sectionsByAudience, nav, header: { mode, socials } };
+  return { sectionsByAudience, nav, header: { mode, variant, socials } };
 }
 
 /** Enabled section types in configured order for a viewer segment. */

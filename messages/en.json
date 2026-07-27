@@ -2079,7 +2079,31 @@
       },
       "spaceRemoved": "Space removed",
       "applyAll": "Apply to all audiences",
-      "applyAllHint": "Changes apply to visitors, free and paying members alike. Turn off to design each audience separately."
+      "applyAllHint": "Changes apply to visitors, free and paying members alike. Turn off to design each audience separately.",
+      "headerStyle": "Header style",
+      "headerStyleHint": "How your page greets visitors. The preview shows each choice straight away, with your content.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Editorial",
+          "desc": "Framed cover, name below it."
+        },
+        "MOSAIC": {
+          "label": "Mosaic",
+          "desc": "Grid of your post images, name centred."
+        },
+        "SPOTLIGHT": {
+          "label": "Spotlight",
+          "desc": "Colour field with the image beside it."
+        },
+        "IMMERSIVE": {
+          "label": "Full-bleed",
+          "desc": "Cover across the full width, text on top."
+        },
+        "COMPACT": {
+          "label": "Compact",
+          "desc": "One slim row, content starts right away."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Analytics",

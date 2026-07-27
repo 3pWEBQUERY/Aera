@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space verwijderd",
       "applyAll": "Toepassen op alle doelgroepen",
-      "applyAllHint": "Wijzigingen gelden voor bezoekers, gratis en betalende leden. Zet uit om elke doelgroep apart in te richten."
+      "applyAllHint": "Wijzigingen gelden voor bezoekers, gratis en betalende leden. Zet uit om elke doelgroep apart in te richten.",
+      "headerStyle": "Kopstijl",
+      "headerStyleHint": "Zo verwelkomt je pagina bezoekers. De voorvertoning laat elke keuze meteen zien, met jouw inhoud.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Redactioneel",
+          "desc": "Omkaderde omslag, naam eronder."
+        },
+        "MOSAIC": {
+          "label": "Mozaïek",
+          "desc": "Raster van je berichtafbeeldingen, naam in het midden."
+        },
+        "SPOTLIGHT": {
+          "label": "Spotlight",
+          "desc": "Kleurvlak met de afbeelding ernaast."
+        },
+        "IMMERSIVE": {
+          "label": "Volle breedte",
+          "desc": "Omslag over de volle breedte, tekst erop."
+        },
+        "COMPACT": {
+          "label": "Compact",
+          "desc": "Eén smalle regel, de inhoud begint meteen."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistieken",

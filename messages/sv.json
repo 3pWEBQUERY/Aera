@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space borttaget",
       "applyAll": "Tillämpa på alla målgrupper",
-      "applyAllHint": "Ändringar gäller besökare samt gratis- och betalande medlemmar. Stäng av för att utforma varje målgrupp separat."
+      "applyAllHint": "Ändringar gäller besökare samt gratis- och betalande medlemmar. Stäng av för att utforma varje målgrupp separat.",
+      "headerStyle": "Sidhuvudets stil",
+      "headerStyleHint": "Så möter din sida besökarna. Förhandsvisningen visar varje val direkt, med ditt innehåll.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Redaktionell",
+          "desc": "Inramad omslagsbild, namnet under."
+        },
+        "MOSAIC": {
+          "label": "Mosaik",
+          "desc": "Rutnät av dina inläggsbilder, namnet i mitten."
+        },
+        "SPOTLIGHT": {
+          "label": "Strålkastare",
+          "desc": "Färgyta med bilden bredvid."
+        },
+        "IMMERSIVE": {
+          "label": "Full bredd",
+          "desc": "Omslagsbild i full bredd, text ovanpå."
+        },
+        "COMPACT": {
+          "label": "Kompakt",
+          "desc": "En smal rad, innehållet börjar direkt."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistik",

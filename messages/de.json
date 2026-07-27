@@ -2079,7 +2079,31 @@
       },
       "spaceRemoved": "Space entfernt",
       "applyAll": "Für alle Zielgruppen übernehmen",
-      "applyAllHint": "Änderungen gelten für Besucher, kostenlose und zahlende Mitglieder gleichermaßen. Deaktivieren, um jede Zielgruppe einzeln zu gestalten."
+      "applyAllHint": "Änderungen gelten für Besucher, kostenlose und zahlende Mitglieder gleichermaßen. Deaktivieren, um jede Zielgruppe einzeln zu gestalten.",
+      "headerStyle": "Kopfzeilen-Stil",
+      "headerStyleHint": "So begrüßt deine Seite Besucher. Die Vorschau zeigt jede Wahl sofort mit deinen Inhalten.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Editorial",
+          "desc": "Titelbild im Rahmen, Name darunter."
+        },
+        "MOSAIC": {
+          "label": "Mosaik",
+          "desc": "Raster aus deinen Beitragsbildern, Name mittig."
+        },
+        "SPOTLIGHT": {
+          "label": "Rampenlicht",
+          "desc": "Farbfläche, Bild rechts daneben."
+        },
+        "IMMERSIVE": {
+          "label": "Vollbild",
+          "desc": "Titelbild über die volle Breite, Text darauf."
+        },
+        "COMPACT": {
+          "label": "Kompakt",
+          "desc": "Schmale Zeile, Inhalt beginnt sofort."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Statistiken",

@@ -1955,7 +1955,31 @@
       },
       "spaceRemoved": "Space eliminado",
       "applyAll": "Aplicar a todas las audiencias",
-      "applyAllHint": "Los cambios se aplican por igual a visitantes, miembros gratuitos y de pago. Desactívalo para diseñar cada audiencia por separado."
+      "applyAllHint": "Los cambios se aplican por igual a visitantes, miembros gratuitos y de pago. Desactívalo para diseñar cada audiencia por separado.",
+      "headerStyle": "Estilo de cabecera",
+      "headerStyleHint": "Así recibe tu página a las visitas. La vista previa muestra cada opción al instante, con tu contenido.",
+      "headerVariants": {
+        "EDITORIAL": {
+          "label": "Editorial",
+          "desc": "Portada enmarcada, con el nombre debajo."
+        },
+        "MOSAIC": {
+          "label": "Mosaico",
+          "desc": "Cuadrícula con las imágenes de tus publicaciones y el nombre centrado."
+        },
+        "SPOTLIGHT": {
+          "label": "Foco",
+          "desc": "Superficie de color con la imagen al lado."
+        },
+        "IMMERSIVE": {
+          "label": "A sangre",
+          "desc": "Portada a todo el ancho, con el texto encima."
+        },
+        "COMPACT": {
+          "label": "Compacta",
+          "desc": "Una fila estrecha; el contenido empieza enseguida."
+        }
+      }
     },
     "analytics": {
       "metaTitle": "Estadísticas",
