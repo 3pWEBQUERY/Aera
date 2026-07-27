@@ -167,7 +167,7 @@ export async function BlogIndex({
   const gridPosts = useHero ? restAfterHero : posts;
 
   const GridCard = ({ p }: { p: BlogPost }) => (
-    <Link key={p.id} href={href(p.id)} className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-md">
+    <Link key={p.id} href={href(p.id)} className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/15 hover:shadow-[var(--shadow-card)]">
       {cfg.showCover && <Cover url={p.coverUrl} title={p.title} ratio="16 / 9" locked={p.locked} lockedLabel={t("locked")} priceLabel={p.priceLabel} />}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="display-serif text-lg leading-snug text-[#161613]">{p.title}</h3>
@@ -180,7 +180,7 @@ export async function BlogIndex({
   );
 
   const ListRow = ({ p }: { p: BlogPost }) => (
-    <Link key={p.id} href={href(p.id)} className="group flex gap-4 rounded-2xl border border-[#161613]/10 bg-white p-4 transition hover:border-[#161613]/25 hover:shadow-sm sm:gap-5">
+    <Link key={p.id} href={href(p.id)} className="group flex gap-4 rounded-2xl border border-[#161613]/10 bg-white p-4 transition hover:border-[#161613]/15 hover:shadow-[var(--shadow-card)] sm:gap-5">
       {cfg.showCover && (
         <div className="w-32 shrink-0 sm:w-48">
           <div className="overflow-hidden rounded-xl">
@@ -201,7 +201,7 @@ export async function BlogIndex({
   return (
     <div className="space-y-8">
       {useHero && (
-        <Link href={href(hero.id)} className="group block overflow-hidden rounded-3xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-lg md:grid md:grid-cols-2">
+        <Link href={href(hero.id)} className="group block overflow-hidden rounded-3xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/15 hover:shadow-[var(--shadow-card-lg)] md:grid md:grid-cols-2">
           {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} priceLabel={hero.priceLabel} large />}
           <div className="flex flex-col justify-center p-6 sm:p-8">
             <div className="mb-3">

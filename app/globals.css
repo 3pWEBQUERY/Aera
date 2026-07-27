@@ -33,6 +33,15 @@
      neutrales Grau einwerfen. */
   --action-soft: #e9e5f8;
   --action-fg: #161613;
+
+  /* Schlagschatten der Karten beim Hover.
+     Tailwinds shadow-md/lg setzen zwei harte Lagen mit 10 % Schwarz — auf dem
+     warmen Papierton der Community wirkt das wie ein grauer Rand. Stattdessen
+     eine einzelne, weit gestreute Lage mit negativer Ausbreitung: der Schatten
+     sitzt unter der Karte statt an ihrer Kante, und der Ton ist der Tintenton
+     der Marke, nicht reines Schwarz. */
+  --shadow-card: 0 8px 26px -14px rgb(22 22 19 / 0.10);
+  --shadow-card-lg: 0 16px 44px -24px rgb(22 22 19 / 0.12);
 }
 
 html {
