@@ -3630,7 +3630,8 @@
     "similarPosts": "Liknande inlägg",
     "popularPosts": "Populära inlägg",
     "untitled": "Utan titel",
-    "joinToRead": "Bli medlem för att läsa"
+    "joinToRead": "Bli medlem för att läsa",
+    "showReplies": "Visa {count} svar till"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",

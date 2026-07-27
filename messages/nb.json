@@ -3630,7 +3630,8 @@
     "similarPosts": "Lignende innlegg",
     "popularPosts": "Populære innlegg",
     "untitled": "Uten tittel",
-    "joinToRead": "Bli medlem for å lese"
+    "joinToRead": "Bli medlem for å lese",
+    "showReplies": "Vis {count} flere svar"
   },
   "discover": {
     "eyebrow": "Communities & skapere",

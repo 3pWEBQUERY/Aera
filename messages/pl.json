@@ -3630,7 +3630,8 @@
     "similarPosts": "Podobne wpisy",
     "popularPosts": "Popularne wpisy",
     "untitled": "Bez tytułu",
-    "joinToRead": "Zostań członkiem, aby przeczytać"
+    "joinToRead": "Zostań członkiem, aby przeczytać",
+    "showReplies": "Pokaż jeszcze {count} odpowiedzi"
   },
   "discover": {
     "eyebrow": "Społeczności i twórcy",

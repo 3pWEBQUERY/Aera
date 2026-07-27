@@ -3630,7 +3630,8 @@
     "similarPosts": "Vergelijkbare posts",
     "popularPosts": "Populaire posts",
     "untitled": "Zonder titel",
-    "joinToRead": "Word lid om te lezen"
+    "joinToRead": "Word lid om te lezen",
+    "showReplies": "{count} reacties meer tonen"
   },
   "discover": {
     "eyebrow": "Communities & creators",

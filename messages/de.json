@@ -3658,7 +3658,8 @@
     "similarPosts": "Ähnliche Posts",
     "popularPosts": "Beliebte Posts",
     "untitled": "Ohne Titel",
-    "joinToRead": "Mitglied werden, um zu lesen"
+    "joinToRead": "Mitglied werden, um zu lesen",
+    "showReplies": "{count} weitere Antworten anzeigen"
   },
   "discover": {
     "eyebrow": "Communities & Creator",

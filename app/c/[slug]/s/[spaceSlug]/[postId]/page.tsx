@@ -16,7 +16,7 @@ import { purchasePostAction } from "@/app/actions/engage";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { PostSlider } from "@/components/community/post-slider";
 import type { PostTileData } from "@/components/community/post-tile";
-import { CommentForm } from "@/components/community/comment-form";
+import { CommentThread } from "@/components/community/comment-thread";
 import { ForumThread } from "@/components/community/forum-thread";
 import { ArticleShare } from "@/components/community/article-share";
 import { Avatar } from "@/components/ui/misc";
@@ -155,33 +155,20 @@ export default async function PostDetail({
   const isMember = ctx.membership?.status === "ACTIVE";
 
   const commentsBlock = (
-    <div className="rounded-xl border border-[#161613]/10 bg-white p-5">
-      <h2 className="mb-4 font-semibold text-[#161613]">
-        {t("commentCount", { count: comments.length })}
-      </h2>
-      <div className="space-y-4">
-        {comments.map((c) => (
-          <div key={c.id} className="flex gap-3">
-            <Avatar name={c.author.name} src={c.author.avatarUrl} size={32} />
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-[#161613]">{c.author.name}</span>
-                <span className="text-xs text-[#161613]/50">{timeAgo(c.createdAt, locale)}</span>
-              </div>
-              <p className="mt-0.5 whitespace-pre-wrap text-sm text-[#161613]/80">{c.body}</p>
-            </div>
-          </div>
-        ))}
-        {comments.length === 0 && (
-          <p className="text-sm text-[#161613]/60">{t("noComments")}</p>
-        )}
-      </div>
-      {isMember && (
-        <div className="mt-5 border-t border-[#161613]/10 pt-4">
-          <CommentForm slug={slug} space={spaceSlug} postId={post.id} />
-        </div>
-      )}
-    </div>
+    <CommentThread
+      slug={slug}
+      spaceSlug={spaceSlug}
+      postId={post.id}
+      isMember={isMember}
+      comments={comments.map((c) => ({
+        id: c.id,
+        body: c.body,
+        authorName: c.author.name,
+        authorAvatar: c.author.avatarUrl,
+        createdAt: c.createdAt,
+        parentId: c.parentId,
+      }))}
+    />
   );
 
   // ----- Blog: editorial / magazine article layout -----

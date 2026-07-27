@@ -3630,7 +3630,8 @@
     "similarPosts": "相似帖子",
     "popularPosts": "热门帖子",
     "untitled": "无标题",
-    "joinToRead": "成为会员即可阅读"
+    "joinToRead": "成为会员即可阅读",
+    "showReplies": "再显示 {count} 条回复"
   },
   "discover": {
     "eyebrow": "社区与创作者",

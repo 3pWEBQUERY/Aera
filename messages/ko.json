@@ -3630,7 +3630,8 @@
     "similarPosts": "비슷한 게시물",
     "popularPosts": "인기 게시물",
     "untitled": "제목 없음",
-    "joinToRead": "읽으려면 멤버 되기"
+    "joinToRead": "읽으려면 멤버 되기",
+    "showReplies": "답글 {count}개 더 보기"
   },
   "discover": {
     "eyebrow": "커뮤니티 & 크리에이터",

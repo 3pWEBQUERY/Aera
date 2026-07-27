@@ -3630,7 +3630,8 @@
     "similarPosts": "Publications similaires",
     "popularPosts": "Publications populaires",
     "untitled": "Sans titre",
-    "joinToRead": "Devenir membre pour lire"
+    "joinToRead": "Devenir membre pour lire",
+    "showReplies": "Afficher {count} réponses de plus"
   },
   "discover": {
     "eyebrow": "Communautés & créateurs",

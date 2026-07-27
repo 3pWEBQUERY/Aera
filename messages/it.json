@@ -3630,7 +3630,8 @@
     "similarPosts": "Post simili",
     "popularPosts": "Post popolari",
     "untitled": "Senza titolo",
-    "joinToRead": "Diventa iscritto per leggere"
+    "joinToRead": "Diventa iscritto per leggere",
+    "showReplies": "Mostra altre {count} risposte"
   },
   "discover": {
     "eyebrow": "Community & creator",
