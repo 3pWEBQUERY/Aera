@@ -1047,7 +1047,6 @@
       "audioLabel": "Lydfil",
       "podcastCover": "Episode-omslag (valgfritt)",
       "blogCover": "Omslagsbilde (valgfritt)",
-      "feedImage": "Bilde (valgfritt)",
       "titleLabel": "Tittel",
       "titleOptional": "Tittel (valgfritt)",
       "titlePlaceholder": "Tittel…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "Bilde og video",
+      "mediaUpload": "Last opp et bilde eller en video",
+      "mediaHint": "JPG, PNG, WebP eller MP4",
+      "mediaVideoBadge": "Video"
     },
     "chat": {
       "badge": "Chat",

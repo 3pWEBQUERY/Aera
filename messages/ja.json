@@ -1047,7 +1047,6 @@
       "audioLabel": "音声ファイル",
       "podcastCover": "エピソードのカバー（任意）",
       "blogCover": "カバー画像（任意）",
-      "feedImage": "画像（任意）",
       "titleLabel": "タイトル",
       "titleOptional": "タイトル（任意）",
       "titlePlaceholder": "タイトル…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "画像と動画",
+      "mediaUpload": "画像または動画をアップロード",
+      "mediaHint": "JPG・PNG・WebP・MP4",
+      "mediaVideoBadge": "動画"
     },
     "chat": {
       "badge": "チャット",

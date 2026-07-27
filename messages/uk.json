@@ -1047,7 +1047,6 @@
       "audioLabel": "Аудіофайл",
       "podcastCover": "Обкладинка епізоду (необовʼязково)",
       "blogCover": "Обкладинка (необовʼязково)",
-      "feedImage": "Зображення (необовʼязково)",
       "titleLabel": "Заголовок",
       "titleOptional": "Заголовок (необовʼязково)",
       "titlePlaceholder": "Заголовок…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "Зображення та відео",
+      "mediaUpload": "Завантажте зображення або відео",
+      "mediaHint": "JPG, PNG, WebP або MP4",
+      "mediaVideoBadge": "Відео"
     },
     "chat": {
       "badge": "Чат",

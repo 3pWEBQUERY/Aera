@@ -1047,7 +1047,6 @@
       "audioLabel": "File audio",
       "podcastCover": "Copertina dell'episodio (facoltativa)",
       "blogCover": "Immagine di copertina (facoltativa)",
-      "feedImage": "Immagine (facoltativa)",
       "titleLabel": "Titolo",
       "titleOptional": "Titolo (facoltativo)",
       "titlePlaceholder": "Titolo…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "Immagine e video",
+      "mediaUpload": "Carica un’immagine o un video",
+      "mediaHint": "JPG, PNG, WebP o MP4",
+      "mediaVideoBadge": "Video"
     },
     "chat": {
       "badge": "Chat",

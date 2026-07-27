@@ -40,6 +40,8 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "blog-video": video("PUBLIC"),
   "blog-file": { visibility: "PUBLIC", kinds: ["file"], maxBytes: MAX_FILE_BYTES },
   "feed-image": image("PUBLIC"),
+  // Video eines Feed-Beitrags — dieselbe Sichtbarkeit wie das Bild daneben.
+  "feed-video": video("PUBLIC"),
   "ppv-teaser": image("PUBLIC"),
   story: image("PUBLIC"),
   "story-video": video("PUBLIC"),

@@ -1047,7 +1047,6 @@
       "audioLabel": "Audiobestand",
       "podcastCover": "Aflevering-omslag (optioneel)",
       "blogCover": "Omslagafbeelding (optioneel)",
-      "feedImage": "Afbeelding (optioneel)",
       "titleLabel": "Titel",
       "titleOptional": "Titel (optioneel)",
       "titlePlaceholder": "Titel…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "Afbeelding en video",
+      "mediaUpload": "Upload een afbeelding of video",
+      "mediaHint": "JPG, PNG, WebP of MP4",
+      "mediaVideoBadge": "Video"
     },
     "chat": {
       "badge": "Chat",

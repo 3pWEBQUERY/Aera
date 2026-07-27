@@ -14,6 +14,7 @@ import { Sheet } from "./sheet";
 import { Icon, type IconName } from "./icons";
 import { ImageUpload } from "./image-upload";
 import { VideoUpload } from "./video-upload";
+import { MediaUpload } from "./media-upload";
 import { AudioUpload } from "./audio-upload";
 import { RichTextEditor } from "./rich-text-editor";
 import { Input, Label, Textarea } from "@/components/ui/field";
@@ -232,8 +233,12 @@ function PostForm({
           )}
           {ty === "FEED" && (
             <div>
-              <Label>{t("feedImage")}</Label>
-              <ImageUpload tenant={slug} name="imageUrl" purpose="feed-image" />
+              <Label>{t("feedMedia")}</Label>
+              <MediaUpload
+                tenant={slug}
+                imagePurpose="feed-image"
+                videoPurpose="feed-video"
+              />
             </div>
           )}
 

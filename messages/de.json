@@ -1072,7 +1072,6 @@
       "audioLabel": "Audio-Datei",
       "podcastCover": "Episoden-Cover (optional)",
       "blogCover": "Titelbild (optional)",
-      "feedImage": "Bild (optional)",
       "titleLabel": "Titel",
       "titleOptional": "Titel (optional)",
       "titlePlaceholder": "Titel…",
@@ -1132,7 +1131,11 @@
         "SHOP": "Produkte",
         "EVENTS": "Events",
         "NEWSLETTER": "Newsletter"
-      }
+      },
+      "feedMedia": "Bild & Video",
+      "mediaUpload": "Bild oder Video hochladen",
+      "mediaHint": "JPG, PNG, WebP oder MP4",
+      "mediaVideoBadge": "Video"
     },
     "chat": {
       "badge": "Chat",

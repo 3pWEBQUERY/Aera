@@ -1047,7 +1047,6 @@
       "audioLabel": "音频文件",
       "podcastCover": "单集封面（可选）",
       "blogCover": "封面图片（可选）",
-      "feedImage": "图片（可选）",
       "titleLabel": "标题",
       "titleOptional": "标题（可选）",
       "titlePlaceholder": "标题…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "图片与视频",
+      "mediaUpload": "上传图片或视频",
+      "mediaHint": "JPG、PNG、WebP 或 MP4",
+      "mediaVideoBadge": "视频"
     },
     "chat": {
       "badge": "聊天",

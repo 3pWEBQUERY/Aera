@@ -1047,7 +1047,6 @@
       "audioLabel": "오디오 파일",
       "podcastCover": "에피소드 커버(선택)",
       "blogCover": "커버 이미지(선택)",
-      "feedImage": "이미지(선택)",
       "titleLabel": "제목",
       "titleOptional": "제목(선택)",
       "titlePlaceholder": "제목…",
@@ -1107,7 +1106,11 @@
       "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
       "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
-      "scheduleHint": "If the time is in the future, the post appears only then."
+      "scheduleHint": "If the time is in the future, the post appears only then.",
+      "feedMedia": "이미지 및 동영상",
+      "mediaUpload": "이미지 또는 동영상 업로드",
+      "mediaHint": "JPG, PNG, WebP 또는 MP4",
+      "mediaVideoBadge": "동영상"
     },
     "chat": {
       "badge": "채팅",
