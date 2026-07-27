@@ -1979,7 +1979,10 @@
           "label": "Compacto",
           "desc": "Uma faixa estreita; o conteúdo começa logo."
         }
-      }
+      },
+      "mosaicTitle": "Imagens do cabeçalho",
+      "mosaicHint": "Estas imagens formam o mosaico, nesta ordem — arraste para reordenar. Um número par preenche a grade sem sobras; 6 ou 12 ficam melhor.",
+      "mosaicUploadError": "Não foi possível enviar uma imagem. Tente novamente."
     },
     "analytics": {
       "metaTitle": "Estatísticas",

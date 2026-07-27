@@ -2103,7 +2103,10 @@
           "label": "Compact",
           "desc": "One slim row, content starts right away."
         }
-      }
+      },
+      "mosaicTitle": "Header images",
+      "mosaicHint": "These images make up the mosaic, in this order — drag to rearrange. An even number fills the grid exactly; 6 or 12 look best.",
+      "mosaicUploadError": "An image could not be uploaded. Please try again."
     },
     "analytics": {
       "metaTitle": "Analytics",

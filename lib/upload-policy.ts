@@ -49,6 +49,9 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "product-cover": image("PUBLIC"),
   announcement: image("PUBLIC"),
   "community-cover": image("PUBLIC"),
+  // Bilder des Mosaik-Kopfbereichs — stehen ueber jeder Community-Startseite
+  // und sind damit per Definition oeffentlich.
+  "header-mosaic": image("PUBLIC"),
   // Social-Vorschaubild der Community (og:image), oeffentlich per Definition.
   "seo-image": image("PUBLIC"),
   "tier-cover": image("PUBLIC"),

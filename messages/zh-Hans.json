@@ -1979,7 +1979,10 @@
           "label": "紧凑",
           "desc": "只有一条窄栏，内容立即开始。"
         }
-      }
+      },
+      "mosaicTitle": "页眉图片",
+      "mosaicHint": "这些图片按此顺序组成马赛克，拖动可调整次序。数量为偶数时网格正好填满，6 张或 12 张效果最好。",
+      "mosaicUploadError": "有一张图片上传失败，请重试。"
     },
     "analytics": {
       "metaTitle": "统计",

@@ -1979,7 +1979,10 @@
           "label": "Compatta",
           "desc": "Una riga sottile, il contenuto inizia subito."
         }
-      }
+      },
+      "mosaicTitle": "Immagini dell’intestazione",
+      "mosaicHint": "Queste immagini formano il mosaico, in quest’ordine: trascina per riordinarle. Un numero pari riempie la griglia senza vuoti; 6 o 12 rendono meglio.",
+      "mosaicUploadError": "Non è stato possibile caricare un’immagine. Riprova."
     },
     "analytics": {
       "metaTitle": "Statistiche",

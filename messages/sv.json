@@ -1979,7 +1979,10 @@
           "label": "Kompakt",
           "desc": "En smal rad, innehållet börjar direkt."
         }
-      }
+      },
+      "mosaicTitle": "Bilder i sidhuvudet",
+      "mosaicHint": "De här bilderna bildar mosaiken, i den här ordningen — dra för att flytta om. Ett jämnt antal fyller rutnätet helt; 6 eller 12 ser bäst ut.",
+      "mosaicUploadError": "En bild kunde inte laddas upp. Försök igen."
     },
     "analytics": {
       "metaTitle": "Statistik",

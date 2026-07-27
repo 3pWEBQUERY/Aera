@@ -1979,7 +1979,10 @@
           "label": "Compacta",
           "desc": "Una fila estrecha; el contenido empieza enseguida."
         }
-      }
+      },
+      "mosaicTitle": "Imágenes de la cabecera",
+      "mosaicHint": "Estas imágenes forman el mosaico, en este orden: arrastra para reordenarlas. Un número par llena la cuadrícula por completo; 6 o 12 quedan mejor.",
+      "mosaicUploadError": "No se pudo subir una imagen. Inténtalo de nuevo."
     },
     "analytics": {
       "metaTitle": "Estadísticas",

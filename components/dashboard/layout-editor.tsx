@@ -33,6 +33,7 @@ import {
   type HeaderMode,
   type HeaderVariant,
   HEADER_VARIANTS,
+  MOSAIC_MAX,
 } from "@/lib/layout";
 
 const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#059669", "#0891b2", "#111827"];
@@ -49,7 +50,12 @@ export interface LayoutEditorInitial {
   coverUrl: string | null;
   sectionsByAudience: SectionsByAudience;
   nav: NavItemConfig[];
-  header: { mode: HeaderMode; variant: HeaderVariant; socials: SocialLink[] };
+  header: {
+    mode: HeaderMode;
+    variant: HeaderVariant;
+    mosaic: string[];
+    socials: SocialLink[];
+  };
 }
 
 const initialState: LayoutState = {};
@@ -77,6 +83,7 @@ export function LayoutEditor({
   const [description, setDescription] = useState(initial.description ?? "");
   const [mode, setMode] = useState<HeaderMode>(initial.header.mode);
   const [variant, setVariant] = useState<HeaderVariant>(initial.header.variant);
+  const [mosaic, setMosaic] = useState<string[]>(initial.header.mosaic);
   const [socials, setSocials] = useState<SocialLink[]>(initial.header.socials);
   const [sectionsByAudience, setSectionsByAudience] = useState<SectionsByAudience>(
     initial.sectionsByAudience,
@@ -113,11 +120,11 @@ export function LayoutEditor({
         logoUrl,
         primaryColor,
         description,
-        header: { mode, variant, socials },
+        header: { mode, variant, mosaic, socials },
         sectionsByAudience,
         nav,
       }),
-    [name, logoUrl, primaryColor, description, mode, variant, socials, sectionsByAudience, nav],
+    [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav],
   );
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
@@ -128,12 +135,12 @@ export function LayoutEditor({
         name,
         logoUrl,
         primaryColor,
-        header: { mode, variant, socials },
+        header: { mode, variant, mosaic, socials },
         sectionsByAudience,
         nav,
         audience,
       }),
-    [name, logoUrl, primaryColor, mode, variant, socials, sectionsByAudience, nav, audience],
+    [name, logoUrl, primaryColor, mode, variant, mosaic, socials, sectionsByAudience, nav, audience],
   );
 
   const [previewNonce, setPreviewNonce] = useState(0);
@@ -258,6 +265,8 @@ export function LayoutEditor({
               setMode={setMode}
               variant={variant}
               setVariant={setVariant}
+              mosaic={mosaic}
+              setMosaic={setMosaic}
               socials={socials}
               setSocials={setSocials}
               coverUrl={initial.coverUrl}
@@ -386,6 +395,8 @@ function HeaderPanel({
   setMode,
   variant,
   setVariant,
+  mosaic,
+  setMosaic,
   socials,
   setSocials,
   coverUrl,
@@ -404,6 +415,8 @@ function HeaderPanel({
   setMode: (v: HeaderMode) => void;
   variant: HeaderVariant;
   setVariant: (v: HeaderVariant) => void;
+  mosaic: string[];
+  setMosaic: (v: string[]) => void;
   socials: SocialLink[];
   setSocials: (v: SocialLink[]) => void;
   coverUrl: string | null;
@@ -434,6 +447,10 @@ function HeaderPanel({
       </div>
 
       <HeaderVariantPicker value={variant} onChange={setVariant} color={primaryColor} />
+
+      {variant === "MOSAIC" && (
+        <MosaicUploader slug={slug} images={mosaic} setImages={setMosaic} />
+      )}
 
       <div>
         <p className="mb-2 text-sm font-bold text-slate-900">{t("headerOptions")}</p>
@@ -577,6 +594,129 @@ function HeaderVariantPicker({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Bilder des Mosaik-Kopfbereichs.
+ *
+ * Bewusst eine eigene Auswahl statt der letzten Beitragsbilder: was ueber der
+ * Seite steht, ist die Visitenkarte der Community — das soll der Creator
+ * bestimmen, nicht der Zufall des letzten Posts. Die Reihenfolge zaehlt und
+ * laesst sich ziehen; das Raster fuellt zeilenweise von links oben.
+ */
+function MosaicUploader({
+  slug,
+  images,
+  setImages,
+}: {
+  slug: string;
+  images: string[];
+  setImages: (v: string[]) => void;
+}) {
+  const t = useTranslations("dashboard.layout");
+  const ref = useRef<HTMLInputElement>(null);
+  const dragIndex = useRef<number | null>(null);
+  const [busy, setBusy] = useState(0);
+  const [error, setError] = useState<string | null>(null);
+  const full = images.length >= MOSAIC_MAX;
+
+  async function pick(e: React.ChangeEvent<HTMLInputElement>) {
+    const files = Array.from(e.target.files ?? []);
+    e.target.value = "";
+    if (files.length === 0) return;
+    // Mehr als frei sind, nimmt der Kopfbereich ohnehin nicht — lieber hier
+    // abschneiden als Bilder hochladen, die danach unsichtbar bleiben.
+    const room = MOSAIC_MAX - images.length;
+    const batch = files.slice(0, room);
+    setError(null);
+    setBusy(batch.length);
+    const done: string[] = [];
+    for (const file of batch) {
+      try {
+        done.push(await uploadMediaFile({ file, tenant: slug, purpose: "header-mosaic" }));
+      } catch {
+        setError(t("mosaicUploadError"));
+      } finally {
+        setBusy((n) => n - 1);
+      }
+    }
+    if (done.length > 0) setImages([...images, ...done]);
+  }
+
+  function onDrop(target: number) {
+    const from = dragIndex.current;
+    dragIndex.current = null;
+    if (from === null || from === target) return;
+    const next = [...images];
+    const [moved] = next.splice(from, 1);
+    next.splice(target, 0, moved);
+    setImages(next);
+  }
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between gap-3">
+        <p className="text-sm font-bold text-slate-900">{t("mosaicTitle")}</p>
+        <p className="shrink-0 text-xs tabular-nums text-slate-400">
+          {images.length}/{MOSAIC_MAX}
+        </p>
+      </div>
+      <p className="mt-1 text-xs text-slate-400">{t("mosaicHint")}</p>
+
+      <div className="mt-3 grid grid-cols-4 gap-1.5">
+        {images.map((url, i) => (
+          <div
+            key={`${url}-${i}`}
+            draggable
+            onDragStart={() => (dragIndex.current = i)}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => onDrop(i)}
+            className="group relative aspect-square cursor-grab overflow-hidden rounded-lg ring-1 ring-slate-200 active:cursor-grabbing"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={url} alt="" className="h-full w-full object-cover" />
+            <button
+              type="button"
+              onClick={() => setImages(images.filter((_, j) => j !== i))}
+              aria-label={t("removeAria")}
+              className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
+            >
+              <Icon name="close" size={13} />
+            </button>
+          </div>
+        ))}
+
+        {Array.from({ length: busy }).map((_, i) => (
+          <div
+            key={`busy-${i}`}
+            className="flex aspect-square animate-pulse items-center justify-center rounded-lg bg-slate-100 text-slate-300"
+          >
+            <Icon name="gallery" size={18} />
+          </div>
+        ))}
+
+        {!full && (
+          <button
+            type="button"
+            onClick={() => ref.current?.click()}
+            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 text-slate-400 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-600"
+          >
+            <Icon name="plus" size={18} />
+          </button>
+        )}
+      </div>
+
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      <input
+        ref={ref}
+        type="file"
+        accept="image/*"
+        multiple
+        className="hidden"
+        onChange={pick}
+      />
     </div>
   );
 }

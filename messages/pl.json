@@ -1979,7 +1979,10 @@
           "label": "Kompaktowy",
           "desc": "Jeden wąski pasek, treść zaczyna się od razu."
         }
-      }
+      },
+      "mosaicTitle": "Zdjęcia w nagłówku",
+      "mosaicHint": "Te zdjęcia tworzą mozaikę, w tej kolejności — przeciągnij, aby zmienić układ. Parzysta liczba wypełnia siatkę bez reszty; najlepiej wyglądają 6 lub 12.",
+      "mosaicUploadError": "Nie udało się przesłać zdjęcia. Spróbuj ponownie."
     },
     "analytics": {
       "metaTitle": "Statystyki",

@@ -1979,7 +1979,10 @@
           "label": "精簡",
           "desc": "只有一條窄列，內容立即開始。"
         }
-      }
+      },
+      "mosaicTitle": "頁首圖片",
+      "mosaicHint": "這些圖片依此順序組成馬賽克，拖曳可調整次序。數量為偶數時格線剛好填滿，6 張或 12 張效果最好。",
+      "mosaicUploadError": "有一張圖片上傳失敗，請重試。"
     },
     "analytics": {
       "metaTitle": "統計",

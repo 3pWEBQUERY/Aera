@@ -2103,7 +2103,10 @@
           "label": "Kompakt",
           "desc": "Schmale Zeile, Inhalt beginnt sofort."
         }
-      }
+      },
+      "mosaicTitle": "Bilder im Kopfbereich",
+      "mosaicHint": "Diese Bilder erscheinen im Mosaik — in dieser Reihenfolge, zum Umsortieren ziehen. Eine gerade Anzahl füllt das Raster ohne Rest, 6 oder 12 sehen am besten aus.",
+      "mosaicUploadError": "Ein Bild konnte nicht hochgeladen werden. Bitte versuch es erneut."
     },
     "analytics": {
       "metaTitle": "Statistiken",

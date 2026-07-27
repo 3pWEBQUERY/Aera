@@ -81,9 +81,18 @@ export interface SocialLink {
   url: string;
 }
 
+/** So viele Bilder traegt der Mosaik-Kopfbereich (6 Spalten x 2 Reihen). */
+export const MOSAIC_MAX = 12;
+
 export interface LayoutHeader {
   mode: HeaderMode;
   variant: HeaderVariant;
+  /**
+   * Bilder des Mosaik-Kopfbereichs, vom Creator hochgeladen und in dieser
+   * Reihenfolge gezeigt. Bewusst nicht automatisch aus Beitraegen befuellt:
+   * welches Bild ueber der Seite steht, ist eine Gestaltungsentscheidung.
+   */
+  mosaic: string[];
   socials: SocialLink[];
 }
 
@@ -166,7 +175,7 @@ export function defaultSections(): LayoutSection[] {
 export function defaultHeader(): LayoutHeader {
   // EDITORIAL ist der Aufbau, den jede bestehende Community heute hat —
   // ein neuer Standard wuerde tausende Seiten ungefragt umbauen.
-  return { mode: "COVER", variant: "EDITORIAL", socials: [] };
+  return { mode: "COVER", variant: "EDITORIAL", mosaic: [], socials: [] };
 }
 
 export function defaultSectionsByAudience(): SectionsByAudience {
@@ -261,6 +270,12 @@ export function parseLayout(raw: unknown): LayoutConfig {
   const variant: HeaderVariant = HEADER_VARIANTS.includes(h.variant as HeaderVariant)
     ? (h.variant as HeaderVariant)
     : "EDITORIAL";
+  const mosaic: string[] = Array.isArray(h.mosaic)
+    ? h.mosaic
+        .filter((u): u is string => typeof u === "string" && u.trim().length > 0)
+        .map((u) => u.trim().slice(0, 500))
+        .slice(0, MOSAIC_MAX)
+    : [];
   const socials: SocialLink[] = Array.isArray(h.socials)
     ? h.socials
         .map((s) => asRecord(s))
@@ -272,7 +287,7 @@ export function parseLayout(raw: unknown): LayoutConfig {
         .slice(0, 8)
     : [];
 
-  return { sectionsByAudience, nav, header: { mode, variant, socials } };
+  return { sectionsByAudience, nav, header: { mode, variant, mosaic, socials } };
 }
 
 /** Enabled section types in configured order for a viewer segment. */

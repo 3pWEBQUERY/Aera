@@ -214,14 +214,55 @@ function Editorial({ d }: { d: CommunityHeroData }) {
  */
 function Mosaic({ d }: { d: CommunityHeroData }) {
   const tiles = d.mosaic.slice(0, 12);
+  const n = tiles.length;
+
+  /**
+   * Das Raster wird aus der Anzahl berechnet, damit nie eine leere Zelle
+   * uebrig bleibt: bis drei Bilder eine Reihe, darueber zwei Reihen mit
+   * halb so vielen Spalten. Bei ungerader Anzahl belegt das letzte Bild zwei
+   * Spalten — eine Luecke saehe nach Fehler aus, ein breiteres Bild nach
+   * Absicht.
+   *
+   * Auf dem Handy waeren sechs Spalten fingerbreite Streifen; dort stehen
+   * darum hoechstens sechs Bilder in drei Spalten, der Rest wird ausgeblendet.
+   */
+  const cols = n <= 3 ? Math.max(n, 1) : Math.ceil(n / 2);
+  // Ohne feste Zeilenhoehen richtet sich jede Zeile nach dem Seitenverhaeltnis
+  // ihrer Bilder — bei zwei breiten Bildern rutschte die zweite Zeile aus dem
+  // Streifen heraus und war unsichtbar.
+  const rows = n <= 3 ? 1 : 2;
+  const mobileCols = n <= 3 ? Math.max(n, 1) : 3;
+  const mobileShown = n <= 3 ? n : 6;
+  const wideLast = n > 3 && n % 2 === 1;
+
   return (
     <section>
       <div className="relative h-[180px] w-full overflow-hidden bg-[#161613]/5 sm:h-[260px]">
-        {tiles.length >= 4 ? (
-          <div className="grid h-full w-full grid-cols-4 grid-rows-2 gap-0.5 sm:grid-cols-6">
+        {n > 0 ? (
+          <div
+            className="grid h-full w-full grid-cols-[repeat(var(--m-cols),minmax(0,1fr))] gap-0.5 sm:grid-cols-[repeat(var(--cols),minmax(0,1fr))]"
+            style={
+              {
+                "--cols": cols,
+                "--m-cols": mobileCols,
+                gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))`,
+              } as React.CSSProperties
+            }
+          >
             {tiles.map((src, i) => (
               // eslint-disable-next-line @next/next/no-img-element
-              <img key={i} src={src} alt="" className="h-full w-full object-cover" />
+              <img
+                key={`${src}-${i}`}
+                src={src}
+                alt=""
+                className={[
+                  "h-full w-full object-cover",
+                  i >= mobileShown ? "hidden sm:block" : "",
+                  wideLast && i === n - 1 ? "col-span-2" : "",
+                ]
+                  .filter(Boolean)
+                  .join(" ")}
+              />
             ))}
           </div>
         ) : d.coverUrl ? (

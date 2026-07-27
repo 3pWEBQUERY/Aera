@@ -1979,7 +1979,10 @@
           "label": "Compact",
           "desc": "Une bande étroite, le contenu commence tout de suite."
         }
-      }
+      },
+      "mosaicTitle": "Images de l’en-tête",
+      "mosaicHint": "Ces images composent la mosaïque, dans cet ordre — faites-les glisser pour les réorganiser. Un nombre pair remplit la grille sans reste ; 6 ou 12 rendent le mieux.",
+      "mosaicUploadError": "Une image n’a pas pu être envoyée. Veuillez réessayer."
     },
     "analytics": {
       "metaTitle": "Statistiques",

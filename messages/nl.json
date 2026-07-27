@@ -1979,7 +1979,10 @@
           "label": "Compact",
           "desc": "Eén smalle regel, de inhoud begint meteen."
         }
-      }
+      },
+      "mosaicTitle": "Afbeeldingen in de kop",
+      "mosaicHint": "Deze afbeeldingen vormen het mozaïek, in deze volgorde — sleep om te herschikken. Een even aantal vult het raster precies; 6 of 12 staan het mooist.",
+      "mosaicUploadError": "Een afbeelding kon niet worden geüpload. Probeer het opnieuw."
     },
     "analytics": {
       "metaTitle": "Statistieken",

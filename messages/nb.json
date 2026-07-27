@@ -1979,7 +1979,10 @@
           "label": "Kompakt",
           "desc": "Én smal rad, innholdet begynner med en gang."
         }
-      }
+      },
+      "mosaicTitle": "Bilder i toppfeltet",
+      "mosaicHint": "Disse bildene utgjør mosaikken, i denne rekkefølgen — dra for å flytte dem. Et partall fyller rutenettet helt; 6 eller 12 ser best ut.",
+      "mosaicUploadError": "Et bilde kunne ikke lastes opp. Prøv igjen."
     },
     "analytics": {
       "metaTitle": "Statistikk",

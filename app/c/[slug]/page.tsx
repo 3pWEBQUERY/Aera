@@ -339,15 +339,9 @@ export default async function CommunityHome({
   const displayName = preview?.name ?? tenant.name;
 
   // ------------------------------------------------------------- Kopfzeile
-  // Das Mosaik nimmt Bilder aus freigegebenen Beitraegen — gesperrte bleiben
-  // draussen, sonst waere die Kopfzeile ein Leck.
-  const mosaic: string[] = [];
-  for (const p of [...recent, ...popular, ...videos]) {
-    if (p.locked) continue;
-    const url = p.coverUrl ?? p.imageUrl;
-    if (url && !mosaic.includes(url)) mosaic.push(url);
-    if (mosaic.length === 12) break;
-  }
+  // Das Mosaik zeigt ausschliesslich die Bilder, die der Creator dafuer
+  // hochgeladen hat. Keine automatisch eingesammelten Beitragsbilder: was
+  // ueber der Seite steht, soll niemanden ueberraschen.
   const heroData: CommunityHeroData = {
     slug,
     name: displayName,
@@ -369,7 +363,7 @@ export default async function CommunityHome({
               : ""
         }`
       : null,
-    mosaic,
+    mosaic: layoutConfig.header.mosaic,
     socials: layoutConfig.header.socials,
     isMember,
     isStaff: ctx.isStaff,

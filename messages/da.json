@@ -1979,7 +1979,10 @@
           "label": "Kompakt",
           "desc": "Én smal række, indholdet begynder straks."
         }
-      }
+      },
+      "mosaicTitle": "Billeder i toppen",
+      "mosaicHint": "Disse billeder udgør mosaikken, i denne rækkefølge — træk for at flytte dem. Et lige antal fylder gitteret helt; 6 eller 12 ser bedst ud.",
+      "mosaicUploadError": "Et billede kunne ikke uploades. Prøv igen."
     },
     "analytics": {
       "metaTitle": "Statistik",
