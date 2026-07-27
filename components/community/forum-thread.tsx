@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { createCommentAction, type EngageState } from "@/app/actions/engage";
 import { VoteControl } from "./vote-control";
+import { CommentLikeButton } from "./comment-like";
+import { EmojiPicker } from "./emoji-picker";
 import { PollBlock, type PollViewData } from "./poll-block";
 import { CoverBanner } from "./cover-banner";
 import { Avatar, FormError } from "@/components/ui/misc";
@@ -35,6 +37,8 @@ export interface ForumComment {
   parentId: string | null;
   score: number;
   myVote: "UP" | "DOWN" | null;
+  likes: number;
+  likedByMe: boolean;
 }
 interface Node extends ForumComment {
   children: Node[];
@@ -216,6 +220,14 @@ function CommentNode({
           <p className="mt-0.5 whitespace-pre-wrap text-sm text-[#161613]/80">{node.body}</p>
           <div className="mt-1 flex items-center gap-3">
             <VoteControl tenant={slug} space={spaceSlug} targetType="comment" targetId={node.id} postId={postId} score={node.score} myVote={node.myVote} layout="horizontal" />
+            <CommentLikeButton
+              slug={slug}
+              space={spaceSlug}
+              commentId={node.id}
+              likes={node.likes}
+              liked={node.likedByMe}
+              label={node.likedByMe ? t("unlike") : t("like")}
+            />
             {isMember && (
               <button onClick={() => setReplyOpen((v) => !v)} className="text-xs font-medium text-[#161613]/60 hover:text-[#161613]">
                 {t("replyCta")}
@@ -257,8 +269,12 @@ function ReplyForm({
 }) {
   const t = useTranslations("spaces");
   const [state, action, pending] = useActionState(createCommentAction, initial);
+  const boxRef = useRef<HTMLTextAreaElement | null>(null);
   useEffect(() => {
-    if (state.ok) onDone?.();
+    if (state.ok) {
+      if (boxRef.current) boxRef.current.value = "";
+      onDone?.();
+    }
   }, [state.ok, onDone]);
   return (
     <form action={action} className="mt-2 space-y-2">
@@ -267,8 +283,10 @@ function ReplyForm({
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="parentId" value={parentId} />
       <FormError message={state.error} />
-      <Textarea name="body" rows={2} required placeholder={t("yourCommentPlaceholder")} />
-      <div className="flex justify-end gap-2">
+      <Textarea ref={boxRef} name="body" rows={2} required placeholder={t("yourCommentPlaceholder")} />
+      <div className="flex items-center justify-end gap-2">
+        <EmojiPicker targetRef={boxRef} label={t("emojiLabel")} />
+        <span className="flex-1" />
         {onDone && (
           <button type="button" onClick={onDone} className="rounded-lg px-3 py-1.5 text-sm font-medium text-[#161613]/60 hover:bg-[#161613]/5">
             {t("cancel")}

@@ -62,17 +62,22 @@ export default async function PostDetail({
       include: { author: { select: { name: true, avatarUrl: true } } },
     });
     const cIds = fcomments.map((c) => c.id);
-    const [postGroups, postMine, cGroups, cMine] = await Promise.all([
+    const [postGroups, postMine, cGroups, cMine, cLikeGroups, cLikeMine] = await Promise.all([
       prisma.reaction.groupBy({ by: ["type"], where: { tenantId: tenant.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, _count: true }),
       user ? prisma.reaction.findFirst({ where: { tenantId: tenant.id, userId: user.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, select: { type: true } }) : Promise.resolve(null),
       cIds.length ? prisma.reaction.groupBy({ by: ["commentId", "type"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, _count: true }) : Promise.resolve([]),
       user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, select: { commentId: true, type: true } }) : Promise.resolve([]),
+      cIds.length ? prisma.reaction.groupBy({ by: ["commentId"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: "LIKE" }, _count: true }) : Promise.resolve([]),
+      user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: "LIKE" }, select: { commentId: true } }) : Promise.resolve([]),
     ]);
     const postScore = postGroups.reduce((s, g) => s + (g.type === "UP" ? 1 : -1) * (g._count as number), 0);
     const cScore: Record<string, number> = {};
     for (const g of cGroups) if (g.commentId) cScore[g.commentId] = (cScore[g.commentId] ?? 0) + (g.type === "UP" ? 1 : -1) * (g._count as number);
     const cMy: Record<string, "UP" | "DOWN"> = {};
     for (const v of cMine) if (v.commentId) cMy[v.commentId] = v.type as "UP" | "DOWN";
+    const cLikes = new Map<string, number>();
+    for (const g of cLikeGroups) if (g.commentId) cLikes.set(g.commentId, g._count as number);
+    const cLiked = new Set(cLikeMine.map((r) => r.commentId).filter((id): id is string => !!id));
 
     const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
     const settings = await readPostSettings(tenant.id, fpost.id);
@@ -119,6 +124,8 @@ export default async function PostDetail({
           parentId: c.parentId,
           score: cScore[c.id] ?? 0,
           myVote: cMy[c.id] ?? null,
+          likes: cLikes.get(c.id) ?? 0,
+          likedByMe: cLiked.has(c.id),
         }))}
       />
     );
