@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Vedi tutto"
+      },
+      "feed": {
+        "heading": "Post recenti di {name}",
+        "sortNewest": "Prima i più recenti",
+        "sortOldest": "Prima i meno recenti",
+        "searchPlaceholder": "Cerca nei post",
+        "noResults": "Nessun risultato per «{q}»",
+        "empty": "Ancora nessun post",
+        "locked": "Bloccato",
+        "joinToUnlock": "Iscriviti per sbloccare",
+        "unlockFor": "Sblocca per {price}",
+        "like": "Mi piace",
+        "unlike": "Non mi piace più",
+        "share": "Condividi",
+        "copied": "Link copiato",
+        "openPost": "Apri il post",
+        "allPosts": "Tutti i post in {space}"
       }
     },
     "nav": {

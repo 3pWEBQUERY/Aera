@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "查看全部"
+      },
+      "feed": {
+        "heading": "{name} 的最新帖子",
+        "sortNewest": "最新在前",
+        "sortOldest": "最早在前",
+        "searchPlaceholder": "搜索帖子",
+        "noResults": "没有找到“{q}”的结果",
+        "empty": "还没有帖子",
+        "locked": "已锁定",
+        "joinToUnlock": "加入以解锁",
+        "unlockFor": "{price} 解锁",
+        "like": "赞",
+        "unlike": "取消赞",
+        "share": "分享",
+        "copied": "链接已复制",
+        "openPost": "打开帖子",
+        "allPosts": "{space} 的全部帖子"
       }
     },
     "nav": {

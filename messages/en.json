@@ -3532,6 +3532,23 @@
       },
       "spotlight": {
         "viewAll": "View all"
+      },
+      "feed": {
+        "heading": "Recent posts from {name}",
+        "sortNewest": "Newest first",
+        "sortOldest": "Oldest first",
+        "searchPlaceholder": "Search posts",
+        "noResults": "No results for “{q}”",
+        "empty": "No posts yet",
+        "locked": "Locked",
+        "joinToUnlock": "Join to unlock",
+        "unlockFor": "Unlock for {price}",
+        "like": "Like",
+        "unlike": "Unlike",
+        "share": "Share",
+        "copied": "Link copied",
+        "openPost": "Open post",
+        "allPosts": "All posts in {space}"
       }
     },
     "nav": {

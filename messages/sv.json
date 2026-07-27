@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Visa alla"
+      },
+      "feed": {
+        "heading": "Senaste inläggen från {name}",
+        "sortNewest": "Nyaste först",
+        "sortOldest": "Äldsta först",
+        "searchPlaceholder": "Sök i inlägg",
+        "noResults": "Inga träffar för ”{q}”",
+        "empty": "Inga inlägg ännu",
+        "locked": "Låst",
+        "joinToUnlock": "Gå med för att låsa upp",
+        "unlockFor": "Lås upp för {price}",
+        "like": "Gilla",
+        "unlike": "Sluta gilla",
+        "share": "Dela",
+        "copied": "Länk kopierad",
+        "openPost": "Öppna inlägg",
+        "allPosts": "Alla inlägg i {space}"
       }
     },
     "nav": {

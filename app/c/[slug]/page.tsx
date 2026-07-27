@@ -19,6 +19,7 @@ import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
 import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
+import { FeedStream, type FeedPostData } from "@/components/community/feed-stream";
 import type { MediaTileData } from "@/components/community/media-tile";
 import { SpaceSlider, type SpaceCardData } from "@/components/community/space-slider";
 import { ShopSection, type ShopProduct, type ShopNotice } from "@/components/community/shop-section";
@@ -617,11 +618,137 @@ export default async function CommunityHome({
     LEADERBOARD: leaderboardSection,
   };
 
-  // A single space featured as its own home-page section (page builder → SPACE).
+  // ------------------------------------------------------------ Feed-Sektion
+  // Ein FEED-Space, der als eigener Abschnitt im Seitenlayout steht, wird zur
+  // Lesefläche statt zur Kachelreihe: Beitraege untereinander, Kommentare
+  // direkt aufklappbar. Beitraege und Kommentare kommen in zwei Abfragen fuer
+  // alle Feed-Abschnitte zusammen, nicht in einer je Beitrag.
   const spaceBySlug = new Map(spaces.map((s) => [s.slug, s]));
+  const feedSpaces = sectionList
+    .filter((sec) => sec.type === "SPACE" && sec.value)
+    .map((sec) => spaceBySlug.get(sec.value!))
+    .filter((sp): sp is NonNullable<typeof sp> => !!sp && sp.type === "FEED" && canAccess(sp, ctx));
+
+  const feedBySpace = new Map<string, FeedPostData[]>();
+  if (feedSpaces.length > 0) {
+    const feedPosts = await prisma.post.findMany({
+      where: {
+        tenantId: tenant.id,
+        spaceId: { in: feedSpaces.map((sp) => sp.id) },
+        isPublished: true,
+        ...(ctx.isStaff ? {} : { publishedAt: { lte: new Date() } }),
+      },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+      take: 10 * feedSpaces.length,
+      include: {
+        author: { select: { name: true, avatarUrl: true } },
+        _count: { select: { comments: true, reactions: true } },
+        reactions: { where: { userId: user?.id ?? "__anon__", type: "LIKE" }, select: { id: true } },
+      },
+    });
+    const feedIds = feedPosts.map((p) => p.id);
+    const [feedComments, commentLikes, myCommentLikes] = feedIds.length
+      ? await Promise.all([
+          prisma.comment.findMany({
+            where: { tenantId: tenant.id, postId: { in: feedIds } },
+            orderBy: { createdAt: "asc" },
+            include: { author: { select: { name: true, avatarUrl: true } } },
+          }),
+          prisma.reaction.groupBy({
+            by: ["commentId"],
+            where: { tenantId: tenant.id, commentId: { not: null }, type: "LIKE" },
+            _count: true,
+          }),
+          user
+            ? prisma.reaction.findMany({
+                where: { tenantId: tenant.id, userId: user.id, commentId: { not: null }, type: "LIKE" },
+                select: { commentId: true },
+              })
+            : Promise.resolve([]),
+        ])
+      : [[], [], []];
+    const cLikes = new Map<string, number>();
+    for (const g of commentLikes) if (g.commentId) cLikes.set(g.commentId, g._count as number);
+    const cMine = new Set(myCommentLikes.map((r) => r.commentId).filter((id): id is string => !!id));
+
+    for (const sp of feedSpaces) {
+      feedBySpace.set(
+        sp.slug,
+        feedPosts
+          .filter((p) => p.spaceId === sp.id)
+          .slice(0, 10)
+          .map((p) => {
+            const kind = postLockKind(p, ctx);
+            const isLocked = kind !== "none";
+            return {
+              id: p.id,
+              href: `/c/${slug}/s/${sp.slug}/${p.id}`,
+              title: p.title,
+              // Gesperrt geht nur ein Auszug ueber die Leitung — der Text ist
+              // der Gegenwert, verwischen allein waere kein Schutz.
+              body: isLocked ? excerpt(p.body, 180) : p.body,
+              createdAt: p.createdAt.toISOString(),
+              images: isLocked
+                ? kind === "paid"
+                  ? p.teaserUrl
+                    ? [p.teaserUrl]
+                    : []
+                  : p.imageUrls.length
+                    ? p.imageUrls
+                    : p.imageUrl
+                      ? [p.imageUrl]
+                      : []
+                : p.imageUrls.length
+                  ? p.imageUrls
+                  : p.imageUrl
+                    ? [p.imageUrl]
+                    : [],
+              videoUrl: isLocked ? null : p.videoUrl,
+              authorName: p.author.name,
+              authorAvatar: p.author.avatarUrl,
+              likes: p._count.reactions,
+              likedByMe: p.reactions.length > 0,
+              commentCount: p._count.comments,
+              lockKind: kind,
+              priceLabel:
+                kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
+              comments: isLocked
+                ? []
+                : feedComments
+                    .filter((c) => c.postId === p.id)
+                    .map((c) => ({
+                      id: c.id,
+                      body: c.body,
+                      authorName: c.author.name,
+                      authorAvatar: c.author.avatarUrl,
+                      createdAt: c.createdAt.toISOString(),
+                      parentId: c.parentId,
+                      likes: cLikes.get(c.id) ?? 0,
+                      likedByMe: cMine.has(c.id),
+                    })),
+            } satisfies FeedPostData;
+          }),
+      );
+    }
+  }
+
   function spaceSection(spaceSlug: string): React.ReactNode {
     const s = spaceBySlug.get(spaceSlug);
     if (!s) return null;
+    const feed = feedBySpace.get(s.slug);
+    if (feed) {
+      return (
+        <FeedStream
+          slug={slug}
+          spaceSlug={s.slug}
+          spaceName={s.name}
+          communityName={displayName}
+          posts={feed}
+          isMember={isMember}
+          locale={locale}
+        />
+      );
+    }
     return (
       <SpaceSectionPreview
         slug={slug}

@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "すべて見る"
+      },
+      "feed": {
+        "heading": "{name} の最近の投稿",
+        "sortNewest": "新しい順",
+        "sortOldest": "古い順",
+        "searchPlaceholder": "投稿を検索",
+        "noResults": "「{q}」の結果はありません",
+        "empty": "まだ投稿がありません",
+        "locked": "ロック中",
+        "joinToUnlock": "参加して解除",
+        "unlockFor": "{price} で解除",
+        "like": "いいね",
+        "unlike": "いいねを取り消す",
+        "share": "共有",
+        "copied": "リンクをコピーしました",
+        "openPost": "投稿を開く",
+        "allPosts": "{space} のすべての投稿"
       }
     },
     "nav": {

@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Se alle"
+      },
+      "feed": {
+        "heading": "Nyeste innlegg fra {name}",
+        "sortNewest": "Nyeste først",
+        "sortOldest": "Eldste først",
+        "searchPlaceholder": "Søk i innlegg",
+        "noResults": "Ingen treff for «{q}»",
+        "empty": "Ingen innlegg ennå",
+        "locked": "Låst",
+        "joinToUnlock": "Bli med for å låse opp",
+        "unlockFor": "Lås opp for {price}",
+        "like": "Liker",
+        "unlike": "Liker ikke lenger",
+        "share": "Del",
+        "copied": "Lenke kopiert",
+        "openPost": "Åpne innlegg",
+        "allPosts": "Alle innlegg i {space}"
       }
     },
     "nav": {

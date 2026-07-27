@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Смотреть все"
+      },
+      "feed": {
+        "heading": "Последние посты от {name}",
+        "sortNewest": "Сначала новые",
+        "sortOldest": "Сначала старые",
+        "searchPlaceholder": "Поиск по постам",
+        "noResults": "Ничего не найдено по «{q}»",
+        "empty": "Постов пока нет",
+        "locked": "Заблокировано",
+        "joinToUnlock": "Вступить, чтобы открыть",
+        "unlockFor": "Открыть за {price}",
+        "like": "Нравится",
+        "unlike": "Больше не нравится",
+        "share": "Поделиться",
+        "copied": "Ссылка скопирована",
+        "openPost": "Открыть пост",
+        "allPosts": "Все посты в {space}"
       }
     },
     "nav": {

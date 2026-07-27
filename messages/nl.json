@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Alles bekijken"
+      },
+      "feed": {
+        "heading": "Recente berichten van {name}",
+        "sortNewest": "Nieuwste eerst",
+        "sortOldest": "Oudste eerst",
+        "searchPlaceholder": "Berichten doorzoeken",
+        "noResults": "Geen resultaten voor ‘{q}’",
+        "empty": "Nog geen berichten",
+        "locked": "Vergrendeld",
+        "joinToUnlock": "Word lid om te ontgrendelen",
+        "unlockFor": "Ontgrendel voor {price}",
+        "like": "Leuk",
+        "unlike": "Niet meer leuk",
+        "share": "Delen",
+        "copied": "Link gekopieerd",
+        "openPost": "Bericht openen",
+        "allPosts": "Alle berichten in {space}"
       }
     },
     "nav": {

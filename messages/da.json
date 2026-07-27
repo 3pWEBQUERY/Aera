@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Se alle"
+      },
+      "feed": {
+        "heading": "Seneste opslag fra {name}",
+        "sortNewest": "Nyeste først",
+        "sortOldest": "Ældste først",
+        "searchPlaceholder": "Søg i opslag",
+        "noResults": "Ingen træffere for “{q}”",
+        "empty": "Ingen opslag endnu",
+        "locked": "Låst",
+        "joinToUnlock": "Bliv medlem for at låse op",
+        "unlockFor": "Lås op for {price}",
+        "like": "Synes godt om",
+        "unlike": "Fjern synes godt om",
+        "share": "Del",
+        "copied": "Link kopieret",
+        "openPost": "Åbn opslag",
+        "allPosts": "Alle opslag i {space}"
       }
     },
     "nav": {

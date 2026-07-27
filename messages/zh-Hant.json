@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "查看全部"
+      },
+      "feed": {
+        "heading": "{name} 的最新貼文",
+        "sortNewest": "最新在前",
+        "sortOldest": "最舊在前",
+        "searchPlaceholder": "搜尋貼文",
+        "noResults": "找不到「{q}」的結果",
+        "empty": "還沒有貼文",
+        "locked": "已鎖定",
+        "joinToUnlock": "加入以解鎖",
+        "unlockFor": "{price} 解鎖",
+        "like": "讚",
+        "unlike": "取消讚",
+        "share": "分享",
+        "copied": "已複製連結",
+        "openPost": "開啟貼文",
+        "allPosts": "{space} 的全部貼文"
       }
     },
     "nav": {

@@ -318,6 +318,23 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
     </>
   ),
+  /** Teilen — Kasten mit Pfeil nach oben, wie im System-Teilen-Dialog. */
+  share: (
+    <>
+      <path d="M12 15V3" />
+      <path d="m8 7 4-4 4 4" />
+      <path d="M20 14v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-5" />
+    </>
+  ),
+  /** Sortierung — zwei gegenlaeufige Pfeile. */
+  sort: (
+    <>
+      <path d="M7 4v16" />
+      <path d="m4 17 3 3 3-3" />
+      <path d="M17 20V4" />
+      <path d="m14 7 3-3 3 3" />
+    </>
+  ),
   smile: (
     <>
       <circle cx="12" cy="12" r="10" />

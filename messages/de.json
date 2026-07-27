@@ -3532,6 +3532,23 @@
       },
       "spotlight": {
         "viewAll": "Alle ansehen"
+      },
+      "feed": {
+        "heading": "Aktuelle Posts von {name}",
+        "sortNewest": "Neueste zuerst",
+        "sortOldest": "Älteste zuerst",
+        "searchPlaceholder": "Posts durchsuchen",
+        "noResults": "Keine Treffer für „{q}“",
+        "empty": "Noch keine Beiträge",
+        "locked": "Gesperrt",
+        "joinToUnlock": "Zum Freischalten beitreten",
+        "unlockFor": "Für {price} freischalten",
+        "like": "Gefällt mir",
+        "unlike": "Gefällt mir nicht mehr",
+        "share": "Teilen",
+        "copied": "Link kopiert",
+        "openPost": "Zum Beitrag",
+        "allPosts": "Alle Beiträge in {space}"
       }
     },
     "nav": {

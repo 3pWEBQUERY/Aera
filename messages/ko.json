@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "전체 보기"
+      },
+      "feed": {
+        "heading": "{name}의 최근 게시물",
+        "sortNewest": "최신순",
+        "sortOldest": "오래된순",
+        "searchPlaceholder": "게시물 검색",
+        "noResults": "‘{q}’에 대한 결과 없음",
+        "empty": "아직 게시물이 없습니다",
+        "locked": "잠김",
+        "joinToUnlock": "가입하고 잠금 해제",
+        "unlockFor": "{price}에 잠금 해제",
+        "like": "좋아요",
+        "unlike": "좋아요 취소",
+        "share": "공유",
+        "copied": "링크 복사됨",
+        "openPost": "게시물 열기",
+        "allPosts": "{space}의 모든 게시물"
       }
     },
     "nav": {

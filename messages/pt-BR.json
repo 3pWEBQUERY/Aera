@@ -3497,6 +3497,23 @@
       },
       "spotlight": {
         "viewAll": "Ver tudo"
+      },
+      "feed": {
+        "heading": "Publicações recentes de {name}",
+        "sortNewest": "Mais recentes primeiro",
+        "sortOldest": "Mais antigas primeiro",
+        "searchPlaceholder": "Buscar publicações",
+        "noResults": "Nenhum resultado para “{q}”",
+        "empty": "Ainda não há publicações",
+        "locked": "Bloqueado",
+        "joinToUnlock": "Participe para desbloquear",
+        "unlockFor": "Desbloquear por {price}",
+        "like": "Curtir",
+        "unlike": "Descurtir",
+        "share": "Compartilhar",
+        "copied": "Link copiado",
+        "openPost": "Abrir publicação",
+        "allPosts": "Todas as publicações em {space}"
       }
     },
     "nav": {

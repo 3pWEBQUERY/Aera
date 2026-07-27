@@ -37,16 +37,18 @@ export interface PostCardData {
  * beschnitten — eine Reihe aus Hoch- und Querformaten haette sonst eine
  * ausgefranste Unterkante.
  */
-function PostImages({ urls }: { urls: string[] }) {
+export function PostImages({ urls, locked = false }: { urls: string[]; locked?: boolean }) {
   if (urls.length === 0) return null;
+  // Gesperrt: sichtbar, aber unkenntlich — dieselbe Behandlung wie auf den
+  // Kacheln und dem Titelbild eines Artikels.
+  const blur = locked ? { filter: "blur(22px)", transform: "scale(1.12)" } : undefined;
   if (urls.length === 1) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={urls[0]}
-        alt=""
-        className="mt-3 max-h-[28rem] w-full rounded-xl border border-[#161613]/10 object-cover"
-      />
+      <div className="relative mt-3 max-h-[28rem] overflow-hidden rounded-xl border border-[#161613]/10">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={urls[0]} alt="" className="max-h-[28rem] w-full object-cover" style={blur} />
+        {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
+      </div>
     );
   }
 
@@ -67,7 +69,13 @@ function PostImages({ urls }: { urls: string[] }) {
           }`}
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={url} alt="" className="absolute inset-0 h-full w-full object-cover" />
+          <img
+            src={url}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+            style={blur}
+          />
+          {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
           {rest > 0 && i === shown.length - 1 && (
             <span className="absolute inset-0 flex items-center justify-center bg-[#161613]/55 text-xl font-semibold text-white">
               +{rest}
