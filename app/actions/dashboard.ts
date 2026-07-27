@@ -2177,6 +2177,24 @@ function readPostVisibility(fd: FormData, priceCents: number): Visibility {
 }
 
 /** Create a post (feed/forum/blog/gallery/video) inside a space — admin side. */
+/** Bilder eines Beitrags aus dem versteckten JSON-Feld, hart begrenzt. */
+const MAX_POST_IMAGES = 10;
+
+function readImageUrls(fd: FormData): string[] {
+  const raw = fd.get("imageUrls");
+  if (typeof raw !== "string" || !raw.trim()) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((u): u is string => typeof u === "string" && u.trim().length > 0)
+      .map((u) => u.trim().slice(0, 500))
+      .slice(0, MAX_POST_IMAGES);
+  } catch {
+    return [];
+  }
+}
+
 export async function createSpacePostAction(
   _p: ActionState,
   fd: FormData,
@@ -2196,7 +2214,11 @@ export async function createSpacePostAction(
   if (bodyHtml && !plain && !htmlHasMedia) bodyHtml = null;
   // For blog posts the plain text comes from the rich editor; otherwise the textarea.
   const body = bodyHtml ? plain : String(fd.get("body") || "").trim();
-  const imageUrl = String(fd.get("imageUrl") || "") || null;
+  // Mehrere Bilder kommen als JSON-Liste; `imageUrl` bleibt mit dem ersten
+  // Eintrag gleichgeschaltet, damit Kacheln, Suche und die mobile API
+  // unveraendert weiterlaufen — dort zaehlt genau ein Bild.
+  const imageUrls = readImageUrls(fd);
+  const imageUrl = imageUrls[0] ?? (String(fd.get("imageUrl") || "") || null);
   const videoUrl = String(fd.get("videoUrl") || "") || null;
   if (!body && !bodyHtml && !imageUrl && !videoUrl && !title) {
     return { error: await tErr("contentRequired") };
@@ -2227,6 +2249,7 @@ export async function createSpacePostAction(
       body,
       bodyHtml,
       imageUrl,
+      imageUrls: imageUrls.length > 0 ? imageUrls : imageUrl ? [imageUrl] : [],
       videoUrl,
       visibility,
       priceCents,

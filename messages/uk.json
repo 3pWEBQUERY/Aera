@@ -1109,8 +1109,11 @@
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Зображення та відео",
       "mediaUpload": "Завантажте зображення або відео",
-      "mediaHint": "JPG, PNG, WebP або MP4",
-      "mediaVideoBadge": "Відео"
+      "mediaHint": "Можна кілька зображень · JPG, PNG, WebP або MP4",
+      "mediaVideoBadge": "Відео",
+      "mediaCover": "Обкладинка",
+      "mediaOrderHint": "Перетягніть, щоб змінити порядок",
+      "mediaCountHint": "До 10 зображень або одне відео. Перше зображення потрапляє на картку."
     },
     "chat": {
       "badge": "Чат",

@@ -1108,9 +1108,12 @@
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Afbeelding en video",
-      "mediaUpload": "Upload een afbeelding of video",
-      "mediaHint": "JPG, PNG, WebP of MP4",
-      "mediaVideoBadge": "Video"
+      "mediaUpload": "Upload afbeeldingen of een video",
+      "mediaHint": "Meerdere afbeeldingen mogelijk · JPG, PNG, WebP of MP4",
+      "mediaVideoBadge": "Video",
+      "mediaCover": "Omslag",
+      "mediaOrderHint": "Sleep om te herschikken",
+      "mediaCountHint": "Tot 10 afbeeldingen of één video. De eerste afbeelding staat op de kaart."
     },
     "chat": {
       "badge": "Chat",

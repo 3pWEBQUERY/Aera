@@ -1108,9 +1108,12 @@
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Изображение и видео",
-      "mediaUpload": "Загрузите изображение или видео",
-      "mediaHint": "JPG, PNG, WebP или MP4",
-      "mediaVideoBadge": "Видео"
+      "mediaUpload": "Загрузите изображения или видео",
+      "mediaHint": "Можно несколько изображений · JPG, PNG, WebP или MP4",
+      "mediaVideoBadge": "Видео",
+      "mediaCover": "Обложка",
+      "mediaOrderHint": "Перетащите, чтобы изменить порядок",
+      "mediaCountHint": "До 10 изображений или одно видео. Первое изображение попадает на карточку."
     },
     "chat": {
       "badge": "Чат",

@@ -1109,8 +1109,11 @@
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "이미지 및 동영상",
       "mediaUpload": "이미지 또는 동영상 업로드",
-      "mediaHint": "JPG, PNG, WebP 또는 MP4",
-      "mediaVideoBadge": "동영상"
+      "mediaHint": "이미지는 여러 장 가능 · JPG, PNG, WebP 또는 MP4",
+      "mediaVideoBadge": "동영상",
+      "mediaCover": "대표 이미지",
+      "mediaOrderHint": "끌어서 순서 변경",
+      "mediaCountHint": "이미지 최대 10장 또는 동영상 1개. 첫 이미지가 카드에 표시됩니다."
     },
     "chat": {
       "badge": "채팅",

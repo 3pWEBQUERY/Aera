@@ -861,6 +861,11 @@ model Post {
   body           String    @default("") // plain text (search / excerpts)
   bodyHtml       String? // rich HTML for blog posts (WYSIWYG)
   imageUrl       String? // gallery image / post attachment
+  /// Alle Bilder eines Beitrags in Anzeigereihenfolge. `imageUrl` bleibt mit
+  /// dem ersten Eintrag gleichgeschaltet, damit Kacheln, Suche, mobile API
+  /// und Vorschaubilder unveraendert weiterlaufen — dort zaehlt genau ein
+  /// Bild, und das ist immer das erste.
+  imageUrls      String[]  @default([])
   videoUrl       String? // video post
   isPinned       Boolean   @default(false)
   isPublished    Boolean   @default(true)

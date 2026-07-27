@@ -456,6 +456,7 @@ export default async function PostDetail({
     body: locked ? "" : post.body,
     bodyHtml: locked ? null : post.bodyHtml,
     imageUrl: locked ? null : post.imageUrl,
+    imageUrls: locked ? [] : post.imageUrls,
     videoUrl: locked ? null : post.videoUrl,
     createdAt: post.createdAt,
     author: post.author,

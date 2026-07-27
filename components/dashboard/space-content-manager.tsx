@@ -239,6 +239,7 @@ function PostForm({
                 imagePurpose="feed-image"
                 videoPurpose="feed-video"
               />
+              <p className="mt-1 text-xs text-slate-400">{t("mediaCountHint")}</p>
             </div>
           )}
 

@@ -1133,9 +1133,12 @@
         "NEWSLETTER": "Newsletter"
       },
       "feedMedia": "Image & video",
-      "mediaUpload": "Upload an image or video",
-      "mediaHint": "JPG, PNG, WebP or MP4",
-      "mediaVideoBadge": "Video"
+      "mediaUpload": "Upload images or a video",
+      "mediaHint": "Several images possible · JPG, PNG, WebP or MP4",
+      "mediaVideoBadge": "Video",
+      "mediaCover": "Cover",
+      "mediaOrderHint": "Drag to reorder",
+      "mediaCountHint": "Up to 10 images or one video. The first image is used on the tile."
     },
     "chat": {
       "badge": "Chat",

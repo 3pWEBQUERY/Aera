@@ -1108,9 +1108,12 @@
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Bild och video",
-      "mediaUpload": "Ladda upp en bild eller en video",
-      "mediaHint": "JPG, PNG, WebP eller MP4",
-      "mediaVideoBadge": "Video"
+      "mediaUpload": "Ladda upp bilder eller en video",
+      "mediaHint": "Flera bilder möjliga · JPG, PNG, WebP eller MP4",
+      "mediaVideoBadge": "Video",
+      "mediaCover": "Omslag",
+      "mediaOrderHint": "Dra för att sortera",
+      "mediaCountHint": "Upp till 10 bilder eller en video. Den första bilden visas på kortet."
     },
     "chat": {
       "badge": "Chatt",

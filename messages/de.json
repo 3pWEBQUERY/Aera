@@ -1133,9 +1133,12 @@
         "NEWSLETTER": "Newsletter"
       },
       "feedMedia": "Bild & Video",
-      "mediaUpload": "Bild oder Video hochladen",
-      "mediaHint": "JPG, PNG, WebP oder MP4",
-      "mediaVideoBadge": "Video"
+      "mediaUpload": "Bilder oder Video hochladen",
+      "mediaHint": "Mehrere Bilder möglich · JPG, PNG, WebP oder MP4",
+      "mediaVideoBadge": "Video",
+      "mediaCover": "Titelbild",
+      "mediaOrderHint": "Zum Sortieren ziehen",
+      "mediaCountHint": "Bis zu 10 Bilder oder ein Video. Das erste Bild steht auf der Kachel."
     },
     "chat": {
       "badge": "Chat",

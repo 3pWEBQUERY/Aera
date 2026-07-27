@@ -1109,8 +1109,11 @@
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "圖片與影片",
       "mediaUpload": "上傳圖片或影片",
-      "mediaHint": "JPG、PNG、WebP 或 MP4",
-      "mediaVideoBadge": "影片"
+      "mediaHint": "可選多張圖片 · JPG、PNG、WebP 或 MP4",
+      "mediaVideoBadge": "影片",
+      "mediaCover": "封面",
+      "mediaOrderHint": "拖曳可調整順序",
+      "mediaCountHint": "最多 10 張圖片或 1 部影片。第一張圖片會用於卡片。"
     },
     "chat": {
       "badge": "聊天",

@@ -562,6 +562,7 @@ export default async function SpacePage({
         body: locked ? "" : p.body,
         bodyHtml: locked ? null : p.bodyHtml,
         imageUrl: locked ? null : p.imageUrl,
+        imageUrls: locked ? [] : p.imageUrls,
         videoUrl: locked ? null : p.videoUrl,
         createdAt: p.createdAt,
         author: p.author,

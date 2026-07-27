@@ -1108,9 +1108,12 @@
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Billede & video",
-      "mediaUpload": "Upload et billede eller en video",
-      "mediaHint": "JPG, PNG, WebP eller MP4",
-      "mediaVideoBadge": "Video"
+      "mediaUpload": "Upload billeder eller en video",
+      "mediaHint": "Flere billeder muligt · JPG, PNG, WebP eller MP4",
+      "mediaVideoBadge": "Video",
+      "mediaCover": "Forside",
+      "mediaOrderHint": "Træk for at sortere",
+      "mediaCountHint": "Op til 10 billeder eller én video. Det første billede vises på feltet."
     },
     "chat": {
       "badge": "Chat",

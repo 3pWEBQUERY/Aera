@@ -1108,9 +1108,12 @@
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Imagem e vídeo",
-      "mediaUpload": "Envie uma imagem ou um vídeo",
-      "mediaHint": "JPG, PNG, WebP ou MP4",
-      "mediaVideoBadge": "Vídeo"
+      "mediaUpload": "Envie imagens ou um vídeo",
+      "mediaHint": "Várias imagens possíveis · JPG, PNG, WebP ou MP4",
+      "mediaVideoBadge": "Vídeo",
+      "mediaCover": "Capa",
+      "mediaOrderHint": "Arraste para reordenar",
+      "mediaCountHint": "Até 10 imagens ou um vídeo. A primeira imagem aparece no card."
     },
     "chat": {
       "badge": "Chat",

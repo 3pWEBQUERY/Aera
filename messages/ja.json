@@ -1109,8 +1109,11 @@
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "画像と動画",
       "mediaUpload": "画像または動画をアップロード",
-      "mediaHint": "JPG・PNG・WebP・MP4",
-      "mediaVideoBadge": "動画"
+      "mediaHint": "画像は複数可 · JPG・PNG・WebP・MP4",
+      "mediaVideoBadge": "動画",
+      "mediaCover": "表紙",
+      "mediaOrderHint": "ドラッグで並べ替え",
+      "mediaCountHint": "画像は10枚まで、または動画1本。1枚目がカードに表示されます。"
     },
     "chat": {
       "badge": "チャット",
