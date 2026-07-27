@@ -1,7 +1,8 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { Icon } from "@/components/dashboard/icons";
 import { Pill } from "@/components/ui/misc";
-import { timeAgo } from "@/lib/utils";
+import { cn, timeAgo } from "@/lib/utils";
 
 export interface TileLabels {
   locale: string;
@@ -51,6 +52,71 @@ const PLATE_STYLE = {
     " color-mix(in oklab, var(--brand) 38%, #1b1520) 0%," +
     " color-mix(in oklab, var(--brand) 20%, #100d15) 100%)",
 } as const;
+
+/**
+ * Verwischtes Bild fuer gesperrte Kacheln.
+ *
+ * Gaeste sollen sehen, *dass* es etwas zu sehen gibt, aber nicht *was* — das
+ * ist der Anreiz. Das Verwischen zieht die Raender nach innen, deshalb wird
+ * das Bild zusaetzlich vergroessert; sonst blitzt der Kachelrand durch.
+ *
+ * Wichtig: das ist eine Anzeige-Entscheidung, kein Schutz. Die Datei liegt
+ * weiter unter ihrer Adresse und ist dort scharf. Was wirklich nicht nach
+ * draussen darf, liefert der Server gar nicht erst aus — bei Einzelverkaeufen
+ * steht deshalb nur das Vorschaubild in der Kachel, nie das Original.
+ */
+/**
+ * Das Verwischen wird in Pixeln gemessen, die Flaeche aendert sich aber je
+ * nach Kachel — auf einer grossen Flaeche waere derselbe Wert zu schwach.
+ * Deshalb zwei Stufen statt einer.
+ */
+const LOCKED_BLUR_PX = { tile: 16, large: 30 } as const;
+const LOCKED_SCALE = 1.15;
+
+function TileImage({
+  post,
+  src,
+  cover,
+  large = false,
+  hoverZoom = true,
+}: {
+  post: PostTileData;
+  src: string;
+  cover: boolean;
+  large?: boolean;
+  hoverZoom?: boolean;
+}) {
+  const zoom = cover ? (post.coverZoom ?? 100) / 100 : 1;
+  const scale = post.locked ? Math.max(zoom, LOCKED_SCALE) : zoom;
+  const origin = cover
+    ? `${post.coverOffsetX ?? 50}% ${post.coverOffsetY ?? 50}%`
+    : undefined;
+  const style: CSSProperties = {
+    objectPosition: origin,
+    transform: scale > 1 ? `scale(${scale})` : undefined,
+    transformOrigin: origin,
+    filter: post.locked
+      ? `blur(${large ? LOCKED_BLUR_PX.large : LOCKED_BLUR_PX.tile}px)`
+      : undefined,
+  };
+  return (
+    <>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt=""
+        className={cn(
+          "absolute inset-0 h-full w-full object-cover transition duration-300",
+          hoverZoom && !post.locked && "group-hover:scale-[1.03]",
+        )}
+        style={style}
+      />
+      {/* Ein Hauch Grau nimmt dem verwischten Bild die Unruhe und traegt die
+          Plakette. */}
+      {post.locked && <span className="absolute inset-0 bg-[#161613]/15" />}
+    </>
+  );
+}
 
 function LockBadge({ post, label }: { post: PostTileData; label: string }) {
   return (
@@ -104,24 +170,9 @@ function Media({
       {post.locked && !post.coverUrl && !post.imageUrl ? (
         <TitlePlate title={post.title} compact={!large} />
       ) : post.coverUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.coverUrl}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-          style={{
-            objectPosition: `${post.coverOffsetX ?? 50}% ${post.coverOffsetY ?? 50}%`,
-            transform: (post.coverZoom ?? 100) > 100 ? `scale(${(post.coverZoom ?? 100) / 100})` : undefined,
-            transformOrigin: `${post.coverOffsetX ?? 50}% ${post.coverOffsetY ?? 50}%`,
-          }}
-        />
+        <TileImage post={post} src={post.coverUrl} cover large={large} />
       ) : post.imageUrl ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={post.imageUrl}
-          alt=""
-          className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-        />
+        <TileImage post={post} src={post.imageUrl} cover={false} large={large} />
       ) : (
         <TitlePlate title={post.title} compact={!large} />
       )}
@@ -219,11 +270,11 @@ export function VideoTile({
             </span>
           </>
         ) : post.coverUrl || post.imageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <TileImage
+            post={post}
             src={(post.coverUrl ?? post.imageUrl) as string}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
+            cover={Boolean(post.coverUrl)}
+            hoverZoom={false}
           />
         ) : (
           <TitlePlate title={post.title} compact />

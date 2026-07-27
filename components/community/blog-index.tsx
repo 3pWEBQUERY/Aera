@@ -44,6 +44,7 @@ function Cover({
   locked,
   lockedLabel,
   priceLabel,
+  large = false,
 }: {
   url: string | null;
   title: string;
@@ -51,12 +52,28 @@ function Cover({
   locked: boolean;
   lockedLabel: string;
   priceLabel?: string | null;
+  /** Grosse Flaeche braucht mehr Unschaerfe fuer dieselbe Wirkung. */
+  large?: boolean;
 }) {
   return (
     <div className="relative w-full overflow-hidden bg-[#161613]/5" style={{ aspectRatio: ratio }}>
       {url ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={url} alt={title} className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
+        <>
+          {/* Gesperrt: sichtbar, aber unkenntlich. Das Vergroessern verhindert,
+              dass das Verwischen den Rand der Kachel durchscheinen laesst. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={url}
+            alt={locked ? "" : title}
+            className={
+              locked
+                ? "absolute inset-0 h-full w-full scale-110 object-cover"
+                : "absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+            }
+            style={locked ? { filter: `blur(${large ? 30 : 16}px)` } : undefined}
+          />
+          {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
+        </>
       ) : (
         <>
           <div className="absolute inset-0" style={PLATE_STYLE} />
@@ -185,7 +202,7 @@ export async function BlogIndex({
     <div className="space-y-8">
       {useHero && (
         <Link href={href(hero.id)} className="group block overflow-hidden rounded-3xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-lg md:grid md:grid-cols-2">
-          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} priceLabel={hero.priceLabel} />}
+          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} priceLabel={hero.priceLabel} large />}
           <div className="flex flex-col justify-center p-6 sm:p-8">
             <div className="mb-3">
               <Pill className="bg-[var(--brand-soft)] text-[var(--brand)]">{t("latest")}</Pill>

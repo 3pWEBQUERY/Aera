@@ -291,6 +291,14 @@ export default async function PostDetail({
       };
     };
 
+    // Gesperrt heisst nicht bildlos: das Titelbild bleibt stehen, nur
+    // unkenntlich. Beim Einzelverkauf tritt das Vorschaubild an seine Stelle.
+    const heroUrl = locked
+      ? post.priceCents > 0
+        ? post.teaserUrl
+        : post.imageUrl
+      : post.imageUrl;
+
     const similarTiles = relatedRaw.map(toTile);
     // Ohne Likes ist "beliebt" eine leere Behauptung — dann faellt die Reihe weg.
     const popularTiles = popularRaw.map(toTile).filter((p) => p.likes > 0);
@@ -325,14 +333,26 @@ export default async function PostDetail({
           </h1>
         </header>
 
-        {/* Hero image */}
-        {post.imageUrl && (
+        {/* Hero image — gesperrt nur verwischt.
+            Beim Einzelverkauf steht ohnehin nur das Vorschaubild bereit; das
+            Original wird gar nicht erst ausgeliefert. Bei "nur fuer Mitglieder"
+            bleibt das Titelbild die Werbung, aber unkenntlich. */}
+        {heroUrl && (
           <div className="mt-9 overflow-hidden rounded-lg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={post.imageUrl} alt="" className="w-full object-cover" />
+            <img
+              src={heroUrl}
+              alt=""
+              className={
+                locked ? "w-full scale-105 object-cover" : "w-full object-cover"
+              }
+              // Das Titelbild eines Artikels ist breit — 16px wie auf einer
+              // Kachel wuerden hier kaum etwas verbergen.
+              style={locked ? { filter: "blur(44px)" } : undefined}
+            />
           </div>
         )}
-        {post.videoUrl && !post.imageUrl && (
+        {post.videoUrl && !heroUrl && !locked && (
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <video
             src={post.videoUrl}
