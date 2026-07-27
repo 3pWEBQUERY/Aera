@@ -71,6 +71,6 @@ export async function POST(
     mediaUrl,
     mediaType,
     createdAt: story.publishAt.toISOString(),
-    expiresAt: story.expiresAt.toISOString(),
+    expiresAt: story.expiresAt?.toISOString() ?? null,
   });
 }

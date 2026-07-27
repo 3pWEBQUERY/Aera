@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Intet planlagt",
       "scheduledEmptyHint": "Planlagte stories vises her.",
       "archivedEmpty": "Intet arkiv",
-      "archivedEmptyHint": "Udløbne stories havner her."
+      "archivedEmptyHint": "Udløbne stories havner her.",
+      "permanentLabel": "Vis permanent",
+      "permanentHint": "Historien udløber ikke og bliver vist, indtil du sletter den.",
+      "permanentBadge": "Permanent"
     },
     "planner": {
       "metaTitle": "Planlægger",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Nye stories fra denne creator vises her.",
         "close": "Luk",
         "prev": "Forrige story",
-        "next": "Næste story"
+        "next": "Næste story",
+        "permanent": "Permanent"
       },
       "tips": {
         "goal": "Mål: {goal}",

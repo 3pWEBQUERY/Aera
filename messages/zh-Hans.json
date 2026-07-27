@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "暂无定时",
       "scheduledEmptyHint": "定时的动态会显示在此处。",
       "archivedEmpty": "暂无归档",
-      "archivedEmptyHint": "过期的动态会归档到此处。"
+      "archivedEmptyHint": "过期的动态会归档到此处。",
+      "permanentLabel": "长期展示",
+      "permanentHint": "这条快拍不会过期，会一直显示，直到你删除它。",
+      "permanentBadge": "长期"
     },
     "planner": {
       "metaTitle": "规划器",
@@ -3470,7 +3473,8 @@
         "emptyHint": "该创作者的新动态将显示在此处。",
         "close": "关闭",
         "prev": "上一条动态",
-        "next": "下一条动态"
+        "next": "下一条动态",
+        "permanent": "长期展示"
       },
       "tips": {
         "goal": "目标：{goal}",

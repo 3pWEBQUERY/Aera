@@ -11,6 +11,8 @@ export interface StoryItem {
   imageUrl: string | null;
   videoUrl: string | null;
   caption: string | null;
+  /** Ohne Ablauf — bleibt dauerhaft stehen. */
+  permanent?: boolean;
 }
 
 /** One creator's stories, merged into a single Instagram-style reel. */
@@ -44,6 +46,7 @@ export function StoryViewer({
   autoplaySeconds?: number;
 }) {
   const t = useTranslations("community.render.stories");
+  const permanentLabel = t("permanent");
   const [pos, setPos] = useState<Pos | null>(null);
   const [progress, setProgress] = useState(0);
 
@@ -136,11 +139,25 @@ export function StoryViewer({
                     <Avatar name={grp.authorName} src={grp.authorAvatar} size={38} />
                   </span>
                 </span>
-                {grp.items.length > 1 && (
-                  <span className="absolute right-2 top-2 rounded-full bg-black/55 px-1.5 py-0.5 text-[10px] font-semibold text-white backdrop-blur-sm">
-                    {grp.items.length}
-                  </span>
-                )}
+                {/* Dauerhafte Stories verschwinden nicht wieder — das gehoert
+                    auf die Karte, sonst wartet niemand vergeblich auf ihr
+                    Ablaufen. */}
+                <span className="absolute right-2 top-2 flex items-center gap-1">
+                  {grp.items.some((it) => it.permanent) && (
+                    <span
+                      title={permanentLabel}
+                      aria-label={permanentLabel}
+                      className="flex h-5 items-center rounded-full bg-black/55 px-1.5 text-white backdrop-blur-sm"
+                    >
+                      <Icon name="infinity" size={13} />
+                    </span>
+                  )}
+                  {grp.items.length > 1 && (
+                    <span className="flex h-5 items-center rounded-full bg-black/55 px-1.5 text-[10px] font-semibold text-white backdrop-blur-sm">
+                      {grp.items.length}
+                    </span>
+                  )}
+                </span>
                 <span className="absolute inset-x-2.5 bottom-2.5 truncate text-left text-xs font-semibold text-white drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                   {grp.authorName}
                 </span>

@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Nic nie zaplanowano",
       "scheduledEmptyHint": "Zaplanowane relacje pojawią się tutaj.",
       "archivedEmpty": "Brak archiwum",
-      "archivedEmptyHint": "Wygasłe relacje trafiają tutaj."
+      "archivedEmptyHint": "Wygasłe relacje trafiają tutaj.",
+      "permanentLabel": "Pokazuj na stałe",
+      "permanentHint": "Relacja nie wygasa i pozostaje widoczna, dopóki jej nie usuniesz.",
+      "permanentBadge": "Na stałe"
     },
     "planner": {
       "metaTitle": "Planer",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Nowe relacje tego twórcy pojawią się tutaj.",
         "close": "Zamknij",
         "prev": "Poprzednia relacja",
-        "next": "Następna relacja"
+        "next": "Następna relacja",
+        "permanent": "Na stałe"
       },
       "tips": {
         "goal": "Cel: {goal}",

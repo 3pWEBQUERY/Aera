@@ -482,7 +482,11 @@ export default async function SpaceContentPage({
     const base = { tenantId: tenant.id, spaceId: space.id } as const;
     const [activeRows, scheduledRows, archivedRows] = await Promise.all([
       prisma.story.findMany({
-        where: { ...base, publishAt: { lte: nowS }, expiresAt: { gt: nowS } },
+        where: {
+          ...base,
+          publishAt: { lte: nowS },
+          OR: [{ expiresAt: null }, { expiresAt: { gt: nowS } }],
+        },
         orderBy: { publishAt: "desc" },
         take: 100,
       }),
@@ -503,7 +507,7 @@ export default async function SpaceContentPage({
       videoUrl: s.videoUrl,
       caption: s.caption,
       publishAt: s.publishAt.toISOString(),
-      expiresAt: s.expiresAt.toISOString(),
+      expiresAt: s.expiresAt?.toISOString() ?? null,
     });
     return (
       <StoriesManager

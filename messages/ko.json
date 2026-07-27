@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "예약된 항목 없음",
       "scheduledEmptyHint": "예약한 스토리가 여기에 표시됩니다.",
       "archivedEmpty": "보관함 없음",
-      "archivedEmptyHint": "만료된 스토리가 여기에 보관됩니다."
+      "archivedEmptyHint": "만료된 스토리가 여기에 보관됩니다.",
+      "permanentLabel": "항상 표시",
+      "permanentHint": "스토리가 만료되지 않고 삭제할 때까지 계속 표시됩니다.",
+      "permanentBadge": "상시"
     },
     "planner": {
       "metaTitle": "플래너",
@@ -3470,7 +3473,8 @@
         "emptyHint": "이 크리에이터의 새 스토리가 여기에 표시됩니다.",
         "close": "닫기",
         "prev": "이전 스토리",
-        "next": "다음 스토리"
+        "next": "다음 스토리",
+        "permanent": "상시 공개"
       },
       "tips": {
         "goal": "목표: {goal}",

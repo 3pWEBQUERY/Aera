@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "沒有排程",
       "scheduledEmptyHint": "排程的限時動態會顯示於此。",
       "archivedEmpty": "沒有封存",
-      "archivedEmptyHint": "過期的限時動態會封存於此。"
+      "archivedEmptyHint": "過期的限時動態會封存於此。",
+      "permanentLabel": "長期展示",
+      "permanentHint": "這則限時動態不會過期，會一直顯示，直到你刪除它。",
+      "permanentBadge": "長期"
     },
     "planner": {
       "metaTitle": "規劃器",
@@ -3470,7 +3473,8 @@
         "emptyHint": "這位創作者的新限時動態將顯示於此。",
         "close": "關閉",
         "prev": "上一則限時動態",
-        "next": "下一則限時動態"
+        "next": "下一則限時動態",
+        "permanent": "長期展示"
       },
       "tips": {
         "goal": "目標：{goal}",

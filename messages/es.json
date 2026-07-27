@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Nada programado",
       "scheduledEmptyHint": "Las historias programadas aparecen aquí.",
       "archivedEmpty": "Sin archivo",
-      "archivedEmptyHint": "Las historias caducadas van aquí."
+      "archivedEmptyHint": "Las historias caducadas van aquí.",
+      "permanentLabel": "Mostrar siempre",
+      "permanentHint": "La historia no caduca y se mantiene visible hasta que la elimines.",
+      "permanentBadge": "Permanente"
     },
     "planner": {
       "metaTitle": "Planificador",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Las nuevas historias de este creador aparecerán aquí.",
         "close": "Cerrar",
         "prev": "Historia anterior",
-        "next": "Historia siguiente"
+        "next": "Historia siguiente",
+        "permanent": "Permanente"
       },
       "tips": {
         "goal": "Meta: {goal}",

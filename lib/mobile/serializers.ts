@@ -1243,7 +1243,7 @@ export type ContentDto =
       kind: "stories";
       groups: {
         author: AuthorDto;
-        stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string }[];
+        stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string | null }[];
       }[];
     }
   | {
@@ -1594,7 +1594,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
           tenantId: tenant.id,
           spaceId: space.id,
           publishAt: { lte: now },
-          expiresAt: { gt: now },
+          OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
         },
         orderBy: { publishAt: "desc" },
         take: 100,
@@ -1605,7 +1605,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       // Creator sortiert nach jüngster Story.
       const groups = new Map<
         string,
-        { author: AuthorDto; stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string }[] }
+        { author: AuthorDto; stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string | null }[] }
       >();
       for (const r of rows) {
         const mediaUrl = r.videoUrl ?? r.imageUrl;
@@ -1620,7 +1620,8 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
           mediaUrl,
           mediaType: r.videoUrl ? "VIDEO" : "IMAGE",
           createdAt: r.publishAt.toISOString(),
-          expiresAt: r.expiresAt.toISOString(),
+          // null = laeuft nie ab (dauerhafte Story).
+          expiresAt: r.expiresAt?.toISOString() ?? null,
         });
       }
       for (const g of groups.values()) g.stories.reverse();

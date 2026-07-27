@@ -1043,7 +1043,7 @@ export default async function SpacePage({
         tenantId: tenant.id,
         spaceId: space.id,
         publishAt: { lte: nowSt },
-        expiresAt: { gt: nowSt },
+        OR: [{ expiresAt: null }, { expiresAt: { gt: nowSt } }],
       },
       orderBy: { publishAt: "desc" },
       take: 100,

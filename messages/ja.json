@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "予約はありません",
       "scheduledEmptyHint": "予約したストーリーがここに表示されます。",
       "archivedEmpty": "アーカイブなし",
-      "archivedEmptyHint": "期限切れのストーリーはここに入ります。"
+      "archivedEmptyHint": "期限切れのストーリーはここに入ります。",
+      "permanentLabel": "常に表示",
+      "permanentHint": "ストーリーは期限切れにならず、削除するまで表示され続けます。",
+      "permanentBadge": "常時"
     },
     "planner": {
       "metaTitle": "プランナー",
@@ -3470,7 +3473,8 @@
         "emptyHint": "このクリエイターの新しいストーリーがここに表示されます。",
         "close": "閉じる",
         "prev": "前のストーリー",
-        "next": "次のストーリー"
+        "next": "次のストーリー",
+        "permanent": "常時公開"
       },
       "tips": {
         "goal": "目標：{goal}",

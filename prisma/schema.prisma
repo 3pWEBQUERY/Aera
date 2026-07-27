@@ -772,7 +772,9 @@ model Story {
   /// Go-live time. `publishAt > now` = scheduled; `publishAt <= now < expiresAt`
   /// = active; `expiresAt <= now` = archived. State is purely time-derived.
   publishAt DateTime @default(now())
-  expiresAt DateTime
+  /// Ablauf. `null` heisst: laeuft nie ab und bleibt dauerhaft sichtbar —
+  /// das Fehlen eines Ablaufs ist ehrlicher als ein Datum im Jahr 3000.
+  expiresAt DateTime?
   createdAt DateTime @default(now())
 
   @@index([tenantId, spaceId])

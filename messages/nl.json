@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Niets gepland",
       "scheduledEmptyHint": "Geplande stories verschijnen hier.",
       "archivedEmpty": "Geen archief",
-      "archivedEmptyHint": "Verlopen stories komen hier."
+      "archivedEmptyHint": "Verlopen stories komen hier.",
+      "permanentLabel": "Permanent tonen",
+      "permanentHint": "Het verhaal verloopt niet en blijft zichtbaar tot je het verwijdert.",
+      "permanentBadge": "Permanent"
     },
     "planner": {
       "metaTitle": "Planner",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Nieuwe stories van deze maker verschijnen hier.",
         "close": "Sluiten",
         "prev": "Vorige story",
-        "next": "Volgende story"
+        "next": "Volgende story",
+        "permanent": "Permanent"
       },
       "tips": {
         "goal": "Doel: {goal}",

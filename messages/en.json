@@ -2938,7 +2938,10 @@
       "scheduledEmpty": "Nothing scheduled",
       "scheduledEmptyHint": "Scheduled stories appear here.",
       "archivedEmpty": "No archive",
-      "archivedEmptyHint": "Expired stories land here."
+      "archivedEmptyHint": "Expired stories land here.",
+      "permanentLabel": "Show permanently",
+      "permanentHint": "The story never expires and stays visible until you delete it.",
+      "permanentBadge": "Always on"
     },
     "planner": {
       "metaTitle": "Planner",
@@ -3505,7 +3508,8 @@
         "emptyHint": "New stories from this creator will show up here.",
         "close": "Close",
         "prev": "Previous story",
-        "next": "Next story"
+        "next": "Next story",
+        "permanent": "Always on"
       },
       "tips": {
         "goal": "Goal: {goal}",

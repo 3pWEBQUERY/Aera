@@ -19,6 +19,12 @@ function ttlFrom(fd: FormData): number {
   );
 }
 
+/** Dauerhaft sichtbar — der Schalter im Formular. */
+function isPermanent(fd: FormData): boolean {
+  const v = fd.get("permanent");
+  return v === "1" || v === "on" || v === "true";
+}
+
 /** A future `publishAt` from the form, or null for "publish now". */
 function scheduledPublishAt(fd: FormData): Date | null {
   const raw = String(fd.get("publishAt") || "").trim();
@@ -42,9 +48,10 @@ export async function createStoryAction(
   const videoUrl = String(fd.get("videoUrl") || "") || null;
   if (!imageUrl && !videoUrl) return { error: "Bild oder Video erforderlich." };
 
-  const hours = ttlFrom(fd);
   const publishAt = scheduledPublishAt(fd) ?? new Date();
-  const expiresAt = new Date(publishAt.getTime() + hours * 3_600_000);
+  const expiresAt = isPermanent(fd)
+    ? null
+    : new Date(publishAt.getTime() + ttlFrom(fd) * 3_600_000);
 
   await prisma.story.create({
     data: {
@@ -78,13 +85,14 @@ export async function updateStoryAction(
   const videoUrl = String(fd.get("videoUrl") || "") || null;
   if (!imageUrl && !videoUrl) return { error: "Bild oder Video erforderlich." };
 
-  const hours = ttlFrom(fd);
   const scheduled = scheduledPublishAt(fd);
   // A future schedule reschedules; otherwise keep the original go-live time for
   // already-published stories, or "now" if it had no valid past time.
   const publishAt =
     scheduled ?? (story.publishAt.getTime() <= Date.now() ? story.publishAt : new Date());
-  const expiresAt = new Date(publishAt.getTime() + hours * 3_600_000);
+  const expiresAt = isPermanent(fd)
+    ? null
+    : new Date(publishAt.getTime() + ttlFrom(fd) * 3_600_000);
 
   await prisma.story.update({
     where: { id: story.id },

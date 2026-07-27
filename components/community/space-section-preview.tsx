@@ -109,7 +109,13 @@ async function StoriesPreview({ slug, tenantId, space }: Props) {
   const t = await getTranslations("community.render.stories");
   const now = new Date();
   const rows = await prisma.story.findMany({
-    where: { tenantId, spaceId: space.id, publishAt: { lte: now }, expiresAt: { gt: now } },
+    where: {
+      tenantId,
+      spaceId: space.id,
+      publishAt: { lte: now },
+      // Ohne Ablauf bleibt eine Story dauerhaft sichtbar.
+      OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+    },
     orderBy: { publishAt: "desc" },
     take: 60,
     include: { author: { select: { name: true, avatarUrl: true } } },

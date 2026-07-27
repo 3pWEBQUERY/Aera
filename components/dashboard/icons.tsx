@@ -318,6 +318,10 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z" />
     </>
   ),
+  /** Unendlich — steht fuer "laeuft nie ab". */
+  infinity: (
+    <path d="M11.5 12c0 2-1.6 3.6-3.5 3.6S4.5 14 4.5 12 6.1 8.4 8 8.4s3.5 1.6 3.5 3.6Zm0 0c0-2 1.6-3.6 3.5-3.6s3.5 1.6 3.5 3.6-1.6 3.6-3.5 3.6-3.5-1.6-3.5-3.6Z" />
+  ),
   /** Teilen — Kasten mit Pfeil nach oben, wie im System-Teilen-Dialog. */
   share: (
     <>

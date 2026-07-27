@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Nada agendado",
       "scheduledEmptyHint": "Stories agendados aparecem aqui.",
       "archivedEmpty": "Sem arquivo",
-      "archivedEmptyHint": "Stories expirados vão para cá."
+      "archivedEmptyHint": "Stories expirados vão para cá.",
+      "permanentLabel": "Exibir sempre",
+      "permanentHint": "O story não expira e fica visível até você excluí-lo.",
+      "permanentBadge": "Permanente"
     },
     "planner": {
       "metaTitle": "Planejador",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Novos stories deste criador aparecerão aqui.",
         "close": "Fechar",
         "prev": "Story anterior",
-        "next": "Próximo story"
+        "next": "Próximo story",
+        "permanent": "Permanente"
       },
       "tips": {
         "goal": "Meta: {goal}",

@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Niente in programma",
       "scheduledEmptyHint": "Le storie programmate appaiono qui.",
       "archivedEmpty": "Nessun archivio",
-      "archivedEmptyHint": "Le storie scadute finiscono qui."
+      "archivedEmptyHint": "Le storie scadute finiscono qui.",
+      "permanentLabel": "Mostra sempre",
+      "permanentHint": "La storia non scade e resta visibile finché non la elimini.",
+      "permanentBadge": "Permanente"
     },
     "planner": {
       "metaTitle": "Pianificatore",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Le nuove storie di questo creator appariranno qui.",
         "close": "Chiudi",
         "prev": "Storia precedente",
-        "next": "Storia successiva"
+        "next": "Storia successiva",
+        "permanent": "Permanente"
       },
       "tips": {
         "goal": "Obiettivo: {goal}",

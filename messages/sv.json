@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Inget schemalagt",
       "scheduledEmptyHint": "Schemalagda stories visas här.",
       "archivedEmpty": "Inget arkiv",
-      "archivedEmptyHint": "Utgångna stories hamnar här."
+      "archivedEmptyHint": "Utgångna stories hamnar här.",
+      "permanentLabel": "Visa permanent",
+      "permanentHint": "Storyn går inte ut och visas tills du raderar den.",
+      "permanentBadge": "Permanent"
     },
     "planner": {
       "metaTitle": "Planerare",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Nya stories från den här skaparen visas här.",
         "close": "Stäng",
         "prev": "Föregående story",
-        "next": "Nästa story"
+        "next": "Nästa story",
+        "permanent": "Permanent"
       },
       "tips": {
         "goal": "Mål: {goal}",

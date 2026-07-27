@@ -6,6 +6,8 @@ interface StoryRowLike {
   imageUrl: string | null;
   videoUrl: string | null;
   caption: string | null;
+  /** Kein Ablauf = dauerhaft sichtbar. */
+  expiresAt?: Date | null;
   authorId: string;
   author: { name: string; avatarUrl: string | null };
 }
@@ -23,7 +25,13 @@ export function groupStoriesByAuthor(rows: StoryRowLike[]): StoryGroup[] {
       grp = { authorName: r.author.name, authorAvatar: r.author.avatarUrl, items: [] };
       map.set(r.authorId, grp);
     }
-    grp.items.push({ id: r.id, imageUrl: r.imageUrl, videoUrl: r.videoUrl, caption: r.caption });
+    grp.items.push({
+      id: r.id,
+      imageUrl: r.imageUrl,
+      videoUrl: r.videoUrl,
+      caption: r.caption,
+      permanent: r.expiresAt === null,
+    });
   }
   for (const g of map.values()) g.items.reverse();
   return [...map.values()];

@@ -2938,7 +2938,10 @@
       "scheduledEmpty": "Nichts geplant",
       "scheduledEmptyHint": "Geplante Storys erscheinen hier.",
       "archivedEmpty": "Kein Archiv",
-      "archivedEmptyHint": "Abgelaufene Storys landen hier."
+      "archivedEmptyHint": "Abgelaufene Storys landen hier.",
+      "permanentLabel": "Dauerhaft anzeigen",
+      "permanentHint": "Die Story läuft nicht ab und bleibt sichtbar, bis du sie löschst.",
+      "permanentBadge": "Dauerhaft"
     },
     "planner": {
       "metaTitle": "Planer",
@@ -3505,7 +3508,8 @@
         "emptyHint": "Neue Storys dieses Creators erscheinen hier.",
         "close": "Schließen",
         "prev": "Vorherige Story",
-        "next": "Nächste Story"
+        "next": "Nächste Story",
+        "permanent": "Dauerhaft"
       },
       "tips": {
         "goal": "Ziel: {goal}",

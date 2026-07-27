@@ -2913,7 +2913,10 @@
       "scheduledEmpty": "Rien de planifié",
       "scheduledEmptyHint": "Les stories planifiées apparaissent ici.",
       "archivedEmpty": "Aucune archive",
-      "archivedEmptyHint": "Les stories expirées arrivent ici."
+      "archivedEmptyHint": "Les stories expirées arrivent ici.",
+      "permanentLabel": "Afficher en permanence",
+      "permanentHint": "La story n’expire pas et reste visible jusqu’à ce que vous la supprimiez.",
+      "permanentBadge": "Permanente"
     },
     "planner": {
       "metaTitle": "Planificateur",
@@ -3470,7 +3473,8 @@
         "emptyHint": "Les nouvelles stories de ce créateur apparaîtront ici.",
         "close": "Fermer",
         "prev": "Story précédente",
-        "next": "Story suivante"
+        "next": "Story suivante",
+        "permanent": "Permanente"
       },
       "tips": {
         "goal": "Objectif : {goal}",

@@ -24,7 +24,8 @@ export interface StoryRow {
   videoUrl: string | null;
   caption: string | null;
   publishAt: string;
-  expiresAt: string;
+  /** null = dauerhaft sichtbar, kein Ablauf. */
+  expiresAt: string | null;
 }
 
 interface SpaceInfo {
@@ -47,6 +48,7 @@ function toDatetimeLocal(iso: string): string {
 
 /** Whole hours between publish and expiry — used to prefill the lifetime field. */
 function ttlHoursOf(story: StoryRow): number {
+  if (!story.expiresAt) return 24;
   const ms = new Date(story.expiresAt).getTime() - new Date(story.publishAt).getTime();
   return Math.max(1, Math.min(168, Math.round(ms / 3_600_000)));
 }
@@ -183,6 +185,12 @@ export function StoriesManager({
                   {t("archivedBadge")}
                 </span>
               )}
+              {tab === "active" && s.expiresAt === null && (
+                <span className="absolute left-1.5 top-1.5 inline-flex items-center gap-1 rounded-md bg-black/60 px-1.5 py-0.5 text-[10px] font-medium text-white backdrop-blur-sm">
+                  <Icon name="infinity" size={11} />
+                  {t("permanentBadge")}
+                </span>
+              )}
 
               {/* actions */}
               <div className="absolute right-1.5 top-1.5 flex gap-1 opacity-0 transition group-hover:opacity-100">
@@ -282,6 +290,9 @@ function StoryForm({
   onDone: () => void;
 }) {
   const isEdit = !!story;
+  // Dauerhaft heisst: kein Ablauf. Beim Bearbeiten erkennt man das daran,
+  // dass die Story keinen hat.
+  const [permanent, setPermanent] = useState(isEdit ? story!.expiresAt === null : false);
   const [state, action, pending] = useActionState(
     isEdit ? updateStoryAction : createStoryAction,
     initial,
@@ -322,10 +333,48 @@ function StoryForm({
               placeholder={t("captionPlaceholder")}
             />
           </div>
-          <div>
-            <Label htmlFor="st-ttl">{t("ttlLabel")}</Label>
-            <Input id="st-ttl" name="ttlHours" type="number" min={1} max={168} defaultValue={defaultTtl} />
-            <p className="mt-1 text-xs text-slate-400">{t("ttlHint")}</p>
+          <div className="rounded-2xl border border-slate-200 p-4">
+            <label className="flex cursor-pointer items-start justify-between gap-4">
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-slate-900">
+                  {t("permanentLabel")}
+                </span>
+                <span className="mt-0.5 block text-xs leading-5 text-slate-400">
+                  {t("permanentHint")}
+                </span>
+              </span>
+              <input
+                type="checkbox"
+                name="permanent"
+                value="1"
+                checked={permanent}
+                onChange={(e) => setPermanent(e.target.checked)}
+                className="peer sr-only"
+              />
+              <span
+                aria-hidden
+                className={cn(
+                  "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition",
+                  permanent ? "bg-[var(--action-strong)]" : "bg-slate-200",
+                )}
+              >
+                <span
+                  className={cn(
+                    "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all",
+                    permanent ? "left-[1.375rem]" : "left-0.5",
+                  )}
+                />
+              </span>
+            </label>
+
+            {/* Die Laufzeit bleibt im DOM, damit ein versehentliches Umlegen
+                den eingestellten Wert nicht verwirft — die Action liest sie
+                ohnehin nur, wenn der Schalter aus ist. */}
+            <div className={permanent ? "hidden" : "mt-4 border-t border-slate-100 pt-4"}>
+              <Label htmlFor="st-ttl">{t("ttlLabel")}</Label>
+              <Input id="st-ttl" name="ttlHours" type="number" min={1} max={168} defaultValue={defaultTtl} />
+              <p className="mt-1 text-xs text-slate-400">{t("ttlHint")}</p>
+            </div>
           </div>
           <div>
             <Label htmlFor="st-schedule">{t("scheduleLabel")}</Label>
