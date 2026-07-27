@@ -3631,7 +3631,8 @@
     "popularPosts": "Populære innlegg",
     "untitled": "Uten tittel",
     "joinToRead": "Bli medlem for å lese",
-    "showReplies": "Vis {count} flere svar"
+    "showReplies": "Vis {count} flere svar",
+    "emojiLabel": "Sett inn emoji"
   },
   "discover": {
     "eyebrow": "Communities & skapere",

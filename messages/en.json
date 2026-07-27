@@ -3659,7 +3659,8 @@
     "popularPosts": "Popular posts",
     "untitled": "Untitled",
     "joinToRead": "Become a member to read",
-    "showReplies": "Show {count} more replies"
+    "showReplies": "Show {count} more replies",
+    "emojiLabel": "Insert emoji"
   },
   "discover": {
     "eyebrow": "Communities & creators",

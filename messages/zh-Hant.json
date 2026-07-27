@@ -3631,7 +3631,8 @@
     "popularPosts": "熱門貼文",
     "untitled": "無標題",
     "joinToRead": "成為會員即可閱讀",
-    "showReplies": "再顯示 {count} 則回覆"
+    "showReplies": "再顯示 {count} 則回覆",
+    "emojiLabel": "插入表情"
   },
   "discover": {
     "eyebrow": "社群與創作者",

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
+import { EMOJIS } from "@/lib/emoji";
 import { UploadError, uploadMediaFile } from "@/lib/client-upload";
 
 /* Small inline glyph icons for the formatting toolbar (kept local & crisp). */
@@ -39,19 +40,6 @@ const glyphs = {
   </>),
 };
 
-/** Compact, curated emoji set for the composer picker (no external dependency). */
-const EMOJIS = [
-  "😀","😃","😄","😁","😆","😅","😂","🤣","🙂","🙃","😉","😊","😇","🥰","😍","🤩",
-  "😘","😗","😚","😋","😛","😜","🤪","😝","🤗","🤭","🤔","🤨","😐","😶","😏","😌",
-  "😔","😪","😴","😒","🙄","😬","🥱","😷","🤒","🤕","🤢","🤮","🥴","😵","🤯","🥶",
-  "🥳","😎","🤓","🧐","😢","😭","😤","😠","😡","🤬","😳","🥺","😱","😨","😰","😥",
-  "👍","👎","👏","🙌","🤝","🙏","💪","👋","✌️","🤞","🤟","🤙","👌","🤌","✋","👆",
-  "👇","👈","👉","💥","🔥","✨","⭐","🌟","💫","💯","✅","❌","⚠️","❓","❗","💤",
-  "❤️","🧡","💛","💚","💙","💜","🖤","🤍","💔","💕","💖","💝","💘","💗","🩷","💌",
-  "🎉","🎊","🎁","🏆","🥇","🎯","🚀","💡","📌","🔗","📎","📷","🎥","🎵","🎶","📣",
-  "☕","🍕","🍔","🍰","🎂","🍺","🥂","🍫","🍎","🌍","☀️","🌙","⚡","🌈","❄️","🌸",
-  "🐶","🐱","🦊","🐻","🐼","🐨","🦁","🐯","🐸","🐵","🦄","🐝","🦋","🌿","🍀","🌵",
-] as const;
 
 type Cmd = { icon: React.ReactNode; label: string; run: () => void };
 

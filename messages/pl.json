@@ -3631,7 +3631,8 @@
     "popularPosts": "Popularne wpisy",
     "untitled": "Bez tytułu",
     "joinToRead": "Zostań członkiem, aby przeczytać",
-    "showReplies": "Pokaż jeszcze {count} odpowiedzi"
+    "showReplies": "Pokaż jeszcze {count} odpowiedzi",
+    "emojiLabel": "Wstaw emoji"
   },
   "discover": {
     "eyebrow": "Społeczności i twórcy",

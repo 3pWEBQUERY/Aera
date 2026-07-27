@@ -545,6 +545,75 @@ export async function createCommentAction(
   return { ok: true };
 }
 
+/**
+ * "Gefaellt mir" an einem Kommentar.
+ *
+ * Getrennt von toggleReactionAction, weil dort der Beitrag der Anker ist und
+ * die Zugriffspruefung ueber dessen Space laeuft. Bei einem Kommentar fuehrt
+ * der Weg ueber den Beitrag, an dem er haengt — der client-gelieferte Space
+ * wird auch hier nie geglaubt.
+ */
+export async function toggleCommentLikeAction(fd: FormData): Promise<void> {
+  const slug = String(fd.get("tenant"));
+  const commentId = String(fd.get("commentId"));
+  const spaceSlug = String(fd.get("space"));
+  const user = await getCurrentUser();
+  if (!user) redirect(`/login?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}`)}`);
+  const tenant = await tenantBySlug(slug);
+  if (!tenant) return;
+
+  const comment = await prisma.comment.findFirst({
+    where: { id: commentId, tenantId: tenant.id },
+    include: { post: { include: { space: true } } },
+  });
+  if (!comment) return;
+  const ctx = await buildAccessContext(tenant.id, user!.id);
+  if (!canAccess(comment.post.space, ctx)) return;
+
+  const existing = await prisma.reaction.findFirst({
+    where: { tenantId: tenant.id, commentId, userId: user!.id, type: "LIKE" },
+  });
+  if (existing) {
+    await prisma.reaction.delete({ where: { id: existing.id } });
+  } else {
+    await prisma.reaction.create({
+      data: { tenantId: tenant.id, commentId, userId: user!.id, type: "LIKE" },
+    });
+    // Anti-Farming: Like/Unlike im Wechsel darf nicht wiederholt Punkte geben.
+    const alreadyAwarded = await prisma.pointsLedger.findFirst({
+      where: {
+        tenantId: tenant.id,
+        userId: user!.id,
+        refType: "Comment",
+        refId: commentId,
+        rule: { trigger: "REACTION_GIVEN" },
+      },
+    });
+    if (!alreadyAwarded) {
+      await awardPoints({
+        tenantId: tenant.id,
+        userId: user!.id,
+        trigger: "REACTION_GIVEN",
+        refType: "Comment",
+        refId: commentId,
+      });
+    }
+    if (comment.authorId !== user!.id) {
+      await notify({
+        tenantId: tenant.id,
+        userId: comment.authorId,
+        actorId: user!.id,
+        type: "REACTION",
+        message: `${user!.name} gefällt dein Kommentar.`,
+        href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`,
+        refType: "Comment",
+        refId: commentId,
+      });
+    }
+  }
+  revalidatePath(`/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`);
+}
+
 export async function toggleReactionAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const postId = String(fd.get("postId"));

@@ -29,11 +29,17 @@ export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
   );
 }
 
-export function Textarea(
-  props: React.TextareaHTMLAttributes<HTMLTextAreaElement>,
-) {
+export function Textarea({
+  ref,
+  ...props
+}: React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  /** React 19 reicht ref als normale Prop durch — gebraucht z. B. von der
+      Emoji-Auswahl, die an der Einfuegemarke schreibt. */
+  ref?: React.Ref<HTMLTextAreaElement>;
+}) {
   return (
     <textarea
+      ref={ref}
       {...props}
       className={cn(
         "w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]",

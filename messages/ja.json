@@ -3631,7 +3631,8 @@
     "popularPosts": "人気の投稿",
     "untitled": "無題",
     "joinToRead": "読むにはメンバーになる",
-    "showReplies": "さらに {count} 件の返信を表示"
+    "showReplies": "さらに {count} 件の返信を表示",
+    "emojiLabel": "絵文字を挿入"
   },
   "discover": {
     "eyebrow": "コミュニティ & クリエイター",

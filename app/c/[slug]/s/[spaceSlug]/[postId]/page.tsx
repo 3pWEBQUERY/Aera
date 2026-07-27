@@ -151,6 +151,31 @@ export default async function PostDetail({
     orderBy: { createdAt: "asc" },
     include: { author: { select: { name: true, avatarUrl: true } } },
   });
+  // Likes je Kommentar in zwei Abfragen statt in einer pro Kommentar.
+  const commentIds = comments.map((c) => c.id);
+  const [likeGroups, myLikes] = commentIds.length
+    ? await Promise.all([
+        prisma.reaction.groupBy({
+          by: ["commentId"],
+          where: { tenantId: tenant.id, commentId: { in: commentIds }, type: "LIKE" },
+          _count: true,
+        }),
+        user
+          ? prisma.reaction.findMany({
+              where: {
+                tenantId: tenant.id,
+                userId: user.id,
+                commentId: { in: commentIds },
+                type: "LIKE",
+              },
+              select: { commentId: true },
+            })
+          : Promise.resolve([]),
+      ])
+    : [[], []];
+  const likeCount = new Map<string, number>();
+  for (const g of likeGroups) if (g.commentId) likeCount.set(g.commentId, g._count as number);
+  const likedByMe = new Set(myLikes.map((r) => r.commentId).filter(Boolean) as string[]);
 
   const isMember = ctx.membership?.status === "ACTIVE";
 
@@ -167,6 +192,8 @@ export default async function PostDetail({
         authorAvatar: c.author.avatarUrl,
         createdAt: c.createdAt,
         parentId: c.parentId,
+        likes: likeCount.get(c.id) ?? 0,
+        likedByMe: likedByMe.has(c.id),
       }))}
     />
   );

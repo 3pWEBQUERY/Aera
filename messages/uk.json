@@ -3631,7 +3631,8 @@
     "popularPosts": "Популярні публікації",
     "untitled": "Без назви",
     "joinToRead": "Стати учасником, щоб читати",
-    "showReplies": "Показати ще {count} відповідей"
+    "showReplies": "Показати ще {count} відповідей",
+    "emojiLabel": "Вставити емодзі"
   },
   "discover": {
     "eyebrow": "Спільноти та автори",

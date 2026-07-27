@@ -3659,7 +3659,8 @@
     "popularPosts": "Beliebte Posts",
     "untitled": "Ohne Titel",
     "joinToRead": "Mitglied werden, um zu lesen",
-    "showReplies": "{count} weitere Antworten anzeigen"
+    "showReplies": "{count} weitere Antworten anzeigen",
+    "emojiLabel": "Emoji einfügen"
   },
   "discover": {
     "eyebrow": "Communities & Creator",

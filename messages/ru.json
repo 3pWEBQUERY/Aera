@@ -3631,7 +3631,8 @@
     "popularPosts": "Популярные публикации",
     "untitled": "Без названия",
     "joinToRead": "Стать участником, чтобы читать",
-    "showReplies": "Показать ещё {count} ответов"
+    "showReplies": "Показать ещё {count} ответов",
+    "emojiLabel": "Вставить эмодзи"
   },
   "discover": {
     "eyebrow": "Сообщества и авторы",

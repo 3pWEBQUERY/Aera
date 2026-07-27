@@ -3631,7 +3631,8 @@
     "popularPosts": "Publications populaires",
     "untitled": "Sans titre",
     "joinToRead": "Devenir membre pour lire",
-    "showReplies": "Afficher {count} réponses de plus"
+    "showReplies": "Afficher {count} réponses de plus",
+    "emojiLabel": "Insérer un emoji"
   },
   "discover": {
     "eyebrow": "Communautés & créateurs",

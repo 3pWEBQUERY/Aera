@@ -3631,7 +3631,8 @@
     "popularPosts": "Populära inlägg",
     "untitled": "Utan titel",
     "joinToRead": "Bli medlem för att läsa",
-    "showReplies": "Visa {count} svar till"
+    "showReplies": "Visa {count} svar till",
+    "emojiLabel": "Infoga emoji"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",

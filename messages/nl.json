@@ -3631,7 +3631,8 @@
     "popularPosts": "Populaire posts",
     "untitled": "Zonder titel",
     "joinToRead": "Word lid om te lezen",
-    "showReplies": "{count} reacties meer tonen"
+    "showReplies": "{count} reacties meer tonen",
+    "emojiLabel": "Emoji invoegen"
   },
   "discover": {
     "eyebrow": "Communities & creators",
