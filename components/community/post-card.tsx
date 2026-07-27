@@ -23,6 +23,14 @@ export interface PostCardData {
   likedByMe: boolean;
   /** Pay-per-post: locked for the current viewer (body/media withheld). */
   locked?: boolean;
+  /**
+   * Was ein Gesperrter zu sehen bekommt: beim Einzelverkauf das eigens
+   * gepflegte Vorschaubild, bei "nur fuer Mitglieder" das Titelbild — dort
+   * ist es die Werbung fuer den Beitrag. Wird verwischt gezeigt.
+   */
+  lockedPreviewUrl?: string | null;
+  /** Auszug, der bei gesperrten Beitraegen unkenntlich angerissen wird. */
+  lockedExcerpt?: string | null;
   priceCents?: number;
   currency?: string;
   teaserUrl?: string | null;
@@ -99,43 +107,77 @@ export function PostCard({
   detail?: boolean;
 }) {
   const t = useTranslations("spaces");
+  const tTile = useTranslations("community.render.postTile");
   const locale = useLocale();
   const href = `/c/${slug}/s/${space}/${post.id}`;
 
   if (post.locked) {
+    // Ein Beitrag ohne Preis will keine Zahlung, sondern eine Mitgliedschaft.
+    // Ein Kauf-Knopf waere dort eine Sackgasse — dieselbe Unterscheidung wie
+    // im Blog.
+    const paid = (post.priceCents ?? 0) > 0;
     return (
-      <article className="rounded-xl border border-[#161613]/10 bg-white p-5">
-        <div className="flex items-center gap-3">
+      <article className="overflow-hidden rounded-xl border border-[#161613]/10 bg-white">
+        <div className="flex items-center gap-3 px-5 pt-5">
           <Avatar name={post.author.name} src={post.author.avatarUrl} size={36} />
-          <div>
-            <p className="text-sm font-medium text-[#161613]">{post.author.name}</p>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-medium text-[#161613]">{post.author.name}</p>
             <p className="text-xs text-[#161613]/50">{timeAgo(post.createdAt, locale)}</p>
           </div>
+          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#161613]/[0.06] px-2.5 py-1.5 text-xs font-semibold text-[#161613]/70">
+            <Icon name="lock" size={13} />
+            {paid
+              ? formatPrice(post.priceCents ?? 0, post.currency ?? PLATFORM_CURRENCY, locale)
+              : tTile("locked")}
+          </span>
         </div>
-        {post.title && <h2 className="display-serif mt-3 text-xl text-[#161613]">{post.title}</h2>}
-        <div
-          className="relative mt-3 w-full overflow-hidden rounded-xl border border-[#161613]/10 bg-[#161613]/5"
-          style={{ aspectRatio: "16 / 9" }}
-        >
-          {post.teaserUrl && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={post.teaserUrl} alt="" className="absolute inset-0 h-full w-full object-cover blur-lg" />
+
+        <div className="px-5">
+          <PostImages
+            urls={post.lockedPreviewUrl ? [post.lockedPreviewUrl] : []}
+            locked
+          />
+
+          {post.title && (
+            <h2 className="display-serif mt-3 text-xl text-[#161613]">{post.title}</h2>
           )}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-[#161613]/40 text-white">
-            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#161613]/70">
-              <Icon name="lock" size={22} />
-            </span>
-            <form action={purchasePostAction}>
+
+          {post.lockedExcerpt && (
+            // Der Anfang bleibt lesbar, der Rest wird unkenntlich. Der volle
+            // Text geht gar nicht erst ueber die Leitung — Verwischen allein
+            // waere kein Schutz.
+            <p className="mt-2 select-none whitespace-pre-wrap text-[15px] leading-7 text-[#161613]/80 blur-[5px]">
+              {post.lockedExcerpt}
+            </p>
+          )}
+
+          {paid ? (
+            <form action={purchasePostAction} className="mt-4">
               <input type="hidden" name="tenant" value={slug} />
               <input type="hidden" name="space" value={space} />
               <input type="hidden" name="postId" value={post.id} />
-              <ImmediateAccessConsent inverse className="mb-2 max-w-xs" />
-              <button className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-sm font-semibold text-[#161613] transition hover:bg-white/90 active:scale-[0.99]">
+              <ImmediateAccessConsent className="mb-3 max-w-md" />
+              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
                 <Icon name="lock" size={15} />
-                {t("unlockFor", { price: formatPrice(post.priceCents ?? 0, post.currency ?? PLATFORM_CURRENCY, locale) })}
+                {t("unlockFor", {
+                  price: formatPrice(post.priceCents ?? 0, post.currency ?? PLATFORM_CURRENCY, locale),
+                })}
               </button>
             </form>
-          </div>
+          ) : (
+            <Link
+              href={`/c/${slug}/join`}
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            >
+              <Icon name="members" size={15} />
+              {t("joinToRead")}
+            </Link>
+          )}
+        </div>
+
+        <div className="mt-5 h-px w-full bg-[#161613]/10" />
+        <div className="px-5 py-3 text-xs text-[#161613]/45">
+          {t("commentCount", { count: post.comments })}
         </div>
       </article>
     );

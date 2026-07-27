@@ -464,6 +464,12 @@ export default async function PostDetail({
     comments: post._count.comments,
     likedByMe: post.reactions.length > 0,
     locked,
+    lockedPreviewUrl: locked
+      ? post.priceCents > 0
+        ? post.teaserUrl
+        : (post.imageUrls[0] ?? post.imageUrl)
+      : null,
+    lockedExcerpt: locked ? excerpt(post.body, 180) : null,
     priceCents: post.priceCents,
     currency: post.currency,
     teaserUrl: post.teaserUrl,

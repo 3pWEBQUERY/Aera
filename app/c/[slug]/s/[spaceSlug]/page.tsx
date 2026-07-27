@@ -570,6 +570,15 @@ export default async function SpacePage({
         comments: p._count.comments,
         likedByMe: p.reactions.length > 0,
         locked,
+        // Gesperrt sichtbar, aber unkenntlich: beim Einzelverkauf das
+        // Vorschaubild, bei "nur fuer Mitglieder" das Titelbild — dort ist es
+        // die Werbung fuer den Beitrag.
+        lockedPreviewUrl: locked
+          ? p.priceCents > 0
+            ? p.teaserUrl
+            : (p.imageUrls[0] ?? p.imageUrl)
+          : null,
+        lockedExcerpt: locked ? excerpt(p.body, 180) : null,
         priceCents: p.priceCents,
         currency: p.currency,
         teaserUrl: p.teaserUrl,
