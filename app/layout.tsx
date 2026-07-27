@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 import { buildPlatformMetadata } from "@/lib/seo";
+import { UploadDock } from "@/components/ui/upload-dock";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -71,6 +72,8 @@ export default async function RootLayout({
           <div id="main-content" tabIndex={-1}>
             {children}
           </div>
+          {/* Laufende Uploads, unten rechts — einmal fuer die ganze App. */}
+          <UploadDock />
         </NextIntlClientProvider>
       </body>
     </html>

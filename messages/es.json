@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Subidas",
+    "preparing": "Preparando …",
+    "verifying": "Comprobando …",
+    "done": "Listo",
+    "failed": "Error",
+    "secondsLeft": "{count, plural, one {queda # segundo} other {quedan # segundos}}",
+    "minutesLeft": "{count, plural, one {queda # minuto} other {quedan # minutos}}",
+    "more": "{count, plural, one {# subida más} other {# subidas más}}",
+    "dismiss": "Ocultar"
   }
 }

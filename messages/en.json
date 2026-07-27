@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Uploads",
+    "preparing": "Preparing …",
+    "verifying": "Checking …",
+    "done": "Done",
+    "failed": "Failed",
+    "secondsLeft": "{count, plural, one {# second left} other {# seconds left}}",
+    "minutesLeft": "{count, plural, one {# minute left} other {# minutes left}}",
+    "more": "{count, plural, one {# more upload} other {# more uploads}}",
+    "dismiss": "Dismiss"
   }
 }

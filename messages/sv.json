@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Uppladdningar",
+    "preparing": "Förbereder …",
+    "verifying": "Kontrollerar …",
+    "done": "Klart",
+    "failed": "Misslyckades",
+    "secondsLeft": "{count, plural, one {# sekund kvar} other {# sekunder kvar}}",
+    "minutesLeft": "{count, plural, one {# minut kvar} other {# minuter kvar}}",
+    "more": "{count, plural, one {# uppladdning till} other {# uppladdningar till}}",
+    "dismiss": "Dölj"
   }
 }

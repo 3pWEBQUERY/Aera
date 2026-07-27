@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Uploads",
+    "preparing": "Voorbereiden …",
+    "verifying": "Controleren …",
+    "done": "Klaar",
+    "failed": "Mislukt",
+    "secondsLeft": "{count, plural, one {nog # seconde} other {nog # seconden}}",
+    "minutesLeft": "{count, plural, one {nog # minuut} other {nog # minuten}}",
+    "more": "{count, plural, one {# upload meer} other {# uploads meer}}",
+    "dismiss": "Verbergen"
   }
 }

@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Envios",
+    "preparing": "Preparando …",
+    "verifying": "Verificando …",
+    "done": "Concluído",
+    "failed": "Falhou",
+    "secondsLeft": "{count, plural, one {falta # segundo} other {faltam # segundos}}",
+    "minutesLeft": "{count, plural, one {falta # minuto} other {faltam # minutos}}",
+    "more": "{count, plural, one {mais # envio} other {mais # envios}}",
+    "dismiss": "Ocultar"
   }
 }

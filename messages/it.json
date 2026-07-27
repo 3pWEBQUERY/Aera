@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Caricamenti",
+    "preparing": "Preparazione …",
+    "verifying": "Verifica …",
+    "done": "Fatto",
+    "failed": "Non riuscito",
+    "secondsLeft": "{count, plural, one {manca # secondo} other {mancano # secondi}}",
+    "minutesLeft": "{count, plural, one {manca # minuto} other {mancano # minuti}}",
+    "more": "{count, plural, one {# altro caricamento} other {altri # caricamenti}}",
+    "dismiss": "Nascondi"
   }
 }

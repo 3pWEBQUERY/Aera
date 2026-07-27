@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Przesyłanie",
+    "preparing": "Przygotowywanie …",
+    "verifying": "Sprawdzanie …",
+    "done": "Gotowe",
+    "failed": "Nie udało się",
+    "secondsLeft": "{count, plural, one {została # sekunda} few {zostały # sekundy} many {zostało # sekund} other {zostało # sekundy}}",
+    "minutesLeft": "{count, plural, one {została # minuta} few {zostały # minuty} many {zostało # minut} other {zostało # minuty}}",
+    "more": "{count, plural, one {jeszcze # plik} few {jeszcze # pliki} many {jeszcze # plików} other {jeszcze # pliku}}",
+    "dismiss": "Ukryj"
   }
 }

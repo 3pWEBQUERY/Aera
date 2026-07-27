@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "上傳",
+    "preparing": "正在準備 …",
+    "verifying": "正在檢查 …",
+    "done": "完成",
+    "failed": "失敗",
+    "secondsLeft": "{count, plural, other {還剩 # 秒}}",
+    "minutesLeft": "{count, plural, other {還剩 # 分鐘}}",
+    "more": "{count, plural, other {還有 # 個}}",
+    "dismiss": "隱藏"
   }
 }

@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "업로드",
+    "preparing": "준비 중 …",
+    "verifying": "확인 중 …",
+    "done": "완료",
+    "failed": "실패",
+    "secondsLeft": "{count, plural, other {#초 남음}}",
+    "minutesLeft": "{count, plural, other {#분 남음}}",
+    "more": "{count, plural, other {외 #개}}",
+    "dismiss": "닫기"
   }
 }

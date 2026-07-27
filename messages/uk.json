@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Завантаження",
+    "preparing": "Підготовка …",
+    "verifying": "Перевірка …",
+    "done": "Готово",
+    "failed": "Не вдалося",
+    "secondsLeft": "{count, plural, one {лишилася # секунда} few {лишилося # секунди} many {лишилося # секунд} other {лишилося # секунди}}",
+    "minutesLeft": "{count, plural, one {лишилася # хвилина} few {лишилося # хвилини} many {лишилося # хвилин} other {лишилося # хвилини}}",
+    "more": "{count, plural, one {ще # файл} few {ще # файли} many {ще # файлів} other {ще # файлу}}",
+    "dismiss": "Сховати"
   }
 }

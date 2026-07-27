@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "Opplastinger",
+    "preparing": "Forbereder …",
+    "verifying": "Kontrollerer …",
+    "done": "Ferdig",
+    "failed": "Mislyktes",
+    "secondsLeft": "{count, plural, one {# sekund igjen} other {# sekunder igjen}}",
+    "minutesLeft": "{count, plural, one {# minutt igjen} other {# minutter igjen}}",
+    "more": "{count, plural, one {# opplasting til} other {# opplastinger til}}",
+    "dismiss": "Skjul"
   }
 }

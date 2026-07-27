@@ -4518,5 +4518,16 @@
     "close": "Close",
     "reopen": "Reopen",
     "closeAfterReply": "Close after sending"
+  },
+  "uploads": {
+    "title": "アップロード",
+    "preparing": "準備中 …",
+    "verifying": "確認中 …",
+    "done": "完了",
+    "failed": "失敗しました",
+    "secondsLeft": "{count, plural, other {残り#秒}}",
+    "minutesLeft": "{count, plural, other {残り#分}}",
+    "more": "{count, plural, other {他#件}}",
+    "dismiss": "閉じる"
   }
 }

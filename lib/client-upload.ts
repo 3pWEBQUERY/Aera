@@ -1,6 +1,7 @@
 "use client";
 
 import { Sha256 } from "@aws-crypto/sha256-browser";
+import { beginUpload, type UploadHandle } from "./upload-progress";
 
 export class UploadError extends Error {
   constructor(
@@ -91,7 +92,34 @@ export async function uploadMediaFile(input: {
   tenant: string;
   purpose: string;
   onProgress?: (percent: number) => void;
+  /** Setzt die Anzeige unten rechts aus — fuer Uploads im Hintergrund. */
+  silent?: boolean;
 }): Promise<string> {
+  // Jeder Upload der App laeuft hier durch, deshalb steht die Anmeldung an
+  // der Fortschrittsanzeige hier und nicht in den einzelnen Oberflaechen.
+  const job = input.silent ? null : beginUpload(input.file);
+  try {
+    return await runUpload(input, job);
+  } catch (error) {
+    job?.fail(error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
+async function runUpload(
+  input: {
+    file: File;
+    tenant: string;
+    purpose: string;
+    onProgress?: (percent: number) => void;
+  },
+  job: UploadHandle | null,
+): Promise<string> {
+  const report = (percent: number) => {
+    job?.setPercent(percent);
+    input.onProgress?.(percent);
+  };
+  job?.setPhase("preparing");
   const checksumSha256 = await sha256Base64(input.file);
   const initiation = await fetch("/api/upload/initiate", {
     method: "POST",
@@ -119,19 +147,28 @@ export async function uploadMediaFile(input: {
       initiation.status,
     );
   }
-  if (!initJson.direct) return bufferedFallback(input);
+  if (!initJson.direct) {
+    const url = await bufferedFallback({ ...input, onProgress: report });
+    job?.done();
+    return url;
+  }
+  job?.setPhase("uploading");
 
   const put = await xhrUpload({
     method: "PUT",
     url: initJson.uploadUrl,
     body: input.file,
     headers: initJson.headers,
-    onProgress: input.onProgress,
+    onProgress: report,
   });
   if (put.status < 200 || put.status >= 300) {
     throw new UploadError("Object storage rejected the upload", put.status);
   }
-  input.onProgress?.(100);
+  report(100);
+  // Der Server prueft jetzt Groesse, Pruefsumme, Dateisignatur und Schadcode.
+  // Bei grossen Dateien dauert das sichtbar lange — ohne eigene Stufe saehe
+  // die Anzeige aus, als haenge sie bei 100 %.
+  job?.setPhase("verifying");
 
   const completion = await fetch("/api/upload/complete", {
     method: "POST",
@@ -151,5 +188,6 @@ export async function uploadMediaFile(input: {
       completion.status,
     );
   }
+  job?.done();
   return completeJson.url;
 }
