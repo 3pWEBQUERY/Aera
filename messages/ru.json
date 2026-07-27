@@ -3682,7 +3682,8 @@
     "untitled": "Без названия",
     "joinToRead": "Стать участником, чтобы читать",
     "showReplies": "Показать ещё {count} ответов",
-    "emojiLabel": "Вставить эмодзи"
+    "emojiLabel": "Вставить эмодзи",
+    "morePosts": "Ещё посты в {space}"
   },
   "discover": {
     "eyebrow": "Сообщества и авторы",

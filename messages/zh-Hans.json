@@ -3682,7 +3682,8 @@
     "untitled": "无标题",
     "joinToRead": "成为会员即可阅读",
     "showReplies": "再显示 {count} 条回复",
-    "emojiLabel": "插入表情"
+    "emojiLabel": "插入表情",
+    "morePosts": "{space} 的更多帖子"
   },
   "discover": {
     "eyebrow": "社区与创作者",

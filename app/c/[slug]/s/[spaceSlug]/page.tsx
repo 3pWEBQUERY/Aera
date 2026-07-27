@@ -688,7 +688,13 @@ export default async function SpacePage({
     }
 
     return (
-      <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      // `data-wide` weitet den Rahmen (siehe s/layout.tsx), damit die
+      // Beitragsspalte neben der Seitenleiste genauso breit bleibt wie auf
+      // der Startseite.
+      <div
+        data-wide
+        className="grid items-start gap-6 lg:grid-cols-[minmax(0,var(--feed-width))_320px]"
+      >
         {/* ------------------------------------------------------- Feed */}
         <div className="min-w-0 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">

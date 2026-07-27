@@ -3682,7 +3682,8 @@
     "untitled": "Utan titel",
     "joinToRead": "Bli medlem för att läsa",
     "showReplies": "Visa {count} svar till",
-    "emojiLabel": "Infoga emoji"
+    "emojiLabel": "Infoga emoji",
+    "morePosts": "Fler inlägg i {space}"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",

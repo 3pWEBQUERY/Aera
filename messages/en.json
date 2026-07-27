@@ -3710,7 +3710,8 @@
     "untitled": "Untitled",
     "joinToRead": "Become a member to read",
     "showReplies": "Show {count} more replies",
-    "emojiLabel": "Insert emoji"
+    "emojiLabel": "Insert emoji",
+    "morePosts": "More posts in {space}"
   },
   "discover": {
     "eyebrow": "Communities & creators",

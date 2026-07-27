@@ -3682,7 +3682,8 @@
     "untitled": "Bez tytułu",
     "joinToRead": "Zostań członkiem, aby przeczytać",
     "showReplies": "Pokaż jeszcze {count} odpowiedzi",
-    "emojiLabel": "Wstaw emoji"
+    "emojiLabel": "Wstaw emoji",
+    "morePosts": "Więcej wpisów w {space}"
   },
   "discover": {
     "eyebrow": "Społeczności i twórcy",

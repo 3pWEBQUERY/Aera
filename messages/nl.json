@@ -3682,7 +3682,8 @@
     "untitled": "Zonder titel",
     "joinToRead": "Word lid om te lezen",
     "showReplies": "{count} reacties meer tonen",
-    "emojiLabel": "Emoji invoegen"
+    "emojiLabel": "Emoji invoegen",
+    "morePosts": "Meer berichten in {space}"
   },
   "discover": {
     "eyebrow": "Communities & creators",

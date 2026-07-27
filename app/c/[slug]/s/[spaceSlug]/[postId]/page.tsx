@@ -469,8 +469,57 @@ export default async function PostDetail({
     teaserUrl: post.teaserUrl,
   };
 
+  // Weitere Beitraege desselben Space — unter den Kommentaren, wie im Blog:
+  // wer bis hierhin gelesen hat, ist mit dem Beitrag fertig.
+  const moreRaw = await prisma.post.findMany({
+    where: {
+      tenantId: tenant.id,
+      spaceId: space.id,
+      isPublished: true,
+      id: { not: post.id },
+      ...(isStaff ? {} : { publishedAt: { lte: new Date() } }),
+    },
+    orderBy: { createdAt: "desc" },
+    take: 9,
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      imageUrl: true,
+      imageUrls: true,
+      videoUrl: true,
+      teaserUrl: true,
+      currency: true,
+      createdAt: true,
+      ...GATE_SELECT,
+      _count: { select: { reactions: true, comments: true } },
+    },
+  });
+  const moreTiles: PostTileData[] = moreRaw.map((p) => {
+    const kind = postLockKind(p, ctx);
+    const tileLocked = kind !== "none";
+    return {
+      id: p.id,
+      title: p.title || excerpt(p.body, 80) || t("untitled"),
+      href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
+      imageUrl: kind === "paid" ? p.teaserUrl : (p.imageUrls[0] ?? p.imageUrl),
+      videoUrl: tileLocked ? null : p.videoUrl,
+      coverUrl: null,
+      hasVideo: Boolean(p.videoUrl),
+      locked: tileLocked,
+      lockKind: kind,
+      priceLabel: kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
+      createdAt: p.createdAt,
+      likes: p._count.reactions,
+      comments: p._count.comments,
+    };
+  });
+
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
+    <div
+      data-wide
+      className="mx-auto max-w-[var(--feed-width)] space-y-5"
+    >
       <Link
         href={`/c/${slug}/s/${spaceSlug}`}
         className="text-sm text-[#161613]/60 hover:text-[#161613]"
@@ -479,6 +528,15 @@ export default async function PostDetail({
       </Link>
       <PostCard post={card} slug={slug} space={spaceSlug} detail />
       {commentsBlock}
+      {moreTiles.length > 0 && (
+        <div className="pt-6">
+          <PostSlider
+            title={t("morePosts", { space: space.name })}
+            titleHref={`/c/${slug}/s/${spaceSlug}`}
+            items={moreTiles}
+          />
+        </div>
+      )}
     </div>
   );
 }

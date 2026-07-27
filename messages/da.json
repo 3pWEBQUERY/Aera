@@ -3682,7 +3682,8 @@
     "untitled": "Uden titel",
     "joinToRead": "Bliv medlem for at læse",
     "showReplies": "Vis {count} flere svar",
-    "emojiLabel": "Indsæt emoji"
+    "emojiLabel": "Indsæt emoji",
+    "morePosts": "Flere opslag i {space}"
   },
   "discover": {
     "eyebrow": "Communities & creators",

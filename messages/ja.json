@@ -3682,7 +3682,8 @@
     "untitled": "無題",
     "joinToRead": "読むにはメンバーになる",
     "showReplies": "さらに {count} 件の返信を表示",
-    "emojiLabel": "絵文字を挿入"
+    "emojiLabel": "絵文字を挿入",
+    "morePosts": "{space} のほかの投稿"
   },
   "discover": {
     "eyebrow": "コミュニティ & クリエイター",

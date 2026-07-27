@@ -3682,7 +3682,8 @@
     "untitled": "Без назви",
     "joinToRead": "Стати учасником, щоб читати",
     "showReplies": "Показати ще {count} відповідей",
-    "emojiLabel": "Вставити емодзі"
+    "emojiLabel": "Вставити емодзі",
+    "morePosts": "Більше дописів у {space}"
   },
   "discover": {
     "eyebrow": "Спільноти та автори",

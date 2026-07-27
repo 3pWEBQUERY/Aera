@@ -3682,7 +3682,8 @@
     "untitled": "제목 없음",
     "joinToRead": "읽으려면 멤버 되기",
     "showReplies": "답글 {count}개 더 보기",
-    "emojiLabel": "이모지 넣기"
+    "emojiLabel": "이모지 넣기",
+    "morePosts": "{space}의 다른 게시물"
   },
   "discover": {
     "eyebrow": "커뮤니티 & 크리에이터",
