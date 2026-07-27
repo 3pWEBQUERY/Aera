@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Utgångna stories hamnar här.",
       "permanentLabel": "Visa permanent",
       "permanentHint": "Storyn går inte ut och visas tills du raderar den.",
-      "permanentBadge": "Permanent"
+      "permanentBadge": "Permanent",
+      "defaultPermanentLabel": "Nya stories permanenta",
+      "defaultPermanentHint": "Nya stories startar med ”Visa permanent” påslaget. Det går att ändra per story."
     },
     "planner": {
       "metaTitle": "Planerare",

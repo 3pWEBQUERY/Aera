@@ -2941,7 +2941,9 @@
       "archivedEmptyHint": "Abgelaufene Storys landen hier.",
       "permanentLabel": "Dauerhaft anzeigen",
       "permanentHint": "Die Story läuft nicht ab und bleibt sichtbar, bis du sie löschst.",
-      "permanentBadge": "Dauerhaft"
+      "permanentBadge": "Dauerhaft",
+      "defaultPermanentLabel": "Neue Stories dauerhaft",
+      "defaultPermanentHint": "Neu erstellte Stories starten mit „Dauerhaft anzeigen“. Bei jeder einzelnen Story lässt sich das ändern."
     },
     "planner": {
       "metaTitle": "Planer",

@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Las historias caducadas van aquí.",
       "permanentLabel": "Mostrar siempre",
       "permanentHint": "La historia no caduca y se mantiene visible hasta que la elimines.",
-      "permanentBadge": "Permanente"
+      "permanentBadge": "Permanente",
+      "defaultPermanentLabel": "Historias nuevas permanentes",
+      "defaultPermanentHint": "Las historias nuevas empiezan con «Mostrar siempre» activado. Puedes cambiarlo en cada historia."
     },
     "planner": {
       "metaTitle": "Planificador",

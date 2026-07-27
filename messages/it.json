@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Le storie scadute finiscono qui.",
       "permanentLabel": "Mostra sempre",
       "permanentHint": "La storia non scade e resta visibile finché non la elimini.",
-      "permanentBadge": "Permanente"
+      "permanentBadge": "Permanente",
+      "defaultPermanentLabel": "Nuove storie permanenti",
+      "defaultPermanentHint": "Le nuove storie partono con «Mostra sempre» attivo. Puoi cambiarlo per ogni storia."
     },
     "planner": {
       "metaTitle": "Pianificatore",

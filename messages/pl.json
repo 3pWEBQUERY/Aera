@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Wygasłe relacje trafiają tutaj.",
       "permanentLabel": "Pokazuj na stałe",
       "permanentHint": "Relacja nie wygasa i pozostaje widoczna, dopóki jej nie usuniesz.",
-      "permanentBadge": "Na stałe"
+      "permanentBadge": "Na stałe",
+      "defaultPermanentLabel": "Nowe relacje na stałe",
+      "defaultPermanentHint": "Nowe relacje startują z włączonym „Pokazuj na stałe”. Można to zmienić przy każdej relacji."
     },
     "planner": {
       "metaTitle": "Planer",

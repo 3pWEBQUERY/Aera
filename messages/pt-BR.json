@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Stories expirados vão para cá.",
       "permanentLabel": "Exibir sempre",
       "permanentHint": "O story não expira e fica visível até você excluí-lo.",
-      "permanentBadge": "Permanente"
+      "permanentBadge": "Permanente",
+      "defaultPermanentLabel": "Novos stories permanentes",
+      "defaultPermanentHint": "Novos stories começam com “Exibir sempre” ligado. Dá para mudar em cada story."
     },
     "planner": {
       "metaTitle": "Planejador",

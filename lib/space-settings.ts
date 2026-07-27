@@ -249,12 +249,19 @@ export function parseChatSettings(raw: unknown): ChatSettings {
 export interface StorySettings {
   /** Default lifetime (hours) prefilled for new stories. 1–168. */
   defaultTtlHours: number;
+  /**
+   * Neue Stories laufen standardmaessig nicht ab. Der Schalter im
+   * Story-Formular startet dann eingeschaltet; jede einzelne Story kann
+   * davon abweichen — die Einstellung ist eine Voreinstellung, kein Zwang.
+   */
+  defaultPermanent: boolean;
   /** Auto-advance in the fullscreen viewer. 0 = manual, else 1–30 seconds. */
   autoplaySeconds: number;
 }
 
 export const STORY_DEFAULTS: StorySettings = {
   defaultTtlHours: 24,
+  defaultPermanent: false,
   autoplaySeconds: 5,
 };
 
@@ -270,6 +277,7 @@ export function parseStorySettings(raw: unknown): StorySettings {
   const autoplay = Number(s.autoplaySeconds);
   return {
     defaultTtlHours: clampInt(s.defaultTtlHours, 1, 168, STORY_DEFAULTS.defaultTtlHours),
+    defaultPermanent: s.defaultPermanent === true,
     autoplaySeconds:
       Number.isFinite(autoplay) && autoplay > 0 ? Math.min(30, Math.floor(autoplay)) : 0,
   };

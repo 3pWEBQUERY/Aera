@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Les stories expirées arrivent ici.",
       "permanentLabel": "Afficher en permanence",
       "permanentHint": "La story n’expire pas et reste visible jusqu’à ce que vous la supprimiez.",
-      "permanentBadge": "Permanente"
+      "permanentBadge": "Permanente",
+      "defaultPermanentLabel": "Nouvelles stories permanentes",
+      "defaultPermanentHint": "Les nouvelles stories démarrent avec « Afficher en permanence » activé. Modifiable pour chaque story."
     },
     "planner": {
       "metaTitle": "Planificateur",

@@ -2495,6 +2495,7 @@ export async function updateStorySettingsAction(
   const settings = {
     ...existing,
     defaultTtlHours: Number.isFinite(ttl) && ttl >= 1 ? Math.min(168, Math.floor(ttl)) : 24,
+    defaultPermanent: fd.get("defaultPermanent") === "1",
     autoplaySeconds:
       Number.isFinite(autoplay) && autoplay > 0 ? Math.min(30, Math.floor(autoplay)) : 0,
   };

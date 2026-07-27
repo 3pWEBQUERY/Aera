@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "過期的限時動態會封存於此。",
       "permanentLabel": "長期展示",
       "permanentHint": "這則限時動態不會過期，會一直顯示，直到你刪除它。",
-      "permanentBadge": "長期"
+      "permanentBadge": "長期",
+      "defaultPermanentLabel": "新限時動態長期展示",
+      "defaultPermanentHint": "新建的限時動態預設開啟「長期展示」。每則都可以單獨更改。"
     },
     "planner": {
       "metaTitle": "規劃器",

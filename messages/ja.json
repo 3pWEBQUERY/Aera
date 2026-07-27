@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "期限切れのストーリーはここに入ります。",
       "permanentLabel": "常に表示",
       "permanentHint": "ストーリーは期限切れにならず、削除するまで表示され続けます。",
-      "permanentBadge": "常時"
+      "permanentBadge": "常時",
+      "defaultPermanentLabel": "新しいストーリーを常時表示",
+      "defaultPermanentHint": "新規ストーリーは「常に表示」がオンで始まります。ストーリーごとに変更できます。"
     },
     "planner": {
       "metaTitle": "プランナー",

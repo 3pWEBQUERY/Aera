@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Udløbne stories havner her.",
       "permanentLabel": "Vis permanent",
       "permanentHint": "Historien udløber ikke og bliver vist, indtil du sletter den.",
-      "permanentBadge": "Permanent"
+      "permanentBadge": "Permanent",
+      "defaultPermanentLabel": "Nye historier permanente",
+      "defaultPermanentHint": "Nye historier starter med “Vis permanent” slået til. Det kan ændres for hver historie."
     },
     "planner": {
       "metaTitle": "Planlægger",

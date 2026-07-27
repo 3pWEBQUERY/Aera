@@ -2941,7 +2941,9 @@
       "archivedEmptyHint": "Expired stories land here.",
       "permanentLabel": "Show permanently",
       "permanentHint": "The story never expires and stays visible until you delete it.",
-      "permanentBadge": "Always on"
+      "permanentBadge": "Always on",
+      "defaultPermanentLabel": "New stories permanent",
+      "defaultPermanentHint": "New stories start with “Show permanently” switched on. You can change it per story."
     },
     "planner": {
       "metaTitle": "Planner",

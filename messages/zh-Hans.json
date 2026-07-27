@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "过期的动态会归档到此处。",
       "permanentLabel": "长期展示",
       "permanentHint": "这条快拍不会过期，会一直显示，直到你删除它。",
-      "permanentBadge": "长期"
+      "permanentBadge": "长期",
+      "defaultPermanentLabel": "新快拍长期展示",
+      "defaultPermanentHint": "新建的快拍默认开启“长期展示”。每条快拍都可以单独更改。"
     },
     "planner": {
       "metaTitle": "规划器",

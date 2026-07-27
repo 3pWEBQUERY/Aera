@@ -2916,7 +2916,9 @@
       "archivedEmptyHint": "Verlopen stories komen hier.",
       "permanentLabel": "Permanent tonen",
       "permanentHint": "Het verhaal verloopt niet en blijft zichtbaar tot je het verwijdert.",
-      "permanentBadge": "Permanent"
+      "permanentBadge": "Permanent",
+      "defaultPermanentLabel": "Nieuwe verhalen permanent",
+      "defaultPermanentHint": "Nieuwe verhalen starten met ‘Permanent tonen’ aan. Per verhaal aan te passen."
     },
     "planner": {
       "metaTitle": "Planner",

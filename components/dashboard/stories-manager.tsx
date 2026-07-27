@@ -235,6 +235,7 @@ export function StoriesManager({
           slug={slug}
           space={space}
           defaultTtl={settings.defaultTtlHours}
+          defaultPermanent={settings.defaultPermanent}
           onDone={() => setCreateOpen(false)}
         />
       </Sheet>
@@ -253,6 +254,7 @@ export function StoriesManager({
             space={space}
             story={editing}
             defaultTtl={ttlHoursOf(editing)}
+            defaultPermanent={settings.defaultPermanent}
             onDone={() => setEditing(null)}
           />
         )}
@@ -281,18 +283,24 @@ function StoryForm({
   space,
   story,
   defaultTtl,
+  defaultPermanent,
   onDone,
 }: {
   slug: string;
   space: SpaceInfo;
   story?: StoryRow;
   defaultTtl: number;
+  defaultPermanent: boolean;
   onDone: () => void;
 }) {
   const isEdit = !!story;
   // Dauerhaft heisst: kein Ablauf. Beim Bearbeiten erkennt man das daran,
   // dass die Story keinen hat.
-  const [permanent, setPermanent] = useState(isEdit ? story!.expiresAt === null : false);
+  // Beim Bearbeiten zaehlt der Zustand der Story, bei einer neuen die
+  // Voreinstellung des Space.
+  const [permanent, setPermanent] = useState(
+    isEdit ? story!.expiresAt === null : defaultPermanent,
+  );
   const [state, action, pending] = useActionState(
     isEdit ? updateStoryAction : createStoryAction,
     initial,
@@ -334,38 +342,13 @@ function StoryForm({
             />
           </div>
           <div className="rounded-2xl border border-slate-200 p-4">
-            <label className="flex cursor-pointer items-start justify-between gap-4">
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-slate-900">
-                  {t("permanentLabel")}
-                </span>
-                <span className="mt-0.5 block text-xs leading-5 text-slate-400">
-                  {t("permanentHint")}
-                </span>
-              </span>
-              <input
-                type="checkbox"
-                name="permanent"
-                value="1"
-                checked={permanent}
-                onChange={(e) => setPermanent(e.target.checked)}
-                className="peer sr-only"
-              />
-              <span
-                aria-hidden
-                className={cn(
-                  "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition",
-                  permanent ? "bg-[var(--action-strong)]" : "bg-slate-200",
-                )}
-              >
-                <span
-                  className={cn(
-                    "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all",
-                    permanent ? "left-[1.375rem]" : "left-0.5",
-                  )}
-                />
-              </span>
-            </label>
+            <Toggle
+              name="permanent"
+              checked={permanent}
+              onChange={setPermanent}
+              title={t("permanentLabel")}
+              hint={t("permanentHint")}
+            />
 
             {/* Die Laufzeit bleibt im DOM, damit ein versehentliches Umlegen
                 den eingestellten Wert nicht verwirft — die Action liest sie
@@ -399,6 +382,52 @@ function StoryForm({
   );
 }
 
+/** Schalter im Aera-Ton — zweimal gebraucht, darum ein eigenes Bauteil. */
+function Toggle({
+  name,
+  checked,
+  onChange,
+  title,
+  hint,
+}: {
+  name: string;
+  checked: boolean;
+  onChange: (v: boolean) => void;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <label className="flex cursor-pointer items-start justify-between gap-4">
+      <span className="min-w-0">
+        <span className="block text-sm font-semibold text-slate-900">{title}</span>
+        <span className="mt-0.5 block text-xs leading-5 text-slate-400">{hint}</span>
+      </span>
+      <input
+        type="checkbox"
+        name={name}
+        value="1"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        className="sr-only"
+      />
+      <span
+        aria-hidden
+        className={cn(
+          "relative mt-0.5 h-6 w-11 shrink-0 rounded-full transition",
+          checked ? "bg-[var(--action-strong)]" : "bg-slate-200",
+        )}
+      >
+        <span
+          className={cn(
+            "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition-all",
+            checked ? "left-[1.375rem]" : "left-0.5",
+          )}
+        />
+      </span>
+    </label>
+  );
+}
+
 const AUTOPLAY_OPTIONS = [0, 3, 5, 8, 10, 15];
 
 function StorySettingsForm({
@@ -415,6 +444,7 @@ function StorySettingsForm({
   const t = useTranslations("dashboard.stories");
   const [state, action, pending] = useActionState(updateStorySettingsAction, initial);
   const [autoplay, setAutoplay] = useState(settings.autoplaySeconds);
+  const [defaultPermanent, setDefaultPermanent] = useState(settings.defaultPermanent);
 
   useEffect(() => {
     if (state.ok) onDone();
@@ -428,17 +458,28 @@ function StorySettingsForm({
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-6 px-6 py-10">
           <FormError message={state.error} />
-          <div>
-            <Label htmlFor="st-default-ttl">{t("defaultTtlLabel")}</Label>
-            <Input
-              id="st-default-ttl"
-              name="defaultTtlHours"
-              type="number"
-              min={1}
-              max={168}
-              defaultValue={settings.defaultTtlHours}
+          <div className="rounded-2xl border border-slate-200 p-4">
+            <Toggle
+              name="defaultPermanent"
+              checked={defaultPermanent}
+              onChange={setDefaultPermanent}
+              title={t("defaultPermanentLabel")}
+              hint={t("defaultPermanentHint")}
             />
-            <p className="mt-1 text-xs text-slate-400">{t("defaultTtlHint")}</p>
+            {/* Die Vorgabe-Laufzeit bleibt im DOM, damit ein Umlegen des
+                Schalters den eingestellten Wert nicht verwirft. */}
+            <div className={defaultPermanent ? "hidden" : "mt-4 border-t border-slate-100 pt-4"}>
+              <Label htmlFor="st-default-ttl">{t("defaultTtlLabel")}</Label>
+              <Input
+                id="st-default-ttl"
+                name="defaultTtlHours"
+                type="number"
+                min={1}
+                max={168}
+                defaultValue={settings.defaultTtlHours}
+              />
+              <p className="mt-1 text-xs text-slate-400">{t("defaultTtlHint")}</p>
+            </div>
           </div>
           <div>
             <Label>{t("autoplayLabel")}</Label>
