@@ -15,8 +15,11 @@ export interface BlogPost {
   readMinutes: number;
   comments: number;
   likes: number;
-  /** Bezahlt oder nur fuer Mitglieder — Auszug und Cover bleiben zurueck. */
+  /** Bezahlt oder nur fuer Mitglieder — der Auszug bleibt in beiden Faellen zurueck. */
   locked: boolean;
+  lockKind: "none" | "members" | "paid";
+  /** Fertig formatierter Preis fuer die Plakette eines Einzelverkaufs. */
+  priceLabel: string | null;
 }
 
 /**
@@ -40,16 +43,18 @@ function Cover({
   ratio,
   locked,
   lockedLabel,
+  priceLabel,
 }: {
   url: string | null;
   title: string;
   ratio: string;
   locked: boolean;
   lockedLabel: string;
+  priceLabel?: string | null;
 }) {
   return (
     <div className="relative w-full overflow-hidden bg-[#161613]/5" style={{ aspectRatio: ratio }}>
-      {url && !locked ? (
+      {url ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={url} alt={title} className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]" />
       ) : (
@@ -71,7 +76,7 @@ function Cover({
       {locked && (
         <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/85 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
           <Icon name="lock" size={13} />
-          {lockedLabel}
+          {priceLabel || lockedLabel}
         </span>
       )}
     </div>
@@ -146,7 +151,7 @@ export async function BlogIndex({
 
   const GridCard = ({ p }: { p: BlogPost }) => (
     <Link key={p.id} href={href(p.id)} className="group flex flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-md">
-      {cfg.showCover && <Cover url={p.coverUrl} title={p.title} ratio="16 / 9" locked={p.locked} lockedLabel={t("locked")} />}
+      {cfg.showCover && <Cover url={p.coverUrl} title={p.title} ratio="16 / 9" locked={p.locked} lockedLabel={t("locked")} priceLabel={p.priceLabel} />}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="display-serif text-lg leading-snug text-[#161613]">{p.title}</h3>
         {cfg.showExcerpt && !p.locked && p.excerpt && (
@@ -162,7 +167,7 @@ export async function BlogIndex({
       {cfg.showCover && (
         <div className="w-32 shrink-0 sm:w-48">
           <div className="overflow-hidden rounded-xl">
-            <Cover url={p.coverUrl} title={p.title} ratio="16 / 10" locked={p.locked} lockedLabel={t("locked")} />
+            <Cover url={p.coverUrl} title={p.title} ratio="16 / 10" locked={p.locked} lockedLabel={t("locked")} priceLabel={p.priceLabel} />
           </div>
         </div>
       )}
@@ -180,7 +185,7 @@ export async function BlogIndex({
     <div className="space-y-8">
       {useHero && (
         <Link href={href(hero.id)} className="group block overflow-hidden rounded-3xl border border-[#161613]/10 bg-white transition hover:border-[#161613]/25 hover:shadow-lg md:grid md:grid-cols-2">
-          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} />}
+          {cfg.showCover && <Cover url={hero.coverUrl} title={hero.title} ratio="16 / 10" locked={hero.locked} lockedLabel={t("locked")} priceLabel={hero.priceLabel} />}
           <div className="flex flex-col justify-center p-6 sm:p-8">
             <div className="mb-3">
               <Pill className="bg-[var(--brand-soft)] text-[var(--brand)]">{t("latest")}</Pill>

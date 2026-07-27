@@ -24,6 +24,10 @@ export interface PostTileData {
   coverOffsetY?: number;
   coverZoom?: number;
   locked: boolean;
+  /** "paid" zeigt den Preis auf der Plakette, "members" nur das Schloss. */
+  lockKind?: "none" | "members" | "paid";
+  /** Fertig formatierter Preis fuer die Plakette eines Einzelverkaufs. */
+  priceLabel?: string | null;
   createdAt: Date;
   likes: number;
   comments: number;
@@ -48,15 +52,20 @@ const PLATE_STYLE = {
     " color-mix(in oklab, var(--brand) 20%, #100d15) 100%)",
 } as const;
 
+function LockBadge({ post, label }: { post: PostTileData; label: string }) {
+  return (
+    <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/85 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+      <Icon name="lock" size={13} />
+      {post.lockKind === "paid" && post.priceLabel ? post.priceLabel : label}
+    </span>
+  );
+}
+
 function TitlePlate({
   title,
-  locked,
-  lockedLabel,
   compact = false,
 }: {
   title: string;
-  locked: boolean;
-  lockedLabel: string;
   compact?: boolean;
 }) {
   return (
@@ -77,12 +86,6 @@ function TitlePlate({
           {title}
         </p>
       </div>
-      {locked && (
-        <span className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/85 px-2.5 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
-          <Icon name="lock" size={13} />
-          {lockedLabel}
-        </span>
-      )}
     </>
   );
 }
@@ -98,8 +101,8 @@ function Media({
 }) {
   return (
     <div className={`relative w-full overflow-hidden bg-[#161613]/5 ${large ? "" : "aspect-video"}`}>
-      {post.locked ? (
-        <TitlePlate title={post.title} locked lockedLabel={memberLabel} compact={!large} />
+      {post.locked && !post.coverUrl && !post.imageUrl ? (
+        <TitlePlate title={post.title} compact={!large} />
       ) : post.coverUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -120,8 +123,10 @@ function Media({
           className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
         />
       ) : (
-        <TitlePlate title={post.title} locked={false} lockedLabel={memberLabel} compact={!large} />
+        <TitlePlate title={post.title} compact={!large} />
       )}
+
+      {post.locked && <LockBadge post={post} label={memberLabel} />}
 
       {post.hasVideo && !post.locked && (
         <span className="absolute bottom-2 right-2 flex h-8 w-8 items-center justify-center rounded-full bg-black/55 text-white backdrop-blur-sm">
@@ -195,8 +200,8 @@ export function VideoTile({
       className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
       <div className="relative aspect-video overflow-hidden rounded-2xl border border-[#161613]/10 bg-[#161613] transition duration-300 group-hover:border-[#161613]/25">
-        {post.locked ? (
-          <TitlePlate title={post.title} locked lockedLabel={memberLabel} compact />
+        {post.locked && !post.videoUrl && !post.coverUrl && !post.imageUrl ? (
+          <TitlePlate title={post.title} compact />
         ) : post.videoUrl ? (
           <>
             <video
@@ -213,9 +218,17 @@ export function VideoTile({
               </span>
             </span>
           </>
+        ) : post.coverUrl || post.imageUrl ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={(post.coverUrl ?? post.imageUrl) as string}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
         ) : (
-          <TitlePlate title={post.title} locked={false} lockedLabel={memberLabel} compact />
+          <TitlePlate title={post.title} compact />
         )}
+        {post.locked && <LockBadge post={post} label={memberLabel} />}
       </div>
       <h3 className="mt-2.5 line-clamp-2 text-sm font-semibold leading-snug text-[#161613]">
         {post.title}

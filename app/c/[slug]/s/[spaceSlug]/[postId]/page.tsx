@@ -4,7 +4,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
-import { GATE_SELECT, isPostLocked } from "@/lib/post-access";
+import { GATE_SELECT, isPostLocked, postLockKind } from "@/lib/post-access";
 import { readPostPoll } from "@/lib/polls";
 import {
   getPostSettingsForPosts,
@@ -22,7 +22,7 @@ import { ArticleShare } from "@/components/community/article-share";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
-import { excerpt, formatDate, timeAgo } from "@/lib/utils";
+import { excerpt, formatDate, formatPrice, timeAgo } from "@/lib/utils";
 
 export default async function PostDetail({
   params,
@@ -202,6 +202,8 @@ export default async function PostDetail({
       body: true,
       imageUrl: true,
       videoUrl: true,
+      teaserUrl: true,
+      currency: true,
       createdAt: true,
       ...GATE_SELECT,
       _count: { select: { reactions: true, comments: true } },
@@ -242,20 +244,26 @@ export default async function PostDetail({
     const toTile = (p: (typeof relatedRaw)[number]): PostTileData => {
       // Bezahlte Beitraege bleiben sichtbar, aber verschlossen: der Anreiz
       // liegt genau darin, dass man sieht, was es noch gibt.
-      const tileLocked = isPostLocked(p, ctx);
+      const kind = postLockKind(p, ctx);
+      const tileLocked = kind !== "none";
       const cover = relatedCovers.get(p.id);
       return {
         id: p.id,
         title: p.title || excerpt(p.body, 80) || tSpace("untitled"),
         href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
-        imageUrl: tileLocked ? null : p.imageUrl,
+        // Mitglieder-Beitraege behalten ihr Titelbild — es ist die Werbung.
+        // Beim Einzelverkauf steht dafuer nur das Vorschaubild bereit.
+        imageUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
         videoUrl: tileLocked ? null : p.videoUrl,
-        coverUrl: tileLocked ? null : (cover?.coverUrl ?? null),
+        coverUrl: kind === "paid" ? null : (cover?.coverUrl ?? null),
         coverOffsetX: cover?.coverOffsetX ?? 50,
         coverOffsetY: cover?.coverOffsetY ?? 50,
         coverZoom: cover?.coverZoom ?? 100,
         hasVideo: Boolean(p.videoUrl),
         locked: tileLocked,
+        lockKind: kind,
+        priceLabel:
+          kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
         createdAt: p.createdAt,
         likes: p._count.reactions,
         comments: p._count.comments,

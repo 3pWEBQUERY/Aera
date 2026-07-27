@@ -6,7 +6,7 @@ import { getCommunityContext } from "@/lib/guards";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
 import { canAccess } from "@/lib/entitlements";
-import { isPostLocked } from "@/lib/post-access";
+import { isPostLocked, postLockKind } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { PostComposer } from "@/components/community/post-composer";
@@ -484,14 +484,17 @@ export default async function SpacePage({
     });
     const blogPosts: BlogPost[] = raw.map((p) => {
       const words = (p.body || "").trim().split(/\s+/).filter(Boolean).length;
-      const postLocked = isPostLocked(p, ctx);
+      const kind = postLockKind(p, ctx);
+      const postLocked = kind !== "none";
       return {
         id: p.id,
         title: p.title || excerpt(p.body, 60) || t("untitled"),
-        // Auszug und Cover eines gesperrten Beitrags gehen gar nicht mit —
-        // der Text ist der Gegenwert, nicht nur eine Anzeigefrage.
+        // Der Auszug geht nie mit — der Text ist der Gegenwert. Das Titelbild
+        // dagegen bleibt bei "nur fuer Mitglieder" stehen: es ist die Werbung.
+        // Beim Einzelverkauf gehoert es zum Gekauften, dort steht nur das
+        // eigens gepflegte Vorschaubild.
         excerpt: postLocked ? "" : excerpt(p.body, 200),
-        coverUrl: postLocked ? null : p.imageUrl,
+        coverUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
         authorName: p.author.name,
         authorAvatar: p.author.avatarUrl,
         createdAt: p.createdAt,
@@ -499,6 +502,9 @@ export default async function SpacePage({
         comments: p._count.comments,
         likes: p._count.reactions,
         locked: postLocked,
+        lockKind: kind,
+        priceLabel:
+          kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
       };
     });
     return (

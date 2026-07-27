@@ -7,7 +7,7 @@ import { getCommunityCoverUrl } from "@/lib/tenant";
 import { isAnnouncementsOnly, activeSpaceAds } from "@/lib/space-settings";
 import { AdsBanner, type AdBannerItem } from "@/components/community/ads-banner";
 import { canAccess } from "@/lib/entitlements";
-import { isPostLocked } from "@/lib/post-access";
+import { postLockKind } from "@/lib/post-access";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { displayRecommendations } from "@/lib/ai";
 import { leaderboard } from "@/lib/gamification";
@@ -175,14 +175,23 @@ export default async function CommunityHome({
   const toTile = (p: (typeof recentRaw)[number]): PostTileData & { body: string } => {
     // Zwei Sperren: der Space kann verschlossen sein, und der einzelne
     // Beitrag kann strenger sein als sein Space.
-    const locked = lockedSpaceIds.has(p.spaceId) || isPostLocked(p, ctx);
+    const spaceLocked = lockedSpaceIds.has(p.spaceId);
+    const kind = spaceLocked ? "members" : postLockKind(p, ctx);
+    const locked = kind !== "none";
+    // Bei "nur fuer Mitglieder" ist das Titelbild die Werbung und bleibt
+    // stehen. Beim Einzelverkauf ist es Teil des Gekauften — dort zeigt nur
+    // das eigens gepflegte Vorschaubild.
+    const teaser = kind === "paid" ? p.teaserUrl : null;
     return {
       id: p.id,
       title: p.title || excerpt(p.body, 80) || t("untitled"),
       href: locked ? `/c/${slug}/join` : `/c/${slug}/s/${p.space.slug}/${p.id}`,
-      imageUrl: locked ? null : p.imageUrl,
+      imageUrl: kind === "paid" ? teaser : p.imageUrl,
       videoUrl: locked ? null : p.videoUrl,
-      coverUrl: locked ? null : (tileCovers.get(p.id)?.coverUrl ?? null),
+      coverUrl: kind === "paid" ? null : (tileCovers.get(p.id)?.coverUrl ?? null),
+      lockKind: kind,
+      priceLabel:
+        kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
       coverOffsetX: tileCovers.get(p.id)?.coverOffsetX ?? 50,
       coverOffsetY: tileCovers.get(p.id)?.coverOffsetY ?? 50,
       coverZoom: tileCovers.get(p.id)?.coverZoom ?? 100,

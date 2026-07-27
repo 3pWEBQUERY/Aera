@@ -47,6 +47,23 @@ export function isPostLocked(post: GatedPost, ctx: AccessContext): boolean {
 }
 
 /**
+ * Art der Sperre — die Oberflaeche zeigt beide Faelle unterschiedlich.
+ *
+ * "members": der Beitrag verlangt eine Mitgliedschaft. Das Titelbild ist hier
+ * die Werbung und bleibt sichtbar; nur der Inhalt haelt zurueck.
+ *
+ * "paid": der Beitrag wird einzeln verkauft. Das Titelbild ist Teil des
+ * Gekauften und geht nicht mit — dafuer gibt es das eigens gepflegte
+ * Vorschaubild (teaserUrl).
+ */
+export type PostLockKind = "none" | "members" | "paid";
+
+export function postLockKind(post: GatedPost, ctx: AccessContext): PostLockKind {
+  if (!isPostLocked(post, ctx)) return "none";
+  return post.priceCents > 0 ? "paid" : "members";
+}
+
+/**
  * Where-Fragment fuer alles, was ausserhalb der Community sichtbar sein darf:
  * Entdecken-Suche, Sitemap, Vorschaubilder. Ein Beitrag, der eine
  * Mitgliedschaft verlangt, hat dort nichts zu suchen.
