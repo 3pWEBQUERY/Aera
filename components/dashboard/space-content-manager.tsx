@@ -185,20 +185,69 @@ function PostForm({
 }) {
   const [state, action, pending] = useActionState(createSpacePostAction, initial);
   const t = useTranslations("dashboard.spaceContent");
+  // Zugriff und Reiter heissen im Blog-Composer schon genau so — dieselben
+  // Begriffe fuer dieselbe Sache, statt einer zweiten Uebersetzung.
+  const tb = useTranslations("dashboard.blog");
   const createLabelFor = useCreateLabel();
+  const [tab, setTab] = useState<"content" | "access">("content");
+  const [visibility, setVisibility] = useState<"PUBLIC" | "MEMBERS" | "PAID">("PUBLIC");
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
 
   const ty = space.type;
   const hasTitle = ty === "FORUM" || ty === "BLOG" || ty === "VIDEOS" || ty === "PODCAST";
+  // Nur wo es etwas zu regeln gibt: Preis und Sichtbarkeit kennt die Action
+  // fuer Feed- und Video-Beitraege.
+  const hasAccess = ty === "FEED" || ty === "VIDEOS";
 
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="spaceId" value={space.id} />
+      {hasAccess && <input type="hidden" name="visibility" value={visibility} />}
+
+      {/* Alle Reiter bleiben im DOM: ein ausgehaengter Reiter wuerde seine
+          Felder beim Abschicken nicht mitsenden. */}
+      {hasAccess && (
+        <div className="border-b border-slate-200 px-6 pt-1">
+          <div role="tablist" className="-mb-px flex gap-1">
+            {([
+              { key: "content" as const, label: tb("tabContent"), icon: "feed" as const },
+              { key: "access" as const, label: tb("tabAccess"), icon: "lock" as const },
+            ]).map((tbn) => {
+              const on = tab === tbn.key;
+              return (
+                <button
+                  key={tbn.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={on}
+                  onClick={() => setTab(tbn.key)}
+                  className={
+                    "inline-flex items-center gap-2 rounded-t-lg border-b-2 px-3.5 py-2.5 text-sm font-medium transition " +
+                    (on
+                      ? "border-[var(--action-strong)] bg-[var(--action-soft)] text-slate-900"
+                      : "border-transparent text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800")
+                  }
+                >
+                  <Icon name={tbn.icon} size={15} />
+                  {tbn.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       <div className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-xl space-y-5 px-6 py-10">
+        <div
+          className={
+            "mx-auto max-w-xl space-y-5 px-6 " +
+            (hasAccess ? "py-8 " : "py-10 ") +
+            (hasAccess && tab !== "content" ? "hidden" : "")
+          }
+        >
           <FormError message={state.error} />
 
           {ty === "GALLERY" && (
@@ -279,9 +328,64 @@ function PostForm({
             </div>
           )}
 
-          {/* Pay-per-view / pay-per-post (FEED + VIDEOS) */}
-          {(ty === "FEED" || ty === "VIDEOS") && (
-            <div className="space-y-4 rounded-2xl border border-slate-200 p-4">
+          {/* Planung fuer Typen ohne Zugriff-Reiter; sonst steht sie dort. */}
+          {!hasAccess && (ty === "PODCAST" || ty === "BLOG") && (
+            <div>
+              <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
+              <ScheduleField id="sc-schedule" />
+              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+            </div>
+          )}
+        </div>
+
+        {hasAccess && (
+          <div
+            className={
+              "mx-auto max-w-xl space-y-5 px-6 py-8 " + (tab === "access" ? "" : "hidden")
+            }
+          >
+            <div>
+              <Label>{tb("accessLabel")}</Label>
+              <div className="mt-1 grid gap-2 sm:grid-cols-3">
+                {ACCESS_CHOICES.map((c) => {
+                  const on = visibility === c.value;
+                  return (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onClick={() => setVisibility(c.value)}
+                      aria-pressed={on}
+                      className={
+                        "rounded-2xl border p-4 text-left transition " +
+                        (on
+                          ? "border-[var(--action-strong)] bg-[var(--action-soft)]"
+                          : "border-slate-200 hover:bg-[var(--action-soft)]")
+                      }
+                    >
+                      <span
+                        className={
+                          "flex h-9 w-9 items-center justify-center rounded-lg transition " +
+                          (on ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")
+                        }
+                      >
+                        <Icon name={c.icon} size={17} />
+                      </span>
+                      <span className="mt-3 block text-sm font-semibold text-slate-900">
+                        {tb(c.titleKey)}
+                      </span>
+                      <span className="mt-1 block text-xs leading-5 text-slate-500">
+                        {tb(c.textKey)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Preis und Vorschaubild gehoeren nur zum Einzelverkauf. Sie
+                bleiben im DOM, damit ein Reiterwechsel nichts verwirft — die
+                Action ignoriert sie, solange visibility nicht PAID ist. */}
+            <div className={visibility === "PAID" ? "space-y-4 rounded-2xl border border-slate-200 p-4" : "hidden"}>
               <div>
                 <Label htmlFor="sc-price">{t("ppvPriceLabel")}</Label>
                 <PricePointSelect id="sc-price" name="priceCents" kind="oneTime" allowFree defaultCents={0} />
@@ -292,22 +396,25 @@ function PostForm({
                 <ImageUpload tenant={slug} name="teaserUrl" purpose="ppv-teaser" />
               </div>
             </div>
-          )}
 
-          {/* Scheduling (FEED / VIDEOS / PODCAST / BLOG) */}
-          {(ty === "FEED" || ty === "VIDEOS" || ty === "PODCAST" || ty === "BLOG") && (
             <div>
               <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
               <ScheduleField id="sc-schedule" />
               <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
       <Footer pending={pending} onDone={onDone} cta={createLabelFor(ty)} />
     </form>
   );
 }
+
+const ACCESS_CHOICES = [
+  { value: "PUBLIC" as const, icon: "globe" as const, titleKey: "accessPublic", textKey: "accessPublicHint" },
+  { value: "MEMBERS" as const, icon: "members" as const, titleKey: "accessMembers", textKey: "accessMembersHint" },
+  { value: "PAID" as const, icon: "creditCard" as const, titleKey: "accessPaid", textKey: "accessPaidHint" },
+];
 
 function ArticleForm({ slug, space, onDone }: { slug: string; space: SpaceInfo; onDone: () => void }) {
   const [state, action, pending] = useActionState(createArticleAction, initial);
