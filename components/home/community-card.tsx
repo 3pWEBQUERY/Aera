@@ -22,9 +22,14 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
       href={`/c/${c.slug}`}
       // Kein Anheben beim Hover: die Karten stehen im Raster ruhig, das
       // Feedback kommt allein über Rahmen und Schatten.
-      className="group block overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:border-[#161613]/25 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+      //
+      // `h-full` plus Spaltenfluss: in einer Reihe oder einem Raster sind die
+      // Zellen ohnehin gleich hoch — die Karte muss ihre Zelle nur ausfuellen.
+      // Sonst richtet sich ihre Hoehe nach dem Text, und eine Community ohne
+      // Beschreibung ergibt eine kuerzere Karte als ihre Nachbarn.
+      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#161613]/10 bg-white transition duration-300 hover:border-[#161613]/15 hover:shadow-[var(--shadow-card)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
     >
-      <div className="relative aspect-[3/1] w-full overflow-hidden bg-[#161613]/5">
+      <div className="relative aspect-[3/1] w-full shrink-0 overflow-hidden bg-[#161613]/5">
         {c.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -39,7 +44,7 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
           />
         )}
       </div>
-      <div className="relative px-4 pb-4">
+      <div className="relative flex flex-1 flex-col px-4 pb-4">
         {/* Floating logo overlapping the cover. */}
         <div className="-mt-6 mb-2.5">
           {c.logoUrl ? (
@@ -64,7 +69,9 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
         {c.tagline && (
           <p className="mt-1 line-clamp-2 text-sm leading-snug text-[#161613]/60">{c.tagline}</p>
         )}
-        <p className="mt-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+        {/* Die Zahlen sitzen am Fuss der Karte, nicht direkt unter dem Text —
+            so stehen sie ueber alle Karten einer Reihe auf einer Linie. */}
+        <p className="mt-auto pt-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
           {t("memberCount", { count: c.memberCount })}
           {c.postCount > 0 && (
             <>
