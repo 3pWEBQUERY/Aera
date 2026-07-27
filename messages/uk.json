@@ -1094,7 +1094,8 @@
         "GALLERY": "Додати зображення",
         "VIDEOS": "Додати відео",
         "KNOWLEDGE": "Написати статтю",
-        "PODCAST": "Опублікувати епізод"
+        "PODCAST": "Опублікувати епізод",
+        "MUSIC": "Завантажити музику"
       },
       "managedLabels": {
         "COURSE": "Курси",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Відео",
       "mediaCover": "Обкладинка",
       "mediaOrderHint": "Перетягніть, щоб змінити порядок",
-      "mediaCountHint": "До 10 зображень або одне відео. Перше зображення потрапляє на картку."
+      "mediaCountHint": "До 10 зображень або одне відео. Перше зображення потрапляє на картку.",
+      "musicCover": "Обкладинка",
+      "musicCoverHint": "Квадратна. Анімовані GIF або WebP дозволені — вони анімуються у плеєрі.",
+      "musicTracks": "Треки",
+      "musicRights": "Завантажуйте лише музику, права на яку належать вам. Записи інших виконавців, семпли чи біти без ліцензії публікувати не можна, як і кавери без дозволу. За порушення спільноту можуть заблокувати.",
+      "trackUpload": "Вибрати музичні файли",
+      "trackUploadHint": "Кілька одразу · MP3, M4A, WAV або OGG",
+      "trackTitleAria": "Назва треку",
+      "removeTrackAria": "Видалити трек",
+      "trackUploading": "Завантаження {count} … {percent}%"
     },
     "chat": {
       "badge": "Чат",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Музика"
       },
       "spaceTypeSingular": {
         "FEED": "Стрічка",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Музика"
       },
       "productTypes": {
         "DIGITAL": "Цифровий",
@@ -3520,6 +3532,19 @@
         "copied": "Посилання скопійовано",
         "openPost": "Відкрити допис",
         "allPosts": "Усі дописи в {space}"
+      },
+      "music": {
+        "empty": "Ще немає треків",
+        "emptyHint": "Завантажте перші треки.",
+        "untitled": "Без назви",
+        "play": "Відтворити",
+        "pause": "Пауза",
+        "previous": "Попередній трек",
+        "next": "Наступний трек",
+        "share": "Поділитися",
+        "like": "Подобається",
+        "unlike": "Більше не подобається",
+        "locked": "Заблоковано"
       }
     },
     "nav": {

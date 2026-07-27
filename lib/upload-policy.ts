@@ -66,6 +66,10 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "course-video": video("MEMBERS"),
   "podcast-cover": image("PUBLIC"),
   "podcast-audio": audio("MEMBERS"),
+  // Musik-Space: Cover oeffentlich (auch animiert als GIF/WebP), Audio wie
+  // beim Podcast nur fuer Mitglieder.
+  "music-cover": image("PUBLIC"),
+  "music-audio": audio("MEMBERS"),
   "ad-media": {
     visibility: "PUBLIC",
     kinds: ["image", "video"],

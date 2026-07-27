@@ -1094,7 +1094,8 @@
         "GALLERY": "添加图片",
         "VIDEOS": "添加视频",
         "KNOWLEDGE": "撰写文章",
-        "PODCAST": "发布单集"
+        "PODCAST": "发布单集",
+        "MUSIC": "上传音乐"
       },
       "managedLabels": {
         "COURSE": "课程",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "视频",
       "mediaCover": "封面",
       "mediaOrderHint": "拖动可调整顺序",
-      "mediaCountHint": "最多 10 张图片或 1 个视频。第一张图片会用于卡片。"
+      "mediaCountHint": "最多 10 张图片或 1 个视频。第一张图片会用于卡片。",
+      "musicCover": "封面",
+      "musicCoverHint": "正方形。允许动态 GIF 或 WebP，会在播放器中动起来。",
+      "musicTracks": "曲目",
+      "musicRights": "只上传你拥有版权的音乐。其他艺人的录音、无授权的采样或伴奏不得在此发布，未经许可的翻唱同样如此。违规可能导致社区被封停。",
+      "trackUpload": "选择音乐文件",
+      "trackUploadHint": "可一次多选 · MP3、M4A、WAV 或 OGG",
+      "trackTitleAria": "曲目名称",
+      "removeTrackAria": "移除曲目",
+      "trackUploading": "正在上传 {count} 个 … {percent}%"
     },
     "chat": {
       "badge": "聊天",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "音乐"
       },
       "spaceTypeSingular": {
         "FEED": "动态",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "音乐"
       },
       "productTypes": {
         "DIGITAL": "数字",
@@ -3520,6 +3532,19 @@
         "copied": "链接已复制",
         "openPost": "打开帖子",
         "allPosts": "{space} 的全部帖子"
+      },
+      "music": {
+        "empty": "还没有曲目",
+        "emptyHint": "上传你的第一批曲目。",
+        "untitled": "未命名",
+        "play": "播放",
+        "pause": "暂停",
+        "previous": "上一首",
+        "next": "下一首",
+        "share": "分享",
+        "like": "赞",
+        "unlike": "取消赞",
+        "locked": "已锁定"
       }
     },
     "nav": {

@@ -9,6 +9,7 @@ import { canAccess } from "@/lib/entitlements";
 import { isPostLocked, postLockKind } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
+import { MusicPlayer, type MusicTrack } from "@/components/community/music-player";
 import { PostComposer } from "@/components/community/post-composer";
 import { VoteControl } from "@/components/community/vote-control";
 import { GalleryFolders, type CPackage } from "@/components/community/gallery-folders";
@@ -523,7 +524,7 @@ export default async function SpacePage({
   }
 
   // ----- Feed / Videos: posts -----
-  if (["FEED", "VIDEOS", "PODCAST"].includes(space.type)) {
+  if (["FEED", "VIDEOS", "PODCAST", "MUSIC"].includes(space.type)) {
     const feedQuery = (q ?? "").trim().slice(0, 80);
     const now = new Date();
     const raw = await prisma.post.findMany({
@@ -584,6 +585,38 @@ export default async function SpacePage({
         teaserUrl: p.teaserUrl,
       };
     });
+
+    // Musik: alle Titel im Player, einer nach dem anderen.
+    if (space.type === "MUSIC") {
+      const tMusic = await getTranslations("community.render.music");
+      const tracks: MusicTrack[] = raw.map((p) => {
+        const kind = postLockKind(p, ctx);
+        return {
+          id: p.id,
+          title: p.title || t("untitled"),
+          href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
+          // Gesperrt: die Audiodatei geht gar nicht erst ueber die Leitung.
+          audioUrl: kind === "none" ? p.videoUrl : null,
+          coverUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
+          artist: p.author.name,
+          artistAvatar: p.author.avatarUrl,
+          likes: p._count.reactions,
+          likedByMe: p.reactions.length > 0,
+          lockKind: kind,
+          priceLabel: kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
+        };
+      });
+      return (
+        <div className="mx-auto max-w-3xl">
+          {header}
+          {tracks.length === 0 ? (
+            <EmptyState icon="music" title={tMusic("empty")} hint={tMusic("emptyHint")} />
+          ) : (
+            <MusicPlayer slug={slug} spaceSlug={spaceSlug} tracks={tracks} />
+          )}
+        </div>
+      );
+    }
 
     // Podcast: episode list with inline audio player.
     if (space.type === "PODCAST") {

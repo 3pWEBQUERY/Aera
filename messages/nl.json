@@ -1094,7 +1094,8 @@
         "GALLERY": "Afbeelding toevoegen",
         "VIDEOS": "Video toevoegen",
         "KNOWLEDGE": "Artikel schrijven",
-        "PODCAST": "Aflevering publiceren"
+        "PODCAST": "Aflevering publiceren",
+        "MUSIC": "Muziek uploaden"
       },
       "managedLabels": {
         "COURSE": "Cursussen",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Omslag",
       "mediaOrderHint": "Sleep om te herschikken",
-      "mediaCountHint": "Tot 10 afbeeldingen of één video. De eerste afbeelding staat op de kaart."
+      "mediaCountHint": "Tot 10 afbeeldingen of één video. De eerste afbeelding staat op de kaart.",
+      "musicCover": "Omslag",
+      "musicCoverHint": "Vierkant. Geanimeerde GIF of WebP mag — die speelt mee in de speler.",
+      "musicTracks": "Nummers",
+      "musicRights": "Upload alleen muziek waarvan je de rechten hebt. Opnames van andere artiesten, samples of beats zonder licentie mogen hier niet worden gepubliceerd, ook geen covers zonder toestemming. Bij overtredingen kan je community worden geblokkeerd.",
+      "trackUpload": "Muziekbestanden kiezen",
+      "trackUploadHint": "Meerdere tegelijk · MP3, M4A, WAV of OGG",
+      "trackTitleAria": "Titel van het nummer",
+      "removeTrackAria": "Nummer verwijderen",
+      "trackUploading": "{count} worden geüpload … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Muziek"
       },
       "spaceTypeSingular": {
         "FEED": "Feed",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Muziek"
       },
       "productTypes": {
         "DIGITAL": "Digitaal",
@@ -3520,6 +3532,19 @@
         "copied": "Link gekopieerd",
         "openPost": "Bericht openen",
         "allPosts": "Alle berichten in {space}"
+      },
+      "music": {
+        "empty": "Nog geen nummers",
+        "emptyHint": "Upload je eerste nummers.",
+        "untitled": "Zonder titel",
+        "play": "Afspelen",
+        "pause": "Pauze",
+        "previous": "Vorig nummer",
+        "next": "Volgend nummer",
+        "share": "Delen",
+        "like": "Leuk",
+        "unlike": "Niet meer leuk",
+        "locked": "Vergrendeld"
       }
     },
     "nav": {

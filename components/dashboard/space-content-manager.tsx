@@ -15,6 +15,7 @@ import { Icon, type IconName } from "./icons";
 import { ImageUpload } from "./image-upload";
 import { VideoUpload } from "./video-upload";
 import { MediaUpload } from "./media-upload";
+import { MusicUpload } from "./music-upload";
 import { AudioUpload } from "./audio-upload";
 import { RichTextEditor } from "./rich-text-editor";
 import { Input, Label, Textarea } from "@/components/ui/field";
@@ -95,7 +96,7 @@ export function SpaceContentManager({
   const tManaged = useTranslations("dashboard.spaceContent.managedLabels");
   const createLabelFor = useCreateLabel();
 
-  const isPost = ["FEED", "FORUM", "BLOG", "GALLERY", "VIDEOS", "PODCAST"].includes(space.type);
+  const isPost = ["FEED", "FORUM", "BLOG", "GALLERY", "VIDEOS", "PODCAST", "MUSIC"].includes(space.type);
   const isKnowledge = space.type === "KNOWLEDGE";
   const link = managedMeta[space.type];
   const managedLabel = link ? tManaged(space.type) : "";
@@ -197,9 +198,12 @@ function PostForm({
 
   const ty = space.type;
   const hasTitle = ty === "FORUM" || ty === "BLOG" || ty === "VIDEOS" || ty === "PODCAST";
+  // Beim Musik-Space traegt jede Datei ihren eigenen Titel — ein Feld fuer
+  // alle waere sinnlos.
+  const isMusic = ty === "MUSIC";
   // Nur wo es etwas zu regeln gibt: Preis und Sichtbarkeit kennt die Action
   // fuer Feed- und Video-Beitraege.
-  const hasAccess = ty === "FEED" || ty === "VIDEOS";
+  const hasAccess = ty === "FEED" || ty === "VIDEOS" || ty === "MUSIC";
 
   return (
     <form action={action} className="flex min-h-0 flex-1 flex-col">
@@ -274,6 +278,26 @@ function PostForm({
               </div>
             </>
           )}
+          {ty === "MUSIC" && (
+            <>
+              <div>
+                <Label>{t("musicCover")}</Label>
+                <ImageUpload tenant={slug} name="imageUrl" purpose="music-cover" />
+                <p className="mt-1.5 text-xs text-slate-400">{t("musicCoverHint")}</p>
+              </div>
+              <div>
+                <Label>{t("musicTracks")}</Label>
+                <MusicUpload tenant={slug} name="tracks" purpose="music-audio" />
+              </div>
+              {/* Rechtehinweis steht bewusst im Formular und nicht im
+                  Kleingedruckten: er betrifft genau die Handlung, die hier
+                  passiert. */}
+              <div className="flex gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4">
+                <Icon name="alert" size={18} className="mt-0.5 shrink-0 text-amber-600" />
+                <p className="text-xs leading-5 text-amber-900">{t("musicRights")}</p>
+              </div>
+            </>
+          )}
           {ty === "BLOG" && (
             <div>
               <Label>{t("blogCover")}</Label>
@@ -299,7 +323,7 @@ function PostForm({
             </div>
           )}
 
-          {ty === "BLOG" || ty === "FORUM" ? (
+          {isMusic ? null : ty === "BLOG" || ty === "FORUM" ? (
             <div>
               <Label>{t("contentLabel")}</Label>
               <RichTextEditor tenant={slug} name="bodyHtml" />

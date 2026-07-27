@@ -7,6 +7,7 @@ import { parseStorySettings } from "@/lib/space-settings";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { LiveSessionCard } from "./live-session-card";
+import { MusicPlayer, type MusicTrack } from "./music-player";
 import { HScrollRow } from "./h-scroll-row";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { StoryViewer } from "./story-viewer";
@@ -42,6 +43,8 @@ export async function SpaceSectionPreview(props: Props) {
   switch (space.type) {
     case "STORIES":
       return <StoriesPreview {...props} />;
+    case "MUSIC":
+      return <MusicPreview {...props} />;
     case "LIVE":
       return <LivePreview {...props} />;
     case "TIPS":
@@ -133,6 +136,54 @@ async function StoriesPreview({ slug, tenantId, space }: Props) {
           groups={groups}
         />
       )}
+    </section>
+  );
+}
+
+/**
+ * Musik-Space als eigener Abschnitt: der Player mit allen Titeln.
+ *
+ * Gesperrte Titel bleiben in der Liste, ihre Datei wird aber nicht
+ * ausgeliefert — sichtbar ist, dass es sie gibt, hoerbar nichts.
+ */
+async function MusicPreview({ slug, tenantId, space, locale }: Props) {
+  const t = await getTranslations("community.render.music");
+  const rows = await prisma.post.findMany({
+    where: { tenantId, spaceId: space.id, isPublished: true, publishedAt: { lte: new Date() } },
+    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+    take: 30,
+    include: {
+      author: { select: { name: true, avatarUrl: true } },
+      _count: { select: { reactions: true } },
+    },
+  });
+  if (rows.length === 0) {
+    return (
+      <section>
+        <Header slug={slug} space={space} />
+        <EmptyState icon="music" title={t("empty")} hint={t("emptyHint")} />
+      </section>
+    );
+  }
+  const tracks: MusicTrack[] = rows.map((p) => ({
+    id: p.id,
+    title: p.title || t("untitled"),
+    href: `/c/${slug}/s/${space.slug}/${p.id}`,
+    // Der Abschnitt kennt den Betrachter nicht; bezahlte Titel bleiben
+    // deshalb hier immer stumm und verlinken auf die Beitragsseite.
+    audioUrl: p.priceCents > 0 ? null : p.videoUrl,
+    coverUrl: p.priceCents > 0 ? p.teaserUrl : p.imageUrl,
+    artist: p.author.name,
+    artistAvatar: p.author.avatarUrl,
+    likes: p._count.reactions,
+    likedByMe: false,
+    lockKind: p.priceCents > 0 ? "paid" : "none",
+    priceLabel: p.priceCents > 0 ? formatPrice(p.priceCents, p.currency, locale) : null,
+  }));
+  return (
+    <section>
+      <Header slug={slug} space={space} />
+      <MusicPlayer slug={slug} spaceSlug={space.slug} tracks={tracks} />
     </section>
   );
 }

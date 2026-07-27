@@ -1094,7 +1094,8 @@
         "GALLERY": "Aggiungi immagine",
         "VIDEOS": "Aggiungi video",
         "KNOWLEDGE": "Scrivi articolo",
-        "PODCAST": "Pubblica episodio"
+        "PODCAST": "Pubblica episodio",
+        "MUSIC": "Carica musica"
       },
       "managedLabels": {
         "COURSE": "Corsi",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Copertina",
       "mediaOrderHint": "Trascina per riordinare",
-      "mediaCountHint": "Fino a 10 immagini o un video. La prima immagine appare sulla scheda."
+      "mediaCountHint": "Fino a 10 immagini o un video. La prima immagine appare sulla scheda.",
+      "musicCover": "Copertina",
+      "musicCoverHint": "Quadrata. Sono ammessi GIF o WebP animati: si animano nel player.",
+      "musicTracks": "Brani",
+      "musicRights": "Carica solo musica di cui detieni i diritti. Registrazioni di altri artisti, sample o beat senza licenza non possono essere pubblicati qui, comprese le cover senza permesso. Le violazioni possono portare alla sospensione della tua community.",
+      "trackUpload": "Scegli file musicali",
+      "trackUploadHint": "Più file insieme · MP3, M4A, WAV o OGG",
+      "trackTitleAria": "Titolo del brano",
+      "removeTrackAria": "Rimuovi brano",
+      "trackUploading": "Caricamento di {count} … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musica"
       },
       "spaceTypeSingular": {
         "FEED": "Feed",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musica"
       },
       "productTypes": {
         "DIGITAL": "Digitale",
@@ -3520,6 +3532,19 @@
         "copied": "Link copiato",
         "openPost": "Apri il post",
         "allPosts": "Tutti i post in {space}"
+      },
+      "music": {
+        "empty": "Ancora nessun brano",
+        "emptyHint": "Carica i tuoi primi brani.",
+        "untitled": "Senza titolo",
+        "play": "Riproduci",
+        "pause": "Pausa",
+        "previous": "Brano precedente",
+        "next": "Brano successivo",
+        "share": "Condividi",
+        "like": "Mi piace",
+        "unlike": "Non mi piace più",
+        "locked": "Bloccato"
       }
     },
     "nav": {

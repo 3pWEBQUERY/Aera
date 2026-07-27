@@ -1094,7 +1094,8 @@
         "GALLERY": "Ajouter une image",
         "VIDEOS": "Ajouter une vidéo",
         "KNOWLEDGE": "Écrire un article",
-        "PODCAST": "Publier un épisode"
+        "PODCAST": "Publier un épisode",
+        "MUSIC": "Envoyer de la musique"
       },
       "managedLabels": {
         "COURSE": "Cours",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Vidéo",
       "mediaCover": "Couverture",
       "mediaOrderHint": "Glisser pour réordonner",
-      "mediaCountHint": "Jusqu’à 10 images ou une vidéo. La première image apparaît sur la vignette."
+      "mediaCountHint": "Jusqu’à 10 images ou une vidéo. La première image apparaît sur la vignette.",
+      "musicCover": "Pochette",
+      "musicCoverHint": "Carrée. Les GIF ou WebP animés sont autorisés — ils s’animent dans le lecteur.",
+      "musicTracks": "Titres",
+      "musicRights": "N’envoyez que de la musique dont vous détenez les droits. Les enregistrements d’autres artistes, les samples ou beats sans licence ne peuvent pas être publiés ici, y compris les reprises sans autorisation. Toute infraction peut entraîner la suspension de votre communauté.",
+      "trackUpload": "Choisir des fichiers audio",
+      "trackUploadHint": "Plusieurs à la fois · MP3, M4A, WAV ou OGG",
+      "trackTitleAria": "Titre du morceau",
+      "removeTrackAria": "Retirer le morceau",
+      "trackUploading": "Envoi de {count} … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musique"
       },
       "spaceTypeSingular": {
         "FEED": "Fil",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musique"
       },
       "productTypes": {
         "DIGITAL": "Numérique",
@@ -3520,6 +3532,19 @@
         "copied": "Lien copié",
         "openPost": "Ouvrir la publication",
         "allPosts": "Toutes les publications dans {space}"
+      },
+      "music": {
+        "empty": "Aucun titre pour l’instant",
+        "emptyHint": "Envoyez vos premiers titres.",
+        "untitled": "Sans titre",
+        "play": "Lecture",
+        "pause": "Pause",
+        "previous": "Titre précédent",
+        "next": "Titre suivant",
+        "share": "Partager",
+        "like": "J’aime",
+        "unlike": "Je n’aime plus",
+        "locked": "Verrouillé"
       }
     },
     "nav": {

@@ -1094,7 +1094,8 @@
         "GALLERY": "Dodaj obraz",
         "VIDEOS": "Dodaj wideo",
         "KNOWLEDGE": "Napisz artykuł",
-        "PODCAST": "Opublikuj odcinek"
+        "PODCAST": "Opublikuj odcinek",
+        "MUSIC": "Prześlij muzykę"
       },
       "managedLabels": {
         "COURSE": "Kursy",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Wideo",
       "mediaCover": "Okładka",
       "mediaOrderHint": "Przeciągnij, aby zmienić kolejność",
-      "mediaCountHint": "Do 10 zdjęć albo jedno wideo. Pierwsze zdjęcie trafia na kafelek."
+      "mediaCountHint": "Do 10 zdjęć albo jedno wideo. Pierwsze zdjęcie trafia na kafelek.",
+      "musicCover": "Okładka",
+      "musicCoverHint": "Kwadratowa. Animowane GIF-y i WebP są dozwolone — animują się w odtwarzaczu.",
+      "musicTracks": "Utwory",
+      "musicRights": "Przesyłaj tylko muzykę, do której masz prawa. Nagrań innych artystów, sampli ani bitów bez licencji nie wolno tu publikować — dotyczy to również coverów bez zgody. Naruszenia mogą skutkować zablokowaniem społeczności.",
+      "trackUpload": "Wybierz pliki muzyczne",
+      "trackUploadHint": "Kilka naraz · MP3, M4A, WAV lub OGG",
+      "trackTitleAria": "Tytuł utworu",
+      "removeTrackAria": "Usuń utwór",
+      "trackUploading": "Przesyłanie {count} … {percent}%"
     },
     "chat": {
       "badge": "Czat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Muzyka"
       },
       "spaceTypeSingular": {
         "FEED": "Aktualności",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Muzyka"
       },
       "productTypes": {
         "DIGITAL": "Cyfrowy",
@@ -3520,6 +3532,19 @@
         "copied": "Skopiowano link",
         "openPost": "Otwórz wpis",
         "allPosts": "Wszystkie wpisy w {space}"
+      },
+      "music": {
+        "empty": "Brak utworów",
+        "emptyHint": "Prześlij swoje pierwsze utwory.",
+        "untitled": "Bez tytułu",
+        "play": "Odtwórz",
+        "pause": "Pauza",
+        "previous": "Poprzedni utwór",
+        "next": "Następny utwór",
+        "share": "Udostępnij",
+        "like": "Lubię to",
+        "unlike": "Już nie lubię",
+        "locked": "Zablokowane"
       }
     },
     "nav": {

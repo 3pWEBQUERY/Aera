@@ -1094,7 +1094,8 @@
         "GALLERY": "画像を追加",
         "VIDEOS": "動画を追加",
         "KNOWLEDGE": "記事を書く",
-        "PODCAST": "エピソードを公開"
+        "PODCAST": "エピソードを公開",
+        "MUSIC": "音楽をアップロード"
       },
       "managedLabels": {
         "COURSE": "コース",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "動画",
       "mediaCover": "表紙",
       "mediaOrderHint": "ドラッグで並べ替え",
-      "mediaCountHint": "画像は10枚まで、または動画1本。1枚目がカードに表示されます。"
+      "mediaCountHint": "画像は10枚まで、または動画1本。1枚目がカードに表示されます。",
+      "musicCover": "カバー",
+      "musicCoverHint": "正方形。アニメーションGIFやWebPも使えます — プレーヤー内で動きます。",
+      "musicTracks": "曲",
+      "musicRights": "権利を持っている音源だけをアップロードしてください。他のアーティストの録音、ライセンスのないサンプルやビートは公開できません。許諾のないカバーも同様です。違反するとコミュニティが停止されることがあります。",
+      "trackUpload": "音楽ファイルを選ぶ",
+      "trackUploadHint": "まとめて選択可 · MP3・M4A・WAV・OGG",
+      "trackTitleAria": "曲名",
+      "removeTrackAria": "曲を削除",
+      "trackUploading": "{count} 件をアップロード中 … {percent}%"
     },
     "chat": {
       "badge": "チャット",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "ミュージック"
       },
       "spaceTypeSingular": {
         "FEED": "フィード",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "ミュージック"
       },
       "productTypes": {
         "DIGITAL": "デジタル",
@@ -3520,6 +3532,19 @@
         "copied": "リンクをコピーしました",
         "openPost": "投稿を開く",
         "allPosts": "{space} のすべての投稿"
+      },
+      "music": {
+        "empty": "まだ曲がありません",
+        "emptyHint": "最初の曲をアップロードしましょう。",
+        "untitled": "無題",
+        "play": "再生",
+        "pause": "一時停止",
+        "previous": "前の曲",
+        "next": "次の曲",
+        "share": "共有",
+        "like": "いいね",
+        "unlike": "いいねを取り消す",
+        "locked": "ロック中"
       }
     },
     "nav": {

@@ -1094,7 +1094,8 @@
         "GALLERY": "Legg til bilde",
         "VIDEOS": "Legg til video",
         "KNOWLEDGE": "Skriv artikkel",
-        "PODCAST": "Publiser episode"
+        "PODCAST": "Publiser episode",
+        "MUSIC": "Last opp musikk"
       },
       "managedLabels": {
         "COURSE": "Kurs",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Forside",
       "mediaOrderHint": "Dra for å sortere",
-      "mediaCountHint": "Opptil 10 bilder eller én video. Det første bildet vises på kortet."
+      "mediaCountHint": "Opptil 10 bilder eller én video. Det første bildet vises på kortet.",
+      "musicCover": "Omslag",
+      "musicCoverHint": "Kvadratisk. Animert GIF eller WebP er tillatt — de spiller av i spilleren.",
+      "musicTracks": "Spor",
+      "musicRights": "Last bare opp musikk du selv har rettighetene til. Opptak av andre artister, samples eller beats uten lisens kan ikke publiseres her — det gjelder også coverversjoner uten tillatelse. Brudd kan føre til at fellesskapet ditt sperres.",
+      "trackUpload": "Velg musikkfiler",
+      "trackUploadHint": "Flere om gangen · MP3, M4A, WAV eller OGG",
+      "trackTitleAria": "Sporets tittel",
+      "removeTrackAria": "Fjern spor",
+      "trackUploading": "Laster opp {count} … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musikk"
       },
       "spaceTypeSingular": {
         "FEED": "Feed",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musikk"
       },
       "productTypes": {
         "DIGITAL": "Digital",
@@ -3520,6 +3532,19 @@
         "copied": "Lenke kopiert",
         "openPost": "Åpne innlegg",
         "allPosts": "Alle innlegg i {space}"
+      },
+      "music": {
+        "empty": "Ingen spor ennå",
+        "emptyHint": "Last opp de første sporene dine.",
+        "untitled": "Uten tittel",
+        "play": "Spill av",
+        "pause": "Pause",
+        "previous": "Forrige spor",
+        "next": "Neste spor",
+        "share": "Del",
+        "like": "Liker",
+        "unlike": "Liker ikke lenger",
+        "locked": "Låst"
       }
     },
     "nav": {

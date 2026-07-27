@@ -1094,7 +1094,8 @@
         "GALLERY": "이미지 추가",
         "VIDEOS": "동영상 추가",
         "KNOWLEDGE": "글 작성",
-        "PODCAST": "에피소드 게시"
+        "PODCAST": "에피소드 게시",
+        "MUSIC": "음악 업로드"
       },
       "managedLabels": {
         "COURSE": "강좌",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "동영상",
       "mediaCover": "대표 이미지",
       "mediaOrderHint": "끌어서 순서 변경",
-      "mediaCountHint": "이미지 최대 10장 또는 동영상 1개. 첫 이미지가 카드에 표시됩니다."
+      "mediaCountHint": "이미지 최대 10장 또는 동영상 1개. 첫 이미지가 카드에 표시됩니다.",
+      "musicCover": "커버",
+      "musicCoverHint": "정사각형. 움직이는 GIF나 WebP도 사용할 수 있으며 플레이어에서 재생됩니다.",
+      "musicTracks": "트랙",
+      "musicRights": "권리를 가진 음악만 올려주세요. 다른 아티스트의 녹음물, 라이선스 없는 샘플이나 비트는 게시할 수 없으며 허락 없는 커버도 마찬가지입니다. 위반 시 커뮤니티가 정지될 수 있습니다.",
+      "trackUpload": "음악 파일 선택",
+      "trackUploadHint": "여러 개 한 번에 · MP3, M4A, WAV 또는 OGG",
+      "trackTitleAria": "트랙 제목",
+      "removeTrackAria": "트랙 삭제",
+      "trackUploading": "{count}개 업로드 중 … {percent}%"
     },
     "chat": {
       "badge": "채팅",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "음악"
       },
       "spaceTypeSingular": {
         "FEED": "피드",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "음악"
       },
       "productTypes": {
         "DIGITAL": "디지털",
@@ -3520,6 +3532,19 @@
         "copied": "링크 복사됨",
         "openPost": "게시물 열기",
         "allPosts": "{space}의 모든 게시물"
+      },
+      "music": {
+        "empty": "아직 트랙이 없습니다",
+        "emptyHint": "첫 트랙을 올려보세요.",
+        "untitled": "제목 없음",
+        "play": "재생",
+        "pause": "일시정지",
+        "previous": "이전 트랙",
+        "next": "다음 트랙",
+        "share": "공유",
+        "like": "좋아요",
+        "unlike": "좋아요 취소",
+        "locked": "잠김"
       }
     },
     "nav": {

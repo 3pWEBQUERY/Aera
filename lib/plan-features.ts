@@ -52,6 +52,7 @@ export type SpaceTypeKey =
   | "VIDEOS"
   | "CHAT"
   | "PODCAST"
+  | "MUSIC"
   | "LINKS"
   | "ADS"
   | "LIVE"
@@ -89,6 +90,7 @@ export const SPACE_TYPE_MIN_PLAN: Record<SpaceTypeKey, PlanKey> = {
   CALENDAR: "STARTER",
   // ---- Pro --------------------------------------------------------------
   PODCAST: "PRO",
+  MUSIC: "PRO",
   LIVE: "PRO",
   BOOKING: "PRO",
   REQUESTS: "PRO",

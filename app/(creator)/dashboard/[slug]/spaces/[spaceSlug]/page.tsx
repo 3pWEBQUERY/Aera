@@ -65,7 +65,7 @@ import { excerpt } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
-const POST_TYPES = ["FEED", "VIDEOS", "PODCAST"];
+const POST_TYPES = ["FEED", "VIDEOS", "PODCAST", "MUSIC"];
 
 export default async function SpaceContentPage({
   params,

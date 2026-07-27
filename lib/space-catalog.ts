@@ -17,6 +17,7 @@ export type SpaceCatalogType =
   | "TIPS"
   | "CALENDAR"
   | "PODCAST"
+  | "MUSIC"
   | "LIVE"
   | "BOOKING"
   | "REQUESTS"
@@ -61,6 +62,7 @@ export const SPACE_BLUEPRINTS: SpaceBlueprint[] = [
   { type: "CALENDAR", name: "Kalender", slug: "kalender", description: "Alle Termine und Releases auf einen Blick.", visibility: "MEMBERS", icon: "events", tagline: "Termine & Releases" },
   // ---- Pro ----------------------------------------------------------------
   { type: "PODCAST", name: "Podcast", slug: "podcast", description: "Audio-Episoden zum Anhören — frei oder exklusiv.", visibility: "MEMBERS", icon: "podcast", tagline: "Episoden & Player" },
+  { type: "MUSIC", name: "Music", slug: "music", description: "Eigene Tracks mit Cover — frei oder exklusiv.", visibility: "MEMBERS", icon: "music", tagline: "Tracks & Player" },
   { type: "LIVE", name: "Live", slug: "live", description: "Live-Streams mit Chat für deine Mitglieder.", visibility: "MEMBERS", icon: "videos", tagline: "Streams & Live-Chat" },
   { type: "BOOKING", name: "Buchungen", slug: "buchungen", description: "1:1-Termine, die deine Mitglieder selbst buchen.", visibility: "MEMBERS", icon: "clock", tagline: "1:1-Termine buchen" },
   { type: "REQUESTS", name: "Wünsche", slug: "wuensche", description: "Wünsche und Custom-Anfragen deiner Community.", visibility: "MEMBERS", icon: "messages", tagline: "Wünsche & Abstimmung" },

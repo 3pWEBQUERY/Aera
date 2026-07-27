@@ -2195,6 +2195,31 @@ function readImageUrls(fd: FormData): string[] {
   }
 }
 
+/** Titel eines Musik-Uploads: [{ url, name }] aus dem versteckten Feld. */
+const MAX_TRACKS = 20;
+
+function readTracks(fd: FormData): { url: string; name: string }[] {
+  const raw = fd.get("tracks");
+  if (typeof raw !== "string" || !raw.trim()) return [];
+  try {
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter(
+        (x): x is { url: string; name?: unknown } =>
+          !!x && typeof x === "object" && typeof (x as { url?: unknown }).url === "string",
+      )
+      .map((x) => ({
+        url: x.url.trim().slice(0, 500),
+        name: (typeof x.name === "string" ? x.name : "").trim().slice(0, 160),
+      }))
+      .filter((x) => x.url.length > 0)
+      .slice(0, MAX_TRACKS);
+  } catch {
+    return [];
+  }
+}
+
 export async function createSpacePostAction(
   _p: ActionState,
   fd: FormData,
@@ -2220,7 +2245,10 @@ export async function createSpacePostAction(
   const imageUrls = readImageUrls(fd);
   const imageUrl = imageUrls[0] ?? (String(fd.get("imageUrl") || "") || null);
   const videoUrl = String(fd.get("videoUrl") || "") || null;
-  if (!body && !bodyHtml && !imageUrl && !videoUrl && !title) {
+  // Im Musik-Space steckt der Inhalt in der Titelliste, nicht in Text oder
+  // Einzelmedium — die allgemeine Pruefung wuerde ihn sonst abweisen.
+  const tracks = space.type === "MUSIC" ? readTracks(fd) : [];
+  if (!body && !bodyHtml && !imageUrl && !videoUrl && !title && tracks.length === 0) {
     return { error: await tErr("contentRequired") };
   }
 
@@ -2239,6 +2267,39 @@ export async function createSpacePostAction(
     scheduledDate && !Number.isNaN(scheduledDate.getTime()) && scheduledDate.getTime() > Date.now()
       ? scheduledDate
       : null;
+
+  // Musik-Space: aus jeder hochgeladenen Datei wird ein eigener Beitrag.
+  // Ein Album entsteht so in einem Durchgang statt in zwoelf Formularen.
+  if (space.type === "MUSIC") {
+    if (tracks.length === 0) return { error: await tErr("contentRequired") };
+    await prisma.$transaction(
+      tracks.map((track, i) =>
+        prisma.post.create({
+          data: {
+            tenantId: tenant.id,
+            spaceId: space.id,
+            authorId: user.id,
+            title: track.name || `Track ${i + 1}`,
+            body: "",
+            // Audio liegt wie beim Podcast in videoUrl, das Cover in imageUrl.
+            videoUrl: track.url,
+            imageUrl,
+            visibility,
+            priceCents,
+            currency: PLATFORM_CURRENCY,
+            teaserUrl,
+            scheduledAt: validSchedule,
+            isPublished: validSchedule ? false : true,
+            publishedAt: validSchedule ?? undefined,
+          },
+        }),
+      ),
+    );
+    revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
+    revalidatePath(`/c/${slug}/s/${space.slug}`);
+    revalidatePath(`/c/${slug}`);
+    return { ok: true };
+  }
 
   const post = await prisma.post.create({
     data: {

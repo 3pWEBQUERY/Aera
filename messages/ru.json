@@ -1094,7 +1094,8 @@
         "GALLERY": "Добавить изображение",
         "VIDEOS": "Добавить видео",
         "KNOWLEDGE": "Написать статью",
-        "PODCAST": "Опубликовать эпизод"
+        "PODCAST": "Опубликовать эпизод",
+        "MUSIC": "Загрузить музыку"
       },
       "managedLabels": {
         "COURSE": "Курсы",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Видео",
       "mediaCover": "Обложка",
       "mediaOrderHint": "Перетащите, чтобы изменить порядок",
-      "mediaCountHint": "До 10 изображений или одно видео. Первое изображение попадает на карточку."
+      "mediaCountHint": "До 10 изображений или одно видео. Первое изображение попадает на карточку.",
+      "musicCover": "Обложка",
+      "musicCoverHint": "Квадратная. Анимированные GIF и WebP разрешены — они анимируются в плеере.",
+      "musicTracks": "Треки",
+      "musicRights": "Загружайте только музыку, права на которую принадлежат вам. Записи других исполнителей, сэмплы и биты без лицензии публиковать нельзя, как и каверы без разрешения. За нарушения сообщество может быть заблокировано.",
+      "trackUpload": "Выбрать музыкальные файлы",
+      "trackUploadHint": "Сразу несколько · MP3, M4A, WAV или OGG",
+      "trackTitleAria": "Название трека",
+      "removeTrackAria": "Удалить трек",
+      "trackUploading": "Загрузка {count} … {percent}%"
     },
     "chat": {
       "badge": "Чат",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Музыка"
       },
       "spaceTypeSingular": {
         "FEED": "Лента",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Музыка"
       },
       "productTypes": {
         "DIGITAL": "Цифровой",
@@ -3520,6 +3532,19 @@
         "copied": "Ссылка скопирована",
         "openPost": "Открыть пост",
         "allPosts": "Все посты в {space}"
+      },
+      "music": {
+        "empty": "Пока нет треков",
+        "emptyHint": "Загрузите первые треки.",
+        "untitled": "Без названия",
+        "play": "Воспроизвести",
+        "pause": "Пауза",
+        "previous": "Предыдущий трек",
+        "next": "Следующий трек",
+        "share": "Поделиться",
+        "like": "Нравится",
+        "unlike": "Больше не нравится",
+        "locked": "Заблокировано"
       }
     },
     "nav": {

@@ -55,7 +55,7 @@ function modelText(content: string): string {
 }
 
 const SPACE_TYPES = [
-  "FEED", "FORUM", "COURSE", "SHOP", "NEWSLETTER", "EVENTS", "BLOG", "KNOWLEDGE", "GALLERY", "VIDEOS", "CHAT", "PODCAST", "LINKS", "ADS", "LIVE", "REQUESTS", "BOOKING", "STORIES", "TIPS", "CALENDAR",
+  "FEED", "FORUM", "COURSE", "SHOP", "NEWSLETTER", "EVENTS", "BLOG", "KNOWLEDGE", "GALLERY", "VIDEOS", "CHAT", "PODCAST", "MUSIC", "LINKS", "ADS", "LIVE", "REQUESTS", "BOOKING", "STORIES", "TIPS", "CALENDAR",
 ] as const;
 const VISIBILITIES = ["PUBLIC", "MEMBERS", "PAID"] as const;
 

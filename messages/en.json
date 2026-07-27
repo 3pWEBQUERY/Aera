@@ -1124,7 +1124,8 @@
         "GALLERY": "Add image",
         "VIDEOS": "Add video",
         "KNOWLEDGE": "Write article",
-        "PODCAST": "Publish episode"
+        "PODCAST": "Publish episode",
+        "MUSIC": "Upload music"
       },
       "managedLabels": {
         "COURSE": "Courses",
@@ -1138,7 +1139,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Cover",
       "mediaOrderHint": "Drag to reorder",
-      "mediaCountHint": "Up to 10 images or one video. The first image is used on the tile."
+      "mediaCountHint": "Up to 10 images or one video. The first image is used on the tile.",
+      "musicCover": "Cover",
+      "musicCoverHint": "Square. Animated GIF or WebP are allowed — they play along in the player.",
+      "musicTracks": "Tracks",
+      "musicRights": "Only upload music you hold the rights to. Recordings by other artists, unlicensed samples or beats must not be published here — that includes cover versions without permission. Violations can get your community suspended.",
+      "trackUpload": "Choose music files",
+      "trackUploadHint": "Several at once · MP3, M4A, WAV or OGG",
+      "trackTitleAria": "Track title",
+      "removeTrackAria": "Remove track",
+      "trackUploading": "Uploading {count} … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3257,7 +3267,8 @@
         "STORIES": "Stories",
         "TIPS": "Tips",
         "CALENDAR": "Calendar",
-        "fallback": "Space"
+        "fallback": "Space",
+        "MUSIC": "Music"
       },
       "live": {
         "player": "Live player",
@@ -3320,7 +3331,8 @@
         "STORIES": "Story",
         "TIPS": "Tips",
         "CALENDAR": "Calendar",
-        "fallback": "Space"
+        "fallback": "Space",
+        "MUSIC": "Music"
       },
       "productTypes": {
         "DIGITAL": "Digital",
@@ -3555,6 +3567,19 @@
         "copied": "Link copied",
         "openPost": "Open post",
         "allPosts": "All posts in {space}"
+      },
+      "music": {
+        "empty": "No tracks yet",
+        "emptyHint": "Upload your first tracks.",
+        "untitled": "Untitled",
+        "play": "Play",
+        "pause": "Pause",
+        "previous": "Previous track",
+        "next": "Next track",
+        "share": "Share",
+        "like": "Like",
+        "unlike": "Unlike",
+        "locked": "Locked"
       }
     },
     "nav": {

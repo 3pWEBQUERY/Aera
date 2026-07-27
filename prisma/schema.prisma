@@ -51,6 +51,9 @@ enum SpaceType {
   VIDEOS
   CHAT
   PODCAST
+  /// Musik: Titel mit Cover und Player. Audio liegt wie beim Podcast in
+  /// `videoUrl`, das Cover in `imageUrl` — dieselbe Beitragsform, andere Buehne.
+  MUSIC
   LINKS
   ADS
   LIVE

@@ -1124,7 +1124,8 @@
         "GALLERY": "Bild hinzufügen",
         "VIDEOS": "Video hinzufügen",
         "KNOWLEDGE": "Artikel schreiben",
-        "PODCAST": "Episode veröffentlichen"
+        "PODCAST": "Episode veröffentlichen",
+        "MUSIC": "Musik hochladen"
       },
       "managedLabels": {
         "COURSE": "Kurse",
@@ -1138,7 +1139,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Titelbild",
       "mediaOrderHint": "Zum Sortieren ziehen",
-      "mediaCountHint": "Bis zu 10 Bilder oder ein Video. Das erste Bild steht auf der Kachel."
+      "mediaCountHint": "Bis zu 10 Bilder oder ein Video. Das erste Bild steht auf der Kachel.",
+      "musicCover": "Cover",
+      "musicCoverHint": "Quadratisch. Animierte GIF oder WebP sind erlaubt — sie laufen im Player mit.",
+      "musicTracks": "Titel",
+      "musicRights": "Lade nur Musik hoch, an der du selbst die Rechte hast. Aufnahmen anderer Künstler·innen, Samples oder Beats ohne Lizenz dürfen hier nicht veröffentlicht werden — das gilt auch für Cover-Versionen ohne Erlaubnis. Bei Verstößen kann deine Community gesperrt werden.",
+      "trackUpload": "Musikdateien auswählen",
+      "trackUploadHint": "Mehrere auf einmal · MP3, M4A, WAV oder OGG",
+      "trackTitleAria": "Titel des Stücks",
+      "removeTrackAria": "Titel entfernen",
+      "trackUploading": "{count} wird hochgeladen … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3257,7 +3267,8 @@
         "STORIES": "Stories",
         "TIPS": "Trinkgeld",
         "CALENDAR": "Kalender",
-        "fallback": "Space"
+        "fallback": "Space",
+        "MUSIC": "Musik"
       },
       "live": {
         "player": "Live-Player",
@@ -3320,7 +3331,8 @@
         "STORIES": "Story",
         "TIPS": "Trinkgeld",
         "CALENDAR": "Kalender",
-        "fallback": "Space"
+        "fallback": "Space",
+        "MUSIC": "Musik"
       },
       "productTypes": {
         "DIGITAL": "Digital",
@@ -3555,6 +3567,19 @@
         "copied": "Link kopiert",
         "openPost": "Zum Beitrag",
         "allPosts": "Alle Beiträge in {space}"
+      },
+      "music": {
+        "empty": "Noch keine Titel",
+        "emptyHint": "Lade deine ersten Tracks hoch.",
+        "untitled": "Ohne Titel",
+        "play": "Abspielen",
+        "pause": "Pause",
+        "previous": "Vorheriger Titel",
+        "next": "Nächster Titel",
+        "share": "Teilen",
+        "like": "Gefällt mir",
+        "unlike": "Gefällt mir nicht mehr",
+        "locked": "Gesperrt"
       }
     },
     "nav": {

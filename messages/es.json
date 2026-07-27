@@ -1094,7 +1094,8 @@
         "GALLERY": "Añadir imagen",
         "VIDEOS": "Añadir vídeo",
         "KNOWLEDGE": "Escribir artículo",
-        "PODCAST": "Publicar episodio"
+        "PODCAST": "Publicar episodio",
+        "MUSIC": "Subir música"
       },
       "managedLabels": {
         "COURSE": "Cursos",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Vídeo",
       "mediaCover": "Portada",
       "mediaOrderHint": "Arrastra para ordenar",
-      "mediaCountHint": "Hasta 10 imágenes o un vídeo. La primera imagen se usa en la tarjeta."
+      "mediaCountHint": "Hasta 10 imágenes o un vídeo. La primera imagen se usa en la tarjeta.",
+      "musicCover": "Portada",
+      "musicCoverHint": "Cuadrada. Se admiten GIF o WebP animados: se reproducen en el reproductor.",
+      "musicTracks": "Pistas",
+      "musicRights": "Sube solo música cuyos derechos poseas. No se pueden publicar aquí grabaciones de otros artistas, samples o beats sin licencia, ni versiones de covers sin permiso. Las infracciones pueden llevar a la suspensión de tu comunidad.",
+      "trackUpload": "Elegir archivos de música",
+      "trackUploadHint": "Varios a la vez · MP3, M4A, WAV u OGG",
+      "trackTitleAria": "Título de la pista",
+      "removeTrackAria": "Quitar pista",
+      "trackUploading": "Subiendo {count} … {percent}%"
     },
     "chat": {
       "badge": "Chat",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Música"
       },
       "spaceTypeSingular": {
         "FEED": "Feed",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Música"
       },
       "productTypes": {
         "DIGITAL": "Digital",
@@ -3520,6 +3532,19 @@
         "copied": "Enlace copiado",
         "openPost": "Abrir publicación",
         "allPosts": "Todas las publicaciones de {space}"
+      },
+      "music": {
+        "empty": "Aún no hay pistas",
+        "emptyHint": "Sube tus primeras pistas.",
+        "untitled": "Sin título",
+        "play": "Reproducir",
+        "pause": "Pausa",
+        "previous": "Pista anterior",
+        "next": "Pista siguiente",
+        "share": "Compartir",
+        "like": "Me gusta",
+        "unlike": "Ya no me gusta",
+        "locked": "Bloqueado"
       }
     },
     "nav": {

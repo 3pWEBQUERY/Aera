@@ -42,6 +42,7 @@ export const spaceSchema = z.object({
     "VIDEOS",
     "CHAT",
     "PODCAST",
+    "MUSIC",
     "LINKS",
     "ADS",
     "LIVE",

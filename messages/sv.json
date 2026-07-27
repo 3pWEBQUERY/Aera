@@ -1094,7 +1094,8 @@
         "GALLERY": "Lägg till bild",
         "VIDEOS": "Lägg till video",
         "KNOWLEDGE": "Skriv artikel",
-        "PODCAST": "Publicera avsnitt"
+        "PODCAST": "Publicera avsnitt",
+        "MUSIC": "Ladda upp musik"
       },
       "managedLabels": {
         "COURSE": "Kurser",
@@ -1113,7 +1114,16 @@
       "mediaVideoBadge": "Video",
       "mediaCover": "Omslag",
       "mediaOrderHint": "Dra för att sortera",
-      "mediaCountHint": "Upp till 10 bilder eller en video. Den första bilden visas på kortet."
+      "mediaCountHint": "Upp till 10 bilder eller en video. Den första bilden visas på kortet.",
+      "musicCover": "Omslag",
+      "musicCoverHint": "Kvadratiskt. Animerad GIF eller WebP är tillåtet — de spelas i spelaren.",
+      "musicTracks": "Låtar",
+      "musicRights": "Ladda bara upp musik du själv har rättigheterna till. Inspelningar av andra artister, samplingar eller beats utan licens får inte publiceras här, inte heller covers utan tillstånd. Överträdelser kan leda till att din community stängs av.",
+      "trackUpload": "Välj musikfiler",
+      "trackUploadHint": "Flera samtidigt · MP3, M4A, WAV eller OGG",
+      "trackTitleAria": "Låtens titel",
+      "removeTrackAria": "Ta bort låt",
+      "trackUploading": "Laddar upp {count} … {percent}%"
     },
     "chat": {
       "badge": "Chatt",
@@ -3222,7 +3232,8 @@
         "BOOKING": "Booking",
         "STORIES": "Stories",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musik"
       },
       "spaceTypeSingular": {
         "FEED": "Flöde",
@@ -3244,7 +3255,8 @@
         "BOOKING": "Booking",
         "STORIES": "Story",
         "TIPS": "Tips",
-        "CALENDAR": "Calendar"
+        "CALENDAR": "Calendar",
+        "MUSIC": "Musik"
       },
       "productTypes": {
         "DIGITAL": "Digital",
@@ -3520,6 +3532,19 @@
         "copied": "Länk kopierad",
         "openPost": "Öppna inlägg",
         "allPosts": "Alla inlägg i {space}"
+      },
+      "music": {
+        "empty": "Inga låtar ännu",
+        "emptyHint": "Ladda upp dina första låtar.",
+        "untitled": "Utan titel",
+        "play": "Spela",
+        "pause": "Paus",
+        "previous": "Föregående låt",
+        "next": "Nästa låt",
+        "share": "Dela",
+        "like": "Gilla",
+        "unlike": "Sluta gilla",
+        "locked": "Låst"
       }
     },
     "nav": {

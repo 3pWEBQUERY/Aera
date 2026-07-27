@@ -18,6 +18,7 @@ const typeIcon: Record<string, IconName> = {
   VIDEOS: "videos",
   CHAT: "chat",
   PODCAST: "podcast",
+  MUSIC: "music",
   LINKS: "link",
 };
 

@@ -101,6 +101,7 @@ export const SPACE_TYPE_ICON: Record<SpaceTypeKey, IconName> = {
   VIDEOS: "videos",
   CHAT: "chat",
   PODCAST: "podcast",
+  MUSIC: "music",
   LINKS: "link",
   ADS: "megaphone",
   LIVE: "videos",
