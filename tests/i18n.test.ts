@@ -17,9 +17,98 @@ function leafKeys(obj: Record<string, unknown>, prefix = ""): string[] {
   });
 }
 
-/** Alle {placeholder}-Namen einer ICU-Nachricht. */
+/** Index der schliessenden Klammer zu `text[open]`, oder -1. */
+function matchBrace(text: string, open: number): number {
+  let depth = 0;
+  for (let i = open; i < text.length; i++) {
+    if (text[i] === "{") depth++;
+    else if (text[i] === "}" && --depth === 0) return i;
+  }
+  return -1;
+}
+
+/**
+ * Alle Argumentnamen einer ICU-Nachricht.
+ *
+ * Ein blosser Ausdruck wie /\{(\w+)/ reicht dafuer nicht: in
+ * `{count, plural, one {noch # Sekunde} other {noch # Sekunden}}` haelt er
+ * auch "noch" fuer einen Platzhalter und meldet einen Unterschied zwischen
+ * zwei voellig korrekten Sprachen. Der Unterschied zwischen einem Argument
+ * und dem Rumpf eines Plural-Zweigs steckt in der Verschachtelung, also wird
+ * sie hier mitgelesen: `{name, plural, ...}` liefert den Namen, und die
+ * Rumpfe der Zweige werden erneut als Text durchsucht — verschachtelte
+ * Argumente wie `{count, plural, other {# von {total}}}` gehen so nicht
+ * verloren.
+ */
 function placeholders(message: string): string[] {
-  return [...message.matchAll(/\{(\w+)/g)].map((m) => m[1]!).sort();
+  const names: string[] = [];
+  scanText(stripQuoted(message), names);
+  return names.sort();
+}
+
+/**
+ * Neutralisiert ICU-Anführungszeichen.
+ *
+ * Ein Apostroph vor `{`, `}` oder `#` macht das Folgende bis zum naechsten
+ * Apostroph zu wortwoertlichem Text. `'{q}'` ist damit kein Platzhalter,
+ * sondern die sichtbare Zeichenfolge "{q}" — ein Uebersetzungsfehler, der
+ * ohne diese Behandlung unentdeckt bliebe. `''` steht fuer einen einzelnen
+ * Apostroph.
+ */
+function stripQuoted(text: string): string {
+  let out = "";
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== "'") {
+      out += text[i];
+      continue;
+    }
+    const next = text[i + 1];
+    if (next === "'") {
+      out += "\u0000";
+      i++;
+    } else if (next === "{" || next === "}" || next === "#") {
+      const end = text.indexOf("'", i + 1);
+      const span = end === -1 ? text.slice(i + 1) : text.slice(i + 1, end);
+      out += "\u0000".repeat(span.length);
+      i = end === -1 ? text.length : end;
+    } else {
+      out += "'";
+    }
+  }
+  return out;
+}
+
+function scanText(text: string, out: string[]): void {
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== "{") continue;
+    const end = matchBrace(text, i);
+    if (end === -1) return;
+    const body = text.slice(i + 1, end);
+    const comma = body.indexOf(",");
+    const name = (comma === -1 ? body : body.slice(0, comma)).trim();
+    // Nur ein einzelnes Wort ist ein Argumentname; alles andere ist der Rumpf
+    // eines Zweigs und wird von scanBranches() behandelt.
+    if (/^\w+$/.test(name)) {
+      out.push(name);
+      const rest = comma === -1 ? "" : body.slice(comma + 1);
+      const type = rest.split(",")[0]!.trim();
+      if (type === "plural" || type === "select" || type === "selectordinal") {
+        scanBranches(rest.slice(rest.indexOf(",") + 1), out);
+      }
+    }
+    i = end;
+  }
+}
+
+/** Die `{...}` einer Plural-/Select-Liste sind Zweig-Rumpfe, keine Argumente. */
+function scanBranches(text: string, out: string[]): void {
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] !== "{") continue;
+    const end = matchBrace(text, i);
+    if (end === -1) return;
+    scanText(text.slice(i + 1, end), out);
+    i = end;
+  }
 }
 
 function messageAt(obj: unknown, path: string): string | undefined {
