@@ -237,7 +237,7 @@ function Mosaic({ d }: { d: CommunityHeroData }) {
 
   return (
     <section>
-      <div className="relative h-[180px] w-full overflow-hidden bg-[#161613]/5 sm:h-[260px]">
+      <div className="relative h-[230px] w-full overflow-hidden bg-[#161613]/5 sm:h-[340px]">
         {n > 0 ? (
           <div
             className="grid h-full w-full grid-cols-[repeat(var(--m-cols),minmax(0,1fr))] gap-0.5 sm:grid-cols-[repeat(var(--cols),minmax(0,1fr))]"
