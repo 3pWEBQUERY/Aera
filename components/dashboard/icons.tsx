@@ -336,6 +336,24 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M18 5v14" />
     </>
   ),
+  /** Rasteransicht — vier Felder. */
+  grid: (
+    <>
+      <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+      <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+      <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+    </>
+  ),
+  /** Listenansicht — Zeilen mit Punkten. */
+  list: (
+    <>
+      <path d="M9 6h11M9 12h11M9 18h11" />
+      <circle cx="4.5" cy="6" r="1.3" />
+      <circle cx="4.5" cy="12" r="1.3" />
+      <circle cx="4.5" cy="18" r="1.3" />
+    </>
+  ),
   /** Musik — Note mit Balken. */
   music: (
     <>

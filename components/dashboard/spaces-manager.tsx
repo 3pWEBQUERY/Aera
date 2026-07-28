@@ -18,6 +18,7 @@ import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { SpaceTypePicker, SPACE_TYPE_ICON } from "./space-type-picker";
 import { CreditsSheet } from "./credits-sheet";
 import { PLAN_LABEL } from "./plan-badge";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { nextPlanAfter, type PlanKey } from "@/lib/plan-features";
 
 export interface SpaceRowData {
@@ -60,6 +61,18 @@ export function SpacesManager({
   /** Max. active spaces for this package; null = unlimited. */
   spaceLimit: number | null;
 }) {
+  const [view, setView] = useState<SpaceView>("grid");
+  // Die Wahl bleibt erhalten, wird aber erst nach der Hydration gelesen —
+  // sonst weicht der erste Aufbau im Browser vom Server ab.
+  useEffect(() => {
+    const stored = window.localStorage.getItem(VIEW_KEY);
+    if (stored === "grid" || stored === "list") setView(stored);
+  }, []);
+  function chooseView(next: SpaceView) {
+    setView(next);
+    window.localStorage.setItem(VIEW_KEY, next);
+  }
+
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<SpaceRowData | null>(null);
   const [plansOpen, setPlansOpen] = useState(false);
@@ -81,13 +94,39 @@ export function SpacesManager({
           </p>
         </div>
         <div className="flex flex-col items-start gap-2 sm:items-end">
-          <button
-            onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
-            className="inline-flex items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] sm:self-auto"
-          >
-            <Icon name={atLimit ? "lock" : "plus"} size={18} />
-            {t("createSpace")}
-          </button>
+          <div className="flex items-center gap-2">
+            <div
+              role="group"
+              aria-label={t("viewLabel")}
+              className="flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-0.5"
+            >
+              {(["grid", "list"] as const).map((v) => (
+                <button
+                  key={v}
+                  type="button"
+                  onClick={() => chooseView(v)}
+                  aria-pressed={view === v}
+                  aria-label={t(v === "grid" ? "viewGrid" : "viewList")}
+                  title={t(v === "grid" ? "viewGrid" : "viewList")}
+                  className={cn(
+                    "flex h-9 w-9 items-center justify-center rounded-lg transition",
+                    view === v
+                      ? "bg-[var(--action)] text-[var(--action-fg)]"
+                      : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800",
+                  )}
+                >
+                  <Icon name={v === "grid" ? "grid" : "list"} size={17} />
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => (atLimit ? setPlansOpen(true) : setCreateOpen(true))}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+            >
+              <Icon name={atLimit ? "lock" : "plus"} size={18} />
+              {t("createSpace")}
+            </button>
+          </div>
           {spaceLimit !== null && (
             <p className="text-xs font-medium text-slate-400">
               {tp("limits.spacesUsed", { used: active.length, limit: spaceLimit })}
@@ -141,18 +180,24 @@ export function SpacesManager({
           </button>
         </div>
       ) : (
-        <div className="space-y-2.5">
-          {active.map((s) => (
-            <Row key={s.id} space={s} slug={slug} onEdit={() => setEditing(s)} />
-          ))}
+        <div>
+          <SpaceCollection
+            spaces={active}
+            view={view}
+            slug={slug}
+            onEdit={(sp) => setEditing(sp)}
+          />
           {archived.length > 0 && (
             <>
-              <p className="px-1 pb-1 pt-5 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <p className="px-1 pb-2 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-400">
                 {t("archived")}
               </p>
-              {archived.map((s) => (
-                <Row key={s.id} space={s} slug={slug} onEdit={() => setEditing(s)} />
-              ))}
+              <SpaceCollection
+                spaces={archived}
+                view={view}
+                slug={slug}
+                onEdit={(sp) => setEditing(sp)}
+              />
             </>
           )}
         </div>
@@ -192,6 +237,136 @@ export function SpacesManager({
         slug={slug}
         focusPlans
       />
+    </div>
+  );
+}
+
+type SpaceView = "grid" | "list";
+const VIEW_KEY = "aera:spaces-view";
+
+/**
+ * Die Sammlung in der gewaehlten Ansicht.
+ *
+ * Raster und Liste zeigen dieselben Angaben, nur anders gewichtet: die Karte
+ * stellt Typ und Sichtbarkeit nach vorn (man sucht darin), die Zeile den
+ * Namen (man liest sie herunter). Beides fuehrt mit einem Klick in dieselbe
+ * Bearbeitung.
+ */
+function SpaceCollection({
+  spaces,
+  view,
+  slug,
+  onEdit,
+}: {
+  spaces: SpaceRowData[];
+  view: SpaceView;
+  slug: string;
+  onEdit: (space: SpaceRowData) => void;
+}) {
+  if (view === "list") {
+    return (
+      <div className="space-y-2.5">
+        {spaces.map((s) => (
+          <Row key={s.id} space={s} slug={slug} onEdit={() => onEdit(s)} />
+        ))}
+      </div>
+    );
+  }
+  return (
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+      {spaces.map((s) => (
+        <Card key={s.id} space={s} slug={slug} onEdit={() => onEdit(s)} />
+      ))}
+    </div>
+  );
+}
+
+/**
+ * Space als Karte.
+ *
+ * Der Kopf traegt das Typ-Zeichen auf einer Flaeche aus der Aktionsfarbe und
+ * rechts die Sichtbarkeit — die beiden Angaben, nach denen man in einem
+ * Raster sucht. Die Zahl der Beitraege steht unten und haelt die Karten auf
+ * gleicher Hoehe, auch wenn ein Name zweizeilig wird.
+ */
+function Card({
+  space,
+  slug,
+  onEdit,
+}: {
+  space: SpaceRowData;
+  slug: string;
+  onEdit: () => void;
+}) {
+  const t = useTranslations("dashboard");
+  return (
+    <div
+      onClick={onEdit}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onEdit();
+        }
+      }}
+      className={cn(
+        "group flex h-full cursor-pointer flex-col rounded-2xl border border-slate-200 bg-white p-4 transition",
+        "hover:border-slate-300 hover:shadow-[var(--shadow-card)]",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+        space.isArchived && "opacity-60",
+      )}
+    >
+      <div className="flex items-start justify-between gap-3">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
+          <Icon name={spaceTypeIcon(space.type)} size={20} />
+        </span>
+        <Pill className={visCls[space.visibility] ?? visCls.MEMBERS}>
+          {t(`visibility.${space.visibility}.label`)}
+        </Pill>
+      </div>
+
+      <p className="mt-3 line-clamp-2 font-semibold leading-snug text-slate-900">{space.name}</p>
+      <p className="mt-0.5 truncate text-sm text-slate-400">/{space.slug}</p>
+
+      {/* Die Beschreibung fuellt die Karte mit dem, was den Space
+          unterscheidet — zwei Zeilen reichen, danach wird gekuerzt. */}
+      {space.description && (
+        <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-slate-500">
+          {space.description}
+        </p>
+      )}
+
+      {space.requiredEntitlementKey && (
+        <span className="mt-2 inline-flex max-w-full items-center gap-1 self-start truncate rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
+          <Icon name="lock" size={12} className="shrink-0" />
+          <span className="truncate">{space.requiredEntitlementKey}</span>
+        </span>
+      )}
+
+      {/* `mt-auto` haelt die Fusszeile unten — dadurch stehen Typ und Zahl
+          ueber alle Karten einer Reihe auf einer Linie. */}
+      <div className="mt-auto flex items-center justify-between gap-2 pt-4">
+        <div className="flex min-w-0 items-center gap-2">
+          <Pill className="bg-slate-100 text-slate-500">
+            {t(`spaceTypes.${space.type}.label`)}
+          </Pill>
+          <span className="truncate text-xs text-slate-400">
+            {t("spaces.postCount", { count: space.postCount })}
+          </span>
+        </div>
+        <form action={toggleSpaceArchiveAction} onClick={(e) => e.stopPropagation()}>
+          <input type="hidden" name="tenant" value={slug} />
+          <input type="hidden" name="spaceId" value={space.id} />
+          <button
+            aria-label={space.isArchived ? t("spaces.reactivate") : t("spaces.archive")}
+            title={space.isArchived ? t("spaces.reactivate") : t("spaces.archive")}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+          >
+            <Icon name="archive" size={16} />
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
