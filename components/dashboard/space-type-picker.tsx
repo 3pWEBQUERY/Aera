@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { SPACE_TYPE_ICON } from "@/lib/dashboard-nav-items";
 import { Icon } from "./icons";
@@ -37,14 +38,31 @@ export function SpaceTypePicker({
   disabledTypes?: string[];
 }) {
   const t = useTranslations("dashboard");
+  const locale = useLocale();
 
-  // Available types first, locked ones after — the ladder reads top to bottom.
-  const ordered = [...SPACE_TYPE_KEYS].sort((a, b) => {
-    const la = planAllowsSpaceType(plan, a) ? 0 : 1;
-    const lb = planAllowsSpaceType(plan, b) ? 0 : 1;
-    if (la !== lb) return la - lb;
-    return SPACE_TYPE_KEYS.indexOf(a) - SPACE_TYPE_KEYS.indexOf(b);
-  });
+  /**
+   * Verfuegbare Typen zuerst, gesperrte danach — und innerhalb der beiden
+   * Bloecke alphabetisch nach ihrem uebersetzten Namen.
+   *
+   * Vorher stand die Reihenfolge, in der die Typen ueber die Jahre
+   * dazugekommen sind: in einer Liste von zwanzig Kacheln findet man darin
+   * nichts wieder. Sortiert wird mit der Sprache des Betrachters, damit
+   * Umlaute und andere Alphabete dort landen, wo man sie sucht.
+   */
+  const collator = useMemo(
+    () => new Intl.Collator(locale, { sensitivity: "base" }),
+    [locale],
+  );
+  const ordered = useMemo(
+    () =>
+      [...SPACE_TYPE_KEYS].sort((a, b) => {
+        const la = planAllowsSpaceType(plan, a) ? 0 : 1;
+        const lb = planAllowsSpaceType(plan, b) ? 0 : 1;
+        if (la !== lb) return la - lb;
+        return collator.compare(t(`spaceTypes.${a}.label`), t(`spaceTypes.${b}.label`));
+      }),
+    [plan, collator, t],
+  );
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
