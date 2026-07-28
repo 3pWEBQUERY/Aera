@@ -754,6 +754,7 @@ export default async function CommunityHome({
       <SpaceSectionPreview
         slug={slug}
         tenantId={tenant.id}
+        access={ctx}
         space={{ id: s.id, slug: s.slug, name: s.name, type: s.type, description: s.description, settings: s.settings }}
         locked={!canAccess(s, ctx)}
         icon={typeIcon[s.type] ?? "spaces"}

@@ -4,6 +4,8 @@ import prisma from "@/lib/prisma";
 import { listLiveSessions } from "@/lib/live";
 import { formatPrice, formatDateTime } from "@/lib/utils";
 import { parseStorySettings } from "@/lib/space-settings";
+import { postLockKind } from "@/lib/post-access";
+import type { AccessContext } from "@/lib/entitlements";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { LiveSessionCard } from "./live-session-card";
@@ -25,6 +27,11 @@ export interface PreviewSpace {
 interface Props {
   slug: string;
   tenantId: string;
+  /**
+   * Rechte des Betrachters. Ohne sie muesste jeder bezahlte Titel vorsorglich
+   * als gesperrt gelten — auch fuer den, der ihn gekauft hat.
+   */
+  access?: AccessContext;
   space: PreviewSpace;
   locked: boolean;
   icon: IconName;
@@ -146,7 +153,7 @@ async function StoriesPreview({ slug, tenantId, space }: Props) {
  * Gesperrte Titel bleiben in der Liste, ihre Datei wird aber nicht
  * ausgeliefert — sichtbar ist, dass es sie gibt, hoerbar nichts.
  */
-async function MusicPreview({ slug, tenantId, space, locale }: Props) {
+async function MusicPreview({ slug, tenantId, space, locale, access }: Props) {
   const t = await getTranslations("community.render.music");
   const rows = await prisma.post.findMany({
     where: { tenantId, spaceId: space.id, isPublished: true, publishedAt: { lte: new Date() } },
@@ -165,21 +172,27 @@ async function MusicPreview({ slug, tenantId, space, locale }: Props) {
       </section>
     );
   }
-  const tracks: MusicTrack[] = rows.map((p) => ({
-    id: p.id,
-    title: p.title || t("untitled"),
-    href: `/c/${slug}/s/${space.slug}/${p.id}`,
-    // Der Abschnitt kennt den Betrachter nicht; bezahlte Titel bleiben
-    // deshalb hier immer stumm und verlinken auf die Beitragsseite.
-    audioUrl: p.priceCents > 0 ? null : p.videoUrl,
-    coverUrl: p.priceCents > 0 ? p.teaserUrl : p.imageUrl,
-    artist: p.author.name,
-    artistAvatar: p.author.avatarUrl,
-    likes: p._count.reactions,
-    likedByMe: false,
-    lockKind: p.priceCents > 0 ? "paid" : "none",
-    priceLabel: p.priceCents > 0 ? formatPrice(p.priceCents, p.currency, locale) : null,
-  }));
+  const tracks: MusicTrack[] = rows.map((p) => {
+    // Ohne Betrachter-Rechte bleibt jeder bezahlte Titel vorsorglich gesperrt.
+    const kind = access
+      ? postLockKind(p, access)
+      : p.priceCents > 0
+        ? ("paid" as const)
+        : ("none" as const);
+    return {
+      id: p.id,
+      title: p.title || t("untitled"),
+      href: `/c/${slug}/s/${space.slug}/${p.id}`,
+      audioUrl: kind === "none" ? p.videoUrl : null,
+      coverUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
+      artist: p.author.name,
+      artistAvatar: p.author.avatarUrl,
+      likes: p._count.reactions,
+      likedByMe: false,
+      lockKind: kind,
+      priceLabel: kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
+    };
+  });
   return (
     <section>
       <Header slug={slug} space={space} />

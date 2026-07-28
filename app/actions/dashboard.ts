@@ -2272,7 +2272,7 @@ export async function createSpacePostAction(
   // Ein Album entsteht so in einem Durchgang statt in zwoelf Formularen.
   if (space.type === "MUSIC") {
     if (tracks.length === 0) return { error: await tErr("contentRequired") };
-    await prisma.$transaction(
+    const created = await prisma.$transaction(
       tracks.map((track, i) =>
         prisma.post.create({
           data: {
@@ -2292,9 +2292,34 @@ export async function createSpacePostAction(
             isPublished: validSchedule ? false : true,
             publishedAt: validSchedule ?? undefined,
           },
+          select: { id: true, title: true },
         }),
       ),
     );
+    // Jeder verkaufte Titel braucht seinen eigenen Berechtigungsschluessel —
+    // ohne ihn bleibt er fuer immer gesperrt, auch nach dem Kauf. Die Schluessel
+    // koennen erst nach dem Anlegen gesetzt werden, weil sie die Beitrags-ID
+    // enthalten.
+    if (priceCents > 0) {
+      await prisma.$transaction(
+        created.map((track) =>
+          prisma.post.update({
+            where: { id: track.id },
+            data: { entitlementKey: `post:${track.id}` },
+          }),
+        ),
+      );
+    }
+    // Ohne Eintrag im Index findet die Suche die Titel nicht.
+    for (const track of created) {
+      await indexContent({
+        tenantId: tenant.id,
+        sourceType: "POST",
+        sourceId: track.id,
+        title: track.title ?? undefined,
+        content: track.title || space.name,
+      });
+    }
     revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
     revalidatePath(`/c/${slug}/s/${space.slug}`);
     revalidatePath(`/c/${slug}`);
