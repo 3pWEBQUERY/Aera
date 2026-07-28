@@ -33,6 +33,8 @@ beforeEach(() => {
   prisma.level.findFirst.mockResolvedValue(null);
   prisma.memberStats.upsert.mockResolvedValue({});
   prisma.badge.findMany.mockResolvedValue([]);
+  // Die Auswertung fragt zuerst, was die Person schon hat.
+  prisma.badgeAward.findMany.mockResolvedValue([]);
   prisma.pointsLedger.create.mockResolvedValue({});
 });
 
@@ -135,6 +137,33 @@ describe("awardPoints", () => {
         data: expect.objectContaining({ badgeId: "b1" }),
       }),
     );
+  });
+
+  it("does not re-award a badge the member already holds", async () => {
+    prisma.gamificationRule.findMany.mockResolvedValue([rule()]);
+    prisma.badge.findMany.mockResolvedValue([
+      { id: "b1", tenantId: "t1", criteria: { type: "points", threshold: 10 } },
+    ]);
+    prisma.badgeAward.findMany.mockResolvedValue([{ badgeId: "b1" }]);
+    prisma.memberStats.findUnique.mockResolvedValue({ points: 10 });
+
+    await awardPoints({ tenantId: "t1", userId: "u1", trigger: "POST_CREATED" });
+
+    expect(prisma.badgeAward.create).not.toHaveBeenCalled();
+    // Und ohne offene Auszeichnung wird auch nichts nachgezaehlt.
+    expect(prisma.memberStats.findUnique).not.toHaveBeenCalled();
+  });
+
+  it("skips badges that are awarded by hand", async () => {
+    prisma.gamificationRule.findMany.mockResolvedValue([rule()]);
+    prisma.badge.findMany.mockResolvedValue([
+      { id: "b1", tenantId: "t1", criteria: { type: "manual", threshold: 1 } },
+    ]);
+
+    await awardPoints({ tenantId: "t1", userId: "u1", trigger: "POST_CREATED" });
+
+    expect(prisma.badgeAward.create).not.toHaveBeenCalled();
+    expect(prisma.badgeAward.findMany).not.toHaveBeenCalled();
   });
 });
 
