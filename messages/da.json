@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Ønsker",
         "tagline": "Ønsker & afstemning"
+      },
+      "MUSIC": {
+        "name": "Musik",
+        "tagline": "Numre & afspiller"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Alle datoer og udgivelser på ét sted.",
       "LIVE": "Livestreams med chat til dine medlemmer.",
       "BOOKING": "1:1-tider, som dine medlemmer selv booker.",
-      "REQUESTS": "Ønsker og specialforespørgsler fra din community."
+      "REQUESTS": "Ønsker og specialforespørgsler fra din community.",
+      "MUSIC": "Dine egne numre med cover — frit eller eksklusivt."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Links",
-        "ADS": "Reklame"
+        "ADS": "Reklame",
+        "MUSIC": "Musik"
       },
       "createLabels": {
         "FEED": "Opret indlæg",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Musik",
+        "desc": "Numre & afspiller"
       }
     },
     "visibility": {

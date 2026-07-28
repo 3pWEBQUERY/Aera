@@ -317,6 +317,10 @@
       "REQUESTS": {
         "name": "Wünsche",
         "tagline": "Wünsche & Abstimmung"
+      },
+      "MUSIC": {
+        "name": "Musik",
+        "tagline": "Tracks & Player"
       }
     },
     "cancel": "Abbrechen",
@@ -376,7 +380,8 @@
       "CALENDAR": "Alle Termine und Releases auf einen Blick.",
       "LIVE": "Live-Streams mit Chat für deine Mitglieder.",
       "BOOKING": "1:1-Termine, die deine Mitglieder selbst buchen.",
-      "REQUESTS": "Wünsche und Custom-Anfragen deiner Community."
+      "REQUESTS": "Wünsche und Custom-Anfragen deiner Community.",
+      "MUSIC": "Eigene Tracks mit Cover — frei oder exklusiv."
     }
   },
   "library": {
@@ -1115,7 +1120,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Links",
-        "ADS": "Werbung"
+        "ADS": "Werbung",
+        "MUSIC": "Musik"
       },
       "createLabels": {
         "FEED": "Beitrag erstellen",
@@ -2586,6 +2592,10 @@
       "CALENDAR": {
         "label": "Kalender",
         "desc": "Termine & Releases"
+      },
+      "MUSIC": {
+        "label": "Musik",
+        "desc": "Tracks & Player"
       }
     },
     "visibility": {

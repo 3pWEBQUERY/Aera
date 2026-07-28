@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "リクエスト",
         "tagline": "リクエストと投票"
+      },
+      "MUSIC": {
+        "name": "ミュージック",
+        "tagline": "曲とプレーヤー"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "予定とリリースをひと目で確認。",
       "LIVE": "メンバー向けのライブ配信とチャット。",
       "BOOKING": "メンバーが自分で予約できる1対1の予定。",
-      "REQUESTS": "コミュニティからのリクエストとカスタム依頼。"
+      "REQUESTS": "コミュニティからのリクエストとカスタム依頼。",
+      "MUSIC": "カバー付きの自作曲を無料または限定で。"
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "チャット",
         "PODCAST": "ポッドキャスト",
         "LINKS": "リンク",
-        "ADS": "広告"
+        "ADS": "広告",
+        "MUSIC": "ミュージック"
       },
       "createLabels": {
         "FEED": "投稿を作成",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "ミュージック",
+        "desc": "曲とプレーヤー"
       }
     },
     "visibility": {

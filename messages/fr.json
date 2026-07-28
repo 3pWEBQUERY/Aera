@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Demandes",
         "tagline": "Souhaits & votes"
+      },
+      "MUSIC": {
+        "name": "Musique",
+        "tagline": "Titres & lecteur"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Toutes les dates et sorties en un coup d'œil.",
       "LIVE": "Streams en direct avec chat pour tes membres.",
       "BOOKING": "Des créneaux 1:1 que tes membres réservent eux-mêmes.",
-      "REQUESTS": "Souhaits et demandes personnalisées de ta communauté."
+      "REQUESTS": "Souhaits et demandes personnalisées de ta communauté.",
+      "MUSIC": "Vos propres titres avec pochette — libres ou exclusifs."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Liens",
-        "ADS": "Publicité"
+        "ADS": "Publicité",
+        "MUSIC": "Musique"
       },
       "createLabels": {
         "FEED": "Créer une publication",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Musique",
+        "desc": "Titres & lecteur"
       }
     },
     "visibility": {

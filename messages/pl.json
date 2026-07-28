@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Prośby",
         "tagline": "Życzenia i głosowanie"
+      },
+      "MUSIC": {
+        "name": "Muzyka",
+        "tagline": "Utwory i odtwarzacz"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Wszystkie terminy i premiery w jednym miejscu.",
       "LIVE": "Transmisje na żywo z czatem dla Twoich członków.",
       "BOOKING": "Spotkania 1:1, które Twoi członkowie rezerwują sami.",
-      "REQUESTS": "Życzenia i indywidualne prośby od Twojej społeczności."
+      "REQUESTS": "Życzenia i indywidualne prośby od Twojej społeczności.",
+      "MUSIC": "Własne utwory z okładką — za darmo lub na wyłączność."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Czat",
         "PODCAST": "Podcast",
         "LINKS": "Linki",
-        "ADS": "Reklamy"
+        "ADS": "Reklamy",
+        "MUSIC": "Muzyka"
       },
       "createLabels": {
         "FEED": "Utwórz wpis",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Muzyka",
+        "desc": "Utwory i odtwarzacz"
       }
     },
     "visibility": {

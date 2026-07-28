@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Solicitudes",
         "tagline": "Peticiones y votación"
+      },
+      "MUSIC": {
+        "name": "Música",
+        "tagline": "Pistas y reproductor"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Todas las fechas y estrenos de un vistazo.",
       "LIVE": "Transmisiones en vivo con chat para tus miembros.",
       "BOOKING": "Citas 1:1 que tus miembros reservan ellos mismos.",
-      "REQUESTS": "Peticiones y solicitudes personalizadas de tu comunidad."
+      "REQUESTS": "Peticiones y solicitudes personalizadas de tu comunidad.",
+      "MUSIC": "Tus propias pistas con portada: gratis o exclusivas."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Enlaces",
-        "ADS": "Publicidad"
+        "ADS": "Publicidad",
+        "MUSIC": "Música"
       },
       "createLabels": {
         "FEED": "Crear publicación",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Música",
+        "desc": "Pistas y reproductor"
       }
     },
     "visibility": {

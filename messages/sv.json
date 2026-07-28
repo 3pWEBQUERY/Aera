@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Önskemål",
         "tagline": "Önskemål & röstning"
+      },
+      "MUSIC": {
+        "name": "Musik",
+        "tagline": "Låtar & spelare"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Alla datum och releaser på ett ställe.",
       "LIVE": "Livesändningar med chatt för dina medlemmar.",
       "BOOKING": "1:1-tider som dina medlemmar bokar själva.",
-      "REQUESTS": "Önskemål och specialförfrågningar från din community."
+      "REQUESTS": "Önskemål och specialförfrågningar från din community.",
+      "MUSIC": "Dina egna låtar med omslag — fritt eller exklusivt."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chatt",
         "PODCAST": "Podd",
         "LINKS": "Länkar",
-        "ADS": "Annonser"
+        "ADS": "Annonser",
+        "MUSIC": "Musik"
       },
       "createLabels": {
         "FEED": "Skapa inlägg",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Musik",
+        "desc": "Låtar & spelare"
       }
     },
     "visibility": {

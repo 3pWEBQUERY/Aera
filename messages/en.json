@@ -317,6 +317,10 @@
       "REQUESTS": {
         "name": "Requests",
         "tagline": "Wishes & voting"
+      },
+      "MUSIC": {
+        "name": "Music",
+        "tagline": "Tracks & player"
       }
     },
     "cancel": "Cancel",
@@ -376,7 +380,8 @@
       "CALENDAR": "Every date and release at a glance.",
       "LIVE": "Live streams with chat for your members.",
       "BOOKING": "1:1 slots your members book themselves.",
-      "REQUESTS": "Wishes and custom requests from your community."
+      "REQUESTS": "Wishes and custom requests from your community.",
+      "MUSIC": "Your own tracks with cover art — free or exclusive."
     }
   },
   "library": {
@@ -1115,7 +1120,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Links",
-        "ADS": "Ads"
+        "ADS": "Ads",
+        "MUSIC": "Music"
       },
       "createLabels": {
         "FEED": "Create post",
@@ -2586,6 +2592,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Music",
+        "desc": "Tracks & player"
       }
     },
     "visibility": {

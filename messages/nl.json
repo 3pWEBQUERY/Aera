@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Verzoeken",
         "tagline": "Wensen & stemmen"
+      },
+      "MUSIC": {
+        "name": "Muziek",
+        "tagline": "Nummers & speler"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Alle data en releases in één overzicht.",
       "LIVE": "Livestreams met chat voor je leden.",
       "BOOKING": "1-op-1-afspraken die je leden zelf boeken.",
-      "REQUESTS": "Wensen en persoonlijke verzoeken van je community."
+      "REQUESTS": "Wensen en persoonlijke verzoeken van je community.",
+      "MUSIC": "Je eigen nummers met omslag — gratis of exclusief."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Links",
-        "ADS": "Advertenties"
+        "ADS": "Advertenties",
+        "MUSIC": "Muziek"
       },
       "createLabels": {
         "FEED": "Bericht maken",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Muziek",
+        "desc": "Nummers & speler"
       }
     },
     "visibility": {

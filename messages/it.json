@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Richieste",
         "tagline": "Desideri e votazioni"
+      },
+      "MUSIC": {
+        "name": "Musica",
+        "tagline": "Brani & player"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Tutte le date e le uscite a colpo d'occhio.",
       "LIVE": "Live streaming con chat per i tuoi membri.",
       "BOOKING": "Appuntamenti 1:1 che i tuoi membri prenotano da soli.",
-      "REQUESTS": "Desideri e richieste personalizzate dalla tua community."
+      "REQUESTS": "Desideri e richieste personalizzate dalla tua community.",
+      "MUSIC": "I tuoi brani con copertina — liberi o esclusivi."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Link",
-        "ADS": "Pubblicità"
+        "ADS": "Pubblicità",
+        "MUSIC": "Musica"
       },
       "createLabels": {
         "FEED": "Crea post",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Musica",
+        "desc": "Brani & player"
       }
     },
     "visibility": {

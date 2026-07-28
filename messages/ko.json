@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "요청",
         "tagline": "요청 & 투표"
+      },
+      "MUSIC": {
+        "name": "음악",
+        "tagline": "트랙과 플레이어"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "모든 일정과 출시 소식을 한눈에.",
       "LIVE": "멤버를 위한 라이브 스트리밍과 채팅.",
       "BOOKING": "멤버가 직접 예약하는 1:1 일정.",
-      "REQUESTS": "커뮤니티의 요청과 맞춤 문의."
+      "REQUESTS": "커뮤니티의 요청과 맞춤 문의.",
+      "MUSIC": "커버가 있는 나만의 트랙 — 무료 또는 독점."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "채팅",
         "PODCAST": "팟캐스트",
         "LINKS": "링크",
-        "ADS": "광고"
+        "ADS": "광고",
+        "MUSIC": "음악"
       },
       "createLabels": {
         "FEED": "게시물 만들기",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "음악",
+        "desc": "트랙과 플레이어"
       }
     },
     "visibility": {

@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Pedidos",
         "tagline": "Pedidos e votação"
+      },
+      "MUSIC": {
+        "name": "Música",
+        "tagline": "Faixas e player"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Todas as datas e lançamentos em um só lugar.",
       "LIVE": "Transmissões ao vivo com chat para seus membros.",
       "BOOKING": "Horários 1:1 que seus membros agendam sozinhos.",
-      "REQUESTS": "Pedidos e solicitações personalizadas da sua comunidade."
+      "REQUESTS": "Pedidos e solicitações personalizadas da sua comunidade.",
+      "MUSIC": "Suas próprias faixas com capa — grátis ou exclusivas."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podcast",
         "LINKS": "Links",
-        "ADS": "Anúncios"
+        "ADS": "Anúncios",
+        "MUSIC": "Música"
       },
       "createLabels": {
         "FEED": "Criar publicação",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Música",
+        "desc": "Faixas e player"
       }
     },
     "visibility": {

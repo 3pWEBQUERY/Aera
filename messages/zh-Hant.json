@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "心願",
         "tagline": "心願與投票"
+      },
+      "MUSIC": {
+        "name": "音樂",
+        "tagline": "曲目與播放器"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "一目了然掌握所有行程與發布。",
       "LIVE": "為你的成員提供直播與聊天。",
       "BOOKING": "成員可自行預約的1對1時段。",
-      "REQUESTS": "來自社群的心願與客製需求。"
+      "REQUESTS": "來自社群的心願與客製需求。",
+      "MUSIC": "你自己的曲目，配封面 — 免費或專屬。"
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "聊天",
         "PODCAST": "Podcast",
         "LINKS": "連結",
-        "ADS": "廣告"
+        "ADS": "廣告",
+        "MUSIC": "音樂"
       },
       "createLabels": {
         "FEED": "建立貼文",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "音樂",
+        "desc": "曲目與播放器"
       }
     },
     "visibility": {

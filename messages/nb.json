@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "Forespørsler",
         "tagline": "Ønsker & avstemning"
+      },
+      "MUSIC": {
+        "name": "Musikk",
+        "tagline": "Spor og spiller"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "Alle datoer og utgivelser på ett sted.",
       "LIVE": "Livestrømmer med chat for medlemmene dine.",
       "BOOKING": "1:1-timer som medlemmene dine booker selv.",
-      "REQUESTS": "Ønsker og skreddersydde forespørsler fra communityet ditt."
+      "REQUESTS": "Ønsker og skreddersydde forespørsler fra communityet ditt.",
+      "MUSIC": "Dine egne spor med omslag — gratis eller eksklusivt."
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "Chat",
         "PODCAST": "Podkast",
         "LINKS": "Lenker",
-        "ADS": "Annonser"
+        "ADS": "Annonser",
+        "MUSIC": "Musikk"
       },
       "createLabels": {
         "FEED": "Opprett innlegg",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "Musikk",
+        "desc": "Spor og spiller"
       }
     },
     "visibility": {

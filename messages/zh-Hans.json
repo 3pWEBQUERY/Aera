@@ -292,6 +292,10 @@
       "REQUESTS": {
         "name": "心愿",
         "tagline": "心愿与投票"
+      },
+      "MUSIC": {
+        "name": "音乐",
+        "tagline": "曲目与播放器"
       }
     },
     "cancel": "Cancel",
@@ -351,7 +355,8 @@
       "CALENDAR": "一目了然查看所有日程和发布。",
       "LIVE": "为你的成员提供直播和聊天。",
       "BOOKING": "成员可自行预约的1对1时段。",
-      "REQUESTS": "来自社区的心愿和定制需求。"
+      "REQUESTS": "来自社区的心愿和定制需求。",
+      "MUSIC": "你自己的曲目，配封面 — 免费或专属。"
     }
   },
   "library": {
@@ -1085,7 +1090,8 @@
         "CHAT": "聊天",
         "PODCAST": "播客",
         "LINKS": "链接",
-        "ADS": "广告"
+        "ADS": "广告",
+        "MUSIC": "音乐"
       },
       "createLabels": {
         "FEED": "创建帖子",
@@ -2462,6 +2468,10 @@
       "CALENDAR": {
         "label": "Calendar",
         "desc": "Dates & releases"
+      },
+      "MUSIC": {
+        "label": "音乐",
+        "desc": "曲目与播放器"
       }
     },
     "visibility": {
