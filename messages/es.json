@@ -2130,8 +2130,9 @@
       "shapeLabel": "Forma",
       "tierLabel": "Metal",
       "iconLabel": "Símbolo",
-      "manualHint": "Esta insignia no se otorga automáticamente.",
-      "manualBadge": "A mano"
+      "manualHint": "Las insignias con la condición «a mano» las otorgas tú —",
+      "manualBadge": "A mano",
+      "manualHintLink": "en la lista de miembros."
     },
     "referrals": {
       "metaTitle": "Recomendaciones",
@@ -2411,7 +2412,21 @@
       "emailShort": "Correo",
       "emailDisabledHint": "Tu correo electrónico es tu inicio de sesión y no se puede cambiar aquí.",
       "roleProtected": "Tu propio rol está protegido",
-      "saveProfile": "Guardar perfil"
+      "saveProfile": "Guardar perfil",
+      "badgesAction": "Insignias",
+      "badgesFor": "Insignias de {name}",
+      "badgesTitle": "Otorgar insignias",
+      "badgesOwned": "Otorgadas",
+      "badgesAvailable": "Pendientes",
+      "badgesAllGiven": "Este miembro ya tiene todas las insignias.",
+      "badgesEmptyTitle": "Aún no hay insignias",
+      "badgesEmptyHint": "Crea insignias en Gamificación y podrás otorgarlas aquí.",
+      "badgeCount": "{count, plural, =0 {Sin insignias} one {# insignia} other {# insignias}}",
+      "award": "Otorgar",
+      "awarding": "Otorgando…",
+      "revoke": "Quitar",
+      "revoking": "Quitando…",
+      "awardedOn": "Otorgada el {date}"
     },
     "spaceTypes": {
       "FEED": {

@@ -2130,8 +2130,9 @@
       "shapeLabel": "Форма",
       "tierLabel": "Метал",
       "iconLabel": "Символ",
-      "manualHint": "Цей значок не видається автоматично.",
-      "manualBadge": "Вручну"
+      "manualHint": "Значки з умовою «вручну» ви надаєте самі —",
+      "manualBadge": "Вручну",
+      "manualHintLink": "у списку учасників."
     },
     "referrals": {
       "metaTitle": "Реферали",
@@ -2411,7 +2412,21 @@
       "emailShort": "Ел. пошта",
       "emailDisabledHint": "Ваша електронна адреса — це ваш логін, її не можна змінити тут.",
       "roleProtected": "Ваша власна роль захищена",
-      "saveProfile": "Зберегти профіль"
+      "saveProfile": "Зберегти профіль",
+      "badgesAction": "Значки",
+      "badgesFor": "Значки для {name}",
+      "badgesTitle": "Надати значки",
+      "badgesOwned": "Надані",
+      "badgesAvailable": "Ще не надані",
+      "badgesAllGiven": "Цей учасник уже має всі значки.",
+      "badgesEmptyTitle": "Значків поки немає",
+      "badgesEmptyHint": "Створіть значки в розділі «Гейміфікація», і ви зможете надавати їх тут.",
+      "badgeCount": "{count, plural, =0 {Немає значків} one {# значок} few {# значки} many {# значків} other {# значка}}",
+      "award": "Надати",
+      "awarding": "Надається…",
+      "revoke": "Прибрати",
+      "revoking": "Прибирається…",
+      "awardedOn": "Надано {date}"
     },
     "spaceTypes": {
       "FEED": {

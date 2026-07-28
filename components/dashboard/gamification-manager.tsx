@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import Link from "next/link";
 import {
   createBadgeAction,
   updateBadgeAction,
@@ -214,6 +215,19 @@ export function GamificationManager({
             <Pill className="bg-slate-100 text-slate-500">{badges.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">{t("badgesDesc")}</p>
+          {/* Von Hand vergebene Auszeichnungen entstehen hier, verteilt werden
+              sie in der Mitgliederliste — ohne den Hinweis sucht man danach. */}
+          {badges.some((b) => b.type === "manual") && (
+            <p className="mt-1.5 text-sm text-slate-400">
+              {t("manualHint")}{" "}
+              <Link
+                href={`/dashboard/${slug}/members`}
+                className="font-medium text-[var(--action-strong)] underline-offset-2 hover:underline"
+              >
+                {t("manualHintLink")}
+              </Link>
+            </p>
+          )}
         </div>
         <button
           onClick={() => setCreateOpen(true)}

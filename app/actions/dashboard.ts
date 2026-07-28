@@ -1801,6 +1801,66 @@ export async function deleteBadgeAction(fd: FormData): Promise<void> {
   revalidatePath(`/dashboard/${slug}/gamification`);
 }
 
+/**
+ * Auszeichnung und Empfaenger pruefen.
+ *
+ * Beides muss zur selben Community gehoeren — sonst koennte ein Admin ueber
+ * eine untergeschobene ID eine fremde Auszeichnung oder ein fremdes Konto
+ * treffen. Geprueft wird deshalb der Beitritt, nicht nur die Nutzer-ID.
+ */
+async function resolveAward(fd: FormData) {
+  const slug = String(fd.get("tenant"));
+  const { tenant } = await requireTenantAdmin(slug);
+  const planBlocked = await featureBlocked(tenant.id, "gamification");
+  if (planBlocked) return { error: planBlocked } as const;
+  const [badge, membership] = await Promise.all([
+    prisma.badge.findFirst({
+      where: { id: String(fd.get("badgeId")), tenantId: tenant.id },
+      select: { id: true },
+    }),
+    prisma.membership.findFirst({
+      where: { userId: String(fd.get("userId")), tenantId: tenant.id },
+      select: { userId: true },
+    }),
+  ]);
+  if (!badge) return { error: await tErr("badgeNotFound") } as const;
+  if (!membership) return { error: await tErr("memberNotFound") } as const;
+  return { slug, tenantId: tenant.id, badgeId: badge.id, userId: membership.userId } as const;
+}
+
+/**
+ * Alle Seiten, auf denen eine Auszeichnung sichtbar ist. Die Community-Seiten
+ * gehoeren dazu: dort zeigt badge-row dieselben Vergaben.
+ */
+function revalidateAwards(slug: string) {
+  revalidatePath(`/dashboard/${slug}/members`);
+  revalidatePath(`/dashboard/${slug}/gamification`);
+  revalidatePath(`/c/${slug}`);
+  revalidatePath(`/c/${slug}/members`);
+  revalidatePath(`/c/${slug}/leaderboard`);
+}
+
+/** Auszeichnung von Hand vergeben — der Weg fuer alles, was sich nicht zaehlen laesst. */
+export async function awardBadgeAction(fd: FormData): Promise<ActionState> {
+  const target = await resolveAward(fd);
+  if ("error" in target) return { error: target.error };
+  const { slug, tenantId, badgeId, userId } = target;
+  // Doppelte faengt der Unique-Index ab: zweimal Vergeben bleibt folgenlos.
+  await prisma.badgeAward.create({ data: { tenantId, badgeId, userId } }).catch(() => undefined);
+  revalidateAwards(slug);
+  return ok;
+}
+
+/** Vergebene Auszeichnung zuruecknehmen. */
+export async function revokeBadgeAction(fd: FormData): Promise<ActionState> {
+  const target = await resolveAward(fd);
+  if ("error" in target) return { error: target.error };
+  const { slug, tenantId, badgeId, userId } = target;
+  await prisma.badgeAward.deleteMany({ where: { tenantId, badgeId, userId } });
+  revalidateAwards(slug);
+  return ok;
+}
+
 // ---------------------------------------------------------------- Media packages
 interface MediaInput {
   type: "IMAGE" | "VIDEO";

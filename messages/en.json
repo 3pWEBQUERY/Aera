@@ -2254,8 +2254,9 @@
       "shapeLabel": "Shape",
       "tierLabel": "Metal",
       "iconLabel": "Symbol",
-      "manualHint": "This badge is not awarded automatically.",
-      "manualBadge": "By hand"
+      "manualHint": "Badges with the “by hand” condition are yours to give —",
+      "manualBadge": "By hand",
+      "manualHintLink": "in the member list."
     },
     "referrals": {
       "metaTitle": "Referrals",
@@ -2535,7 +2536,21 @@
       "emailShort": "Email",
       "emailDisabledHint": "Your email address is your login and can't be changed here.",
       "roleProtected": "Your own role is protected",
-      "saveProfile": "Save profile"
+      "saveProfile": "Save profile",
+      "badgesAction": "Badges",
+      "badgesFor": "Badges for {name}",
+      "badgesTitle": "Award badges",
+      "badgesOwned": "Awarded",
+      "badgesAvailable": "Not yet awarded",
+      "badgesAllGiven": "This member already has every badge.",
+      "badgesEmptyTitle": "No badges yet",
+      "badgesEmptyHint": "Create badges under Gamification, then you can award them here.",
+      "badgeCount": "{count, plural, =0 {No badges} one {# badge} other {# badges}}",
+      "award": "Award",
+      "awarding": "Awarding…",
+      "revoke": "Remove",
+      "revoking": "Removing…",
+      "awardedOn": "Awarded on {date}"
     },
     "spaceTypes": {
       "FEED": {

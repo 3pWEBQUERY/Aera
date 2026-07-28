@@ -2130,8 +2130,9 @@
       "shapeLabel": "Form",
       "tierLabel": "Metal",
       "iconLabel": "Symbol",
-      "manualHint": "Dette mærke tildeles ikke automatisk.",
-      "manualBadge": "Manuelt"
+      "manualHint": "Badges med betingelsen “manuelt” tildeler du selv —",
+      "manualBadge": "Manuelt",
+      "manualHintLink": "i medlemslisten."
     },
     "referrals": {
       "metaTitle": "Henvisninger",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-mail",
       "emailDisabledHint": "E-mailadressen er dit login og kan ikke ændres her.",
       "roleProtected": "Din egen rolle er beskyttet",
-      "saveProfile": "Gem profil"
+      "saveProfile": "Gem profil",
+      "badgesAction": "Badges",
+      "badgesFor": "Badges til {name}",
+      "badgesTitle": "Tildel badges",
+      "badgesOwned": "Tildelt",
+      "badgesAvailable": "Endnu ikke tildelt",
+      "badgesAllGiven": "Dette medlem har allerede alle badges.",
+      "badgesEmptyTitle": "Ingen badges endnu",
+      "badgesEmptyHint": "Opret badges under Gamification, så kan du tildele dem her.",
+      "badgeCount": "{count, plural, =0 {Ingen badges} one {# badge} other {# badges}}",
+      "award": "Tildel",
+      "awarding": "Tildeler…",
+      "revoke": "Fjern",
+      "revoking": "Fjerner…",
+      "awardedOn": "Tildelt den {date}"
     },
     "spaceTypes": {
       "FEED": {

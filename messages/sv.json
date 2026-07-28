@@ -2130,8 +2130,9 @@
       "shapeLabel": "Form",
       "tierLabel": "Metall",
       "iconLabel": "Symbol",
-      "manualHint": "Det här märket delas inte ut automatiskt.",
-      "manualBadge": "För hand"
+      "manualHint": "Märken med villkoret ”för hand” tilldelar du själv —",
+      "manualBadge": "För hand",
+      "manualHintLink": "i medlemslistan."
     },
     "referrals": {
       "metaTitle": "Hänvisningar",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-post",
       "emailDisabledHint": "Din e-postadress är din inloggning och kan inte ändras här.",
       "roleProtected": "Din egen roll är skyddad",
-      "saveProfile": "Spara profil"
+      "saveProfile": "Spara profil",
+      "badgesAction": "Märken",
+      "badgesFor": "Märken för {name}",
+      "badgesTitle": "Tilldela märken",
+      "badgesOwned": "Tilldelade",
+      "badgesAvailable": "Inte tilldelade",
+      "badgesAllGiven": "Den här medlemmen har redan alla märken.",
+      "badgesEmptyTitle": "Inga märken än",
+      "badgesEmptyHint": "Skapa märken under Gamification, sedan kan du tilldela dem här.",
+      "badgeCount": "{count, plural, =0 {Inga märken} one {# märke} other {# märken}}",
+      "award": "Tilldela",
+      "awarding": "Tilldelar…",
+      "revoke": "Ta bort",
+      "revoking": "Tar bort…",
+      "awardedOn": "Tilldelat {date}"
     },
     "spaceTypes": {
       "FEED": {

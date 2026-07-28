@@ -2130,8 +2130,9 @@
       "shapeLabel": "形状",
       "tierLabel": "材质",
       "iconLabel": "符号",
-      "manualHint": "此徽章不会自动授予。",
-      "manualBadge": "手动"
+      "manualHint": "条件为“手动”的徽章由你自己颁发 —",
+      "manualBadge": "手动",
+      "manualHintLink": "在成员列表中。"
     },
     "referrals": {
       "metaTitle": "推荐",
@@ -2411,7 +2412,21 @@
       "emailShort": "邮箱",
       "emailDisabledHint": "电子邮件地址是你的登录名，无法在此更改。",
       "roleProtected": "你自己的角色受保护",
-      "saveProfile": "保存资料"
+      "saveProfile": "保存资料",
+      "badgesAction": "徽章",
+      "badgesFor": "{name} 的徽章",
+      "badgesTitle": "颁发徽章",
+      "badgesOwned": "已颁发",
+      "badgesAvailable": "尚未颁发",
+      "badgesAllGiven": "该成员已拥有全部徽章。",
+      "badgesEmptyTitle": "还没有徽章",
+      "badgesEmptyHint": "先在“游戏化”中创建徽章，然后就能在这里颁发。",
+      "badgeCount": "{count, plural, =0 {没有徽章} other {# 枚徽章}}",
+      "award": "颁发",
+      "awarding": "颁发中…",
+      "revoke": "移除",
+      "revoking": "移除中…",
+      "awardedOn": "{date} 颁发"
     },
     "spaceTypes": {
       "FEED": {

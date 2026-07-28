@@ -2130,8 +2130,9 @@
       "shapeLabel": "Forma",
       "tierLabel": "Metal",
       "iconLabel": "Símbolo",
-      "manualHint": "Esta insígnia não é concedida automaticamente.",
-      "manualBadge": "À mão"
+      "manualHint": "Emblemas com a condição “à mão” são concedidos por você —",
+      "manualBadge": "À mão",
+      "manualHintLink": "na lista de membros."
     },
     "referrals": {
       "metaTitle": "Indicações",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-mail",
       "emailDisabledHint": "Seu e-mail é seu login e não pode ser alterado aqui.",
       "roleProtected": "Sua própria função é protegida",
-      "saveProfile": "Salvar perfil"
+      "saveProfile": "Salvar perfil",
+      "badgesAction": "Emblemas",
+      "badgesFor": "Emblemas de {name}",
+      "badgesTitle": "Conceder emblemas",
+      "badgesOwned": "Concedidos",
+      "badgesAvailable": "Pendentes",
+      "badgesAllGiven": "Este membro já tem todos os emblemas.",
+      "badgesEmptyTitle": "Nenhum emblema ainda",
+      "badgesEmptyHint": "Crie emblemas em Gamificação e conceda-os aqui.",
+      "badgeCount": "{count, plural, =0 {Nenhum emblema} one {# emblema} other {# emblemas}}",
+      "award": "Conceder",
+      "awarding": "Concedendo…",
+      "revoke": "Remover",
+      "revoking": "Removendo…",
+      "awardedOn": "Concedido em {date}"
     },
     "spaceTypes": {
       "FEED": {

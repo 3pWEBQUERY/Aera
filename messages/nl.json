@@ -2130,8 +2130,9 @@
       "shapeLabel": "Vorm",
       "tierLabel": "Metaal",
       "iconLabel": "Symbool",
-      "manualHint": "Deze badge wordt niet automatisch toegekend.",
-      "manualBadge": "Handmatig"
+      "manualHint": "Badges met de voorwaarde ‘handmatig’ ken je zelf toe —",
+      "manualBadge": "Handmatig",
+      "manualHintLink": "in de ledenlijst."
     },
     "referrals": {
       "metaTitle": "Verwijzingen",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-mail",
       "emailDisabledHint": "Je e-mailadres is je login en kan hier niet worden gewijzigd.",
       "roleProtected": "Je eigen rol is beschermd",
-      "saveProfile": "Profiel opslaan"
+      "saveProfile": "Profiel opslaan",
+      "badgesAction": "Badges",
+      "badgesFor": "Badges voor {name}",
+      "badgesTitle": "Badges toekennen",
+      "badgesOwned": "Toegekend",
+      "badgesAvailable": "Nog open",
+      "badgesAllGiven": "Dit lid heeft al alle badges.",
+      "badgesEmptyTitle": "Nog geen badges",
+      "badgesEmptyHint": "Maak badges aan bij Gamification, dan kun je ze hier toekennen.",
+      "badgeCount": "{count, plural, =0 {Geen badges} one {# badge} other {# badges}}",
+      "award": "Toekennen",
+      "awarding": "Bezig met toekennen…",
+      "revoke": "Verwijderen",
+      "revoking": "Bezig met verwijderen…",
+      "awardedOn": "Toegekend op {date}"
     },
     "spaceTypes": {
       "FEED": {

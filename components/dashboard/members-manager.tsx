@@ -1,14 +1,20 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createMemberAction,
   updateMemberAction,
   updateOwnProfileAction,
   deleteMemberAction,
+  awardBadgeAction,
+  revokeBadgeAction,
   type ActionState,
 } from "@/app/actions/dashboard";
+import { BadgeMedal } from "@/components/community/badge-medal";
+import type { BadgeCriteriaType, BadgeShape, BadgeTier } from "@/lib/badges";
+import type { IconName } from "./icons";
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { SettingsTabs, type SettingsSection } from "./settings-tabs";
@@ -25,6 +31,23 @@ export interface MemberRow {
   joinedAt: string | Date;
   tierId: string | null;
   user: { name: string; email: string; avatarUrl: string | null };
+  /** Bereits vergebene Auszeichnungen dieses Mitglieds. */
+  badges: MemberAward[];
+}
+export interface MemberAward {
+  badgeId: string;
+  awardedAt: string | Date;
+}
+/** Eine Auszeichnung der Community, so wie sie zur Vergabe angeboten wird. */
+export interface BadgeOption {
+  id: string;
+  name: string;
+  description: string | null;
+  shape: BadgeShape;
+  tier: BadgeTier;
+  icon: IconName;
+  type: BadgeCriteriaType;
+  threshold: number;
 }
 interface Tier {
   id: string;
@@ -49,22 +72,41 @@ export function MembersManager({
   slug,
   members,
   tiers,
+  badges,
   currentUserId,
   initialTab,
 }: {
   slug: string;
   members: MemberRow[];
   tiers: Tier[];
+  badges: BadgeOption[];
   currentUserId: string;
   initialTab?: string;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<MemberRow | null>(null);
+  const [awarding, setAwarding] = useState<MemberRow | null>(null);
   const editingSelf = !!editing && editing.userId === currentUserId;
   const t = useTranslations("dashboard.members");
   const tRoles = useTranslations("dashboard.roles");
   const tStatus = useTranslations("dashboard.memberStatus");
   const locale = useLocale();
+
+  // Vergaben liegen im Zustand, damit eine Aenderung sofort in der Liste
+  // steht. Der Server bleibt die Wahrheit: nach jedem Schritt laedt
+  // router.refresh() die Seite nach und setzt diesen Zustand neu.
+  const [awards, setAwards] = useState<Record<string, MemberAward[]>>(() =>
+    Object.fromEntries(members.map((m) => [m.userId, m.badges])),
+  );
+  useEffect(() => {
+    setAwards(Object.fromEntries(members.map((m) => [m.userId, m.badges])));
+  }, [members]);
+
+  const byId = new Map(badges.map((b) => [b.id, b]));
+  const badgesOf = (userId: string) =>
+    (awards[userId] ?? [])
+      .map((a) => ({ badge: byId.get(a.badgeId), awardedAt: a.awardedAt }))
+      .filter((x): x is { badge: BadgeOption; awardedAt: string | Date } => !!x.badge);
 
   const team = members.filter((m) => m.role !== "MEMBER");
   const banned = members.filter((m) => m.status === "BANNED");
@@ -72,6 +114,7 @@ export function MembersManager({
   const renderRow = (m: MemberRow) => {
     const isSelf = m.userId === currentUserId;
     const editable = m.role !== "OWNER" || isSelf;
+    const own = badgesOf(m.userId);
     return (
       <div
         key={m.id}
@@ -102,12 +145,47 @@ export function MembersManager({
             {m.user.email} · {t("joined", { date: formatDate(m.joinedAt, locale) })}
           </p>
         </div>
-        {editable && (
-          <span className="flex w-full items-center justify-end gap-1.5 border-t border-slate-100 pt-2.5 text-sm font-medium text-slate-500 sm:w-auto sm:rounded-lg sm:border-0 sm:px-3 sm:py-1.5 sm:pt-0 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
-            <Icon name="settings" size={16} />
-            {isSelf ? t("editProfile") : t("edit")}
+        {/* Die ersten drei Auszeichnungen stehen in der Zeile — mehr wuerde
+            den Namen verdraengen, deshalb zaehlt der Rest nur noch. */}
+        {own.length > 0 && (
+          <span className="flex shrink-0 items-center gap-1" title={own.map((x) => x.badge.name).join(", ")}>
+            {own.slice(0, 3).map((x) => (
+              <BadgeMedal
+                key={x.badge.id}
+                look={{ shape: x.badge.shape, tier: x.badge.tier, icon: x.badge.icon }}
+                size={22}
+                title={x.badge.name}
+              />
+            ))}
+            {own.length > 3 && (
+              <span className="text-xs font-semibold text-slate-400">+{own.length - 3}</span>
+            )}
           </span>
         )}
+        <span className="flex w-full items-center justify-end gap-1 border-t border-slate-100 pt-2.5 sm:w-auto sm:border-0 sm:pt-0">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setAwarding(m);
+            }}
+            // Sonst faengt die Zeile die Taste ab und oeffnet zusaetzlich die
+            // Bearbeitung.
+            onKeyDown={(e) => e.stopPropagation()}
+            title={t("badgesAction")}
+            aria-label={t("badgesFor", { name: m.user.name })}
+            className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+          >
+            <Icon name="gamification" size={16} />
+            <span className="sm:hidden">{t("badgesAction")}</span>
+          </button>
+          {editable && (
+            <span className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-500 sm:opacity-0 sm:transition sm:group-hover:opacity-100 sm:group-focus-within:opacity-100">
+              <Icon name="settings" size={16} />
+              {isSelf ? t("editProfile") : t("edit")}
+            </span>
+          )}
+        </span>
       </div>
     );
   };
@@ -242,6 +320,203 @@ export function MembersManager({
             />
           ))}
       </Sheet>
+
+      {/* Auszeichnungen vergeben */}
+      <Sheet
+        open={!!awarding}
+        onClose={() => setAwarding(null)}
+        title={t("badgesTitle")}
+        subtitle={awarding?.user.name}
+        icon="gamification"
+      >
+        {awarding && (
+          <BadgeAwardPanel
+            key={awarding.id}
+            slug={slug}
+            member={awarding}
+            badges={badges}
+            owned={awards[awarding.userId] ?? []}
+            onChange={(next) =>
+              setAwards((prev) => ({ ...prev, [awarding.userId]: next }))
+            }
+            onDone={() => setAwarding(null)}
+          />
+        )}
+      </Sheet>
+    </div>
+  );
+}
+
+/**
+ * Auszeichnungen eines Mitglieds vergeben und zuruecknehmen.
+ *
+ * Oben steht, was das Mitglied schon hat, darunter der Rest — die Trennung
+ * beantwortet die eigentliche Frage ("fehlt noch etwas?") ohne Suchen.
+ * Auszeichnungen mit einer zaehlbaren Bedingung erhaelt man normalerweise
+ * automatisch; sie stehen trotzdem hier, weil ein Creator jemanden auch
+ * vorzeitig auszeichnen darf. Der Hinweis an der Zeile sagt, welcher Fall
+ * vorliegt.
+ */
+function BadgeAwardPanel({
+  slug,
+  member,
+  badges,
+  owned,
+  onChange,
+  onDone,
+}: {
+  slug: string;
+  member: MemberRow;
+  badges: BadgeOption[];
+  owned: MemberAward[];
+  onChange: (next: MemberAward[]) => void;
+  onDone: () => void;
+}) {
+  const t = useTranslations("dashboard.members");
+  const tGam = useTranslations("dashboard.gamification");
+  const tCrit = useTranslations("dashboard.gamification.criteria");
+  const locale = useLocale();
+  const router = useRouter();
+  const [, startTransition] = useTransition();
+  const [busy, setBusy] = useState<string | null>(null);
+  const [error, setError] = useState<string>();
+
+  const ownedIds = new Set(owned.map((a) => a.badgeId));
+  const has = badges.filter((b) => ownedIds.has(b.id));
+  const open = badges.filter((b) => !ownedIds.has(b.id));
+
+  async function run(badgeId: string, mode: "award" | "revoke") {
+    setBusy(badgeId);
+    setError(undefined);
+    const fd = new FormData();
+    fd.set("tenant", slug);
+    fd.set("userId", member.userId);
+    fd.set("badgeId", badgeId);
+    const result =
+      mode === "award" ? await awardBadgeAction(fd) : await revokeBadgeAction(fd);
+    setBusy(null);
+    if (result.error) {
+      setError(result.error);
+      return;
+    }
+    onChange(
+      mode === "award"
+        ? [...owned, { badgeId, awardedAt: new Date() }]
+        : owned.filter((a) => a.badgeId !== badgeId),
+    );
+    // Der Serverzustand kommt nach — Punkte, Zaehler und die Community-Seite
+    // haengen an denselben Daten.
+    startTransition(() => router.refresh());
+  }
+
+  const hint = (b: BadgeOption) =>
+    b.type === "manual"
+      ? tGam("manualBadge")
+      : tGam("badgeThreshold", { threshold: b.threshold, criterion: tCrit(b.type) });
+
+  const row = (b: BadgeOption, awardedAt?: string | Date) => (
+    <li
+      key={b.id}
+      className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3"
+    >
+      <span className="flex w-11 shrink-0 items-center justify-center">
+        <BadgeMedal look={{ shape: b.shape, tier: b.tier, icon: b.icon }} size={38} />
+      </span>
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-semibold text-slate-900">{b.name}</p>
+        <p className="truncate text-xs text-slate-400">
+          {awardedAt ? t("awardedOn", { date: formatDate(awardedAt, locale) }) : hint(b)}
+        </p>
+      </div>
+      {awardedAt ? (
+        <button
+          type="button"
+          onClick={() => run(b.id, "revoke")}
+          disabled={busy === b.id}
+          className="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600 disabled:opacity-50"
+        >
+          {busy === b.id ? t("revoking") : t("revoke")}
+        </button>
+      ) : (
+        <button
+          type="button"
+          onClick={() => run(b.id, "award")}
+          disabled={busy === b.id}
+          className="shrink-0 rounded-lg bg-[var(--action)] px-3 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+        >
+          {busy === b.id ? t("awarding") : t("award")}
+        </button>
+      )}
+    </li>
+  );
+
+  return (
+    <div className="flex min-h-0 flex-1 flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-xl space-y-6 px-6 py-10">
+          <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <Avatar name={member.user.name} src={member.user.avatarUrl} size={44} />
+            <div className="min-w-0">
+              <p className="truncate font-semibold text-slate-900">{member.user.name}</p>
+              <p className="truncate text-sm text-slate-400">
+                {t("badgeCount", { count: has.length })}
+              </p>
+            </div>
+          </div>
+
+          <FormError message={error} />
+
+          {badges.length === 0 ? (
+            <div className="rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+                <Icon name="gamification" size={22} />
+              </div>
+              <p className="mt-3 text-sm font-medium text-slate-700">{t("badgesEmptyTitle")}</p>
+              <p className="mt-0.5 text-xs text-slate-400">{t("badgesEmptyHint")}</p>
+            </div>
+          ) : (
+            <>
+              {has.length > 0 && (
+                <div>
+                  <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                    {t("badgesOwned")}
+                    <Pill className="bg-slate-100 text-slate-500">{has.length}</Pill>
+                  </h3>
+                  <ul className="mt-2.5 space-y-2">
+                    {has.map((b) =>
+                      row(b, owned.find((a) => a.badgeId === b.id)?.awardedAt),
+                    )}
+                  </ul>
+                </div>
+              )}
+
+              <div>
+                <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  {t("badgesAvailable")}
+                  <Pill className="bg-slate-100 text-slate-500">{open.length}</Pill>
+                </h3>
+                {open.length === 0 ? (
+                  <p className="mt-2.5 rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-400">
+                    {t("badgesAllGiven")}
+                  </p>
+                ) : (
+                  <ul className="mt-2.5 space-y-2">{open.map((b) => row(b))}</ul>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center justify-end border-t border-slate-200 bg-white px-6 py-4">
+        <button
+          type="button"
+          onClick={onDone}
+          className="rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+        >
+          {t("done")}
+        </button>
+      </div>
     </div>
   );
 }

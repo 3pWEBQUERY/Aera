@@ -2130,8 +2130,9 @@
       "shapeLabel": "Forma",
       "tierLabel": "Metallo",
       "iconLabel": "Simbolo",
-      "manualHint": "Questo distintivo non viene assegnato automaticamente.",
-      "manualBadge": "A mano"
+      "manualHint": "I badge con la condizione «a mano» li assegni tu —",
+      "manualBadge": "A mano",
+      "manualHintLink": "nell’elenco dei membri."
     },
     "referrals": {
       "metaTitle": "Referral",
@@ -2411,7 +2412,21 @@
       "emailShort": "Email",
       "emailDisabledHint": "Il tuo indirizzo email è il tuo accesso e non può essere modificato qui.",
       "roleProtected": "Il tuo ruolo è protetto",
-      "saveProfile": "Salva profilo"
+      "saveProfile": "Salva profilo",
+      "badgesAction": "Badge",
+      "badgesFor": "Badge di {name}",
+      "badgesTitle": "Assegna badge",
+      "badgesOwned": "Assegnati",
+      "badgesAvailable": "Da assegnare",
+      "badgesAllGiven": "Questo membro ha già tutti i badge.",
+      "badgesEmptyTitle": "Nessun badge",
+      "badgesEmptyHint": "Crea i badge in Gamification, poi potrai assegnarli qui.",
+      "badgeCount": "{count, plural, =0 {Nessun badge} one {# badge} other {# badge}}",
+      "award": "Assegna",
+      "awarding": "Assegnazione…",
+      "revoke": "Rimuovi",
+      "revoking": "Rimozione…",
+      "awardedOn": "Assegnato il {date}"
     },
     "spaceTypes": {
       "FEED": {

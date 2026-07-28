@@ -2130,8 +2130,9 @@
       "shapeLabel": "Forme",
       "tierLabel": "Métal",
       "iconLabel": "Symbole",
-      "manualHint": "Ce badge n’est pas attribué automatiquement.",
-      "manualBadge": "À la main"
+      "manualHint": "Les badges dont la condition est « à la main » se donnent —",
+      "manualBadge": "À la main",
+      "manualHintLink": "dans la liste des membres."
     },
     "referrals": {
       "metaTitle": "Parrainages",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-mail",
       "emailDisabledHint": "Votre adresse e-mail est votre identifiant et ne peut pas être modifiée ici.",
       "roleProtected": "Votre propre rôle est protégé",
-      "saveProfile": "Enregistrer le profil"
+      "saveProfile": "Enregistrer le profil",
+      "badgesAction": "Badges",
+      "badgesFor": "Badges de {name}",
+      "badgesTitle": "Attribuer des badges",
+      "badgesOwned": "Attribués",
+      "badgesAvailable": "À attribuer",
+      "badgesAllGiven": "Ce membre possède déjà tous les badges.",
+      "badgesEmptyTitle": "Aucun badge pour l’instant",
+      "badgesEmptyHint": "Créez des badges dans Gamification, puis attribuez-les ici.",
+      "badgeCount": "{count, plural, =0 {Aucun badge} one {# badge} other {# badges}}",
+      "award": "Attribuer",
+      "awarding": "Attribution…",
+      "revoke": "Retirer",
+      "revoking": "Retrait…",
+      "awardedOn": "Attribué le {date}"
     },
     "spaceTypes": {
       "FEED": {

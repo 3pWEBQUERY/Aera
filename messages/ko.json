@@ -2130,8 +2130,9 @@
       "shapeLabel": "모양",
       "tierLabel": "금속",
       "iconLabel": "기호",
-      "manualHint": "이 배지는 자동으로 수여되지 않습니다.",
-      "manualBadge": "수동"
+      "manualHint": "조건이 ‘수동’인 배지는 직접 부여합니다 —",
+      "manualBadge": "수동",
+      "manualHintLink": "회원 목록에서."
     },
     "referrals": {
       "metaTitle": "추천",
@@ -2411,7 +2412,21 @@
       "emailShort": "이메일",
       "emailDisabledHint": "이메일 주소는 로그인 정보이며 여기서 변경할 수 없습니다.",
       "roleProtected": "본인의 역할은 보호됩니다",
-      "saveProfile": "프로필 저장"
+      "saveProfile": "프로필 저장",
+      "badgesAction": "배지",
+      "badgesFor": "{name}님의 배지",
+      "badgesTitle": "배지 부여",
+      "badgesOwned": "부여됨",
+      "badgesAvailable": "미부여",
+      "badgesAllGiven": "이 회원은 이미 모든 배지를 보유하고 있습니다.",
+      "badgesEmptyTitle": "아직 배지가 없습니다",
+      "badgesEmptyHint": "게이미피케이션에서 배지를 만들면 여기에서 부여할 수 있습니다.",
+      "badgeCount": "{count, plural, =0 {배지 없음} other {배지 #개}}",
+      "award": "부여",
+      "awarding": "부여 중…",
+      "revoke": "제거",
+      "revoking": "제거 중…",
+      "awardedOn": "{date}에 부여됨"
     },
     "spaceTypes": {
       "FEED": {

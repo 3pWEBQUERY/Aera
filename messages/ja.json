@@ -2130,8 +2130,9 @@
       "shapeLabel": "形",
       "tierLabel": "素材",
       "iconLabel": "記号",
-      "manualHint": "このバッジは自動では付与されません。",
-      "manualBadge": "手動"
+      "manualHint": "条件が「手動」のバッジは自分で付与します —",
+      "manualBadge": "手動",
+      "manualHintLink": "メンバー一覧から。"
     },
     "referrals": {
       "metaTitle": "紹介",
@@ -2411,7 +2412,21 @@
       "emailShort": "メール",
       "emailDisabledHint": "メールアドレスはログインに使用され、ここでは変更できません。",
       "roleProtected": "自分の役割は保護されています",
-      "saveProfile": "プロフィールを保存"
+      "saveProfile": "プロフィールを保存",
+      "badgesAction": "バッジ",
+      "badgesFor": "{name} のバッジ",
+      "badgesTitle": "バッジを付与",
+      "badgesOwned": "付与済み",
+      "badgesAvailable": "未付与",
+      "badgesAllGiven": "このメンバーはすべてのバッジを持っています。",
+      "badgesEmptyTitle": "バッジがまだありません",
+      "badgesEmptyHint": "ゲーミフィケーションでバッジを作成すると、ここで付与できます。",
+      "badgeCount": "{count, plural, =0 {バッジなし} other {バッジ # 個}}",
+      "award": "付与",
+      "awarding": "付与中…",
+      "revoke": "削除",
+      "revoking": "削除中…",
+      "awardedOn": "{date} に付与"
     },
     "spaceTypes": {
       "FEED": {

@@ -355,7 +355,13 @@ function Card({
             {t("spaces.postCount", { count: space.postCount })}
           </span>
         </div>
-        <form action={toggleSpaceArchiveAction} onClick={(e) => e.stopPropagation()}>
+        <form
+          action={toggleSpaceArchiveAction}
+          onClick={(e) => e.stopPropagation()}
+          // Sonst oeffnet die Karte beim Absenden per Taste zusaetzlich die
+          // Bearbeitung.
+          onKeyDown={(e) => e.stopPropagation()}
+        >
           <input type="hidden" name="tenant" value={slug} />
           <input type="hidden" name="spaceId" value={space.id} />
           <button

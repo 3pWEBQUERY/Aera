@@ -2130,8 +2130,9 @@
       "shapeLabel": "Kształt",
       "tierLabel": "Metal",
       "iconLabel": "Symbol",
-      "manualHint": "Ta odznaka nie jest przyznawana automatycznie.",
-      "manualBadge": "Ręcznie"
+      "manualHint": "Odznaki z warunkiem „ręcznie” przyznajesz sam —",
+      "manualBadge": "Ręcznie",
+      "manualHintLink": "na liście członków."
     },
     "referrals": {
       "metaTitle": "Polecenia",
@@ -2411,7 +2412,21 @@
       "emailShort": "E-mail",
       "emailDisabledHint": "Adres e-mail to Twój login i nie można go tutaj zmienić.",
       "roleProtected": "Twoja własna rola jest chroniona",
-      "saveProfile": "Zapisz profil"
+      "saveProfile": "Zapisz profil",
+      "badgesAction": "Odznaki",
+      "badgesFor": "Odznaki dla {name}",
+      "badgesTitle": "Przyznaj odznaki",
+      "badgesOwned": "Przyznane",
+      "badgesAvailable": "Do przyznania",
+      "badgesAllGiven": "Ten członek ma już wszystkie odznaki.",
+      "badgesEmptyTitle": "Brak odznak",
+      "badgesEmptyHint": "Utwórz odznaki w sekcji Gamifikacja, a potem przyznasz je tutaj.",
+      "badgeCount": "{count, plural, =0 {Brak odznak} one {# odznaka} few {# odznaki} many {# odznak} other {# odznaki}}",
+      "award": "Przyznaj",
+      "awarding": "Przyznawanie…",
+      "revoke": "Usuń",
+      "revoking": "Usuwanie…",
+      "awardedOn": "Przyznano {date}"
     },
     "spaceTypes": {
       "FEED": {
