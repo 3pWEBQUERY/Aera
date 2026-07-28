@@ -19,6 +19,7 @@ import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
 import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { badgesForUsers } from "@/lib/member-badges";
 import { BadgeRow } from "@/components/community/badge-row";
 import { FeedStream, type FeedPostData } from "@/components/community/feed-stream";
@@ -31,28 +32,6 @@ import { ButtonLink } from "@/components/ui/button";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 
-const typeIcon: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  MUSIC: "music",
-  LINKS: "link",
-  LIVE: "videos",
-  REQUESTS: "messages",
-  BOOKING: "clock",
-  STORIES: "sparkles",
-  TIPS: "heart",
-  CALENDAR: "events",
-};
 // Icon shown on each recommendation, keyed by the type key from lib/ai
 // (product · post · event · course).
 const recTypeIcon: Record<string, IconName> = {
@@ -324,7 +303,7 @@ export default async function CommunityHome({
     return {
       slug: s.slug,
       name: s.name,
-      icon: typeIcon[s.type] ?? "spaces",
+      icon: spaceTypeIcon(s.type),
       // Big serif word on the tile = the category, like the landing marquee.
       category: tTypes.has(s.type) ? tTypes(s.type) : s.type,
       meta: `${s.name}${posts > 0 ? ` · ${t("postsCount", { count: nf.format(posts) })}` : ""}`,
@@ -764,7 +743,7 @@ export default async function CommunityHome({
         access={ctx}
         space={{ id: s.id, slug: s.slug, name: s.name, type: s.type, description: s.description, settings: s.settings }}
         locked={!canAccess(s, ctx)}
-        icon={typeIcon[s.type] ?? "spaces"}
+        icon={spaceTypeIcon(s.type)}
         typeLabel={tTypes.has(s.type) ? tTypes(s.type) : s.type}
         locale={locale}
       />

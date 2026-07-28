@@ -12,6 +12,7 @@ import {
 } from "@/app/actions/dashboard";
 import { Sheet } from "./sheet";
 import { Icon, type IconName } from "./icons";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { ImageUpload } from "./image-upload";
 import { VideoUpload } from "./video-upload";
 import { MediaUpload } from "./media-upload";
@@ -55,22 +56,6 @@ interface SpaceInfo {
 }
 
 const initial: ActionState = {};
-const typeIcon: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  BLOG: "blog",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  KNOWLEDGE: "knowledge",
-  COURSE: "courses",
-  SHOP: "products",
-  EVENTS: "events",
-  NEWSLETTER: "newsletter",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  LINKS: "link",
-  ADS: "megaphone",
-};
 const managedMeta: Record<string, { href: string; icon: IconName }> = {
   COURSE: { href: "/courses", icon: "courses" },
   SHOP: { href: "/products", icon: "products" },
@@ -113,7 +98,7 @@ export function SpaceContentManager({
       <div className="mb-7 flex flex-wrap items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
-            <Icon name={typeIcon[space.type] ?? "spaces"} size={20} />
+            <Icon name={spaceTypeIcon(space.type)} size={20} />
           </span>
           <div>
             <div className="flex items-center gap-2">
@@ -162,7 +147,7 @@ export function SpaceContentManager({
           onClose={() => setOpen(false)}
           title={createLabelFor(space.type)}
           subtitle={space.name}
-          icon={typeIcon[space.type] ?? "spaces"}
+          icon={spaceTypeIcon(space.type)}
         >
           {isKnowledge ? (
             <ArticleForm key={nonce} slug={slug} space={space} onDone={() => setOpen(false)} />
@@ -517,7 +502,7 @@ function PostList({
     return (
       <SpaceEmpty
         label={createLabelFor(space.type)}
-        icon={typeIcon[space.type] ?? "spaces"}
+        icon={spaceTypeIcon(space.type)}
         onCreate={onEmptyCreate}
       />
     );

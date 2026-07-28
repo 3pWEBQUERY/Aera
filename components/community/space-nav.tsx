@@ -3,24 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, isPathActive } from "@/lib/utils";
-import { Icon, type IconName } from "@/components/dashboard/icons";
+import { Icon } from "@/components/dashboard/icons";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 
-const typeIcon: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  MUSIC: "music",
-  LINKS: "link",
-};
 
 const itemClass = (active: boolean) =>
   cn(
@@ -49,7 +34,7 @@ export function SpaceNav({
         return (
           <Link key={s.slug} href={href} className={itemClass(active)}>
             <Icon
-              name={typeIcon[s.type] ?? "spaces"}
+              name={spaceTypeIcon(s.type)}
               size={17}
               className={cn("shrink-0", active ? "text-[var(--brand)]" : "text-[#161613]/50")}
             />

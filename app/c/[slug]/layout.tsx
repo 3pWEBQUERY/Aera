@@ -14,25 +14,11 @@ import { Icon, type IconName } from "@/components/dashboard/icons";
 import { unreadNotificationCount } from "@/lib/notifications";
 import { getTranslations } from "next-intl/server";
 import { parseLayout, resolveNavHref, NAV_TYPE_ICON } from "@/lib/layout";
+import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { readPreviewOverride } from "@/lib/preview";
 import type { Metadata } from "next";
 
 /** Space type → nav icon (matches the mobile SpaceNav mapping). */
-const spaceTypeIcon: Record<string, IconName> = {
-  FEED: "feed",
-  FORUM: "forum",
-  COURSE: "courses",
-  SHOP: "products",
-  NEWSLETTER: "newsletter",
-  EVENTS: "events",
-  BLOG: "blog",
-  KNOWLEDGE: "knowledge",
-  GALLERY: "gallery",
-  VIDEOS: "videos",
-  CHAT: "chat",
-  PODCAST: "podcast",
-  LINKS: "link",
-};
 
 export async function generateMetadata({
   params,
@@ -121,7 +107,7 @@ export default async function CommunityLayout({
     ...contentSpaces.slice(0, 5).map((s) => ({
       href: `/c/${slug}/s/${s.slug}`,
       label: s.name,
-      icon: spaceTypeIcon[s.type] ?? "spaces",
+      icon: spaceTypeIcon(s.type),
     })),
     ...chatSpaces.map((s) => ({
       href: `/c/${slug}/s/${s.slug}`,
@@ -143,7 +129,7 @@ export default async function CommunityLayout({
           label: item.label,
           icon:
             item.type === "SPACE" && item.value
-              ? spaceTypeIcon[spaceTypeBySlug.get(item.value) ?? ""] ?? "spaces"
+              ? spaceTypeIcon(spaceTypeBySlug.get(item.value) ?? "")
               : NAV_TYPE_ICON[item.type],
           exact: item.type === "HOME",
           recent: item.type === "RECENTLY_VISITED",
