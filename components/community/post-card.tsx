@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/misc";
+import { PostImages } from "./post-images";
 import { Icon } from "@/components/dashboard/icons";
 import { toggleReactionAction, purchasePostAction } from "@/app/actions/engage";
 import { timeAgo, excerpt, formatPrice } from "@/lib/utils";
@@ -34,65 +35,6 @@ export interface PostCardData {
   priceCents?: number;
   currency?: string;
   teaserUrl?: string | null;
-}
-
-/**
- * Bilder eines Beitrags.
- *
- * Ein Bild bleibt wie bisher gross. Ab zwei entsteht ein Raster: zwei
- * nebeneinander, drei mit einem grossen links, ab vier ein Vierer-Raster mit
- * einer Zaehlung auf dem letzten Feld. Alle Kacheln sind quadratisch
- * beschnitten — eine Reihe aus Hoch- und Querformaten haette sonst eine
- * ausgefranste Unterkante.
- */
-export function PostImages({ urls, locked = false }: { urls: string[]; locked?: boolean }) {
-  if (urls.length === 0) return null;
-  // Gesperrt: sichtbar, aber unkenntlich — dieselbe Behandlung wie auf den
-  // Kacheln und dem Titelbild eines Artikels.
-  const blur = locked ? { filter: "blur(22px)", transform: "scale(1.12)" } : undefined;
-  if (urls.length === 1) {
-    return (
-      <div className="relative mt-3 max-h-[28rem] overflow-hidden rounded-xl border border-[#161613]/10">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={urls[0]} alt="" className="max-h-[28rem] w-full object-cover" style={blur} />
-        {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
-      </div>
-    );
-  }
-
-  const shown = urls.slice(0, 4);
-  const rest = urls.length - shown.length;
-
-  return (
-    <div className="mt-3 grid grid-cols-2 gap-1.5 overflow-hidden rounded-xl border border-[#161613]/10">
-      {shown.map((url, i) => (
-        <div
-          key={`${url}-${i}`}
-          // Beim Dreier fuellt das erste Bild die linke Spalte ueber beide
-          // Reihen. `h-full` statt eines Seitenverhaeltnisses: die Hoehe kommt
-          // aus den beiden quadratischen Kacheln daneben, sonst bliebe unter
-          // dem grossen Bild eine weisse Luecke.
-          className={`relative ${
-            urls.length === 3 && i === 0 ? "row-span-2 h-full" : "aspect-square"
-          }`}
-        >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={url}
-            alt=""
-            className="absolute inset-0 h-full w-full object-cover"
-            style={blur}
-          />
-          {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
-          {rest > 0 && i === shown.length - 1 && (
-            <span className="absolute inset-0 flex items-center justify-center bg-[#161613]/55 text-xl font-semibold text-white">
-              +{rest}
-            </span>
-          )}
-        </div>
-      ))}
-    </div>
-  );
 }
 
 export function PostCard({
@@ -251,3 +193,5 @@ export function PostCard({
     </article>
   );
 }
+
+export { PostImages };

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { toggleReactionAction } from "@/app/actions/engage";
 import { CommentThread, type ThreadComment } from "./comment-thread";
-import { PostImages } from "./post-card";
+import { PostImages } from "./post-images";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { cn, timeAgo } from "@/lib/utils";
