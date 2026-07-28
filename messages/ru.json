@@ -2094,8 +2094,14 @@
       "createBadge": "Создать значок",
       "criteria": {
         "points": "Баллы",
-        "posts": "Публикации",
-        "comments": "Комментарии"
+        "posts": "Посты",
+        "comments": "Комментарии",
+        "likesGiven": "Поставленные лайки",
+        "likesReceived": "Полученные лайки",
+        "coursesCompleted": "Пройденные курсы",
+        "lessonsCompleted": "Пройденные уроки",
+        "memberDays": "Дней в сообществе",
+        "manual": "Выдаётся вручную"
       },
       "triggers": {
         "POST_CREATED": "Публикация создана",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Ежедневный вход",
         "PURCHASE": "Покупка совершена",
         "REFERRAL": "Приглашён участник"
-      }
+      },
+      "shapes": {
+        "COIN": "Монета",
+        "MEDAL": "Медаль",
+        "HEX": "Герб",
+        "SEAL": "Печать"
+      },
+      "tiers": {
+        "GOLD": "Золото",
+        "SILVER": "Серебро",
+        "BRONZE": "Бронза",
+        "BRAND": "Бренд",
+        "INK": "Чернила"
+      },
+      "preview": "Предпросмотр",
+      "shapeLabel": "Форма",
+      "tierLabel": "Металл",
+      "iconLabel": "Символ",
+      "manualHint": "Этот значок не выдаётся автоматически.",
+      "manualBadge": "Вручную"
     },
     "referrals": {
       "metaTitle": "Рефералы",

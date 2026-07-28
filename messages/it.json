@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Punti",
         "posts": "Post",
-        "comments": "Commenti"
+        "comments": "Commenti",
+        "likesGiven": "Mi piace dati",
+        "likesReceived": "Mi piace ricevuti",
+        "coursesCompleted": "Corsi completati",
+        "lessonsCompleted": "Lezioni completate",
+        "memberDays": "Giorni da membro",
+        "manual": "Assegnato a mano"
       },
       "triggers": {
         "POST_CREATED": "Post creato",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Accesso giornaliero",
         "PURCHASE": "Acquisto effettuato",
         "REFERRAL": "Membro segnalato"
-      }
+      },
+      "shapes": {
+        "COIN": "Moneta",
+        "MEDAL": "Medaglia",
+        "HEX": "Stemma",
+        "SEAL": "Sigillo"
+      },
+      "tiers": {
+        "GOLD": "Oro",
+        "SILVER": "Argento",
+        "BRONZE": "Bronzo",
+        "BRAND": "Marchio",
+        "INK": "Inchiostro"
+      },
+      "preview": "Anteprima",
+      "shapeLabel": "Forma",
+      "tierLabel": "Metallo",
+      "iconLabel": "Simbolo",
+      "manualHint": "Questo distintivo non viene assegnato automaticamente.",
+      "manualBadge": "A mano"
     },
     "referrals": {
       "metaTitle": "Referral",

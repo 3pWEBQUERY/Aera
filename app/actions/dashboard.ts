@@ -55,6 +55,7 @@ import {
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion } from "@/lib/data-lifecycle";
 import { safeHexColor } from "@/lib/color";
+import { parseBadgeCriteria } from "@/lib/badges";
 
 export interface ActionState {
   error?: string;
@@ -976,6 +977,17 @@ export async function sendCampaignTestAction(
 }
 
 // ---------------------------------------------------------------- Gamification
+/** Bedingung und Gestalt einer Auszeichnung aus dem Formular. */
+function readBadgeCriteria(fd: FormData) {
+  return parseBadgeCriteria({
+    type: fd.get("type"),
+    threshold: Number(fd.get("threshold") || 0),
+    shape: fd.get("shape"),
+    tier: fd.get("tier"),
+    icon: fd.get("icon"),
+  });
+}
+
 export async function createBadgeAction(
   _p: ActionState,
   fd: FormData,
@@ -986,15 +998,15 @@ export async function createBadgeAction(
   const planBlocked = await featureBlocked(tenant.id, "gamification");
   if (planBlocked) return { error: planBlocked };
   const name = String(fd.get("name") || "").trim();
-  const type = String(fd.get("type") || "points");
-  const threshold = Number(fd.get("threshold") || 0);
   if (name.length < 2) return { error: await tErr("nameRequired") };
   await prisma.badge.create({
     data: {
       tenantId: tenant.id,
       name,
       description: String(fd.get("description") || "") || null,
-      criteria: { type, threshold },
+      // Bedingung und Gestalt liegen zusammen im JSON — parseBadgeCriteria
+      // raeumt dabei alles auf, was nicht zum Katalog gehoert.
+      criteria: { ...readBadgeCriteria(fd) },
     },
   });
   revalidatePath(`/dashboard/${slug}/gamification`);
@@ -1765,8 +1777,6 @@ export async function updateBadgeAction(
   if (planBlocked) return { error: planBlocked };
   const badgeId = String(fd.get("badgeId"));
   const name = String(fd.get("name") || "").trim();
-  const type = String(fd.get("type") || "points");
-  const threshold = Number(fd.get("threshold") || 0);
   if (name.length < 2) return { error: await tErr("nameRequired") };
   const badge = await prisma.badge.findFirst({ where: { id: badgeId, tenantId: tenant.id } });
   if (!badge) return { error: await tErr("badgeNotFound") };
@@ -1775,7 +1785,7 @@ export async function updateBadgeAction(
     data: {
       name,
       description: String(fd.get("description") || "") || null,
-      criteria: { type, threshold },
+      criteria: { ...readBadgeCriteria(fd) },
     },
   });
   revalidatePath(`/dashboard/${slug}/gamification`);

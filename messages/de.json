@@ -2219,7 +2219,13 @@
       "criteria": {
         "points": "Punkte",
         "posts": "Beiträge",
-        "comments": "Kommentare"
+        "comments": "Kommentare",
+        "likesGiven": "Vergebene Likes",
+        "likesReceived": "Erhaltene Likes",
+        "coursesCompleted": "Abgeschlossene Kurse",
+        "lessonsCompleted": "Abgeschlossene Lektionen",
+        "memberDays": "Tage dabei",
+        "manual": "Von Hand vergeben"
       },
       "triggers": {
         "POST_CREATED": "Beitrag erstellt",
@@ -2230,7 +2236,26 @@
         "DAILY_LOGIN": "Täglicher Login",
         "PURCHASE": "Kauf getätigt",
         "REFERRAL": "Mitglied geworben"
-      }
+      },
+      "shapes": {
+        "COIN": "Münze",
+        "MEDAL": "Medaille",
+        "HEX": "Wappen",
+        "SEAL": "Siegel"
+      },
+      "tiers": {
+        "GOLD": "Gold",
+        "SILVER": "Silber",
+        "BRONZE": "Bronze",
+        "BRAND": "Marke",
+        "INK": "Tinte"
+      },
+      "preview": "Vorschau",
+      "shapeLabel": "Form",
+      "tierLabel": "Metall",
+      "iconLabel": "Zeichen",
+      "manualHint": "Diese Auszeichnung wird nicht automatisch vergeben.",
+      "manualBadge": "Von Hand"
     },
     "referrals": {
       "metaTitle": "Empfehlungen",

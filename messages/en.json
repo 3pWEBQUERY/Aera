@@ -2219,7 +2219,13 @@
       "criteria": {
         "points": "Points",
         "posts": "Posts",
-        "comments": "Comments"
+        "comments": "Comments",
+        "likesGiven": "Likes given",
+        "likesReceived": "Likes received",
+        "coursesCompleted": "Courses completed",
+        "lessonsCompleted": "Lessons completed",
+        "memberDays": "Days as member",
+        "manual": "Awarded by hand"
       },
       "triggers": {
         "POST_CREATED": "Post created",
@@ -2230,7 +2236,26 @@
         "DAILY_LOGIN": "Daily login",
         "PURCHASE": "Purchase made",
         "REFERRAL": "Member referred"
-      }
+      },
+      "shapes": {
+        "COIN": "Coin",
+        "MEDAL": "Medal",
+        "HEX": "Crest",
+        "SEAL": "Seal"
+      },
+      "tiers": {
+        "GOLD": "Gold",
+        "SILVER": "Silver",
+        "BRONZE": "Bronze",
+        "BRAND": "Brand",
+        "INK": "Ink"
+      },
+      "preview": "Preview",
+      "shapeLabel": "Shape",
+      "tierLabel": "Metal",
+      "iconLabel": "Symbol",
+      "manualHint": "This badge is not awarded automatically.",
+      "manualBadge": "By hand"
     },
     "referrals": {
       "metaTitle": "Referrals",

@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Poäng",
         "posts": "Inlägg",
-        "comments": "Kommentarer"
+        "comments": "Kommentarer",
+        "likesGiven": "Givna gillanden",
+        "likesReceived": "Mottagna gillanden",
+        "coursesCompleted": "Avklarade kurser",
+        "lessonsCompleted": "Avklarade lektioner",
+        "memberDays": "Dagar som medlem",
+        "manual": "Tilldelas för hand"
       },
       "triggers": {
         "POST_CREATED": "Inlägg skapat",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Daglig inloggning",
         "PURCHASE": "Köp genomfört",
         "REFERRAL": "Medlem värvad"
-      }
+      },
+      "shapes": {
+        "COIN": "Mynt",
+        "MEDAL": "Medalj",
+        "HEX": "Sköld",
+        "SEAL": "Sigill"
+      },
+      "tiers": {
+        "GOLD": "Guld",
+        "SILVER": "Silver",
+        "BRONZE": "Brons",
+        "BRAND": "Varumärke",
+        "INK": "Bläck"
+      },
+      "preview": "Förhandsvisning",
+      "shapeLabel": "Form",
+      "tierLabel": "Metall",
+      "iconLabel": "Symbol",
+      "manualHint": "Det här märket delas inte ut automatiskt.",
+      "manualBadge": "För hand"
     },
     "referrals": {
       "metaTitle": "Hänvisningar",

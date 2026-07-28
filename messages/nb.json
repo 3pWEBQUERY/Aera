@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Poeng",
         "posts": "Innlegg",
-        "comments": "Kommentarer"
+        "comments": "Kommentarer",
+        "likesGiven": "Gitte likes",
+        "likesReceived": "Mottatte likes",
+        "coursesCompleted": "Fullførte kurs",
+        "lessonsCompleted": "Fullførte leksjoner",
+        "memberDays": "Dager som medlem",
+        "manual": "Tildelt manuelt"
       },
       "triggers": {
         "POST_CREATED": "Innlegg opprettet",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Daglig innlogging",
         "PURCHASE": "Kjøp gjennomført",
         "REFERRAL": "Medlem vervet"
-      }
+      },
+      "shapes": {
+        "COIN": "Mynt",
+        "MEDAL": "Medalje",
+        "HEX": "Skjold",
+        "SEAL": "Segl"
+      },
+      "tiers": {
+        "GOLD": "Gull",
+        "SILVER": "Sølv",
+        "BRONZE": "Bronse",
+        "BRAND": "Merke",
+        "INK": "Blekk"
+      },
+      "preview": "Forhåndsvisning",
+      "shapeLabel": "Form",
+      "tierLabel": "Metall",
+      "iconLabel": "Symbol",
+      "manualHint": "Dette merket tildeles ikke automatisk.",
+      "manualBadge": "Manuelt"
     },
     "referrals": {
       "metaTitle": "Henvisninger",

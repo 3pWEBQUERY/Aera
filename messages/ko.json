@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "포인트",
         "posts": "게시물",
-        "comments": "댓글"
+        "comments": "댓글",
+        "likesGiven": "보낸 좋아요",
+        "likesReceived": "받은 좋아요",
+        "coursesCompleted": "완료한 코스",
+        "lessonsCompleted": "완료한 레슨",
+        "memberDays": "가입 일수",
+        "manual": "직접 수여"
       },
       "triggers": {
         "POST_CREATED": "게시물 작성",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "일일 로그인",
         "PURCHASE": "구매 완료",
         "REFERRAL": "멤버 추천"
-      }
+      },
+      "shapes": {
+        "COIN": "코인",
+        "MEDAL": "메달",
+        "HEX": "엠블럼",
+        "SEAL": "씰"
+      },
+      "tiers": {
+        "GOLD": "골드",
+        "SILVER": "실버",
+        "BRONZE": "브론즈",
+        "BRAND": "브랜드",
+        "INK": "잉크"
+      },
+      "preview": "미리보기",
+      "shapeLabel": "모양",
+      "tierLabel": "금속",
+      "iconLabel": "기호",
+      "manualHint": "이 배지는 자동으로 수여되지 않습니다.",
+      "manualBadge": "수동"
     },
     "referrals": {
       "metaTitle": "추천",

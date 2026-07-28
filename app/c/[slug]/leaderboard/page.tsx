@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getCommunityContext } from "@/lib/guards";
 import { leaderboard } from "@/lib/gamification";
+import { badgesForUsers } from "@/lib/member-badges";
+import { BadgeRow } from "@/components/community/badge-row";
 import { Card, CardBody } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
@@ -37,6 +39,11 @@ export default async function LeaderboardPage({
   }
 
   const board = await leaderboard(community.tenant.id, 50);
+  const badgeBy = await badgesForUsers(
+    community.tenant.id,
+    board.map((r) => r.userId),
+    3,
+  );
   const meId = community.user?.id;
   const nf = new Intl.NumberFormat(await getLocale());
 
@@ -163,11 +170,10 @@ export default async function LeaderboardPage({
                               </span>
                             )}
                           </p>
-                          {row.levelName && (
-                            <p className="truncate text-xs text-slate-400">
-                              {row.levelName}
-                            </p>
-                          )}
+                          <p className="flex items-center gap-2 truncate text-xs text-slate-400">
+                            {row.levelName && <span className="truncate">{row.levelName}</span>}
+                            <BadgeRow badges={badgeBy.get(row.userId) ?? []} size={18} max={3} />
+                          </p>
                         </div>
                         <span className="shrink-0 font-bold text-[color:var(--brand)]">
                           {nf.format(row.points)}

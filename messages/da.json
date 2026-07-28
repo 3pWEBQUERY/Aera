@@ -2094,8 +2094,14 @@
       "createBadge": "Opret badge",
       "criteria": {
         "points": "Point",
-        "posts": "Indlæg",
-        "comments": "Kommentarer"
+        "posts": "Opslag",
+        "comments": "Kommentarer",
+        "likesGiven": "Givne likes",
+        "likesReceived": "Modtagne likes",
+        "coursesCompleted": "Gennemførte kurser",
+        "lessonsCompleted": "Gennemførte lektioner",
+        "memberDays": "Dage som medlem",
+        "manual": "Tildelt manuelt"
       },
       "triggers": {
         "POST_CREATED": "Indlæg oprettet",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Dagligt login",
         "PURCHASE": "Køb foretaget",
         "REFERRAL": "Medlem henvist"
-      }
+      },
+      "shapes": {
+        "COIN": "Mønt",
+        "MEDAL": "Medalje",
+        "HEX": "Skjold",
+        "SEAL": "Segl"
+      },
+      "tiers": {
+        "GOLD": "Guld",
+        "SILVER": "Sølv",
+        "BRONZE": "Bronze",
+        "BRAND": "Brand",
+        "INK": "Blæk"
+      },
+      "preview": "Forhåndsvisning",
+      "shapeLabel": "Form",
+      "tierLabel": "Metal",
+      "iconLabel": "Symbol",
+      "manualHint": "Dette mærke tildeles ikke automatisk.",
+      "manualBadge": "Manuelt"
     },
     "referrals": {
       "metaTitle": "Henvisninger",

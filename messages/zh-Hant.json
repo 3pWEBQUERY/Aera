@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "積分",
         "posts": "貼文",
-        "comments": "留言"
+        "comments": "留言",
+        "likesGiven": "送出的讚",
+        "likesReceived": "收到的讚",
+        "coursesCompleted": "完成的課程",
+        "lessonsCompleted": "完成的課堂",
+        "memberDays": "加入天數",
+        "manual": "手動授予"
       },
       "triggers": {
         "POST_CREATED": "建立貼文",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "每日登入",
         "PURCHASE": "完成購買",
         "REFERRAL": "推薦成員"
-      }
+      },
+      "shapes": {
+        "COIN": "金幣",
+        "MEDAL": "獎章",
+        "HEX": "徽章",
+        "SEAL": "印章"
+      },
+      "tiers": {
+        "GOLD": "金",
+        "SILVER": "銀",
+        "BRONZE": "銅",
+        "BRAND": "品牌",
+        "INK": "墨"
+      },
+      "preview": "預覽",
+      "shapeLabel": "形狀",
+      "tierLabel": "材質",
+      "iconLabel": "符號",
+      "manualHint": "此徽章不會自動授予。",
+      "manualBadge": "手動"
     },
     "referrals": {
       "metaTitle": "推薦",

@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Pontos",
         "posts": "Publicações",
-        "comments": "Comentários"
+        "comments": "Comentários",
+        "likesGiven": "Curtidas dadas",
+        "likesReceived": "Curtidas recebidas",
+        "coursesCompleted": "Cursos concluídos",
+        "lessonsCompleted": "Aulas concluídas",
+        "memberDays": "Dias como membro",
+        "manual": "Concedida à mão"
       },
       "triggers": {
         "POST_CREATED": "Publicação criada",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Login diário",
         "PURCHASE": "Compra realizada",
         "REFERRAL": "Membro indicado"
-      }
+      },
+      "shapes": {
+        "COIN": "Moeda",
+        "MEDAL": "Medalha",
+        "HEX": "Brasão",
+        "SEAL": "Selo"
+      },
+      "tiers": {
+        "GOLD": "Ouro",
+        "SILVER": "Prata",
+        "BRONZE": "Bronze",
+        "BRAND": "Marca",
+        "INK": "Tinta"
+      },
+      "preview": "Prévia",
+      "shapeLabel": "Forma",
+      "tierLabel": "Metal",
+      "iconLabel": "Símbolo",
+      "manualHint": "Esta insígnia não é concedida automaticamente.",
+      "manualBadge": "À mão"
     },
     "referrals": {
       "metaTitle": "Indicações",

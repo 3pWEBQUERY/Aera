@@ -19,6 +19,8 @@ import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
 import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
+import { badgesForUsers } from "@/lib/member-badges";
+import { BadgeRow } from "@/components/community/badge-row";
 import { FeedStream, type FeedPostData } from "@/components/community/feed-stream";
 import type { MediaTileData } from "@/components/community/media-tile";
 import { SpaceSlider, type SpaceCardData } from "@/components/community/space-slider";
@@ -273,6 +275,8 @@ export default async function CommunityHome({
   ]);
 
   const nf = new Intl.NumberFormat(locale);
+  // Auszeichnungen der Top-Mitglieder — eine Abfrage fuer die ganze Liste.
+  const boardBadges = await badgesForUsers(tenant.id, board.map((r) => r.userId), 3);
 
   // ---------------------------------------------------------------- Shop data
   const shopProducts: ShopProduct[] = shopProductsRaw.map((p) => ({
@@ -584,7 +588,10 @@ export default async function CommunityHome({
                 <Avatar name={row.name} src={row.avatarUrl} size={32} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[#161613]">{row.name}</p>
-                  {row.levelName && <p className="truncate text-xs text-[#161613]/45">{row.levelName}</p>}
+                  <p className="flex items-center gap-2 truncate text-xs text-[#161613]/45">
+                    {row.levelName && <span className="truncate">{row.levelName}</span>}
+                    <BadgeRow badges={boardBadges.get(row.userId) ?? []} size={16} max={3} />
+                  </p>
                 </div>
                 <span className="shrink-0 rounded-full bg-[var(--brand-soft)] px-2.5 py-1 text-xs font-semibold text-[color:var(--brand)]">
                   {t("points", { count: nf.format(row.points) })}

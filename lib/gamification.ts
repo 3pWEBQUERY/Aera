@@ -1,6 +1,7 @@
 import "server-only";
 import prisma from "./prisma";
 import type { GamificationTrigger } from "@/app/generated/prisma/client";
+import { parseBadgeCriteria, type BadgeCriteriaType } from "./badges";
 
 /** Resolve the level name for a given point total within a tenant. */
 export async function levelForPoints(
@@ -28,31 +29,135 @@ async function refreshStats(tenantId: string, userId: string): Promise<void> {
   });
 }
 
-async function evaluateBadges(tenantId: string, userId: string): Promise<void> {
+/**
+ * Zaehlt alles, woran eine Auszeichnung haengen kann.
+ *
+ * Bewusst frisch gezaehlt statt fortgeschrieben: die Zahlen aendern sich auch
+ * durch Loeschungen, und ein Zaehler, der nur hochgeht, verspricht Dinge, die
+ * nicht mehr stimmen. Die Abfragen laufen nebenlaeufig und nur dann, wenn es
+ * ueberhaupt eine Auszeichnung dieser Art gibt.
+ */
+async function badgeCounters(
+  tenantId: string,
+  userId: string,
+  needed: Set<BadgeCriteriaType>,
+): Promise<Record<BadgeCriteriaType, number>> {
+  const zero = 0;
+  const need = (t: BadgeCriteriaType) => needed.has(t);
+
+  const [stats, posts, comments, likesGiven, membership] = await Promise.all([
+    need("points")
+      ? prisma.memberStats.findUnique({ where: { tenantId_userId: { tenantId, userId } } })
+      : Promise.resolve(null),
+    need("posts")
+      ? prisma.post.count({ where: { tenantId, authorId: userId } })
+      : Promise.resolve(zero),
+    need("comments")
+      ? prisma.comment.count({ where: { tenantId, authorId: userId } })
+      : Promise.resolve(zero),
+    need("likesGiven")
+      ? prisma.reaction.count({ where: { tenantId, userId, type: "LIKE" } })
+      : Promise.resolve(zero),
+    need("memberDays")
+      ? prisma.membership.findUnique({ where: { tenantId_userId: { tenantId, userId } } })
+      : Promise.resolve(null),
+  ]);
+
+  // Erhaltene Likes: auf eigenen Beitraegen und eigenen Kommentaren. Zwei
+  // Abfragen statt eines Joins — Reaction kennt beide Wege getrennt.
+  let likesReceived = zero;
+  if (need("likesReceived")) {
+    const [onPosts, onComments] = await Promise.all([
+      prisma.reaction.count({
+        where: { tenantId, type: "LIKE", post: { authorId: userId } },
+      }),
+      prisma.reaction.count({
+        where: { tenantId, type: "LIKE", comment: { authorId: userId } },
+      }),
+    ]);
+    likesReceived = onPosts + onComments;
+  }
+
+  const lessonsCompleted =
+    need("lessonsCompleted") || need("coursesCompleted")
+      ? await prisma.lessonProgress.count({ where: { tenantId, userId } })
+      : zero;
+
+  // Ein Kurs zaehlt als abgeschlossen, wenn keine seiner Lektionen mehr offen
+  // ist. Kurse ohne Lektionen zaehlen nicht — sonst waere jeder leere Kurs
+  // sofort "geschafft".
+  let coursesCompleted = zero;
+  if (need("coursesCompleted") && lessonsCompleted > 0) {
+    const courses = await prisma.course.findMany({
+      where: { tenantId, lessons: { some: {} } },
+      select: {
+        id: true,
+        _count: { select: { lessons: true } },
+        lessons: { select: { progress: { where: { userId }, select: { id: true } } } },
+      },
+    });
+    coursesCompleted = courses.filter(
+      (course) =>
+        course._count.lessons > 0 &&
+        course.lessons.every((lesson) => lesson.progress.length > 0),
+    ).length;
+  }
+
+  const memberDays = membership
+    ? Math.floor((Date.now() - membership.joinedAt.getTime()) / 86_400_000)
+    : zero;
+
+  return {
+    points: stats?.points ?? zero,
+    posts,
+    comments,
+    likesGiven,
+    likesReceived,
+    coursesCompleted,
+    lessonsCompleted,
+    memberDays,
+    manual: zero,
+  };
+}
+
+/**
+ * Vergibt alle Auszeichnungen, deren Bedingung erfuellt ist.
+ *
+ * Von Hand vergebene Auszeichnungen ("manual") bleiben unberuehrt — die
+ * entscheidet der Creator, nicht der Zaehler. Einmal Vergebenes wird nie
+ * zurueckgenommen: eine Auszeichnung ist eine Erinnerung an ein Ereignis,
+ * kein Statusanzeiger.
+ */
+export async function evaluateBadges(tenantId: string, userId: string): Promise<void> {
   const badges = await prisma.badge.findMany({ where: { tenantId } });
   if (badges.length === 0) return;
 
-  const [stats, postCount, commentCount] = await Promise.all([
-    prisma.memberStats.findUnique({
-      where: { tenantId_userId: { tenantId, userId } },
-    }),
-    prisma.post.count({ where: { tenantId, authorId: userId } }),
-    prisma.comment.count({ where: { tenantId, authorId: userId } }),
-  ]);
-  const points = stats?.points ?? 0;
+  const parsed = badges.map((badge) => ({ badge, c: parseBadgeCriteria(badge.criteria) }));
+  const automatic = parsed.filter((x) => x.c.type !== "manual" && x.c.threshold > 0);
+  if (automatic.length === 0) return;
 
-  for (const badge of badges) {
-    const c = (badge.criteria ?? {}) as { type?: string; threshold?: number };
-    const threshold = Number(c.threshold ?? 0);
-    let earned = false;
-    if (c.type === "points") earned = points >= threshold;
-    else if (c.type === "posts") earned = postCount >= threshold;
-    else if (c.type === "comments") earned = commentCount >= threshold;
-    if (earned) {
-      await prisma.badgeAward
-        .create({ data: { tenantId, badgeId: badge.id, userId } })
-        .catch(() => undefined); // unique(badgeId,userId) => ignore duplicates
-    }
+  const owned = new Set(
+    (
+      await prisma.badgeAward.findMany({
+        where: { tenantId, userId },
+        select: { badgeId: true },
+      })
+    ).map((a) => a.badgeId),
+  );
+  const open = automatic.filter((x) => !owned.has(x.badge.id));
+  if (open.length === 0) return;
+
+  const counters = await badgeCounters(
+    tenantId,
+    userId,
+    new Set(open.map((x) => x.c.type)),
+  );
+
+  for (const { badge, c } of open) {
+    if (counters[c.type] < c.threshold) continue;
+    await prisma.badgeAward
+      .create({ data: { tenantId, badgeId: badge.id, userId } })
+      .catch(() => undefined); // unique(badgeId,userId) => Doppelte ignorieren
   }
 }
 
@@ -73,7 +178,10 @@ export async function awardPoints(input: {
   const rules = await prisma.gamificationRule.findMany({
     where: { tenantId, trigger, isActive: true },
   });
-  if (rules.length === 0) return 0;
+  if (rules.length === 0) {
+    await evaluateBadges(tenantId, userId);
+    return 0;
+  }
 
   let total = 0;
   for (const rule of rules) {
@@ -118,10 +226,11 @@ export async function awardPoints(input: {
     total += rule.points;
   }
 
-  if (total > 0) {
-    await refreshStats(tenantId, userId);
-    await evaluateBadges(tenantId, userId);
-  }
+  if (total > 0) await refreshStats(tenantId, userId);
+  // Auszeichnungen haengen an der Tat, nicht an der Punkteregel: auch wenn
+  // gerade keine Punkte flossen (Regel aus, Tageslimit erreicht), zaehlt der
+  // Beitrag fuer "10 Beitraege geschrieben".
+  await evaluateBadges(tenantId, userId);
   return total;
 }
 

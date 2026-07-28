@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Бали",
         "posts": "Дописи",
-        "comments": "Коментарі"
+        "comments": "Коментарі",
+        "likesGiven": "Поставлені вподобання",
+        "likesReceived": "Отримані вподобання",
+        "coursesCompleted": "Пройдені курси",
+        "lessonsCompleted": "Пройдені уроки",
+        "memberDays": "Днів у спільноті",
+        "manual": "Видається вручну"
       },
       "triggers": {
         "POST_CREATED": "Допис створено",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Щоденний вхід",
         "PURCHASE": "Покупку здійснено",
         "REFERRAL": "Запрошено учасника"
-      }
+      },
+      "shapes": {
+        "COIN": "Монета",
+        "MEDAL": "Медаль",
+        "HEX": "Герб",
+        "SEAL": "Печатка"
+      },
+      "tiers": {
+        "GOLD": "Золото",
+        "SILVER": "Срібло",
+        "BRONZE": "Бронза",
+        "BRAND": "Бренд",
+        "INK": "Чорнило"
+      },
+      "preview": "Попередній перегляд",
+      "shapeLabel": "Форма",
+      "tierLabel": "Метал",
+      "iconLabel": "Символ",
+      "manualHint": "Цей значок не видається автоматично.",
+      "manualBadge": "Вручну"
     },
     "referrals": {
       "metaTitle": "Реферали",

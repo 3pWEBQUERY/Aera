@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
+import { badgesForUsers } from "@/lib/member-badges";
+import { BadgeRow } from "@/components/community/badge-row";
 import { getCommunityContext } from "@/lib/guards";
 import { ensureReferralCode } from "@/lib/referrals";
 import { env } from "@/lib/env";
@@ -62,6 +64,11 @@ export default async function CommunityMembers({
     select: { userId: true, points: true, levelName: true },
   });
   const statBy = new Map(statRows.map((s) => [s.userId, s]));
+  // Auszeichnungen aller gelisteten Mitglieder in einer Abfrage.
+  const badgeBy = await badgesForUsers(
+    tenant.id,
+    members.map((m) => m.userId),
+  );
 
   // Staff first, then founding members (oldest join) first.
   const ordered = [...members].sort(
@@ -122,6 +129,7 @@ export default async function CommunityMembers({
                   <p className="mt-0.5 truncate text-xs text-slate-400">
                     {t("memberSince", { date: joinedLabel(m.joinedAt) })}
                   </p>
+                  <BadgeRow badges={badgeBy.get(m.userId) ?? []} className="mt-1.5" />
                 </div>
               </div>
 

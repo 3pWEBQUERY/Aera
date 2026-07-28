@@ -2,6 +2,7 @@ import { requireTenantAdmin } from "@/lib/guards";
 import { featureGate } from "@/components/dashboard/feature-gate";
 import prisma from "@/lib/prisma";
 import { leaderboard } from "@/lib/gamification";
+import { parseBadgeCriteria } from "@/lib/badges";
 import {
   GamificationManager,
   type RuleData,
@@ -41,13 +42,16 @@ export default async function GamificationPage({
     maxPerDay: r.maxPerDay,
   }));
   const badges: BadgeData[] = badgesRaw.map((b) => {
-    const c = (b.criteria ?? {}) as { type?: string; threshold?: number };
+    const c = parseBadgeCriteria(b.criteria);
     return {
       id: b.id,
       name: b.name,
       description: b.description,
-      type: c.type ?? "points",
-      threshold: Number(c.threshold ?? 0),
+      type: c.type,
+      threshold: c.threshold,
+      shape: c.shape,
+      tier: c.tier,
+      icon: c.icon,
       awardCount: b._count.awards,
     };
   });

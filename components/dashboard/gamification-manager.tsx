@@ -16,6 +16,18 @@ import { Icon, type IconName } from "./icons";
 import { SettingsTabs, type SettingsSection } from "./settings-tabs";
 import { Input, Label, Select } from "@/components/ui/field";
 import { Avatar, FormError, Pill } from "@/components/ui/misc";
+import { BadgeMedal } from "@/components/community/badge-medal";
+import { cn } from "@/lib/utils";
+import {
+  BADGE_CRITERIA,
+  BADGE_DEFAULTS,
+  BADGE_ICONS,
+  BADGE_SHAPES,
+  BADGE_TIERS,
+  type BadgeCriteriaType,
+  type BadgeShape,
+  type BadgeTier,
+} from "@/lib/badges";
 
 export interface RuleData {
   id: string;
@@ -30,6 +42,9 @@ export interface BadgeData {
   description: string | null;
   type: string;
   threshold: number;
+  shape: BadgeShape;
+  tier: BadgeTier;
+  icon: IconName;
   awardCount: number;
 }
 export interface LeaderRow {
@@ -230,13 +245,15 @@ export function GamificationManager({
                     onClick={() => setEditing(b)}
                     className="group flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-left transition hover:border-slate-300 hover:shadow-sm"
                   >
-                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 text-white shadow-sm">
-                      <Icon name="gamification" size={22} />
+                    <span className="flex w-11 shrink-0 items-center justify-center">
+                      <BadgeMedal look={{ shape: b.shape, tier: b.tier, icon: b.icon }} size={40} />
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-slate-900">{b.name}</p>
                       <p className="truncate text-xs text-slate-400">
-                        {t("badgeThreshold", { threshold: b.threshold, criterion: tCrit(b.type) })}
+                        {b.type === "manual"
+                          ? t("manualBadge")
+                          : t("badgeThreshold", { threshold: b.threshold, criterion: tCrit(b.type) })}
                       </p>
                     </div>
                     <Pill className="shrink-0 bg-slate-100 text-slate-500">{b.awardCount}×</Pill>
@@ -396,6 +413,15 @@ function BadgeForm({
   const [deleting, setDeleting] = useState(false);
   const t = useTranslations("dashboard.gamification");
   const tCrit = useTranslations("dashboard.gamification.criteria");
+  const tShape = useTranslations("dashboard.gamification.shapes");
+  const tTier = useTranslations("dashboard.gamification.tiers");
+  const [type, setType] = useState<BadgeCriteriaType>(
+    (badge?.type as BadgeCriteriaType) ?? BADGE_DEFAULTS.type,
+  );
+  const [threshold, setThreshold] = useState(badge?.threshold || 10);
+  const [shape, setShape] = useState<BadgeShape>(badge?.shape ?? BADGE_DEFAULTS.shape);
+  const [tier, setTier] = useState<BadgeTier>(badge?.tier ?? BADGE_DEFAULTS.tier);
+  const [icon, setIcon] = useState<IconName>(badge?.icon ?? BADGE_DEFAULTS.icon);
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -422,18 +448,121 @@ function BadgeForm({
             <Label htmlFor="bf-name">{t("nameLabel")}</Label>
             <Input id="bf-name" name="name" required defaultValue={badge?.name} placeholder={t("badgeNamePlaceholder")} className="text-base" />
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="bf-type">{t("criterionLabel")}</Label>
-              <Select id="bf-type" name="type" defaultValue={badge?.type ?? "points"}>
-                <option value="points">{tCrit("points")}</option>
-                <option value="posts">{tCrit("posts")}</option>
-                <option value="comments">{tCrit("comments")}</option>
+              <Select
+                id="bf-type"
+                name="type"
+                value={type}
+                onChange={(v) => setType(v as BadgeCriteriaType)}
+              >
+                {BADGE_CRITERIA.map((c) => (
+                  <option key={c} value={c}>
+                    {tCrit(c)}
+                  </option>
+                ))}
               </Select>
             </div>
-            <div>
+            <div className={type === "manual" ? "hidden" : ""}>
               <Label htmlFor="bf-th">{t("thresholdLabel")}</Label>
-              <Input id="bf-th" name="threshold" type="number" min={1} defaultValue={badge?.threshold ?? 10} />
+              <Input
+                id="bf-th"
+                name="threshold"
+                type="number"
+                min={1}
+                value={threshold}
+                onChange={(e) => setThreshold(Math.max(1, Number(e.target.value) || 1))}
+              />
+            </div>
+          </div>
+          {type === "manual" && (
+            <p className="-mt-2 text-xs text-slate-400">{t("manualHint")}</p>
+          )}
+
+          {/* Gestaltung mit Vorschau: was der Creator waehlt, steht sofort
+              daneben — eine Liste aus Woertern wie "HEX/BRONZE" wuerde
+              niemand blind zusammenstellen wollen. */}
+          <div className="rounded-2xl border border-slate-200 p-4">
+            <input type="hidden" name="shape" value={shape} />
+            <input type="hidden" name="tier" value={tier} />
+            <input type="hidden" name="icon" value={icon} />
+            <div className="flex items-start gap-5">
+              <div className="flex w-24 shrink-0 flex-col items-center gap-2">
+                <BadgeMedal look={{ shape, tier, icon }} size={72} />
+                <span className="text-center text-[11px] font-medium text-slate-400">
+                  {t("preview")}
+                </span>
+              </div>
+              <div className="min-w-0 flex-1 space-y-4">
+                <div>
+                  <p className="mb-1.5 text-xs font-semibold text-slate-700">{t("shapeLabel")}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {BADGE_SHAPES.map((sh) => (
+                      <button
+                        key={sh}
+                        type="button"
+                        onClick={() => setShape(sh)}
+                        aria-pressed={sh === shape}
+                        aria-label={tShape(sh)}
+                        title={tShape(sh)}
+                        className={cn(
+                          "flex h-12 w-12 items-center justify-center rounded-xl border transition",
+                          sh === shape
+                            ? "border-[var(--action-strong)] bg-[var(--action-soft)]"
+                            : "border-slate-200 hover:bg-slate-50",
+                        )}
+                      >
+                        <BadgeMedal look={{ shape: sh, tier, icon }} size={30} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-1.5 text-xs font-semibold text-slate-700">{t("tierLabel")}</p>
+                  <div className="flex flex-wrap gap-2">
+                    {BADGE_TIERS.map((ti) => (
+                      <button
+                        key={ti}
+                        type="button"
+                        onClick={() => setTier(ti)}
+                        aria-pressed={ti === tier}
+                        aria-label={tTier(ti)}
+                        title={tTier(ti)}
+                        className={cn(
+                          "flex h-12 w-12 items-center justify-center rounded-xl border transition",
+                          ti === tier
+                            ? "border-[var(--action-strong)] bg-[var(--action-soft)]"
+                            : "border-slate-200 hover:bg-slate-50",
+                        )}
+                      >
+                        <BadgeMedal look={{ shape: "COIN", tier: ti, icon }} size={30} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p className="mb-1.5 text-xs font-semibold text-slate-700">{t("iconLabel")}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {BADGE_ICONS.map((ic) => (
+                      <button
+                        key={ic}
+                        type="button"
+                        onClick={() => setIcon(ic)}
+                        aria-pressed={ic === icon}
+                        className={cn(
+                          "flex h-9 w-9 items-center justify-center rounded-lg border transition",
+                          ic === icon
+                            ? "border-[var(--action-strong)] bg-[var(--action-soft)] text-slate-900"
+                            : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                        )}
+                      >
+                        <Icon name={ic} size={16} />
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div>

@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "积分",
         "posts": "帖子",
-        "comments": "评论"
+        "comments": "评论",
+        "likesGiven": "送出的赞",
+        "likesReceived": "收到的赞",
+        "coursesCompleted": "完成的课程",
+        "lessonsCompleted": "完成的课时",
+        "memberDays": "加入天数",
+        "manual": "手动授予"
       },
       "triggers": {
         "POST_CREATED": "创建帖子",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "每日登录",
         "PURCHASE": "完成购买",
         "REFERRAL": "推荐成员"
-      }
+      },
+      "shapes": {
+        "COIN": "金币",
+        "MEDAL": "奖章",
+        "HEX": "徽章",
+        "SEAL": "印章"
+      },
+      "tiers": {
+        "GOLD": "金",
+        "SILVER": "银",
+        "BRONZE": "铜",
+        "BRAND": "品牌",
+        "INK": "墨"
+      },
+      "preview": "预览",
+      "shapeLabel": "形状",
+      "tierLabel": "材质",
+      "iconLabel": "符号",
+      "manualHint": "此徽章不会自动授予。",
+      "manualBadge": "手动"
     },
     "referrals": {
       "metaTitle": "推荐",

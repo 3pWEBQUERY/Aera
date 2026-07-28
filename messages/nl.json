@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Punten",
         "posts": "Berichten",
-        "comments": "Reacties"
+        "comments": "Reacties",
+        "likesGiven": "Gegeven likes",
+        "likesReceived": "Ontvangen likes",
+        "coursesCompleted": "Voltooide cursussen",
+        "lessonsCompleted": "Voltooide lessen",
+        "memberDays": "Dagen lid",
+        "manual": "Handmatig toegekend"
       },
       "triggers": {
         "POST_CREATED": "Bericht geplaatst",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Dagelijkse login",
         "PURCHASE": "Aankoop gedaan",
         "REFERRAL": "Lid geworven"
-      }
+      },
+      "shapes": {
+        "COIN": "Munt",
+        "MEDAL": "Medaille",
+        "HEX": "Wapen",
+        "SEAL": "Zegel"
+      },
+      "tiers": {
+        "GOLD": "Goud",
+        "SILVER": "Zilver",
+        "BRONZE": "Brons",
+        "BRAND": "Merk",
+        "INK": "Inkt"
+      },
+      "preview": "Voorvertoning",
+      "shapeLabel": "Vorm",
+      "tierLabel": "Metaal",
+      "iconLabel": "Symbool",
+      "manualHint": "Deze badge wordt niet automatisch toegekend.",
+      "manualBadge": "Handmatig"
     },
     "referrals": {
       "metaTitle": "Verwijzingen",

@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "ポイント",
         "posts": "投稿",
-        "comments": "コメント"
+        "comments": "コメント",
+        "likesGiven": "付けたいいね",
+        "likesReceived": "もらったいいね",
+        "coursesCompleted": "修了したコース",
+        "lessonsCompleted": "修了したレッスン",
+        "memberDays": "参加日数",
+        "manual": "手動で付与"
       },
       "triggers": {
         "POST_CREATED": "投稿を作成",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "毎日のログイン",
         "PURCHASE": "購入を実施",
         "REFERRAL": "メンバーを紹介"
-      }
+      },
+      "shapes": {
+        "COIN": "コイン",
+        "MEDAL": "メダル",
+        "HEX": "エンブレム",
+        "SEAL": "シール"
+      },
+      "tiers": {
+        "GOLD": "ゴールド",
+        "SILVER": "シルバー",
+        "BRONZE": "ブロンズ",
+        "BRAND": "ブランド",
+        "INK": "インク"
+      },
+      "preview": "プレビュー",
+      "shapeLabel": "形",
+      "tierLabel": "素材",
+      "iconLabel": "記号",
+      "manualHint": "このバッジは自動では付与されません。",
+      "manualBadge": "手動"
     },
     "referrals": {
       "metaTitle": "紹介",

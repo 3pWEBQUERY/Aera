@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Punkty",
         "posts": "Wpisy",
-        "comments": "Komentarze"
+        "comments": "Komentarze",
+        "likesGiven": "Oddane polubienia",
+        "likesReceived": "Otrzymane polubienia",
+        "coursesCompleted": "Ukończone kursy",
+        "lessonsCompleted": "Ukończone lekcje",
+        "memberDays": "Dni członkostwa",
+        "manual": "Przyznawana ręcznie"
       },
       "triggers": {
         "POST_CREATED": "Utworzono wpis",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Codzienne logowanie",
         "PURCHASE": "Dokonano zakupu",
         "REFERRAL": "Polecono członka"
-      }
+      },
+      "shapes": {
+        "COIN": "Moneta",
+        "MEDAL": "Medal",
+        "HEX": "Herb",
+        "SEAL": "Pieczęć"
+      },
+      "tiers": {
+        "GOLD": "Złoto",
+        "SILVER": "Srebro",
+        "BRONZE": "Brąz",
+        "BRAND": "Marka",
+        "INK": "Atrament"
+      },
+      "preview": "Podgląd",
+      "shapeLabel": "Kształt",
+      "tierLabel": "Metal",
+      "iconLabel": "Symbol",
+      "manualHint": "Ta odznaka nie jest przyznawana automatycznie.",
+      "manualBadge": "Ręcznie"
     },
     "referrals": {
       "metaTitle": "Polecenia",

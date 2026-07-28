@@ -171,9 +171,9 @@ export async function POST(req: Request) {
       },
       badges: {
         create: [
-          { name: tSeed("badges.firstPost.name"), description: tSeed("badges.firstPost.description"), criteria: { type: "posts", threshold: 1 } },
-          { name: tSeed("badges.writer.name"), description: tSeed("badges.writer.description"), criteria: { type: "posts", threshold: 10 } },
-          { name: tSeed("badges.points100.name"), description: tSeed("badges.points100.description"), criteria: { type: "points", threshold: 100 } },
+          { name: tSeed("badges.firstPost.name"), description: tSeed("badges.firstPost.description"), criteria: { type: "posts", threshold: 1, shape: "SEAL", tier: "BRONZE", icon: "feed" } },
+          { name: tSeed("badges.writer.name"), description: tSeed("badges.writer.description"), criteria: { type: "posts", threshold: 10, shape: "MEDAL", tier: "SILVER", icon: "sparkles" } },
+          { name: tSeed("badges.points100.name"), description: tSeed("badges.points100.description"), criteria: { type: "points", threshold: 100, shape: "COIN", tier: "GOLD", icon: "trophy" } },
         ],
       },
     },

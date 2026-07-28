@@ -2095,7 +2095,13 @@
       "criteria": {
         "points": "Points",
         "posts": "Publications",
-        "comments": "Commentaires"
+        "comments": "Commentaires",
+        "likesGiven": "J’aime donnés",
+        "likesReceived": "J’aime reçus",
+        "coursesCompleted": "Cours terminés",
+        "lessonsCompleted": "Leçons terminées",
+        "memberDays": "Jours de membre",
+        "manual": "Attribué à la main"
       },
       "triggers": {
         "POST_CREATED": "Publication créée",
@@ -2106,7 +2112,26 @@
         "DAILY_LOGIN": "Connexion quotidienne",
         "PURCHASE": "Achat effectué",
         "REFERRAL": "Membre parrainé"
-      }
+      },
+      "shapes": {
+        "COIN": "Pièce",
+        "MEDAL": "Médaille",
+        "HEX": "Écusson",
+        "SEAL": "Sceau"
+      },
+      "tiers": {
+        "GOLD": "Or",
+        "SILVER": "Argent",
+        "BRONZE": "Bronze",
+        "BRAND": "Marque",
+        "INK": "Encre"
+      },
+      "preview": "Aperçu",
+      "shapeLabel": "Forme",
+      "tierLabel": "Métal",
+      "iconLabel": "Symbole",
+      "manualHint": "Ce badge n’est pas attribué automatiquement.",
+      "manualBadge": "À la main"
     },
     "referrals": {
       "metaTitle": "Parrainages",
