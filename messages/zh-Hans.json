@@ -2896,9 +2896,7 @@
         "vimeo": "粘贴你的 Vimeo 视频或直播链接。我们会自动转换为 Vimeo 播放器。需在 Vimeo 设置中允许嵌入。",
         "custom": "粘贴任意嵌入/播放器 URL。该 URL 将原样嵌入，需允许 iframe 嵌入。"
       },
-      "sourceAera": "通过 Aera 直播",
       "sourceAeraShort": "Aera 直播",
-      "sourceAeraDesc": "你从 OBS 直接推流到 Aera，播放与录制都在这里完成。",
       "sourceAeraSetup": "创建后，这里会显示 OBS 的服务器地址和推流密钥。用它们推流，再点击“开始直播”，成员就能看到。",
       "sourceAeraUnavailable": "本平台尚未配置通过 Aera 直播。",
       "sourceExternal": "外部平台",
@@ -2921,7 +2919,30 @@
       "copied": "已复制",
       "replayAeraHint": "直播结束后会自动从录像填入。",
       "replayFetch": "获取录像",
-      "replayFetching": "获取中…"
+      "replayFetching": "获取中…",
+      "sourceBrowser": "在浏览器中",
+      "sourceBrowserDesc": "摄像头或屏幕，一键开始——延迟不到一秒，不录制。",
+      "sourceBrowserSetup": "创建后在这里打开预览，选择摄像头和麦克风，一键开始直播。无需任何软件。",
+      "sourceObs": "使用 OBS",
+      "sourceObsDesc": "带场景和叠加层的直播软件——可录制，但有几秒延迟。",
+      "browserTitle": "摄像头与声音",
+      "browserOnAir": "直播中 · {clock}",
+      "browserStarting": "正在连接…",
+      "browserSource": "视频来源",
+      "browserCamera": "摄像头",
+      "browserScreen": "屏幕",
+      "browserCameraLabel": "选择摄像头",
+      "browserMicLabel": "选择麦克风",
+      "browserDeviceFallback": "设备 {n}",
+      "browserMute": "静音麦克风",
+      "browserUnmute": "打开麦克风",
+      "browserOpen": "打开直播",
+      "browserHint": "画面和声音从这里直接传给成员——没有中转，也不录制。直播期间请不要关闭页面。",
+      "permissionDenied": "无法访问摄像头或麦克风，请在浏览器地址栏中允许访问。",
+      "whipUnavailable": "该场次没有浏览器推流入口，请重新创建。",
+      "whipFailed": "无法建立连接，请检查网络后重试。",
+      "whipDropped": "连接已中断。请结束直播后重新开始。",
+      "replayBrowserHint": "从浏览器直播不会生成录像。如果你有自己的地址，可以填在这里。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "调整聊天宽度",
         "startsIn": "{time} 后开始",
         "startsAnyMoment": "即将开始…",
-        "daysShort": "天"
+        "daysShort": "天",
+        "whepConnecting": "正在连接…",
+        "whepFailed": "目前无法播放该直播。",
+        "unmute": "打开声音"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

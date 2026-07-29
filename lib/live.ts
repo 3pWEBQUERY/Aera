@@ -1,13 +1,19 @@
 import "server-only";
 import prisma from "./prisma";
-import { playbackToken, streamIframeUrl, streamLiveEnabled } from "./cloudflare-stream";
-import type { LiveSource, LiveStatus } from "@/app/generated/prisma/client";
+import {
+  getLiveInput,
+  playbackToken,
+  streamIframeUrl,
+  streamLiveEnabled,
+} from "./cloudflare-stream";
+import type { LiveIngest, LiveSource, LiveStatus } from "@/app/generated/prisma/client";
 
 export interface LiveSessionData {
   id: string;
   title: string;
   status: LiveStatus;
   source: LiveSource;
+  ingest: LiveIngest;
   cfInputId: string | null;
   cfReplayId: string | null;
   streamUrl: string | null;
@@ -28,18 +34,41 @@ export interface LiveSessionData {
  * Fremde Plattformen gehen unveraendert durch; daraus macht der Live-Raum
  * clientseitig die passende Einbettung.
  */
-export async function liveEmbedUrl(s: LiveSessionData): Promise<string | null> {
+export interface LivePlayback {
+  /** Adresse fuer den eingebetteten Cloudflare-Player (HLS). */
+  embedUrl?: string | null;
+  /**
+   * WHEP-Adresse fuer einen Stream, der gerade aus dem Browser gesendet wird.
+   * Wird nur an Berechtigte ausgeliefert — bei WebRTC gibt es (Beta) keine
+   * signierten Adressen, der Schutz liegt also darin, sie gar nicht erst
+   * herauszugeben.
+   */
+  whepUrl?: string | null;
+}
+
+export async function livePlayback(s: LiveSessionData): Promise<LivePlayback> {
+  // Ein laufender Browser-Stream wird ueber WebRTC gesehen, nicht ueber HLS —
+  // Cloudflare mischt die beiden Wege nicht.
+  if (s.source === "AERA" && s.ingest === "BROWSER" && s.status === "LIVE" && s.cfInputId) {
+    if (!streamLiveEnabled()) return {};
+    const input = await getLiveInput(s.cfInputId).catch(() => null);
+    return { whepUrl: input?.whepUrl ?? null };
+  }
+
   const id = s.status === "ENDED" ? (s.cfReplayId ?? s.cfInputId) : s.cfInputId;
   if (s.source !== "AERA" || !id || !streamLiveEnabled()) {
-    return s.status === "ENDED" ? (s.replayUrl ?? s.streamUrl) : (s.streamUrl ?? s.replayUrl);
+    return {
+      embedUrl:
+        s.status === "ENDED" ? (s.replayUrl ?? s.streamUrl) : (s.streamUrl ?? s.replayUrl),
+    };
   }
-  if (!s.requiredEntitlementKey) return streamIframeUrl(id);
+  if (!s.requiredEntitlementKey) return { embedUrl: streamIframeUrl(id) };
   try {
-    return streamIframeUrl(await playbackToken(id));
+    return { embedUrl: streamIframeUrl(await playbackToken(id)) };
   } catch {
     // Ohne Token bleibt der Player leer — besser als eine offene Adresse,
     // die den geschuetzten Stream fuer jeden abspielbar macht.
-    return null;
+    return {};
   }
 }
 
@@ -66,6 +95,7 @@ export async function listLiveSessions(
     title: s.title,
     status: s.status,
     source: s.source,
+    ingest: s.ingest,
     cfInputId: s.cfInputId,
     cfReplayId: s.cfReplayId,
     streamUrl: s.streamUrl,
@@ -87,6 +117,7 @@ export async function getLiveSession(
     title: s.title,
     status: s.status,
     source: s.source,
+    ingest: s.ingest,
     cfInputId: s.cfInputId,
     cfReplayId: s.cfReplayId,
     streamUrl: s.streamUrl,

@@ -7,6 +7,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { timeAgo } from "@/lib/utils";
 import { toLiveEmbedUrl } from "@/lib/live-embed";
 import { LiveCountdown } from "./live-countdown";
+import { WhepPlayer } from "./whep-player";
 
 interface LiveMessage {
   id: string;
@@ -22,6 +23,7 @@ export function LiveRoom({
   streamUrl,
   replayUrl,
   embedUrl,
+  whepUrl,
   startsAt,
   initialMessages,
   canChat,
@@ -37,6 +39,8 @@ export function LiveRoom({
    * braucht — das darf im Browser nicht entstehen.
    */
   embedUrl?: string | null;
+  /** WHEP-Adresse, wenn gerade aus dem Browser gesendet wird. */
+  whepUrl?: string | null;
   startsAt?: string | null;
   initialMessages: LiveMessage[];
   canChat: boolean;
@@ -230,7 +234,9 @@ export function LiveRoom({
           className="relative overflow-hidden rounded-2xl border border-[#161613]/10 bg-black"
           style={{ aspectRatio: "16 / 9" }}
         >
-          {playerUrl ? (
+          {whepUrl ? (
+            <WhepPlayer url={whepUrl} />
+          ) : playerUrl ? (
             <iframe
               src={playerUrl}
               title={t("player")}

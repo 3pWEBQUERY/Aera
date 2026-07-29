@@ -19,6 +19,7 @@ import {
   type LivePlatform,
 } from "@/lib/live-embed";
 import { PlatformIcon, PLATFORM_COLORS } from "./platform-icons";
+import { BrowserBroadcaster } from "./browser-broadcaster";
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
@@ -26,12 +27,16 @@ import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { cn, formatDateTime } from "@/lib/utils";
 
 export type LiveSourceKey = "AERA" | "EXTERNAL";
+export type LiveIngestKey = "BROWSER" | "OBS";
+/** Die drei Wege, wie ein Stream zustande kommt — so wie der Creator sie sieht. */
+type Mode = "BROWSER" | "OBS" | "EXTERNAL";
 
 export interface LiveSessionRow {
   id: string;
   title: string;
   status: "SCHEDULED" | "LIVE" | "ENDED";
   source: LiveSourceKey;
+  ingest: LiveIngestKey;
   streamUrl: string | null;
   replayUrl: string | null;
   requiredEntitlementKey: string | null;
@@ -155,7 +160,30 @@ export function LiveManager({
                 </div>
                 <div className="flex items-center gap-2">
                   {own && s.status !== "ENDED" && (
-                    <GoLiveButton slug={slug} session={s} />
+                    s.ingest === "BROWSER" ? (
+                      // Aus dem Browser zu senden heisst: Kamera oeffnen. Der
+                      // Knopf fuehrt deshalb dorthin, wo die Vorschau steht,
+                      // statt die Session blind auf "live" zu schalten.
+                      <button
+                        type="button"
+                        onClick={() => openEdit(s)}
+                        className={cn(
+                          "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition",
+                          s.status === "LIVE"
+                            ? "bg-red-600 text-white hover:bg-red-700"
+                            : "bg-[var(--action)] text-[var(--action-fg)] hover:bg-[var(--action-hover)]",
+                        )}
+                      >
+                        {s.status === "LIVE" ? (
+                          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+                        ) : (
+                          <Icon name="camera" size={15} />
+                        )}
+                        {s.status === "LIVE" ? t("browserOpen") : t("goLive")}
+                      </button>
+                    ) : (
+                      <GoLiveButton slug={slug} session={s} />
+                    )
                   )}
                   <button
                     onClick={() => openEdit(s)}
@@ -587,11 +615,18 @@ function LiveForm({
   const initialPlatform = session?.streamUrl ? detectLivePlatform(session.streamUrl) : null;
   const [platform, setPlatform] = useState<LivePlatform>(initialPlatform ?? "twitch");
   const [status, setStatus] = useState(session?.status ?? "SCHEDULED");
-  // Vorbelegung: eigener Stream, sobald die Plattform ihn kann — das ist der
-  // Weg, den Aera anbietet. Bestehende Sessions behalten ihre Quelle.
-  const [source, setSource] = useState<LiveSourceKey>(
-    session?.source ?? (streamReady ? "AERA" : "EXTERNAL"),
+  // Vorbelegung: aus dem Browser senden, sobald die Plattform es kann — das
+  // ist der Weg ohne Zusatzsoftware. Bestehende Sessions behalten ihren.
+  const [mode, setMode] = useState<Mode>(
+    session
+      ? session.source === "AERA"
+        ? session.ingest
+        : "EXTERNAL"
+      : streamReady
+        ? "BROWSER"
+        : "EXTERNAL",
   );
+  const source: LiveSourceKey = mode === "EXTERNAL" ? "EXTERNAL" : "AERA";
   const [restricted, setRestricted] = useState(!!session?.requiredEntitlementKey);
   const [helpOpen, setHelpOpen] = useState(false);
 
@@ -630,18 +665,28 @@ function LiveForm({
           <section className="space-y-4">
             <SectionHeading>{t("sectionSource")}</SectionHeading>
             <input type="hidden" name="source" value={source} />
+            <input type="hidden" name="ingest" value={mode === "OBS" ? "OBS" : "BROWSER"} />
 
             {/* Der Schalter entscheidet ueber zwei grundverschiedene Wege:
                 selbst senden oder einen fremden Stream einbetten. Deshalb
                 zwei erklaerte Flaechen statt eines Auswahlfelds. */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* Untereinander statt nebeneinander: im Blatt bleiben gut 570 px,
+                und in drei Spalten bricht schon der Titel um. */}
+            <div className="space-y-2">
               {(
                 [
                   {
-                    key: "AERA" as const,
+                    key: "BROWSER" as const,
+                    icon: "camera" as const,
+                    label: t("sourceBrowser"),
+                    desc: t("sourceBrowserDesc"),
+                    disabled: !streamReady,
+                  },
+                  {
+                    key: "OBS" as const,
                     icon: "broadcast" as const,
-                    label: t("sourceAera"),
-                    desc: t("sourceAeraDesc"),
+                    label: t("sourceObs"),
+                    desc: t("sourceObsDesc"),
                     disabled: !streamReady,
                   },
                   {
@@ -653,16 +698,16 @@ function LiveForm({
                   },
                 ]
               ).map((o) => {
-                const sel = source === o.key;
+                const sel = mode === o.key;
                 return (
                   <button
                     key={o.key}
                     type="button"
-                    onClick={() => !o.disabled && setSource(o.key)}
+                    onClick={() => !o.disabled && setMode(o.key)}
                     aria-pressed={sel}
                     disabled={o.disabled}
                     className={cn(
-                      "flex items-start gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
+                      "flex w-full items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
                       o.disabled
                         ? "cursor-not-allowed border-slate-200 opacity-50"
                         : sel
@@ -678,12 +723,17 @@ function LiveForm({
                     >
                       <Icon name={o.icon} size={18} />
                     </span>
-                    <span className="min-w-0">
+                    <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
                       <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
                         {o.desc}
                       </span>
                     </span>
+                    {sel && (
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[var(--action-strong)] text-white">
+                        <Icon name="check" size={12} />
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -695,7 +745,19 @@ function LiveForm({
               </p>
             )}
 
-            {source === "AERA" ? (
+            {mode === "BROWSER" ? (
+              isEdit ? (
+                <BrowserBroadcaster
+                  slug={slug}
+                  sessionId={session!.id}
+                  initiallyLive={session!.status === "LIVE"}
+                />
+              ) : (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-sm leading-relaxed text-slate-600">{t("sourceBrowserSetup")}</p>
+                </div>
+              )
+            ) : mode === "OBS" ? (
               isEdit ? (
                 <IngestPanel slug={slug} sessionId={session!.id} />
               ) : (
@@ -845,9 +907,9 @@ function LiveForm({
                   placeholder="https://…"
                 />
                 <p className="mt-1 text-xs text-slate-400">
-                  {source === "AERA" ? t("replayAeraHint") : t("replayHint")}
+                  {mode === "OBS" ? t("replayAeraHint") : mode === "BROWSER" ? t("replayBrowserHint") : t("replayHint")}
                 </p>
-                {source === "AERA" && <FetchReplayButton slug={slug} sessionId={session!.id} />}
+                {mode === "OBS" && <FetchReplayButton slug={slug} sessionId={session!.id} />}
               </div>
             </section>
           )}

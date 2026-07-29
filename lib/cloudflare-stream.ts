@@ -29,6 +29,13 @@ export interface LiveInput {
   streamKey: string;
   srtUrl: string | null;
   srtPassphrase: string | null;
+  /**
+   * WHIP-Adresse zum Senden aus dem Browser. Enthaelt ein Geheimnis: wer sie
+   * hat, sendet auf diesen Eingang. Nur an Staff ausgeben.
+   */
+  whipUrl: string | null;
+  /** WHEP-Adresse zum Zuschauen mit unter einer Sekunde Verzoegerung. */
+  whepUrl: string | null;
   /** true, sobald eine Sendesoftware verbunden ist. */
   connected: boolean;
 }
@@ -103,6 +110,8 @@ interface RawInput {
   uid: string;
   rtmps?: { url?: string; streamKey?: string };
   srt?: { url?: string; passphrase?: string };
+  webRTC?: { url?: string };
+  webRTCPlayback?: { url?: string };
   status?: { current?: { state?: string } } | null;
 }
 
@@ -113,6 +122,8 @@ function toLiveInput(raw: RawInput): LiveInput {
     streamKey: raw.rtmps?.streamKey ?? "",
     srtUrl: raw.srt?.url ?? null,
     srtPassphrase: raw.srt?.passphrase ?? null,
+    whipUrl: raw.webRTC?.url ?? null,
+    whepUrl: raw.webRTCPlayback?.url ?? null,
     connected: raw.status?.current?.state === "connected",
   };
 }

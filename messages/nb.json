@@ -2896,9 +2896,7 @@
         "vimeo": "Lim inn lenken til Vimeo-videoen eller -streamen din. Vi gjør den automatisk om til Vimeo-spilleren. Innbygging må være tillatt i Vimeo-innstillingene.",
         "custom": "Lim inn en hvilken som helst embed- eller spiller-URL. URL-en bygges inn som den er og må tillate iframe."
       },
-      "sourceAera": "Strøm via Aera",
       "sourceAeraShort": "Aera Live",
-      "sourceAeraDesc": "Du sender fra OBS rett til Aera. Avspilling og opptak skjer her.",
       "sourceAeraSetup": "Når sesjonen er opprettet, vises serveradresse og strømnøkkel for OBS her. Send med dem, og trykk «Gå live» for medlemmene dine.",
       "sourceAeraUnavailable": "Strømming via Aera er ikke konfigurert på denne plattformen ennå.",
       "sourceExternal": "Ekstern plattform",
@@ -2921,7 +2919,30 @@
       "copied": "Kopiert",
       "replayAeraHint": "Fylles automatisk fra opptaket når sendingen er slutt.",
       "replayFetch": "Hent opptak",
-      "replayFetching": "Henter…"
+      "replayFetching": "Henter…",
+      "sourceBrowser": "I nettleseren",
+      "sourceBrowserDesc": "Kamera eller skjerm, ett klikk — under ett sekunds forsinkelse, uten opptak.",
+      "sourceBrowserSetup": "Når sesjonen er opprettet, åpner du forhåndsvisningen her, velger kamera og mikrofon og går live med ett klikk. Ingen programvare nødvendig.",
+      "sourceObs": "Med OBS",
+      "sourceObsDesc": "Sendeprogramvare med scener og overlegg — med opptak, men noen sekunders forsinkelse.",
+      "browserTitle": "Kamera og lyd",
+      "browserOnAir": "På lufta · {clock}",
+      "browserStarting": "Kobler til…",
+      "browserSource": "Videokilde",
+      "browserCamera": "Kamera",
+      "browserScreen": "Skjerm",
+      "browserCameraLabel": "Velg kamera",
+      "browserMicLabel": "Velg mikrofon",
+      "browserDeviceFallback": "Enhet {n}",
+      "browserMute": "Slå av mikrofonen",
+      "browserUnmute": "Slå på mikrofonen",
+      "browserOpen": "Åpne sendingen",
+      "browserHint": "Bilde og lyd går rett herfra til medlemmene dine — uten mellomledd og uten opptak. Ikke lukk siden mens du sender.",
+      "permissionDenied": "Ingen tilgang til kamera eller mikrofon. Tillat det i nettleserens adressefelt.",
+      "whipUnavailable": "Denne sesjonen har ingen nettlesertilgang. Opprett den på nytt.",
+      "whipFailed": "Tilkoblingen ble ikke opprettet. Sjekk internettforbindelsen og prøv igjen.",
+      "whipDropped": "Tilkoblingen ble brutt. Avslutt sendingen og start den på nytt.",
+      "replayBrowserHint": "Når du sender fra nettleseren, lages det ikke opptak. Legg inn din egen adresse her hvis du har en."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "Juster chatbredde",
         "startsIn": "Starter om {time}",
         "startsAnyMoment": "Starter når som helst…",
-        "daysShort": "d"
+        "daysShort": "d",
+        "whepConnecting": "Kobler til…",
+        "whepFailed": "Strømmen kan ikke spilles av akkurat nå.",
+        "unmute": "Slå på lyd"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

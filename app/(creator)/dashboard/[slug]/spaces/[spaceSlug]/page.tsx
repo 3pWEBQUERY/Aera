@@ -408,6 +408,7 @@ export default async function SpaceContentPage({
       title: s.title,
       status: s.status,
       source: s.source,
+      ingest: s.ingest,
       streamUrl: s.streamUrl,
       replayUrl: s.replayUrl,
       requiredEntitlementKey: s.requiredEntitlementKey,

@@ -2896,9 +2896,7 @@
         "vimeo": "Colle le lien de ta vidéo ou de ton direct Vimeo. Nous le convertissons automatiquement en lecteur Vimeo. L'intégration doit être autorisée dans les réglages Vimeo.",
         "custom": "Colle n'importe quelle URL d'intégration ou de lecteur. L'URL est intégrée telle quelle et doit autoriser l'iframe."
       },
-      "sourceAera": "Diffuser via Aera",
       "sourceAeraShort": "Aera Live",
-      "sourceAeraDesc": "Vous diffusez depuis OBS directement vers Aera. Lecture et enregistrement se font ici.",
       "sourceAeraSetup": "Une fois créée, l’adresse du serveur et la clé de flux pour OBS apparaissent ici. Diffusez avec, puis appuyez sur « Passer en direct » pour vos membres.",
       "sourceAeraUnavailable": "La diffusion via Aera n’est pas encore configurée sur cette plateforme.",
       "sourceExternal": "Plateforme externe",
@@ -2921,7 +2919,30 @@
       "copied": "Copié",
       "replayAeraHint": "Rempli automatiquement depuis l’enregistrement à la fin du direct.",
       "replayFetch": "Récupérer l’enregistrement",
-      "replayFetching": "Récupération…"
+      "replayFetching": "Récupération…",
+      "sourceBrowser": "Dans le navigateur",
+      "sourceBrowserDesc": "Caméra ou écran, un clic — moins d’une seconde de latence, sans enregistrement.",
+      "sourceBrowserSetup": "Une fois créée, ouvrez l’aperçu ici, choisissez caméra et micro, et passez en direct en un clic. Aucun logiciel requis.",
+      "sourceObs": "Avec OBS",
+      "sourceObsDesc": "Logiciel de diffusion avec scènes et incrustations — avec enregistrement, mais quelques secondes de décalage.",
+      "browserTitle": "Caméra et son",
+      "browserOnAir": "À l’antenne · {clock}",
+      "browserStarting": "Connexion…",
+      "browserSource": "Source vidéo",
+      "browserCamera": "Caméra",
+      "browserScreen": "Écran",
+      "browserCameraLabel": "Choisir la caméra",
+      "browserMicLabel": "Choisir le micro",
+      "browserDeviceFallback": "Appareil {n}",
+      "browserMute": "Couper le micro",
+      "browserUnmute": "Réactiver le micro",
+      "browserOpen": "Ouvrir la diffusion",
+      "browserHint": "L’image et le son vont directement d’ici à vos membres — sans détour et sans enregistrement. Ne fermez pas la page pendant la diffusion.",
+      "permissionDenied": "Pas d’accès à la caméra ou au micro. Autorisez-le dans la barre d’adresse du navigateur.",
+      "whipUnavailable": "Cette session n’a pas d’accès navigateur. Recréez-la.",
+      "whipFailed": "La connexion n’a pas pu être établie. Vérifiez votre connexion internet et réessayez.",
+      "whipDropped": "La connexion a été perdue. Terminez la diffusion et relancez-la.",
+      "replayBrowserHint": "La diffusion depuis le navigateur ne produit pas d’enregistrement. Indiquez ici votre propre adresse si vous en avez une."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "Ajuster la largeur du chat",
         "startsIn": "Commence dans {time}",
         "startsAnyMoment": "Commence d'un instant à l'autre…",
-        "daysShort": "j"
+        "daysShort": "j",
+        "whepConnecting": "Connexion…",
+        "whepFailed": "Le direct ne peut pas être lu pour le moment.",
+        "unmute": "Activer le son"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

@@ -2896,9 +2896,7 @@
         "vimeo": "Incolla il link del tuo video o della diretta Vimeo. Lo convertiamo automaticamente nel player Vimeo. L'incorporamento deve essere consentito nelle impostazioni Vimeo.",
         "custom": "Incolla qualsiasi URL embed o player. L'URL viene incorporato così com'è e deve consentire l'iframe."
       },
-      "sourceAera": "Trasmetti tramite Aera",
       "sourceAeraShort": "Aera Live",
-      "sourceAeraDesc": "Trasmetti da OBS direttamente ad Aera. Riproduzione e registrazione avvengono qui.",
       "sourceAeraSetup": "Dopo la creazione qui compaiono indirizzo del server e chiave di trasmissione per OBS. Trasmetti con quelli e premi «Vai live» per i tuoi iscritti.",
       "sourceAeraUnavailable": "Lo streaming tramite Aera non è ancora configurato su questa piattaforma.",
       "sourceExternal": "Piattaforma esterna",
@@ -2921,7 +2919,30 @@
       "copied": "Copiato",
       "replayAeraHint": "Compilato automaticamente dalla registrazione al termine.",
       "replayFetch": "Recupera registrazione",
-      "replayFetching": "Recupero…"
+      "replayFetching": "Recupero…",
+      "sourceBrowser": "Nel browser",
+      "sourceBrowserDesc": "Fotocamera o schermo, un clic — meno di un secondo di ritardo, senza registrazione.",
+      "sourceBrowserSetup": "Dopo la creazione apri qui l’anteprima, scegli fotocamera e microfono e vai live con un clic. Nessun software necessario.",
+      "sourceObs": "Con OBS",
+      "sourceObsDesc": "Software di trasmissione con scene e overlay — con registrazione, ma qualche secondo di ritardo.",
+      "browserTitle": "Fotocamera e audio",
+      "browserOnAir": "In onda · {clock}",
+      "browserStarting": "Connessione…",
+      "browserSource": "Sorgente video",
+      "browserCamera": "Fotocamera",
+      "browserScreen": "Schermo",
+      "browserCameraLabel": "Scegli fotocamera",
+      "browserMicLabel": "Scegli microfono",
+      "browserDeviceFallback": "Dispositivo {n}",
+      "browserMute": "Disattiva microfono",
+      "browserUnmute": "Attiva microfono",
+      "browserOpen": "Apri la diretta",
+      "browserHint": "Video e audio vanno direttamente da qui ai tuoi iscritti — senza tappe intermedie e senza registrazione. Non chiudere la pagina mentre trasmetti.",
+      "permissionDenied": "Nessun accesso a fotocamera o microfono. Consentilo nella barra degli indirizzi del browser.",
+      "whipUnavailable": "Questa sessione non ha un accesso dal browser. Ricreala.",
+      "whipFailed": "Non è stato possibile stabilire la connessione. Controlla la connessione a internet e riprova.",
+      "whipDropped": "La connessione è caduta. Termina la diretta e riavviala.",
+      "replayBrowserHint": "Trasmettendo dal browser non viene creata alcuna registrazione. Inserisci qui un tuo indirizzo, se ne hai uno."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "Regola larghezza chat",
         "startsIn": "Inizia tra {time}",
         "startsAnyMoment": "Inizia da un momento all'altro…",
-        "daysShort": "g"
+        "daysShort": "g",
+        "whepConnecting": "Connessione…",
+        "whepFailed": "Al momento non è possibile riprodurre lo streaming.",
+        "unmute": "Attiva audio"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

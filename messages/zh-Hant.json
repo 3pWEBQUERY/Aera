@@ -2896,9 +2896,7 @@
         "vimeo": "貼上你的 Vimeo 影片或直播連結。我們會自動轉換為 Vimeo 播放器。需在 Vimeo 設定中允許嵌入。",
         "custom": "貼上任意嵌入/播放器 URL。該 URL 將原樣嵌入，需允許 iframe 嵌入。"
       },
-      "sourceAera": "透過 Aera 直播",
       "sourceAeraShort": "Aera 直播",
-      "sourceAeraDesc": "你從 OBS 直接推流到 Aera，播放與錄影都在這裡完成。",
       "sourceAeraSetup": "建立後，這裡會顯示 OBS 的伺服器位址與推流金鑰。用它們推流，再點「開始直播」，成員就能看到。",
       "sourceAeraUnavailable": "本平台尚未設定透過 Aera 直播。",
       "sourceExternal": "外部平台",
@@ -2921,7 +2919,30 @@
       "copied": "已複製",
       "replayAeraHint": "直播結束後會自動從錄影填入。",
       "replayFetch": "取得錄影",
-      "replayFetching": "取得中…"
+      "replayFetching": "取得中…",
+      "sourceBrowser": "在瀏覽器中",
+      "sourceBrowserDesc": "攝影機或螢幕，一鍵開始——延遲不到一秒，不錄影。",
+      "sourceBrowserSetup": "建立後在這裡開啟預覽，選擇攝影機與麥克風，一鍵開始直播。無需任何軟體。",
+      "sourceObs": "使用 OBS",
+      "sourceObsDesc": "帶場景與疊加層的直播軟體——可錄影，但有幾秒延遲。",
+      "browserTitle": "攝影機與聲音",
+      "browserOnAir": "直播中 · {clock}",
+      "browserStarting": "正在連線…",
+      "browserSource": "視訊來源",
+      "browserCamera": "攝影機",
+      "browserScreen": "螢幕",
+      "browserCameraLabel": "選擇攝影機",
+      "browserMicLabel": "選擇麥克風",
+      "browserDeviceFallback": "裝置 {n}",
+      "browserMute": "靜音麥克風",
+      "browserUnmute": "開啟麥克風",
+      "browserOpen": "開啟直播",
+      "browserHint": "畫面與聲音從這裡直接傳給成員——沒有中轉，也不錄影。直播期間請不要關閉頁面。",
+      "permissionDenied": "無法存取攝影機或麥克風，請在瀏覽器網址列中允許存取。",
+      "whipUnavailable": "該場次沒有瀏覽器推流入口，請重新建立。",
+      "whipFailed": "無法建立連線，請檢查網路後重試。",
+      "whipDropped": "連線已中斷。請結束直播後重新開始。",
+      "replayBrowserHint": "從瀏覽器直播不會產生錄影。如果你有自己的位址，可以填在這裡。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "調整聊天寬度",
         "startsIn": "{time} 後開始",
         "startsAnyMoment": "即將開始…",
-        "daysShort": "天"
+        "daysShort": "天",
+        "whepConnecting": "正在連線…",
+        "whepFailed": "目前無法播放該直播。",
+        "unmute": "開啟聲音"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

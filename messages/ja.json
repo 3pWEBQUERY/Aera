@@ -2896,9 +2896,7 @@
         "vimeo": "Vimeoの動画またはライブのリンクを貼り付けてください。自動的にVimeoプレイヤーに変換されます。Vimeoの設定で埋め込みを許可してください。",
         "custom": "任意の埋め込み/プレイヤーURLを貼り付けてください。URLはそのまま埋め込まれるため、iframe埋め込みが許可されている必要があります。"
       },
-      "sourceAera": "Aera で配信",
       "sourceAeraShort": "Aera ライブ",
-      "sourceAeraDesc": "OBS から Aera へ直接送信します。再生と録画はここで行われます。",
       "sourceAeraSetup": "作成後、OBS 用のサーバーアドレスとストリームキーがここに表示されます。それで送信し、「ライブ開始」を押すとメンバーに表示されます。",
       "sourceAeraUnavailable": "このプラットフォームでは Aera 経由の配信がまだ設定されていません。",
       "sourceExternal": "外部プラットフォーム",
@@ -2921,7 +2919,30 @@
       "copied": "コピーしました",
       "replayAeraHint": "配信終了後、録画から自動的に入ります。",
       "replayFetch": "録画を取得",
-      "replayFetching": "取得中…"
+      "replayFetching": "取得中…",
+      "sourceBrowser": "ブラウザで",
+      "sourceBrowserDesc": "カメラまたは画面をワンクリックで。遅延は 1 秒未満、録画はなし。",
+      "sourceBrowserSetup": "作成後、ここでプレビューを開き、カメラとマイクを選んでワンクリックでライブ配信できます。ソフトは不要です。",
+      "sourceObs": "OBS で",
+      "sourceObsDesc": "シーンやオーバーレイを使う配信ソフト。録画あり、ただし数秒の遅延があります。",
+      "browserTitle": "カメラと音声",
+      "browserOnAir": "配信中 · {clock}",
+      "browserStarting": "接続中…",
+      "browserSource": "映像ソース",
+      "browserCamera": "カメラ",
+      "browserScreen": "画面",
+      "browserCameraLabel": "カメラを選択",
+      "browserMicLabel": "マイクを選択",
+      "browserDeviceFallback": "デバイス {n}",
+      "browserMute": "マイクをミュート",
+      "browserUnmute": "マイクをオン",
+      "browserOpen": "配信を開く",
+      "browserHint": "映像と音声はここから直接メンバーへ届きます。中継も録画もありません。配信中はこのページを閉じないでください。",
+      "permissionDenied": "カメラまたはマイクにアクセスできません。ブラウザのアドレスバーで許可してください。",
+      "whipUnavailable": "このセッションにはブラウザ用の入力がありません。作り直してください。",
+      "whipFailed": "接続できませんでした。インターネット接続を確認してもう一度お試しください。",
+      "whipDropped": "接続が切れました。配信を終了してから開始し直してください。",
+      "replayBrowserHint": "ブラウザからの配信では録画は作成されません。独自のアドレスがあればここに入力してください。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "チャット幅を調整",
         "startsIn": "開始まで {time}",
         "startsAnyMoment": "まもなく開始…",
-        "daysShort": "日"
+        "daysShort": "日",
+        "whepConnecting": "接続中…",
+        "whepFailed": "現在この配信を再生できません。",
+        "unmute": "音声をオンにする"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

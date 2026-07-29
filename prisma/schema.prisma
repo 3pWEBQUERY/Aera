@@ -256,6 +256,14 @@ enum LiveSource {
   AERA
 }
 
+/// Womit gesendet wird. BROWSER = Kamera/Bildschirm direkt aus der Seite
+/// (WebRTC/WHIP, unter einer Sekunde Verzögerung, ohne Aufzeichnung),
+/// OBS = Sendesoftware über RTMPS (mit Aufzeichnung, einige Sekunden Versatz).
+enum LiveIngest {
+  BROWSER
+  OBS
+}
+
 enum StorageVisibility {
   PUBLIC
   MEMBERS
@@ -1688,6 +1696,7 @@ model LiveSession {
   title                  String
   status                 LiveStatus @default(SCHEDULED)
   source                 LiveSource @default(EXTERNAL)
+  ingest                 LiveIngest @default(BROWSER)
   roomName               String     @unique
   hostId                 String
   /// UID des Cloudflare-Live-Inputs. Der Sendeschlüssel wird bewusst nicht

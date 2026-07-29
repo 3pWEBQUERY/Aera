@@ -35,7 +35,7 @@ import { LiveRoom } from "@/components/community/live-room";
 import { StoryViewer } from "@/components/community/story-viewer";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { RequestVoteControl } from "@/components/community/request-vote-control";
-import { listLiveSessions, getLiveSession, fetchRecentLiveMessages, liveEmbedUrl } from "@/lib/live";
+import { listLiveSessions, getLiveSession, fetchRecentLiveMessages, livePlayback } from "@/lib/live";
 import { ProductCarousel } from "@/components/community/product-carousel";
 import { fetchSpaceMessages, listHubThreads, getDirectThread } from "@/lib/chat";
 import {
@@ -830,7 +830,10 @@ export default async function SpacePage({
         );
       }
       const canChat = isMember || ctx.isStaff;
-      const recent = await fetchRecentLiveMessages(tenant.id, activeSession.id, 80);
+      const [recent, playback] = await Promise.all([
+        fetchRecentLiveMessages(tenant.id, activeSession.id, 80),
+        livePlayback(activeSession),
+      ]);
       return (
         <div>
           <div className="mb-4">
@@ -849,7 +852,8 @@ export default async function SpacePage({
             status={activeSession.status}
             streamUrl={activeSession.streamUrl}
             replayUrl={activeSession.replayUrl}
-            embedUrl={await liveEmbedUrl(activeSession)}
+            embedUrl={playback.embedUrl}
+            whepUrl={playback.whepUrl}
             startsAt={activeSession.startsAt ? new Date(activeSession.startsAt).toISOString() : null}
             canChat={canChat}
             initialMessages={recent.map((m) => ({

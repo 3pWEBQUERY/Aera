@@ -2896,9 +2896,7 @@
         "vimeo": "Plak de link naar je Vimeo-video of -livestream. We zetten hem automatisch om naar de Vimeo-speler. Insluiten moet toegestaan zijn in je Vimeo-instellingen.",
         "custom": "Plak een willekeurige embed- of speler-URL. De URL wordt ongewijzigd ingesloten en moet iframe-insluiting toestaan."
       },
-      "sourceAera": "Streamen via Aera",
       "sourceAeraShort": "Aera Live",
-      "sourceAeraDesc": "Je zendt vanuit OBS rechtstreeks naar Aera. Afspelen en opnemen gebeurt hier.",
       "sourceAeraSetup": "Na het aanmaken verschijnen hier het serveradres en de streamsleutel voor OBS. Zend daarmee uit en druk op ‘Live gaan’ voor je leden.",
       "sourceAeraUnavailable": "Streamen via Aera is nog niet ingesteld op dit platform.",
       "sourceExternal": "Extern platform",
@@ -2921,7 +2919,30 @@
       "copied": "Gekopieerd",
       "replayAeraHint": "Wordt automatisch gevuld vanuit de opname zodra de stream eindigt.",
       "replayFetch": "Opname ophalen",
-      "replayFetching": "Ophalen…"
+      "replayFetching": "Ophalen…",
+      "sourceBrowser": "In de browser",
+      "sourceBrowserDesc": "Camera of scherm, één klik — minder dan een seconde vertraging, geen opname.",
+      "sourceBrowserSetup": "Na het aanmaken open je hier de voorbeeldweergave, kies je camera en microfoon en ga je met één klik live. Software is niet nodig.",
+      "sourceObs": "Met OBS",
+      "sourceObsDesc": "Uitzendsoftware met scènes en overlays — met opname, maar een paar seconden vertraging.",
+      "browserTitle": "Camera en geluid",
+      "browserOnAir": "In de lucht · {clock}",
+      "browserStarting": "Verbinden…",
+      "browserSource": "Videobron",
+      "browserCamera": "Camera",
+      "browserScreen": "Scherm",
+      "browserCameraLabel": "Camera kiezen",
+      "browserMicLabel": "Microfoon kiezen",
+      "browserDeviceFallback": "Apparaat {n}",
+      "browserMute": "Microfoon dempen",
+      "browserUnmute": "Microfoon inschakelen",
+      "browserOpen": "Uitzending openen",
+      "browserHint": "Beeld en geluid gaan rechtstreeks van hier naar je leden — zonder tussenstop en zonder opname. Sluit deze pagina niet tijdens het uitzenden.",
+      "permissionDenied": "Geen toegang tot camera of microfoon. Sta dit toe in de adresbalk van de browser.",
+      "whipUnavailable": "Deze sessie heeft geen browseringang. Maak hem opnieuw aan.",
+      "whipFailed": "De verbinding kwam niet tot stand. Controleer je internetverbinding en probeer het opnieuw.",
+      "whipDropped": "De verbinding is verbroken. Beëindig de uitzending en start opnieuw.",
+      "replayBrowserHint": "Bij uitzenden vanuit de browser ontstaat geen opname. Vul hier je eigen adres in als je er een hebt."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "Chatbreedte aanpassen",
         "startsIn": "Begint over {time}",
         "startsAnyMoment": "Begint elk moment…",
-        "daysShort": "d"
+        "daysShort": "d",
+        "whepConnecting": "Verbinden…",
+        "whepFailed": "De stream kan nu niet worden afgespeeld.",
+        "unmute": "Geluid aanzetten"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

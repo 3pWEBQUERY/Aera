@@ -62,6 +62,8 @@ describe("createLiveInput", () => {
         uid: "input-1",
         rtmps: { url: "rtmps://live.cloudflare.com:443/live/", streamKey: "key-1" },
         srt: { url: "srt://live.cloudflare.com:778", passphrase: "pass-1" },
+        webRTC: { url: "https://customer-x.cloudflarestream.com/secret/webRTC/publish" },
+        webRTCPlayback: { url: "https://customer-x.cloudflarestream.com/input-1/webRTC/play" },
         status: { current: { state: "disconnected" } },
       }),
     );
@@ -72,6 +74,8 @@ describe("createLiveInput", () => {
       uid: "input-1",
       ingestUrl: "rtmps://live.cloudflare.com:443/live/",
       streamKey: "key-1",
+      whipUrl: "https://customer-x.cloudflarestream.com/secret/webRTC/publish",
+      whepUrl: "https://customer-x.cloudflarestream.com/input-1/webRTC/play",
       connected: false,
     });
     const [url, init] = fetchMock.mock.calls[0];

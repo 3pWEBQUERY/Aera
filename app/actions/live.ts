@@ -14,7 +14,7 @@ import {
   latestRecording,
   streamLiveEnabled,
 } from "@/lib/cloudflare-stream";
-import type { LiveSource, LiveStatus } from "@/app/generated/prisma/client";
+import type { LiveIngest, LiveSource, LiveStatus } from "@/app/generated/prisma/client";
 
 export interface ActionState {
   ok?: boolean;
@@ -32,6 +32,23 @@ function parseDate(raw: unknown): Date | null {
 
 function parseSource(raw: unknown): LiveSource {
   return String(raw ?? "") === "AERA" ? "AERA" : "EXTERNAL";
+}
+
+function parseIngest(raw: unknown): LiveIngest {
+  return String(raw ?? "") === "OBS" ? "OBS" : "BROWSER";
+}
+
+/**
+ * Ob der Eingang signierte Adressen verlangt.
+ *
+ * Nur beim Weg ueber die Sendesoftware: dort laeuft die Wiedergabe ueber HLS,
+ * und eine kopierte Adresse waere sonst dauerhaft gueltig. Beim Senden aus dem
+ * Browser laeuft die Wiedergabe ueber WebRTC — dort gibt Cloudflare (Beta)
+ * keine signierten Adressen aus. Geschuetzt wird sie dadurch, dass die
+ * Wiedergabe-Adresse nur an Berechtigte ueberhaupt ausgeliefert wird.
+ */
+function needsSignedUrls(ingest: LiveIngest, entitlementKey: string | null): boolean {
+  return ingest === "OBS" && !!entitlementKey;
 }
 
 /**
@@ -63,6 +80,7 @@ export async function createLiveSessionAction(
   if (title.length < 2) return { error: await tErr("titleRequired") };
 
   const source = parseSource(fd.get("source"));
+  const ingest = parseIngest(fd.get("ingest"));
   const requiredEntitlementKey = String(fd.get("requiredEntitlementKey") || "") || null;
 
   // Bei einem eigenen Stream entsteht zuerst der Live-Input bei Cloudflare.
@@ -76,7 +94,7 @@ export async function createLiveSessionAction(
         name: `${tenant.slug} · ${title}`,
         // Ein Stream mit Zugangsvoraussetzung darf sich nicht weitergeben
         // lassen — sonst ist die Bezahlschranke eine Empfehlung.
-        requireSignedURLs: !!requiredEntitlementKey,
+        requireSignedURLs: needsSignedUrls(ingest, requiredEntitlementKey),
       });
       cfInputId = created.uid;
     } catch (error) {
@@ -91,6 +109,7 @@ export async function createLiveSessionAction(
       title,
       status: "SCHEDULED",
       source,
+      ingest,
       cfInputId,
       roomName: newRoomName(),
       hostId: user.id,
@@ -135,14 +154,21 @@ export async function updateLiveSessionAction(
   // Live-Input — beides muss geschehen sein, bevor der Datensatz umgestellt
   // wird, sonst zeigt die Session auf einen Eingang, den es nicht gibt.
   const source = fd.get("source") !== null ? parseSource(fd.get("source")) : session.source;
+  const ingest = fd.get("ingest") !== null ? parseIngest(fd.get("ingest")) : session.ingest;
   let cfInputId = session.cfInputId;
-  if (source !== session.source) {
+  // Auch der Wechsel der Sendeart legt neu an: signierte Adressen lassen sich
+  // an einem bestehenden Eingang nicht sinnvoll nachtraeglich umstellen.
+  if (source !== session.source || (source === "AERA" && ingest !== session.ingest)) {
     try {
       if (source === "AERA") {
         if (!streamLiveEnabled()) return { error: await tErr("streamNotConfigured") };
+        if (cfInputId) await deleteLiveInput(cfInputId);
         const created = await createLiveInput({
           name: `${tenant.slug} · ${title || session.title}`,
-          requireSignedURLs: !!(fd.get("requiredEntitlementKey") ?? session.requiredEntitlementKey),
+          requireSignedURLs: needsSignedUrls(
+            ingest,
+            String(fd.get("requiredEntitlementKey") ?? session.requiredEntitlementKey ?? "") || null,
+          ),
         });
         cfInputId = created.uid;
       } else if (cfInputId) {
@@ -161,6 +187,7 @@ export async function updateLiveSessionAction(
       ...(status ? { status } : {}),
       ...(status === "ENDED" ? { endedAt: new Date() } : {}),
       source,
+      ingest,
       cfInputId,
       // Eine fremde Adresse hat bei einem eigenen Stream nichts zu suchen.
       ...(source === "AERA"
@@ -207,6 +234,8 @@ export interface IngestInfo {
   key: string;
   srtUrl: string | null;
   srtPassphrase: string | null;
+  /** WHIP-Adresse zum Senden aus dem Browser. */
+  whipUrl: string | null;
   /** true, sobald OBS o. ae. verbunden ist. */
   connected: boolean;
 }
@@ -237,6 +266,7 @@ export async function liveIngestAction(
         key: input.streamKey,
         srtUrl: input.srtUrl,
         srtPassphrase: input.srtPassphrase,
+        whipUrl: input.whipUrl,
         connected: input.connected,
       },
     };

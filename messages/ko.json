@@ -2896,9 +2896,7 @@
         "vimeo": "Vimeo 영상 또는 라이브 링크를 붙여넣으세요. 자동으로 Vimeo 플레이어로 변환됩니다. Vimeo 설정에서 임베드가 허용되어야 합니다.",
         "custom": "임의의 임베드/플레이어 URL을 붙여넣으세요. URL은 그대로 삽입되며 iframe 임베드를 허용해야 합니다."
       },
-      "sourceAera": "Aera로 스트리밍",
       "sourceAeraShort": "Aera 라이브",
-      "sourceAeraDesc": "OBS에서 Aera로 바로 송출합니다. 재생과 녹화가 여기에서 이루어집니다.",
       "sourceAeraSetup": "만들면 OBS용 서버 주소와 스트림 키가 여기에 표시됩니다. 그것으로 송출한 뒤 ‘라이브 시작’을 누르면 회원에게 보입니다.",
       "sourceAeraUnavailable": "이 플랫폼에는 Aera를 통한 스트리밍이 아직 설정되지 않았습니다.",
       "sourceExternal": "외부 플랫폼",
@@ -2921,7 +2919,30 @@
       "copied": "복사됨",
       "replayAeraHint": "방송이 끝나면 녹화본에서 자동으로 채워집니다.",
       "replayFetch": "녹화 가져오기",
-      "replayFetching": "가져오는 중…"
+      "replayFetching": "가져오는 중…",
+      "sourceBrowser": "브라우저에서",
+      "sourceBrowserDesc": "카메라 또는 화면을 클릭 한 번으로. 지연 1초 미만, 녹화 없음.",
+      "sourceBrowserSetup": "만든 뒤 여기에서 미리보기를 열고 카메라와 마이크를 고른 다음 한 번의 클릭으로 라이브를 시작합니다. 별도 소프트웨어가 필요 없습니다.",
+      "sourceObs": "OBS로",
+      "sourceObsDesc": "장면과 오버레이를 쓰는 방송 소프트웨어. 녹화가 되지만 몇 초의 지연이 있습니다.",
+      "browserTitle": "카메라와 소리",
+      "browserOnAir": "방송 중 · {clock}",
+      "browserStarting": "연결 중…",
+      "browserSource": "영상 소스",
+      "browserCamera": "카메라",
+      "browserScreen": "화면",
+      "browserCameraLabel": "카메라 선택",
+      "browserMicLabel": "마이크 선택",
+      "browserDeviceFallback": "장치 {n}",
+      "browserMute": "마이크 음소거",
+      "browserUnmute": "마이크 켜기",
+      "browserOpen": "방송 열기",
+      "browserHint": "영상과 소리가 여기에서 회원에게 바로 전달됩니다. 경유도 녹화도 없습니다. 방송 중에는 이 페이지를 닫지 마세요.",
+      "permissionDenied": "카메라 또는 마이크에 접근할 수 없습니다. 브라우저 주소창에서 허용해 주세요.",
+      "whipUnavailable": "이 세션에는 브라우저 송출 입력이 없습니다. 새로 만들어 주세요.",
+      "whipFailed": "연결하지 못했습니다. 인터넷 연결을 확인하고 다시 시도해 주세요.",
+      "whipDropped": "연결이 끊겼습니다. 방송을 종료한 뒤 다시 시작해 주세요.",
+      "replayBrowserHint": "브라우저에서 송출하면 녹화본이 생기지 않습니다. 직접 만든 주소가 있으면 여기에 입력하세요."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3544,7 +3565,10 @@
         "resizeChat": "채팅 너비 조절",
         "startsIn": "{time} 후 시작",
         "startsAnyMoment": "곧 시작합니다…",
-        "daysShort": "일"
+        "daysShort": "일",
+        "whepConnecting": "연결 중…",
+        "whepFailed": "지금은 이 방송을 재생할 수 없습니다.",
+        "unmute": "소리 켜기"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

@@ -354,6 +354,45 @@ const paths: Record<string, React.ReactNode> = {
       <circle cx="4.5" cy="18" r="1.3" />
     </>
   ),
+  /** Ton an — Lautsprecher mit Wellen. */
+  volume: (
+    <>
+      <path d="M11 5 6.5 9H3v6h3.5L11 19z" />
+      <path d="M15.5 9.5a3.5 3.5 0 0 1 0 5M18 7a7 7 0 0 1 0 10" />
+    </>
+  ),
+  /** Kamera — fuer das Senden aus dem Browser. */
+  camera: (
+    <>
+      <rect x="2.5" y="6" width="14" height="12" rx="2.5" />
+      <path d="M16.5 11 21.5 8.5v7L16.5 13z" />
+    </>
+  ),
+  /** Bildschirm teilen — Monitor mit Pfeil. */
+  screen: (
+    <>
+      <rect x="2.5" y="4" width="19" height="13" rx="2" />
+      <path d="M8 21h8M12 17v4" />
+      <path d="M12 7v5M9.5 9.5 12 7l2.5 2.5" />
+    </>
+  ),
+  /** Mikrofon. */
+  mic: (
+    <>
+      <rect x="9" y="2.5" width="6" height="11" rx="3" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 13 0" />
+      <path d="M12 17.5V21M9 21h6" />
+    </>
+  ),
+  /** Mikrofon stumm. */
+  micOff: (
+    <>
+      <path d="M9 5a3 3 0 0 1 6 0v5" />
+      <path d="M5.5 11a6.5 6.5 0 0 0 10 5.5" />
+      <path d="M12 17.5V21M9 21h6" />
+      <path d="M3.5 3.5 20.5 20.5" />
+    </>
+  ),
   /** Neu laden — Kreispfeil. */
   refresh: (
     <>
