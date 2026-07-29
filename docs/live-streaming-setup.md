@@ -41,6 +41,10 @@ funktionieren wie bisher.
 |---|---|---|
 | `CLOUDFLARE_ACCOUNT_ID` | Dashboard → rechte Spalte „Account ID", oder aus der URL nach `/accounts/` | 32 Zeichen hex |
 | `CLOUDFLARE_STREAM_CUSTOMER_CODE` | Stream → ein beliebiges Video → Embed-Code. In `customer-XXXX.cloudflarestream.com` ist `XXXX` der Code | ca. 16–32 Zeichen |
+
+Beim Customer-Code darfst du auch die ganze Adresse einsetzen —
+`customer-XXXX.cloudflarestream.com` oder `https://customer-XXXX.cloudflarestream.com/…`
+werden beim Start auf den Code zurückgeführt.
 | `CLOUDFLARE_STREAM_TOKEN` | siehe Schritt 3 | beginnt nicht mit einem festen Präfix |
 
 Hat das Konto noch kein Video, entsteht der Customer-Code nach dem ersten
@@ -144,7 +148,8 @@ Das skaliert linear — du kannst also pro Paket ein Kontingent kalkulieren
 
 | Symptom | Ursache |
 |---|---|
-| „Über Aera streamen" ist ausgegraut | Eine der drei Variablen fehlt oder das Deployment ist noch das alte |
+| Beide eigenen Wege sind ausgegraut | Eine der drei Variablen fehlt oder das Deployment ist noch das alte |
+| Log: „Environment validation reported issues" | Die nächste Logzeile nennt die Variable. Häufigster Fall: `CLOUDFLARE_ACCOUNT_ID` ist nicht die 32-stellige Konto-ID |
 | „Der Stream konnte nicht eingerichtet werden" | Token hat nicht `Stream: Edit`, oder Stream ist im Konto nicht aktiviert |
 | OBS verbindet nicht | Dienst muss „Benutzerdefiniert" sein, nicht Twitch/YouTube. Port 443 ausgehend muss offen sein |
 | Bleibt „Wartet auf Signal" | OBS sendet noch nicht, oder der Schlüssel gehört zu einer anderen Session |

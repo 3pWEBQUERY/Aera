@@ -1,5 +1,5 @@
 // Centralized environment access with helpful guards.
-import { validateEnvironment } from "./env-validation";
+import { normalizeStreamCustomerCode, validateEnvironment } from "./env-validation";
 
 // Next evaluates server modules while producing the build. Runtime validation
 // is handled by `prestart`; explicit AERA_ENVIRONMENT=production also covers
@@ -125,7 +125,11 @@ export const env = {
    */
   CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
   CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN ?? "",
-  CLOUDFLARE_STREAM_CUSTOMER_CODE: process.env.CLOUDFLARE_STREAM_CUSTOMER_CODE ?? "",
+  // Aus dem Embed-Code kopiert man die ganze Adresse; hier zaehlt nur der Code
+  // dazwischen. Beides ist erlaubt.
+  CLOUDFLARE_STREAM_CUSTOMER_CODE: normalizeStreamCustomerCode(
+    process.env.CLOUDFLARE_STREAM_CUSTOMER_CODE ?? "",
+  ),
   /** Bundle-ID der iOS-App (z. B. "so.aera.app") — Pflicht für Apple-IAP-Validierung. */
   APPLE_BUNDLE_ID: process.env.APPLE_BUNDLE_ID ?? "",
   /** "1" erlaubt Sandbox-Transaktionen (TestFlight/Simulator); Production sonst Pflicht. */

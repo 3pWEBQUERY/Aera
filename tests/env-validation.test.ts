@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   EnvironmentValidationError,
+  normalizeStreamCustomerCode,
   validateEnvironment,
   type EnvironmentSource,
 } from "@/lib/env-validation";
@@ -37,6 +38,9 @@ const validProduction = {
   REDIS_URL: "redis://default:secret@redis.railway.internal:6379",
   CLAMAV_HOST: "clamav.railway.internal",
   CLAMAV_PORT: "3310",
+  CLOUDFLARE_ACCOUNT_ID: "0123456789abcdef0123456789abcdef",
+  CLOUDFLARE_STREAM_TOKEN: "cf-stream-token-with-more-than-thirty-chars",
+  CLOUDFLARE_STREAM_CUSTOMER_CODE: "f33zs165nr7gyfy4",
 } satisfies EnvironmentSource;
 
 const packageJson = JSON.parse(
@@ -185,5 +189,65 @@ describe("production environment validation", () => {
     expect(() =>
       validateEnvironment({ S3_BUCKET: "aera-private" }, "production"),
     ).toThrow(/S3_ENDPOINT/);
+  });
+});
+
+/**
+ * Der Kundencode von Cloudflare Stream.
+ *
+ * Im Dashboard steht er nur als Teil einer Adresse. Wer sie kopiert, kopiert
+ * sie ganz — und genau das darf kein Deployment-Fehler sein.
+ */
+describe("normalizeStreamCustomerCode", () => {
+  it("takes the bare code as it is", () => {
+    expect(normalizeStreamCustomerCode("f33zs165nr7gyfy4")).toBe("f33zs165nr7gyfy4");
+  });
+
+  it("pulls the code out of the host, the URL and an embed link", () => {
+    for (const input of [
+      "customer-f33zs165nr7gyfy4.cloudflarestream.com",
+      "https://customer-f33zs165nr7gyfy4.cloudflarestream.com",
+      "https://customer-f33zs165nr7gyfy4.cloudflarestream.com/abc123/iframe",
+      "  customer-F33ZS165NR7GYFY4.cloudflarestream.com  ",
+    ]) {
+      expect(normalizeStreamCustomerCode(input)).toBe("f33zs165nr7gyfy4");
+    }
+  });
+
+  it("rejects what is not a customer code", () => {
+    expect(normalizeStreamCustomerCode("https://example.com")).toBe("");
+    expect(normalizeStreamCustomerCode("customer-xyz.cloudflarestream.com")).toBe("");
+    expect(normalizeStreamCustomerCode("")).toBe("");
+  });
+
+  it("accepts a pasted host in the environment check", () => {
+    expect(() =>
+      validateEnvironment(
+        {
+          ...validProduction,
+          CLOUDFLARE_STREAM_CUSTOMER_CODE:
+            "https://customer-f33zs165nr7gyfy4.cloudflarestream.com",
+        },
+        "production",
+      ),
+    ).not.toThrow();
+  });
+
+  it("still complains when the value is not a Stream address at all", () => {
+    expect(() =>
+      validateEnvironment(
+        { ...validProduction, CLOUDFLARE_STREAM_CUSTOMER_CODE: "https://aera.so" },
+        "production",
+      ),
+    ).toThrow(EnvironmentValidationError);
+  });
+
+  it("requires the whole group once one Cloudflare value is set", () => {
+    expect(() =>
+      validateEnvironment(
+        { ...minimalProduction, CLOUDFLARE_ACCOUNT_ID: "0123456789abcdef0123456789abcdef" },
+        "production",
+      ),
+    ).toThrow(EnvironmentValidationError);
   });
 });

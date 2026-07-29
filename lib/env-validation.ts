@@ -101,6 +101,31 @@ function validateKeyring(raw: string, issues: string[], required: boolean): void
   }
 }
 
+/**
+ * Der Kundencode von Cloudflare Stream — aus allem, was man im Dashboard
+ * markieren kann.
+ *
+ * Im Embed-Code steht die ganze Adresse; wer sie kopiert, kopiert sie ganz.
+ * Statt das als Konfigurationsfehler zurueckzuweisen, wird der Code
+ * herausgeloest: "customer-abc123.cloudflarestream.com", die volle URL und der
+ * blanke Code fuehren alle zum selben Ergebnis. Gibt "" zurueck, wenn sich
+ * nichts Brauchbares darin findet.
+ */
+export function normalizeStreamCustomerCode(raw: string): string {
+  const value = raw.trim();
+  if (!value) return "";
+  // Aus einer Adresse nur den Hostnamen nehmen — Pfad, Schema und Video-ID
+  // gehoeren nicht dazu.
+  const host = value
+    .replace(/^[a-z]+:\/\//i, "")
+    .split("/")[0]
+    .split("?")[0]
+    .toLowerCase();
+  const match = /^customer-([0-9a-z]+)\.cloudflarestream\.com$/.exec(host);
+  const code = match ? match[1] : host;
+  return /^[0-9a-z]{10,}$/.test(code) ? code : "";
+}
+
 function validateCompleteGroup(
   source: EnvironmentSource,
   keys: readonly string[],
@@ -315,9 +340,9 @@ export function validateEnvironment(
       issues.push("CLOUDFLARE_ACCOUNT_ID: must be the 32-character hex account id");
     }
     requireSecret(source, "CLOUDFLARE_STREAM_TOKEN", 30, issues, true);
-    if (!/^[0-9a-z]{16,}$/i.test(get(source, "CLOUDFLARE_STREAM_CUSTOMER_CODE"))) {
+    if (!normalizeStreamCustomerCode(get(source, "CLOUDFLARE_STREAM_CUSTOMER_CODE"))) {
       issues.push(
-        "CLOUDFLARE_STREAM_CUSTOMER_CODE: must be the customer subdomain code, not a URL",
+        "CLOUDFLARE_STREAM_CUSTOMER_CODE: must be the customer code, the customer-… host, or a cloudflarestream.com URL",
       );
     }
   }
