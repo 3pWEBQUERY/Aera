@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "라이브 세션을 찾을 수 없습니다.",
+    "streamNotConfigured": "이 플랫폼에는 Aera를 통한 스트리밍이 아직 설정되지 않았습니다.",
+    "streamUnreachable": "스트리밍 서비스가 응답하지 않습니다. 잠시 후 다시 시도해 주세요.",
+    "streamFailed": "스트림을 설정하지 못했습니다.",
+    "streamInputGone": "이 세션의 송출 입력이 더 이상 없습니다. 세션을 새로 만들어 주세요.",
+    "streamReplayPending": "녹화가 아직 준비되지 않았습니다. 몇 분 후에 다시 시도해 주세요."
   },
   "nameStatus": {
     "checking": "사용 가능 여부 확인 중…",
@@ -1956,7 +1962,8 @@
         "SHOP": "상점",
         "SPACES": "스페이스 탐색",
         "RECOMMENDATIONS": "추천",
-        "LEADERBOARD": "상위 멤버"
+        "LEADERBOARD": "상위 멤버",
+        "LIVE": "라이브"
       },
       "sectionGroups": {
         "posts": "게시물",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "라이브러리",
         "JOIN": "멤버십",
         "EXTERNAL": "외부 링크",
-        "RECENTLY_VISITED": "최근 방문"
+        "RECENTLY_VISITED": "최근 방문",
+        "LIVE": "라이브"
       },
       "spaceRemoved": "스페이스가 삭제됨",
       "applyAll": "모든 대상에게 적용",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Chaturbate 룸 링크(chaturbate.com/이름)를 붙여넣으세요. 자동으로 룸의 임베드 화면을 사용합니다.",
         "vimeo": "Vimeo 영상 또는 라이브 링크를 붙여넣으세요. 자동으로 Vimeo 플레이어로 변환됩니다. Vimeo 설정에서 임베드가 허용되어야 합니다.",
         "custom": "임의의 임베드/플레이어 URL을 붙여넣으세요. URL은 그대로 삽입되며 iframe 임베드를 허용해야 합니다."
-      }
+      },
+      "sourceAera": "Aera로 스트리밍",
+      "sourceAeraShort": "Aera 라이브",
+      "sourceAeraDesc": "OBS에서 Aera로 바로 송출합니다. 재생과 녹화가 여기에서 이루어집니다.",
+      "sourceAeraSetup": "만들면 OBS용 서버 주소와 스트림 키가 여기에 표시됩니다. 그것으로 송출한 뒤 ‘라이브 시작’을 누르면 회원에게 보입니다.",
+      "sourceAeraUnavailable": "이 플랫폼에는 Aera를 통한 스트리밍이 아직 설정되지 않았습니다.",
+      "sourceExternal": "외부 플랫폼",
+      "sourceExternalDesc": "Twitch, YouTube 등에서 진행 중인 방송을 여기에 삽입합니다.",
+      "goLive": "라이브 시작",
+      "endLive": "종료",
+      "switching": "전환 중…",
+      "ingestTitle": "OBS 송출 정보",
+      "ingestConnected": "연결됨",
+      "ingestWaiting": "신호 대기 중",
+      "ingestLoading": "불러오는 중…",
+      "ingestUrlLabel": "서버 주소",
+      "ingestKeyLabel": "스트림 키",
+      "ingestSrtLabel": "SRT 주소",
+      "ingestHint": "OBS의 설정 → 방송에서 서비스를 ‘사용자 지정’으로 두고 주소와 키를 붙여넣으세요. 키는 절대 공유하지 마세요.",
+      "ingestRefresh": "상태 새로고침",
+      "showKey": "키 표시",
+      "hideKey": "키 숨기기",
+      "copy": "복사",
+      "copied": "복사됨",
+      "replayAeraHint": "방송이 끝나면 녹화본에서 자동으로 채워집니다.",
+      "replayFetch": "녹화 가져오기",
+      "replayFetching": "가져오는 중…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/년",
         "membershipOptions": "멤버십 옵션",
         "errCheckout": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
-        "errPaymentsUnavailable": "현재 결제를 이용할 수 없습니다. 나중에 다시 시도해 주세요."
+        "errPaymentsUnavailable": "현재 결제를 이용할 수 없습니다. 나중에 다시 시도해 주세요.",
+        "liveHeading": "라이브"
       },
       "shop": {
         "heading": "상점",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Aera 라이브"
       },
       "spaceCard": {
         "space": "스페이스",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "친구 초대",
       "text": "나만의 링크를 공유하세요 — 링크를 통한 가입은 나에게 집계됩니다."
+    },
+    "live": {
+      "title": "라이브",
+      "subtitle": "{name}의 모든 방송을 한곳에서.",
+      "emptyTitle": "아직 예정된 방송이 없습니다",
+      "emptyHint": "방송이 잡히면 여기에 표시됩니다.",
+      "group": {
+        "now": "지금 방송 중",
+        "upcoming": "예정",
+        "past": "다시 보기"
+      }
     }
   },
   "notifications": {

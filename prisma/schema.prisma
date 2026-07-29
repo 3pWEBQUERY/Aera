@@ -249,6 +249,13 @@ enum LiveStatus {
   ENDED
 }
 
+/// Woher das Bild kommt: AERA = der Creator sendet an Aera (Cloudflare Stream),
+/// EXTERNAL = eingebetteter Stream einer fremden Plattform.
+enum LiveSource {
+  EXTERNAL
+  AERA
+}
+
 enum StorageVisibility {
   PUBLIC
   MEMBERS
@@ -1680,8 +1687,15 @@ model LiveSession {
   space                  Space?     @relation(fields: [spaceId], references: [id], onDelete: SetNull)
   title                  String
   status                 LiveStatus @default(SCHEDULED)
+  source                 LiveSource @default(EXTERNAL)
   roomName               String     @unique
   hostId                 String
+  /// UID des Cloudflare-Live-Inputs. Der Sendeschlüssel wird bewusst nicht
+  /// gespeichert, sondern bei Bedarf von Cloudflare geholt.
+  cfInputId              String?    @unique
+  /// Video-ID der Cloudflare-Aufzeichnung. Getrennt von `replayUrl`, weil eine
+  /// geschützte Aufzeichnung erst beim Abspielen eine signierte Adresse bekommt.
+  cfReplayId             String?
   streamUrl              String?
   replayUrl              String?
   requiredEntitlementKey String?

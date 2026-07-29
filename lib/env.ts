@@ -118,6 +118,14 @@ export const env = {
   CLAMAV_PORT: Number.isInteger(Number(process.env.CLAMAV_PORT ?? "3310"))
     ? Number(process.env.CLAMAV_PORT ?? "3310")
     : 3310,
+  /**
+   * Cloudflare Stream Live — Streams, die über Aera selbst laufen.
+   * ACCOUNT_ID und CUSTOMER_CODE stehen im Cloudflare-Dashboard unter Stream,
+   * das Token braucht die Berechtigung "Stream: Edit".
+   */
+  CLOUDFLARE_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID ?? "",
+  CLOUDFLARE_STREAM_TOKEN: process.env.CLOUDFLARE_STREAM_TOKEN ?? "",
+  CLOUDFLARE_STREAM_CUSTOMER_CODE: process.env.CLOUDFLARE_STREAM_CUSTOMER_CODE ?? "",
   /** Bundle-ID der iOS-App (z. B. "so.aera.app") — Pflicht für Apple-IAP-Validierung. */
   APPLE_BUNDLE_ID: process.env.APPLE_BUNDLE_ID ?? "",
   /** "1" erlaubt Sandbox-Transaktionen (TestFlight/Simulator); Production sonst Pflicht. */
@@ -150,4 +158,11 @@ export const features = {
       env.S3_SECRET_ACCESS_KEY,
   ),
   push: Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY),
+  // Ohne alle drei Werte lässt sich kein Stream anlegen, ausliefern oder
+  // zuordnen — halb eingerichtet ist hier schlimmer als aus.
+  streamLive: Boolean(
+    env.CLOUDFLARE_ACCOUNT_ID &&
+      env.CLOUDFLARE_STREAM_TOKEN &&
+      env.CLOUDFLARE_STREAM_CUSTOMER_CODE,
+  ),
 };

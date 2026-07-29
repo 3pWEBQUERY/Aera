@@ -1464,7 +1464,16 @@ function AddNavModal({
                 setValue("");
               }}
               options={(
-                ["EXTERNAL", "SPACE", "HOME", "MEMBERS", "LIBRARY", "JOIN", "RECENTLY_VISITED"] as NavType[]
+                [
+                  "EXTERNAL",
+                  "SPACE",
+                  "HOME",
+                  "MEMBERS",
+                  "LIBRARY",
+                  "LIVE",
+                  "JOIN",
+                  "RECENTLY_VISITED",
+                ] as NavType[]
               ).map((nt) => ({ value: nt, label: tNav(nt), icon: NAV_TYPE_ICON[nt] }))}
             />
           </div>

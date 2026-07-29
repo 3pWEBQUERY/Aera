@@ -354,6 +354,22 @@ const paths: Record<string, React.ReactNode> = {
       <circle cx="4.5" cy="18" r="1.3" />
     </>
   ),
+  /** Neu laden — Kreispfeil. */
+  refresh: (
+    <>
+      <path d="M20 11a8 8 0 0 0-13.7-5.7L3 8.5" />
+      <path d="M4 13a8 8 0 0 0 13.7 5.7L21 15.5" />
+      <path d="M3 4v4.5h4.5M21 20v-4.5h-4.5" />
+    </>
+  ),
+  /** Senden — Antenne mit Wellen. Steht fuer einen Stream, der ueber Aera laeuft. */
+  broadcast: (
+    <>
+      <circle cx="12" cy="12" r="2.5" />
+      <path d="M8.5 15.5a5 5 0 0 1 0-7M15.5 8.5a5 5 0 0 1 0 7" />
+      <path d="M5.5 18.5a9 9 0 0 1 0-13M18.5 5.5a9 9 0 0 1 0 13" />
+    </>
+  ),
   /** Musik — Note mit Balken. */
   music: (
     <>

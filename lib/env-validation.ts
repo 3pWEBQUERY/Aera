@@ -303,5 +303,24 @@ export function validateEnvironment(
   const vapidKeys = ["NEXT_PUBLIC_VAPID_PUBLIC_KEY", "VAPID_PRIVATE_KEY"] as const;
   validateCompleteGroup(source, vapidKeys, issues, false);
 
+  // Cloudflare Stream Live. Die drei Werte gehören zusammen: mit Konto-ID und
+  // Token allein liesse sich senden, aber nicht abspielen.
+  const streamKeys = [
+    "CLOUDFLARE_ACCOUNT_ID",
+    "CLOUDFLARE_STREAM_TOKEN",
+    "CLOUDFLARE_STREAM_CUSTOMER_CODE",
+  ] as const;
+  if (validateCompleteGroup(source, streamKeys, issues, false)) {
+    if (!/^[0-9a-f]{32}$/i.test(get(source, "CLOUDFLARE_ACCOUNT_ID"))) {
+      issues.push("CLOUDFLARE_ACCOUNT_ID: must be the 32-character hex account id");
+    }
+    requireSecret(source, "CLOUDFLARE_STREAM_TOKEN", 30, issues, true);
+    if (!/^[0-9a-z]{16,}$/i.test(get(source, "CLOUDFLARE_STREAM_CUSTOMER_CODE"))) {
+      issues.push(
+        "CLOUDFLARE_STREAM_CUSTOMER_CODE: must be the customer subdomain code, not a URL",
+      );
+    }
+  }
+
   if (issues.length > 0) throw new EnvironmentValidationError([...new Set(issues)]);
 }

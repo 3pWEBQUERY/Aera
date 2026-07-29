@@ -17,6 +17,7 @@ export function LiveSessionCard({
   status,
   statusLabel,
   streamUrl,
+  ownStreamLabel,
   startsAtLabel,
   startsAtIso,
 }: {
@@ -25,10 +26,12 @@ export function LiveSessionCard({
   status: "SCHEDULED" | "LIVE" | "ENDED";
   statusLabel: string;
   streamUrl: string | null;
+  /** Gesetzt, wenn der Stream ueber Aera laeuft — dann steht das statt einer Plattform. */
+  ownStreamLabel?: string | null;
   startsAtLabel: string | null;
   startsAtIso?: string | null;
 }) {
-  const platform = streamUrl ? detectLivePlatform(streamUrl) : null;
+  const platform = ownStreamLabel ? null : streamUrl ? detectLivePlatform(streamUrl) : null;
   const info =
     platform && platform !== "custom" ? LIVE_PLATFORMS.find((p) => p.key === platform) : null;
   const isLive = status === "LIVE";
@@ -62,13 +65,21 @@ export function LiveSessionCard({
           )}
           {statusLabel}
         </Pill>
-        {info && platform && (
-          <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/[0.04] px-2 py-1 text-xs font-medium text-[#161613]/70">
-            <span className="flex shrink-0" style={{ color: PLATFORM_COLORS[platform] }}>
-              <PlatformIcon platform={platform} size={14} />
-            </span>
-            {info.label}
+        {ownStreamLabel ? (
+          <span className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--brand-soft)] px-2 py-1 text-xs font-medium text-[color:var(--brand)]">
+            <Icon name="broadcast" size={13} />
+            {ownStreamLabel}
           </span>
+        ) : (
+          info &&
+          platform && (
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-[#161613]/[0.04] px-2 py-1 text-xs font-medium text-[#161613]/70">
+              <span className="flex shrink-0" style={{ color: PLATFORM_COLORS[platform] }}>
+                <PlatformIcon platform={platform} size={14} />
+              </span>
+              {info.label}
+            </span>
+          )
         )}
       </div>
       <h3 className="display-serif mt-3 truncate text-xl text-[#161613] transition group-hover:text-[color:var(--brand)]">

@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "ライブセッションが見つかりません。",
+    "streamNotConfigured": "このプラットフォームでは Aera 経由の配信がまだ設定されていません。",
+    "streamUnreachable": "配信サービスが応答していません。しばらくしてからもう一度お試しください。",
+    "streamFailed": "配信を設定できませんでした。",
+    "streamInputGone": "このセッションの配信入力は既に存在しません。セッションを作り直してください。",
+    "streamReplayPending": "録画はまだ準備できていません。数分後にもう一度お試しください。"
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -1956,7 +1962,8 @@
         "SHOP": "ショップ",
         "SPACES": "スペースを探す",
         "RECOMMENDATIONS": "おすすめ",
-        "LEADERBOARD": "トップメンバー"
+        "LEADERBOARD": "トップメンバー",
+        "LIVE": "ライブ"
       },
       "sectionGroups": {
         "posts": "投稿",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "ライブラリ",
         "JOIN": "メンバーシップ",
         "EXTERNAL": "外部リンク",
-        "RECENTLY_VISITED": "最近訪れた"
+        "RECENTLY_VISITED": "最近訪れた",
+        "LIVE": "ライブ"
       },
       "spaceRemoved": "スペースを削除しました",
       "applyAll": "すべての対象者に適用",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Chaturbateルームのリンク（chaturbate.com/名前）を貼り付けてください。自動的にルームの埋め込みビューを使用します。",
         "vimeo": "Vimeoの動画またはライブのリンクを貼り付けてください。自動的にVimeoプレイヤーに変換されます。Vimeoの設定で埋め込みを許可してください。",
         "custom": "任意の埋め込み/プレイヤーURLを貼り付けてください。URLはそのまま埋め込まれるため、iframe埋め込みが許可されている必要があります。"
-      }
+      },
+      "sourceAera": "Aera で配信",
+      "sourceAeraShort": "Aera ライブ",
+      "sourceAeraDesc": "OBS から Aera へ直接送信します。再生と録画はここで行われます。",
+      "sourceAeraSetup": "作成後、OBS 用のサーバーアドレスとストリームキーがここに表示されます。それで送信し、「ライブ開始」を押すとメンバーに表示されます。",
+      "sourceAeraUnavailable": "このプラットフォームでは Aera 経由の配信がまだ設定されていません。",
+      "sourceExternal": "外部プラットフォーム",
+      "sourceExternalDesc": "Twitch や YouTube などで配信中のものをここに埋め込みます。",
+      "goLive": "ライブ開始",
+      "endLive": "終了",
+      "switching": "切り替え中…",
+      "ingestTitle": "OBS 用の配信設定",
+      "ingestConnected": "接続済み",
+      "ingestWaiting": "信号待ち",
+      "ingestLoading": "読み込み中…",
+      "ingestUrlLabel": "サーバーアドレス",
+      "ingestKeyLabel": "ストリームキー",
+      "ingestSrtLabel": "SRT アドレス",
+      "ingestHint": "OBS の 設定 → 配信 で、サービスを「カスタム」にし、アドレスとキーを貼り付けます。キーは誰にも渡さないでください。",
+      "ingestRefresh": "状態を更新",
+      "showKey": "キーを表示",
+      "hideKey": "キーを隠す",
+      "copy": "コピー",
+      "copied": "コピーしました",
+      "replayAeraHint": "配信終了後、録画から自動的に入ります。",
+      "replayFetch": "録画を取得",
+      "replayFetching": "取得中…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/年",
         "membershipOptions": "メンバーシップの選択肢",
         "errCheckout": "決済を開始できませんでした。もう一度お試しください。",
-        "errPaymentsUnavailable": "現在お支払いはご利用いただけません。後ほどお試しください。"
+        "errPaymentsUnavailable": "現在お支払いはご利用いただけません。後ほどお試しください。",
+        "liveHeading": "ライブ"
       },
       "shop": {
         "heading": "ショップ",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Aera でライブ"
       },
       "spaceCard": {
         "space": "スペース",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "友達を招待",
       "text": "あなた専用のリンクをシェアしましょう — リンク経由の参加はあなたの実績になります。"
+    },
+    "live": {
+      "title": "ライブ",
+      "subtitle": "{name} の配信をまとめて表示します。",
+      "emptyTitle": "まだ予定はありません",
+      "emptyHint": "配信の予定ができるとここに表示されます。",
+      "group": {
+        "now": "配信中",
+        "upcoming": "予定",
+        "past": "アーカイブ"
+      }
     }
   },
   "notifications": {

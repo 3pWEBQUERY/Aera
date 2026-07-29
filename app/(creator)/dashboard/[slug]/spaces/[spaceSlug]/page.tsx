@@ -64,6 +64,7 @@ import {
 import { excerpt } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { features } from "@/lib/env";
 
 const POST_TYPES = ["FEED", "VIDEOS", "PODCAST", "MUSIC"];
 
@@ -406,6 +407,7 @@ export default async function SpaceContentPage({
       id: s.id,
       title: s.title,
       status: s.status,
+      source: s.source,
       streamUrl: s.streamUrl,
       replayUrl: s.replayUrl,
       requiredEntitlementKey: s.requiredEntitlementKey,
@@ -417,6 +419,7 @@ export default async function SpaceContentPage({
         space={{ id: space.id, slug: space.slug, name: space.name }}
         sessions={sessions}
         tiers={tierRows.map((tr) => ({ name: tr.name, entitlementKey: tr.entitlementKey }))}
+        streamReady={features.streamLive}
       />
     );
   }

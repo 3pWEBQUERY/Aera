@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "Livesessie niet gevonden.",
+    "streamNotConfigured": "Streamen via Aera is nog niet ingesteld op dit platform.",
+    "streamUnreachable": "De streamingdienst reageert momenteel niet. Probeer het zo meteen opnieuw.",
+    "streamFailed": "De stream kon niet worden ingesteld.",
+    "streamInputGone": "De ingang voor deze sessie bestaat niet meer. Maak de sessie opnieuw aan.",
+    "streamReplayPending": "De opname is nog niet klaar. Probeer het over een paar minuten opnieuw."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -1956,7 +1962,8 @@
         "SHOP": "Shop",
         "SPACES": "Spaces ontdekken",
         "RECOMMENDATIONS": "Aanbevolen voor jou",
-        "LEADERBOARD": "Topleden"
+        "LEADERBOARD": "Topleden",
+        "LIVE": "Live"
       },
       "sectionGroups": {
         "posts": "Berichten",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "Bibliotheek",
         "JOIN": "Lidmaatschap",
         "EXTERNAL": "Externe link",
-        "RECENTLY_VISITED": "Recent bezocht"
+        "RECENTLY_VISITED": "Recent bezocht",
+        "LIVE": "Live"
       },
       "spaceRemoved": "Space verwijderd",
       "applyAll": "Toepassen op alle doelgroepen",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Plak de link naar je Chaturbate-room (chaturbate.com/jouwnaam). We gebruiken automatisch de embed-weergave van de room.",
         "vimeo": "Plak de link naar je Vimeo-video of -livestream. We zetten hem automatisch om naar de Vimeo-speler. Insluiten moet toegestaan zijn in je Vimeo-instellingen.",
         "custom": "Plak een willekeurige embed- of speler-URL. De URL wordt ongewijzigd ingesloten en moet iframe-insluiting toestaan."
-      }
+      },
+      "sourceAera": "Streamen via Aera",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Je zendt vanuit OBS rechtstreeks naar Aera. Afspelen en opnemen gebeurt hier.",
+      "sourceAeraSetup": "Na het aanmaken verschijnen hier het serveradres en de streamsleutel voor OBS. Zend daarmee uit en druk op ‘Live gaan’ voor je leden.",
+      "sourceAeraUnavailable": "Streamen via Aera is nog niet ingesteld op dit platform.",
+      "sourceExternal": "Extern platform",
+      "sourceExternalDesc": "Een stream op Twitch, YouTube en dergelijke, hier ingesloten.",
+      "goLive": "Live gaan",
+      "endLive": "Beëindigen",
+      "switching": "Bezig met wisselen…",
+      "ingestTitle": "Uitzendgegevens voor OBS",
+      "ingestConnected": "Verbonden",
+      "ingestWaiting": "Wacht op signaal",
+      "ingestLoading": "Laden…",
+      "ingestUrlLabel": "Serveradres",
+      "ingestKeyLabel": "Streamsleutel",
+      "ingestSrtLabel": "SRT-adres",
+      "ingestHint": "In OBS bij Instellingen → Streamen: dienst ‘Aangepast’, plak adres en sleutel. Deel de sleutel nooit.",
+      "ingestRefresh": "Status vernieuwen",
+      "showKey": "Sleutel tonen",
+      "hideKey": "Sleutel verbergen",
+      "copy": "Kopiëren",
+      "copied": "Gekopieerd",
+      "replayAeraHint": "Wordt automatisch gevuld vanuit de opname zodra de stream eindigt.",
+      "replayFetch": "Opname ophalen",
+      "replayFetching": "Ophalen…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/jaar",
         "membershipOptions": "Lidmaatschapsopties",
         "errCheckout": "Het afrekenen kon niet worden gestart. Probeer het opnieuw.",
-        "errPaymentsUnavailable": "Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw."
+        "errPaymentsUnavailable": "Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw.",
+        "liveHeading": "Live"
       },
       "shop": {
         "heading": "Shop",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Live via Aera"
       },
       "spaceCard": {
         "space": "Space",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "Vrienden uitnodigen",
       "text": "Deel je persoonlijke link — aanmeldingen via jouw link worden aan jou toegeschreven."
+    },
+    "live": {
+      "title": "Live",
+      "subtitle": "Alle streams van {name} op één plek.",
+      "emptyTitle": "Nog niets gepland",
+      "emptyHint": "Zodra er een stream aankomt, zie je die hier.",
+      "group": {
+        "now": "Nu live",
+        "upcoming": "Gepland",
+        "past": "Herhalingen"
+      }
     }
   },
   "notifications": {

@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "Livesession blev ikke fundet.",
+    "streamNotConfigured": "Streaming via Aera er endnu ikke sat op på denne platform.",
+    "streamUnreachable": "Streamingtjenesten svarer ikke lige nu. Prøv igen om lidt.",
+    "streamFailed": "Streamen kunne ikke oprettes.",
+    "streamInputGone": "Sendeadgangen til denne session findes ikke længere. Opret sessionen igen.",
+    "streamReplayPending": "Optagelsen er ikke klar endnu. Prøv igen om et par minutter."
   },
   "nameStatus": {
     "checking": "Tjekker tilgængelighed…",
@@ -1956,7 +1962,8 @@
         "SHOP": "Shop",
         "SPACES": "Opdag spaces",
         "RECOMMENDATIONS": "Anbefalet til dig",
-        "LEADERBOARD": "Topmedlemmer"
+        "LEADERBOARD": "Topmedlemmer",
+        "LIVE": "Live"
       },
       "sectionGroups": {
         "posts": "Indlæg",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "Bibliotek",
         "JOIN": "Medlemskab",
         "EXTERNAL": "Eksternt link",
-        "RECENTLY_VISITED": "Senest besøgt"
+        "RECENTLY_VISITED": "Senest besøgt",
+        "LIVE": "Live"
       },
       "spaceRemoved": "Space fjernet",
       "applyAll": "Anvend på alle målgrupper",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Indsæt linket til dit Chaturbate-rum (chaturbate.com/ditnavn). Vi bruger automatisk rummets embed-visning.",
         "vimeo": "Indsæt linket til din Vimeo-video eller -livestream. Vi omdanner det automatisk til Vimeo-afspilleren. Indlejring skal være tilladt i Vimeo-indstillingerne.",
         "custom": "Indsæt en vilkårlig embed- eller afspiller-URL. URL'en indlejres som den er og skal tillade iframe-indlejring."
-      }
+      },
+      "sourceAera": "Stream via Aera",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Du sender fra OBS direkte til Aera. Afspilning og optagelse sker her.",
+      "sourceAeraSetup": "Når sessionen er oprettet, vises serveradresse og streamnøgle til OBS her. Send med dem, og tryk “Gå live”, så dine medlemmer kan se det.",
+      "sourceAeraUnavailable": "Streaming via Aera er endnu ikke konfigureret på denne platform.",
+      "sourceExternal": "Ekstern platform",
+      "sourceExternalDesc": "En stream, der kører på Twitch, YouTube m.fl. og indlejres her.",
+      "goLive": "Gå live",
+      "endLive": "Afslut",
+      "switching": "Skifter…",
+      "ingestTitle": "Sendeoplysninger til OBS",
+      "ingestConnected": "Forbundet",
+      "ingestWaiting": "Venter på signal",
+      "ingestLoading": "Indlæser…",
+      "ingestUrlLabel": "Serveradresse",
+      "ingestKeyLabel": "Streamnøgle",
+      "ingestSrtLabel": "SRT-adresse",
+      "ingestHint": "I OBS under Indstillinger → Stream: tjenesten “Brugerdefineret”, indsæt adresse og nøgle. Del aldrig nøglen.",
+      "ingestRefresh": "Opdater status",
+      "showKey": "Vis nøgle",
+      "hideKey": "Skjul nøgle",
+      "copy": "Kopiér",
+      "copied": "Kopieret",
+      "replayAeraHint": "Udfyldes automatisk fra optagelsen, når streamen slutter.",
+      "replayFetch": "Hent optagelse",
+      "replayFetching": "Henter…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/år",
         "membershipOptions": "Medlemskabsmuligheder",
         "errCheckout": "Betalingen kunne ikke startes. Prøv igen.",
-        "errPaymentsUnavailable": "Betalinger er i øjeblikket ikke tilgængelige. Prøv igen senere."
+        "errPaymentsUnavailable": "Betalinger er i øjeblikket ikke tilgængelige. Prøv igen senere.",
+        "liveHeading": "Live"
       },
       "shop": {
         "heading": "Shop",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Live via Aera"
       },
       "spaceCard": {
         "space": "Space",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "Invitér venner",
       "text": "Del dit personlige link — tilmeldinger via dit link krediteres dig."
+    },
+    "live": {
+      "title": "Live",
+      "subtitle": "Alle streams fra {name} ét sted.",
+      "emptyTitle": "Intet planlagt endnu",
+      "emptyHint": "Så snart en stream er på vej, står den her.",
+      "group": {
+        "now": "Kører nu",
+        "upcoming": "Planlagt",
+        "past": "Genudsendelser"
+      }
     }
   },
   "notifications": {

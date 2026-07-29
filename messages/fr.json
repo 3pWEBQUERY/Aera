@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "Session en direct introuvable.",
+    "streamNotConfigured": "La diffusion via Aera n’est pas encore configurée sur cette plateforme.",
+    "streamUnreachable": "Le service de diffusion ne répond pas pour le moment. Réessayez dans un instant.",
+    "streamFailed": "Le direct n’a pas pu être configuré.",
+    "streamInputGone": "L’accès de diffusion de cette session n’existe plus. Recréez la session.",
+    "streamReplayPending": "L’enregistrement n’est pas encore prêt. Réessayez dans quelques minutes."
   },
   "nameStatus": {
     "checking": "Vérification de la disponibilité…",
@@ -1956,7 +1962,8 @@
         "SHOP": "Boutique",
         "SPACES": "Découvrir les espaces",
         "RECOMMENDATIONS": "Recommandé pour vous",
-        "LEADERBOARD": "Meilleurs membres"
+        "LEADERBOARD": "Meilleurs membres",
+        "LIVE": "En direct"
       },
       "sectionGroups": {
         "posts": "Publications",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "Bibliothèque",
         "JOIN": "Adhésion",
         "EXTERNAL": "Lien externe",
-        "RECENTLY_VISITED": "Récemment visité"
+        "RECENTLY_VISITED": "Récemment visité",
+        "LIVE": "En direct"
       },
       "spaceRemoved": "Space supprimé",
       "applyAll": "Appliquer à tous les publics",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Colle le lien de ta room Chaturbate (chaturbate.com/tonnom). Nous utilisons automatiquement la vue intégrable de la room.",
         "vimeo": "Colle le lien de ta vidéo ou de ton direct Vimeo. Nous le convertissons automatiquement en lecteur Vimeo. L'intégration doit être autorisée dans les réglages Vimeo.",
         "custom": "Colle n'importe quelle URL d'intégration ou de lecteur. L'URL est intégrée telle quelle et doit autoriser l'iframe."
-      }
+      },
+      "sourceAera": "Diffuser via Aera",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Vous diffusez depuis OBS directement vers Aera. Lecture et enregistrement se font ici.",
+      "sourceAeraSetup": "Une fois créée, l’adresse du serveur et la clé de flux pour OBS apparaissent ici. Diffusez avec, puis appuyez sur « Passer en direct » pour vos membres.",
+      "sourceAeraUnavailable": "La diffusion via Aera n’est pas encore configurée sur cette plateforme.",
+      "sourceExternal": "Plateforme externe",
+      "sourceExternalDesc": "Un direct diffusé sur Twitch, YouTube, etc., intégré ici.",
+      "goLive": "Passer en direct",
+      "endLive": "Terminer",
+      "switching": "Changement…",
+      "ingestTitle": "Paramètres de diffusion pour OBS",
+      "ingestConnected": "Connecté",
+      "ingestWaiting": "En attente de signal",
+      "ingestLoading": "Chargement…",
+      "ingestUrlLabel": "Adresse du serveur",
+      "ingestKeyLabel": "Clé de flux",
+      "ingestSrtLabel": "Adresse SRT",
+      "ingestHint": "Dans OBS, Paramètres → Stream : service « Personnalisé », collez l’adresse et la clé. Ne partagez jamais la clé.",
+      "ingestRefresh": "Actualiser l’état",
+      "showKey": "Afficher la clé",
+      "hideKey": "Masquer la clé",
+      "copy": "Copier",
+      "copied": "Copié",
+      "replayAeraHint": "Rempli automatiquement depuis l’enregistrement à la fin du direct.",
+      "replayFetch": "Récupérer l’enregistrement",
+      "replayFetching": "Récupération…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/an",
         "membershipOptions": "Options d’abonnement",
         "errCheckout": "Le paiement n’a pas pu démarrer. Veuillez réessayer.",
-        "errPaymentsUnavailable": "Les paiements sont actuellement indisponibles. Veuillez réessayer plus tard."
+        "errPaymentsUnavailable": "Les paiements sont actuellement indisponibles. Veuillez réessayer plus tard.",
+        "liveHeading": "En direct"
       },
       "shop": {
         "heading": "Boutique",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "En direct via Aera"
       },
       "spaceCard": {
         "space": "Space",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "Inviter des amis",
       "text": "Partagez votre lien personnel — les adhésions via votre lien vous sont créditées."
+    },
+    "live": {
+      "title": "En direct",
+      "subtitle": "Tous les directs de {name} au même endroit.",
+      "emptyTitle": "Rien de prévu pour l’instant",
+      "emptyHint": "Dès qu’un direct est prévu, il apparaît ici.",
+      "group": {
+        "now": "En direct maintenant",
+        "upcoming": "À venir",
+        "past": "Rediffusions"
+      }
     }
   },
   "notifications": {

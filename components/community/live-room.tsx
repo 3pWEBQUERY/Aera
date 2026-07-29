@@ -21,6 +21,7 @@ export function LiveRoom({
   status,
   streamUrl,
   replayUrl,
+  embedUrl,
   startsAt,
   initialMessages,
   canChat,
@@ -30,6 +31,12 @@ export function LiveRoom({
   status: "SCHEDULED" | "LIVE" | "ENDED";
   streamUrl: string | null;
   replayUrl: string | null;
+  /**
+   * Fertige Wiedergabe-Adresse fuer Streams, die ueber Aera laufen. Sie wird
+   * auf dem Server erzeugt, weil ein geschuetzter Stream ein signiertes Token
+   * braucht — das darf im Browser nicht entstehen.
+   */
+  embedUrl?: string | null;
   startsAt?: string | null;
   initialMessages: LiveMessage[];
   canChat: boolean;
@@ -115,9 +122,11 @@ export function LiveRoom({
   // parent-Parameter. Kanal-/Video-Links werden in Player-Embeds umgewandelt.
   const [embedHost, setEmbedHost] = useState<string | null>(null);
   useEffect(() => setEmbedHost(window.location.hostname), []);
-  const playerUrl = rawPlayerUrl
-    ? toLiveEmbedUrl(rawPlayerUrl, embedHost ?? undefined)
-    : rawPlayerUrl;
+  // Der eigene Stream hat seine Adresse schon fertig; nur fremde Links muessen
+  // noch in eine Einbettung uebersetzt werden.
+  const playerUrl =
+    embedUrl ??
+    (rawPlayerUrl ? toLiveEmbedUrl(rawPlayerUrl, embedHost ?? undefined) : rawPlayerUrl);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });

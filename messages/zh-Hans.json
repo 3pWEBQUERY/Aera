@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "未找到直播场次。",
+    "streamNotConfigured": "本平台尚未配置通过 Aera 直播。",
+    "streamUnreachable": "直播服务暂时没有响应，请稍后再试。",
+    "streamFailed": "无法设置该直播。",
+    "streamInputGone": "该场次的推流入口已不存在，请重新创建场次。",
+    "streamReplayPending": "录像尚未生成，请几分钟后再试。"
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -1956,7 +1962,8 @@
         "SHOP": "商店",
         "SPACES": "发现空间",
         "RECOMMENDATIONS": "为你推荐",
-        "LEADERBOARD": "顶尖成员"
+        "LEADERBOARD": "顶尖成员",
+        "LIVE": "直播"
       },
       "sectionGroups": {
         "posts": "帖子",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "资料库",
         "JOIN": "会员",
         "EXTERNAL": "外部链接",
-        "RECENTLY_VISITED": "最近访问"
+        "RECENTLY_VISITED": "最近访问",
+        "LIVE": "直播"
       },
       "spaceRemoved": "空间已删除",
       "applyAll": "应用到所有受众",
@@ -2887,7 +2895,33 @@
         "chaturbate": "粘贴你的 Chaturbate 房间链接（chaturbate.com/名字）。我们会自动使用房间的嵌入视图。",
         "vimeo": "粘贴你的 Vimeo 视频或直播链接。我们会自动转换为 Vimeo 播放器。需在 Vimeo 设置中允许嵌入。",
         "custom": "粘贴任意嵌入/播放器 URL。该 URL 将原样嵌入，需允许 iframe 嵌入。"
-      }
+      },
+      "sourceAera": "通过 Aera 直播",
+      "sourceAeraShort": "Aera 直播",
+      "sourceAeraDesc": "你从 OBS 直接推流到 Aera，播放与录制都在这里完成。",
+      "sourceAeraSetup": "创建后，这里会显示 OBS 的服务器地址和推流密钥。用它们推流，再点击“开始直播”，成员就能看到。",
+      "sourceAeraUnavailable": "本平台尚未配置通过 Aera 直播。",
+      "sourceExternal": "外部平台",
+      "sourceExternalDesc": "在 Twitch、YouTube 等平台进行的直播，嵌入到这里。",
+      "goLive": "开始直播",
+      "endLive": "结束",
+      "switching": "切换中…",
+      "ingestTitle": "OBS 推流信息",
+      "ingestConnected": "已连接",
+      "ingestWaiting": "等待信号",
+      "ingestLoading": "加载中…",
+      "ingestUrlLabel": "服务器地址",
+      "ingestKeyLabel": "推流密钥",
+      "ingestSrtLabel": "SRT 地址",
+      "ingestHint": "在 OBS 的 设置 → 直播 中，服务选择“自定义”，粘贴地址和密钥。请勿把密钥交给他人。",
+      "ingestRefresh": "刷新状态",
+      "showKey": "显示密钥",
+      "hideKey": "隐藏密钥",
+      "copy": "复制",
+      "copied": "已复制",
+      "replayAeraHint": "直播结束后会自动从录像填入。",
+      "replayFetch": "获取录像",
+      "replayFetching": "获取中…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/年",
         "membershipOptions": "会员选项",
         "errCheckout": "无法开始结账。请重试。",
-        "errPaymentsUnavailable": "当前无法付款。请稍后再试。"
+        "errPaymentsUnavailable": "当前无法付款。请稍后再试。",
+        "liveHeading": "直播"
       },
       "shop": {
         "heading": "商店",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Aera 直播"
       },
       "spaceCard": {
         "space": "空间",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "邀请好友",
       "text": "分享你的专属链接 — 通过你的链接加入的成员将计入你的名下。"
+    },
+    "live": {
+      "title": "直播",
+      "subtitle": "{name} 的全部直播都在这里。",
+      "emptyTitle": "还没有安排",
+      "emptyHint": "一旦有直播安排，就会出现在这里。",
+      "group": {
+        "now": "正在直播",
+        "upcoming": "即将开始",
+        "past": "回放"
+      }
     }
   },
   "notifications": {

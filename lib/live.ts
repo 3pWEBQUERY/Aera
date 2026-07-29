@@ -1,16 +1,46 @@
 import "server-only";
 import prisma from "./prisma";
-import type { LiveStatus } from "@/app/generated/prisma/client";
+import { playbackToken, streamIframeUrl, streamLiveEnabled } from "./cloudflare-stream";
+import type { LiveSource, LiveStatus } from "@/app/generated/prisma/client";
 
 export interface LiveSessionData {
   id: string;
   title: string;
   status: LiveStatus;
+  source: LiveSource;
+  cfInputId: string | null;
+  cfReplayId: string | null;
   streamUrl: string | null;
   replayUrl: string | null;
   requiredEntitlementKey: string | null;
   startsAt: Date | null;
   endedAt: Date | null;
+}
+
+/**
+ * Die Adresse, die im Player steht.
+ *
+ * Bei einem eigenen Stream zeigt sie auf Cloudflare — auf den Live-Eingang,
+ * solange gesendet wird, danach auf die Aufzeichnung. Setzt die Session Rechte
+ * voraus, wird die ID durch ein kurzlebiges Token ersetzt: eine kopierte
+ * Adresse laeuft dann von selbst ab, statt den bezahlten Stream weiterzugeben.
+ *
+ * Fremde Plattformen gehen unveraendert durch; daraus macht der Live-Raum
+ * clientseitig die passende Einbettung.
+ */
+export async function liveEmbedUrl(s: LiveSessionData): Promise<string | null> {
+  const id = s.status === "ENDED" ? (s.cfReplayId ?? s.cfInputId) : s.cfInputId;
+  if (s.source !== "AERA" || !id || !streamLiveEnabled()) {
+    return s.status === "ENDED" ? (s.replayUrl ?? s.streamUrl) : (s.streamUrl ?? s.replayUrl);
+  }
+  if (!s.requiredEntitlementKey) return streamIframeUrl(id);
+  try {
+    return streamIframeUrl(await playbackToken(id));
+  } catch {
+    // Ohne Token bleibt der Player leer — besser als eine offene Adresse,
+    // die den geschuetzten Stream fuer jeden abspielbar macht.
+    return null;
+  }
 }
 
 export interface LiveMessageData {
@@ -35,6 +65,9 @@ export async function listLiveSessions(
     id: s.id,
     title: s.title,
     status: s.status,
+    source: s.source,
+    cfInputId: s.cfInputId,
+    cfReplayId: s.cfReplayId,
     streamUrl: s.streamUrl,
     replayUrl: s.replayUrl,
     requiredEntitlementKey: s.requiredEntitlementKey,
@@ -53,6 +86,9 @@ export async function getLiveSession(
     id: s.id,
     title: s.title,
     status: s.status,
+    source: s.source,
+    cfInputId: s.cfInputId,
+    cfReplayId: s.cfReplayId,
     streamUrl: s.streamUrl,
     replayUrl: s.replayUrl,
     requiredEntitlementKey: s.requiredEntitlementKey,

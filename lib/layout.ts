@@ -21,6 +21,7 @@ export type SectionType =
   | "SPACES"
   | "RECOMMENDATIONS"
   | "LEADERBOARD"
+  | "LIVE"
   // A single, user-picked space featured as its own section. Unlike the fixed
   // catalog types above, several SPACE sections can coexist (one per space),
   // so they carry a `value` (space slug) and a stable `id`.
@@ -43,6 +44,7 @@ export type NavType =
   | "SPACE"
   | "MEMBERS"
   | "LIBRARY"
+  | "LIVE"
   | "JOIN"
   | "EXTERNAL"
   | "RECENTLY_VISITED";
@@ -132,6 +134,9 @@ export const SECTION_CATALOG: {
   { type: "SPACES", label: "SPACES", group: "community", icon: "spaces", desc: "SPACES" },
   { type: "RECOMMENDATIONS", label: "RECOMMENDATIONS", group: "community", icon: "sparkles", desc: "RECOMMENDATIONS" },
   { type: "LEADERBOARD", label: "LEADERBOARD", group: "community", icon: "trophy", desc: "LEADERBOARD" },
+  // Live steht bewusst im Bereich "community": ein laufender Stream ist ein
+  // Termin, kein Medienarchiv.
+  { type: "LIVE", label: "LIVE", group: "community", icon: "broadcast", desc: "LIVE" },
 ];
 
 export const SECTION_META: Record<CatalogSectionType, { label: string; icon: IconName; group: string }> =
@@ -147,6 +152,7 @@ export const NAV_TYPE_LABELS: Record<NavType, string> = {
   SPACE: "SPACE",
   MEMBERS: "MEMBERS",
   LIBRARY: "LIBRARY",
+  LIVE: "LIVE",
   JOIN: "JOIN",
   EXTERNAL: "EXTERNAL",
   RECENTLY_VISITED: "RECENTLY_VISITED",
@@ -157,6 +163,7 @@ export const NAV_TYPE_ICON: Record<NavType, IconName> = {
   SPACE: "spaces",
   MEMBERS: "members",
   LIBRARY: "gallery",
+  LIVE: "broadcast",
   JOIN: "tiers",
   EXTERNAL: "external",
   RECENTLY_VISITED: "clock",
@@ -316,6 +323,8 @@ export function resolveNavHref(item: NavItemConfig, slug: string): string {
       return `/c/${slug}/members`;
     case "LIBRARY":
       return `/c/${slug}/library`;
+    case "LIVE":
+      return `/c/${slug}/live`;
     case "JOIN":
       return `/c/${slug}/join`;
     case "SPACE":

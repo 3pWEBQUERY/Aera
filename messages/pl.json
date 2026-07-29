@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "Nie znaleziono sesji na żywo.",
+    "streamNotConfigured": "Transmisja przez Aera nie jest jeszcze skonfigurowana na tej platformie.",
+    "streamUnreachable": "Usługa transmisji nie odpowiada. Spróbuj ponownie za chwilę.",
+    "streamFailed": "Nie udało się skonfigurować transmisji.",
+    "streamInputGone": "Wejście nadawcze tej sesji już nie istnieje. Utwórz sesję ponownie.",
+    "streamReplayPending": "Nagranie nie jest jeszcze gotowe. Spróbuj ponownie za kilka minut."
   },
   "nameStatus": {
     "checking": "Sprawdzanie dostępności…",
@@ -1956,7 +1962,8 @@
         "SHOP": "Sklep",
         "SPACES": "Odkryj przestrzenie",
         "RECOMMENDATIONS": "Polecane dla Ciebie",
-        "LEADERBOARD": "Najlepsi członkowie"
+        "LEADERBOARD": "Najlepsi członkowie",
+        "LIVE": "Na żywo"
       },
       "sectionGroups": {
         "posts": "Wpisy",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "Biblioteka",
         "JOIN": "Członkostwo",
         "EXTERNAL": "Link zewnętrzny",
-        "RECENTLY_VISITED": "Ostatnio odwiedzone"
+        "RECENTLY_VISITED": "Ostatnio odwiedzone",
+        "LIVE": "Na żywo"
       },
       "spaceRemoved": "Usunięto space",
       "applyAll": "Zastosuj do wszystkich grup",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Wklej link do swojego pokoju Chaturbate (chaturbate.com/nazwa). Automatycznie użyjemy widoku embed pokoju.",
         "vimeo": "Wklej link do swojego wideo lub transmisji Vimeo. Automatycznie zamienimy go na odtwarzacz Vimeo. Osadzanie musi być dozwolone w ustawieniach Vimeo.",
         "custom": "Wklej dowolny URL embed lub odtwarzacza. URL zostanie osadzony bez zmian i musi zezwalać na iframe."
-      }
+      },
+      "sourceAera": "Transmituj przez Aera",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Nadajesz z OBS bezpośrednio do Aera. Odtwarzanie i nagrywanie odbywa się tutaj.",
+      "sourceAeraSetup": "Po utworzeniu pojawią się tu adres serwera i klucz transmisji dla OBS. Nadawaj z nimi i naciśnij „Wejdź na żywo”, aby zobaczyli to członkowie.",
+      "sourceAeraUnavailable": "Transmisja przez Aera nie jest jeszcze skonfigurowana na tej platformie.",
+      "sourceExternal": "Platforma zewnętrzna",
+      "sourceExternalDesc": "Transmisja na Twitchu, YouTube itp., osadzona tutaj.",
+      "goLive": "Wejdź na żywo",
+      "endLive": "Zakończ",
+      "switching": "Przełączanie…",
+      "ingestTitle": "Dane nadawania dla OBS",
+      "ingestConnected": "Połączono",
+      "ingestWaiting": "Oczekiwanie na sygnał",
+      "ingestLoading": "Ładowanie…",
+      "ingestUrlLabel": "Adres serwera",
+      "ingestKeyLabel": "Klucz transmisji",
+      "ingestSrtLabel": "Adres SRT",
+      "ingestHint": "W OBS w Ustawienia → Transmisja: usługa „Niestandardowa”, wklej adres i klucz. Nigdy nie udostępniaj klucza.",
+      "ingestRefresh": "Odśwież stan",
+      "showKey": "Pokaż klucz",
+      "hideKey": "Ukryj klucz",
+      "copy": "Kopiuj",
+      "copied": "Skopiowano",
+      "replayAeraHint": "Uzupełniane automatycznie z nagrania po zakończeniu transmisji.",
+      "replayFetch": "Pobierz nagranie",
+      "replayFetching": "Pobieranie…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/rok",
         "membershipOptions": "Opcje członkostwa",
         "errCheckout": "Nie udało się rozpocząć płatności. Spróbuj ponownie.",
-        "errPaymentsUnavailable": "Płatności są obecnie niedostępne. Spróbuj później."
+        "errPaymentsUnavailable": "Płatności są obecnie niedostępne. Spróbuj później.",
+        "liveHeading": "Na żywo"
       },
       "shop": {
         "heading": "Sklep",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Na żywo przez Aera"
       },
       "spaceCard": {
         "space": "Strefa",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "Zaproś znajomych",
       "text": "Udostępnij swój osobisty link — dołączenia przez Twój link są przypisywane Tobie."
+    },
+    "live": {
+      "title": "Na żywo",
+      "subtitle": "Wszystkie transmisje {name} w jednym miejscu.",
+      "emptyTitle": "Nic jeszcze nie zaplanowano",
+      "emptyHint": "Gdy tylko pojawi się transmisja, znajdziesz ją tutaj.",
+      "group": {
+        "now": "Trwa teraz",
+        "upcoming": "Zaplanowane",
+        "past": "Powtórki"
+      }
     }
   },
   "notifications": {

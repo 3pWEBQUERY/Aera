@@ -11,12 +11,13 @@ import { postLockKind } from "@/lib/post-access";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { displayRecommendations } from "@/lib/ai";
 import { leaderboard } from "@/lib/gamification";
-import { excerpt, formatPrice, timeAgo } from "@/lib/utils";
+import { excerpt, formatDateTime, formatPrice, timeAgo } from "@/lib/utils";
 import { PostTile, type PostTileData } from "@/components/community/post-tile";
 import { PostSlider } from "@/components/community/post-slider";
 import { VideoSlider } from "@/components/community/video-slider";
 import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
+import { LiveSessionCard } from "@/components/community/live-session-card";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
 import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
@@ -66,6 +67,7 @@ export default async function CommunityHome({
   const tRec = await getTranslations("community.render.recTypes");
   const tReason = await getTranslations("community.render.recReason");
   const tPostTile = await getTranslations("community.render.postTile");
+  const tSpaceRender = await getTranslations("community.render.space");
   const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
 
@@ -491,6 +493,45 @@ export default async function CommunityHome({
       </HScrollRow>
     ) : null;
   const imagesSection = <MediaSlider title={t("images")} items={mediaPackages} />;
+
+  // ---------------------------------------------------------------- Live
+  // Laufende und geplante Streams aus allen Live-Spaces, auf die der
+  // Betrachter Zugriff hat. Laufende zuerst — wer gerade sendet, gehoert nach
+  // oben; beendete Streams stehen im Space, nicht auf der Startseite.
+  const liveSpaces = spaces.filter((s) => s.type === "LIVE" && canAccess(s, ctx));
+  const liveRows = liveSpaces.length
+    ? (
+        await prisma.liveSession.findMany({
+          where: {
+            tenantId: tenant.id,
+            spaceId: { in: liveSpaces.map((s) => s.id) },
+            status: { in: ["LIVE", "SCHEDULED"] },
+          },
+          orderBy: [{ status: "asc" }, { startsAt: "asc" }],
+          take: 8,
+          include: { space: { select: { slug: true } } },
+        })
+      ).sort((a, b) => (a.status === b.status ? 0 : a.status === "LIVE" ? -1 : 1))
+    : [];
+  const liveSection =
+    liveRows.length > 0 ? (
+      <HScrollRow title={t("liveHeading")}>
+        {liveRows.map((s) => (
+          <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
+            <LiveSessionCard
+              href={`/c/${slug}/s/${s.space?.slug ?? ""}?open=${s.id}`}
+              title={s.title}
+              status={s.status}
+              statusLabel={tSpaceRender(`liveStatus.${s.status}`)}
+              streamUrl={s.streamUrl}
+              ownStreamLabel={s.source === "AERA" ? tSpaceRender("liveOwnStream") : null}
+              startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+              startsAtIso={s.startsAt ? s.startsAt.toISOString() : null}
+            />
+          </div>
+        ))}
+      </HScrollRow>
+    ) : null;
   const spacesSection = <SpaceSlider title={t("discover")} slug={slug} items={spaceCards} />;
 
   const recsSection =
@@ -603,6 +644,7 @@ export default async function CommunityHome({
     SPACES: spacesSection,
     RECOMMENDATIONS: recsSection,
     LEADERBOARD: leaderboardSection,
+    LIVE: liveSection,
   };
 
   // ------------------------------------------------------------ Feed-Sektion

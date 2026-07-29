@@ -135,7 +135,13 @@
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
     "supportSubjectInvalid": "Please enter a subject between 3 and 120 characters.",
-    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters)."
+    "supportBodyInvalid": "Please write at least a couple of sentences (max. 5000 characters).",
+    "liveSessionNotFound": "Прямой эфир не найден.",
+    "streamNotConfigured": "Трансляция через Aera на этой платформе ещё не настроена.",
+    "streamUnreachable": "Сервис трансляций сейчас не отвечает. Повторите попытку чуть позже.",
+    "streamFailed": "Не удалось настроить трансляцию.",
+    "streamInputGone": "Точка вещания этой трансляции больше не существует. Создайте трансляцию заново.",
+    "streamReplayPending": "Запись ещё не готова. Повторите попытку через несколько минут."
   },
   "nameStatus": {
     "checking": "Проверка доступности…",
@@ -1956,7 +1962,8 @@
         "SHOP": "Магазин",
         "SPACES": "Открыть пространства",
         "RECOMMENDATIONS": "Рекомендовано для вас",
-        "LEADERBOARD": "Топ-участники"
+        "LEADERBOARD": "Топ-участники",
+        "LIVE": "В эфире"
       },
       "sectionGroups": {
         "posts": "Публикации",
@@ -1973,7 +1980,8 @@
         "LIBRARY": "Библиотека",
         "JOIN": "Членство",
         "EXTERNAL": "Внешняя ссылка",
-        "RECENTLY_VISITED": "Недавно посещённые"
+        "RECENTLY_VISITED": "Недавно посещённые",
+        "LIVE": "В эфире"
       },
       "spaceRemoved": "Пространство удалено",
       "applyAll": "Применить ко всем аудиториям",
@@ -2887,7 +2895,33 @@
         "chaturbate": "Вставьте ссылку на вашу комнату Chaturbate (chaturbate.com/имя). Мы автоматически используем embed-версию комнаты.",
         "vimeo": "Вставьте ссылку на видео или эфир Vimeo. Мы автоматически преобразуем её в плеер Vimeo. Встраивание должно быть разрешено в настройках Vimeo.",
         "custom": "Вставьте любой embed- или плеер-URL. Ссылка встраивается как есть и должна разрешать iframe."
-      }
+      },
+      "sourceAera": "Трансляция через Aera",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Вы вещаете из OBS прямо в Aera. Воспроизведение и запись — здесь.",
+      "sourceAeraSetup": "После создания здесь появятся адрес сервера и ключ трансляции для OBS. Вещайте с ними и нажмите «В эфир», чтобы участники увидели трансляцию.",
+      "sourceAeraUnavailable": "Трансляция через Aera на этой платформе ещё не настроена.",
+      "sourceExternal": "Внешняя платформа",
+      "sourceExternalDesc": "Трансляция на Twitch, YouTube и подобных, встроенная здесь.",
+      "goLive": "В эфир",
+      "endLive": "Завершить",
+      "switching": "Переключение…",
+      "ingestTitle": "Данные вещания для OBS",
+      "ingestConnected": "Подключено",
+      "ingestWaiting": "Ожидание сигнала",
+      "ingestLoading": "Загрузка…",
+      "ingestUrlLabel": "Адрес сервера",
+      "ingestKeyLabel": "Ключ трансляции",
+      "ingestSrtLabel": "Адрес SRT",
+      "ingestHint": "В OBS: Настройки → Трансляция, сервис «Пользовательский», вставьте адрес и ключ. Никому не передавайте ключ.",
+      "ingestRefresh": "Обновить состояние",
+      "showKey": "Показать ключ",
+      "hideKey": "Скрыть ключ",
+      "copy": "Копировать",
+      "copied": "Скопировано",
+      "replayAeraHint": "Заполняется автоматически из записи после окончания эфира.",
+      "replayFetch": "Получить запись",
+      "replayFetching": "Получение…"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3359,7 +3393,8 @@
         "perYear": "/год",
         "membershipOptions": "Варианты подписки",
         "errCheckout": "Не удалось начать оплату. Попробуйте ещё раз.",
-        "errPaymentsUnavailable": "Оплата сейчас недоступна. Попробуйте позже."
+        "errPaymentsUnavailable": "Оплата сейчас недоступна. Попробуйте позже.",
+        "liveHeading": "В эфире"
       },
       "shop": {
         "heading": "Магазин",
@@ -3476,7 +3511,8 @@
           "SCHEDULED": "Scheduled",
           "LIVE": "Live",
           "ENDED": "Replay"
-        }
+        },
+        "liveOwnStream": "Эфир через Aera"
       },
       "spaceCard": {
         "space": "Пространство",
@@ -3681,6 +3717,17 @@
     "invite": {
       "title": "Пригласить друзей",
       "text": "Поделись личной ссылкой — вступления по твоей ссылке засчитываются тебе."
+    },
+    "live": {
+      "title": "В эфире",
+      "subtitle": "Все трансляции {name} в одном месте.",
+      "emptyTitle": "Пока ничего не запланировано",
+      "emptyHint": "Как только появится трансляция, она будет здесь.",
+      "group": {
+        "now": "Идёт сейчас",
+        "upcoming": "Запланировано",
+        "past": "Записи"
+      }
     }
   },
   "notifications": {

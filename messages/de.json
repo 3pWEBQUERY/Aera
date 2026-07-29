@@ -135,7 +135,13 @@
     "seoImageInvalid": "Bitte gib eine gültige Bild-URL an (https://… oder /pfad.png).",
     "seoTemplateInvalid": "Das Titelmuster muss %s enthalten — dort wird der Seitentitel eingesetzt.",
     "supportSubjectInvalid": "Bitte gib einen Betreff mit 3 bis 120 Zeichen an.",
-    "supportBodyInvalid": "Bitte schreib uns mindestens ein paar Sätze (max. 5000 Zeichen)."
+    "supportBodyInvalid": "Bitte schreib uns mindestens ein paar Sätze (max. 5000 Zeichen).",
+    "liveSessionNotFound": "Live-Session nicht gefunden.",
+    "streamNotConfigured": "Streaming über Aera ist auf dieser Plattform noch nicht eingerichtet.",
+    "streamUnreachable": "Der Streaming-Dienst antwortet gerade nicht. Bitte gleich noch einmal versuchen.",
+    "streamFailed": "Der Stream konnte nicht eingerichtet werden.",
+    "streamInputGone": "Der Sendezugang zu dieser Session existiert nicht mehr. Lege die Session neu an.",
+    "streamReplayPending": "Die Aufzeichnung ist noch nicht fertig. In ein paar Minuten erneut versuchen."
   },
   "legalPurchase": {
     "immediateAccess": "Ich verlange sofortigen Zugang und weiß, dass mein Widerrufsrecht mit Beginn der digitalen Lieferung erlischt. <withdrawal>Details</withdrawal>.",
@@ -1709,7 +1715,33 @@
         "chaturbate": "Füge den Link zu deinem Chaturbate-Raum ein (chaturbate.com/deinname). Wir nutzen automatisch die Embed-Ansicht des Raums, damit der Stream direkt hier läuft.",
         "vimeo": "Füge den Link zu deinem Vimeo-Video oder -Livestream ein (vimeo.com/123456789). Wir wandeln ihn automatisch in den Vimeo-Player um. In den Vimeo-Datenschutz-Einstellungen muss Einbetten erlaubt sein.",
         "custom": "Füge eine beliebige Embed- oder Player-URL ein, z. B. den iframe-Link deines Streaming-Anbieters. Die URL wird unverändert eingebettet und muss das Einbetten per iframe erlauben."
-      }
+      },
+      "sourceAera": "Über Aera streamen",
+      "sourceAeraShort": "Aera Live",
+      "sourceAeraDesc": "Du sendest aus OBS direkt an Aera. Wiedergabe und Aufzeichnung laufen hier.",
+      "sourceAeraSetup": "Nach dem Anlegen erscheinen hier Serveradresse und Streamschlüssel für OBS. Damit sendest du, und mit „Live gehen“ sehen deine Mitglieder den Stream.",
+      "sourceAeraUnavailable": "Streaming über Aera ist auf dieser Plattform noch nicht hinterlegt.",
+      "sourceExternal": "Externe Plattform",
+      "sourceExternalDesc": "Ein Stream, der bei Twitch, YouTube und Co. läuft und hier eingebettet wird.",
+      "goLive": "Live gehen",
+      "endLive": "Beenden",
+      "switching": "Wird umgeschaltet…",
+      "ingestTitle": "Sendedaten für OBS",
+      "ingestConnected": "Verbunden",
+      "ingestWaiting": "Wartet auf Signal",
+      "ingestLoading": "Wird geladen…",
+      "ingestUrlLabel": "Serveradresse",
+      "ingestKeyLabel": "Streamschlüssel",
+      "ingestSrtLabel": "SRT-Adresse",
+      "ingestHint": "In OBS unter Einstellungen → Stream: Dienst „Benutzerdefiniert“, dann Adresse und Schlüssel einsetzen. Gib den Schlüssel an niemanden weiter.",
+      "ingestRefresh": "Zustand aktualisieren",
+      "showKey": "Schlüssel anzeigen",
+      "hideKey": "Schlüssel verbergen",
+      "copy": "Kopieren",
+      "copied": "Kopiert",
+      "replayAeraHint": "Wird nach dem Beenden automatisch von der Aufzeichnung übernommen.",
+      "replayFetch": "Aufzeichnung holen",
+      "replayFetching": "Wird geholt…"
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",
@@ -2080,7 +2112,8 @@
         "SHOP": "Shop",
         "SPACES": "Spaces entdecken",
         "RECOMMENDATIONS": "Für dich empfohlen",
-        "LEADERBOARD": "Top-Mitglieder"
+        "LEADERBOARD": "Top-Mitglieder",
+        "LIVE": "Live"
       },
       "sectionGroups": {
         "posts": "Beiträge",
@@ -2097,7 +2130,8 @@
         "LIBRARY": "Bibliothek",
         "JOIN": "Mitgliedschaft",
         "EXTERNAL": "Externer Link",
-        "RECENTLY_VISITED": "Zuletzt besucht"
+        "RECENTLY_VISITED": "Zuletzt besucht",
+        "LIVE": "Live"
       },
       "spaceRemoved": "Space entfernt",
       "applyAll": "Für alle Zielgruppen übernehmen",
@@ -3435,7 +3469,8 @@
         "perYear": "/Jahr",
         "membershipOptions": "Mitgliedschafts-Optionen",
         "errCheckout": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuch es erneut.",
-        "errPaymentsUnavailable": "Zahlungen sind aktuell nicht verfügbar. Bitte versuch es später erneut."
+        "errPaymentsUnavailable": "Zahlungen sind aktuell nicht verfügbar. Bitte versuch es später erneut.",
+        "liveHeading": "Live"
       },
       "shop": {
         "heading": "Shop",
@@ -3552,7 +3587,8 @@
         "staffOnlyChat": "Nur das Team kann in diesem Chat schreiben.",
         "untitled": "Ohne Titel",
         "episode": "Episode",
-        "owned": "Gekauft"
+        "owned": "Gekauft",
+        "liveOwnStream": "Live über Aera"
       },
       "spaceCard": {
         "space": "Space",
@@ -3716,6 +3752,17 @@
     "invite": {
       "title": "Freunde einladen",
       "text": "Teile deinen persönlichen Link — Beitritte über deinen Link werden dir zugerechnet."
+    },
+    "live": {
+      "title": "Live",
+      "subtitle": "Alle Streams von {name} an einem Ort.",
+      "emptyTitle": "Noch nichts geplant",
+      "emptyHint": "Sobald ein Stream ansteht, findest du ihn hier.",
+      "group": {
+        "now": "Läuft gerade",
+        "upcoming": "Geplant",
+        "past": "Wiederholungen"
+      }
     }
   },
   "notifications": {

@@ -35,7 +35,7 @@ import { LiveRoom } from "@/components/community/live-room";
 import { StoryViewer } from "@/components/community/story-viewer";
 import { groupStoriesByAuthor } from "@/lib/stories";
 import { RequestVoteControl } from "@/components/community/request-vote-control";
-import { listLiveSessions, getLiveSession, fetchRecentLiveMessages } from "@/lib/live";
+import { listLiveSessions, getLiveSession, fetchRecentLiveMessages, liveEmbedUrl } from "@/lib/live";
 import { ProductCarousel } from "@/components/community/product-carousel";
 import { fetchSpaceMessages, listHubThreads, getDirectThread } from "@/lib/chat";
 import {
@@ -849,6 +849,7 @@ export default async function SpacePage({
             status={activeSession.status}
             streamUrl={activeSession.streamUrl}
             replayUrl={activeSession.replayUrl}
+            embedUrl={await liveEmbedUrl(activeSession)}
             startsAt={activeSession.startsAt ? new Date(activeSession.startsAt).toISOString() : null}
             canChat={canChat}
             initialMessages={recent.map((m) => ({
@@ -877,6 +878,7 @@ export default async function SpacePage({
                 status={s.status}
                 statusLabel={t(`liveStatus.${s.status}`)}
                 streamUrl={s.streamUrl}
+                ownStreamLabel={s.source === "AERA" ? t("liveOwnStream") : null}
                 startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
                 startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
               />
