@@ -516,77 +516,67 @@ function StudioChat({
   const [sending, setSending] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
   const seen = useRef(new Set<string>());
+  const lastIso = useRef<string | null>(null);
+
+  const addIncoming = useCallback((incoming: LiveMessage[]) => {
+    if (incoming.length === 0) return;
+    setMessages((prev) => {
+      const next = [...prev];
+      for (const m of incoming) {
+        if (seen.current.has(m.id)) continue;
+        seen.current.add(m.id);
+        if (!lastIso.current || m.createdAt > lastIso.current) {
+          lastIso.current = m.createdAt;
+        }
+        next.push(m);
+      }
+      return next;
+    });
+  }, []);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }, [messages]);
 
-  // Erst die letzten Nachrichten holen, dann live per SSE anschliessen;
-  // bricht der Stream weg, springt das Polling aus dem Live-Room-Muster ein.
+  // Realtime: SSE ist der schnelle Pfad, ein deduplizierter Sync alle 4s die
+  // Garantie — bleibt der Event-Stream stumm (puffernder Proxy, mehrere
+  // Instanzen ohne Redis), kommen Nachrichten trotzdem live an.
   useEffect(() => {
     let stopped = false;
-    const add = (incoming: LiveMessage[]) => {
-      if (stopped || incoming.length === 0) return;
-      setMessages((prev) => {
-        const next = [...prev];
-        for (const m of incoming) {
-          if (!seen.current.has(m.id)) {
-            seen.current.add(m.id);
-            next.push(m);
-          }
-        }
-        return next;
-      });
-    };
-    const lastIso = () =>
-      seen.current.size === 0
-        ? new Date(0).toISOString()
-        : (messages[messages.length - 1]?.createdAt ?? new Date(0).toISOString());
+    const base = `/api/c/${slug}/live/${sessionId}`;
 
-    void (async () => {
+    async function sync() {
       try {
-        const res = await fetch(`/api/c/${slug}/live/${sessionId}`);
+        const url = lastIso.current
+          ? `${base}?after=${encodeURIComponent(lastIso.current)}`
+          : base;
+        const res = await fetch(url);
         if (res.ok) {
           const data = (await res.json()) as { messages: LiveMessage[] };
-          add(data.messages);
+          if (!stopped) addIncoming(data.messages);
         }
       } catch {
-        /* SSE/Polling unten faengt auf */
+        /* naechster Tick versucht es erneut */
       }
-    })();
+    }
 
-    const base = `/api/c/${slug}/live/${sessionId}`;
-    let poll: ReturnType<typeof setInterval> | null = null;
     const es = new EventSource(`${base}/stream`);
     es.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data) as { message?: LiveMessage };
-        if (data.message) add([data.message]);
+        if (data.message) addIncoming([data.message]);
       } catch {
         /* ignore */
       }
     };
-    es.onerror = () => {
-      if (poll) return;
-      poll = setInterval(async () => {
-        try {
-          const res = await fetch(`${base}?after=${encodeURIComponent(lastIso())}`);
-          if (res.ok) {
-            const data = (await res.json()) as { messages: LiveMessage[] };
-            add(data.messages);
-          }
-        } catch {
-          /* ignore */
-        }
-      }, 4000);
-    };
+    void sync();
+    const poll = setInterval(sync, 4000);
     return () => {
       stopped = true;
       es.close();
-      if (poll) clearInterval(poll);
+      clearInterval(poll);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug, sessionId]);
+  }, [slug, sessionId, addIncoming]);
 
   async function send(e: React.FormEvent) {
     e.preventDefault();
@@ -595,11 +585,19 @@ function StudioChat({
     setSending(true);
     setDraft("");
     try {
-      await fetch(`/api/c/${slug}/live/${sessionId}`, {
+      const res = await fetch(`/api/c/${slug}/live/${sessionId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ body }),
       });
+      // Die eigene Nachricht sofort einblenden — nicht erst warten, bis sie
+      // ueber SSE oder den Sync zurueckkommt.
+      if (res.ok) {
+        const data = (await res.json()) as { message?: LiveMessage };
+        if (data.message) addIncoming([data.message]);
+      }
+    } catch {
+      /* ignore */
     } finally {
       setSending(false);
     }

@@ -139,12 +139,16 @@ export function ChatThread({
     };
   }, [slug, param, target.id, appendLive]);
 
-  // Fallback: Polling — überspringt Ticks, solange SSE verbunden ist, und
-  // fängt verpasste Nachrichten nach Reconnects wieder ein.
+  // Fallback + Abgleich: Polling faengt verpasste Nachrichten ein. Solange
+  // SSE verbunden ist, nur jeder fuenfte Tick — ein Stream kann offen sein,
+  // aber keine Events liefern (mehrere Instanzen ohne Redis, puffernde
+  // Proxies); der gelegentliche Abgleich gleicht das aus.
   useEffect(() => {
     let alive = true;
+    let tickCount = 0;
     const tick = async () => {
-      if (sseConnected.current) return;
+      tickCount += 1;
+      if (sseConnected.current && tickCount % 5 !== 0) return;
       try {
         const res = await fetch(
           `/api/c/${slug}/chat?${param}=${encodeURIComponent(target.id)}&after=${encodeURIComponent(lastAt.current)}`,
