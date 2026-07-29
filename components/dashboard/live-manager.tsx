@@ -19,7 +19,7 @@ import {
   type LivePlatform,
 } from "@/lib/live-embed";
 import { PlatformIcon, PLATFORM_COLORS } from "./platform-icons";
-import { BrowserBroadcaster } from "./browser-broadcaster";
+import { BrowserStudio } from "./browser-studio";
 import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
@@ -72,6 +72,7 @@ export function LiveManager({
 }) {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<LiveSessionRow | null>(null);
+  const [studio, setStudio] = useState<LiveSessionRow | null>(null);
   const [nonce, setNonce] = useState(0);
   const t = useTranslations("dashboard.live");
   const locale = useLocale();
@@ -162,11 +163,12 @@ export function LiveManager({
                   {own && s.status !== "ENDED" && (
                     s.ingest === "BROWSER" ? (
                       // Aus dem Browser zu senden heisst: Kamera oeffnen. Der
-                      // Knopf fuehrt deshalb dorthin, wo die Vorschau steht,
-                      // statt die Session blind auf "live" zu schalten.
+                      // Knopf fuehrt deshalb direkt ins Live-Studio (Vorschau,
+                      // Steuerung und Zuschauer-Chat), statt die Session blind
+                      // auf "live" zu schalten.
                       <button
                         type="button"
-                        onClick={() => openEdit(s)}
+                        onClick={() => setStudio(s)}
                         className={cn(
                           "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-semibold transition",
                           s.status === "LIVE"
@@ -225,8 +227,19 @@ export function LiveManager({
           tiers={tiers}
           streamReady={streamReady}
           onDone={() => setOpen(false)}
+          onOpenStudio={(s) => setStudio(s)}
         />
       </Sheet>
+
+      {studio && (
+        <BrowserStudio
+          slug={slug}
+          sessionId={studio.id}
+          title={studio.title}
+          initiallyLive={studio.status === "LIVE"}
+          onClose={() => setStudio(null)}
+        />
+      )}
     </div>
   );
 }
@@ -596,6 +609,7 @@ function LiveForm({
   tiers,
   streamReady,
   onDone,
+  onOpenStudio,
 }: {
   slug: string;
   space: SpaceInfo;
@@ -603,6 +617,7 @@ function LiveForm({
   tiers: TierOption[];
   streamReady: boolean;
   onDone: () => void;
+  onOpenStudio: (s: LiveSessionRow) => void;
 }) {
   const isEdit = !!session;
   const [state, action, pending] = useActionState(
@@ -747,11 +762,36 @@ function LiveForm({
 
             {mode === "BROWSER" ? (
               isEdit ? (
-                <BrowserBroadcaster
-                  slug={slug}
-                  sessionId={session!.id}
-                  initiallyLive={session!.status === "LIVE"}
-                />
+                // Vorschau, Sende-Steuerung und der Zuschauer-Chat gehoeren
+                // zusammen — sie liegen deshalb nicht eingeengt im Formular,
+                // sondern im Live-Studio ueber der ganzen Flaeche.
+                <button
+                  type="button"
+                  onClick={() => onOpenStudio(session!)}
+                  className="group flex w-full items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-[var(--action-strong)] hover:bg-[var(--action-soft)]"
+                >
+                  <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white">
+                    <Icon name="camera" size={20} />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-semibold text-slate-900">{t("studioTitle")}</span>
+                      {session!.status === "LIVE" && (
+                        <span className="inline-flex items-center gap-1.5 rounded-lg bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700">
+                          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-red-600" />
+                          {t("status.LIVE")}
+                        </span>
+                      )}
+                    </span>
+                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
+                      {t("studioCardDesc")}
+                    </span>
+                  </span>
+                  <span className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition group-hover:bg-[var(--action-hover)]">
+                    {t("studioOpen")}
+                    <Icon name="arrowRight" size={16} />
+                  </span>
+                </button>
               ) : (
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <p className="text-sm leading-relaxed text-slate-600">{t("sourceBrowserSetup")}</p>

@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Ta sesja nie ma wejścia przeglądarkowego. Utwórz ją ponownie.",
       "whipFailed": "Nie udało się nawiązać połączenia. Sprawdź połączenie z internetem i spróbuj ponownie.",
       "whipDropped": "Połączenie zostało przerwane. Zakończ transmisję i uruchom ją ponownie.",
-      "replayBrowserHint": "Nadawanie z przeglądarki nie tworzy nagrania. Wpisz tu własny adres, jeśli go masz."
+      "replayBrowserHint": "Nadawanie z przeglądarki nie tworzy nagrania. Wpisz tu własny adres, jeśli go masz.",
+      "studioTitle": "Studio na żywo",
+      "studioOpen": "Otwórz studio",
+      "studioCardDesc": "Podgląd, transmisja i czat widzów — wszystko w jednym widoku.",
+      "studioChatTitle": "Czat na żywo",
+      "studioChatEmpty": "Brak wiadomości. Przywitaj się z widzami!",
+      "studioChatPlaceholder": "Wiadomość do widzów…",
+      "studioChatSend": "Wyślij",
+      "studioChatShow": "Pokaż czat",
+      "studioChatHide": "Ukryj czat",
+      "studioFullscreen": "Pełny ekran",
+      "studioCloseConfirm": "Jesteś na żywo. Zamknięcie studia przerwie transmisję. Zamknąć mimo to?",
+      "studioNoPreview": "Transmisja trwa — podgląd obrazu istnieje tylko na urządzeniu nadającym."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

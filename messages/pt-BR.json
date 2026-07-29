@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Esta sessão não tem entrada pelo navegador. Crie-a novamente.",
       "whipFailed": "Não foi possível estabelecer a conexão. Verifique sua internet e tente de novo.",
       "whipDropped": "A conexão caiu. Encerre a transmissão e comece de novo.",
-      "replayBrowserHint": "Transmitir pelo navegador não gera gravação. Informe aqui seu próprio endereço, se tiver um."
+      "replayBrowserHint": "Transmitir pelo navegador não gera gravação. Informe aqui seu próprio endereço, se tiver um.",
+      "studioTitle": "Estúdio ao vivo",
+      "studioOpen": "Abrir estúdio",
+      "studioCardDesc": "Prévia, transmissão e chat dos espectadores — tudo em uma só tela.",
+      "studioChatTitle": "Chat ao vivo",
+      "studioChatEmpty": "Ainda não há mensagens. Cumprimente seus espectadores!",
+      "studioChatPlaceholder": "Mensagem para seus espectadores…",
+      "studioChatSend": "Enviar",
+      "studioChatShow": "Mostrar chat",
+      "studioChatHide": "Ocultar chat",
+      "studioFullscreen": "Tela cheia",
+      "studioCloseConfirm": "Você está ao vivo. Fechar o estúdio interromperá a transmissão. Fechar mesmo assim?",
+      "studioNoPreview": "A transmissão está ativa — a prévia de vídeo só existe no dispositivo que está transmitindo."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

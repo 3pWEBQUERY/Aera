@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Denne sesjonen har ingen nettlesertilgang. Opprett den på nytt.",
       "whipFailed": "Tilkoblingen ble ikke opprettet. Sjekk internettforbindelsen og prøv igjen.",
       "whipDropped": "Tilkoblingen ble brutt. Avslutt sendingen og start den på nytt.",
-      "replayBrowserHint": "Når du sender fra nettleseren, lages det ikke opptak. Legg inn din egen adresse her hvis du har en."
+      "replayBrowserHint": "Når du sender fra nettleseren, lages det ikke opptak. Legg inn din egen adresse her hvis du har en.",
+      "studioTitle": "Livestudio",
+      "studioOpen": "Åpne studio",
+      "studioCardDesc": "Forhåndsvisning, sending og seerchat — alt i én visning.",
+      "studioChatTitle": "Livechat",
+      "studioChatEmpty": "Ingen meldinger ennå. Si hei til seerne dine!",
+      "studioChatPlaceholder": "Melding til seerne dine…",
+      "studioChatSend": "Send",
+      "studioChatShow": "Vis chat",
+      "studioChatHide": "Skjul chat",
+      "studioFullscreen": "Fullskjerm",
+      "studioCloseConfirm": "Du er live nå. Hvis du lukker studioet, avbrytes sendingen. Lukk likevel?",
+      "studioNoPreview": "Sendingen kjører — forhåndsvisningen finnes bare på enheten som sender."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

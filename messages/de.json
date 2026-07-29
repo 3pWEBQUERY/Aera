@@ -1762,7 +1762,19 @@
       "whipUnavailable": "Für diese Session gibt es keinen Browser-Zugang. Lege sie neu an.",
       "whipFailed": "Die Verbindung kam nicht zustande. Prüfe deine Internetverbindung und versuche es erneut.",
       "whipDropped": "Die Verbindung ist abgebrochen. Beende die Sendung und starte sie neu.",
-      "replayBrowserHint": "Beim Senden aus dem Browser entsteht keine Aufzeichnung. Trage hier eine eigene Adresse ein, wenn du eine hast."
+      "replayBrowserHint": "Beim Senden aus dem Browser entsteht keine Aufzeichnung. Trage hier eine eigene Adresse ein, wenn du eine hast.",
+      "studioTitle": "Live-Studio",
+      "studioOpen": "Studio öffnen",
+      "studioCardDesc": "Vorschau, Sendung und Zuschauer-Chat — alles in einer Ansicht.",
+      "studioChatTitle": "Live-Chat",
+      "studioChatEmpty": "Noch keine Nachrichten. Begrüße deine Zuschauer!",
+      "studioChatPlaceholder": "Nachricht an deine Zuschauer…",
+      "studioChatSend": "Senden",
+      "studioChatShow": "Chat einblenden",
+      "studioChatHide": "Chat ausblenden",
+      "studioFullscreen": "Vollbild",
+      "studioCloseConfirm": "Du bist gerade auf Sendung. Wenn du das Studio schließt, bricht deine Übertragung ab. Trotzdem schließen?",
+      "studioNoPreview": "Die Sendung läuft — die Bildvorschau gibt es nur auf dem Gerät, das sendet."
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",

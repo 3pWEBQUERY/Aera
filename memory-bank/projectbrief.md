@@ -23,14 +23,20 @@ Community-App, Kursplattform, Mailtool und Shop.
    zusätzlich per PostgreSQL Row Level Security als Defense-in-Depth.
 2. **Alles unter der Marke des Creators:** Eigenes Logo, eigene Farben, eigenes Layout,
    eigene Internetadresse (Subdomain, Custom Domain vorbereitet).
-3. **Vollständiger Funktionsumfang statt Feature-Fragmenten:** 14 Bereichs-Typen
-   (Spaces), Memberships, Commerce, Kurse, Events, Newsletter, Chat/DMs, Live,
-   Mediathek, Gamification, KI, Mitgliederverwaltung, Entdecken, Datenexport.
+3. **Vollständiger Funktionsumfang statt Feature-Fragmenten:** 21 Bereichs-Typen
+   (Spaces: Feed, Forum, Kurs, Shop, Newsletter, Events, Blog, Wissen, Galerie,
+   Videos, Chat, Podcast, Musik, Links, Werbung, Live, Requests, Booking, Stories,
+   Trinkgeld, Kalender), Memberships, Commerce, Kurse, Events, Newsletter,
+   Chat/DMs, **Live-Streaming direkt im Browser** (WebRTC/WHIP über Cloudflare
+   Stream), Mediathek, Gamification, KI, Mitgliederverwaltung, Support-Tickets,
+   SEO-Einstellungen, Entdecken, Datenexport.
 4. **Datenhoheit:** Vollständiger Datenexport jederzeit; kein Lock-in.
-5. **Progressive Integrationen:** Stripe, Resend und OpenAI sind vollständig
-   implementiert und schalten sich frei, sobald der jeweilige Key gesetzt ist. Ohne
-   Keys bleibt die App vollständig nutzbar (Free-Tiers, Käufe im Dev als bezahlt
-   verbucht, Newsletter protokolliert, KI keyword-basiert).
+5. **Progressive Integrationen:** Stripe, Resend, OpenAI/Gemini, Cloudflare
+   Stream, Redis, S3 + ClamAV sind vollständig implementiert und schalten sich
+   frei, sobald der jeweilige Key gesetzt ist. Ohne Keys bleibt die App lokal
+   nutzbar (Käufe im Dev als bezahlt verbucht, Newsletter protokolliert, KI
+   keyword-basiert); **in Produktion sind launchkritische Pfade fail-closed**
+   (Zahlungen, Secret-Speicherung, Uploads).
 
 ## Scope-Grenzen
 

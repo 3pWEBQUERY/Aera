@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Questa sessione non ha un accesso dal browser. Ricreala.",
       "whipFailed": "Non è stato possibile stabilire la connessione. Controlla la connessione a internet e riprova.",
       "whipDropped": "La connessione è caduta. Termina la diretta e riavviala.",
-      "replayBrowserHint": "Trasmettendo dal browser non viene creata alcuna registrazione. Inserisci qui un tuo indirizzo, se ne hai uno."
+      "replayBrowserHint": "Trasmettendo dal browser non viene creata alcuna registrazione. Inserisci qui un tuo indirizzo, se ne hai uno.",
+      "studioTitle": "Studio dal vivo",
+      "studioOpen": "Apri studio",
+      "studioCardDesc": "Anteprima, trasmissione e chat degli spettatori — tutto in una vista.",
+      "studioChatTitle": "Chat dal vivo",
+      "studioChatEmpty": "Nessun messaggio. Saluta i tuoi spettatori!",
+      "studioChatPlaceholder": "Messaggio ai tuoi spettatori…",
+      "studioChatSend": "Invia",
+      "studioChatShow": "Mostra chat",
+      "studioChatHide": "Nascondi chat",
+      "studioFullscreen": "Schermo intero",
+      "studioCloseConfirm": "Sei in diretta. Chiudendo lo studio, la trasmissione si interrompe. Chiudere comunque?",
+      "studioNoPreview": "La trasmissione è in corso — l'anteprima video esiste solo sul dispositivo che trasmette."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

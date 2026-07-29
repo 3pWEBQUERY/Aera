@@ -2942,7 +2942,19 @@
       "whipUnavailable": "该场次没有浏览器推流入口，请重新创建。",
       "whipFailed": "无法建立连接，请检查网络后重试。",
       "whipDropped": "连接已中断。请结束直播后重新开始。",
-      "replayBrowserHint": "从浏览器直播不会生成录像。如果你有自己的地址，可以填在这里。"
+      "replayBrowserHint": "从浏览器直播不会生成录像。如果你有自己的地址，可以填在这里。",
+      "studioTitle": "直播工作室",
+      "studioOpen": "打开工作室",
+      "studioCardDesc": "预览、直播和观众聊天——尽在一个视图。",
+      "studioChatTitle": "直播聊天",
+      "studioChatEmpty": "还没有消息。向你的观众打个招呼吧！",
+      "studioChatPlaceholder": "给观众发消息…",
+      "studioChatSend": "发送",
+      "studioChatShow": "显示聊天",
+      "studioChatHide": "隐藏聊天",
+      "studioFullscreen": "全屏",
+      "studioCloseConfirm": "你正在直播中。关闭工作室将中断直播。仍要关闭吗？",
+      "studioNoPreview": "直播正在进行——视频预览仅存在于正在直播的设备上。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

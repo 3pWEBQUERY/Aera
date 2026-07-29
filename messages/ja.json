@@ -2942,7 +2942,19 @@
       "whipUnavailable": "このセッションにはブラウザ用の入力がありません。作り直してください。",
       "whipFailed": "接続できませんでした。インターネット接続を確認してもう一度お試しください。",
       "whipDropped": "接続が切れました。配信を終了してから開始し直してください。",
-      "replayBrowserHint": "ブラウザからの配信では録画は作成されません。独自のアドレスがあればここに入力してください。"
+      "replayBrowserHint": "ブラウザからの配信では録画は作成されません。独自のアドレスがあればここに入力してください。",
+      "studioTitle": "ライブスタジオ",
+      "studioOpen": "スタジオを開く",
+      "studioCardDesc": "プレビュー、配信、視聴者チャット — すべてを1つの画面に。",
+      "studioChatTitle": "ライブチャット",
+      "studioChatEmpty": "まだメッセージはありません。視聴者に挨拶しましょう！",
+      "studioChatPlaceholder": "視聴者へのメッセージ…",
+      "studioChatSend": "送信",
+      "studioChatShow": "チャットを表示",
+      "studioChatHide": "チャットを非表示",
+      "studioFullscreen": "全画面",
+      "studioCloseConfirm": "現在ライブ配信中です。スタジオを閉じると配信が中断されます。閉じますか？",
+      "studioNoPreview": "配信は実行中です — 映像プレビューは配信しているデバイスでのみ表示されます。"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

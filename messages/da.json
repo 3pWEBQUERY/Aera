@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Denne session har ingen browseradgang. Opret den igen.",
       "whipFailed": "Forbindelsen kunne ikke oprettes. Tjek din internetforbindelse og prøv igen.",
       "whipDropped": "Forbindelsen blev afbrudt. Afslut udsendelsen og start den igen.",
-      "replayBrowserHint": "Når du sender fra browseren, laves der ingen optagelse. Indsæt din egen adresse her, hvis du har en."
+      "replayBrowserHint": "Når du sender fra browseren, laves der ingen optagelse. Indsæt din egen adresse her, hvis du har en.",
+      "studioTitle": "Live-studio",
+      "studioOpen": "Åbn studio",
+      "studioCardDesc": "Forhåndsvisning, udsendelse og seerchat — alt i én visning.",
+      "studioChatTitle": "Livechat",
+      "studioChatEmpty": "Ingen beskeder endnu. Sig hej til dine seere!",
+      "studioChatPlaceholder": "Besked til dine seere…",
+      "studioChatSend": "Send",
+      "studioChatShow": "Vis chat",
+      "studioChatHide": "Skjul chat",
+      "studioFullscreen": "Fuld skærm",
+      "studioCloseConfirm": "Du er live lige nu. Hvis du lukker studiet, afbrydes din udsendelse. Luk alligevel?",
+      "studioNoPreview": "Udsendelsen kører — billedforhåndsvisningen findes kun på den enhed, der sender."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

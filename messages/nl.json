@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Deze sessie heeft geen browseringang. Maak hem opnieuw aan.",
       "whipFailed": "De verbinding kwam niet tot stand. Controleer je internetverbinding en probeer het opnieuw.",
       "whipDropped": "De verbinding is verbroken. Beëindig de uitzending en start opnieuw.",
-      "replayBrowserHint": "Bij uitzenden vanuit de browser ontstaat geen opname. Vul hier je eigen adres in als je er een hebt."
+      "replayBrowserHint": "Bij uitzenden vanuit de browser ontstaat geen opname. Vul hier je eigen adres in als je er een hebt.",
+      "studioTitle": "Livestudio",
+      "studioOpen": "Studio openen",
+      "studioCardDesc": "Preview, uitzending en kijkerschat — alles in één overzicht.",
+      "studioChatTitle": "Livechat",
+      "studioChatEmpty": "Nog geen berichten. Begroet je kijkers!",
+      "studioChatPlaceholder": "Bericht aan je kijkers…",
+      "studioChatSend": "Verzenden",
+      "studioChatShow": "Chat tonen",
+      "studioChatHide": "Chat verbergen",
+      "studioFullscreen": "Volledig scherm",
+      "studioCloseConfirm": "Je bent live. Als je de studio sluit, wordt je uitzending onderbroken. Toch sluiten?",
+      "studioNoPreview": "De uitzending loopt — de videopreview bestaat alleen op het apparaat dat uitzendt."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

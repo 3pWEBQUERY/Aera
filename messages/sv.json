@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Den här sessionen saknar webbläsaringång. Skapa den på nytt.",
       "whipFailed": "Anslutningen kunde inte upprättas. Kontrollera din internetanslutning och försök igen.",
       "whipDropped": "Anslutningen bröts. Avsluta sändningen och starta om.",
-      "replayBrowserHint": "När du sänder från webbläsaren skapas ingen inspelning. Ange din egen adress här om du har en."
+      "replayBrowserHint": "När du sänder från webbläsaren skapas ingen inspelning. Ange din egen adress här om du har en.",
+      "studioTitle": "Livestudio",
+      "studioOpen": "Öppna studio",
+      "studioCardDesc": "Förhandsvisning, sändning och tittarchatt — allt i en vy.",
+      "studioChatTitle": "Livechatt",
+      "studioChatEmpty": "Inga meddelanden än. Hälsa på dina tittare!",
+      "studioChatPlaceholder": "Meddelande till dina tittare…",
+      "studioChatSend": "Skicka",
+      "studioChatShow": "Visa chatt",
+      "studioChatHide": "Dölj chatt",
+      "studioFullscreen": "Helskärm",
+      "studioCloseConfirm": "Du är live just nu. Om du stänger studion avbryts sändningen. Stäng ändå?",
+      "studioNoPreview": "Sändningen pågår — videoförhandsvisningen finns bara på enheten som sänder."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

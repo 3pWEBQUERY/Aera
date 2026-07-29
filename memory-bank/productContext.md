@@ -13,27 +13,37 @@ in den Vordergrund drängt.
 
 ## Welche Probleme Aera löst
 
-- **Tool-Salat** → Eine Plattform mit einem Login, einem Checkout, einem Dashboard.
+- **Tool-Salat** → Eine Plattform mit einem Login, einem Checkout, einem Dashboard —
+  inklusive Live-Streaming direkt aus dem Browser (kein OBS nötig), Trinkgeld,
+  Musik-Verkauf, Stories und Kalender.
 - **Geliehene Reichweite** → Eigene Marke, eigene Adresse, direkter Draht zu Mitgliedern.
-- **Verstreute Monetarisierung** → Vier Umsatzwege über einen Checkout: Mitgliedschaften,
-  digitale Produkte, bezahlte Bereiche/Kurse, Events.
+- **Verstreute Monetarisierung** → Viele Umsatzwege über einen Checkout:
+  Mitgliedschaften, digitale Produkte, bezahlte Bereiche/Kurse/Beiträge, Events,
+  Musik und Trinkgeld.
 - **Lock-in** → Vollständiger Datenexport jederzeit.
 
 ## Wie es funktionieren soll (User Journeys)
 
 ### Creator
-1. Konto erstellen (`/signup`) → Community anlegen (`/start`, Onboarding).
+1. Konto erstellen (`/signup`) → Community anlegen (`/start`, Onboarding mit
+   vollständigem Space-Katalog je Tarif, Promo-Codes möglich).
 2. Im Dashboard (`/dashboard/[slug]`) Bereiche (Spaces) einrichten, Branding & Layout
    setzen, Mitgliedschaften (Tiers) und Produkte anlegen.
-3. Inhalte veröffentlichen, Mitglieder einladen & verwalten, Newsletter versenden.
-4. Monetarisieren, sobald bereit — Auszahlungen laufen über Stripe Connect.
-5. KI-Assistent hilft bei Texten/Ideen; Gamification hält Mitglieder aktiv.
+3. Inhalte veröffentlichen (Rich-Editor mit Slash-Menü, Umfragen, Titelbild-Crop),
+   Mitglieder einladen & verwalten, Newsletter versenden (Text oder HTML).
+4. Monetarisieren, sobald bereit — Auszahlungen laufen über Stripe Connect;
+   zusätzlich Trinkgeld und Musik-Verkauf.
+5. Live gehen direkt im Browser (WebRTC/WHIP) oder externe Plattform einbetten.
+6. KI-Assistent hilft bei Texten/Ideen/Bildern; Gamification hält Mitglieder aktiv;
+   Support-Tickets und SEO-Einstellungen im selben Dashboard.
 
 ### Mitglied
-1. Community entdecken (`/home`, „Entdecken") oder direkt über die Community-Adresse.
+1. Community entdecken (`/home`, „Entdecken" mit plattformweiter Live-Suche) oder
+   direkt über die Community-Adresse.
 2. Beitreten (`/c/[slug]/join`), ggf. kostenpflichtige Mitgliedschaft wählen.
-3. Teilnehmen: Beiträge, Kommentare, Reaktionen, Kurse, Events, Chat/DMs, Live,
-   Mediathek; Punkte/Level/Abzeichen/Bestenliste als Motivation.
+3. Teilnehmen: Beiträge, Kommentare (mit Antworten & Reaktionen), Umfragen, Kurse,
+   Events, Chat/DMs, Live-Streams, Stories, Kalender, Mediathek; Trinkgeld geben;
+   Punkte/Level/Abzeichen/Bestenliste als Motivation; Support-Tickets bei Problemen.
 
 ## UX-Prinzipien
 

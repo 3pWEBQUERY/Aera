@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { fetchLiveMessagesSince, insertLiveMessage } from "@/lib/live";
+import { fetchLiveMessagesSince, fetchRecentLiveMessages, insertLiveMessage } from "@/lib/live";
 import { publish, liveChannel } from "@/lib/realtime";
 import { resolveLiveAccess } from "./_resolve";
 
-// GET  /api/c/:slug/live/:sessionId?after=<iso>  — poll new live-chat messages
+// GET  /api/c/:slug/live/:sessionId           — latest live-chat messages
+// GET  /api/c/:slug/live/:sessionId?after=<iso>  — poll for newer ones
 // POST /api/c/:slug/live/:sessionId   { body }   — send a live-chat message
 
 export async function GET(
@@ -12,12 +13,14 @@ export async function GET(
 ) {
   const { slug, sessionId } = await params;
   const url = new URL(req.url);
-  const after = url.searchParams.get("after") ?? new Date(0).toISOString();
+  const after = url.searchParams.get("after");
 
   const r = await resolveLiveAccess(slug, sessionId);
   if (!r) return NextResponse.json({ error: "forbidden" }, { status: 403 });
 
-  const messages = await fetchLiveMessagesSince(r.community.tenant.id, r.sessionId, after);
+  const messages = after
+    ? await fetchLiveMessagesSince(r.community.tenant.id, r.sessionId, after)
+    : await fetchRecentLiveMessages(r.community.tenant.id, r.sessionId);
   return NextResponse.json({ messages });
 }
 

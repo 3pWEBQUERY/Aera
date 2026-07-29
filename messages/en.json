@@ -1762,7 +1762,19 @@
       "whipUnavailable": "This session has no browser ingest. Create it again.",
       "whipFailed": "The connection could not be established. Check your internet connection and try again.",
       "whipDropped": "The connection dropped. End the broadcast and start it again.",
-      "replayBrowserHint": "Broadcasting from the browser produces no recording. Enter your own URL here if you have one."
+      "replayBrowserHint": "Broadcasting from the browser produces no recording. Enter your own URL here if you have one.",
+      "studioTitle": "Live studio",
+      "studioOpen": "Open studio",
+      "studioCardDesc": "Preview, broadcast and viewer chat — all in one view.",
+      "studioChatTitle": "Live chat",
+      "studioChatEmpty": "No messages yet. Say hi to your viewers!",
+      "studioChatPlaceholder": "Message your viewers…",
+      "studioChatSend": "Send",
+      "studioChatShow": "Show chat",
+      "studioChatHide": "Hide chat",
+      "studioFullscreen": "Fullscreen",
+      "studioCloseConfirm": "You are live right now. Closing the studio will interrupt your broadcast. Close anyway?",
+      "studioNoPreview": "The broadcast is running — the video preview only exists on the device that is sending."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

@@ -2942,7 +2942,19 @@
       "whipUnavailable": "Cette session n’a pas d’accès navigateur. Recréez-la.",
       "whipFailed": "La connexion n’a pas pu être établie. Vérifiez votre connexion internet et réessayez.",
       "whipDropped": "La connexion a été perdue. Terminez la diffusion et relancez-la.",
-      "replayBrowserHint": "La diffusion depuis le navigateur ne produit pas d’enregistrement. Indiquez ici votre propre adresse si vous en avez une."
+      "replayBrowserHint": "La diffusion depuis le navigateur ne produit pas d’enregistrement. Indiquez ici votre propre adresse si vous en avez une.",
+      "studioTitle": "Studio en direct",
+      "studioOpen": "Ouvrir le studio",
+      "studioCardDesc": "Aperçu, diffusion et chat des spectateurs — tout dans une seule vue.",
+      "studioChatTitle": "Chat en direct",
+      "studioChatEmpty": "Aucun message pour le moment. Saluez vos spectateurs !",
+      "studioChatPlaceholder": "Message à vos spectateurs…",
+      "studioChatSend": "Envoyer",
+      "studioChatShow": "Afficher le chat",
+      "studioChatHide": "Masquer le chat",
+      "studioFullscreen": "Plein écran",
+      "studioCloseConfirm": "Vous êtes en direct. Fermer le studio interrompra votre diffusion. Fermer quand même ?",
+      "studioNoPreview": "La diffusion est en cours — l'aperçu vidéo n'existe que sur l'appareil qui émet."
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
