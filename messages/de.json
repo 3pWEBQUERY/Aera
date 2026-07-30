@@ -2195,7 +2195,9 @@
       },
       "mosaicTitle": "Bilder im Kopfbereich",
       "mosaicHint": "Diese Bilder erscheinen im Mosaik — in dieser Reihenfolge, zum Umsortieren ziehen. Eine gerade Anzahl füllt das Raster ohne Rest, 6 oder 12 sehen am besten aus.",
-      "mosaicUploadError": "Ein Bild konnte nicht hochgeladen werden. Bitte versuch es erneut."
+      "mosaicUploadError": "Ein Bild konnte nicht hochgeladen werden. Bitte versuch es erneut.",
+      "hubMenu": "Menü der Kopfzeile",
+      "titleMenu": "Menü der Kopfzeile"
     },
     "analytics": {
       "metaTitle": "Statistiken",
@@ -2910,8 +2912,7 @@
       "mobileSubtitle": "Dashboard-Navigation",
       "planner": "Planer",
       "lockedSuffix": "nur mit {plan}",
-      "seo": "SEO",
-      "menu": "Menü"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Medien",
@@ -3322,11 +3323,6 @@
       "derivedNote": "Alles, was du leer lässt, wird aus den Angaben von {name} abgeleitet — du musst hier nichts ausfüllen, damit es funktioniert."
     },
     "heroMenu": {
-      "title": "Menü",
-      "subtitle": "Die Zeile unter der Beschreibung in der Kopfzeile — gilt für jeden Kopfzeilen-Stil.",
-      "save": "Speichern",
-      "saving": "Wird gespeichert…",
-      "saved": "Gespeichert",
       "barTitle": "In der Zeile",
       "barHint": "Steht direkt sichtbar unter der Beschreibung. Zwei bis vier Punkte wirken am ruhigsten.",
       "moreTitle": "Im „…“-Menü",
@@ -3351,10 +3347,7 @@
       "moreLabelLabel": "Beschriftung statt Punkte",
       "moreLabelPlaceholder": "Leer = nur die drei Punkte",
       "moreLabelHint": "Mit Text wird aus dem runden Knopf eine Pille — passend, wenn „Mehr“ deutlicher sein soll als „…“.",
-      "previewTitle": "Vorschau",
-      "previewHint": "Genau diese Zeile steht später in der Kopfzeile — in jedem Stil. Links sind hier stillgelegt.",
       "tipsMissing": "Kein Trinkgeld-Space",
-      "tipsMissingHint": "„Unterstützen“ braucht einen Trinkgeld-Space. Solange es keinen gibt, bleibt der Punkt ausgeblendet.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Direkt in einen Bereich deiner Community.",
       "groupPages": "Funktionen",
@@ -3392,11 +3385,6 @@
         "SPACE": "Ein Bereich deiner Community",
         "MEMBERSHIP": "Deine Stufe und Abrechnung"
       },
-      "viewers": {
-        "GUEST": "Gast",
-        "MEMBER": "Mitglied",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Alle",
         "GUESTS": "Gäste",
@@ -3408,7 +3396,8 @@
         "OUTLINE": "Umrandet",
         "PLAIN": "Schlicht"
       },
-      "urlMissing": "Noch keine Adresse"
+      "urlMissing": "Noch keine Adresse",
+      "close": "Schließen"
     }
   },
   "common": {

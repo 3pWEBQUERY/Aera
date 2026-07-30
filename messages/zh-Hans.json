@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "页眉图片",
       "mosaicHint": "这些图片按此顺序组成马赛克，拖动可调整次序。数量为偶数时网格正好填满，6 张或 12 张效果最好。",
-      "mosaicUploadError": "有一张图片上传失败，请重试。"
+      "mosaicUploadError": "有一张图片上传失败，请重试。",
+      "hubMenu": "页头菜单",
+      "titleMenu": "页头菜单"
     },
     "analytics": {
       "metaTitle": "统计",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "仪表板导航",
       "planner": "规划器",
       "lockedSuffix": "仅限 {plan}",
-      "seo": "SEO",
-      "menu": "菜单"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "菜单",
-      "subtitle": "页头描述下方的那一行——适用于所有页头样式。",
-      "save": "保存",
-      "saving": "保存中…",
-      "saved": "已保存",
       "barTitle": "显示在行内",
       "barHint": "直接显示在描述下方。两到四项看起来最清爽。",
       "moreTitle": "在“…”菜单中",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "用文字代替圆点",
       "moreLabelPlaceholder": "留空 = 仅三个圆点",
       "moreLabelHint": "加上文字后，圆形按钮变成胶囊形——想让“更多”更明确时用。",
-      "previewTitle": "预览",
-      "previewHint": "这一行就是页头里将显示的样子（所有样式）。此处链接不跳转。",
       "tipsMissing": "没有打赏空间",
-      "tipsMissingHint": "“支持”需要一个打赏空间。没有时该项会隐藏。",
       "groupSpaces": "空间",
       "groupSpacesHint": "直接进入社区中的某个板块。",
       "groupPages": "功能",
@@ -3367,11 +3360,6 @@
         "SPACE": "社区中的一个板块",
         "MEMBERSHIP": "你的等级与账单"
       },
-      "viewers": {
-        "GUEST": "访客",
-        "MEMBER": "会员",
-        "STAFF": "团队"
-      },
       "audiences": {
         "ALL": "所有人",
         "GUESTS": "访客",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "描边",
         "PLAIN": "朴素"
       },
-      "urlMissing": "还没有地址"
+      "urlMissing": "还没有地址",
+      "close": "关闭"
     }
   },
   "common": {

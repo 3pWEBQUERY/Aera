@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Afbeeldingen in de kop",
       "mosaicHint": "Deze afbeeldingen vormen het mozaïek, in deze volgorde — sleep om te herschikken. Een even aantal vult het raster precies; 6 of 12 staan het mooist.",
-      "mosaicUploadError": "Een afbeelding kon niet worden geüpload. Probeer het opnieuw."
+      "mosaicUploadError": "Een afbeelding kon niet worden geüpload. Probeer het opnieuw.",
+      "hubMenu": "Menu van de koptekst",
+      "titleMenu": "Menu van de koptekst"
     },
     "analytics": {
       "metaTitle": "Statistieken",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Dashboardnavigatie",
       "planner": "Planner",
       "lockedSuffix": "alleen met {plan}",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "De rij onder de beschrijving in de koptekst — geldt voor elke koptekststijl.",
-      "save": "Opslaan",
-      "saving": "Opslaan…",
-      "saved": "Opgeslagen",
       "barTitle": "In de rij",
       "barHint": "Direct zichtbaar onder de beschrijving. Twee tot vier items zijn het rustigst.",
       "moreTitle": "In het ‘…’-menu",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Tekst in plaats van puntjes",
       "moreLabelPlaceholder": "Leeg = alleen de drie puntjes",
       "moreLabelHint": "Met tekst wordt de ronde knop een pil — handig als ‘Meer’ duidelijker moet zijn.",
-      "previewTitle": "Voorbeeld",
-      "previewHint": "Precies deze rij komt later in de koptekst — in elke stijl. Links doen hier niets.",
       "tipsMissing": "Geen tip-space",
-      "tipsMissingHint": "‘Steunen’ vereist een tip-space. Zolang die ontbreekt, blijft het item verborgen.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Rechtstreeks naar een gebied van je community.",
       "groupPages": "Functies",
@@ -3367,11 +3360,6 @@
         "SPACE": "Een gebied van je community",
         "MEMBERSHIP": "Je niveau en facturering"
       },
-      "viewers": {
-        "GUEST": "Gast",
-        "MEMBER": "Lid",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Iedereen",
         "GUESTS": "Gasten",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Omlijnd",
         "PLAIN": "Eenvoudig"
       },
-      "urlMissing": "Nog geen adres"
+      "urlMissing": "Nog geen adres",
+      "close": "Sluiten"
     }
   },
   "common": {

@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "頁首圖片",
       "mosaicHint": "這些圖片依此順序組成馬賽克，拖曳可調整次序。數量為偶數時格線剛好填滿，6 張或 12 張效果最好。",
-      "mosaicUploadError": "有一張圖片上傳失敗，請重試。"
+      "mosaicUploadError": "有一張圖片上傳失敗，請重試。",
+      "hubMenu": "頁首選單",
+      "titleMenu": "頁首選單"
     },
     "analytics": {
       "metaTitle": "統計",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "儀表板導覽",
       "planner": "規劃器",
       "lockedSuffix": "僅限 {plan}",
-      "seo": "SEO",
-      "menu": "選單"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "選單",
-      "subtitle": "頁首描述下方的那一行——適用於所有頁首樣式。",
-      "save": "儲存",
-      "saving": "儲存中…",
-      "saved": "已儲存",
       "barTitle": "顯示在行內",
       "barHint": "直接顯示在描述下方。兩到四項看起來最清爽。",
       "moreTitle": "在「…」選單中",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "用文字代替圓點",
       "moreLabelPlaceholder": "留空 = 僅三個圓點",
       "moreLabelHint": "加上文字後，圓形按鈕變成膠囊形——想讓「更多」更明確時用。",
-      "previewTitle": "預覽",
-      "previewHint": "這一行就是頁首將顯示的樣子（所有樣式）。此處連結不跳轉。",
       "tipsMissing": "沒有打賞空間",
-      "tipsMissingHint": "「支持」需要一個打賞空間。沒有時該項會隱藏。",
       "groupSpaces": "空間",
       "groupSpacesHint": "直接進入社群中的某個板塊。",
       "groupPages": "功能",
@@ -3367,11 +3360,6 @@
         "SPACE": "社群中的一個板塊",
         "MEMBERSHIP": "你的等級與帳單"
       },
-      "viewers": {
-        "GUEST": "訪客",
-        "MEMBER": "會員",
-        "STAFF": "團隊"
-      },
       "audiences": {
         "ALL": "所有人",
         "GUESTS": "訪客",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "描邊",
         "PLAIN": "樸素"
       },
-      "urlMissing": "還沒有位址"
+      "urlMissing": "還沒有位址",
+      "close": "關閉"
     }
   },
   "common": {

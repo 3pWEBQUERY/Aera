@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Bilder i sidhuvudet",
       "mosaicHint": "De här bilderna bildar mosaiken, i den här ordningen — dra för att flytta om. Ett jämnt antal fyller rutnätet helt; 6 eller 12 ser bäst ut.",
-      "mosaicUploadError": "En bild kunde inte laddas upp. Försök igen."
+      "mosaicUploadError": "En bild kunde inte laddas upp. Försök igen.",
+      "hubMenu": "Meny i rubriken",
+      "titleMenu": "Meny i rubriken"
     },
     "analytics": {
       "metaTitle": "Statistik",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Instrumentpanelsnavigering",
       "planner": "Planerare",
       "lockedSuffix": "endast {plan}",
-      "seo": "SEO",
-      "menu": "Meny"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Meny",
-      "subtitle": "Raden under beskrivningen i rubriken — gäller alla rubrikstilar.",
-      "save": "Spara",
-      "saving": "Sparar…",
-      "saved": "Sparat",
       "barTitle": "I raden",
       "barHint": "Syns direkt under beskrivningen. Två till fyra poster ser lugnast ut.",
       "moreTitle": "I ”…”-menyn",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Text i stället för punkter",
       "moreLabelPlaceholder": "Tomt = bara de tre punkterna",
       "moreLabelHint": "Med text blir den runda knappen en pill — bra när ”Mer” ska vara tydligare.",
-      "previewTitle": "Förhandsvisning",
-      "previewHint": "Exakt den här raden visas i rubriken — i alla stilar. Länkar är avstängda här.",
       "tipsMissing": "Ingen tipsspace",
-      "tipsMissingHint": "”Stötta” kräver en tipsspace. Utan den är posten dold.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Direkt till ett område i din community.",
       "groupPages": "Funktioner",
@@ -3367,11 +3360,6 @@
         "SPACE": "Ett område i din community",
         "MEMBERSHIP": "Din nivå och betalning"
       },
-      "viewers": {
-        "GUEST": "Gäst",
-        "MEMBER": "Medlem",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Alla",
         "GUESTS": "Gäster",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Konturerad",
         "PLAIN": "Enkel"
       },
-      "urlMissing": "Ingen adress än"
+      "urlMissing": "Ingen adress än",
+      "close": "Stäng"
     }
   },
   "common": {

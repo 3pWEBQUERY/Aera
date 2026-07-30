@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Zdjęcia w nagłówku",
       "mosaicHint": "Te zdjęcia tworzą mozaikę, w tej kolejności — przeciągnij, aby zmienić układ. Parzysta liczba wypełnia siatkę bez reszty; najlepiej wyglądają 6 lub 12.",
-      "mosaicUploadError": "Nie udało się przesłać zdjęcia. Spróbuj ponownie."
+      "mosaicUploadError": "Nie udało się przesłać zdjęcia. Spróbuj ponownie.",
+      "hubMenu": "Menu nagłówka",
+      "titleMenu": "Menu nagłówka"
     },
     "analytics": {
       "metaTitle": "Statystyki",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Nawigacja panelu",
       "planner": "Planer",
       "lockedSuffix": "tylko z {plan}",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "Wiersz pod opisem w nagłówku — dotyczy każdego stylu nagłówka.",
-      "save": "Zapisz",
-      "saving": "Zapisywanie…",
-      "saved": "Zapisano",
       "barTitle": "W wierszu",
       "barHint": "Widoczne bezpośrednio pod opisem. Od dwóch do czterech pozycji wygląda najspokojniej.",
       "moreTitle": "W menu „…”",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Tekst zamiast kropek",
       "moreLabelPlaceholder": "Puste = tylko trzy kropki",
       "moreLabelHint": "Z tekstem okrągły przycisk staje się pigułką — gdy „Więcej” ma być wyraźniejsze.",
-      "previewTitle": "Podgląd",
-      "previewHint": "Dokładnie ten wiersz pojawi się w nagłówku — w każdym stylu. Linki tu nie działają.",
       "tipsMissing": "Brak przestrzeni na napiwki",
-      "tipsMissingHint": "„Wsparcie” wymaga przestrzeni na napiwki. Dopóki jej nie ma, pozycja jest ukryta.",
       "groupSpaces": "Przestrzenie",
       "groupSpacesHint": "Bezpośrednio do obszaru społeczności.",
       "groupPages": "Funkcje",
@@ -3367,11 +3360,6 @@
         "SPACE": "Obszar społeczności",
         "MEMBERSHIP": "Twój poziom i rozliczenia"
       },
-      "viewers": {
-        "GUEST": "Gość",
-        "MEMBER": "Członek",
-        "STAFF": "Zespół"
-      },
       "audiences": {
         "ALL": "Wszyscy",
         "GUESTS": "Goście",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Obramowany",
         "PLAIN": "Prosty"
       },
-      "urlMissing": "Brak adresu"
+      "urlMissing": "Brak adresu",
+      "close": "Zamknij"
     }
   },
   "common": {

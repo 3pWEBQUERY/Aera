@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Imagens do cabeçalho",
       "mosaicHint": "Estas imagens formam o mosaico, nesta ordem — arraste para reordenar. Um número par preenche a grade sem sobras; 6 ou 12 ficam melhor.",
-      "mosaicUploadError": "Não foi possível enviar uma imagem. Tente novamente."
+      "mosaicUploadError": "Não foi possível enviar uma imagem. Tente novamente.",
+      "hubMenu": "Menu do cabeçalho",
+      "titleMenu": "Menu do cabeçalho"
     },
     "analytics": {
       "metaTitle": "Estatísticas",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Navegação do painel",
       "planner": "Planejador",
       "lockedSuffix": "somente no {plan}",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "A linha sob a descrição no cabeçalho — vale para todos os estilos.",
-      "save": "Salvar",
-      "saving": "Salvando…",
-      "saved": "Salvo",
       "barTitle": "Na linha",
       "barHint": "Visível logo abaixo da descrição. De dois a quatro itens ficam mais calmos.",
       "moreTitle": "No menu “…”",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Texto em vez dos pontos",
       "moreLabelPlaceholder": "Vazio = só os três pontos",
       "moreLabelHint": "Com texto o botão redondo vira uma pílula — útil quando “Mais” deve ficar claro.",
-      "previewTitle": "Prévia",
-      "previewHint": "Exatamente esta linha aparece no cabeçalho — em todos os estilos. Aqui os links não navegam.",
       "tipsMissing": "Sem espaço de gorjeta",
-      "tipsMissingHint": "“Apoiar” precisa de um espaço de gorjeta. Sem ele, o item fica oculto.",
       "groupSpaces": "Espaços",
       "groupSpacesHint": "Direto para uma área da sua comunidade.",
       "groupPages": "Recursos",
@@ -3367,11 +3360,6 @@
         "SPACE": "Uma área da sua comunidade",
         "MEMBERSHIP": "Seu plano e cobrança"
       },
-      "viewers": {
-        "GUEST": "Visitante",
-        "MEMBER": "Membro",
-        "STAFF": "Equipe"
-      },
       "audiences": {
         "ALL": "Todos",
         "GUESTS": "Visitantes",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Contornado",
         "PLAIN": "Simples"
       },
-      "urlMissing": "Sem endereço ainda"
+      "urlMissing": "Sem endereço ainda",
+      "close": "Fechar"
     }
   },
   "common": {

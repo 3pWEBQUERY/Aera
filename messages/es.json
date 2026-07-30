@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Imágenes de la cabecera",
       "mosaicHint": "Estas imágenes forman el mosaico, en este orden: arrastra para reordenarlas. Un número par llena la cuadrícula por completo; 6 o 12 quedan mejor.",
-      "mosaicUploadError": "No se pudo subir una imagen. Inténtalo de nuevo."
+      "mosaicUploadError": "No se pudo subir una imagen. Inténtalo de nuevo.",
+      "hubMenu": "Menú de la cabecera",
+      "titleMenu": "Menú de la cabecera"
     },
     "analytics": {
       "metaTitle": "Estadísticas",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Navegación del panel",
       "planner": "Planificador",
       "lockedSuffix": "solo con {plan}",
-      "seo": "SEO",
-      "menu": "Menú"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menú",
-      "subtitle": "La fila bajo la descripción en la cabecera: se aplica a todos los estilos.",
-      "save": "Guardar",
-      "saving": "Guardando…",
-      "saved": "Guardado",
       "barTitle": "En la fila",
       "barHint": "Visible justo bajo la descripción. De dos a cuatro elementos se ven mejor.",
       "moreTitle": "En el menú «…»",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Texto en vez de puntos",
       "moreLabelPlaceholder": "Vacío = solo los tres puntos",
       "moreLabelHint": "Con texto el botón redondo se vuelve una pastilla, útil si «Más» debe ser más claro.",
-      "previewTitle": "Vista previa",
-      "previewHint": "Esta misma fila aparecerá en la cabecera, en todos los estilos. Aquí los enlaces no funcionan.",
       "tipsMissing": "Sin espacio de propinas",
-      "tipsMissingHint": "«Apoyar» necesita un espacio de propinas. Hasta que exista, el elemento queda oculto.",
       "groupSpaces": "Espacios",
       "groupSpacesHint": "Directo a un área de tu comunidad.",
       "groupPages": "Funciones",
@@ -3367,11 +3360,6 @@
         "SPACE": "Un área de tu comunidad",
         "MEMBERSHIP": "Tu nivel y facturación"
       },
-      "viewers": {
-        "GUEST": "Invitado",
-        "MEMBER": "Miembro",
-        "STAFF": "Equipo"
-      },
       "audiences": {
         "ALL": "Todos",
         "GUESTS": "Invitados",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Con borde",
         "PLAIN": "Sencillo"
       },
-      "urlMissing": "Sin dirección aún"
+      "urlMissing": "Sin dirección aún",
+      "close": "Cerrar"
     }
   },
   "common": {

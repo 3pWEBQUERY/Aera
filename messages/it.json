@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Immagini dell’intestazione",
       "mosaicHint": "Queste immagini formano il mosaico, in quest’ordine: trascina per riordinarle. Un numero pari riempie la griglia senza vuoti; 6 o 12 rendono meglio.",
-      "mosaicUploadError": "Non è stato possibile caricare un’immagine. Riprova."
+      "mosaicUploadError": "Non è stato possibile caricare un’immagine. Riprova.",
+      "hubMenu": "Menu dell’intestazione",
+      "titleMenu": "Menu dell’intestazione"
     },
     "analytics": {
       "metaTitle": "Statistiche",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Navigazione dashboard",
       "planner": "Pianificatore",
       "lockedSuffix": "solo con {plan}",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "La riga sotto la descrizione nell’intestazione — vale per ogni stile.",
-      "save": "Salva",
-      "saving": "Salvataggio…",
-      "saved": "Salvato",
       "barTitle": "Nella riga",
       "barHint": "Visibile subito sotto la descrizione. Da due a quattro voci restano leggibili.",
       "moreTitle": "Nel menu «…»",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Testo invece dei punti",
       "moreLabelPlaceholder": "Vuoto = solo i tre punti",
       "moreLabelHint": "Con il testo il pulsante rotondo diventa una pillola — utile se «Altro» deve essere più chiaro.",
-      "previewTitle": "Anteprima",
-      "previewHint": "Questa riga comparirà nell’intestazione, in ogni stile. Qui i link sono disattivati.",
       "tipsMissing": "Nessuno spazio mance",
-      "tipsMissingHint": "«Sostieni» richiede uno spazio mance. Finché non esiste, la voce resta nascosta.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Direttamente in un’area della community.",
       "groupPages": "Funzioni",
@@ -3367,11 +3360,6 @@
         "SPACE": "Un’area della community",
         "MEMBERSHIP": "Il tuo piano e la fatturazione"
       },
-      "viewers": {
-        "GUEST": "Ospite",
-        "MEMBER": "Membro",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Tutti",
         "GUESTS": "Ospiti",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Bordato",
         "PLAIN": "Semplice"
       },
-      "urlMissing": "Nessun indirizzo"
+      "urlMissing": "Nessun indirizzo",
+      "close": "Chiudi"
     }
   },
   "common": {

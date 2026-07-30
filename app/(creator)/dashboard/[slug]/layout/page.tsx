@@ -12,12 +12,18 @@ export default async function LayoutBuilderPage({
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug);
 
-  const [coverUrl, spaceRows] = await Promise.all([
+  const [coverUrl, spaceRows, tipsSpace] = await Promise.all([
     getCommunityCoverUrl(tenant.id),
     prisma.space.findMany({
       where: { tenantId: tenant.id, isArchived: false },
       orderBy: { sortOrder: "asc" },
       select: { slug: true, name: true, visibility: true, type: true },
+    }),
+    // "Unterstützen" zeigt auf den Trinkgeld-Space. Den gibt es nicht in jeder
+    // Community — fehlt er, blendet die Kopfzeile den Punkt von selbst aus.
+    prisma.space.findFirst({
+      where: { tenantId: tenant.id, type: "TIPS", isArchived: false },
+      select: { slug: true },
     }),
   ]);
 
@@ -38,6 +44,8 @@ export default async function LayoutBuilderPage({
         sectionsByAudience: config.sectionsByAudience,
         nav: config.nav,
         header: config.header,
+        heroMenu: config.heroMenu,
+        tipsSlug: tipsSpace?.slug ?? null,
       }}
     />
   );

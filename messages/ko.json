@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "헤더 이미지",
       "mosaicHint": "이 이미지들이 이 순서대로 모자이크를 이룹니다. 끌어서 순서를 바꾸세요. 짝수면 격자가 딱 맞고, 6장 또는 12장이 가장 보기 좋습니다.",
-      "mosaicUploadError": "이미지를 업로드하지 못했습니다. 다시 시도해 주세요."
+      "mosaicUploadError": "이미지를 업로드하지 못했습니다. 다시 시도해 주세요.",
+      "hubMenu": "헤더 메뉴",
+      "titleMenu": "헤더 메뉴"
     },
     "analytics": {
       "metaTitle": "통계",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "대시보드 내비게이션",
       "planner": "플래너",
       "lockedSuffix": "{plan} 전용",
-      "seo": "SEO",
-      "menu": "메뉴"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "메뉴",
-      "subtitle": "헤더 설명 아래의 줄 — 모든 헤더 스타일에 적용됩니다.",
-      "save": "저장",
-      "saving": "저장 중…",
-      "saved": "저장됨",
       "barTitle": "줄에 표시",
       "barHint": "설명 바로 아래에 표시됩니다. 2~4개가 가장 깔끔합니다.",
       "moreTitle": "‘…’ 메뉴 안",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "점 대신 문구",
       "moreLabelPlaceholder": "비우면 점 세 개만",
       "moreLabelHint": "문구를 넣으면 원형 버튼이 알약 모양이 됩니다. ‘더 보기’를 분명히 하고 싶을 때.",
-      "previewTitle": "미리보기",
-      "previewHint": "이 줄이 그대로 헤더에 표시됩니다(모든 스타일). 여기서는 링크가 동작하지 않습니다.",
       "tipsMissing": "후원 스페이스 없음",
-      "tipsMissingHint": "‘후원하기’에는 후원 스페이스가 필요합니다. 없으면 항목이 숨겨집니다.",
       "groupSpaces": "스페이스",
       "groupSpacesHint": "커뮤니티의 한 영역으로 바로.",
       "groupPages": "기능",
@@ -3367,11 +3360,6 @@
         "SPACE": "커뮤니티의 한 영역",
         "MEMBERSHIP": "등급과 결제"
       },
-      "viewers": {
-        "GUEST": "비회원",
-        "MEMBER": "회원",
-        "STAFF": "팀"
-      },
       "audiences": {
         "ALL": "모두",
         "GUESTS": "비회원",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "외곽선",
         "PLAIN": "단순"
       },
-      "urlMissing": "주소 없음"
+      "urlMissing": "주소 없음",
+      "close": "닫기"
     }
   },
   "common": {

@@ -2195,7 +2195,9 @@
       },
       "mosaicTitle": "Header images",
       "mosaicHint": "These images make up the mosaic, in this order — drag to rearrange. An even number fills the grid exactly; 6 or 12 look best.",
-      "mosaicUploadError": "An image could not be uploaded. Please try again."
+      "mosaicUploadError": "An image could not be uploaded. Please try again.",
+      "hubMenu": "Header menu",
+      "titleMenu": "Header menu"
     },
     "analytics": {
       "metaTitle": "Analytics",
@@ -2910,8 +2912,7 @@
       "mobileSubtitle": "Dashboard navigation",
       "planner": "Planner",
       "lockedSuffix": "{plan} only",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3322,11 +3323,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "The row under the description in the header — applies to every header style.",
-      "save": "Save",
-      "saving": "Saving…",
-      "saved": "Saved",
       "barTitle": "In the row",
       "barHint": "Directly visible under the description. Two to four items look calmest.",
       "moreTitle": "In the “…” menu",
@@ -3351,10 +3347,7 @@
       "moreLabelLabel": "Label instead of dots",
       "moreLabelPlaceholder": "Empty = just the three dots",
       "moreLabelHint": "With text the round button becomes a pill — useful when “More” should be clearer than “…”.",
-      "previewTitle": "Preview",
-      "previewHint": "This exact row appears in the header later — in every style. Links are inert here.",
       "tipsMissing": "No tip space",
-      "tipsMissingHint": "“Support” needs a tip space. Until one exists, the item stays hidden.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Straight into one of your community's areas.",
       "groupPages": "Features",
@@ -3392,11 +3385,6 @@
         "SPACE": "An area of your community",
         "MEMBERSHIP": "Your tier and billing"
       },
-      "viewers": {
-        "GUEST": "Guest",
-        "MEMBER": "Member",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Everyone",
         "GUESTS": "Guests",
@@ -3408,7 +3396,8 @@
         "OUTLINE": "Outlined",
         "PLAIN": "Plain"
       },
-      "urlMissing": "No address yet"
+      "urlMissing": "No address yet",
+      "close": "Close"
     }
   },
   "common": {

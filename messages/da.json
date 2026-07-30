@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Billeder i toppen",
       "mosaicHint": "Disse billeder udgør mosaikken, i denne rækkefølge — træk for at flytte dem. Et lige antal fylder gitteret helt; 6 eller 12 ser bedst ud.",
-      "mosaicUploadError": "Et billede kunne ikke uploades. Prøv igen."
+      "mosaicUploadError": "Et billede kunne ikke uploades. Prøv igen.",
+      "hubMenu": "Header-menu",
+      "titleMenu": "Header-menu"
     },
     "analytics": {
       "metaTitle": "Statistik",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Dashboard-navigation",
       "planner": "Planlægger",
       "lockedSuffix": "kun med {plan}",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "Rækken under beskrivelsen i headeren — gælder for alle header-stilarter.",
-      "save": "Gem",
-      "saving": "Gemmer…",
-      "saved": "Gemt",
       "barTitle": "I rækken",
       "barHint": "Synlig direkte under beskrivelsen. To til fire punkter virker roligst.",
       "moreTitle": "I “…”-menuen",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Tekst i stedet for punkter",
       "moreLabelPlaceholder": "Tom = kun de tre punkter",
       "moreLabelHint": "Med tekst bliver den runde knap en pille — nyttigt når “Mere” skal være tydeligere.",
-      "previewTitle": "Forhåndsvisning",
-      "previewHint": "Præcis denne række vises i headeren — i alle stilarter. Links er slået fra her.",
       "tipsMissing": "Ingen tip-space",
-      "tipsMissingHint": "“Støt” kræver en tip-space. Indtil der er en, skjules punktet.",
       "groupSpaces": "Spaces",
       "groupSpacesHint": "Direkte til et område i din community.",
       "groupPages": "Funktioner",
@@ -3367,11 +3360,6 @@
         "SPACE": "Et område i din community",
         "MEMBERSHIP": "Dit niveau og betaling"
       },
-      "viewers": {
-        "GUEST": "Gæst",
-        "MEMBER": "Medlem",
-        "STAFF": "Team"
-      },
       "audiences": {
         "ALL": "Alle",
         "GUESTS": "Gæster",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Med kant",
         "PLAIN": "Enkel"
       },
-      "urlMissing": "Ingen adresse endnu"
+      "urlMissing": "Ingen adresse endnu",
+      "close": "Luk"
     }
   },
   "common": {

@@ -34,13 +34,22 @@ import {
   type HeaderVariant,
   HEADER_VARIANTS,
   MOSAIC_MAX,
+  HERO_MENU_DEFAULT_AUDIENCE,
+  HERO_MENU_ICON,
+  HERO_MENU_MAX,
+  type HeroMenuAudience,
+  type HeroMenuConfig,
+  type HeroMenuItem,
+  type HeroMenuSlot,
+  type HeroMenuStyle,
+  type HeroMenuType,
 } from "@/lib/layout";
 
 const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#059669", "#0891b2", "#111827"];
 
 // Space type → icon (matches the Spaces dashboard).
 
-type View = "hub" | "header" | "sections" | "nav";
+type View = "hub" | "header" | "sections" | "nav" | "menu";
 
 export interface LayoutEditorInitial {
   name: string;
@@ -56,6 +65,10 @@ export interface LayoutEditorInitial {
     mosaic: string[];
     socials: SocialLink[];
   };
+  /** Die Menüzeile der Kopfzeile. */
+  heroMenu: HeroMenuConfig;
+  /** Adresse des Trinkgeld-Space, falls die Community einen hat. */
+  tipsSlug: string | null;
 }
 
 const initialState: LayoutState = {};
@@ -102,6 +115,7 @@ export function LayoutEditor({
   const [nav, setNav] = useState<NavItemConfig[]>(
     initial.nav.length > 0 ? initial.nav : [{ id: uid(), label: t("navTypes.HOME"), type: "HOME" }],
   );
+  const [heroMenu, setHeroMenu] = useState<HeroMenuConfig>(initial.heroMenu);
 
   const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
   const [flash, setFlash] = useState(false);
@@ -123,8 +137,9 @@ export function LayoutEditor({
         header: { mode, variant, mosaic, socials },
         sectionsByAudience,
         nav,
+        heroMenu,
       }),
-    [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav],
+    [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu],
   );
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
@@ -138,9 +153,10 @@ export function LayoutEditor({
         header: { mode, variant, mosaic, socials },
         sectionsByAudience,
         nav,
+        heroMenu,
         audience,
       }),
-    [name, logoUrl, primaryColor, mode, variant, mosaic, socials, sectionsByAudience, nav, audience],
+    [name, logoUrl, primaryColor, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, audience],
   );
 
   const [previewNonce, setPreviewNonce] = useState(0);
@@ -174,6 +190,7 @@ export function LayoutEditor({
     header: t("titleHeader"),
     sections: t("titleSections"),
     nav: t("titleNav"),
+    menu: t("titleMenu"),
   };
 
   return (
@@ -283,6 +300,9 @@ export function LayoutEditor({
             />
           )}
           {view === "nav" && <NavPanel nav={nav} setNav={setNav} spaces={spaces} />}
+          {view === "menu" && (
+            <MenuPanel menu={heroMenu} setMenu={setHeroMenu} spaces={spaces} tipsSlug={initial.tipsSlug} />
+          )}
         </aside>
 
         <main className="hidden min-h-0 flex-1 overflow-hidden bg-slate-100 p-6 md:block">
@@ -358,6 +378,7 @@ function Hub({ onOpen }: { onOpen: (v: View) => void }) {
     { view: "header", label: t("hubHeader"), icon: "branding" },
     { view: "sections", label: t("hubSections"), icon: "layout" },
     { view: "nav", label: t("hubNav"), icon: "menu" },
+    { view: "menu", label: t("hubMenu"), icon: "more" },
   ];
   return (
     <div className="py-2">
@@ -1215,6 +1236,510 @@ function AddSectionDropdown({
 }
 
 // ---------------------------------------------------------------- Nav panel
+/**
+ * Die Menüzeile der Kopfzeile zusammenstellen.
+ *
+ * Zwei Listen, weil es zwei Orte gibt: die Zeile und das „…"-Menü. Punkte
+ * wandern per Zug oder Knopf zwischen ihnen — das ist die eigentliche
+ * Gestaltungsentscheidung ("was ist wichtig genug für die Zeile?"), und sie
+ * soll sich wie eine anfühlen.
+ *
+ * Eine eigene Vorschau braucht es hier nicht: rechts steht die echte Seite.
+ */
+function MenuPanel({
+  menu,
+  setMenu,
+  spaces,
+  tipsSlug,
+}: {
+  menu: HeroMenuConfig;
+  setMenu: (next: HeroMenuConfig) => void;
+  spaces: { slug: string; name: string; visibility: string; type: string }[];
+  tipsSlug: string | null;
+}) {
+  const t = useTranslations("dashboard.heroMenu");
+  const [addFor, setAddFor] = useState<HeroMenuSlot | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
+  const drag = useRef<{ slot: HeroMenuSlot; index: number } | null>(null);
+
+  const listFor = (slot: HeroMenuSlot) => menu.items.filter((i) => i.slot === slot);
+  const write = (bar: HeroMenuItem[], more: HeroMenuItem[]) =>
+    setMenu({ ...menu, items: [...bar, ...more] });
+  const replace = (slot: HeroMenuSlot, next: HeroMenuItem[]) =>
+    slot === "BAR" ? write(next, listFor("MORE")) : write(listFor("BAR"), next);
+
+  function patch(slot: HeroMenuSlot, id: string, change: Partial<HeroMenuItem>) {
+    replace(slot, listFor(slot).map((i) => (i.id === id ? { ...i, ...change } : i)));
+  }
+  function moveSlot(from: HeroMenuSlot, id: string) {
+    const item = listFor(from).find((i) => i.id === id);
+    if (!item) return;
+    const to: HeroMenuSlot = from === "BAR" ? "MORE" : "BAR";
+    const rest = listFor(from).filter((i) => i.id !== id);
+    const target = [...listFor(to), { ...item, slot: to }];
+    if (from === "BAR") write(rest, target);
+    else write(target, rest);
+  }
+  function add(slot: HeroMenuSlot, type: HeroMenuType, value?: string) {
+    if (menu.items.length >= HERO_MENU_MAX) return;
+    const item: HeroMenuItem = {
+      id: uid(),
+      label: "",
+      type,
+      value,
+      slot,
+      audience: HERO_MENU_DEFAULT_AUDIENCE[type] ?? "ALL",
+      // In der Zeile ist schlicht die richtige Vorgabe: eine zweite gefüllte
+      // Pille nimmt der ersten die Wirkung.
+      style: "PLAIN",
+    };
+    replace(slot, [...listFor(slot), item]);
+    setAddFor(null);
+    setOpenId(item.id);
+  }
+
+  function onDrop(slot: HeroMenuSlot, index: number) {
+    const from = drag.current;
+    drag.current = null;
+    if (!from) return;
+    if (from.slot === slot) {
+      if (from.index === index) return;
+      const next = [...listFor(slot)];
+      const [moved] = next.splice(from.index, 1);
+      next.splice(index, 0, moved);
+      replace(slot, next);
+      return;
+    }
+    const source = [...listFor(from.slot)];
+    const [moved] = source.splice(from.index, 1);
+    if (!moved) return;
+    const target = [...listFor(slot)];
+    target.splice(index, 0, { ...moved, slot });
+    if (slot === "BAR") write(target, source);
+    else write(source, target);
+  }
+
+  const iconOf = (item: HeroMenuItem): IconName => {
+    if (item.type === "SPACE") {
+      const sp = spaces.find((x) => x.slug === item.value);
+      return sp ? spaceTypeIcon(sp.type) : HERO_MENU_ICON.SPACE;
+    }
+    return HERO_MENU_ICON[item.type];
+  };
+
+  /**
+   * Die zweite Zeile einer Reihe: wohin der Punkt führt. Bei eingebauten
+   * Seiten der Hinweis, nicht der Name — sonst wiederholt sie nur die
+   * Beschriftung darüber.
+   */
+  const targetOf = (item: HeroMenuItem) => {
+    if (item.type === "SPACE") {
+      return spaces.find((x) => x.slug === item.value)?.name ?? `/${item.value}`;
+    }
+    if (item.type === "LINK") return item.value?.trim() || t("urlMissing");
+    if (item.type === "TIPS" && !tipsSlug) return t("tipsMissing");
+    return t(`typeHints.${item.type}`);
+  };
+
+  const row = (item: HeroMenuItem, slot: HeroMenuSlot, index: number) => {
+    const open = openId === item.id;
+    return (
+      <li
+        key={item.id}
+        draggable
+        onDragStart={() => (drag.current = { slot, index })}
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={() => onDrop(slot, index)}
+        className={cn(
+          "rounded-2xl border bg-white transition",
+          open ? "border-[var(--action-strong)]" : "border-slate-200",
+        )}
+      >
+        <div className="flex items-center gap-2 p-2.5">
+          <span className="cursor-grab text-slate-300 active:cursor-grabbing">
+            <Icon name="grip" size={17} />
+          </span>
+          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+            <Icon name={iconOf(item)} size={16} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-slate-900">
+              {item.label.trim() || t(`types.${item.type}`)}
+            </p>
+            <p className="truncate text-xs text-slate-400">{targetOf(item)}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => moveSlot(slot, item.id)}
+            title={slot === "BAR" ? t("toMore") : t("toBar")}
+            aria-label={slot === "BAR" ? t("toMore") : t("toBar")}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          >
+            <Icon name={slot === "BAR" ? "more" : "menu"} size={15} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setOpenId(open ? null : item.id)}
+            aria-expanded={open}
+            aria-label={t("editAria")}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+          >
+            <Icon name="chevron" size={15} className={cn("transition", open && "rotate-180")} />
+          </button>
+        </div>
+
+        {open && (
+          <div className="space-y-3.5 border-t border-slate-100 px-2.5 pb-3.5 pt-3">
+            <Field label={t("labelLabel")}>
+              <input
+                value={item.label}
+                maxLength={40}
+                placeholder={t(`types.${item.type}`)}
+                onChange={(e) => patch(slot, item.id, { label: e.target.value })}
+                className={INPUT}
+              />
+            </Field>
+
+            {item.type === "LINK" && (
+              <Field label={t("urlLabel")}>
+                <input
+                  value={item.value ?? ""}
+                  type="url"
+                  placeholder="https://…"
+                  onChange={(e) => patch(slot, item.id, { value: e.target.value })}
+                  className={INPUT}
+                />
+              </Field>
+            )}
+
+            {item.type === "SPACE" && (
+              <Field label={t("spaceLabel")}>
+                <select
+                  value={item.value ?? ""}
+                  onChange={(e) => patch(slot, item.id, { value: e.target.value })}
+                  className={INPUT}
+                >
+                  {spaces.map((sp) => (
+                    <option key={sp.slug} value={sp.slug}>
+                      {sp.name}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            )}
+
+            <Field label={t("audienceLabel")} hint={t("audienceHint")}>
+              <div className="flex flex-wrap gap-1.5">
+                {(["ALL", "GUESTS", "MEMBERS", "STAFF"] as HeroMenuAudience[]).map((a) => (
+                  <Chip
+                    key={a}
+                    active={item.audience === a}
+                    onClick={() => patch(slot, item.id, { audience: a })}
+                  >
+                    {t(`audiences.${a}`)}
+                  </Chip>
+                ))}
+              </div>
+            </Field>
+
+            {slot === "BAR" && (
+              <Field label={t("styleLabel")} hint={t("styleHint")}>
+                <div className="flex flex-wrap gap-1.5">
+                  {(["SOLID", "OUTLINE", "PLAIN"] as HeroMenuStyle[]).map((st) => (
+                    <Chip
+                      key={st}
+                      active={item.style === st}
+                      onClick={() => patch(slot, item.id, { style: st })}
+                    >
+                      {t(`styles.${st}`)}
+                    </Chip>
+                  ))}
+                </div>
+              </Field>
+            )}
+
+            <button
+              type="button"
+              onClick={() => replace(slot, listFor(slot).filter((i) => i.id !== item.id))}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
+            >
+              <Icon name="trash" size={14} /> {t("remove")}
+            </button>
+          </div>
+        )}
+      </li>
+    );
+  };
+
+  const zone = (slot: HeroMenuSlot, title: string, hint: string) => {
+    const list = listFor(slot);
+    return (
+      <section>
+        <div className="flex items-start justify-between gap-2">
+          <div className="min-w-0">
+            <h2 className="flex items-center gap-2 text-sm font-bold text-slate-900">
+              <Icon name={slot === "BAR" ? "menu" : "more"} size={15} className="text-slate-400" />
+              {title}
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+                {list.length}
+              </span>
+            </h2>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{hint}</p>
+          </div>
+          <button
+            type="button"
+            onClick={() => setAddFor(slot)}
+            disabled={menu.items.length >= HERO_MENU_MAX}
+            className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+          >
+            <Icon name="plus" size={14} /> {t("add")}
+          </button>
+        </div>
+
+        {list.length === 0 ? (
+          <div
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={() => onDrop(slot, 0)}
+            className="mt-3 rounded-2xl border border-dashed border-slate-200 px-3 py-6 text-center text-xs leading-relaxed text-slate-400"
+          >
+            {t("emptyZone")}
+          </div>
+        ) : (
+          <ul className="mt-3 space-y-2">{list.map((item, i) => row(item, slot, i))}</ul>
+        )}
+      </section>
+    );
+  };
+
+  return (
+    <div className="space-y-7 px-6 py-6">
+      {zone("BAR", t("barTitle"), t("barHint"))}
+      {zone("MORE", t("moreTitle"), t("moreHint"))}
+
+      <section className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5">
+        <h2 className="text-sm font-bold text-slate-900">{t("moreButtonTitle")}</h2>
+        <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{t("moreButtonHint")}</p>
+        <label className="mt-3 flex items-center gap-3">
+          <button
+            type="button"
+            role="switch"
+            aria-checked={menu.more.enabled}
+            onClick={() => setMenu({ ...menu, more: { ...menu.more, enabled: !menu.more.enabled } })}
+            className={cn(
+              "relative h-6 w-11 shrink-0 rounded-full transition",
+              menu.more.enabled ? "bg-[var(--action-strong)]" : "bg-slate-200",
+            )}
+          >
+            <span
+              className={cn(
+                "absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all",
+                menu.more.enabled ? "left-[1.375rem]" : "left-0.5",
+              )}
+            />
+          </button>
+          <span className="text-sm text-slate-700">{t("moreEnabled")}</span>
+        </label>
+        {menu.more.enabled && (
+          <div className="mt-3.5">
+            <Field label={t("moreLabelLabel")} hint={t("moreLabelHint")}>
+              <input
+                value={menu.more.label}
+                maxLength={40}
+                placeholder={t("moreLabelPlaceholder")}
+                onChange={(e) => setMenu({ ...menu, more: { ...menu.more, label: e.target.value } })}
+                className={INPUT}
+              />
+            </Field>
+          </div>
+        )}
+      </section>
+
+      {addFor && (
+        <MenuAddSheet
+          slot={addFor}
+          spaces={spaces}
+          onClose={() => setAddFor(null)}
+          onPick={(type, value) => add(addFor, type, value)}
+        />
+      )}
+    </div>
+  );
+}
+
+const INPUT =
+  "w-full rounded-xl border border-slate-300 px-3 py-2 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]";
+
+function Field({
+  label,
+  hint,
+  children,
+}: {
+  label: string;
+  hint?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-1.5 block text-xs font-bold text-slate-900">{label}</label>
+      {children}
+      {hint && <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint}</p>}
+    </div>
+  );
+}
+
+function Chip({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition",
+        active
+          ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
+          : "border-slate-200 text-slate-600 hover:border-slate-400",
+      )}
+    >
+      {children}
+    </button>
+  );
+}
+
+/** Auswahlblatt: drei gleichrangige Gruppen nebeneinander. */
+function MenuAddSheet({
+  slot,
+  spaces,
+  onClose,
+  onPick,
+}: {
+  slot: HeroMenuSlot;
+  spaces: { slug: string; name: string; visibility: string; type: string }[];
+  onClose: () => void;
+  onPick: (type: HeroMenuType, value?: string) => void;
+}) {
+  const t = useTranslations("dashboard.heroMenu");
+  const ref = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
+  const PAGES: HeroMenuType[] = [
+    "HOME",
+    "MEMBERS",
+    "LEADERBOARD",
+    "LIBRARY",
+    "LIVE",
+    "SEARCH",
+    "JOIN",
+    "TIPS",
+    "DASHBOARD",
+  ];
+
+  const choice = (icon: IconName, label: string, hint: string, onClick: () => void) => (
+    <button
+      key={label + hint}
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-slate-400 hover:shadow-[var(--shadow-card)]"
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+        <Icon name={icon} size={17} />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-semibold text-slate-900">{label}</span>
+        <span className="block truncate text-xs text-slate-400">{hint}</span>
+      </span>
+      <Icon name="plus" size={16} className="shrink-0 text-slate-400" />
+    </button>
+  );
+
+  const group = (title: string, hint: string, children: React.ReactNode) => (
+    <section className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+        {title}
+      </h3>
+      <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint}</p>
+      {/* Ueberschrift steht, Liste scrollt: zwanzig Spaces sollen die beiden
+          anderen Spalten nicht aus dem Bild schieben. */}
+      <div className="mt-3 max-h-[46vh] space-y-2 overflow-y-auto pr-0.5">{children}</div>
+    </section>
+  );
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-[#161613]/40 p-4">
+      <div
+        ref={ref}
+        role="dialog"
+        aria-modal="true"
+        className="flex max-h-[86vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl"
+      >
+        <div className="flex items-center gap-3 border-b border-slate-200 px-5 py-4">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
+            <Icon name="menu" size={18} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-slate-900">{t("addTitle")}</p>
+            <p className="truncate text-sm text-slate-400">
+              {slot === "MORE" ? t("moreTitle") : t("barTitle")}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t("close")}
+            className="flex h-9 w-9 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100"
+          >
+            <Icon name="close" size={18} />
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          <div className="grid items-start gap-4 p-5 md:grid-cols-3">
+            {group(
+              t("groupSpaces"),
+              t("groupSpacesHint"),
+              spaces.length === 0 ? (
+                <p className="text-sm text-slate-400">{t("noSpaces")}</p>
+              ) : (
+                spaces.map((sp) =>
+                  choice(spaceTypeIcon(sp.type), sp.name, `/${sp.slug}`, () =>
+                    onPick("SPACE", sp.slug),
+                  ),
+                )
+              ),
+            )}
+            {group(
+              t("groupPages"),
+              t("groupPagesHint"),
+              PAGES.map((type) =>
+                choice(HERO_MENU_ICON[type], t(`types.${type}`), t(`typeHints.${type}`), () =>
+                  onPick(type),
+                ),
+              ),
+            )}
+            {group(
+              t("groupOther"),
+              t("groupOtherHint"),
+              <>
+                {choice(HERO_MENU_ICON.SHARE, t("types.SHARE"), t("typeHints.SHARE"), () =>
+                  onPick("SHARE"),
+                )}
+                {choice(HERO_MENU_ICON.LINK, t("types.LINK"), t("typeHints.LINK"), () =>
+                  onPick("LINK", "https://"),
+                )}
+              </>,
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function NavPanel({
   nav,
   setNav,

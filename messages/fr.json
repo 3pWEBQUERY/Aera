@@ -2012,7 +2012,9 @@
       },
       "mosaicTitle": "Images de l’en-tête",
       "mosaicHint": "Ces images composent la mosaïque, dans cet ordre — faites-les glisser pour les réorganiser. Un nombre pair remplit la grille sans reste ; 6 ou 12 rendent le mieux.",
-      "mosaicUploadError": "Une image n’a pas pu être envoyée. Veuillez réessayer."
+      "mosaicUploadError": "Une image n’a pas pu être envoyée. Veuillez réessayer.",
+      "hubMenu": "Menu de l’en-tête",
+      "titleMenu": "Menu de l’en-tête"
     },
     "analytics": {
       "metaTitle": "Statistiques",
@@ -2727,8 +2729,7 @@
       "mobileSubtitle": "Navigation du tableau de bord",
       "planner": "Planificateur",
       "lockedSuffix": "{plan} uniquement",
-      "seo": "SEO",
-      "menu": "Menu"
+      "seo": "SEO"
     },
     "media": {
       "metaTitle": "Media",
@@ -3297,11 +3298,6 @@
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
     },
     "heroMenu": {
-      "title": "Menu",
-      "subtitle": "La ligne sous la description de l’en-tête — s’applique à tous les styles.",
-      "save": "Enregistrer",
-      "saving": "Enregistrement…",
-      "saved": "Enregistré",
       "barTitle": "Dans la ligne",
       "barHint": "Visible juste sous la description. Deux à quatre entrées restent lisibles.",
       "moreTitle": "Dans le menu « … »",
@@ -3326,10 +3322,7 @@
       "moreLabelLabel": "Libellé au lieu des points",
       "moreLabelPlaceholder": "Vide = seulement les trois points",
       "moreLabelHint": "Avec du texte, le bouton rond devient une pilule — utile si « Plus » doit être plus clair.",
-      "previewTitle": "Aperçu",
-      "previewHint": "Cette ligne exacte apparaîtra dans l’en-tête, dans tous les styles. Les liens sont inertes ici.",
       "tipsMissing": "Pas d’espace pourboire",
-      "tipsMissingHint": "« Soutenir » nécessite un espace pourboire. Sans lui, l’entrée reste masquée.",
       "groupSpaces": "Espaces",
       "groupSpacesHint": "Directement vers un espace de ta communauté.",
       "groupPages": "Fonctions",
@@ -3367,11 +3360,6 @@
         "SPACE": "Un espace de ta communauté",
         "MEMBERSHIP": "Votre formule et facturation"
       },
-      "viewers": {
-        "GUEST": "Visiteur",
-        "MEMBER": "Membre",
-        "STAFF": "Équipe"
-      },
       "audiences": {
         "ALL": "Tout le monde",
         "GUESTS": "Visiteurs",
@@ -3383,7 +3371,8 @@
         "OUTLINE": "Contour",
         "PLAIN": "Sobre"
       },
-      "urlMissing": "Pas encore d’adresse"
+      "urlMissing": "Pas encore d’adresse",
+      "close": "Fermer"
     }
   },
   "common": {
