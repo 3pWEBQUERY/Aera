@@ -3624,7 +3624,9 @@
         "untitled": "Untitled",
         "episode": "Episode",
         "owned": "Owned",
-        "liveOwnStream": "Live via Aera"
+        "liveOwnStream": "Live via Aera",
+        "liveWatchNow": "Watch now",
+        "liveWatchReplay": "Watch the replay"
       },
       "spaceCard": {
         "space": "Space",

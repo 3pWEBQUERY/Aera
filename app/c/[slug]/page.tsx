@@ -513,25 +513,50 @@ export default async function CommunityHome({
         })
       ).sort((a, b) => (a.status === b.status ? 0 : a.status === "LIVE" ? -1 : 1))
     : [];
-  const liveSection =
-    liveRows.length > 0 ? (
-      <HScrollRow title={t("liveHeading")}>
-        {liveRows.map((s) => (
-          <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
-            <LiveSessionCard
-              href={`/c/${slug}/s/${s.space?.slug ?? ""}?open=${s.id}`}
-              title={s.title}
-              status={s.status}
-              statusLabel={tSpaceRender(`liveStatus.${s.status}`)}
-              streamUrl={s.streamUrl}
-              ownStreamLabel={s.source === "AERA" ? tSpaceRender("liveOwnStream") : null}
-              startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
-              startsAtIso={s.startsAt ? s.startsAt.toISOString() : null}
-            />
-          </div>
-        ))}
-      </HScrollRow>
-    ) : null;
+  // Läuft gerade eine Sendung, steht sie allein im Rampenlicht — eine grosse
+  // Buehne statt einer Karte unter vielen. Geplante Streams kommen in der
+  // Scroll-Reihe, sobald nichts mehr live ist.
+  const liveNow = liveRows.find((s) => s.status === "LIVE");
+  const liveSection = liveNow ? (
+    <section>
+      <div className="mb-4 flex items-center gap-2">
+        <span className="relative flex h-2 w-2">
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500" />
+        </span>
+        <h2 className="display-serif text-2xl text-[#161613]">{t("liveHeading")}</h2>
+      </div>
+      <LiveSessionCard
+        featured
+        href={`/c/${slug}/s/${liveNow.space?.slug ?? ""}?open=${liveNow.id}`}
+        title={liveNow.title}
+        status={liveNow.status}
+        statusLabel={tSpaceRender(`liveStatus.${liveNow.status}`)}
+        streamUrl={liveNow.streamUrl}
+        ownStreamLabel={liveNow.source === "AERA" ? tSpaceRender("liveOwnStream") : null}
+        startsAtLabel={liveNow.startsAt ? formatDateTime(liveNow.startsAt, locale) : null}
+        startsAtIso={liveNow.startsAt ? liveNow.startsAt.toISOString() : null}
+        watchNowLabel={tSpaceRender("liveWatchNow")}
+      />
+    </section>
+  ) : liveRows.length > 0 ? (
+    <HScrollRow title={t("liveHeading")}>
+      {liveRows.map((s) => (
+        <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
+          <LiveSessionCard
+            href={`/c/${slug}/s/${s.space?.slug ?? ""}?open=${s.id}`}
+            title={s.title}
+            status={s.status}
+            statusLabel={tSpaceRender(`liveStatus.${s.status}`)}
+            streamUrl={s.streamUrl}
+            ownStreamLabel={s.source === "AERA" ? tSpaceRender("liveOwnStream") : null}
+            startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+            startsAtIso={s.startsAt ? s.startsAt.toISOString() : null}
+          />
+        </div>
+      ))}
+    </HScrollRow>
+  ) : null;
   const spacesSection = <SpaceSlider title={t("discover")} slug={slug} items={spaceCards} />;
 
   const recsSection =

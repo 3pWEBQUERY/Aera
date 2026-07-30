@@ -83,6 +83,8 @@ export default async function CommunityLive({
                     ownStreamLabel={s.source === "AERA" ? tSpace("liveOwnStream") : null}
                     startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
                     startsAtIso={s.startsAt ? s.startsAt.toISOString() : null}
+                    watchNowLabel={s.status === "LIVE" ? tSpace("liveWatchNow") : undefined}
+                    watchReplayLabel={s.status === "ENDED" ? tSpace("liveWatchReplay") : undefined}
                   />
                 ))}
               </div>

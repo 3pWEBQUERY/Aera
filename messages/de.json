@@ -3624,7 +3624,9 @@
         "untitled": "Ohne Titel",
         "episode": "Episode",
         "owned": "Gekauft",
-        "liveOwnStream": "Live über Aera"
+        "liveOwnStream": "Live über Aera",
+        "liveWatchNow": "Jetzt ansehen",
+        "liveWatchReplay": "Aufzeichnung ansehen"
       },
       "spaceCard": {
         "space": "Space",

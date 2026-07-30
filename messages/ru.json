@@ -3545,7 +3545,9 @@
           "LIVE": "Live",
           "ENDED": "Replay"
         },
-        "liveOwnStream": "Эфир через Aera"
+        "liveOwnStream": "Эфир через Aera",
+        "liveWatchNow": "Смотреть сейчас",
+        "liveWatchReplay": "Смотреть запись"
       },
       "spaceCard": {
         "space": "Пространство",

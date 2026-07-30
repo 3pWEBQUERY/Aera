@@ -3545,7 +3545,9 @@
           "LIVE": "Live",
           "ENDED": "Replay"
         },
-        "liveOwnStream": "Ao vivo pela Aera"
+        "liveOwnStream": "Ao vivo pela Aera",
+        "liveWatchNow": "Assistir agora",
+        "liveWatchReplay": "Assistir à gravação"
       },
       "spaceCard": {
         "space": "Space",

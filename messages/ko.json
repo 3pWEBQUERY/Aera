@@ -3545,7 +3545,9 @@
           "LIVE": "Live",
           "ENDED": "Replay"
         },
-        "liveOwnStream": "Aera 라이브"
+        "liveOwnStream": "Aera 라이브",
+        "liveWatchNow": "지금 시청",
+        "liveWatchReplay": "다시 보기"
       },
       "spaceCard": {
         "space": "스페이스",

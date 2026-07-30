@@ -1,6 +1,6 @@
 # Active Context — Aera
 
-_Zuletzt aktualisiert: 29. Juli 2026_
+_Zuletzt aktualisiert: 30. Juli 2026_
 
 ## Aktueller Fokus
 
@@ -9,6 +9,32 @@ Drittsoftware (OBS optional) direkt im Browser per **WebRTC/WHIP** live gehen.
 Neueste Migrationen `20260729100000_live_source` + `20260729120000_live_ingest`
 („ingest"-Spalte als eigene Migration nachgezogen). Customer-Code von Cloudflare
 Stream wird auch als Adresse akzeptiert. Doku: `docs/live-streaming-setup.md`.
+
+## Letzte Änderungen (30. Juli 2026)
+
+### Live-Chat: Nachrichten kommen wieder zuverlässig live an
+- Der Polling-Fallback sprang nur bei hartem SSE-Fehler an. Blieb der Stream
+  offen, aber stumm (Keepalive-Pings ja, Events nein — z. B. mehrere Instanzen
+  ohne Redis oder puffernde Proxies), gab es weder Fehler noch Fallback:
+  Chat stumm bis zum Reload.
+- Fix in `live-room.tsx` + `browser-studio.tsx`: **deduplizierter Sync läuft
+  jetzt immer** (alle 4 s, SSE bleibt der sofortige Pfad), eigene Nachricht
+  sofort aus der POST-Antwort eingeblendet, Zeitstempel-Cursor als Ref statt
+  Stale Closure. In `chat-thread.tsx` pausiert das Polling bei offenem Stream
+  nicht mehr dauerhaft (periodischer Abgleich jeden 5. Tick).
+
+### Live-Karten: neues Design + „eine Bühne" bei laufender Sendung
+- `live-session-card.tsx` neu: **LIVE** als dunkle Bühne (rot pinging,
+  Glows, CTA „Jetzt ansehen"), **geplant** hell mit Countdown,
+  **Aufzeichnung** ruhig mit Wiedergabe-Verweis; `featured`-Prop als große
+  Hero-Variante.
+- Läuft eine Sendung, steht sie **allein** im Rampenlicht: Space-Seite
+  (`/c/[slug]/s/[spaceSlug]`) und Community-Startseite (`/c/[slug]`) zeigen
+  dann nur die eine Hero-Karte (Startseite mit pinging Punkt in der
+  Überschrift); geplante Streams rücken in die Scroll-Reihe, sobald nichts
+  mehr live ist. Live-Übersicht (`/c/[slug]/live`) bleibt gruppiert.
+- i18n: `liveWatchNow`/`liveWatchReplay` in allen 17 Vollkatalogen.
+  tsc 0 Fehler, ESLint sauber, 508/508 Tests grün.
 
 ## Letzte Änderungen (29. Juli 2026)
 

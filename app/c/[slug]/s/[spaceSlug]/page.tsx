@@ -867,6 +867,36 @@ export default async function SpacePage({
       );
     }
 
+    // Läuft eine Sendung, gehoert ihr die Seite: nur diese eine grosse
+    // Buehne, ohne konkurrierende Karten daneben.
+    const liveNow = sessions.find((s) => s.status === "LIVE");
+    if (liveNow) {
+      return (
+        <div>
+          {header}
+          <LiveSessionCard
+            featured
+            href={`/c/${slug}/s/${spaceSlug}?open=${liveNow.id}`}
+            title={liveNow.title}
+            status={liveNow.status}
+            statusLabel={t(`liveStatus.${liveNow.status}`)}
+            streamUrl={liveNow.streamUrl}
+            ownStreamLabel={liveNow.source === "AERA" ? t("liveOwnStream") : null}
+            startsAtLabel={liveNow.startsAt ? formatDateTime(liveNow.startsAt, locale) : null}
+            startsAtIso={liveNow.startsAt ? new Date(liveNow.startsAt).toISOString() : null}
+            watchNowLabel={t("liveWatchNow")}
+          />
+        </div>
+      );
+    }
+
+    // Ohne laufende Sendung: geplante zuerst (baldigstes zuerst), dann die
+    // Aufzeichnungen (neueste zuerst).
+    const upcoming = sessions
+      .filter((s) => s.status === "SCHEDULED")
+      .sort((a, b) => (a.startsAt ?? 0) > (b.startsAt ?? 0) ? 1 : -1);
+    const past = sessions.filter((s) => s.status === "ENDED");
+
     return (
       <div>
         {header}
@@ -874,7 +904,7 @@ export default async function SpacePage({
           <EmptyState icon="videos" title={t("liveNone")} hint={t("liveNoneHint")} />
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
-            {sessions.map((s) => (
+            {[...upcoming, ...past].map((s) => (
               <LiveSessionCard
                 key={s.id}
                 href={`/c/${slug}/s/${spaceSlug}?open=${s.id}`}
@@ -885,6 +915,7 @@ export default async function SpacePage({
                 ownStreamLabel={s.source === "AERA" ? t("liveOwnStream") : null}
                 startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
                 startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
+                watchReplayLabel={t("liveWatchReplay")}
               />
             ))}
           </div>
