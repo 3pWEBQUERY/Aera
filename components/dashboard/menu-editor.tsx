@@ -569,7 +569,12 @@ export function MenuEditor({
         {addFor && (
           <div className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 overflow-y-auto">
-              <div className="mx-auto max-w-xl space-y-7 px-6 py-10">
+              {/* Drei Spalten statt einer Kolonne: die Gruppen sind
+                  gleichrangige Antworten auf dieselbe Frage ("was soll da
+                  hin?") und lassen sich nebeneinander vergleichen, statt
+                  aneinander vorbeizuscrollen. Unter md bleibt es gestapelt —
+                  drei Spalten auf einem Telefon waeren Spalten von nichts. */}
+              <div className="mx-auto grid max-w-6xl items-start gap-5 px-6 py-10 md:grid-cols-3">
                 <Group title={t("groupSpaces")} hint={t("groupSpacesHint")}>
                   {spaces.length === 0 ? (
                     <p className="text-sm text-slate-400">{t("noSpaces")}</p>
@@ -621,6 +626,13 @@ export function MenuEditor({
   );
 }
 
+/**
+ * Eine Spalte des Auswahlblatts.
+ *
+ * Die Ueberschrift bleibt stehen, die Liste scrollt darunter: eine Community
+ * mit zwanzig Spaces soll die beiden anderen Spalten nicht aus dem Bild
+ * schieben, und man will beim Suchen sehen, wonach man sucht.
+ */
 function Group({
   title,
   hint,
@@ -631,12 +643,12 @@ function Group({
   children: React.ReactNode;
 }) {
   return (
-    <section>
+    <section className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
       <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
         {title}
       </h3>
-      <p className="mt-1 text-xs text-slate-400">{hint}</p>
-      <div className="mt-3 space-y-2">{children}</div>
+      <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint}</p>
+      <div className="mt-3 max-h-[46vh] space-y-2 overflow-y-auto pr-0.5">{children}</div>
     </section>
   );
 }
@@ -656,7 +668,7 @@ function Choice({
     <button
       type="button"
       onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-slate-200 p-3 text-left transition hover:border-slate-300 hover:bg-slate-50"
+      className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-slate-400 hover:shadow-[var(--shadow-card)]"
     >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
         <Icon name={icon} size={17} />
