@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "대시보드 내비게이션",
       "planner": "플래너",
       "lockedSuffix": "{plan} 전용",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "메뉴"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "메뉴",
+      "subtitle": "헤더 설명 아래의 줄 — 모든 헤더 스타일에 적용됩니다.",
+      "save": "저장",
+      "saving": "저장 중…",
+      "saved": "저장됨",
+      "barTitle": "줄에 표시",
+      "barHint": "설명 바로 아래에 표시됩니다. 2~4개가 가장 깔끔합니다.",
+      "moreTitle": "‘…’ 메뉴 안",
+      "moreHint": "자리를 차지하지 않고 접근할 수 있습니다. 자주 쓰지 않는 것은 여기로.",
+      "emptyZone": "비어 있음 — 항목을 추가하거나 다른 목록에서 끌어다 놓으세요.",
+      "add": "추가",
+      "addTitle": "메뉴 항목 추가",
+      "remove": "제거",
+      "toMore": "‘…’ 메뉴로 이동",
+      "toBar": "줄로 이동",
+      "editAria": "항목 편집",
+      "labelLabel": "라벨",
+      "urlLabel": "주소",
+      "spaceLabel": "스페이스",
+      "audienceLabel": "표시 대상",
+      "audienceHint": "보는 사람에게 의미 없는 항목은 보여주지 않는 것이 좋습니다.",
+      "styleLabel": "모양",
+      "styleHint": "채워진 항목은 하나까지. 둘이면 서로 효과를 잃습니다.",
+      "moreButtonTitle": "‘…’ 버튼",
+      "moreButtonHint": "항목이 배정되어 있을 때만 나타납니다.",
+      "moreEnabled": "‘…’ 버튼 표시",
+      "moreLabelLabel": "점 대신 문구",
+      "moreLabelPlaceholder": "비우면 점 세 개만",
+      "moreLabelHint": "문구를 넣으면 원형 버튼이 알약 모양이 됩니다. ‘더 보기’를 분명히 하고 싶을 때.",
+      "previewTitle": "미리보기",
+      "previewHint": "이 줄이 그대로 헤더에 표시됩니다(모든 스타일). 여기서는 링크가 동작하지 않습니다.",
+      "tipsMissing": "후원 스페이스 없음",
+      "tipsMissingHint": "‘후원하기’에는 후원 스페이스가 필요합니다. 없으면 항목이 숨겨집니다.",
+      "groupSpaces": "스페이스",
+      "groupSpacesHint": "커뮤니티의 한 영역으로 바로.",
+      "groupPages": "기능",
+      "groupPagesHint": "커뮤니티의 기본 페이지.",
+      "groupOther": "동작과 링크",
+      "groupOtherHint": "공유, 또는 그 밖의 어디든.",
+      "noSpaces": "아직 스페이스가 없습니다.",
+      "types": {
+        "HOME": "홈",
+        "SPACE": "스페이스",
+        "MEMBERS": "회원",
+        "LEADERBOARD": "순위",
+        "LIBRARY": "내 라이브러리",
+        "LIVE": "라이브",
+        "SEARCH": "검색",
+        "JOIN": "회원 되기",
+        "MEMBERSHIP": "내 멤버십",
+        "TIPS": "후원하기",
+        "DASHBOARD": "대시보드",
+        "SHARE": "공유",
+        "LINK": "사용자 링크"
+      },
+      "typeHints": {
+        "HOME": "홈으로",
+        "MEMBERS": "함께하는 사람들",
+        "LEADERBOARD": "점수와 순위",
+        "LIBRARY": "구매한 콘텐츠",
+        "LIVE": "진행 중·예정 방송",
+        "SEARCH": "전체 검색",
+        "JOIN": "멤버십과 가격",
+        "TIPS": "커뮤니티 후원 스페이스",
+        "DASHBOARD": "팀에게만 표시",
+        "SHARE": "주소 복사 또는 공유",
+        "LINK": "임의의 주소, 새 탭에서 열림",
+        "SPACE": "커뮤니티의 한 영역",
+        "MEMBERSHIP": "등급과 결제"
+      },
+      "viewers": {
+        "GUEST": "비회원",
+        "MEMBER": "회원",
+        "STAFF": "팀"
+      },
+      "audiences": {
+        "ALL": "모두",
+        "GUESTS": "비회원",
+        "MEMBERS": "회원",
+        "STAFF": "팀"
+      },
+      "styles": {
+        "SOLID": "채움",
+        "OUTLINE": "외곽선",
+        "PLAIN": "단순"
+      },
+      "urlMissing": "주소 없음"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "지금 방송 중",
         "upcoming": "예정",
         "past": "다시 보기"
+      }
+    },
+    "heroMenu": {
+      "more": "기타 옵션",
+      "copied": "링크를 복사했습니다",
+      "type": {
+        "HOME": "홈",
+        "SPACE": "스페이스",
+        "MEMBERS": "회원",
+        "LEADERBOARD": "순위",
+        "LIBRARY": "내 라이브러리",
+        "LIVE": "라이브",
+        "SEARCH": "검색",
+        "JOIN": "회원 되기",
+        "MEMBERSHIP": "내 멤버십",
+        "TIPS": "후원하기",
+        "DASHBOARD": "대시보드",
+        "SHARE": "공유",
+        "LINK": "사용자 링크"
       }
     }
   },

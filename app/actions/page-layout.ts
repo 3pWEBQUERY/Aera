@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import prisma, { setTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { parseLayout } from "@/lib/layout";
+import { parseHeroMenu, parseLayout } from "@/lib/layout";
 import { nameStatus } from "@/lib/tenant-name";
 import { tErr } from "@/lib/action-errors";
 import { activeRoleAtLeast } from "@/lib/tenant";
@@ -53,6 +53,10 @@ export async function saveLayoutAction(
     sectionsByAudience: payload.sectionsByAudience,
     nav: payload.nav,
     header: payload.header,
+    // Die Menüzeile hat ihre eigene Seite. Wer nur das Seitenlayout speichert,
+    // schickt sie nicht mit — dann bleibt der gespeicherte Stand stehen,
+    // statt auf die Standardbelegung zurückzufallen.
+    heroMenu: payload.heroMenu ?? (tenant.layout as { heroMenu?: unknown } | null)?.heroMenu,
   });
 
   const name = String(payload.name ?? tenant.name).trim().slice(0, 60) || tenant.name;
@@ -83,5 +87,56 @@ export async function saveLayoutAction(
   revalidatePath(`/c/${slug}`, "layout");
   revalidatePath(`/c/${slug}`);
   revalidatePath(`/dashboard/${slug}/layout`);
+  return { ok: true };
+}
+
+/**
+ * Nur die Menüzeile der Kopfzeile speichern.
+ *
+ * Eine eigene Aktion statt eines Zweigs in saveLayoutAction: die Menü-Seite
+ * schickt nichts über Name, Logo oder Abschnitte mit, und ein gemeinsamer
+ * Pfad müsste all das jedes Mal wieder zusammensetzen — mit dem Risiko, beim
+ * Speichern des Menüs versehentlich etwas anderes zu überschreiben.
+ */
+export async function saveHeroMenuAction(
+  _prev: LayoutState,
+  fd: FormData,
+): Promise<LayoutState> {
+  const slug = String(fd.get("tenant"));
+  const user = await getCurrentUser();
+  if (!user) return { error: await tErr("notAuthenticated") };
+
+  const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
+  if (!tenant) return { error: await tErr("communityNotFound") };
+  setTenantContext(tenant.id);
+
+  const membership = await prisma.membership.findUnique({
+    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+  });
+  if (!activeRoleAtLeast(membership, "MODERATOR")) {
+    return { error: await tErr("noPermission") };
+  }
+
+  let payload: unknown;
+  try {
+    payload = JSON.parse(String(fd.get("payload") || "{}"));
+  } catch {
+    return { error: await tErr("invalidData") };
+  }
+
+  // Der gespeicherte Rest bleibt unangetastet: einlesen, Menü ersetzen,
+  // zurückschreiben.
+  const current = parseLayout(tenant.layout);
+  const layout = { ...current, heroMenu: parseHeroMenu(payload) };
+
+  await prisma.tenant.update({
+    where: { id: tenant.id },
+    data: { layout: layout as unknown as object },
+  });
+
+  (await cookies()).delete(`aera_preview_${slug}`);
+  revalidatePath(`/c/${slug}`, "layout");
+  revalidatePath(`/c/${slug}`);
+  revalidatePath(`/dashboard/${slug}/menu`);
   return { ok: true };
 }

@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Nawigacja panelu",
       "planner": "Planer",
       "lockedSuffix": "tylko z {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "Wiersz pod opisem w nagłówku — dotyczy każdego stylu nagłówka.",
+      "save": "Zapisz",
+      "saving": "Zapisywanie…",
+      "saved": "Zapisano",
+      "barTitle": "W wierszu",
+      "barHint": "Widoczne bezpośrednio pod opisem. Od dwóch do czterech pozycji wygląda najspokojniej.",
+      "moreTitle": "W menu „…”",
+      "moreHint": "Dostępne, ale nie zajmuje miejsca. Wszystko rzadko używane należy tutaj.",
+      "emptyZone": "Puste — dodaj pozycje lub przeciągnij je z drugiej listy.",
+      "add": "Dodaj",
+      "addTitle": "Dodaj pozycję menu",
+      "remove": "Usuń",
+      "toMore": "Przenieś do menu „…”",
+      "toBar": "Przenieś do wiersza",
+      "editAria": "Edytuj pozycję",
+      "labelLabel": "Etykieta",
+      "urlLabel": "Adres",
+      "spaceLabel": "Przestrzeń",
+      "audienceLabel": "Widoczne dla",
+      "audienceHint": "Pozycje bez sensu dla odbiorcy nie powinny być pokazywane.",
+      "styleLabel": "Wygląd",
+      "styleHint": "Najwyżej jedna wypełniona pozycja. Dwie się znoszą.",
+      "moreButtonTitle": "Przycisk „…”",
+      "moreButtonHint": "Pojawia się tylko wtedy, gdy ma przypisane pozycje.",
+      "moreEnabled": "Pokaż przycisk „…”",
+      "moreLabelLabel": "Tekst zamiast kropek",
+      "moreLabelPlaceholder": "Puste = tylko trzy kropki",
+      "moreLabelHint": "Z tekstem okrągły przycisk staje się pigułką — gdy „Więcej” ma być wyraźniejsze.",
+      "previewTitle": "Podgląd",
+      "previewHint": "Dokładnie ten wiersz pojawi się w nagłówku — w każdym stylu. Linki tu nie działają.",
+      "tipsMissing": "Brak przestrzeni na napiwki",
+      "tipsMissingHint": "„Wsparcie” wymaga przestrzeni na napiwki. Dopóki jej nie ma, pozycja jest ukryta.",
+      "groupSpaces": "Przestrzenie",
+      "groupSpacesHint": "Bezpośrednio do obszaru społeczności.",
+      "groupPages": "Funkcje",
+      "groupPagesHint": "Wbudowane strony społeczności.",
+      "groupOther": "Akcje i linki",
+      "groupOtherHint": "Udostępnianie albo dowolne miejsce.",
+      "noSpaces": "Brak przestrzeni.",
+      "types": {
+        "HOME": "Strona główna",
+        "SPACE": "Przestrzeń",
+        "MEMBERS": "Członkowie",
+        "LEADERBOARD": "Ranking",
+        "LIBRARY": "Moja biblioteka",
+        "LIVE": "Na żywo",
+        "SEARCH": "Szukaj",
+        "JOIN": "Zostań członkiem",
+        "MEMBERSHIP": "Twoje członkostwo",
+        "TIPS": "Wsparcie",
+        "DASHBOARD": "Panel",
+        "SHARE": "Udostępnij",
+        "LINK": "Własny link"
+      },
+      "typeHints": {
+        "HOME": "Powrót na stronę główną",
+        "MEMBERS": "Kto jest w środku",
+        "LEADERBOARD": "Punkty i pozycje",
+        "LIBRARY": "Zakupione treści",
+        "LIVE": "Trwające i zaplanowane transmisje",
+        "SEARCH": "Szukaj we wszystkim",
+        "JOIN": "Członkostwa i ceny",
+        "TIPS": "Przestrzeń na napiwki",
+        "DASHBOARD": "Widoczne tylko dla zespołu",
+        "SHARE": "Skopiuj lub udostępnij adres",
+        "LINK": "Dowolny adres, otwiera nową kartę",
+        "SPACE": "Obszar społeczności",
+        "MEMBERSHIP": "Twój poziom i rozliczenia"
+      },
+      "viewers": {
+        "GUEST": "Gość",
+        "MEMBER": "Członek",
+        "STAFF": "Zespół"
+      },
+      "audiences": {
+        "ALL": "Wszyscy",
+        "GUESTS": "Goście",
+        "MEMBERS": "Członkowie",
+        "STAFF": "Zespół"
+      },
+      "styles": {
+        "SOLID": "Wypełniony",
+        "OUTLINE": "Obramowany",
+        "PLAIN": "Prosty"
+      },
+      "urlMissing": "Brak adresu"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "Trwa teraz",
         "upcoming": "Zaplanowane",
         "past": "Powtórki"
+      }
+    },
+    "heroMenu": {
+      "more": "Więcej opcji",
+      "copied": "Link skopiowany!",
+      "type": {
+        "HOME": "Strona główna",
+        "SPACE": "Przestrzeń",
+        "MEMBERS": "Członkowie",
+        "LEADERBOARD": "Ranking",
+        "LIBRARY": "Moja biblioteka",
+        "LIVE": "Na żywo",
+        "SEARCH": "Szukaj",
+        "JOIN": "Zostań członkiem",
+        "MEMBERSHIP": "Twoje członkostwo",
+        "TIPS": "Wsparcie",
+        "DASHBOARD": "Panel",
+        "SHARE": "Udostępnij",
+        "LINK": "Własny link"
       }
     }
   },

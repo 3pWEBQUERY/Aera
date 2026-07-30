@@ -1,6 +1,6 @@
 import { HeroActions } from "./hero-actions";
 import { SOCIAL_BY_KEY, SocialGlyph } from "@/components/dashboard/social-icons";
-import type { HeaderVariant, SocialLink } from "@/lib/layout";
+import type { HeaderVariant, HeroMenuConfig, SocialLink } from "@/lib/layout";
 
 /**
  * Kopfzeile der Community-Startseite in fuenf Ausfuehrungen.
@@ -31,6 +31,8 @@ export interface CommunityHeroData {
   /** Bilder freigegebener Beitraege fuer das Mosaik. */
   mosaic: string[];
   socials: SocialLink[];
+  /** Die Menüzeile — vom Creator unter Layout → Menü zusammengestellt. */
+  menu: HeroMenuConfig;
   isMember: boolean;
   isStaff: boolean;
   tipsHref: string | null;
@@ -198,7 +200,13 @@ function Editorial({ d }: { d: CommunityHeroData }) {
           )}
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
-          <HeroActions slug={d.slug} isMember={d.isMember} isStaff={d.isStaff} tipsHref={d.tipsHref} />
+          <HeroActions
+            slug={d.slug}
+            isMember={d.isMember}
+            isStaff={d.isStaff}
+            tipsHref={d.tipsHref}
+            menu={d.menu}
+          />
           <Socials d={d} />
         </div>
       </div>
@@ -287,7 +295,13 @@ function Mosaic({ d }: { d: CommunityHeroData }) {
           <p className="mx-auto mt-3 max-w-xl text-base leading-7 text-[#161613]/65">{d.tagline}</p>
         )}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-3 gap-y-3">
-          <HeroActions slug={d.slug} isMember={d.isMember} isStaff={d.isStaff} tipsHref={d.tipsHref} />
+          <HeroActions
+            slug={d.slug}
+            isMember={d.isMember}
+            isStaff={d.isStaff}
+            tipsHref={d.tipsHref}
+            menu={d.menu}
+          />
         </div>
         {d.socials.length > 0 && (
           <div className="mt-5 flex justify-center">
@@ -334,6 +348,7 @@ function Spotlight({ d }: { d: CommunityHeroData }) {
               isMember={d.isMember}
               isStaff={d.isStaff}
               tipsHref={d.tipsHref}
+              menu={d.menu}
               tone="light"
             />
             <Socials d={d} tone="light" />
@@ -406,6 +421,7 @@ function Immersive({ d }: { d: CommunityHeroData }) {
                 isMember={d.isMember}
                 isStaff={d.isStaff}
                 tipsHref={d.tipsHref}
+                menu={d.menu}
                 tone="light"
               />
               <Socials d={d} tone="light" />
@@ -438,7 +454,13 @@ function Compact({ d }: { d: CommunityHeroData }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-x-3 gap-y-3">
-          <HeroActions slug={d.slug} isMember={d.isMember} isStaff={d.isStaff} tipsHref={d.tipsHref} />
+          <HeroActions
+            slug={d.slug}
+            isMember={d.isMember}
+            isStaff={d.isStaff}
+            tipsHref={d.tipsHref}
+            menu={d.menu}
+          />
           <Socials d={d} />
         </div>
       </div>

@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Navigation du tableau de bord",
       "planner": "Planificateur",
       "lockedSuffix": "{plan} uniquement",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "La ligne sous la description de l’en-tête — s’applique à tous les styles.",
+      "save": "Enregistrer",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré",
+      "barTitle": "Dans la ligne",
+      "barHint": "Visible juste sous la description. Deux à quatre entrées restent lisibles.",
+      "moreTitle": "Dans le menu « … »",
+      "moreHint": "Accessible sans encombrer. Tout ce qui sert rarement va ici.",
+      "emptyZone": "Vide — ajoutez des entrées ou faites-les glisser depuis l’autre liste.",
+      "add": "Ajouter",
+      "addTitle": "Ajouter une entrée",
+      "remove": "Retirer",
+      "toMore": "Déplacer dans le menu « … »",
+      "toBar": "Déplacer dans la ligne",
+      "editAria": "Modifier l’entrée",
+      "labelLabel": "Libellé",
+      "urlLabel": "Adresse",
+      "spaceLabel": "Espace",
+      "audienceLabel": "Visible pour",
+      "audienceHint": "Une entrée qui n’a pas de sens pour le visiteur ne doit pas lui être proposée.",
+      "styleLabel": "Apparence",
+      "styleHint": "Un seul élément plein au maximum. Deux s’annulent.",
+      "moreButtonTitle": "Le bouton « … »",
+      "moreButtonHint": "Il n’apparaît que si des entrées lui sont affectées.",
+      "moreEnabled": "Afficher le bouton « … »",
+      "moreLabelLabel": "Libellé au lieu des points",
+      "moreLabelPlaceholder": "Vide = seulement les trois points",
+      "moreLabelHint": "Avec du texte, le bouton rond devient une pilule — utile si « Plus » doit être plus clair.",
+      "previewTitle": "Aperçu",
+      "previewHint": "Cette ligne exacte apparaîtra dans l’en-tête, dans tous les styles. Les liens sont inertes ici.",
+      "tipsMissing": "Pas d’espace pourboire",
+      "tipsMissingHint": "« Soutenir » nécessite un espace pourboire. Sans lui, l’entrée reste masquée.",
+      "groupSpaces": "Espaces",
+      "groupSpacesHint": "Directement vers un espace de ta communauté.",
+      "groupPages": "Fonctions",
+      "groupPagesHint": "Pages intégrées de ta communauté.",
+      "groupOther": "Actions et liens",
+      "groupOtherHint": "Le partage, ou n’importe où ailleurs.",
+      "noSpaces": "Aucun espace pour l’instant.",
+      "types": {
+        "HOME": "Accueil",
+        "SPACE": "Espace",
+        "MEMBERS": "Membres",
+        "LEADERBOARD": "Classement",
+        "LIBRARY": "Ma bibliothèque",
+        "LIVE": "En direct",
+        "SEARCH": "Recherche",
+        "JOIN": "Devenir membre",
+        "MEMBERSHIP": "Votre abonnement",
+        "TIPS": "Soutenir",
+        "DASHBOARD": "Tableau de bord",
+        "SHARE": "Partager",
+        "LINK": "Lien personnalisé"
+      },
+      "typeHints": {
+        "HOME": "Retour à l’accueil",
+        "MEMBERS": "Qui est là",
+        "LEADERBOARD": "Points et classement",
+        "LIBRARY": "Contenus achetés",
+        "LIVE": "Directs en cours et à venir",
+        "SEARCH": "Tout rechercher",
+        "JOIN": "Abonnements et tarifs",
+        "TIPS": "L’espace pourboire",
+        "DASHBOARD": "Visible uniquement par ton équipe",
+        "SHARE": "Copier ou partager l’adresse",
+        "LINK": "N’importe quelle adresse, nouvel onglet",
+        "SPACE": "Un espace de ta communauté",
+        "MEMBERSHIP": "Votre formule et facturation"
+      },
+      "viewers": {
+        "GUEST": "Visiteur",
+        "MEMBER": "Membre",
+        "STAFF": "Équipe"
+      },
+      "audiences": {
+        "ALL": "Tout le monde",
+        "GUESTS": "Visiteurs",
+        "MEMBERS": "Membres",
+        "STAFF": "Équipe"
+      },
+      "styles": {
+        "SOLID": "Plein",
+        "OUTLINE": "Contour",
+        "PLAIN": "Sobre"
+      },
+      "urlMissing": "Pas encore d’adresse"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "En direct maintenant",
         "upcoming": "À venir",
         "past": "Rediffusions"
+      }
+    },
+    "heroMenu": {
+      "more": "Plus d’options",
+      "copied": "Lien copié !",
+      "type": {
+        "HOME": "Accueil",
+        "SPACE": "Espace",
+        "MEMBERS": "Membres",
+        "LEADERBOARD": "Classement",
+        "LIBRARY": "Ma bibliothèque",
+        "LIVE": "En direct",
+        "SEARCH": "Recherche",
+        "JOIN": "Devenir membre",
+        "MEMBERSHIP": "Votre abonnement",
+        "TIPS": "Soutenir",
+        "DASHBOARD": "Tableau de bord",
+        "SHARE": "Partager",
+        "LINK": "Lien personnalisé"
       }
     }
   },

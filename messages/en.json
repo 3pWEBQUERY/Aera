@@ -2910,7 +2910,8 @@
       "mobileSubtitle": "Dashboard navigation",
       "planner": "Planner",
       "lockedSuffix": "{plan} only",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3319,6 +3320,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "The row under the description in the header — applies to every header style.",
+      "save": "Save",
+      "saving": "Saving…",
+      "saved": "Saved",
+      "barTitle": "In the row",
+      "barHint": "Directly visible under the description. Two to four items look calmest.",
+      "moreTitle": "In the “…” menu",
+      "moreHint": "Reachable without taking space. Everything rarely needed belongs here.",
+      "emptyZone": "Empty — add items or drag them here from the other list.",
+      "add": "Add",
+      "addTitle": "Add a menu item",
+      "remove": "Remove",
+      "toMore": "Move into the “…” menu",
+      "toBar": "Move into the row",
+      "editAria": "Edit item",
+      "labelLabel": "Label",
+      "urlLabel": "Address",
+      "spaceLabel": "Space",
+      "audienceLabel": "Visible to",
+      "audienceHint": "Items that make no sense for a viewer should not be offered to them.",
+      "styleLabel": "Appearance",
+      "styleHint": "At most one filled item. Two cancel each other out.",
+      "moreButtonTitle": "The “…” button",
+      "moreButtonHint": "It only appears when items are assigned to it.",
+      "moreEnabled": "Show the “…” button",
+      "moreLabelLabel": "Label instead of dots",
+      "moreLabelPlaceholder": "Empty = just the three dots",
+      "moreLabelHint": "With text the round button becomes a pill — useful when “More” should be clearer than “…”.",
+      "previewTitle": "Preview",
+      "previewHint": "This exact row appears in the header later — in every style. Links are inert here.",
+      "tipsMissing": "No tip space",
+      "tipsMissingHint": "“Support” needs a tip space. Until one exists, the item stays hidden.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Straight into one of your community's areas.",
+      "groupPages": "Features",
+      "groupPagesHint": "Built-in pages of your community.",
+      "groupOther": "Actions and links",
+      "groupOtherHint": "Sharing, or anywhere else.",
+      "noSpaces": "No spaces yet.",
+      "types": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Members",
+        "LEADERBOARD": "Leaderboard",
+        "LIBRARY": "My library",
+        "LIVE": "Live",
+        "SEARCH": "Search",
+        "JOIN": "Become a member",
+        "MEMBERSHIP": "Your membership",
+        "TIPS": "Support",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Share",
+        "LINK": "Custom link"
+      },
+      "typeHints": {
+        "HOME": "Back to the home page",
+        "MEMBERS": "Who is here",
+        "LEADERBOARD": "Points and ranks",
+        "LIBRARY": "Purchased content",
+        "LIVE": "Live and upcoming streams",
+        "SEARCH": "Search everything",
+        "JOIN": "Memberships and prices",
+        "TIPS": "The community's tip space",
+        "DASHBOARD": "Only visible to your team",
+        "SHARE": "Copy or share the address",
+        "LINK": "Any address, opens in a new tab",
+        "SPACE": "An area of your community",
+        "MEMBERSHIP": "Your tier and billing"
+      },
+      "viewers": {
+        "GUEST": "Guest",
+        "MEMBER": "Member",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Everyone",
+        "GUESTS": "Guests",
+        "MEMBERS": "Members",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Filled",
+        "OUTLINE": "Outlined",
+        "PLAIN": "Plain"
+      },
+      "urlMissing": "No address yet"
     }
   },
   "common": {
@@ -3800,6 +3890,25 @@
         "now": "Live now",
         "upcoming": "Upcoming",
         "past": "Replays"
+      }
+    },
+    "heroMenu": {
+      "more": "More options",
+      "copied": "Link copied!",
+      "type": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Members",
+        "LEADERBOARD": "Leaderboard",
+        "LIBRARY": "My library",
+        "LIVE": "Live",
+        "SEARCH": "Search",
+        "JOIN": "Become a member",
+        "MEMBERSHIP": "Your membership",
+        "TIPS": "Support",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Share",
+        "LINK": "Custom link"
       }
     }
   },

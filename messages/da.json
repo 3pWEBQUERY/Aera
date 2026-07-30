@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Dashboard-navigation",
       "planner": "Planlægger",
       "lockedSuffix": "kun med {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "Rækken under beskrivelsen i headeren — gælder for alle header-stilarter.",
+      "save": "Gem",
+      "saving": "Gemmer…",
+      "saved": "Gemt",
+      "barTitle": "I rækken",
+      "barHint": "Synlig direkte under beskrivelsen. To til fire punkter virker roligst.",
+      "moreTitle": "I “…”-menuen",
+      "moreHint": "Tilgængelig uden at tage plads. Alt sjældent brugt hører til her.",
+      "emptyZone": "Tom — tilføj punkter eller træk dem hertil fra den anden liste.",
+      "add": "Tilføj",
+      "addTitle": "Tilføj menupunkt",
+      "remove": "Fjern",
+      "toMore": "Flyt til “…”-menuen",
+      "toBar": "Flyt til rækken",
+      "editAria": "Rediger punkt",
+      "labelLabel": "Etiket",
+      "urlLabel": "Adresse",
+      "spaceLabel": "Space",
+      "audienceLabel": "Synlig for",
+      "audienceHint": "Punkter, der ikke giver mening for læseren, skal ikke tilbydes.",
+      "styleLabel": "Udseende",
+      "styleHint": "Højst ét udfyldt punkt. To ophæver hinanden.",
+      "moreButtonTitle": "“…”-knappen",
+      "moreButtonHint": "Den vises kun, når der er tildelt punkter.",
+      "moreEnabled": "Vis “…”-knappen",
+      "moreLabelLabel": "Tekst i stedet for punkter",
+      "moreLabelPlaceholder": "Tom = kun de tre punkter",
+      "moreLabelHint": "Med tekst bliver den runde knap en pille — nyttigt når “Mere” skal være tydeligere.",
+      "previewTitle": "Forhåndsvisning",
+      "previewHint": "Præcis denne række vises i headeren — i alle stilarter. Links er slået fra her.",
+      "tipsMissing": "Ingen tip-space",
+      "tipsMissingHint": "“Støt” kræver en tip-space. Indtil der er en, skjules punktet.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Direkte til et område i din community.",
+      "groupPages": "Funktioner",
+      "groupPagesHint": "Indbyggede sider i din community.",
+      "groupOther": "Handlinger og links",
+      "groupOtherHint": "Deling, eller et andet sted.",
+      "noSpaces": "Ingen spaces endnu.",
+      "types": {
+        "HOME": "Forside",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmer",
+        "LEADERBOARD": "Rangliste",
+        "LIBRARY": "Mit bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Søg",
+        "JOIN": "Bliv medlem",
+        "MEMBERSHIP": "Dit medlemskab",
+        "TIPS": "Støt",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Del",
+        "LINK": "Eget link"
+      },
+      "typeHints": {
+        "HOME": "Tilbage til forsiden",
+        "MEMBERS": "Hvem der er med",
+        "LEADERBOARD": "Point og rangeringer",
+        "LIBRARY": "Købt indhold",
+        "LIVE": "Aktuelle og planlagte streams",
+        "SEARCH": "Søg i alt",
+        "JOIN": "Medlemskaber og priser",
+        "TIPS": "Communityens tip-space",
+        "DASHBOARD": "Kun synlig for dit team",
+        "SHARE": "Kopiér eller del adressen",
+        "LINK": "En vilkårlig adresse, åbner ny fane",
+        "SPACE": "Et område i din community",
+        "MEMBERSHIP": "Dit niveau og betaling"
+      },
+      "viewers": {
+        "GUEST": "Gæst",
+        "MEMBER": "Medlem",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Alle",
+        "GUESTS": "Gæster",
+        "MEMBERS": "Medlemmer",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Udfyldt",
+        "OUTLINE": "Med kant",
+        "PLAIN": "Enkel"
+      },
+      "urlMissing": "Ingen adresse endnu"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "Kører nu",
         "upcoming": "Planlagt",
         "past": "Genudsendelser"
+      }
+    },
+    "heroMenu": {
+      "more": "Flere valg",
+      "copied": "Link kopieret!",
+      "type": {
+        "HOME": "Forside",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmer",
+        "LEADERBOARD": "Rangliste",
+        "LIBRARY": "Mit bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Søg",
+        "JOIN": "Bliv medlem",
+        "MEMBERSHIP": "Dit medlemskab",
+        "TIPS": "Støt",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Del",
+        "LINK": "Eget link"
       }
     }
   },

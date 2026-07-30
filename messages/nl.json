@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Dashboardnavigatie",
       "planner": "Planner",
       "lockedSuffix": "alleen met {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "De rij onder de beschrijving in de koptekst — geldt voor elke koptekststijl.",
+      "save": "Opslaan",
+      "saving": "Opslaan…",
+      "saved": "Opgeslagen",
+      "barTitle": "In de rij",
+      "barHint": "Direct zichtbaar onder de beschrijving. Twee tot vier items zijn het rustigst.",
+      "moreTitle": "In het ‘…’-menu",
+      "moreHint": "Bereikbaar zonder ruimte in te nemen. Alles wat zelden nodig is hoort hier.",
+      "emptyZone": "Leeg — voeg items toe of sleep ze hierheen uit de andere lijst.",
+      "add": "Toevoegen",
+      "addTitle": "Menu-item toevoegen",
+      "remove": "Verwijderen",
+      "toMore": "Naar het ‘…’-menu verplaatsen",
+      "toBar": "Naar de rij verplaatsen",
+      "editAria": "Item bewerken",
+      "labelLabel": "Label",
+      "urlLabel": "Adres",
+      "spaceLabel": "Space",
+      "audienceLabel": "Zichtbaar voor",
+      "audienceHint": "Items die voor een bezoeker geen zin hebben, hoef je niet aan te bieden.",
+      "styleLabel": "Weergave",
+      "styleHint": "Maximaal één gevuld item. Twee heffen elkaar op.",
+      "moreButtonTitle": "De ‘…’-knop",
+      "moreButtonHint": "Hij verschijnt alleen als er items aan zijn toegewezen.",
+      "moreEnabled": "‘…’-knop weergeven",
+      "moreLabelLabel": "Tekst in plaats van puntjes",
+      "moreLabelPlaceholder": "Leeg = alleen de drie puntjes",
+      "moreLabelHint": "Met tekst wordt de ronde knop een pil — handig als ‘Meer’ duidelijker moet zijn.",
+      "previewTitle": "Voorbeeld",
+      "previewHint": "Precies deze rij komt later in de koptekst — in elke stijl. Links doen hier niets.",
+      "tipsMissing": "Geen tip-space",
+      "tipsMissingHint": "‘Steunen’ vereist een tip-space. Zolang die ontbreekt, blijft het item verborgen.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Rechtstreeks naar een gebied van je community.",
+      "groupPages": "Functies",
+      "groupPagesHint": "Ingebouwde pagina's van je community.",
+      "groupOther": "Acties en links",
+      "groupOtherHint": "Delen, of ergens anders naartoe.",
+      "noSpaces": "Nog geen spaces.",
+      "types": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Leden",
+        "LEADERBOARD": "Ranglijst",
+        "LIBRARY": "Mijn bibliotheek",
+        "LIVE": "Live",
+        "SEARCH": "Zoeken",
+        "JOIN": "Lid worden",
+        "MEMBERSHIP": "Je lidmaatschap",
+        "TIPS": "Steunen",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Delen",
+        "LINK": "Eigen link"
+      },
+      "typeHints": {
+        "HOME": "Terug naar de startpagina",
+        "MEMBERS": "Wie erbij is",
+        "LEADERBOARD": "Punten en posities",
+        "LIBRARY": "Gekochte inhoud",
+        "LIVE": "Lopende en geplande streams",
+        "SEARCH": "Alles doorzoeken",
+        "JOIN": "Lidmaatschappen en prijzen",
+        "TIPS": "De tip-space van de community",
+        "DASHBOARD": "Alleen zichtbaar voor je team",
+        "SHARE": "Adres kopiëren of delen",
+        "LINK": "Elk adres, opent een nieuw tabblad",
+        "SPACE": "Een gebied van je community",
+        "MEMBERSHIP": "Je niveau en facturering"
+      },
+      "viewers": {
+        "GUEST": "Gast",
+        "MEMBER": "Lid",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Iedereen",
+        "GUESTS": "Gasten",
+        "MEMBERS": "Leden",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Gevuld",
+        "OUTLINE": "Omlijnd",
+        "PLAIN": "Eenvoudig"
+      },
+      "urlMissing": "Nog geen adres"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "Nu live",
         "upcoming": "Gepland",
         "past": "Herhalingen"
+      }
+    },
+    "heroMenu": {
+      "more": "Meer opties",
+      "copied": "Link gekopieerd!",
+      "type": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Leden",
+        "LEADERBOARD": "Ranglijst",
+        "LIBRARY": "Mijn bibliotheek",
+        "LIVE": "Live",
+        "SEARCH": "Zoeken",
+        "JOIN": "Lid worden",
+        "MEMBERSHIP": "Je lidmaatschap",
+        "TIPS": "Steunen",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Delen",
+        "LINK": "Eigen link"
       }
     }
   },

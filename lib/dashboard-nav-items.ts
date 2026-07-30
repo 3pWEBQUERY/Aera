@@ -68,6 +68,7 @@ export const NAV_GROUPS_AFTER: DashboardNavGroup[] = [
     labelKey: "settingsGroup",
     items: [
       { href: "/layout", labelKey: "layout", icon: "layout" },
+      { href: "/menu", labelKey: "menu", icon: "menu" },
       { href: "/settings", labelKey: "settings", icon: "settings" },
       { href: "/seo", labelKey: "seo", icon: "search" },
       { href: "/developers", labelKey: "developers", icon: "bolt", feature: "developers" },

@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Instrumentpanelsnavigering",
       "planner": "Planerare",
       "lockedSuffix": "endast {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Meny"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Meny",
+      "subtitle": "Raden under beskrivningen i rubriken — gäller alla rubrikstilar.",
+      "save": "Spara",
+      "saving": "Sparar…",
+      "saved": "Sparat",
+      "barTitle": "I raden",
+      "barHint": "Syns direkt under beskrivningen. Två till fyra poster ser lugnast ut.",
+      "moreTitle": "I ”…”-menyn",
+      "moreHint": "Nåbart utan att ta plats. Allt som används sällan hör hit.",
+      "emptyZone": "Tomt — lägg till poster eller dra dem hit från den andra listan.",
+      "add": "Lägg till",
+      "addTitle": "Lägg till menypost",
+      "remove": "Ta bort",
+      "toMore": "Flytta till ”…”-menyn",
+      "toBar": "Flytta till raden",
+      "editAria": "Redigera post",
+      "labelLabel": "Etikett",
+      "urlLabel": "Adress",
+      "spaceLabel": "Space",
+      "audienceLabel": "Synlig för",
+      "audienceHint": "Poster som inte betyder något för besökaren bör inte visas.",
+      "styleLabel": "Utseende",
+      "styleHint": "Högst en ifylld post. Två tar ut varandra.",
+      "moreButtonTitle": "”…”-knappen",
+      "moreButtonHint": "Den visas bara när poster är tilldelade.",
+      "moreEnabled": "Visa ”…”-knappen",
+      "moreLabelLabel": "Text i stället för punkter",
+      "moreLabelPlaceholder": "Tomt = bara de tre punkterna",
+      "moreLabelHint": "Med text blir den runda knappen en pill — bra när ”Mer” ska vara tydligare.",
+      "previewTitle": "Förhandsvisning",
+      "previewHint": "Exakt den här raden visas i rubriken — i alla stilar. Länkar är avstängda här.",
+      "tipsMissing": "Ingen tipsspace",
+      "tipsMissingHint": "”Stötta” kräver en tipsspace. Utan den är posten dold.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Direkt till ett område i din community.",
+      "groupPages": "Funktioner",
+      "groupPagesHint": "Inbyggda sidor i din community.",
+      "groupOther": "Åtgärder och länkar",
+      "groupOtherHint": "Delning, eller någon annanstans.",
+      "noSpaces": "Inga spaces än.",
+      "types": {
+        "HOME": "Hem",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmar",
+        "LEADERBOARD": "Topplista",
+        "LIBRARY": "Mitt bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Sök",
+        "JOIN": "Bli medlem",
+        "MEMBERSHIP": "Ditt medlemskap",
+        "TIPS": "Stötta",
+        "DASHBOARD": "Instrumentpanel",
+        "SHARE": "Dela",
+        "LINK": "Egen länk"
+      },
+      "typeHints": {
+        "HOME": "Tillbaka till startsidan",
+        "MEMBERS": "Vilka som är med",
+        "LEADERBOARD": "Poäng och placeringar",
+        "LIBRARY": "Köpt innehåll",
+        "LIVE": "Pågående och planerade sändningar",
+        "SEARCH": "Sök i allt",
+        "JOIN": "Medlemskap och priser",
+        "TIPS": "Communityns tipsspace",
+        "DASHBOARD": "Bara synligt för ditt team",
+        "SHARE": "Kopiera eller dela adressen",
+        "LINK": "Vilken adress som helst, öppnas i ny flik",
+        "SPACE": "Ett område i din community",
+        "MEMBERSHIP": "Din nivå och betalning"
+      },
+      "viewers": {
+        "GUEST": "Gäst",
+        "MEMBER": "Medlem",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Alla",
+        "GUESTS": "Gäster",
+        "MEMBERS": "Medlemmar",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Ifylld",
+        "OUTLINE": "Konturerad",
+        "PLAIN": "Enkel"
+      },
+      "urlMissing": "Ingen adress än"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "Sänds nu",
         "upcoming": "Kommande",
         "past": "Repriser"
+      }
+    },
+    "heroMenu": {
+      "more": "Fler alternativ",
+      "copied": "Länk kopierad!",
+      "type": {
+        "HOME": "Hem",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmar",
+        "LEADERBOARD": "Topplista",
+        "LIBRARY": "Mitt bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Sök",
+        "JOIN": "Bli medlem",
+        "MEMBERSHIP": "Ditt medlemskap",
+        "TIPS": "Stötta",
+        "DASHBOARD": "Instrumentpanel",
+        "SHARE": "Dela",
+        "LINK": "Egen länk"
       }
     }
   },

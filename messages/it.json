@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Navigazione dashboard",
       "planner": "Pianificatore",
       "lockedSuffix": "solo con {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menu"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menu",
+      "subtitle": "La riga sotto la descrizione nell’intestazione — vale per ogni stile.",
+      "save": "Salva",
+      "saving": "Salvataggio…",
+      "saved": "Salvato",
+      "barTitle": "Nella riga",
+      "barHint": "Visibile subito sotto la descrizione. Da due a quattro voci restano leggibili.",
+      "moreTitle": "Nel menu «…»",
+      "moreHint": "Raggiungibile senza occupare spazio. Tutto ciò che serve raramente va qui.",
+      "emptyZone": "Vuoto — aggiungi voci o trascinale qui dall’altra lista.",
+      "add": "Aggiungi",
+      "addTitle": "Aggiungi una voce",
+      "remove": "Rimuovi",
+      "toMore": "Sposta nel menu «…»",
+      "toBar": "Sposta nella riga",
+      "editAria": "Modifica voce",
+      "labelLabel": "Etichetta",
+      "urlLabel": "Indirizzo",
+      "spaceLabel": "Space",
+      "audienceLabel": "Visibile a",
+      "audienceHint": "Le voci che non hanno senso per chi guarda non vanno offerte.",
+      "styleLabel": "Aspetto",
+      "styleHint": "Al massimo una voce piena. Due si annullano.",
+      "moreButtonTitle": "Il pulsante «…»",
+      "moreButtonHint": "Compare solo se gli sono assegnate voci.",
+      "moreEnabled": "Mostra il pulsante «…»",
+      "moreLabelLabel": "Testo invece dei punti",
+      "moreLabelPlaceholder": "Vuoto = solo i tre punti",
+      "moreLabelHint": "Con il testo il pulsante rotondo diventa una pillola — utile se «Altro» deve essere più chiaro.",
+      "previewTitle": "Anteprima",
+      "previewHint": "Questa riga comparirà nell’intestazione, in ogni stile. Qui i link sono disattivati.",
+      "tipsMissing": "Nessuno spazio mance",
+      "tipsMissingHint": "«Sostieni» richiede uno spazio mance. Finché non esiste, la voce resta nascosta.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Direttamente in un’area della community.",
+      "groupPages": "Funzioni",
+      "groupPagesHint": "Pagine integrate della community.",
+      "groupOther": "Azioni e link",
+      "groupOtherHint": "Condivisione, o qualunque altro posto.",
+      "noSpaces": "Ancora nessuno space.",
+      "types": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Membri",
+        "LEADERBOARD": "Classifica",
+        "LIBRARY": "La mia libreria",
+        "LIVE": "Live",
+        "SEARCH": "Cerca",
+        "JOIN": "Diventa membro",
+        "MEMBERSHIP": "Il tuo abbonamento",
+        "TIPS": "Sostieni",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Condividi",
+        "LINK": "Link personalizzato"
+      },
+      "typeHints": {
+        "HOME": "Torna alla home",
+        "MEMBERS": "Chi c’è",
+        "LEADERBOARD": "Punti e posizioni",
+        "LIBRARY": "Contenuti acquistati",
+        "LIVE": "Streaming in corso e in arrivo",
+        "SEARCH": "Cerca tutto",
+        "JOIN": "Abbonamenti e prezzi",
+        "TIPS": "Lo spazio mance",
+        "DASHBOARD": "Visibile solo al tuo team",
+        "SHARE": "Copia o condividi l’indirizzo",
+        "LINK": "Qualsiasi indirizzo, apre una nuova scheda",
+        "SPACE": "Un’area della community",
+        "MEMBERSHIP": "Il tuo piano e la fatturazione"
+      },
+      "viewers": {
+        "GUEST": "Ospite",
+        "MEMBER": "Membro",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Tutti",
+        "GUESTS": "Ospiti",
+        "MEMBERS": "Membri",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Pieno",
+        "OUTLINE": "Bordato",
+        "PLAIN": "Semplice"
+      },
+      "urlMissing": "Nessun indirizzo"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "In onda ora",
         "upcoming": "In programma",
         "past": "Repliche"
+      }
+    },
+    "heroMenu": {
+      "more": "Altre opzioni",
+      "copied": "Link copiato!",
+      "type": {
+        "HOME": "Home",
+        "SPACE": "Space",
+        "MEMBERS": "Membri",
+        "LEADERBOARD": "Classifica",
+        "LIBRARY": "La mia libreria",
+        "LIVE": "Live",
+        "SEARCH": "Cerca",
+        "JOIN": "Diventa membro",
+        "MEMBERSHIP": "Il tuo abbonamento",
+        "TIPS": "Sostieni",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Condividi",
+        "LINK": "Link personalizzato"
       }
     }
   },

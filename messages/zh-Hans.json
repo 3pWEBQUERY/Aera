@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "仪表板导航",
       "planner": "规划器",
       "lockedSuffix": "仅限 {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "菜单"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "菜单",
+      "subtitle": "页头描述下方的那一行——适用于所有页头样式。",
+      "save": "保存",
+      "saving": "保存中…",
+      "saved": "已保存",
+      "barTitle": "显示在行内",
+      "barHint": "直接显示在描述下方。两到四项看起来最清爽。",
+      "moreTitle": "在“…”菜单中",
+      "moreHint": "可访问但不占位置。不常用的都放这里。",
+      "emptyZone": "为空——添加项目，或从另一个列表拖到这里。",
+      "add": "添加",
+      "addTitle": "添加菜单项",
+      "remove": "移除",
+      "toMore": "移到“…”菜单",
+      "toBar": "移到行内",
+      "editAria": "编辑项目",
+      "labelLabel": "文字",
+      "urlLabel": "地址",
+      "spaceLabel": "空间",
+      "audienceLabel": "显示给",
+      "audienceHint": "对访客没有意义的项目就不该出现。",
+      "styleLabel": "外观",
+      "styleHint": "最多一个实心项。两个会互相削弱。",
+      "moreButtonTitle": "“…”按钮",
+      "moreButtonHint": "仅当有项目分配给它时才出现。",
+      "moreEnabled": "显示“…”按钮",
+      "moreLabelLabel": "用文字代替圆点",
+      "moreLabelPlaceholder": "留空 = 仅三个圆点",
+      "moreLabelHint": "加上文字后，圆形按钮变成胶囊形——想让“更多”更明确时用。",
+      "previewTitle": "预览",
+      "previewHint": "这一行就是页头里将显示的样子（所有样式）。此处链接不跳转。",
+      "tipsMissing": "没有打赏空间",
+      "tipsMissingHint": "“支持”需要一个打赏空间。没有时该项会隐藏。",
+      "groupSpaces": "空间",
+      "groupSpacesHint": "直接进入社区中的某个板块。",
+      "groupPages": "功能",
+      "groupPagesHint": "社区内置页面。",
+      "groupOther": "操作与链接",
+      "groupOtherHint": "分享，或任何其他地方。",
+      "noSpaces": "还没有空间。",
+      "types": {
+        "HOME": "首页",
+        "SPACE": "空间",
+        "MEMBERS": "成员",
+        "LEADERBOARD": "排行榜",
+        "LIBRARY": "我的库",
+        "LIVE": "直播",
+        "SEARCH": "搜索",
+        "JOIN": "成为会员",
+        "MEMBERSHIP": "你的会员",
+        "TIPS": "支持",
+        "DASHBOARD": "控制台",
+        "SHARE": "分享",
+        "LINK": "自定义链接"
+      },
+      "typeHints": {
+        "HOME": "返回首页",
+        "MEMBERS": "都有谁",
+        "LEADERBOARD": "积分与排名",
+        "LIBRARY": "已购内容",
+        "LIVE": "正在进行和计划中的直播",
+        "SEARCH": "搜索全部",
+        "JOIN": "会员与价格",
+        "TIPS": "社区的打赏空间",
+        "DASHBOARD": "仅你的团队可见",
+        "SHARE": "复制或分享地址",
+        "LINK": "任意地址，在新标签页打开",
+        "SPACE": "社区中的一个板块",
+        "MEMBERSHIP": "你的等级与账单"
+      },
+      "viewers": {
+        "GUEST": "访客",
+        "MEMBER": "会员",
+        "STAFF": "团队"
+      },
+      "audiences": {
+        "ALL": "所有人",
+        "GUESTS": "访客",
+        "MEMBERS": "会员",
+        "STAFF": "团队"
+      },
+      "styles": {
+        "SOLID": "实心",
+        "OUTLINE": "描边",
+        "PLAIN": "朴素"
+      },
+      "urlMissing": "还没有地址"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "正在直播",
         "upcoming": "即将开始",
         "past": "回放"
+      }
+    },
+    "heroMenu": {
+      "more": "更多选项",
+      "copied": "链接已复制！",
+      "type": {
+        "HOME": "首页",
+        "SPACE": "空间",
+        "MEMBERS": "成员",
+        "LEADERBOARD": "排行榜",
+        "LIBRARY": "我的库",
+        "LIVE": "直播",
+        "SEARCH": "搜索",
+        "JOIN": "成为会员",
+        "MEMBERSHIP": "你的会员",
+        "TIPS": "支持",
+        "DASHBOARD": "控制台",
+        "SHARE": "分享",
+        "LINK": "自定义链接"
       }
     }
   },

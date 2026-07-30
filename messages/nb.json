@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Dashbordnavigasjon",
       "planner": "Planlegger",
       "lockedSuffix": "kun med {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Meny"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Meny",
+      "subtitle": "Raden under beskrivelsen i toppfeltet — gjelder alle toppfeltstiler.",
+      "save": "Lagre",
+      "saving": "Lagrer…",
+      "saved": "Lagret",
+      "barTitle": "I raden",
+      "barHint": "Synlig rett under beskrivelsen. To til fire punkter virker roligst.",
+      "moreTitle": "I «…»-menyen",
+      "moreHint": "Tilgjengelig uten å ta plass. Alt som brukes sjelden hører hit.",
+      "emptyZone": "Tom — legg til punkter eller dra dem hit fra den andre listen.",
+      "add": "Legg til",
+      "addTitle": "Legg til menypunkt",
+      "remove": "Fjern",
+      "toMore": "Flytt til «…»-menyen",
+      "toBar": "Flytt til raden",
+      "editAria": "Rediger punkt",
+      "labelLabel": "Merkelapp",
+      "urlLabel": "Adresse",
+      "spaceLabel": "Space",
+      "audienceLabel": "Synlig for",
+      "audienceHint": "Punkter som ikke gir mening for leseren, bør ikke tilbys.",
+      "styleLabel": "Utseende",
+      "styleHint": "Høyst ett fylt punkt. To opphever hverandre.",
+      "moreButtonTitle": "«…»-knappen",
+      "moreButtonHint": "Den vises bare når punkter er tilordnet.",
+      "moreEnabled": "Vis «…»-knappen",
+      "moreLabelLabel": "Tekst i stedet for punkter",
+      "moreLabelPlaceholder": "Tom = bare de tre punktene",
+      "moreLabelHint": "Med tekst blir den runde knappen en pille — nyttig når «Mer» skal være tydeligere.",
+      "previewTitle": "Forhåndsvisning",
+      "previewHint": "Nøyaktig denne raden vises i toppfeltet — i alle stiler. Lenker er avslått her.",
+      "tipsMissing": "Ingen tips-space",
+      "tipsMissingHint": "«Støtt» krever en tips-space. Uten den skjules punktet.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Direkte til et område i fellesskapet.",
+      "groupPages": "Funksjoner",
+      "groupPagesHint": "Innebygde sider i fellesskapet.",
+      "groupOther": "Handlinger og lenker",
+      "groupOtherHint": "Deling, eller et annet sted.",
+      "noSpaces": "Ingen spaces ennå.",
+      "types": {
+        "HOME": "Hjem",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmer",
+        "LEADERBOARD": "Ledertavle",
+        "LIBRARY": "Mitt bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Søk",
+        "JOIN": "Bli medlem",
+        "MEMBERSHIP": "Medlemskapet ditt",
+        "TIPS": "Støtt",
+        "DASHBOARD": "Dashbord",
+        "SHARE": "Del",
+        "LINK": "Egen lenke"
+      },
+      "typeHints": {
+        "HOME": "Tilbake til forsiden",
+        "MEMBERS": "Hvem som er med",
+        "LEADERBOARD": "Poeng og plasseringer",
+        "LIBRARY": "Kjøpt innhold",
+        "LIVE": "Pågående og planlagte sendinger",
+        "SEARCH": "Søk i alt",
+        "JOIN": "Medlemskap og priser",
+        "TIPS": "Fellesskapets tips-space",
+        "DASHBOARD": "Bare synlig for teamet ditt",
+        "SHARE": "Kopier eller del adressen",
+        "LINK": "En hvilken som helst adresse, åpner ny fane",
+        "SPACE": "Et område i fellesskapet",
+        "MEMBERSHIP": "Nivået ditt og betaling"
+      },
+      "viewers": {
+        "GUEST": "Gjest",
+        "MEMBER": "Medlem",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Alle",
+        "GUESTS": "Gjester",
+        "MEMBERS": "Medlemmer",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Fylt",
+        "OUTLINE": "Med kant",
+        "PLAIN": "Enkel"
+      },
+      "urlMissing": "Ingen adresse ennå"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "Direkte nå",
         "upcoming": "Kommende",
         "past": "Reprisér"
+      }
+    },
+    "heroMenu": {
+      "more": "Flere valg",
+      "copied": "Lenke kopiert!",
+      "type": {
+        "HOME": "Hjem",
+        "SPACE": "Space",
+        "MEMBERS": "Medlemmer",
+        "LEADERBOARD": "Ledertavle",
+        "LIBRARY": "Mitt bibliotek",
+        "LIVE": "Live",
+        "SEARCH": "Søk",
+        "JOIN": "Bli medlem",
+        "MEMBERSHIP": "Medlemskapet ditt",
+        "TIPS": "Støtt",
+        "DASHBOARD": "Dashbord",
+        "SHARE": "Del",
+        "LINK": "Egen lenke"
       }
     }
   },

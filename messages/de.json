@@ -2910,7 +2910,8 @@
       "mobileSubtitle": "Dashboard-Navigation",
       "planner": "Planer",
       "lockedSuffix": "nur mit {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menü"
     },
     "media": {
       "metaTitle": "Medien",
@@ -3319,6 +3320,95 @@
       "previewSearch": "Google-Vorschau",
       "previewSocial": "Beim Teilen",
       "derivedNote": "Alles, was du leer lässt, wird aus den Angaben von {name} abgeleitet — du musst hier nichts ausfüllen, damit es funktioniert."
+    },
+    "heroMenu": {
+      "title": "Menü",
+      "subtitle": "Die Zeile unter der Beschreibung in der Kopfzeile — gilt für jeden Kopfzeilen-Stil.",
+      "save": "Speichern",
+      "saving": "Wird gespeichert…",
+      "saved": "Gespeichert",
+      "barTitle": "In der Zeile",
+      "barHint": "Steht direkt sichtbar unter der Beschreibung. Zwei bis vier Punkte wirken am ruhigsten.",
+      "moreTitle": "Im „…“-Menü",
+      "moreHint": "Erreichbar, aber nicht im Weg. Alles, was selten gebraucht wird, gehört hierher.",
+      "emptyZone": "Leer — Punkte hinzufügen oder aus der anderen Liste hierher ziehen.",
+      "add": "Hinzufügen",
+      "addTitle": "Menüpunkt hinzufügen",
+      "remove": "Entfernen",
+      "toMore": "Ins „…“-Menü verschieben",
+      "toBar": "In die Zeile verschieben",
+      "editAria": "Punkt bearbeiten",
+      "labelLabel": "Beschriftung",
+      "urlLabel": "Adresse",
+      "spaceLabel": "Space",
+      "audienceLabel": "Sichtbar für",
+      "audienceHint": "Punkte, die für den Betrachter keinen Sinn haben, sollen ihm auch nicht angeboten werden.",
+      "styleLabel": "Darstellung",
+      "styleHint": "Höchstens ein gefüllter Punkt. Zwei nehmen sich gegenseitig die Wirkung.",
+      "moreButtonTitle": "Der „…“-Knopf",
+      "moreButtonHint": "Er erscheint nur, wenn ihm Punkte zugewiesen sind.",
+      "moreEnabled": "„…“-Knopf anzeigen",
+      "moreLabelLabel": "Beschriftung statt Punkte",
+      "moreLabelPlaceholder": "Leer = nur die drei Punkte",
+      "moreLabelHint": "Mit Text wird aus dem runden Knopf eine Pille — passend, wenn „Mehr“ deutlicher sein soll als „…“.",
+      "previewTitle": "Vorschau",
+      "previewHint": "Genau diese Zeile steht später in der Kopfzeile — in jedem Stil. Links sind hier stillgelegt.",
+      "tipsMissing": "Kein Trinkgeld-Space",
+      "tipsMissingHint": "„Unterstützen“ braucht einen Trinkgeld-Space. Solange es keinen gibt, bleibt der Punkt ausgeblendet.",
+      "groupSpaces": "Spaces",
+      "groupSpacesHint": "Direkt in einen Bereich deiner Community.",
+      "groupPages": "Funktionen",
+      "groupPagesHint": "Eingebaute Seiten deiner Community.",
+      "groupOther": "Aktionen und Links",
+      "groupOtherHint": "Teilen, oder irgendwohin sonst.",
+      "noSpaces": "Noch keine Spaces angelegt.",
+      "types": {
+        "HOME": "Startseite",
+        "SPACE": "Space",
+        "MEMBERS": "Mitglieder",
+        "LEADERBOARD": "Rangliste",
+        "LIBRARY": "Meine Bibliothek",
+        "LIVE": "Live",
+        "SEARCH": "Suche",
+        "JOIN": "Mitglied werden",
+        "MEMBERSHIP": "Deine Mitgliedschaft",
+        "TIPS": "Unterstützen",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Teilen",
+        "LINK": "Eigener Link"
+      },
+      "typeHints": {
+        "HOME": "Zurück zur Startseite",
+        "MEMBERS": "Wer alles dabei ist",
+        "LEADERBOARD": "Punkte und Ränge",
+        "LIBRARY": "Gekaufte Inhalte",
+        "LIVE": "Laufende und geplante Streams",
+        "SEARCH": "Alles durchsuchen",
+        "JOIN": "Mitgliedschaften und Preise",
+        "TIPS": "Trinkgeld-Space der Community",
+        "DASHBOARD": "Nur für dein Team sichtbar",
+        "SHARE": "Adresse kopieren oder teilen",
+        "LINK": "Irgendeine Adresse, öffnet neuen Tab",
+        "SPACE": "Ein Bereich deiner Community",
+        "MEMBERSHIP": "Deine Stufe und Abrechnung"
+      },
+      "viewers": {
+        "GUEST": "Gast",
+        "MEMBER": "Mitglied",
+        "STAFF": "Team"
+      },
+      "audiences": {
+        "ALL": "Alle",
+        "GUESTS": "Gäste",
+        "MEMBERS": "Mitglieder",
+        "STAFF": "Team"
+      },
+      "styles": {
+        "SOLID": "Gefüllt",
+        "OUTLINE": "Umrandet",
+        "PLAIN": "Schlicht"
+      },
+      "urlMissing": "Noch keine Adresse"
     }
   },
   "common": {
@@ -3800,6 +3890,25 @@
         "now": "Läuft gerade",
         "upcoming": "Geplant",
         "past": "Wiederholungen"
+      }
+    },
+    "heroMenu": {
+      "more": "Weitere Optionen",
+      "copied": "Link kopiert!",
+      "type": {
+        "HOME": "Startseite",
+        "SPACE": "Space",
+        "MEMBERS": "Mitglieder",
+        "LEADERBOARD": "Rangliste",
+        "LIBRARY": "Meine Bibliothek",
+        "LIVE": "Live",
+        "SEARCH": "Suche",
+        "JOIN": "Mitglied werden",
+        "MEMBERSHIP": "Deine Mitgliedschaft",
+        "TIPS": "Unterstützen",
+        "DASHBOARD": "Dashboard",
+        "SHARE": "Teilen",
+        "LINK": "Eigener Link"
       }
     }
   },

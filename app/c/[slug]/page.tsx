@@ -339,6 +339,7 @@ export default async function CommunityHome({
     // Titelbild auch dann, wenn der Creator sich dagegen entschieden hatte.
     coverUrl: layoutConfig.header.mode === "PHOTO" ? null : coverUrl,
     primaryColor: preview?.primaryColor ?? tenant.primaryColor,
+    menu: layoutConfig.heroMenu,
     memberCount,
     postCount,
     priceLabel: cheapestPaidTier

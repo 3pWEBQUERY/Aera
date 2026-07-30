@@ -57,6 +57,182 @@ export interface NavItemConfig {
   value?: string;
 }
 
+// ------------------------------------------------------- Menü der Kopfzeile
+/**
+ * Die Zeile unter der Beschreibung auf der Community-Startseite.
+ *
+ * Sie stand bisher fest: eine Beitritts-Pille, optional "Unterstuetzen" und
+ * ein "…"-Knopf mit vier immer gleichen Einträgen. Jetzt stellt der Creator
+ * sie zusammen — aus Spaces, eingebauten Seiten, eigenen Adressen und den
+ * beiden Aktionen (Teilen, Beitreten).
+ *
+ * Zwei Dinge machen daraus mehr als eine Linkliste:
+ *
+ * `slot` entscheidet, ob ein Punkt in der Zeile steht oder im "…"-Menü. Damit
+ * ist der Drei-Punkte-Knopf nichts Festes mehr, sondern der Ort für alles,
+ * was zwar erreichbar sein soll, aber nicht die Zeile belegen darf.
+ *
+ * `audience` blendet einen Punkt für die aus, für die er nicht gilt: "Deine
+ * Mitgliedschaft" hat für einen Gast keinen Sinn, "Kostenlos beitreten" für
+ * ein Mitglied keinen. Genau das tat die alte, fest verdrahtete Liste — nur
+ * konnte man es nicht ändern.
+ */
+export type HeroMenuType =
+  | "SPACE"
+  | "HOME"
+  | "MEMBERS"
+  | "LEADERBOARD"
+  | "LIBRARY"
+  | "LIVE"
+  | "SEARCH"
+  | "JOIN"
+  | "TIPS"
+  | "DASHBOARD"
+  | "SHARE"
+  | "LINK";
+
+export type HeroMenuSlot = "BAR" | "MORE";
+
+/** Für wen ein Punkt sichtbar ist. */
+export type HeroMenuAudience = "ALL" | "GUESTS" | "MEMBERS" | "STAFF";
+
+/** Wie ein Punkt in der Zeile aussieht. Im "…"-Menü spielt es keine Rolle. */
+export type HeroMenuStyle = "SOLID" | "OUTLINE" | "PLAIN";
+
+export interface HeroMenuItem {
+  id: string;
+  label: string;
+  type: HeroMenuType;
+  /** Space-Slug (SPACE) bzw. Adresse (LINK). */
+  value?: string;
+  icon?: IconName;
+  slot: HeroMenuSlot;
+  audience: HeroMenuAudience;
+  style: HeroMenuStyle;
+}
+
+export interface HeroMenuConfig {
+  items: HeroMenuItem[];
+  /** Der "…"-Knopf: abschaltbar, beschriftbar. */
+  more: { enabled: boolean; label: string };
+}
+
+/** So viele Punkte trägt die Zeile, bevor sie unruhig wird. */
+export const HERO_MENU_MAX = 24;
+
+export const HERO_MENU_TYPES: HeroMenuType[] = [
+  "SPACE",
+  "HOME",
+  "MEMBERS",
+  "LEADERBOARD",
+  "LIBRARY",
+  "LIVE",
+  "SEARCH",
+  "JOIN",
+  "TIPS",
+  "DASHBOARD",
+  "SHARE",
+  "LINK",
+];
+
+export const HERO_MENU_ICON: Record<HeroMenuType, IconName> = {
+  SPACE: "spaces",
+  HOME: "home",
+  MEMBERS: "members",
+  LEADERBOARD: "trophy",
+  LIBRARY: "gallery",
+  LIVE: "broadcast",
+  SEARCH: "search",
+  JOIN: "tiers",
+  TIPS: "heart",
+  DASHBOARD: "dashboard",
+  SHARE: "share",
+  LINK: "external",
+};
+
+/** Punkte, die von sich aus nur für ein Publikum sinnvoll sind. */
+export const HERO_MENU_DEFAULT_AUDIENCE: Partial<Record<HeroMenuType, HeroMenuAudience>> = {
+  JOIN: "GUESTS",
+  LIBRARY: "MEMBERS",
+  DASHBOARD: "STAFF",
+};
+
+/**
+ * Die Belegung, die eine Community ohne eigene Einstellung sieht — genau das,
+ * was die Kopfzeile vorher fest anzeigte. Wer nichts ändert, merkt nichts.
+ */
+export function defaultHeroMenu(): HeroMenuConfig {
+  const item = (
+    id: string,
+    type: HeroMenuType,
+    slot: HeroMenuSlot,
+    audience: HeroMenuAudience = "ALL",
+    style: HeroMenuStyle = "PLAIN",
+  ): HeroMenuItem => ({ id, label: "", type, slot, audience, style, icon: undefined });
+  return {
+    items: [
+      item("d-join", "JOIN", "BAR", "GUESTS", "SOLID"),
+      item("d-tips", "TIPS", "BAR", "ALL", "OUTLINE"),
+      item("d-library", "LIBRARY", "MORE", "MEMBERS"),
+      item("d-member", "JOIN", "MORE", "MEMBERS"),
+      item("d-members", "MEMBERS", "MORE"),
+      item("d-board", "LEADERBOARD", "MORE"),
+      item("d-dash", "DASHBOARD", "MORE", "STAFF"),
+      item("d-share", "SHARE", "MORE"),
+    ],
+    more: { enabled: true, label: "" },
+  };
+}
+
+/** Adresse eines Menüpunkts. Aktionen (SHARE) haben keine. */
+export function heroMenuHref(item: HeroMenuItem, slug: string): string | null {
+  switch (item.type) {
+    case "SPACE":
+      return item.value ? `/c/${slug}/s/${item.value}` : null;
+    case "HOME":
+      return `/c/${slug}`;
+    case "MEMBERS":
+      return `/c/${slug}/members`;
+    case "LEADERBOARD":
+      return `/c/${slug}/leaderboard`;
+    case "LIBRARY":
+      return `/c/${slug}/library`;
+    case "LIVE":
+      return `/c/${slug}/live`;
+    case "SEARCH":
+      return `/c/${slug}/search`;
+    case "JOIN":
+      return `/c/${slug}/join`;
+    case "TIPS":
+      // Der Trinkgeld-Space heisst je Community anders; die Adresse kommt
+      // deshalb von aussen und steht in `value`.
+      return item.value ?? null;
+    case "DASHBOARD":
+      return `/dashboard/${slug}`;
+    case "LINK":
+      return item.value ?? null;
+    case "SHARE":
+      return null;
+  }
+}
+
+/** Gilt der Punkt für diesen Betrachter? */
+export function heroMenuVisible(
+  item: HeroMenuItem,
+  viewer: { isMember: boolean; isStaff: boolean },
+): boolean {
+  switch (item.audience) {
+    case "GUESTS":
+      return !viewer.isMember;
+    case "MEMBERS":
+      return viewer.isMember;
+    case "STAFF":
+      return viewer.isStaff;
+    case "ALL":
+      return true;
+  }
+}
+
 export type HeaderMode = "PHOTO" | "COVER";
 
 /**
@@ -114,6 +290,8 @@ export interface LayoutConfig {
   sectionsByAudience: SectionsByAudience;
   nav: NavItemConfig[];
   header: LayoutHeader;
+  /** Die Menüzeile der Kopfzeile — gilt für jeden Kopfzeilen-Stil. */
+  heroMenu: HeroMenuConfig;
 }
 
 // ---------------------------------------------------------------- Catalogs
@@ -190,7 +368,12 @@ export function defaultSectionsByAudience(): SectionsByAudience {
 }
 
 export function defaultLayout(): LayoutConfig {
-  return { sectionsByAudience: defaultSectionsByAudience(), nav: [], header: defaultHeader() };
+  return {
+    sectionsByAudience: defaultSectionsByAudience(),
+    nav: [],
+    header: defaultHeader(),
+    heroMenu: defaultHeroMenu(),
+  };
 }
 
 // ---------------------------------------------------------------- Parsing
@@ -294,7 +477,62 @@ export function parseLayout(raw: unknown): LayoutConfig {
         .slice(0, 8)
     : [];
 
-  return { sectionsByAudience, nav, header: { mode, variant, mosaic, socials } };
+  return {
+    sectionsByAudience,
+    nav,
+    header: { mode, variant, mosaic, socials },
+    heroMenu: parseHeroMenu(obj.heroMenu),
+  };
+}
+
+/**
+ * Menüzeile einlesen.
+ *
+ * Fehlt der Abschnitt ganz, gilt die Standardbelegung — eine Community, die
+ * nichts eingestellt hat, soll aussehen wie vorher. Eine ausdrücklich leere
+ * Liste bleibt dagegen leer: "ich will hier nichts" ist eine Einstellung.
+ */
+export function parseHeroMenu(raw: unknown): HeroMenuConfig {
+  if (raw === undefined || raw === null) return defaultHeroMenu();
+  const obj = asRecord(raw);
+  if (!Array.isArray(obj.items)) return defaultHeroMenu();
+
+  const items: HeroMenuItem[] = [];
+  const seen = new Set<string>();
+  for (const entry of obj.items) {
+    if (items.length >= HERO_MENU_MAX) break;
+    const r = asRecord(entry);
+    const type = r.type as HeroMenuType;
+    if (!HERO_MENU_TYPES.includes(type)) continue;
+    const value = typeof r.value === "string" ? r.value.trim().slice(0, 300) : undefined;
+    // Ein Punkt ohne Ziel führt ins Leere und wird stillschweigend verworfen.
+    if ((type === "SPACE" || type === "LINK") && !value) continue;
+    let id = typeof r.id === "string" ? r.id.slice(0, 40) : "";
+    if (!id || seen.has(id)) id = `m-${items.length}-${type.toLowerCase()}`;
+    seen.add(id);
+    items.push({
+      id,
+      label: typeof r.label === "string" ? r.label.slice(0, 40) : "",
+      type,
+      value,
+      icon: typeof r.icon === "string" ? (r.icon as IconName) : undefined,
+      slot: r.slot === "MORE" ? "MORE" : "BAR",
+      audience:
+        r.audience === "GUESTS" || r.audience === "MEMBERS" || r.audience === "STAFF"
+          ? r.audience
+          : (HERO_MENU_DEFAULT_AUDIENCE[type] ?? "ALL"),
+      style: r.style === "SOLID" || r.style === "OUTLINE" ? r.style : "PLAIN",
+    });
+  }
+
+  const more = asRecord(obj.more);
+  return {
+    items,
+    more: {
+      enabled: more.enabled !== false,
+      label: typeof more.label === "string" ? more.label.slice(0, 40) : "",
+    },
+  };
 }
 
 /** Enabled section types in configured order for a viewer segment. */

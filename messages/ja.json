@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "ダッシュボードのナビゲーション",
       "planner": "プランナー",
       "lockedSuffix": "{plan} 限定",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "メニュー"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "メニュー",
+      "subtitle": "ヘッダーの説明の下の行。すべてのヘッダースタイルに適用されます。",
+      "save": "保存",
+      "saving": "保存中…",
+      "saved": "保存しました",
+      "barTitle": "行に表示",
+      "barHint": "説明のすぐ下に表示されます。2〜4 個が最も落ち着きます。",
+      "moreTitle": "「…」メニュー内",
+      "moreHint": "邪魔にならず到達できます。あまり使わないものはここへ。",
+      "emptyZone": "空です — 項目を追加するか、もう一方のリストからドラッグしてください。",
+      "add": "追加",
+      "addTitle": "メニュー項目を追加",
+      "remove": "削除",
+      "toMore": "「…」メニューへ移動",
+      "toBar": "行へ移動",
+      "editAria": "項目を編集",
+      "labelLabel": "ラベル",
+      "urlLabel": "URL",
+      "spaceLabel": "スペース",
+      "audienceLabel": "表示対象",
+      "audienceHint": "見る人にとって意味のない項目は出さないほうがよいです。",
+      "styleLabel": "見た目",
+      "styleHint": "塗りつぶしは 1 つまで。2 つあると効果が打ち消し合います。",
+      "moreButtonTitle": "「…」ボタン",
+      "moreButtonHint": "項目が割り当てられているときだけ表示されます。",
+      "moreEnabled": "「…」ボタンを表示",
+      "moreLabelLabel": "点の代わりのラベル",
+      "moreLabelPlaceholder": "空欄 = 三点のみ",
+      "moreLabelHint": "文字を入れると丸ボタンが横長になります。「その他」と明示したいときに。",
+      "previewTitle": "プレビュー",
+      "previewHint": "この行がそのままヘッダーに表示されます（すべてのスタイル）。ここではリンクは動きません。",
+      "tipsMissing": "チップスペースなし",
+      "tipsMissingHint": "「応援する」にはチップスペースが必要です。無い間は非表示になります。",
+      "groupSpaces": "スペース",
+      "groupSpacesHint": "コミュニティ内の場所へ直接。",
+      "groupPages": "機能",
+      "groupPagesHint": "コミュニティの標準ページ。",
+      "groupOther": "操作とリンク",
+      "groupOtherHint": "共有、または任意の場所。",
+      "noSpaces": "スペースがまだありません。",
+      "types": {
+        "HOME": "ホーム",
+        "SPACE": "スペース",
+        "MEMBERS": "メンバー",
+        "LEADERBOARD": "ランキング",
+        "LIBRARY": "マイライブラリ",
+        "LIVE": "ライブ",
+        "SEARCH": "検索",
+        "JOIN": "メンバーになる",
+        "MEMBERSHIP": "メンバーシップ",
+        "TIPS": "応援する",
+        "DASHBOARD": "ダッシュボード",
+        "SHARE": "共有",
+        "LINK": "カスタムリンク"
+      },
+      "typeHints": {
+        "HOME": "ホームへ戻る",
+        "MEMBERS": "参加している人",
+        "LEADERBOARD": "ポイントと順位",
+        "LIBRARY": "購入したコンテンツ",
+        "LIVE": "配信中と予定の配信",
+        "SEARCH": "すべてを検索",
+        "JOIN": "メンバーシップと料金",
+        "TIPS": "コミュニティのチップスペース",
+        "DASHBOARD": "チームにのみ表示",
+        "SHARE": "アドレスをコピー／共有",
+        "LINK": "任意のアドレス。新しいタブで開きます",
+        "SPACE": "コミュニティ内の場所",
+        "MEMBERSHIP": "プランと請求"
+      },
+      "viewers": {
+        "GUEST": "ゲスト",
+        "MEMBER": "メンバー",
+        "STAFF": "チーム"
+      },
+      "audiences": {
+        "ALL": "全員",
+        "GUESTS": "ゲスト",
+        "MEMBERS": "メンバー",
+        "STAFF": "チーム"
+      },
+      "styles": {
+        "SOLID": "塗りつぶし",
+        "OUTLINE": "枠線",
+        "PLAIN": "シンプル"
+      },
+      "urlMissing": "アドレス未設定"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "配信中",
         "upcoming": "予定",
         "past": "アーカイブ"
+      }
+    },
+    "heroMenu": {
+      "more": "その他の操作",
+      "copied": "リンクをコピーしました",
+      "type": {
+        "HOME": "ホーム",
+        "SPACE": "スペース",
+        "MEMBERS": "メンバー",
+        "LEADERBOARD": "ランキング",
+        "LIBRARY": "マイライブラリ",
+        "LIVE": "ライブ",
+        "SEARCH": "検索",
+        "JOIN": "メンバーになる",
+        "MEMBERSHIP": "メンバーシップ",
+        "TIPS": "応援する",
+        "DASHBOARD": "ダッシュボード",
+        "SHARE": "共有",
+        "LINK": "カスタムリンク"
       }
     }
   },

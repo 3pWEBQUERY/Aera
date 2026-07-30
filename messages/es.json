@@ -2727,7 +2727,8 @@
       "mobileSubtitle": "Navegación del panel",
       "planner": "Planificador",
       "lockedSuffix": "solo con {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "menu": "Menú"
     },
     "media": {
       "metaTitle": "Media",
@@ -3294,6 +3295,95 @@
       "previewSearch": "Google preview",
       "previewSocial": "When shared",
       "derivedNote": "Anything you leave empty is derived from {name}'s details — you do not have to fill in anything here for it to work."
+    },
+    "heroMenu": {
+      "title": "Menú",
+      "subtitle": "La fila bajo la descripción en la cabecera: se aplica a todos los estilos.",
+      "save": "Guardar",
+      "saving": "Guardando…",
+      "saved": "Guardado",
+      "barTitle": "En la fila",
+      "barHint": "Visible justo bajo la descripción. De dos a cuatro elementos se ven mejor.",
+      "moreTitle": "En el menú «…»",
+      "moreHint": "Accesible sin ocupar espacio. Todo lo poco usado va aquí.",
+      "emptyZone": "Vacío: añade elementos o arrástralos desde la otra lista.",
+      "add": "Añadir",
+      "addTitle": "Añadir elemento de menú",
+      "remove": "Quitar",
+      "toMore": "Mover al menú «…»",
+      "toBar": "Mover a la fila",
+      "editAria": "Editar elemento",
+      "labelLabel": "Etiqueta",
+      "urlLabel": "Dirección",
+      "spaceLabel": "Espacio",
+      "audienceLabel": "Visible para",
+      "audienceHint": "Los elementos que no tienen sentido para quien mira no deberían ofrecerse.",
+      "styleLabel": "Aspecto",
+      "styleHint": "Como máximo un elemento relleno. Dos se anulan.",
+      "moreButtonTitle": "El botón «…»",
+      "moreButtonHint": "Solo aparece si tiene elementos asignados.",
+      "moreEnabled": "Mostrar el botón «…»",
+      "moreLabelLabel": "Texto en vez de puntos",
+      "moreLabelPlaceholder": "Vacío = solo los tres puntos",
+      "moreLabelHint": "Con texto el botón redondo se vuelve una pastilla, útil si «Más» debe ser más claro.",
+      "previewTitle": "Vista previa",
+      "previewHint": "Esta misma fila aparecerá en la cabecera, en todos los estilos. Aquí los enlaces no funcionan.",
+      "tipsMissing": "Sin espacio de propinas",
+      "tipsMissingHint": "«Apoyar» necesita un espacio de propinas. Hasta que exista, el elemento queda oculto.",
+      "groupSpaces": "Espacios",
+      "groupSpacesHint": "Directo a un área de tu comunidad.",
+      "groupPages": "Funciones",
+      "groupPagesHint": "Páginas integradas de tu comunidad.",
+      "groupOther": "Acciones y enlaces",
+      "groupOtherHint": "Compartir, o cualquier otro sitio.",
+      "noSpaces": "Aún no hay espacios.",
+      "types": {
+        "HOME": "Inicio",
+        "SPACE": "Espacio",
+        "MEMBERS": "Miembros",
+        "LEADERBOARD": "Clasificación",
+        "LIBRARY": "Mi biblioteca",
+        "LIVE": "En directo",
+        "SEARCH": "Buscar",
+        "JOIN": "Hazte miembro",
+        "MEMBERSHIP": "Tu membresía",
+        "TIPS": "Apoyar",
+        "DASHBOARD": "Panel",
+        "SHARE": "Compartir",
+        "LINK": "Enlace propio"
+      },
+      "typeHints": {
+        "HOME": "Volver al inicio",
+        "MEMBERS": "Quién está dentro",
+        "LEADERBOARD": "Puntos y posiciones",
+        "LIBRARY": "Contenido comprado",
+        "LIVE": "Directos en curso y previstos",
+        "SEARCH": "Buscar en todo",
+        "JOIN": "Membresías y precios",
+        "TIPS": "Espacio de propinas",
+        "DASHBOARD": "Solo visible para tu equipo",
+        "SHARE": "Copiar o compartir la dirección",
+        "LINK": "Cualquier dirección, abre pestaña nueva",
+        "SPACE": "Un área de tu comunidad",
+        "MEMBERSHIP": "Tu nivel y facturación"
+      },
+      "viewers": {
+        "GUEST": "Invitado",
+        "MEMBER": "Miembro",
+        "STAFF": "Equipo"
+      },
+      "audiences": {
+        "ALL": "Todos",
+        "GUESTS": "Invitados",
+        "MEMBERS": "Miembros",
+        "STAFF": "Equipo"
+      },
+      "styles": {
+        "SOLID": "Relleno",
+        "OUTLINE": "Con borde",
+        "PLAIN": "Sencillo"
+      },
+      "urlMissing": "Sin dirección aún"
     }
   },
   "common": {
@@ -3765,6 +3855,25 @@
         "now": "En directo ahora",
         "upcoming": "Próximamente",
         "past": "Repeticiones"
+      }
+    },
+    "heroMenu": {
+      "more": "Más opciones",
+      "copied": "¡Enlace copiado!",
+      "type": {
+        "HOME": "Inicio",
+        "SPACE": "Espacio",
+        "MEMBERS": "Miembros",
+        "LEADERBOARD": "Clasificación",
+        "LIBRARY": "Mi biblioteca",
+        "LIVE": "En directo",
+        "SEARCH": "Buscar",
+        "JOIN": "Hazte miembro",
+        "MEMBERSHIP": "Tu membresía",
+        "TIPS": "Apoyar",
+        "DASHBOARD": "Panel",
+        "SHARE": "Compartir",
+        "LINK": "Enlace propio"
       }
     }
   },

@@ -1,7 +1,13 @@
 import type { SVGProps } from "react";
 
 // Clean, consistent line icons (lucide geometry). Stroke-based, no emoji.
-const paths: Record<string, React.ReactNode> = {
+/**
+ * Bewusst ohne `Record<string, …>`-Annotation: mit ihr waere `IconName` nur
+ * `string`, und jeder Tippfehler in einem Icon-Namen bliebe stumm — er ergaebe
+ * ein leeres SVG, das niemandem auffaellt. `satisfies` prueft die Werte und
+ * behaelt die Schluessel als Union.
+ */
+const paths = {
   dashboard: (
     <>
       <rect width="7" height="9" x="3" y="3" rx="1" />
@@ -514,7 +520,8 @@ const paths: Record<string, React.ReactNode> = {
       <path d="M17 7h4v4" />
     </>
   ),
-};
+
+} satisfies Record<string, React.ReactNode>;
 
 export type IconName = keyof typeof paths;
 
