@@ -3663,7 +3663,9 @@
         "daysShort": "d",
         "whepConnecting": "Ansluter…",
         "whepFailed": "Sändningen kan inte spelas upp just nu.",
-        "unmute": "Slå på ljudet"
+        "unmute": "Slå på ljudet",
+        "back": "Tillbaka",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

@@ -3663,7 +3663,9 @@
         "daysShort": "g",
         "whepConnecting": "Connessione…",
         "whepFailed": "Al momento non è possibile riprodurre lo streaming.",
-        "unmute": "Attiva audio"
+        "unmute": "Attiva audio",
+        "back": "Indietro",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

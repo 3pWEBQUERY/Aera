@@ -3663,7 +3663,9 @@
         "daysShort": "d",
         "whepConnecting": "Opretter forbindelse…",
         "whepFailed": "Streamen kan ikke afspilles lige nu.",
-        "unmute": "Slå lyd til"
+        "unmute": "Slå lyd til",
+        "back": "Tilbage",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

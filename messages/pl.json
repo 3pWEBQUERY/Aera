@@ -3663,7 +3663,9 @@
         "daysShort": "d",
         "whepConnecting": "Łączenie…",
         "whepFailed": "Nie można teraz odtworzyć transmisji.",
-        "unmute": "Włącz dźwięk"
+        "unmute": "Włącz dźwięk",
+        "back": "Wstecz",
+        "liveNow": "Na żywo"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

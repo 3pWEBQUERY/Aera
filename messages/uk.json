@@ -3663,7 +3663,9 @@
         "daysShort": "д",
         "whepConnecting": "Встановлення з’єднання…",
         "whepFailed": "Зараз трансляцію відтворити не вдається.",
-        "unmute": "Увімкнути звук"
+        "unmute": "Увімкнути звук",
+        "back": "Назад",
+        "liveNow": "В ефірі"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

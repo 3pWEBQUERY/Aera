@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
@@ -47,6 +48,49 @@ export function LiveRoom({
 }) {
   const t = useTranslations("community.render.live");
   const locale = useLocale();
+  const router = useRouter();
+
+  /**
+   * Kino-Modus.
+   *
+   * Auf dem Telefon ist der Stream nicht ein Kaestchen auf einer Seite,
+   * sondern das Einzige, was gerade zaehlt. Er nimmt deshalb den ganzen
+   * Bildschirm ein, und der Chat legt sich darueber statt darunter — sonst
+   * bleiben fuer Bild und Gespraech jeweils die Haelfte von zu wenig.
+   *
+   * Ab lg bleibt es beim Nebeneinander: dort ist Platz fuer beides.
+   */
+  const [theater, setTheater] = useState(false);
+  const [landscape, setLandscape] = useState(false);
+  useEffect(() => {
+    const small = window.matchMedia("(max-width: 1023px)");
+    const wide = window.matchMedia("(orientation: landscape)");
+    const sync = () => {
+      setTheater(small.matches);
+      setLandscape(wide.matches);
+    };
+    sync();
+    small.addEventListener("change", sync);
+    wide.addEventListener("change", sync);
+    return () => {
+      small.removeEventListener("change", sync);
+      wide.removeEventListener("change", sync);
+    };
+  }, []);
+
+  // Im Kino-Modus darf die Seite darunter nicht mitscrollen.
+  useEffect(() => {
+    if (!theater) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [theater]);
+
+  // Im Querformat legt sich der Chat an die rechte Kante, im Hochformat an
+  // den unteren Rand. Ein- und ausblendbar ist er in beiden Lagen.
+  const [overlayChat, setOverlayChat] = useState(true);
   const [messages, setMessages] = useState<LiveMessage[]>(initialMessages);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -223,6 +267,131 @@ export function LiveRoom({
     }
   }
 
+  const player = whepUrl ? (
+    <WhepPlayer url={whepUrl} />
+  ) : playerUrl ? (
+    <iframe
+      src={playerUrl}
+      title={t("player")}
+      allow="autoplay; encrypted-media; picture-in-picture"
+      allowFullScreen
+      className="absolute inset-0 h-full w-full"
+    />
+  ) : (
+    <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
+      <Icon name="videos" size={30} />
+      <span className="text-sm">{status === "SCHEDULED" ? t("notStarted") : t("noStream")}</span>
+      {status === "SCHEDULED" && startsAt && (
+        <LiveCountdown startsAt={startsAt} className="mt-1 text-2xl font-semibold text-white" />
+      )}
+    </div>
+  );
+
+  // ------------------------------------------------------------ Kino-Modus
+  if (theater) {
+    return (
+      <div className="fixed inset-0 z-50 bg-black text-white">
+        <div ref={playerBoxRef} className="absolute inset-0">
+          {player}
+        </div>
+
+        {/* Verlaeufe statt Balken: die Bedienung liegt auf dem Bild und muss
+            lesbar sein, ohne es zuzudecken. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-black/70 to-transparent" />
+
+        <div className="absolute inset-x-0 top-0 flex items-center gap-2 p-3">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            aria-label={t("back")}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition active:scale-95"
+          >
+            <Icon name="chevron" size={20} className="rotate-90" />
+          </button>
+          {status === "LIVE" && (
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-red-600 px-2.5 py-1 text-[11px] font-bold uppercase tracking-[0.12em]">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-white" />
+              {t("liveNow")}
+            </span>
+          )}
+          <span className="flex-1" />
+          <button
+            type="button"
+            onClick={() => setOverlayChat((v) => !v)}
+            aria-pressed={overlayChat}
+            aria-label={overlayChat ? t("chatHide") : t("chatShow")}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition active:scale-95"
+          >
+            <Icon name={overlayChat ? "eyeOff" : "chat"} size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={enterFullscreen}
+            aria-label={t("fullscreen")}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition active:scale-95"
+          >
+            <Icon name="expand" size={18} />
+          </button>
+        </div>
+
+        {overlayChat && (
+          <div
+            className={
+              landscape
+                ? // Querformat: schmale Spalte an der rechten Kante, damit das
+                  // Bild in der Mitte frei bleibt.
+                  "absolute bottom-0 right-0 top-0 flex w-[min(20rem,42vw)] flex-col justify-end pb-3 pl-6 pr-3 pt-16"
+                : "absolute inset-x-0 bottom-0 flex max-h-[52%] flex-col justify-end px-3 pb-3"
+            }
+          >
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+
+            <div
+              ref={listRef}
+              className="relative min-h-0 flex-1 space-y-2 overflow-y-auto pb-2 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+            >
+              {messages.length === 0 ? (
+                <p className="text-sm text-white/50">{t("chatEmpty")}</p>
+              ) : (
+                messages.map((m) => (
+                  <div key={m.id} className="flex items-start gap-2">
+                    <Avatar name={m.user.name} src={m.user.avatarUrl} size={24} />
+                    <p className="min-w-0 flex-1 text-sm leading-snug">
+                      <span className="mr-1.5 font-semibold text-white/60">{m.user.name}</span>
+                      <span className="break-words text-white [text-shadow:0_1px_3px_rgb(0_0_0/0.6)]">
+                        {m.body}
+                      </span>
+                    </p>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {canChat && (
+              <form onSubmit={send} className="relative flex items-center gap-2">
+                <input
+                  value={draft}
+                  onChange={(e) => setDraft(e.target.value)}
+                  placeholder={t("chatPlaceholder")}
+                  maxLength={1000}
+                  className="min-w-0 flex-1 rounded-full border border-white/20 bg-black/45 px-4 py-2.5 text-sm text-white backdrop-blur-sm placeholder:text-white/45 focus:border-white/50 focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={sending || !draft.trim()}
+                  aria-label={t("send")}
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#161613] transition active:scale-95 disabled:opacity-40"
+                >
+                  <Icon name="send" size={17} />
+                </button>
+              </form>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div
       style={{ ["--chat-w" as string]: `${chatWidth}px` }}
@@ -253,28 +422,7 @@ export function LiveRoom({
           className="relative overflow-hidden rounded-2xl border border-[#161613]/10 bg-black"
           style={{ aspectRatio: "16 / 9" }}
         >
-          {whepUrl ? (
-            <WhepPlayer url={whepUrl} />
-          ) : playerUrl ? (
-            <iframe
-              src={playerUrl}
-              title={t("player")}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="absolute inset-0 h-full w-full"
-            />
-          ) : (
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/70">
-              <Icon name="videos" size={30} />
-              <span className="text-sm">{status === "SCHEDULED" ? t("notStarted") : t("noStream")}</span>
-              {status === "SCHEDULED" && startsAt && (
-                <LiveCountdown
-                  startsAt={startsAt}
-                  className="mt-1 text-2xl font-semibold text-white"
-                />
-              )}
-            </div>
-          )}
+          {player}
         </div>
       </div>
 

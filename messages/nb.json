@@ -3663,7 +3663,9 @@
         "daysShort": "d",
         "whepConnecting": "Kobler til…",
         "whepFailed": "Strømmen kan ikke spilles av akkurat nå.",
-        "unmute": "Slå på lyd"
+        "unmute": "Slå på lyd",
+        "back": "Tilbake",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

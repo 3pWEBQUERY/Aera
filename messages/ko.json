@@ -3663,7 +3663,9 @@
         "daysShort": "일",
         "whepConnecting": "연결 중…",
         "whepFailed": "지금은 이 방송을 재생할 수 없습니다.",
-        "unmute": "소리 켜기"
+        "unmute": "소리 켜기",
+        "back": "뒤로",
+        "liveNow": "라이브"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

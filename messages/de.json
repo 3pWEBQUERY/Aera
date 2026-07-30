@@ -3488,7 +3488,9 @@
         "daysShort": "T",
         "whepConnecting": "Verbindung wird aufgebaut…",
         "whepFailed": "Der Stream lässt sich gerade nicht abspielen.",
-        "unmute": "Ton einschalten"
+        "unmute": "Ton einschalten",
+        "back": "Zurück",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "Worum geht es? (Titel)",

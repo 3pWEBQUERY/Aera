@@ -3663,7 +3663,9 @@
         "daysShort": "日",
         "whepConnecting": "接続中…",
         "whepFailed": "現在この配信を再生できません。",
-        "unmute": "音声をオンにする"
+        "unmute": "音声をオンにする",
+        "back": "戻る",
+        "liveNow": "ライブ"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

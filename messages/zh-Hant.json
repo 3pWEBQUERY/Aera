@@ -3663,7 +3663,9 @@
         "daysShort": "天",
         "whepConnecting": "正在連線…",
         "whepFailed": "目前無法播放該直播。",
-        "unmute": "開啟聲音"
+        "unmute": "開啟聲音",
+        "back": "返回",
+        "liveNow": "直播中"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

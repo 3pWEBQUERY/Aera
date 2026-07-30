@@ -3488,7 +3488,9 @@
         "daysShort": "d",
         "whepConnecting": "Connecting…",
         "whepFailed": "The stream cannot be played right now.",
-        "unmute": "Turn on sound"
+        "unmute": "Turn on sound",
+        "back": "Back",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

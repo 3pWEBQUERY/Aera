@@ -3663,7 +3663,9 @@
         "daysShort": "d",
         "whepConnecting": "Verbinden…",
         "whepFailed": "De stream kan nu niet worden afgespeeld.",
-        "unmute": "Geluid aanzetten"
+        "unmute": "Geluid aanzetten",
+        "back": "Terug",
+        "liveNow": "Live"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",

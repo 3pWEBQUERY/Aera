@@ -3663,7 +3663,9 @@
         "daysShort": "j",
         "whepConnecting": "Connexion…",
         "whepFailed": "Le direct ne peut pas être lu pour le moment.",
-        "unmute": "Activer le son"
+        "unmute": "Activer le son",
+        "back": "Retour",
+        "liveNow": "En direct"
       },
       "requests": {
         "titlePlaceholder": "What is it about? (title)",
