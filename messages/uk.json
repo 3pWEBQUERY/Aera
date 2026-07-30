@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Ви в ефірі. Закриття студії перерве трансляцію. Все одно закрити?",
       "studioNoPreview": "Трансляція триває — попередній перегляд доступний лише на пристрої, який транслює.",
       "studioMirror": "Віддзеркалити перегляд",
-      "studioLevel": "Рівень звуку"
+      "studioLevel": "Рівень звуку",
+      "studioHintLabel": "Примітка"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

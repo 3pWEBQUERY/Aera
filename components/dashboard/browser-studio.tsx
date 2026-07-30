@@ -403,21 +403,6 @@ export function BrowserStudio({
                 <Icon name="expand" size={17} />
               </button>
 
-          {/* Der Chat legt sich ueber das Bild statt daneben zu stehen: die
-                  Buehne behaelt ihre volle Breite, und der Blick bleibt beim
-                  Bild — genau wie es die Zuschauer sehen. Ausblenden gibt das
-                  Bild wieder ganz frei. */}
-              <aside
-                className={cn(
-                  "absolute bottom-0 right-0 top-0 z-10 min-h-0 flex-col",
-                  chatOpen ? "hidden w-[340px] lg:flex xl:w-[380px]" : "hidden",
-                )}
-              >
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#0b0b10] via-[#0b0b10]/85 to-transparent" />
-                <div className="relative flex min-h-0 flex-1 flex-col">
-                  <StudioChat slug={slug} sessionId={sessionId} />
-                </div>
-              </aside>
             </div>
 
             {/* ---- Steuerung ---- */}
@@ -500,10 +485,11 @@ export function BrowserStudio({
                   </>
                 )}
 
-                <p className="mr-auto hidden max-w-sm text-xs leading-relaxed text-white/40 xl:block">
-                  {t("browserHint")}
-                </p>
-                <span className="flex-1 xl:hidden" />
+                {/* Der Hinweis lag quer durch die Leiste und nahm den Platz
+                    ein, den die Geraetewahl braucht. Als Knopf ist er da, wo
+                    man ihn sucht — und nur dann sichtbar, wenn man fragt. */}
+                <StudioHint text={t("browserHint")} label={t("studioHintLabel")} />
+                <span className="flex-1" />
 
                 <button
                   type="button"
@@ -547,6 +533,20 @@ export function BrowserStudio({
           </div>
 
           {/* ---- Chat: Spalte auf grossen Flaechen, Blatt auf kleinen ---- */}
+          {/* ---- Chat: eigene Spalte rechts, Blatt auf kleinen Flaechen ----
+              Bild und Gespraech bleiben getrennt. Uebereinandergelegt nimmt
+              der Chat dem Bild Flaeche — und im Studio ist die eigene
+              Vorschau das Wichtigste. Auf der Zuschauerseite ist es
+              umgekehrt; dort liegt der Chat auf dem Bild. */}
+          <aside
+            className={cn(
+              "min-h-0 flex-col border-l border-white/10 bg-[#0b0b10]",
+              chatOpen ? "hidden w-[340px] shrink-0 lg:flex xl:w-[380px]" : "hidden",
+            )}
+          >
+            <StudioChat slug={slug} sessionId={sessionId} />
+          </aside>
+
           {chatOpen && (
             <div className="absolute inset-0 z-20 lg:hidden">
               <div
@@ -576,6 +576,60 @@ export function BrowserStudio({
 
   if (typeof document === "undefined") return null;
   return createPortal(studio, document.body);
+}
+
+/**
+ * Der Sendehinweis als Knopf.
+ *
+ * Aufgeklappt legt er sich ueber die Leiste statt sie auseinanderzuschieben —
+ * eine Steuerung, die beim Lesen eines Hinweises ihre Knoepfe verschiebt,
+ * waere die schlechtere Antwort auf eine harmlose Frage.
+ */
+function StudioHint({ text, label }: { text: string; label: string }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onDoc = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div ref={ref} className="relative shrink-0">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={label}
+        title={label}
+        className={cn(
+          "flex h-10 w-10 items-center justify-center rounded-xl border transition",
+          open
+            ? "border-white bg-white text-[#0b0b10]"
+            : "border-white/20 text-white/60 hover:bg-white/10 hover:text-white",
+        )}
+      >
+        <Icon name="info" size={17} />
+      </button>
+      {open && (
+        <div
+          role="note"
+          className="absolute bottom-full left-0 z-30 mb-2 w-72 rounded-xl border border-white/15 bg-[#16161d] p-3.5 text-xs leading-relaxed text-white/75 shadow-2xl"
+        >
+          {text}
+        </div>
+      )}
+    </div>
+  );
 }
 
 /**

@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "現在ライブ配信中です。スタジオを閉じると配信が中断されます。閉じますか？",
       "studioNoPreview": "配信は実行中です — 映像プレビューは配信しているデバイスでのみ表示されます。",
       "studioMirror": "プレビューを左右反転",
-      "studioLevel": "音量レベル"
+      "studioLevel": "音量レベル",
+      "studioHintLabel": "メモ"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Você está ao vivo. Fechar o estúdio interromperá a transmissão. Fechar mesmo assim?",
       "studioNoPreview": "A transmissão está ativa — a prévia de vídeo só existe no dispositivo que está transmitindo.",
       "studioMirror": "Espelhar a prévia",
-      "studioLevel": "Nível de áudio"
+      "studioLevel": "Nível de áudio",
+      "studioHintLabel": "Nota"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

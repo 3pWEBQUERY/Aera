@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "현재 라이브 방송 중입니다. 스튜디오를 닫으면 방송이 중단됩니다. 그래도 닫을까요?",
       "studioNoPreview": "방송이 진행 중입니다 — 영상 미리 보기는 송출 중인 기기에서만 표시됩니다.",
       "studioMirror": "미리보기 좌우 반전",
-      "studioLevel": "오디오 레벨"
+      "studioLevel": "오디오 레벨",
+      "studioHintLabel": "안내"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "你正在直播中。关闭工作室将中断直播。仍要关闭吗？",
       "studioNoPreview": "直播正在进行——视频预览仅存在于正在直播的设备上。",
       "studioMirror": "镜像预览",
-      "studioLevel": "音量电平"
+      "studioLevel": "音量电平",
+      "studioHintLabel": "说明"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Vous êtes en direct. Fermer le studio interrompra votre diffusion. Fermer quand même ?",
       "studioNoPreview": "La diffusion est en cours — l'aperçu vidéo n'existe que sur l'appareil qui émet.",
       "studioMirror": "Miroir de l’aperçu",
-      "studioLevel": "Niveau audio"
+      "studioLevel": "Niveau audio",
+      "studioHintLabel": "Remarque"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

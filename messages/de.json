@@ -1776,7 +1776,8 @@
       "studioCloseConfirm": "Du bist gerade auf Sendung. Wenn du das Studio schließt, bricht deine Übertragung ab. Trotzdem schließen?",
       "studioNoPreview": "Die Sendung läuft — die Bildvorschau gibt es nur auf dem Gerät, das sendet.",
       "studioMirror": "Vorschau spiegeln",
-      "studioLevel": "Aussteuerung"
+      "studioLevel": "Aussteuerung",
+      "studioHintLabel": "Hinweis"
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",

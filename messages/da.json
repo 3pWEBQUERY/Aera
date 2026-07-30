@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Du er live lige nu. Hvis du lukker studiet, afbrydes din udsendelse. Luk alligevel?",
       "studioNoPreview": "Udsendelsen kører — billedforhåndsvisningen findes kun på den enhed, der sender.",
       "studioMirror": "Spejlvend forhåndsvisning",
-      "studioLevel": "Lydniveau"
+      "studioLevel": "Lydniveau",
+      "studioHintLabel": "Bemærk"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

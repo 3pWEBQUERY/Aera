@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Estás en directo. Si cierras el estudio, se interrumpirá la emisión. ¿Cerrar de todos modos?",
       "studioNoPreview": "La emisión está en marcha; la vista previa solo existe en el dispositivo que emite.",
       "studioMirror": "Reflejar la vista previa",
-      "studioLevel": "Nivel de audio"
+      "studioLevel": "Nivel de audio",
+      "studioHintLabel": "Nota"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

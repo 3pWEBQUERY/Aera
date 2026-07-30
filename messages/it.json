@@ -2958,7 +2958,8 @@
       "studioCloseConfirm": "Sei in diretta. Chiudendo lo studio, la trasmissione si interrompe. Chiudere comunque?",
       "studioNoPreview": "La trasmissione è in corso — l'anteprima video esiste solo sul dispositivo che trasmette.",
       "studioMirror": "Rispecchia l’anteprima",
-      "studioLevel": "Livello audio"
+      "studioLevel": "Livello audio",
+      "studioHintLabel": "Nota"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
