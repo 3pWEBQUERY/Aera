@@ -2956,7 +2956,9 @@
       "studioChatHide": "Ocultar chat",
       "studioFullscreen": "Tela cheia",
       "studioCloseConfirm": "Você está ao vivo. Fechar o estúdio interromperá a transmissão. Fechar mesmo assim?",
-      "studioNoPreview": "A transmissão está ativa — a prévia de vídeo só existe no dispositivo que está transmitindo."
+      "studioNoPreview": "A transmissão está ativa — a prévia de vídeo só existe no dispositivo que está transmitindo.",
+      "studioMirror": "Espelhar a prévia",
+      "studioLevel": "Nível de áudio"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

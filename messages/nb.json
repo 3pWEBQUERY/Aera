@@ -2956,7 +2956,9 @@
       "studioChatHide": "Skjul chat",
       "studioFullscreen": "Fullskjerm",
       "studioCloseConfirm": "Du er live nå. Hvis du lukker studioet, avbrytes sendingen. Lukk likevel?",
-      "studioNoPreview": "Sendingen kjører — forhåndsvisningen finnes bare på enheten som sender."
+      "studioNoPreview": "Sendingen kjører — forhåndsvisningen finnes bare på enheten som sender.",
+      "studioMirror": "Speilvend forhåndsvisningen",
+      "studioLevel": "Lydnivå"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

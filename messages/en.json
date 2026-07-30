@@ -1774,7 +1774,9 @@
       "studioChatHide": "Hide chat",
       "studioFullscreen": "Fullscreen",
       "studioCloseConfirm": "You are live right now. Closing the studio will interrupt your broadcast. Close anyway?",
-      "studioNoPreview": "The broadcast is running — the video preview only exists on the device that is sending."
+      "studioNoPreview": "The broadcast is running — the video preview only exists on the device that is sending.",
+      "studioMirror": "Mirror the preview",
+      "studioLevel": "Audio level"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

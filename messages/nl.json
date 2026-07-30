@@ -2956,7 +2956,9 @@
       "studioChatHide": "Chat verbergen",
       "studioFullscreen": "Volledig scherm",
       "studioCloseConfirm": "Je bent live. Als je de studio sluit, wordt je uitzending onderbroken. Toch sluiten?",
-      "studioNoPreview": "De uitzending loopt — de videopreview bestaat alleen op het apparaat dat uitzendt."
+      "studioNoPreview": "De uitzending loopt — de videopreview bestaat alleen op het apparaat dat uitzendt.",
+      "studioMirror": "Voorbeeld spiegelen",
+      "studioLevel": "Geluidsniveau"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

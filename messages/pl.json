@@ -2956,7 +2956,9 @@
       "studioChatHide": "Ukryj czat",
       "studioFullscreen": "Pełny ekran",
       "studioCloseConfirm": "Jesteś na żywo. Zamknięcie studia przerwie transmisję. Zamknąć mimo to?",
-      "studioNoPreview": "Transmisja trwa — podgląd obrazu istnieje tylko na urządzeniu nadającym."
+      "studioNoPreview": "Transmisja trwa — podgląd obrazu istnieje tylko na urządzeniu nadającym.",
+      "studioMirror": "Odbij podgląd",
+      "studioLevel": "Poziom dźwięku"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

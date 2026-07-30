@@ -2956,7 +2956,9 @@
       "studioChatHide": "Скрыть чат",
       "studioFullscreen": "Во весь экран",
       "studioCloseConfirm": "Вы в эфире. Закрытие студии прервёт трансляцию. Всё равно закрыть?",
-      "studioNoPreview": "Трансляция идёт — предпросмотр доступен только на устройстве, которое ведёт трансляцию."
+      "studioNoPreview": "Трансляция идёт — предпросмотр доступен только на устройстве, которое ведёт трансляцию.",
+      "studioMirror": "Отразить предпросмотр",
+      "studioLevel": "Уровень звука"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

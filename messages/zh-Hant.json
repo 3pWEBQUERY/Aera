@@ -2956,7 +2956,9 @@
       "studioChatHide": "隱藏聊天",
       "studioFullscreen": "全螢幕",
       "studioCloseConfirm": "你正在直播中。關閉工作室將中斷直播。仍要關閉嗎？",
-      "studioNoPreview": "直播正在進行——影片預覽僅存在於正在直播的裝置上。"
+      "studioNoPreview": "直播正在進行——影片預覽僅存在於正在直播的裝置上。",
+      "studioMirror": "鏡像預覽",
+      "studioLevel": "音量電平"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

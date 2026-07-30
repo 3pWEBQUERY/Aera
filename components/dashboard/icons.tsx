@@ -399,6 +399,14 @@ const paths = {
       <path d="M3.5 3.5 20.5 20.5" />
     </>
   ),
+  /** Spiegeln — zwei Haelften an einer Achse. */
+  flip: (
+    <>
+      <path d="M12 3v18" />
+      <path d="M9 7 4.5 12 9 17z" />
+      <path d="M15 7l4.5 5-4.5 5z" />
+    </>
+  ),
   /** Neu laden — Kreispfeil. */
   refresh: (
     <>

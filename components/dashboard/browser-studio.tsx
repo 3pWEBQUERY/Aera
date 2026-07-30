@@ -65,6 +65,11 @@ export function BrowserStudio({
   const [micId, setMicId] = useState("");
   const [screen, setScreen] = useState(false);
   const [micOn, setMicOn] = useState(true);
+  // Die Vorschau der eigenen Kamera wird gespiegelt — so kennt man sich aus
+  // dem Spiegel. Ein gespiegelter Bildschirm waere dagegen unlesbar, deshalb
+  // gilt es nur fuer die Kamera. Gesendet wird ohnehin ungespiegelt.
+  const [mirror, setMirror] = useState(true);
+  const [level, setLevel] = useState(0);
   const [seconds, setSeconds] = useState(0);
   // Auf schmalen Viewports teilen sich Buehne und Chat den Platz nicht —
   // der Chat liegt dann als Blatt ueber der Buehne und startet zu.
@@ -134,6 +139,54 @@ export function BrowserStudio({
     const stream = streamRef.current;
     stream?.getAudioTracks().forEach((track) => (track.enabled = micOn));
   }, [micOn]);
+
+  /**
+   * Aussteuerung.
+   *
+   * Ohne sie merkt man erst nach der Sendung, dass das falsche Mikrofon lief
+   * oder der Pegel bei null stand. Der Balken beantwortet die Frage vorher —
+   * und waehrend der Sendung, wo sich die Geraete nicht mehr wechseln lassen.
+   */
+  useEffect(() => {
+    const track = streamRef.current?.getAudioTracks()[0];
+    if (!track) return;
+    let raf = 0;
+    let ctx: AudioContext | null = null;
+    try {
+      ctx = new AudioContext();
+      const analyser = ctx.createAnalyser();
+      analyser.fftSize = 512;
+      ctx.createMediaStreamSource(new MediaStream([track])).connect(analyser);
+      const data = new Uint8Array(analyser.frequencyBinCount);
+      const tick = () => {
+        analyser.getByteTimeDomainData(data);
+        let peak = 0;
+        for (const v of data) peak = Math.max(peak, Math.abs(v - 128));
+        // Schnell nach oben, traege nach unten: so liest sich ein Pegel.
+        setLevel((prev) => Math.max(peak / 128, prev * 0.86));
+        raf = requestAnimationFrame(tick);
+      };
+      tick();
+    } catch {
+      // Ohne AudioContext bleibt der Balken leer; das Senden haengt nicht daran.
+    }
+    return () => {
+      cancelAnimationFrame(raf);
+      void ctx?.close();
+    };
+  }, [phase, screen, camId, micId]);
+
+  /**
+   * Ein geschlossener Tab beendet die Sendung — Bild und Ton kommen aus
+   * diesem Fenster. Den Text waehlt der Browser inzwischen selbst, die
+   * Rueckfrage kommt trotzdem.
+   */
+  useEffect(() => {
+    if (phase !== "live") return;
+    const warn = (e: BeforeUnloadEvent) => e.preventDefault();
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [phase]);
 
   useEffect(() => {
     if (phase !== "live") return;
@@ -319,7 +372,10 @@ export function BrowserStudio({
                 autoPlay
                 playsInline
                 muted
-                className="absolute inset-0 h-full w-full object-contain"
+                className={cn(
+                  "absolute inset-0 h-full w-full object-contain",
+                  mirror && !screen && "-scale-x-100",
+                )}
               />
               {live && !streamRef.current && (
                 <div className="absolute inset-0 flex items-center justify-center px-6 text-center text-sm text-white/60">
@@ -394,6 +450,23 @@ export function BrowserStudio({
                       </select>
                     )}
 
+                    {!screen && (
+                      <button
+                        type="button"
+                        onClick={() => setMirror((v) => !v)}
+                        aria-pressed={mirror}
+                        title={t("studioMirror")}
+                        className={cn(
+                          "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition",
+                          mirror
+                            ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
+                            : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                        )}
+                      >
+                        <Icon name="flip" size={17} />
+                      </button>
+                    )}
+
                     {mics.length > 1 && (
                       <select
                         aria-label={t("browserMicLabel")}
@@ -430,6 +503,8 @@ export function BrowserStudio({
                 >
                   <Icon name={micOn ? "mic" : "micOff"} size={17} />
                 </button>
+
+                <MicLevel value={micOn ? level : 0} label={t("studioLevel")} />
 
                 {live ? (
                   <button
@@ -493,6 +568,43 @@ export function BrowserStudio({
 
   if (typeof document === "undefined") return null;
   return createPortal(studio, document.body);
+}
+
+/**
+ * Aussteuerung als Balkenreihe.
+ *
+ * Fuenf Balken statt eines Zeigers: man will wissen, ob ueberhaupt etwas
+ * ankommt und ob es uebersteuert — nicht den genauen Dezibelwert. Grau heisst
+ * still, gruen heisst gut, der letzte Balken faerbt sich bernstein, bevor es
+ * klippt.
+ */
+function MicLevel({ value, label }: { value: number; label: string }) {
+  const bars = 5;
+  return (
+    <span
+      className="flex h-10 shrink-0 items-center gap-[3px] rounded-xl border border-slate-200 px-2.5"
+      title={label}
+      aria-label={label}
+      role="meter"
+      aria-valuenow={Math.round(value * 100)}
+      aria-valuemin={0}
+      aria-valuemax={100}
+    >
+      {Array.from({ length: bars }, (_, i) => {
+        const on = value * bars > i;
+        return (
+          <span
+            key={i}
+            className={cn(
+              "w-[3px] rounded-full transition-all duration-75",
+              on ? (i === bars - 1 ? "bg-amber-500" : "bg-emerald-500") : "bg-slate-200",
+            )}
+            style={{ height: `${7 + i * 3}px` }}
+          />
+        );
+      })}
+    </span>
+  );
 }
 
 /**

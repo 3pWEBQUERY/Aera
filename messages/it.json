@@ -2956,7 +2956,9 @@
       "studioChatHide": "Nascondi chat",
       "studioFullscreen": "Schermo intero",
       "studioCloseConfirm": "Sei in diretta. Chiudendo lo studio, la trasmissione si interrompe. Chiudere comunque?",
-      "studioNoPreview": "La trasmissione è in corso — l'anteprima video esiste solo sul dispositivo che trasmette."
+      "studioNoPreview": "La trasmissione è in corso — l'anteprima video esiste solo sul dispositivo che trasmette.",
+      "studioMirror": "Rispecchia l’anteprima",
+      "studioLevel": "Livello audio"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

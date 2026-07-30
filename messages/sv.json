@@ -2956,7 +2956,9 @@
       "studioChatHide": "Dölj chatt",
       "studioFullscreen": "Helskärm",
       "studioCloseConfirm": "Du är live just nu. Om du stänger studion avbryts sändningen. Stäng ändå?",
-      "studioNoPreview": "Sändningen pågår — videoförhandsvisningen finns bara på enheten som sänder."
+      "studioNoPreview": "Sändningen pågår — videoförhandsvisningen finns bara på enheten som sänder.",
+      "studioMirror": "Spegelvänd förhandsvisningen",
+      "studioLevel": "Ljudnivå"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

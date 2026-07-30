@@ -2956,7 +2956,9 @@
       "studioChatHide": "Ocultar chat",
       "studioFullscreen": "Pantalla completa",
       "studioCloseConfirm": "Estás en directo. Si cierras el estudio, se interrumpirá la emisión. ¿Cerrar de todos modos?",
-      "studioNoPreview": "La emisión está en marcha; la vista previa solo existe en el dispositivo que emite."
+      "studioNoPreview": "La emisión está en marcha; la vista previa solo existe en el dispositivo que emite.",
+      "studioMirror": "Reflejar la vista previa",
+      "studioLevel": "Nivel de audio"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
