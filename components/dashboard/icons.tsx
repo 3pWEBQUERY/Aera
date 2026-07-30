@@ -399,6 +399,12 @@ const paths = {
       <path d="M3.5 3.5 20.5 20.5" />
     </>
   ),
+  /** Vollbild verlassen — Pfeile nach innen. */
+  collapse: (
+    <>
+      <path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5" />
+    </>
+  ),
   /** Spiegeln — zwei Haelften an einer Achse. */
   flip: (
     <>

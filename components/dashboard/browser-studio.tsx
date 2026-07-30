@@ -310,19 +310,19 @@ export function BrowserStudio({
         aria-label={t("studioTitle")}
         tabIndex={-1}
         className={cn(
-          "absolute inset-0 flex flex-col bg-white transition-transform duration-300 ease-out will-change-transform",
+          "absolute inset-0 flex flex-col bg-[#0b0b10] text-white transition-transform duration-300 ease-out will-change-transform",
           shown ? "translate-y-0" : "translate-y-full",
         )}
       >
         {/* ---- Kopf ---- */}
-        <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-slate-200 px-4 sm:px-5">
+        <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/10 px-4 sm:px-5">
           <div className="flex min-w-0 items-center gap-3">
             <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)]">
               <Icon name="broadcast" size={18} />
             </span>
             <div className="min-w-0">
-              <h2 className="truncate text-sm font-semibold text-slate-900">{title}</h2>
-              <p className="text-xs text-slate-400">{t("studioTitle")}</p>
+              <h2 className="truncate text-sm font-semibold">{title}</h2>
+              <p className="text-xs text-white/45">{t("studioTitle")}</p>
             </div>
             {live && (
               <span className="ml-1 hidden shrink-0 items-center gap-1.5 rounded-lg bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700 sm:inline-flex">
@@ -340,8 +340,8 @@ export function BrowserStudio({
               className={cn(
                 "flex h-9 items-center gap-2 rounded-lg px-3 text-sm font-medium transition",
                 chatOpen
-                  ? "bg-[var(--action-soft)] text-slate-800"
-                  : "text-slate-500 hover:bg-slate-100 hover:text-slate-900",
+                  ? "bg-white/15 text-white"
+                  : "text-white/60 hover:bg-white/10 hover:text-white",
               )}
             >
               <Icon name="chat" size={17} />
@@ -353,7 +353,7 @@ export function BrowserStudio({
               type="button"
               onClick={requestClose}
               aria-label={tUi("close")}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
+              className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/10 hover:text-white"
             >
               <Icon name="close" size={20} />
             </button>
@@ -365,7 +365,7 @@ export function BrowserStudio({
           <div className="flex min-w-0 flex-1 flex-col">
             <div
               ref={stageRef}
-              className="relative min-h-0 flex-1 bg-slate-950"
+              className="relative min-h-0 flex-1 bg-black"
             >
               <video
                 ref={videoRef}
@@ -402,15 +402,31 @@ export function BrowserStudio({
               >
                 <Icon name="expand" size={17} />
               </button>
+
+          {/* Der Chat legt sich ueber das Bild statt daneben zu stehen: die
+                  Buehne behaelt ihre volle Breite, und der Blick bleibt beim
+                  Bild — genau wie es die Zuschauer sehen. Ausblenden gibt das
+                  Bild wieder ganz frei. */}
+              <aside
+                className={cn(
+                  "absolute bottom-0 right-0 top-0 z-10 min-h-0 flex-col",
+                  chatOpen ? "hidden w-[340px] lg:flex xl:w-[380px]" : "hidden",
+                )}
+              >
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-l from-[#0b0b10] via-[#0b0b10]/85 to-transparent" />
+                <div className="relative flex min-h-0 flex-1 flex-col">
+                  <StudioChat slug={slug} sessionId={sessionId} />
+                </div>
+              </aside>
             </div>
 
             {/* ---- Steuerung ---- */}
-            <div className="shrink-0 border-t border-slate-200 bg-white px-4 py-3.5 sm:px-5">
+            <div className="shrink-0 bg-[#0b0b10]/85 px-4 py-3.5 backdrop-blur-sm sm:px-5">
               <FormError message={error} />
               <div className={cn("flex flex-wrap items-center gap-2.5", error && "mt-3")}>
                 {!live && (
                   <>
-                    <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
+                    <div className="flex gap-1 rounded-xl bg-white/10 p-1">
                       {(
                         [
                           { key: false, icon: "camera" as const, label: t("browserCamera") },
@@ -425,8 +441,8 @@ export function BrowserStudio({
                           className={cn(
                             "inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition",
                             screen === o.key
-                              ? "bg-white text-slate-900 shadow-sm"
-                              : "text-slate-500 hover:text-slate-800",
+                              ? "bg-white text-[#0b0b10]"
+                              : "text-white/60 hover:text-white",
                           )}
                         >
                           <Icon name={o.icon} size={15} />
@@ -440,7 +456,7 @@ export function BrowserStudio({
                         aria-label={t("browserCameraLabel")}
                         value={camId}
                         onChange={(e) => setCamId(e.target.value)}
-                        className="max-w-44 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 focus:border-slate-400 focus:outline-none"
+                        className="max-w-44 rounded-lg border border-white/15 bg-white/10 px-2.5 py-2 text-sm text-white focus:border-white/40 focus:outline-none [&>option]:text-[#161613]"
                       >
                         {cams.map((d, i) => (
                           <option key={d.deviceId} value={d.deviceId}>
@@ -459,8 +475,8 @@ export function BrowserStudio({
                         className={cn(
                           "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition",
                           mirror
-                            ? "border-[var(--action-strong)] bg-[var(--action)] text-[var(--action-fg)]"
-                            : "border-slate-200 text-slate-500 hover:bg-slate-50",
+                            ? "border-white bg-white text-[#0b0b10]"
+                            : "border-white/20 text-white/60 hover:bg-white/10",
                         )}
                       >
                         <Icon name="flip" size={17} />
@@ -472,7 +488,7 @@ export function BrowserStudio({
                         aria-label={t("browserMicLabel")}
                         value={micId}
                         onChange={(e) => setMicId(e.target.value)}
-                        className="max-w-44 rounded-lg border border-slate-200 bg-white px-2.5 py-2 text-sm text-slate-900 focus:border-slate-400 focus:outline-none"
+                        className="max-w-44 rounded-lg border border-white/15 bg-white/10 px-2.5 py-2 text-sm text-white focus:border-white/40 focus:outline-none [&>option]:text-[#161613]"
                       >
                         {mics.map((d, i) => (
                           <option key={d.deviceId} value={d.deviceId}>
@@ -484,7 +500,7 @@ export function BrowserStudio({
                   </>
                 )}
 
-                <p className="mr-auto hidden max-w-sm text-xs leading-relaxed text-slate-400 xl:block">
+                <p className="mr-auto hidden max-w-sm text-xs leading-relaxed text-white/40 xl:block">
                   {t("browserHint")}
                 </p>
                 <span className="flex-1 xl:hidden" />
@@ -497,8 +513,8 @@ export function BrowserStudio({
                   className={cn(
                     "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border transition",
                     micOn
-                      ? "border-slate-200 text-slate-600 hover:bg-slate-50"
-                      : "border-red-200 bg-red-50 text-red-600",
+                      ? "border-white/20 text-white/80 hover:bg-white/10"
+                      : "border-red-500/40 bg-red-600/20 text-red-300",
                   )}
                 >
                   <Icon name={micOn ? "mic" : "micOff"} size={17} />
@@ -520,7 +536,7 @@ export function BrowserStudio({
                     type="button"
                     onClick={goLive}
                     disabled={phase === "starting"}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+                    className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-2.5 text-sm font-bold text-[#0b0b10] transition hover:bg-white/90 active:scale-[0.98] disabled:opacity-50"
                   >
                     <Icon name="broadcast" size={17} />
                     {phase === "starting" ? t("browserStarting") : t("goLive")}
@@ -531,28 +547,20 @@ export function BrowserStudio({
           </div>
 
           {/* ---- Chat: Spalte auf grossen Flaechen, Blatt auf kleinen ---- */}
-          <aside
-            className={cn(
-              "min-h-0 flex-col border-l border-slate-200 bg-white",
-              chatOpen ? "hidden w-[340px] shrink-0 lg:flex xl:w-[380px]" : "hidden",
-            )}
-          >
-            <StudioChat slug={slug} sessionId={sessionId} />
-          </aside>
           {chatOpen && (
             <div className="absolute inset-0 z-20 lg:hidden">
               <div
-                className="absolute inset-0 bg-slate-900/40"
+                className="absolute inset-0 bg-black/50"
                 onClick={() => setChatOpen(false)}
               />
-              <div className="absolute inset-x-0 bottom-0 top-1/4 flex flex-col rounded-t-2xl border-t border-slate-200 bg-white shadow-[0_-12px_40px_rgba(15,15,13,0.25)]">
-                <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-2">
-                  <span className="mx-auto h-1 w-9 rounded-full bg-slate-300" aria-hidden />
+              <div className="absolute inset-x-0 bottom-0 top-1/4 flex flex-col rounded-t-2xl border-t border-white/10 bg-[#0b0b10] shadow-[0_-12px_40px_rgba(0,0,0,0.5)]">
+                <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-2">
+                  <span className="mx-auto h-1 w-9 rounded-full bg-white/25" aria-hidden />
                   <button
                     type="button"
                     onClick={() => setChatOpen(false)}
                     aria-label={tUi("close")}
-                    className="absolute right-3 flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                    className="absolute right-3 flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
                   >
                     <Icon name="close" size={17} />
                   </button>
@@ -582,7 +590,7 @@ function MicLevel({ value, label }: { value: number; label: string }) {
   const bars = 5;
   return (
     <span
-      className="flex h-10 shrink-0 items-center gap-[3px] rounded-xl border border-slate-200 px-2.5"
+      className="flex h-10 shrink-0 items-center gap-[3px] rounded-xl border border-white/20 px-2.5"
       title={label}
       aria-label={label}
       role="meter"
@@ -597,7 +605,7 @@ function MicLevel({ value, label }: { value: number; label: string }) {
             key={i}
             className={cn(
               "w-[3px] rounded-full transition-all duration-75",
-              on ? (i === bars - 1 ? "bg-amber-500" : "bg-emerald-500") : "bg-slate-200",
+              on ? (i === bars - 1 ? "bg-amber-400" : "bg-emerald-400") : "bg-white/20",
             )}
             style={{ height: `${7 + i * 3}px` }}
           />
@@ -718,10 +726,10 @@ function StudioChat({
   return (
     <>
       {!hideTitle && (
-        <div className="flex shrink-0 items-center justify-between border-b border-slate-100 px-4 py-3">
-          <p className="text-sm font-semibold text-slate-900">{t("studioChatTitle")}</p>
+        <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3">
+          <p className="text-sm font-semibold text-white">{t("studioChatTitle")}</p>
           {messages.length > 0 && (
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
+            <span className="rounded-full bg-white/10 px-2 py-0.5 text-xs font-medium text-white/60">
               {messages.length}
             </span>
           )}
@@ -729,17 +737,19 @@ function StudioChat({
       )}
       <div ref={listRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
         {messages.length === 0 ? (
-          <p className="text-sm text-slate-400">{t("studioChatEmpty")}</p>
+          <p className="text-sm text-white/40">{t("studioChatEmpty")}</p>
         ) : (
           messages.map((m) => (
             <div key={m.id} className="flex gap-2.5">
               <Avatar name={m.user.name} src={m.user.avatarUrl} size={28} />
               <div className="min-w-0">
-                <p className="text-xs text-slate-400">
-                  <span className="font-medium text-slate-700">{m.user.name}</span> ·{" "}
+                <p className="text-xs text-white/40">
+                  <span className="font-semibold text-white/70">{m.user.name}</span> ·{" "}
                   {timeAgo(new Date(m.createdAt), locale)}
                 </p>
-                <p className="whitespace-pre-wrap break-words text-sm text-slate-800">{m.body}</p>
+                <p className="whitespace-pre-wrap break-words text-sm text-white/85 [text-shadow:0_1px_3px_rgb(0_0_0/0.5)]">
+                  {m.body}
+                </p>
               </div>
             </div>
           ))
@@ -747,19 +757,19 @@ function StudioChat({
       </div>
       <form
         onSubmit={send}
-        className="flex shrink-0 items-center gap-2 border-t border-slate-100 p-3"
+        className="flex shrink-0 items-center gap-2 border-t border-white/10 p-3"
       >
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={t("studioChatPlaceholder")}
           maxLength={1000}
-          className="min-w-0 flex-1 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:border-slate-400 focus:outline-none"
+          className="min-w-0 flex-1 rounded-full border border-white/20 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-white/40 focus:border-white/50 focus:outline-none"
         />
         <button
           type="submit"
           disabled={sending || !draft.trim()}
-          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-40"
+          className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#0b0b10] transition hover:bg-white/90 disabled:opacity-40"
           aria-label={t("studioChatSend")}
         >
           <Icon name="send" size={16} />

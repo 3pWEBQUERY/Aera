@@ -182,8 +182,59 @@ export function LiveRoom({
     });
   }
 
-  function enterFullscreen() {
-    playerBoxRef.current?.requestFullscreen?.().catch(() => undefined);
+  /**
+   * Vollbild — soweit der Browser es hergibt.
+   *
+   * Auf iOS kennt Safari `requestFullscreen` nur fuer `<video>`, nicht fuer
+   * beliebige Elemente. Der Knopf tat dort schlicht nichts. Jetzt weicht er
+   * auf `webkitEnterFullscreen` des Videos aus — und wo auch das fehlt (etwa
+   * beim eingebetteten Player einer fremden Plattform), verschwindet er.
+   * Ein Knopf, der nichts tut, ist schlimmer als keiner.
+   *
+   * Ausserdem ist er jetzt ein Umschalter: er ging bisher nur hinein.
+   */
+  const [fullscreen, setFullscreen] = useState(false);
+  const [canFullscreen, setCanFullscreen] = useState(false);
+
+  const nativeVideo = useCallback(
+    () =>
+      playerBoxRef.current?.querySelector<
+        HTMLVideoElement & { webkitEnterFullscreen?: () => void }
+      >("video") ?? null,
+    [],
+  );
+
+  useEffect(() => {
+    const sync = () => setFullscreen(!!document.fullscreenElement);
+    document.addEventListener("fullscreenchange", sync);
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  useEffect(() => {
+    // Der Player haengt sein <video> erst nach dem Verbinden ein; kurz nach
+    // dem Mount noch einmal nachsehen, sonst bleibt der Knopf zu Unrecht weg.
+    const check = () =>
+      setCanFullscreen(
+        Boolean(document.fullscreenEnabled) ||
+          typeof nativeVideo()?.webkitEnterFullscreen === "function",
+      );
+    check();
+    const timer = setTimeout(check, 1500);
+    return () => clearTimeout(timer);
+  }, [nativeVideo, whepUrl, embedUrl, streamUrl, replayUrl]);
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) {
+      void document.exitFullscreen?.();
+      return;
+    }
+    const box = playerBoxRef.current;
+    if (document.fullscreenEnabled && box?.requestFullscreen) {
+      void box.requestFullscreen().catch(() => undefined);
+      return;
+    }
+    // iOS: nur das Videoelement selbst kann in den Vollbildmodus.
+    nativeVideo()?.webkitEnterFullscreen?.();
   }
 
   const rawPlayerUrl = status === "ENDED" ? replayUrl : streamUrl ?? replayUrl;
@@ -324,14 +375,17 @@ export function LiveRoom({
           >
             <Icon name={overlayChat ? "eyeOff" : "chat"} size={18} />
           </button>
-          <button
-            type="button"
-            onClick={enterFullscreen}
-            aria-label={t("fullscreen")}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition active:scale-95"
-          >
-            <Icon name="expand" size={18} />
-          </button>
+          {canFullscreen && (
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              aria-pressed={fullscreen}
+              aria-label={t("fullscreen")}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition active:scale-95"
+            >
+              <Icon name={fullscreen ? "collapse" : "expand"} size={18} />
+            </button>
+          )}
         </div>
 
         {overlayChat && (
@@ -400,13 +454,16 @@ export function LiveRoom({
       <div className="min-w-0 flex-1">
         {/* Steuerleiste: Vollbild + Chat ein-/ausblenden */}
         <div className="mb-2 flex items-center justify-end gap-1.5">
-          <button
-            type="button"
-            onClick={enterFullscreen}
-            className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
-          >
-            <Icon name="expand" size={14} /> {t("fullscreen")}
-          </button>
+          {canFullscreen && (
+            <button
+              type="button"
+              onClick={toggleFullscreen}
+              aria-pressed={fullscreen}
+              className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-medium text-[#161613]/60 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+            >
+              <Icon name={fullscreen ? "collapse" : "expand"} size={14} /> {t("fullscreen")}
+            </button>
+          )}
           <button
             type="button"
             onClick={toggleChat}
