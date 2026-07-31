@@ -98,8 +98,19 @@ struct PostDetailView: View {
                     defaultLayout(detail.post)
                 }
 
-                commentsSection(detail)
-                    .padding(.horizontal, 16)
+                if !detail.post.hideComments {
+                    commentsSection(detail)
+                        .padding(.horizontal, 16)
+                }
+
+                // Weitere Beiträge bewusst unter den Kommentaren: wer bis
+                // hierhin gelesen hat, ist mit dem Beitrag fertig.
+                if !detail.related.isEmpty {
+                    postRow("Ähnliche Beiträge", posts: detail.related)
+                }
+                if !detail.popular.isEmpty {
+                    postRow("Beliebte Beiträge", posts: detail.popular)
+                }
             }
             .padding(.bottom, 24)
         }
@@ -112,7 +123,15 @@ struct PostDetailView: View {
 
     private func blogLayout(_ post: Post) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            if !post.locked, post.imageUrl != nil {
+            // Titelplatte mit gespeichertem Bildausschnitt, sonst das
+            // Beitragsbild.
+            if !post.locked, let cover = post.coverUrl {
+                PostCoverImage(url: cover,
+                               focusX: post.coverFocusX,
+                               focusY: post.coverFocusY,
+                               zoom: post.coverZoom)
+                    .aspectRatio(16 / 9, contentMode: .fit)
+            } else if !post.locked, post.imageUrl != nil {
                 Color.clear
                     .aspectRatio(16 / 9, contentMode: .fit)
                     .overlay {
@@ -138,6 +157,7 @@ struct PostDetailView: View {
                     lockedMedia(post)
                 } else {
                     articleBody(post)
+                    pollBlock(post)
                 }
             }
             .padding(.horizontal, 20)
@@ -185,6 +205,7 @@ struct PostDetailView: View {
                         .foregroundStyle(Theme.ink.opacity(0.85))
                 }
                 postMedia(post)
+                pollBlock(post)
             }
 
             likeRow(post)
@@ -216,6 +237,7 @@ struct PostDetailView: View {
                         .foregroundStyle(Theme.ink.opacity(0.85))
                 }
                 postMedia(post)
+                pollBlock(post)
             }
 
             likeRow(post)
@@ -293,23 +315,30 @@ struct PostDetailView: View {
             RemoteVideoPlayer(url: url)
                 .aspectRatio(16 / 9, contentMode: .fit)
                 .clipShape(shape)
-        } else if post.imageUrl != nil {
-            Color.clear
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .overlay {
-                    AsyncImageView(url: post.imageUrl)
-                }
-                .clipShape(shape)
+        } else if !post.imageUrls.isEmpty {
+            PostImageGrid(urls: post.imageUrls)
         }
     }
 
-    /// Gesperrter Inhalt: Teaser + `LockedOverlay` (Kauf) bzw. Mitglieds-Hinweis.
+    /// Umfrage am Beitrag — im Forum die halbe Miete des Themas.
+    @ViewBuilder
+    private func pollBlock(_ post: Post) -> some View {
+        if let poll = post.poll {
+            PollBlock(poll: poll, canVote: canComment) { options in
+                vote(poll: options)
+            }
+        }
+    }
+
+    /// Gesperrter Inhalt: verwischtes Vorschaubild + `LockedOverlay` (Kauf)
+    /// bzw. Mitglieds-Hinweis.
     private func lockedMedia(_ post: Post) -> some View {
         let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
         return Color.clear
             .aspectRatio(16 / 9, contentMode: .fit)
             .overlay {
-                AsyncImageView(url: post.teaserUrl ?? post.imageUrl)
+                AsyncImageView(url: post.lockedPreviewUrl ?? post.teaserUrl)
+                    .blur(radius: 18)
             }
             .overlay {
                 if let unlock = post.unlock {
@@ -359,10 +388,35 @@ struct PostDetailView: View {
                                         depth: 0,
                                         showsVoting: detail.post.spaceType == .forum,
                                         onVote: { comment, dir in voteComment(comment, dir: dir) },
+                                        onLike: { comment in toggleCommentLike(comment) },
                                         onReply: { comment in beginReply(to: comment) })
                     }
                 }
             }
+        }
+    }
+
+    /// Waagerechte Reihe weiterer Beiträge des Space.
+    private func postRow(_ title: LocalizedStringKey, posts: [Post]) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            SectionHeader(title)
+                .padding(.horizontal, 16)
+
+            ScrollView(.horizontal) {
+                HStack(alignment: .top, spacing: 12) {
+                    ForEach(posts) { post in
+                        NavigationLink {
+                            PostDetailView(slug: slug, postId: post.id)
+                                .brandTheme(activeBrand)
+                        } label: {
+                            PostTile(post: post)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .padding(.horizontal, 16)
+            }
+            .scrollIndicators(.hidden)
         }
     }
 
@@ -642,6 +696,72 @@ struct PostDetailView: View {
         }
     }
 
+    /// „Gefällt mir" an einem Kommentar — optimistisch, mit Rücknahme.
+    private func toggleCommentLike(_ comment: Comment) {
+        guard appState.session.isLoggedIn else {
+            showLogin = true
+            return
+        }
+        guard var detail else { return }
+        let originalCount = comment.likeCount
+        let originalLiked = comment.likedByMe
+
+        _ = Self.update(commentId: comment.id, in: &detail.comments) { current in
+            current.likedByMe.toggle()
+            current.likeCount += current.likedByMe ? 1 : -1
+        }
+        withAnimation(.snappy(duration: 0.25)) {
+            self.detail = detail
+        }
+        likeTrigger += 1
+
+        Task {
+            do {
+                let response = try await appState.api.toggleCommentReaction(slug: slug,
+                                                                            commentId: comment.id)
+                applyCommentLike(commentId: comment.id,
+                                 liked: response.liked,
+                                 count: response.likeCount)
+            } catch {
+                applyCommentLike(commentId: comment.id, liked: originalLiked, count: originalCount)
+            }
+        }
+    }
+
+    private func applyCommentLike(commentId: String, liked: Bool, count: Int) {
+        guard var detail else { return }
+        _ = Self.update(commentId: commentId, in: &detail.comments) { current in
+            current.likedByMe = liked
+            current.likeCount = count
+        }
+        self.detail = detail
+    }
+
+    /// Stimme an der Umfrage — der Server liefert das Ergebnis zurück.
+    private func vote(poll options: [Int]) {
+        guard appState.session.isLoggedIn else {
+            showLogin = true
+            return
+        }
+        guard canComment else {
+            requestCommentAccess()
+            return
+        }
+        Task {
+            do {
+                let poll = try await appState.api.votePoll(slug: slug,
+                                                           postId: postId,
+                                                           options: options)
+                withAnimation(.snappy(duration: 0.25)) {
+                    detail?.post.poll = poll
+                }
+                successTrigger += 1
+            } catch {
+                actionError = error.localizedDescription
+            }
+        }
+    }
+
     private func applyCommentVote(commentId: String, score: Int, myVote: VoteDirection?) {
         guard var detail else { return }
         _ = Self.update(commentId: commentId, in: &detail.comments) { current in
@@ -713,6 +833,72 @@ struct PostDetailView: View {
     }
 }
 
+// MARK: - PostTile
+
+/// Kachel für die Reihen unter den Kommentaren: Bild, Titel, Likes.
+/// Gesperrte Beiträge bleiben sichtbar — der Anreiz liegt genau darin, zu
+/// sehen, was es noch gibt.
+private struct PostTile: View {
+    let post: Post
+
+    @Environment(\.brand) private var brand
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Color.clear
+                .frame(width: 200, height: 118)
+                .overlay {
+                    if imageUrl != nil {
+                        AsyncImageView(url: imageUrl)
+                            .blur(radius: post.locked ? 12 : 0)
+                    } else {
+                        ZStack {
+                            brand.soft
+                            Image(systemName: post.spaceType.symbolName)
+                                .font(.system(size: 20))
+                                .foregroundStyle(brand.color.opacity(0.7))
+                        }
+                    }
+                }
+                .clipped()
+                .overlay(alignment: .topTrailing) {
+                    if post.locked {
+                        Image(systemName: "lock.fill")
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(.white)
+                            .frame(width: 26, height: 26)
+                            .glassEffect(.regular, in: .circle)
+                            .padding(8)
+                    }
+                }
+                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+
+            Text(post.title ?? String(localized: "Ohne Titel"))
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .frame(width: 200, alignment: .leading)
+
+            if post.likeCount > 0 {
+                HStack(spacing: 4) {
+                    Image(systemName: "heart.fill")
+                    Text(Format.compactCount(post.likeCount))
+                        .monospacedDigit()
+                }
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(Theme.ink.opacity(0.4))
+            }
+        }
+    }
+
+    private var imageUrl: String? {
+        post.locked
+            ? (post.lockedPreviewUrl ?? post.teaserUrl)
+            : (post.coverUrl ?? post.imageUrls.first ?? post.imageUrl)
+    }
+}
+
 // MARK: - CommentNodeView
 
 /// Ein Kommentar mit rekursiv gerenderten Antworten; Einrückung bis
@@ -722,7 +908,10 @@ private struct CommentNodeView: View {
     let depth: Int
     let showsVoting: Bool
     let onVote: (Comment, VoteDirection) -> Void
+    let onLike: (Comment) -> Void
     let onReply: (Comment) -> Void
+
+    @Environment(\.brand) private var brand
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -754,11 +943,32 @@ private struct CommentNodeView: View {
                         .foregroundStyle(Theme.ink.opacity(0.85))
                         .fixedSize(horizontal: false, vertical: true)
 
-                    Button("Antworten") {
-                        onReply(comment)
+                    HStack(spacing: 14) {
+                        Button {
+                            onLike(comment)
+                        } label: {
+                            HStack(spacing: 4) {
+                                Image(systemName: comment.likedByMe ? "heart.fill" : "heart")
+                                    .font(.system(size: 12, weight: .medium))
+                                // Eine dauerhafte 0 trägt keine Information.
+                                if comment.likeCount > 0 {
+                                    Text(Format.compactCount(comment.likeCount))
+                                        .font(.system(size: 12, weight: .medium))
+                                        .monospacedDigit()
+                                        .contentTransition(.numericText())
+                                }
+                            }
+                            .foregroundStyle(comment.likedByMe ? brand.color : Theme.ink.opacity(0.45))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text(comment.likedByMe ? "Gefällt mir entfernen" : "Gefällt mir"))
+
+                        Button("Antworten") {
+                            onReply(comment)
+                        }
+                        .buttonStyle(.ghost)
+                        .font(.system(size: 12, weight: .medium))
                     }
-                    .buttonStyle(.ghost)
-                    .font(.system(size: 12, weight: .medium))
                 }
 
                 Spacer(minLength: 0)
@@ -771,6 +981,7 @@ private struct CommentNodeView: View {
                                         depth: depth + 1,
                                         showsVoting: showsVoting,
                                         onVote: onVote,
+                                        onLike: onLike,
                                         onReply: onReply)
                     }
                 }

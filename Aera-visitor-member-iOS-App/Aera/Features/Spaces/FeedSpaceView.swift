@@ -248,6 +248,10 @@ private struct FeedPostCard: View {
 
             Spacer(minLength: 8)
 
+            if post.lockKind == .paid, post.priceCents > 0 {
+                PostPriceBadge(priceCents: post.priceCents, currency: post.currency)
+            }
+
             if post.isPinned {
                 PillLabel(String(localized: "Angepinnt"), systemImage: "pin.fill", prominent: true)
             }
@@ -263,7 +267,10 @@ private struct FeedPostCard: View {
             Color.clear
                 .aspectRatio(16 / 9, contentMode: .fit)
                 .overlay {
-                    AsyncImageView(url: post.teaserUrl ?? post.imageUrl)
+                    // Verwischt statt scharf: das Bild soll neugierig machen,
+                    // nicht den Kauf ersetzen — so hält es auch das Web.
+                    AsyncImageView(url: post.lockedPreviewUrl ?? post.teaserUrl)
+                        .blur(radius: 18)
                 }
                 .overlay {
                     if let unlock = post.unlock {
@@ -277,13 +284,8 @@ private struct FeedPostCard: View {
             RemoteVideoPlayer(url: url)
                 .aspectRatio(16 / 9, contentMode: .fit)
                 .clipShape(shape)
-        } else if post.imageUrl != nil {
-            Color.clear
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .overlay {
-                    AsyncImageView(url: post.imageUrl)
-                }
-                .clipShape(shape)
+        } else if !post.imageUrls.isEmpty {
+            PostImageGrid(urls: post.imageUrls)
         }
     }
 
@@ -309,17 +311,20 @@ private struct FeedPostCard: View {
 
     private var meta: some View {
         HStack(spacing: 18) {
-            Button(action: onLike) {
-                HStack(spacing: 5) {
-                    Image(systemName: post.likedByMe ? "heart.fill" : "heart")
-                        .foregroundStyle(post.likedByMe ? brand.color : Theme.ink.opacity(0.5))
-                    Text(Format.compactCount(post.likeCount))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
+            // Der Creator kann Likes je Beitrag ausblenden.
+            if !post.hideLikes {
+                Button(action: onLike) {
+                    HStack(spacing: 5) {
+                        Image(systemName: post.likedByMe ? "heart.fill" : "heart")
+                            .foregroundStyle(post.likedByMe ? brand.color : Theme.ink.opacity(0.5))
+                        Text(Format.compactCount(post.likeCount))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(post.likedByMe ? "Gefällt mir entfernen" : "Gefällt mir"))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text(post.likedByMe ? "Gefällt mir entfernen" : "Gefällt mir"))
 
             NavigationLink {
                 PostDetailView(slug: slug, postId: post.id)

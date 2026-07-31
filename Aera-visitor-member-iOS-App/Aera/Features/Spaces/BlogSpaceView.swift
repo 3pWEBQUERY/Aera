@@ -110,18 +110,52 @@ struct BlogSpaceView: View {
         }
     }
 
+    /// Titelplatte: bevorzugt das eigens gesetzte Titelbild samt gespeichertem
+    /// Bildausschnitt, sonst das Beitragsbild. Gesperrte Beiträge zeigen ihr
+    /// Bild verwischt — sichtbar, aber nicht verraten.
     @ViewBuilder
     private func cover(_ post: Post) -> some View {
-        let coverUrl = post.imageUrl ?? post.teaserUrl
-        if coverUrl != nil {
+        let shape = UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16)
+        if post.locked, let preview = post.lockedPreviewUrl ?? post.teaserUrl {
             Color.clear
                 .aspectRatio(16 / 9, contentMode: .fit)
                 .overlay {
-                    AsyncImageView(url: coverUrl)
+                    AsyncImageView(url: preview)
+                        .blur(radius: 18)
                 }
-                .clipShape(
-                    UnevenRoundedRectangle(topLeadingRadius: 16, topTrailingRadius: 16)
-                )
+                .overlay(alignment: .bottomLeading) {
+                    if post.lockKind == .paid, post.priceCents > 0 {
+                        PostPriceBadge(priceCents: post.priceCents, currency: post.currency)
+                            .padding(12)
+                    } else {
+                        HStack(spacing: 6) {
+                            Image(systemName: "lock.fill")
+                                .font(.system(size: 10, weight: .semibold))
+                            Text("Mit Mitgliedschaft")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 5)
+                        .background(Theme.ink.opacity(0.75), in: .capsule)
+                        .padding(12)
+                    }
+                }
+                .clipShape(shape)
+        } else if let cover = post.coverUrl {
+            PostCoverImage(url: cover,
+                           focusX: post.coverFocusX,
+                           focusY: post.coverFocusY,
+                           zoom: post.coverZoom)
+                .aspectRatio(16 / 9, contentMode: .fit)
+                .clipShape(shape)
+        } else if post.imageUrl != nil || post.teaserUrl != nil {
+            Color.clear
+                .aspectRatio(16 / 9, contentMode: .fit)
+                .overlay {
+                    AsyncImageView(url: post.imageUrl ?? post.teaserUrl)
+                }
+                .clipShape(shape)
         }
     }
 

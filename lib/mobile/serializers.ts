@@ -311,8 +311,16 @@ export interface PostDto {
   body: string | null;
   bodyHtml: string | null;
   imageUrl: string | null;
+  /** Alle Bilder des Beitrags — `imageUrl` ist das erste davon. */
+  imageUrls: string[];
   videoUrl: string | null;
   teaserUrl: string | null;
+  /** Titelplatte des Blogs samt Bildausschnitt. */
+  coverUrl: string | null;
+  /** Bildmitte in Prozent (0–100) und Zoom in Prozent (100 = 1:1). */
+  coverFocusX: number;
+  coverFocusY: number;
+  coverZoom: number;
   isPinned: boolean;
   publishedAt: string;
   author: AuthorDto;
@@ -320,10 +328,35 @@ export interface PostDto {
   likedByMe: boolean;
   commentCount: number;
   locked: boolean;
+  /**
+   * Art der Sperre. „members" verlangt eine Mitgliedschaft — das Titelbild
+   * bleibt sichtbar, es ist die Werbung fuer den Beitrag. „paid" wird
+   * einzeln verkauft; dort geht nur das eigens gepflegte Vorschaubild mit.
+   */
+  lockKind: "none" | "members" | "paid";
+  /** Bild, das bei gesperrten Beitraegen gezeigt (und verwischt) werden darf. */
+  lockedPreviewUrl: string | null;
+  priceCents: number;
+  currency: string;
   unlock: UnlockDto | null;
   score: number | null;
   myVote: "UP" | "DOWN" | null;
   readingMinutes: number | null;
+  /** Umfrage am Beitrag — nur in der Einzelansicht gefuellt. */
+  poll: PollDto | null;
+  /** Beitrags-Einstellungen des Creators. */
+  hideComments: boolean;
+  closeComments: boolean;
+  hideLikes: boolean;
+}
+
+/** Umfrage am Beitrag (Web: components/community/poll-block.tsx). */
+export interface PollDto {
+  question: string;
+  multiple: boolean;
+  totalVotes: number;
+  options: { index: number; label: string; votes: number }[];
+  myVotes: number[];
 }
 
 export interface PostRow {
@@ -332,8 +365,17 @@ export interface PostRow {
   body: string;
   bodyHtml: string | null;
   imageUrl: string | null;
+  /** Optional, weil einzelne Aufrufer nur eine Teilmenge selektieren. */
+  imageUrls?: string[];
   videoUrl: string | null;
   teaserUrl: string | null;
+  coverUrl?: string | null;
+  coverOffsetX?: number | null;
+  coverOffsetY?: number | null;
+  coverZoom?: number | null;
+  hideComments?: boolean;
+  closeComments?: boolean;
+  hideLikes?: boolean;
   isPinned: boolean;
   publishedAt: Date;
   visibility: Visibility;
@@ -438,8 +480,13 @@ export function toPostDto(
     body: nullBody ? null : post.body,
     bodyHtml: nullBody ? null : post.bodyHtml,
     imageUrl: locked ? null : post.imageUrl,
+    imageUrls: locked ? [] : (post.imageUrls ?? (post.imageUrl ? [post.imageUrl] : [])),
     videoUrl: locked ? null : post.videoUrl,
     teaserUrl: post.teaserUrl,
+    coverUrl: locked ? null : (post.coverUrl ?? null),
+    coverFocusX: post.coverOffsetX ?? 50,
+    coverFocusY: post.coverOffsetY ?? 50,
+    coverZoom: post.coverZoom ?? 100,
     isPinned: post.isPinned,
     publishedAt: post.publishedAt.toISOString(),
     author: toAuthor(post.author, roles),
@@ -449,6 +496,17 @@ export function toPostDto(
     locked,
     // Unlock nur für Pay-per-Post; Space-gesperrte freie Posts sind nicht
     // einzeln kaufbar (Beitritt/Tier nötig) → unlock bleibt null.
+    lockKind: locked ? (post.priceCents > 0 ? "paid" : "members") : "none",
+    // Gesperrt sichtbar, aber unkenntlich: beim Einzelverkauf das
+    // Vorschaubild, bei „nur fuer Mitglieder" das Titelbild — dort ist es
+    // die Werbung fuer den Beitrag (wie auf der Web-Space-Seite).
+    lockedPreviewUrl: locked
+      ? post.priceCents > 0
+        ? post.teaserUrl
+        : (post.imageUrls?.[0] ?? post.imageUrl ?? post.coverUrl ?? null)
+      : null,
+    priceCents: post.priceCents,
+    currency: post.currency,
     unlock:
       locked && post.priceCents > 0
         ? unlockDto("post", post.id, post.priceCents, post.currency)
@@ -458,6 +516,12 @@ export function toPostDto(
     readingMinutes: blog
       ? Math.max(1, Math.round((post.body ?? "").length / 1000))
       : null,
+    // Umfragen kosten eigene Abfragen und werden nur in der Einzelansicht
+    // nachgeladen (siehe posts/[postId]/route.ts).
+    poll: null,
+    hideComments: post.hideComments ?? false,
+    closeComments: post.closeComments ?? false,
+    hideLikes: post.hideLikes ?? false,
   };
 }
 
@@ -492,6 +556,9 @@ export interface CommentDto {
   author: AuthorDto;
   score: number;
   myVote: "UP" | "DOWN" | null;
+  /** „Gefaellt mir" am Kommentar (Web: components/community/comment-like.tsx). */
+  likeCount: number;
+  likedByMe: boolean;
   children: CommentDto[];
 }
 
@@ -507,7 +574,7 @@ export async function commentTree(
     include: { author: { select: { id: true, name: true, avatarUrl: true } } },
   });
   const ids = rows.map((c) => c.id);
-  const [roles, voteGroups, myVotes] = await Promise.all([
+  const [roles, voteGroups, myVotes, likeGroups, myLikeRows] = await Promise.all([
     roleMapFor(tenantId, rows.map((c) => c.author.id)),
     ids.length
       ? prisma.reaction.groupBy({
@@ -522,7 +589,26 @@ export async function commentTree(
           select: { commentId: true, type: true },
         })
       : Promise.resolve([]),
+    ids.length
+      ? prisma.reaction.groupBy({
+          by: ["commentId"],
+          where: { tenantId, commentId: { in: ids }, type: "LIKE" },
+          _count: true,
+        })
+      : Promise.resolve([]),
+    userId && ids.length
+      ? prisma.reaction.findMany({
+          where: { tenantId, userId, commentId: { in: ids }, type: "LIKE" },
+          select: { commentId: true },
+        })
+      : Promise.resolve([]),
   ]);
+  const likeCounts = new Map<string, number>();
+  for (const g of likeGroups) {
+    if (!g.commentId) continue;
+    likeCounts.set(g.commentId, g._count as number);
+  }
+  const myLikes = new Set(myLikeRows.map((r) => r.commentId).filter(Boolean) as string[]);
   const scores = new Map<string, number>();
   for (const g of voteGroups) {
     if (!g.commentId) continue;
@@ -545,6 +631,8 @@ export async function commentTree(
       author: toAuthor(c.author, roles),
       score: scores.get(c.id) ?? 0,
       myVote: mine.get(c.id) ?? null,
+      likeCount: likeCounts.get(c.id) ?? 0,
+      likedByMe: myLikes.has(c.id),
       children: [],
     });
   }
@@ -580,6 +668,8 @@ export async function singleCommentDto(
     author: toAuthor(comment.author, roles),
     score: 0,
     myVote: null,
+    likeCount: 0,
+    likedByMe: false,
     children: [],
   };
 }

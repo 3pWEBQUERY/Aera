@@ -5,11 +5,21 @@ import { awardPoints } from "@/lib/gamification";
 import { notify } from "@/lib/notifications";
 import { jsonError, jsonOk, parseJsonBody, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
-// POST /api/mobile/v1/c/{slug}/reactions/toggle  { postId } → { liked, likeCount }
-// Logik gespiegelt aus toggleReactionAction (app/actions/engage.ts) inkl.
-// Anti-Farming (Like/Unlike-Zyklen minten keine Punkte) + Benachrichtigung.
+// POST /api/mobile/v1/c/{slug}/reactions/toggle
+//   { postId }    → { liked, likeCount }   Beitrag
+//   { commentId } → { liked, likeCount }   Kommentar
+// Logik gespiegelt aus toggleReactionAction / toggleCommentLikeAction
+// (app/actions/engage.ts) inkl. Anti-Farming (Like/Unlike-Zyklen minten keine
+// Punkte) + Benachrichtigung.
 
-const schema = z.object({ postId: z.string().min(1) });
+const schema = z
+  .object({
+    postId: z.string().min(1).optional(),
+    commentId: z.string().min(1).optional(),
+  })
+  .refine((v) => Boolean(v.postId) !== Boolean(v.commentId), {
+    message: "Either postId or commentId is required.",
+  });
 
 export async function POST(
   req: Request,
@@ -25,7 +35,72 @@ export async function POST(
 
   const parsed = await parseJsonBody(req, schema);
   if ("response" in parsed) return parsed.response;
-  const postId = parsed.data.postId;
+
+  // Kommentar: der Weg zur Zugriffspruefung fuehrt ueber den Beitrag, an dem
+  // er haengt — der Space wird nie vom Client geglaubt.
+  if (parsed.data.commentId) {
+    const commentId = parsed.data.commentId;
+    const comment = await prisma.comment.findFirst({
+      where: { id: commentId, tenantId: tenant.id },
+      include: { post: { include: { space: true } } },
+    });
+    if (!comment) return jsonError("not_found", "Comment not found.", 404);
+    const ctx = await buildAccessContext(tenant.id, user.id);
+    if (!canAccess(comment.post.space, ctx)) {
+      return jsonError("not_member", "You do not have access to this space.", 403);
+    }
+
+    const existing = await prisma.reaction.findFirst({
+      where: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+    });
+    let liked: boolean;
+    if (existing) {
+      await prisma.reaction.delete({ where: { id: existing.id } });
+      liked = false;
+    } else {
+      await prisma.reaction.create({
+        data: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+      });
+      liked = true;
+      const alreadyAwarded = await prisma.pointsLedger.findFirst({
+        where: {
+          tenantId: tenant.id,
+          userId: user.id,
+          refType: "Comment",
+          refId: commentId,
+          rule: { trigger: "REACTION_GIVEN" },
+        },
+      });
+      if (!alreadyAwarded) {
+        await awardPoints({
+          tenantId: tenant.id,
+          userId: user.id,
+          trigger: "REACTION_GIVEN",
+          refType: "Comment",
+          refId: commentId,
+        });
+      }
+      if (comment.authorId !== user.id) {
+        await notify({
+          tenantId: tenant.id,
+          userId: comment.authorId,
+          actorId: user.id,
+          type: "REACTION",
+          message: `${user.name} gefällt dein Kommentar.`,
+          href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`,
+          refType: "Comment",
+          refId: commentId,
+        });
+      }
+    }
+
+    const likeCount = await prisma.reaction.count({
+      where: { tenantId: tenant.id, commentId, type: "LIKE" },
+    });
+    return jsonOk({ liked, likeCount });
+  }
+
+  const postId = parsed.data.postId!;
 
   const post = await prisma.post.findFirst({
     where: { id: postId, tenantId: tenant.id },

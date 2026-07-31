@@ -273,10 +273,26 @@ final class APIClient {
         return envelope.comment
     }
 
-    /// `POST /c/{slug}/reactions/toggle`
+    /// `POST /c/{slug}/reactions/toggle` — „Gefällt mir" am Beitrag.
     func toggleReaction(slug: String, postId: String) async throws -> ReactionResponse {
         try await send(Endpoint(.post, "c/\(slug)/reactions/toggle"),
-                       body: PostIdBody(postId: postId))
+                       body: ReactionBody(postId: postId, commentId: nil))
+    }
+
+    /// `POST /c/{slug}/reactions/toggle` — „Gefällt mir" am Kommentar.
+    func toggleCommentReaction(slug: String, commentId: String) async throws -> ReactionResponse {
+        try await send(Endpoint(.post, "c/\(slug)/reactions/toggle"),
+                       body: ReactionBody(postId: nil, commentId: commentId))
+    }
+
+    /// `POST /c/{slug}/posts/{postId}/poll` — Abstimmen; eine erneute Stimme
+    /// ersetzt die alte. 403 `not_member` ohne aktive Mitgliedschaft.
+    func votePoll(slug: String, postId: String, options: [Int]) async throws -> Poll {
+        let envelope: PollEnvelope = try await send(
+            Endpoint(.post, "c/\(slug)/posts/\(postId)/poll"),
+            body: PollVoteBody(options: options)
+        )
+        return envelope.poll
     }
 
     /// `POST /c/{slug}/vote`
@@ -742,8 +758,15 @@ private struct CreateCommentBody: Encodable {
     let parentId: String?
 }
 
-private struct PostIdBody: Encodable {
-    let postId: String
+/// Entweder `postId` oder `commentId` — `nil` wird weggelassen
+/// (synthetisiertes `encodeIfPresent`).
+private struct ReactionBody: Encodable {
+    let postId: String?
+    let commentId: String?
+}
+
+private struct PollVoteBody: Encodable {
+    let options: [Int]
 }
 
 private struct VoteBody: Encodable {
@@ -862,6 +885,10 @@ private struct PostEnvelope: Decodable {
 
 private struct CommentEnvelope: Decodable {
     let comment: Comment
+}
+
+private struct PollEnvelope: Decodable {
+    let poll: Poll
 }
 
 private struct ConversationsEnvelope: Decodable {
