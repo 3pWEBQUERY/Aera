@@ -393,6 +393,25 @@ StudioOrder { id, description, productName: string|null,
 
 **Stories**
 
+- `GET /studio/{slug}/live` → `{ spaces: [{ slug, name }], sessions: StudioLiveSession[], streamEnabled: boolean }`
+- `POST /studio/{slug}/live` `{ spaceSlug, title, startsAt?, requiredEntitlementKey? }` → `{ session: StudioLiveSession }` — legt den Cloudflare-Eingang an und erzeugt die Session als eigener Stream aus dem Geraet (`source: AERA`, `ingest: BROWSER`). 409 `stream_not_configured`, wenn die Plattform kein Cloudflare Stream hat.
+- `GET /studio/{slug}/live/{sessionId}` → `{ session, whipUrl: string|null, connected: boolean }` — **`whipUrl` traegt ein Geheimnis** (wer sie hat, sendet auf diesen Eingang) und geht nur an Staff.
+- `PATCH /studio/{slug}/live/{sessionId}` `{ status: "SCHEDULED"|"LIVE"|"ENDED" }` → `{ session }` — live gehen bzw. beenden; beim Beenden wird die Aufzeichnung nachgeschlagen.
+
+```ts
+StudioLiveSession { id, title, status: "SCHEDULED"|"LIVE"|"ENDED",
+                    source: "AERA"|"EXTERNAL", ingest: "BROWSER"|"OBS",
+                    spaceSlug: string|null, startsAt: string|null, endedAt: string|null,
+                    canBroadcast: boolean,   // nur eigener Stream aus dem Geraet
+                    studioUrl: string }      // Buehne im WebView, siehe unten
+```
+
+Die Buehne (`{APP_URL}/live-studio?session=<id>`) laeuft im WKWebView der App und macht den
+WHIP-Handshake — den WebRTC-Stack gibt es auf iOS nur dort. Die App legt Token und Slug vor dem
+Laden ins Fenster (`window.__aeraStudio`), die Seite meldet Zustaende ueber
+`webkit.messageHandlers.aeraStudio` zurueck und laesst sich mit `window.aeraStudioEnd()` von aussen
+beenden.
+
 - `POST /studio/{slug}/stories` `{ mediaUrl, mediaType: "IMAGE"|"VIDEO", caption? (≤280), permanent?, ttlHours? (1–168) }` → `{ id, mediaUrl, mediaType, caption, createdAt, expiresAt }` — Story-Item-Shape wie im `STORIES`-Space-Content. Ohne `permanent`/`ttlHours` gelten die Voreinstellungen des Space; `expiresAt: null` heisst dauerhaft.
   - Persistenz exakt wie die Web-Dashboard-Action (`createStoryAction`): sofort live (`publishAt = now`), Ablauf nach **24 h** (`expiresAt = publishAt + 24h`); Sichtbarkeit ergibt sich wie im Web aus dem Ziel-Space.
   - Ziel-Space = **erster `STORIES`-Space** des Tenants; existiert keiner → **409** `no_stories_space`.

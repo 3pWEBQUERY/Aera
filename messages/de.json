@@ -1777,7 +1777,19 @@
       "studioNoPreview": "Die Sendung läuft — die Bildvorschau gibt es nur auf dem Gerät, das sendet.",
       "studioMirror": "Vorschau spiegeln",
       "studioLevel": "Aussteuerung",
-      "studioHintLabel": "Hinweis"
+      "studioHintLabel": "Hinweis",
+      "mobileStudio": {
+        "goLive": "Live gehen",
+        "starting": "Verbinde…",
+        "end": "Beenden",
+        "onAir": "Auf Sendung",
+        "micOn": "Ton einschalten",
+        "micOff": "Ton ausschalten",
+        "flip": "Kamera wechseln",
+        "cameraDenied": "Ohne Zugriff auf Kamera und Mikrofon lässt sich nicht senden. Du kannst ihn in den Einstellungen erlauben.",
+        "noIngest": "Für diese Session gibt es keinen Sendeweg.",
+        "startFailed": "Die Sendung ließ sich nicht starten."
+      }
     },
     "requests": {
       "subtitle": "Wünsche & Custom-Anfragen deiner Mitglieder verwalten.",

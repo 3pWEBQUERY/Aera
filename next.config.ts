@@ -19,7 +19,11 @@ const contentSecurityPolicy = [
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
   "font-src 'self' data:",
-  `connect-src 'self' https://api.stripe.com https://*.stripe.com wss:${storageOrigin ? ` ${storageOrigin}` : ""}`,
+  // WebRTC laeuft ueber fetch, nicht ueber ein iframe: Senden (WHIP) und
+  // Zuschauen (WHEP) sprechen direkt mit Cloudflare Stream. Ohne diesen
+  // Eintrag scheitert jeder Sendeversuch im Browser und in der App-Buehne
+  // still an der CSP.
+  `connect-src 'self' https://api.stripe.com https://*.stripe.com https://*.cloudflarestream.com wss:${storageOrigin ? ` ${storageOrigin}` : ""}`,
   // Stripe-Checkout + Live-Stream-Player (siehe lib/live-embed.ts). Neue
   // Streaming-Plattformen müssen hier freigegeben werden, sonst blockiert
   // die CSP das iframe ("Dieser Inhalt ist blockiert").

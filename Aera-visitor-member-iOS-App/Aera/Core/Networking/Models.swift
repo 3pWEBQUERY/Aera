@@ -1246,6 +1246,37 @@ enum StudioUploadPurpose: String, Hashable, Sendable {
     case story
 }
 
+// MARK: - Studio: Live
+
+/// Live-Session aus Sicht des Creators (`GET /studio/{slug}/live`).
+struct StudioLiveSession: Decodable, Hashable, Sendable, Identifiable {
+    var id: String
+    var title: String
+    var status: LiveSessionStatus
+    var source: LiveSource
+    var spaceSlug: String?
+    var startsAt: Date?
+    var endedAt: Date?
+    /// Nur eigene Streams aus dem Gerät lassen sich aus der App senden.
+    var canBroadcast: Bool
+    /// Adresse der Studio-Bühne im WebView.
+    var studioUrl: String
+}
+
+struct StudioLiveOverview: Decodable, Hashable, Sendable {
+    struct SpaceRef: Decodable, Hashable, Sendable, Identifiable {
+        var slug: String
+        var name: String
+
+        var id: String { slug }
+    }
+
+    var spaces: [SpaceRef]
+    var sessions: [StudioLiveSession]
+    /// Ist Cloudflare Stream für die Plattform eingerichtet?
+    var streamEnabled: Bool
+}
+
 /// Antwort von `POST /studio/{slug}/stories` (Story-Item-Shape wie im
 /// STORIES-Space-Content).
 struct StudioStory: Decodable, Hashable, Sendable, Identifiable {

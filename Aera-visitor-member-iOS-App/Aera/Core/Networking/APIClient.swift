@@ -489,6 +489,41 @@ final class APIClient {
         )
     }
 
+    /// `GET /studio/{slug}/live` — Live-Bereiche und Sessions des Creators.
+    func studioLive(slug: String) async throws -> StudioLiveOverview {
+        try await send(Endpoint(.get, "studio/\(slug)/live"))
+    }
+
+    /// `POST /studio/{slug}/live` — neue Session, die aus dem Gerät gesendet
+    /// wird (eigener Stream über Aera). 409 `stream_not_configured`, wenn die
+    /// Plattform kein Cloudflare Stream hat.
+    func createStudioLive(slug: String,
+                          spaceSlug: String,
+                          title: String,
+                          startsAt: Date? = nil) async throws -> StudioLiveSession {
+        let envelope: StudioLiveSessionEnvelope = try await send(
+            Endpoint(.post, "studio/\(slug)/live"),
+            body: CreateStudioLiveBody(
+                spaceSlug: spaceSlug,
+                title: title,
+                startsAt: startsAt.map { AeraDateParser.standard.string(from: $0) }
+            )
+        )
+        return envelope.session
+    }
+
+    /// `PATCH /studio/{slug}/live/{sessionId}` — live gehen bzw. beenden.
+    @discardableResult
+    func setStudioLiveStatus(slug: String,
+                             sessionId: String,
+                             status: LiveSessionStatus) async throws -> StudioLiveSession {
+        let envelope: StudioLiveSessionEnvelope = try await send(
+            Endpoint(.patch, "studio/\(slug)/live/\(sessionId)"),
+            body: LiveStatusBody(status: status.rawValue)
+        )
+        return envelope.session
+    }
+
     /// `POST /studio/{slug}/upload` — Multipart-Upload (`file` + `purpose`).
     /// Liefert die relative Media-Proxy-URL (direkt in `imageUrl`/`videoUrl`/
     /// `mediaUrl` verwendbar). Fehler u. a. 400 `validation` (MIME/Größe),
@@ -769,6 +804,17 @@ private struct PollVoteBody: Encodable {
     let options: [Int]
 }
 
+private struct CreateStudioLiveBody: Encodable {
+    let spaceSlug: String
+    let title: String
+    /// ISO-8601; `nil` → Feld wird weggelassen.
+    let startsAt: String?
+}
+
+private struct LiveStatusBody: Encodable {
+    let status: String
+}
+
 private struct VoteBody: Encodable {
     let targetType: VoteTargetType
     let targetId: String
@@ -889,6 +935,10 @@ private struct CommentEnvelope: Decodable {
 
 private struct PollEnvelope: Decodable {
     let poll: Poll
+}
+
+private struct StudioLiveSessionEnvelope: Decodable {
+    let session: StudioLiveSession
 }
 
 private struct ConversationsEnvelope: Decodable {

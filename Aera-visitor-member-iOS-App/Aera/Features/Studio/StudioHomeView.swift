@@ -196,6 +196,15 @@ struct StudioHomeView: View {
 
                 rowDivider
 
+                NavigationLink {
+                    StudioLiveView(community: community)
+                } label: {
+                    studioRow(icon: SpaceType.live.symbolName, title: "Live gehen")
+                }
+                .buttonStyle(.plain)
+
+                rowDivider
+
                 Button {
                     showEventSheet = true
                 } label: {

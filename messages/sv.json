@@ -2959,7 +2959,19 @@
       "studioNoPreview": "Sändningen pågår — videoförhandsvisningen finns bara på enheten som sänder.",
       "studioMirror": "Spegelvänd förhandsvisningen",
       "studioLevel": "Ljudnivå",
-      "studioHintLabel": "Notering"
+      "studioHintLabel": "Notering",
+      "mobileStudio": {
+        "goLive": "Go live",
+        "starting": "Connecting…",
+        "end": "End",
+        "onAir": "On air",
+        "micOn": "Unmute",
+        "micOff": "Mute",
+        "flip": "Switch camera",
+        "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
+        "noIngest": "This session has no ingest.",
+        "startFailed": "The broadcast could not be started."
+      }
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",

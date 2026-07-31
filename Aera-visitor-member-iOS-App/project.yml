@@ -29,6 +29,8 @@ targets:
         # Quer dreht allein der Live-Raum.
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_CFBundleDisplayName: Aera
+        INFOPLIST_KEY_NSCameraUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera dein Kamerabild an deine Mitglieder."
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera deinen Ton an deine Mitglieder."
         SWIFT_EMIT_LOC_STRINGS: YES
         CODE_SIGN_STYLE: Automatic
     info:
