@@ -15,6 +15,7 @@
 		1DB7A7EFC5883FD807A5EA77 /* StudioMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 605C48F31E9390582F49CF01 /* StudioMembersView.swift */; };
 		20540D5F795C1E4C6BF354CE /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D26BFB9CD42243C668FAE60 /* AppState.swift */; };
 		20EC392EADDE01C7F80CC385 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 615DFAF9FA31CB767970ABF6 /* Assets.xcassets */; };
+		24BD7273238474D34A8C2E45 /* CommunityHero.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EDACE4E6406930418C9D6BA /* CommunityHero.swift */; };
 		2668E3CD4503D55DF431950D /* HTMLTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365F6C6E6119850ECE93842E /* HTMLTextView.swift */; };
 		267EC47C01299539A1B100D9 /* MembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DF964D994B1DF35B0ABECC2 /* MembersView.swift */; };
 		2CC6ABB73095C81E3010F7E2 /* CalendarSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DF285C053CE456AB9B3CEEE /* CalendarSpaceView.swift */; };
@@ -38,9 +39,11 @@
 		6B034711D295E43E8BA05F66 /* ShopSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13F38F857096923EC40BB56E /* ShopSpaceView.swift */; };
 		6DC66DAE7D59CAED3CEBB6B7 /* LoginSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 689A124A380A9ECDAAE07B2E /* LoginSheetView.swift */; };
 		71A8126010D98F612A8C26CB /* ChatThreadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15472081E400A33E8BEC0DCB /* ChatThreadView.swift */; };
+		72614BFB5302D8953596684B /* OrientationGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E79F0AC142B7E62CA8C52EBC /* OrientationGate.swift */; };
 		72EF34857BE11C63BBD77902 /* ForumSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4368430E26B245B6076BFAF /* ForumSpaceView.swift */; };
 		781AA9A3636ECC57BBF992AD /* CreateCommunityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C074832F89803735EE8DE33 /* CreateCommunityView.swift */; };
 		7B0332A1E0C5B1D3022BCD76 /* GallerySpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D84D47395A981B48E07382F /* GallerySpaceView.swift */; };
+		85BD662AF9497FCC9C342826 /* MusicSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D75B7BCF729D1CDA299F45C2 /* MusicSpaceView.swift */; };
 		85EFB72CF0049332142E90B8 /* LiveRoomView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C56108C143D15743B55AA02 /* LiveRoomView.swift */; };
 		870652ECEF72AA04B3E57984 /* PostDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9800B972C1CC672E4393DA28 /* PostDetailView.swift */; };
 		8C0F502AAFB926EBDFF76028 /* RecentCommunitiesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC453D7FE042ED664E537BC /* RecentCommunitiesStore.swift */; };
@@ -66,9 +69,12 @@
 		D3CF94CE875693F3D96CD4F3 /* GlassChipBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A88951D2893282223E760DD1 /* GlassChipBar.swift */; };
 		D5EE1D6713884ADAA44FEAE3 /* StudioHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1F8467779119469EC5D6C1B /* StudioHomeView.swift */; };
 		DB03DB097F7EC9AF8EEEFD69 /* KnowledgeSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E03BEC4F26DA903FC1525C0 /* KnowledgeSpaceView.swift */; };
+		DFCA4DFA55B527E943A50325 /* PostMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69B1BDB92A2CE805C20365E2 /* PostMedia.swift */; };
+		E035AF35E11EF40A4909682D /* BadgeMedal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0CA69959D741F5B3BC853A63 /* BadgeMedal.swift */; };
 		E03E357074070B5EB919F92A /* StudioRequestsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9EF325B5E15463E10F66EE /* StudioRequestsView.swift */; };
 		E3005C95DA4A1DAE06BDE045 /* FeedSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACF18B5F880121F29AFB495 /* FeedSpaceView.swift */; };
 		E8007B0C9CFCE44AED7B9A50 /* SpacePaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95EF4AEE768FBB87861A0611 /* SpacePaywallView.swift */; };
+		E81AD8D6902E459B1B2D61C5 /* LiveStage.swift in Sources */ = {isa = PBXBuildFile; fileRef = A928E83EE213306039EACDA7 /* LiveStage.swift */; };
 		EE24B7F021689623D132CA01 /* ProductDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CBD90E8892CB19106AC3CE3 /* ProductDetailView.swift */; };
 		EE2841FA9A5345FDFF61058D /* VideosSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D22CFBA169578B58FCFDF3EA /* VideosSpaceView.swift */; };
 		F028AE4B82A49277C18D2B71 /* ChatSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9481E0A78D08AB065A3DABD /* ChatSpaceView.swift */; };
@@ -85,6 +91,7 @@
 		04C072CDD01B9AF8D58A9715 /* AeraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AeraApp.swift; sourceTree = "<group>"; };
 		05AB512E2B0149EA93B8FE7C /* LiveSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveSpaceView.swift; sourceTree = "<group>"; };
 		092B71C5AB1BCFAF63AACC69 /* PurchaseCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurchaseCoordinator.swift; sourceTree = "<group>"; };
+		0CA69959D741F5B3BC853A63 /* BadgeMedal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeMedal.swift; sourceTree = "<group>"; };
 		105B2FA6D4F5947B15C0DB14 /* LinksSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinksSpaceView.swift; sourceTree = "<group>"; };
 		13F38F857096923EC40BB56E /* ShopSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopSpaceView.swift; sourceTree = "<group>"; };
 		15472081E400A33E8BEC0DCB /* ChatThreadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatThreadView.swift; sourceTree = "<group>"; };
@@ -105,12 +112,14 @@
 		52345DA0A8D9BCE7872D926A /* LeaderboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardView.swift; sourceTree = "<group>"; };
 		55B0BB9652B5AE955335582C /* CourseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseDetailView.swift; sourceTree = "<group>"; };
 		5DF285C053CE456AB9B3CEEE /* CalendarSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarSpaceView.swift; sourceTree = "<group>"; };
+		5EDACE4E6406930418C9D6BA /* CommunityHero.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunityHero.swift; sourceTree = "<group>"; };
 		605C48F31E9390582F49CF01 /* StudioMembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioMembersView.swift; sourceTree = "<group>"; };
 		615DFAF9FA31CB767970ABF6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		62C72404FD7FC03E60EBF679 /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		63AA2E7683B710068B420F24 /* SessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionStore.swift; sourceTree = "<group>"; };
 		63D4453EE8F043003CB17FE0 /* StoreService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreService.swift; sourceTree = "<group>"; };
 		689A124A380A9ECDAAE07B2E /* LoginSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginSheetView.swift; sourceTree = "<group>"; };
+		69B1BDB92A2CE805C20365E2 /* PostMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostMedia.swift; sourceTree = "<group>"; };
 		6CBD90E8892CB19106AC3CE3 /* ProductDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailView.swift; sourceTree = "<group>"; };
 		6D26BFB9CD42243C668FAE60 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		6F603E107C068D7BC20BCCC9 /* ChatTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTabView.swift; sourceTree = "<group>"; };
@@ -133,6 +142,7 @@
 		A50692F391A9BDE724C89EEE /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		A88951D2893282223E760DD1 /* GlassChipBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassChipBar.swift; sourceTree = "<group>"; };
 		A8A9B265DCF588E9F9FB53B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		A928E83EE213306039EACDA7 /* LiveStage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveStage.swift; sourceTree = "<group>"; };
 		AB16E91E0127CCB95E7915C7 /* BookingSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookingSpaceView.swift; sourceTree = "<group>"; };
 		AE2682B7AB0C89B66707C301 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		AED13D6EBCBC35404E696022 /* NewsletterSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsletterSpaceView.swift; sourceTree = "<group>"; };
@@ -143,10 +153,12 @@
 		CF3DDD5933728A4383FD1CBC /* EventsSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsSpaceView.swift; sourceTree = "<group>"; };
 		D22CFBA169578B58FCFDF3EA /* VideosSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideosSpaceView.swift; sourceTree = "<group>"; };
 		D732903E46111E84E5A45431 /* Endpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoints.swift; sourceTree = "<group>"; };
+		D75B7BCF729D1CDA299F45C2 /* MusicSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicSpaceView.swift; sourceTree = "<group>"; };
 		E1F8467779119469EC5D6C1B /* StudioHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioHomeView.swift; sourceTree = "<group>"; };
 		E4368430E26B245B6076BFAF /* ForumSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForumSpaceView.swift; sourceTree = "<group>"; };
 		E60AF38C3FD92F6AEF338092 /* StudioEventComposeSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudioEventComposeSheet.swift; sourceTree = "<group>"; };
 		E793E6DD1FF76D0F1BA2E65C /* StoriesSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesSpaceView.swift; sourceTree = "<group>"; };
+		E79F0AC142B7E62CA8C52EBC /* OrientationGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrientationGate.swift; sourceTree = "<group>"; };
 		EACF18B5F880121F29AFB495 /* FeedSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedSpaceView.swift; sourceTree = "<group>"; };
 		F030E309CC291757BB32FB2B /* CommunitySearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySearchView.swift; sourceTree = "<group>"; };
 		F5B1756B4D393B6BC9E571FB /* Components.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Components.swift; sourceTree = "<group>"; };
@@ -233,6 +245,7 @@
 				105B2FA6D4F5947B15C0DB14 /* LinksSpaceView.swift */,
 				7C56108C143D15743B55AA02 /* LiveRoomView.swift */,
 				05AB512E2B0149EA93B8FE7C /* LiveSpaceView.swift */,
+				D75B7BCF729D1CDA299F45C2 /* MusicSpaceView.swift */,
 				AED13D6EBCBC35404E696022 /* NewsletterSpaceView.swift */,
 				259F01E92093FF9208A7CDF0 /* PodcastSpaceView.swift */,
 				6CBD90E8892CB19106AC3CE3 /* ProductDetailView.swift */,
@@ -250,6 +263,7 @@
 			children = (
 				04C072CDD01B9AF8D58A9715 /* AeraApp.swift */,
 				6D26BFB9CD42243C668FAE60 /* AppState.swift */,
+				E79F0AC142B7E62CA8C52EBC /* OrientationGate.swift */,
 				9DBC6502D0FC8A686F62FBFF /* RootView.swift */,
 			);
 			path = App;
@@ -258,10 +272,13 @@
 		5686CFAE85D5DBB1ECCDB4C2 /* DesignSystem */ = {
 			isa = PBXGroup;
 			children = (
+				0CA69959D741F5B3BC853A63 /* BadgeMedal.swift */,
 				F5B1756B4D393B6BC9E571FB /* Components.swift */,
 				A88951D2893282223E760DD1 /* GlassChipBar.swift */,
 				365F6C6E6119850ECE93842E /* HTMLTextView.swift */,
+				A928E83EE213306039EACDA7 /* LiveStage.swift */,
 				1BC857167BEEE2C2589A9253 /* MediaPlayers.swift */,
+				69B1BDB92A2CE805C20365E2 /* PostMedia.swift */,
 				728E705E55BD857C7D761624 /* Theme.swift */,
 			);
 			path = DesignSystem;
@@ -286,6 +303,7 @@
 		81127702D22086019569420D /* Community */ = {
 			isa = PBXGroup;
 			children = (
+				5EDACE4E6406930418C9D6BA /* CommunityHero.swift */,
 				842D77EF6F8AB6C3E7B77C42 /* CommunityView.swift */,
 				3E84294A49D727F181525585 /* PostComposerSheet.swift */,
 				9800B972C1CC672E4393DA28 /* PostDetailView.swift */,
@@ -479,12 +497,14 @@
 				CA3DC74919682DF11D7B75F1 /* AccountView.swift in Sources */,
 				F20028FAAB207714E5BA07DA /* AeraApp.swift in Sources */,
 				20540D5F795C1E4C6BF354CE /* AppState.swift in Sources */,
+				E035AF35E11EF40A4909682D /* BadgeMedal.swift in Sources */,
 				2CF7060D67E4C9E7E574234A /* BlogSpaceView.swift in Sources */,
 				A15C0C05DB60277E435BD930 /* BookingSpaceView.swift in Sources */,
 				2CC6ABB73095C81E3010F7E2 /* CalendarSpaceView.swift in Sources */,
 				F028AE4B82A49277C18D2B71 /* ChatSpaceView.swift in Sources */,
 				18CA149A34F2D96D9CBA0002 /* ChatTabView.swift in Sources */,
 				71A8126010D98F612A8C26CB /* ChatThreadView.swift in Sources */,
+				24BD7273238474D34A8C2E45 /* CommunityHero.swift in Sources */,
 				F911656B58F8172FCDE8AC45 /* CommunitySearchView.swift in Sources */,
 				0A4A75EF84E7956A12929B94 /* CommunityView.swift in Sources */,
 				52DC7D0C24F59737D021040A /* Components.swift in Sources */,
@@ -508,17 +528,21 @@
 				44F0547F1300B2317A2C5CB6 /* LinksSpaceView.swift in Sources */,
 				85EFB72CF0049332142E90B8 /* LiveRoomView.swift in Sources */,
 				BC816D6CA87831292644FB3C /* LiveSpaceView.swift in Sources */,
+				E81AD8D6902E459B1B2D61C5 /* LiveStage.swift in Sources */,
 				6DC66DAE7D59CAED3CEBB6B7 /* LoginSheetView.swift in Sources */,
 				AEA394EBCD61ED8C0346E14E /* MediaPlayers.swift in Sources */,
 				267EC47C01299539A1B100D9 /* MembersView.swift in Sources */,
 				3A6B838511A420A06AC145A0 /* Models+Content.swift in Sources */,
 				99FEAE4833B805C0E02101AA /* Models.swift in Sources */,
+				85BD662AF9497FCC9C342826 /* MusicSpaceView.swift in Sources */,
 				448B3EA845EE65BBEEBB0D4C /* MyCommunitiesView.swift in Sources */,
 				C0B747FB3F19C120C43A2684 /* NewsletterSpaceView.swift in Sources */,
 				353D6946B58A1A95E68472C8 /* NotificationsView.swift in Sources */,
+				72614BFB5302D8953596684B /* OrientationGate.swift in Sources */,
 				F63C22F124295909F5B4A50C /* PodcastSpaceView.swift in Sources */,
 				658B0512C01377F433885DF3 /* PostComposerSheet.swift in Sources */,
 				870652ECEF72AA04B3E57984 /* PostDetailView.swift in Sources */,
+				DFCA4DFA55B527E943A50325 /* PostMedia.swift in Sources */,
 				EE24B7F021689623D132CA01 /* ProductDetailView.swift in Sources */,
 				A45D52A64EA017ABB9B8F5D7 /* PurchaseCoordinator.swift in Sources */,
 				8C0F502AAFB926EBDFF76028 /* RecentCommunitiesStore.swift in Sources */,
@@ -557,7 +581,7 @@
 				INFOPLIST_FILE = Aera/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Aera;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -578,7 +602,7 @@
 				INFOPLIST_FILE = Aera/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Aera;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

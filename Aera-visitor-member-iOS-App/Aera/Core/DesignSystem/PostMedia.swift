@@ -53,7 +53,9 @@ struct PostImageGrid: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
         .fullScreenCover(item: $openIndex) { context in
-            ImageLightbox(urls: urls, startIndex: context.index)
+            ImageLightbox(urls: urls, startIndex: context.index) {
+                openIndex = nil
+            }
         }
     }
 
@@ -87,19 +89,30 @@ struct PostImageGrid: View {
 struct ImageLightbox: View {
     let urls: [String]
     let startIndex: Int
+    /// Setzt das Präsentations-Binding im Parent zurück — `dismiss()` allein
+    /// schließt einen `fullScreenCover` in dieser App nicht zuverlässig
+    /// (dieselbe Stelle wie im Galerie- und im Story-Viewer).
+    let onClose: () -> Void
 
     @Environment(\.dismiss) private var dismiss
     @State private var index: Int
+    @State private var dragOffset: CGFloat = 0
 
     struct Context: Identifiable, Hashable {
         let index: Int
         var id: Int { index }
     }
 
-    init(urls: [String], startIndex: Int) {
+    init(urls: [String], startIndex: Int, onClose: @escaping () -> Void = {}) {
         self.urls = urls
         self.startIndex = startIndex
+        self.onClose = onClose
         self._index = State(initialValue: startIndex)
+    }
+
+    private func close() {
+        onClose()
+        dismiss()
     }
 
     var body: some View {
@@ -117,13 +130,14 @@ struct ImageLightbox: View {
 
             HStack {
                 Button {
-                    dismiss()
+                    close()
                 } label: {
                     Image(systemName: "xmark")
-                        .font(.system(size: 14, weight: .semibold))
+                        .font(.system(size: 15, weight: .semibold))
                         .foregroundStyle(.white)
-                        .frame(width: 36, height: 36)
-                        .glassEffect(.regular.interactive(), in: .circle)
+                        .frame(width: 44, height: 44)
+                        .glassEffect(.regular, in: .circle)
+                        .contentShape(.circle)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("Schließen"))
@@ -143,6 +157,24 @@ struct ImageLightbox: View {
             .padding(.horizontal, 16)
             .padding(.top, 8)
         }
+        .offset(y: max(dragOffset, 0))
+        // Nach unten wischen schließt — in einer Bildansicht erwartet man das,
+        // und es ist der zweite Weg hinaus, falls der Knopf mal danebengeht.
+        .gesture(
+            DragGesture(minimumDistance: 20)
+                .onChanged { value in
+                    if value.translation.height > 0 {
+                        dragOffset = value.translation.height
+                    }
+                }
+                .onEnded { value in
+                    if value.translation.height > 120 {
+                        close()
+                    } else {
+                        withAnimation(.snappy(duration: 0.25)) { dragOffset = 0 }
+                    }
+                }
+        )
         // nicht .preferredColorScheme: der Modifier blockiert in
         // fullScreenCover das Schließen (bekannter SwiftUI-Fehler).
         .environment(\.colorScheme, .dark)
