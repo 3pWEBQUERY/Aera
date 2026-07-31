@@ -165,15 +165,61 @@ enum LiveSessionStatus: String, Decodable, Hashable, Sendable {
     case ended = "ENDED"
 }
 
+/// Woher das Bild kommt: über Aera gesendet oder von einer fremden Plattform.
+enum LiveSource: String, Decodable, Hashable, Sendable {
+    case aera = "AERA"
+    case external = "EXTERNAL"
+}
+
+/// Eine Live-Session.
+///
+/// Eigene Streams kommen als HLS (`hlsUrl`) und laufen direkt in AVPlayer —
+/// das Web nimmt dafür WebRTC, wofür es auf dem Telefon keinen Player gibt.
+/// Fremde Plattformen kommen als fertige Einbettungsadresse (`embedUrl`) für
+/// das WebView.
+///
+/// Die Felder jenseits des alten Vertrags werden bewusst weich dekodiert:
+/// eine App-Version, die vor dem passenden Server ausgeliefert wird, soll
+/// den Live-Bereich nicht komplett verlieren.
 struct LiveSession: Decodable, Hashable, Sendable, Identifiable {
     var id: String
     var title: String
     var description: String?
     var status: LiveSessionStatus
+    var source: LiveSource
     var scheduledAt: Date?
+    var endedAt: Date?
+    var hlsUrl: String?
+    var embedUrl: String?
+    /// `twitch`, `youtube`, … — `nil` beim eigenen Stream.
+    var platform: String?
     var streamUrl: String?
     var replayUrl: String?
     var accessible: Bool
+    var canChat: Bool
+
+    private enum CodingKeys: String, CodingKey {
+        case id, title, description, status, source, scheduledAt, endedAt
+        case hlsUrl, embedUrl, platform, streamUrl, replayUrl, accessible, canChat
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        title = try c.decode(String.self, forKey: .title)
+        description = try c.decodeIfPresent(String.self, forKey: .description)
+        status = try c.decode(LiveSessionStatus.self, forKey: .status)
+        source = try c.decodeIfPresent(LiveSource.self, forKey: .source) ?? .external
+        scheduledAt = try c.decodeIfPresent(Date.self, forKey: .scheduledAt)
+        endedAt = try c.decodeIfPresent(Date.self, forKey: .endedAt)
+        hlsUrl = try c.decodeIfPresent(String.self, forKey: .hlsUrl)
+        embedUrl = try c.decodeIfPresent(String.self, forKey: .embedUrl)
+        platform = try c.decodeIfPresent(String.self, forKey: .platform)
+        streamUrl = try c.decodeIfPresent(String.self, forKey: .streamUrl)
+        replayUrl = try c.decodeIfPresent(String.self, forKey: .replayUrl)
+        accessible = try c.decodeIfPresent(Bool.self, forKey: .accessible) ?? true
+        canChat = try c.decodeIfPresent(Bool.self, forKey: .canChat) ?? true
+    }
 }
 
 struct ChatContent: Decodable, Hashable, Sendable {
@@ -239,8 +285,12 @@ struct Story: Decodable, Hashable, Sendable, Identifiable {
     var id: String
     var mediaUrl: String
     var mediaType: MediaType
+    var caption: String?
     var createdAt: Date
-    var expiresAt: Date
+    /// `nil` = dauerhafte Story, sie läuft nie ab.
+    var expiresAt: Date?
+
+    var isPermanent: Bool { expiresAt == nil }
 }
 
 struct TipsContent: Decodable, Hashable, Sendable {

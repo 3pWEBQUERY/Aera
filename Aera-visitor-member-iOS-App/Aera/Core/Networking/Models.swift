@@ -89,12 +89,18 @@ enum ReservationStatus: String, Decodable, Hashable, Sendable {
 // MARK: - SpaceType
 
 /// Alle Space-Typen des Vertrags (`ADS` wird nie als Space geliefert).
+///
+/// Unbekannte Werte fallen auf `.unknown` zurück, statt den Decode zu
+/// werfen: ein neuer Space-Typ auf dem Server darf niemals die ganze
+/// Community-Antwort unlesbar machen. `SpaceContent` hält es mit
+/// `.unsupported` genauso.
 enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
     case feed = "FEED"
     case forum = "FORUM"
     case blog = "BLOG"
     case videos = "VIDEOS"
     case podcast = "PODCAST"
+    case music = "MUSIC"
     case gallery = "GALLERY"
     case course = "COURSE"
     case shop = "SHOP"
@@ -109,6 +115,13 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
     case stories = "STORIES"
     case tips = "TIPS"
     case calendar = "CALENDAR"
+    /// Vom Server geliefert, dieser App-Version aber unbekannt.
+    case unknown = "__unknown__"
+
+    init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = SpaceType(rawValue: raw) ?? .unknown
+    }
 
     /// Anzeige-Name des Space-Typs (z. B. für die Space-Pill im Home-Feed).
     var displayName: String {
@@ -118,6 +131,7 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
         case .blog: String(localized: "Blog")
         case .videos: String(localized: "Videos")
         case .podcast: String(localized: "Podcast")
+        case .music: String(localized: "Musik")
         case .gallery: String(localized: "Galerie")
         case .course: String(localized: "Kurse")
         case .shop: String(localized: "Shop")
@@ -132,6 +146,7 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
         case .stories: String(localized: "Stories")
         case .tips: String(localized: "Unterstützen")
         case .calendar: String(localized: "Kalender")
+        case .unknown: String(localized: "Bereich")
         }
     }
 
@@ -143,6 +158,7 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
         case .blog: "text.book.closed"
         case .videos: "play.rectangle"
         case .podcast: "waveform"
+        case .music: "music.note"
         case .gallery: "photo.on.rectangle.angled"
         case .course: "graduationcap"
         case .shop: "bag"
@@ -160,6 +176,7 @@ enum SpaceType: String, Decodable, Hashable, Sendable, CaseIterable {
                 : "rectangle.portrait.on.rectangle.portrait"
         case .tips: "heart"
         case .calendar: "calendar.day.timeline.left"
+        case .unknown: "sparkles"
         }
     }
 }
@@ -896,8 +913,10 @@ struct StudioStory: Decodable, Hashable, Sendable, Identifiable {
     var id: String
     var mediaUrl: String
     var mediaType: MediaType
+    var caption: String?
     var createdAt: Date
-    var expiresAt: Date
+    /// `nil` = dauerhafte Story, sie läuft nie ab.
+    var expiresAt: Date?
 }
 
 /// Mitglied in der Verwaltungssicht (inkl. E-Mail und Status).

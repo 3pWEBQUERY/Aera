@@ -1,8 +1,12 @@
 import SwiftUI
 
-/// LIVE-Space: Session-Karten mit Status-Pill (LIVE rot pulsierend,
-/// „Geplant" mit Datum, „Beendet"). Zugängliche Sessions öffnen den
-/// `LiveRoomView` als Push, gesperrte zeigen einen Schloss-Hinweis.
+/// LIVE-Space: drei klar unterscheidbare Zustände, wie im Web.
+///
+/// - **Auf Sendung**: dunkle Bühne mit pulsierendem Punkt — sie soll sich aus
+///   der Liste herausheben, denn sie ist der einzige Eintrag, der jetzt
+///   gerade etwas zeigt.
+/// - **Geplant**: helle Karte mit tickendem Countdown.
+/// - **Beendet**: ruhige Archivkarte mit Verweis auf die Aufzeichnung.
 struct LiveSpaceView: View {
     let slug: String
     let space: SpaceDetail
@@ -71,11 +75,99 @@ private struct LiveSessionCard: View {
     @Environment(\.brand) private var brand
 
     var body: some View {
+        if session.status == .live {
+            liveStage
+        } else {
+            quietCard
+        }
+    }
+
+    // MARK: Auf Sendung
+
+    private var liveStage: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                HStack(spacing: 6) {
+                    LivePulseDot()
+                    Text("LIVE")
+                        .font(.system(size: 12, weight: .bold))
+                        .kerning(1.2)
+                }
+                .foregroundStyle(.white)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 5)
+                .background(Theme.danger, in: .capsule)
+
+                sourceTag
+
+                Spacer(minLength: 4)
+
+                if session.accessible {
+                    Image(systemName: "play.circle.fill")
+                        .font(.system(size: 22))
+                        .foregroundStyle(.white.opacity(0.9))
+                }
+            }
+
+            Text(session.title)
+                .font(.displaySerif(22))
+                .kerning(-0.4)
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.leading)
+
+            if let description = session.description, !description.isEmpty {
+                Text(description)
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(3)
+                    .multilineTextAlignment(.leading)
+            }
+
+            if session.accessible {
+                Text("Jetzt zusehen")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundStyle(Theme.ink)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 9)
+                    .background(.white, in: .capsule)
+            } else {
+                lockNote(onDark: true)
+            }
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background {
+            ZStack {
+                Theme.rail
+                // Ein Hauch Community-Farbe von unten — die Bühne bleibt dunkel,
+                // trägt aber die Handschrift der Community.
+                LinearGradient(
+                    colors: [.clear, brand.color.opacity(0.45)],
+                    startPoint: .top,
+                    endPoint: .bottomTrailing
+                )
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.12), radius: 14, y: 6)
+    }
+
+    // MARK: Geplant & beendet
+
+    private var quietCard: some View {
         AeraCard(padding: 16) {
             VStack(alignment: .leading, spacing: 10) {
-                HStack(alignment: .center) {
-                    LiveStatusPill(status: session.status, scheduledAt: session.scheduledAt)
-                    Spacer()
+                HStack(alignment: .center, spacing: 8) {
+                    if session.status == .ended {
+                        PillLabel(String(localized: "Aufzeichnung"), systemImage: "play.rectangle")
+                    } else {
+                        PillLabel(scheduledLabel, systemImage: "calendar", prominent: true)
+                    }
+
+                    sourceTag
+
+                    Spacer(minLength: 4)
+
                     if session.accessible {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 12, weight: .semibold))
@@ -97,61 +189,50 @@ private struct LiveSessionCard: View {
                         .multilineTextAlignment(.leading)
                 }
 
+                if session.status == .scheduled, let scheduledAt = session.scheduledAt {
+                    LiveCountdownText(target: scheduledAt)
+                        .foregroundStyle(brand.color)
+                }
+
                 if !session.accessible {
-                    HStack(spacing: 6) {
-                        Image(systemName: "lock.fill")
-                            .font(.system(size: 11, weight: .semibold))
-                        Text("Mit Mitgliedschaft verfügbar")
-                            .font(.system(size: 13, weight: .medium))
-                    }
-                    .foregroundStyle(Theme.ink.opacity(0.55))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(Theme.softFill, in: .capsule)
+                    lockNote(onDark: false)
                 }
             }
         }
     }
-}
 
-// MARK: - LiveStatusPill
+    // MARK: Bausteine
 
-private struct LiveStatusPill: View {
-    let status: LiveSessionStatus
-    let scheduledAt: Date?
-
-    @State private var isPulsing = false
-
-    var body: some View {
-        switch status {
-        case .live:
-            HStack(spacing: 6) {
-                Circle()
-                    .fill(.white)
-                    .frame(width: 7, height: 7)
-                    .opacity(isPulsing ? 0.35 : 1)
-                Text("LIVE")
-                    .font(.system(size: 12, weight: .bold))
-                    .kerning(1.2)
+    /// Woher gesendet wird: Plattform-Marke oder „über Aera".
+    @ViewBuilder
+    private var sourceTag: some View {
+        if let platform = LivePlatformStyle.label(session.platform) {
+            LivePlatformTag(name: platform, color: LivePlatformStyle.color(session.platform))
+                .opacity(session.status == .live ? 1 : 0.9)
+        } else if session.source == .aera {
+            if session.status == .live {
+                LivePlatformTag(name: String(localized: "Eigener Stream"), color: .white)
+            } else {
+                PillLabel(String(localized: "Eigener Stream"), systemImage: "dot.radiowaves.left.and.right")
             }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 5)
-            .background(Theme.danger, in: .capsule)
-            .onAppear {
-                withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) {
-                    isPulsing = true
-                }
-            }
-        case .scheduled:
-            PillLabel(scheduledLabel, systemImage: "calendar", prominent: true)
-        case .ended:
-            PillLabel(String(localized: "Beendet"), systemImage: "checkmark")
         }
+    }
+
+    private func lockNote(onDark: Bool) -> some View {
+        HStack(spacing: 6) {
+            Image(systemName: "lock.fill")
+                .font(.system(size: 11, weight: .semibold))
+            Text("Mit Mitgliedschaft verfügbar")
+                .font(.system(size: 13, weight: .medium))
+        }
+        .foregroundStyle(onDark ? Color.white.opacity(0.8) : Theme.ink.opacity(0.55))
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .background(onDark ? Color.white.opacity(0.14) : Theme.softFill, in: .capsule)
     }
 
     private var scheduledLabel: String {
-        if let scheduledAt {
+        if let scheduledAt = session.scheduledAt {
             return String(localized: "Geplant · \(scheduledAt.formatted(date: .abbreviated, time: .shortened))")
         }
         return String(localized: "Geplant")

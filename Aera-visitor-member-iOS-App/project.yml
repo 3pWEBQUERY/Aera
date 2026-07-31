@@ -24,7 +24,10 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: so.aera.app
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
-        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait
+        # Erlaubt sind Hoch- und Querformat; welche Lage tatsächlich gilt,
+        # entscheidet AeraAppDelegate (siehe App/OrientationGate.swift).
+        # Quer dreht allein der Live-Raum.
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_CFBundleDisplayName: Aera
         SWIFT_EMIT_LOC_STRINGS: YES
         CODE_SIGN_STYLE: Automatic
@@ -38,6 +41,8 @@ targets:
           UIImageName: LaunchLogo
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         CFBundleLocalizations:
           [de, en, en-GB, da, es, es-419, fr, it, ja, ko, nb, nl, pl, pt-BR, ru, sv, uk, zh-Hans, zh-Hant]
         UIApplicationSceneManifest:

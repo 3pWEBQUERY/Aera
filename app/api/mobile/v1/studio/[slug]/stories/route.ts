@@ -2,17 +2,19 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { jsonError, jsonOk, parseJsonBody } from "@/lib/mobile/api";
 import { requireStudioAccess } from "@/lib/mobile/studio";
+import { parseStorySettings } from "@/lib/space-settings";
 
-// POST /api/mobile/v1/studio/{slug}/stories { mediaUrl, mediaType, caption? }
-//   → { id, mediaUrl, mediaType, createdAt, expiresAt }  (Story-Shape wie der
-//     STORIES-Space-Content der Community-API, lib/mobile/serializers.ts)
+// POST /api/mobile/v1/studio/{slug}/stories { mediaUrl, mediaType, caption?,
+//   permanent?, ttlHours? }
+//   → { id, mediaUrl, mediaType, caption, createdAt, expiresAt }  (Story-Shape
+//     wie der STORIES-Space-Content, lib/mobile/serializers.ts)
 // Persistenz exakt wie createStoryAction (app/actions/stories.ts):
-// publishAt = jetzt, expiresAt = publishAt + 24h (DEFAULT_TTL_HOURS),
+// publishAt = jetzt; expiresAt = publishAt + Laufzeit — oder `null`, wenn die
+// Story dauerhaft bleiben soll. Ohne Angabe gelten die Voreinstellungen des
+// Space (defaultPermanent/defaultTtlHours), genau wie im Web-Formular.
 // caption getrimmt auf 280 Zeichen, imageUrl/videoUrl je nach mediaType.
 // Ziel-Space = erster STORIES-Space des Tenants; ohne einen solchen → 409
 // `no_stories_space`. Rolle ≥ ADMIN (wie requireTenantAdmin im Web).
-
-const DEFAULT_TTL_HOURS = 24; // wie app/actions/stories.ts
 
 const createSchema = z.object({
   /** Nur eigene Upload-URLs (aus /studio/{slug}/upload purpose "story"). */
@@ -25,6 +27,10 @@ const createSchema = z.object({
     }),
   mediaType: z.enum(["IMAGE", "VIDEO"]),
   caption: z.string().max(280).optional(),
+  /** Dauerhaft sichtbar — ohne Angabe entscheidet die Space-Voreinstellung. */
+  permanent: z.boolean().optional(),
+  /** Laufzeit in Stunden, 1–168 (wie ttlFrom in app/actions/stories.ts). */
+  ttlHours: z.number().int().min(1).max(168).optional(),
 });
 
 export async function POST(
@@ -49,8 +55,16 @@ export async function POST(
     return jsonError("no_stories_space", "This community has no stories space.", 409);
   }
 
+  const storySettings = parseStorySettings(space.settings);
+  const permanent = parsed.data.permanent ?? storySettings.defaultPermanent;
+  const ttlHours = parsed.data.ttlHours ?? storySettings.defaultTtlHours;
+
   const publishAt = new Date();
-  const expiresAt = new Date(publishAt.getTime() + DEFAULT_TTL_HOURS * 3_600_000);
+  // null = laeuft nie ab. Das Fehlen eines Ablaufs ist ehrlicher als ein
+  // Datum im Jahr 3000 (siehe Kommentar am Prisma-Feld).
+  const expiresAt = permanent
+    ? null
+    : new Date(publishAt.getTime() + ttlHours * 3_600_000);
 
   const story = await prisma.story.create({
     data: {
@@ -70,6 +84,7 @@ export async function POST(
     id: story.id,
     mediaUrl,
     mediaType,
+    caption: story.caption,
     createdAt: story.publishAt.toISOString(),
     expiresAt: story.expiresAt?.toISOString() ?? null,
   });

@@ -9,7 +9,7 @@ import {
   requireMobileAuth,
   resolveTenant,
 } from "@/lib/mobile/api";
-import { buildViewerContext, chatMessageDtos } from "@/lib/mobile/serializers";
+import { buildViewerContext, chatMessageDtos, liveSessionDto } from "@/lib/mobile/serializers";
 import type { NextResponse } from "next/server";
 import type { LiveSession, Tenant, User } from "@/app/generated/prisma/client";
 
@@ -98,16 +98,12 @@ export async function GET(
       ).reverse();
 
   return jsonOk({
-    session: {
-      id: session.id,
-      title: session.title,
-      description: null,
-      status: session.status,
-      scheduledAt: session.startsAt ? session.startsAt.toISOString() : null,
-      streamUrl: session.streamUrl,
-      replayUrl: session.replayUrl,
-      accessible: true,
-    },
+    // Hier mit Wiedergabe-Adressen: die Session ist geoeffnet, jetzt wird das
+    // Bild gebraucht (und ein Token, falls sie geschuetzt ist).
+    session: await liveSessionDto(session, s.ctx, {
+      canChat: s.ctx.membership?.status === "ACTIVE" || s.ctx.isStaff,
+      withPlayback: true,
+    }),
     messages: await chatMessageDtos(tenant.id, rows, user.id),
   });
 }

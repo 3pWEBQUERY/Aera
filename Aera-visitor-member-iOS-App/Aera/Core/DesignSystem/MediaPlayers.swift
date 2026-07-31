@@ -40,6 +40,9 @@ final class AudioPlayerModel {
     private(set) var duration: Double = 0
     var currentTime: Double = 0
     var isScrubbing = false
+    /// Wird gerufen, wenn der Titel durchgelaufen ist. Der MUSIC-Space hängt
+    /// daran den nächsten Titel der Liste; der Podcast lässt es leer.
+    var onFinish: (() -> Void)?
 
     private var player: AVPlayer?
     private var timeObserver: Any?
@@ -78,6 +81,14 @@ final class AudioPlayerModel {
             guard let loaded = try? await item.asset.load(.duration), loaded.isNumeric else { return }
             self?.duration = loaded.seconds
         }
+    }
+
+    /// Startet die Wiedergabe, ohne den Zustand zu kippen — für den Wechsel
+    /// zum nächsten Titel, bei dem schon gespielt wurde.
+    func play() {
+        guard let player, !isPlaying else { return }
+        player.play()
+        isPlaying = true
     }
 
     func togglePlayback() {
@@ -125,6 +136,7 @@ final class AudioPlayerModel {
         isPlaying = false
         currentTime = 0
         player?.seek(to: .zero)
+        onFinish?()
     }
 }
 

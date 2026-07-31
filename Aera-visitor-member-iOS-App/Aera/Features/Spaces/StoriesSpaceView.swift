@@ -153,9 +153,11 @@ struct StoryPlayerView: View {
                 progressSegments
                 authorRow
                 Spacer()
+                caption
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
+            .padding(.bottom, 24)
         }
         .offset(y: max(dragOffset, 0))
         .gesture(
@@ -249,6 +251,22 @@ struct StoryPlayerView: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel(Text("Schließen"))
+        }
+    }
+
+    /// Bildunterschrift der aktuellen Story — liegt über dem Bild, damit sie
+    /// dem Motiv nichts wegnimmt.
+    @ViewBuilder
+    private var caption: some View {
+        if let text = currentStory?.caption, !text.isEmpty {
+            Text(text)
+                .font(.system(size: 14))
+                .foregroundStyle(.white)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 10)
+                .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
         }
     }
 

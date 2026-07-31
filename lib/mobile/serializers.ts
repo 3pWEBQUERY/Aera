@@ -21,7 +21,10 @@ import {
   tipPresets,
   unlockAppleProductId,
 } from "@/lib/apple-products";
+import { env } from "@/lib/env";
+import { liveMobilePlayback } from "@/lib/live";
 import type {
+  LiveSession,
   Membership,
   MembershipTier,
   Role,
@@ -1124,6 +1127,70 @@ export async function chatMessageDtos(
   }));
 }
 
+// ================================================================ Live
+
+/**
+ * Eine Live-Session, wie die App sie braucht.
+ *
+ * Der Web-Raum spielt eigene Streams ueber WebRTC (WHEP) ab — auf dem Telefon
+ * gibt es dafuer keinen Player, darum steht hier HLS. Fremde Plattformen
+ * kommen als fertige Einbettungsadresse; der Twitch-Player braucht dafuer den
+ * Host der einbettenden Seite, den die App nicht kennt.
+ *
+ * `streamUrl`/`replayUrl` bleiben erhalten: aeltere App-Versionen lesen sie.
+ */
+export interface LiveSessionDto {
+  id: string;
+  title: string;
+  description: string | null;
+  status: "SCHEDULED" | "LIVE" | "ENDED";
+  /** `AERA` = ueber Aera gesendet, `EXTERNAL` = fremde Plattform. */
+  source: "AERA" | "EXTERNAL";
+  scheduledAt: string | null;
+  endedAt: string | null;
+  /** HLS fuer AVPlayer — nur bei eigenen Streams. */
+  hlsUrl: string | null;
+  /** Einbettungsadresse einer fremden Plattform (WebView). */
+  embedUrl: string | null;
+  /** `twitch`, `youtube`, … — `null` bei eigenem Stream. */
+  platform: string | null;
+  streamUrl: string | null;
+  replayUrl: string | null;
+  accessible: boolean;
+  /** Darf der Betrachter im Live-Chat schreiben? */
+  canChat: boolean;
+}
+
+export async function liveSessionDto(
+  s: LiveSession,
+  ctx: AccessContext,
+  opts: { canChat: boolean; withPlayback: boolean },
+): Promise<LiveSessionDto> {
+  const accessible =
+    ctx.isStaff || !s.requiredEntitlementKey || ctx.keys.has(s.requiredEntitlementKey);
+  const playback =
+    accessible && opts.withPlayback
+      ? await liveMobilePlayback(s, env.ROOT_DOMAIN)
+      : { hlsUrl: null, embedUrl: null, platform: null };
+
+  return {
+    id: s.id,
+    title: s.title,
+    description: null,
+    status: s.status,
+    source: s.source,
+    scheduledAt: s.startsAt ? s.startsAt.toISOString() : null,
+    endedAt: s.endedAt ? s.endedAt.toISOString() : null,
+    hlsUrl: playback.hlsUrl,
+    embedUrl: playback.embedUrl,
+    platform: playback.platform,
+    streamUrl: accessible ? s.streamUrl : null,
+    replayUrl: accessible ? s.replayUrl : null,
+    accessible,
+    canChat: accessible && opts.canChat,
+  };
+}
+
 // ================================================================ Notifications / Members / Orders
 export interface NotificationDto {
   id: string;
@@ -1223,19 +1290,7 @@ export type ContentDto =
       articles: { id: string; title: string; slug: string; excerpt: string; bodyHtml: string | null; locked: boolean; updatedAt: string }[];
     }
   | { kind: "links"; links: { label: string; url: string; description: string | null }[] }
-  | {
-      kind: "live";
-      sessions: {
-        id: string;
-        title: string;
-        description: string | null;
-        status: "SCHEDULED" | "LIVE" | "ENDED";
-        scheduledAt: string | null;
-        streamUrl: string | null;
-        replayUrl: string | null;
-        accessible: boolean;
-      }[];
-    }
+  | { kind: "live"; sessions: LiveSessionDto[] }
   | { kind: "chat"; conversations: ConversationDto[] }
   | { kind: "requests"; requests: RequestDto[]; canCreate: boolean }
   | { kind: "booking"; slots: BookingSlotDto[] }
@@ -1243,7 +1298,15 @@ export type ContentDto =
       kind: "stories";
       groups: {
         author: AuthorDto;
-        stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string | null }[];
+        stories: {
+          id: string;
+          mediaUrl: string;
+          mediaType: "IMAGE" | "VIDEO";
+          caption: string | null;
+          createdAt: string;
+          /** `null` = dauerhafte Story, laeuft nie ab. */
+          expiresAt: string | null;
+        }[];
       }[];
     }
   | {
@@ -1288,7 +1351,11 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
   switch (space.type) {
     case "FEED":
     case "VIDEOS":
-    case "PODCAST": {
+    case "PODCAST":
+    // Musik traegt dieselbe Beitragsform wie der Podcast: Audio in
+    // `videoUrl`, Cover in `imageUrl`. Die App baut daraus eine andere
+    // Buehne — die Daten bleiben dieselben.
+    case "MUSIC": {
       const now = new Date();
       const rows = await prisma.post.findMany({
         where: {
@@ -1474,24 +1541,15 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
         where: { tenantId: tenant.id, spaceId: space.id },
         orderBy: [{ status: "asc" }, { startsAt: "desc" }, { createdAt: "desc" }],
       });
+      const canChat = isActiveMember || ctx.isStaff;
       return {
         kind: "live",
-        sessions: sessions.map((s) => {
-          const accessible =
-            ctx.isStaff ||
-            !s.requiredEntitlementKey ||
-            ctx.keys.has(s.requiredEntitlementKey);
-          return {
-            id: s.id,
-            title: s.title,
-            description: null,
-            status: s.status,
-            scheduledAt: s.startsAt ? s.startsAt.toISOString() : null,
-            streamUrl: accessible ? s.streamUrl : null,
-            replayUrl: accessible ? s.replayUrl : null,
-            accessible,
-          };
-        }),
+        // In der Liste ohne Wiedergabe-Adressen: die kosten bei geschuetzten
+        // Sessions je einen Cloudflare-Aufruf und werden erst gebraucht, wenn
+        // jemand die Session oeffnet.
+        sessions: await Promise.all(
+          sessions.map((s) => liveSessionDto(s, ctx, { canChat, withPlayback: false })),
+        ),
       };
     }
 
@@ -1605,7 +1663,17 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       // Creator sortiert nach jüngster Story.
       const groups = new Map<
         string,
-        { author: AuthorDto; stories: { id: string; mediaUrl: string; mediaType: "IMAGE" | "VIDEO"; createdAt: string; expiresAt: string | null }[] }
+        {
+          author: AuthorDto;
+          stories: {
+            id: string;
+            mediaUrl: string;
+            mediaType: "IMAGE" | "VIDEO";
+            caption: string | null;
+            createdAt: string;
+            expiresAt: string | null;
+          }[];
+        }
       >();
       for (const r of rows) {
         const mediaUrl = r.videoUrl ?? r.imageUrl;
@@ -1619,6 +1687,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
           id: r.id,
           mediaUrl,
           mediaType: r.videoUrl ? "VIDEO" : "IMAGE",
+          caption: r.caption,
           createdAt: r.publishAt.toISOString(),
           // null = laeuft nie ab (dauerhafte Story).
           expiresAt: r.expiresAt?.toISOString() ?? null,

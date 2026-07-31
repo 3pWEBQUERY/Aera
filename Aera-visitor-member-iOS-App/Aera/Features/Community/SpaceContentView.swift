@@ -109,6 +109,8 @@ struct SpaceContentView: View {
                 VideosSpaceView(slug: slug, space: space, content: content, viewer: viewer, reload: reload)
             case .podcast:
                 PodcastSpaceView(slug: slug, space: space, content: content, viewer: viewer, reload: reload)
+            case .music:
+                MusicSpaceView(slug: slug, space: space, content: content, viewer: viewer, reload: reload)
             default:
                 FeedSpaceView(slug: slug, space: space, content: content, viewer: viewer, reload: reload)
             }

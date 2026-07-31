@@ -3,9 +3,11 @@ import prisma from "./prisma";
 import {
   getLiveInput,
   playbackToken,
+  streamHlsUrl,
   streamIframeUrl,
   streamLiveEnabled,
 } from "./cloudflare-stream";
+import { detectLivePlatform, toLiveEmbedUrl, type LivePlatform } from "./live-embed";
 import type { LiveIngest, LiveSource, LiveStatus } from "@/app/generated/prisma/client";
 
 export interface LiveSessionData {
@@ -70,6 +72,55 @@ export async function livePlayback(s: LiveSessionData): Promise<LivePlayback> {
     // die den geschuetzten Stream fuer jeden abspielbar macht.
     return {};
   }
+}
+
+/**
+ * Was die iOS-App braucht, um ein Bild zu zeigen.
+ *
+ * Der Browser bekommt bei eigenen Streams WebRTC (WHEP) — unter einer
+ * Sekunde Verzoegerung, dafuer nur im Browser. Auf dem Telefon gibt es
+ * keinen WebRTC-Stack, also liefert die App-Antwort HLS: dieselbe Sendung,
+ * ein paar Sekunden spaeter, dafuer nativ in AVPlayer abspielbar.
+ *
+ * Fremde Plattformen kommen als fertige Einbettungsadresse — Twitch braucht
+ * dafuer den Host der einbettenden Seite, den die App nicht kennt.
+ */
+export interface LiveMobilePlayback {
+  /** HLS-Adresse (eigener Stream, live oder Aufzeichnung). */
+  hlsUrl: string | null;
+  /** Einbettungsadresse einer fremden Plattform. */
+  embedUrl: string | null;
+  /** Erkannte Plattform der Einbettung, `null` bei eigenem Stream. */
+  platform: LivePlatform | null;
+}
+
+export async function liveMobilePlayback(
+  s: LiveSessionData,
+  parentHost: string,
+): Promise<LiveMobilePlayback> {
+  const empty: LiveMobilePlayback = { hlsUrl: null, embedUrl: null, platform: null };
+
+  if (s.source === "AERA" && streamLiveEnabled()) {
+    // Solange gesendet wird, laeuft die Wiedergabe ueber den Live-Eingang;
+    // danach ueber die Aufzeichnung.
+    const id = s.status === "ENDED" ? (s.cfReplayId ?? s.cfInputId) : s.cfInputId;
+    if (!id) return empty;
+    if (!s.requiredEntitlementKey) return { ...empty, hlsUrl: streamHlsUrl(id) };
+    try {
+      return { ...empty, hlsUrl: streamHlsUrl(await playbackToken(id)) };
+    } catch {
+      // Ohne Token bleibt der Player leer — besser als eine offene Adresse.
+      return empty;
+    }
+  }
+
+  const raw = s.status === "ENDED" ? (s.replayUrl ?? s.streamUrl) : (s.streamUrl ?? s.replayUrl);
+  if (!raw) return empty;
+  return {
+    hlsUrl: null,
+    embedUrl: toLiveEmbedUrl(raw, parentHost),
+    platform: detectLivePlatform(raw),
+  };
 }
 
 export interface LiveMessageData {
