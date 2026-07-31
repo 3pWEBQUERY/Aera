@@ -5,13 +5,18 @@ import {
   buildViewerContext,
   communityCoverMap,
   toCommunityCard,
+  toHeaderDto,
   toSpaceSummary,
 } from "@/lib/mobile/serializers";
 import { isAnnouncementsOnly } from "@/lib/space-settings";
 
 // GET /api/mobile/v1/c/{slug}
-// → { community: CommunityCard & { description }, viewer, spaces, announcement }
+// → { community: CommunityCard & { description }, viewer, spaces, header,
+//     announcement }
 // Token optional — Viewer/Gating je nach Mitgliedschaft.
+// `header` traegt Kopfzeilen-Stil, Mosaik-Bilder, Social-Links und die
+// Menuezeile, die der Creator im Layout-Editor zusammenstellt — bereits auf
+// diesen Betrachter aufgeloest (Publikum gefiltert, Ziele geprueft).
 
 export async function GET(
   req: Request,
@@ -49,6 +54,9 @@ export async function GET(
     },
     viewer,
     spaces: spaces.map((s) => toSpaceSummary(s, ctx)),
+    // Kopfzeilen-Stil und die vom Creator zusammengestellte Menüzeile —
+    // bereits auf diesen Betrachter aufgelöst.
+    header: toHeaderDto(tenant, spaces, { isMember: viewer.isMember, isStaff: viewer.isStaff }),
     announcement: activeAnnouncementFor(allSpaces),
   });
 }

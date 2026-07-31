@@ -20,6 +20,12 @@ struct CommunityView: View {
     @State private var showJoin = false
     @State private var composeContext: ComposeContext?
     @State private var showComposer = false
+    /// Ziel eines Menüpunkts der Kopfzeile.
+    @State private var heroRoute: HeroRoute?
+    /// Adresse, die geteilt werden soll (Menüpunkt „Teilen").
+    @State private var shareURL: ShareTarget?
+
+    @Environment(\.openURL) private var openURL
 
     init(slug: String) {
         self.slug = slug
@@ -52,6 +58,12 @@ struct CommunityView: View {
             JoinView(slug: slug) {
                 await reloadAll()
             }
+        }
+        .navigationDestination(item: $heroRoute) { route in
+            heroDestination(route)
+        }
+        .sheet(item: $shareURL) { target in
+            ShareSheet(items: [target.url])
         }
         .sheet(isPresented: $showComposer) {
             if let composeContext {
@@ -135,77 +147,73 @@ struct CommunityView: View {
     // MARK: - Hero
 
     private func hero(_ response: CommunityResponse) -> some View {
-        let community = response.community
-        return VStack(alignment: .leading, spacing: 14) {
-            heroCover(community)
-
-            HStack(alignment: .center, spacing: 12) {
-                logoView(community)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(community.name)
-                        .font(.displaySerif(28))
-                        .kerning(-0.4)
-                        .foregroundStyle(Theme.ink)
-                        .lineLimit(2)
-                    if let tagline = community.tagline, !tagline.isEmpty {
-                        Text(tagline)
-                            .font(.system(size: 14))
-                            .foregroundStyle(Theme.ink.opacity(0.6))
-                            .lineLimit(2)
-                    }
-                }
-            }
-
-            HStack(spacing: 6) {
-                PillLabel(String(localized: "\(community.memberCount) Mitglieder"),
-                          systemImage: "person.2")
-                if response.viewer.isMember, let levelName = response.viewer.levelName {
-                    LevelChip(levelName: levelName, points: response.viewer.points)
-                }
-                if let role = response.viewer.role {
-                    RoleBadge(role: role)
-                }
-            }
+        CommunityHeroView(community: response.community,
+                          viewer: response.viewer,
+                          header: response.header) { item in
+            handle(item, in: response)
         }
     }
 
-    @ViewBuilder
-    private func heroCover(_ community: CommunityDetail) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 24, style: .continuous)
-        if community.coverUrl != nil {
-            Color.clear
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .overlay {
-                    AsyncImageView(url: community.coverUrl)
-                }
-                .clipShape(shape)
-                .overlay(shape.strokeBorder(Theme.border, lineWidth: 1))
-        } else {
-            BrandCoverPlaceholder(name: community.name, brand: brand)
-                .aspectRatio(16 / 9, contentMode: .fit)
-                .clipShape(shape)
-        }
+    // MARK: - Menüzeile
+
+    /// Ziel eines Menüpunkts, das als eigene Seite geöffnet wird.
+    private enum HeroRoute: Hashable, Identifiable {
+        case members
+        case leaderboard
+        case library
+        case search
+
+        var id: Self { self }
     }
 
     @ViewBuilder
-    private func logoView(_ community: CommunityDetail) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 8, style: .continuous)
-        Group {
-            if community.logoUrl != nil {
-                AsyncImageView(url: community.logoUrl)
-            } else {
-                ZStack {
-                    brand.soft
-                    Text(String(community.name.prefix(1)).uppercased())
-                        .font(.displaySerif(18))
-                        .foregroundStyle(brand.color)
-                }
-            }
+    private func heroDestination(_ route: HeroRoute) -> some View {
+        switch route {
+        case .members:
+            MembersView(slug: slug).brandTheme(brand)
+        case .leaderboard:
+            LeaderboardView(slug: slug).brandTheme(brand)
+        case .library:
+            LibraryView(slug: slug).brandTheme(brand)
+        case .search:
+            CommunitySearchView(slug: slug).brandTheme(brand)
         }
-        .frame(width: 44, height: 44)
-        .clipShape(shape)
-        .overlay(shape.strokeBorder(.black.opacity(0.05), lineWidth: 1))
+    }
+
+    /// Was ein Menüpunkt tut. Bereiche wählt die Chip-Leiste aus — sie sind
+    /// keine eigene Seite, sondern der Inhalt unter der Kopfzeile.
+    private func handle(_ item: HeroMenuItem, in response: CommunityResponse) {
+        switch item.type {
+        case .space, .tips:
+            if let target = item.spaceSlug,
+               response.spaces.contains(where: { $0.slug == target }) {
+                withAnimation(.snappy(duration: 0.25)) { selectedSpaceSlug = target }
+            }
+        case .live:
+            if let live = response.spaces.first(where: { $0.type == .live }) {
+                withAnimation(.snappy(duration: 0.25)) { selectedSpaceSlug = live.slug }
+            }
+        case .home:
+            withAnimation(.snappy(duration: 0.25)) { selectedSpaceSlug = nil }
+        case .members:
+            heroRoute = .members
+        case .leaderboard:
+            heroRoute = .leaderboard
+        case .library:
+            heroRoute = .library
+        case .search:
+            heroRoute = .search
+        case .join:
+            showJoin = true
+        case .share:
+            shareURL = ShareTarget(url: AppConfig.baseURL.appending(path: "c/\(slug)"))
+        case .link:
+            if let raw = item.url, let url = URL(string: raw) {
+                openURL(url)
+            }
+        case .unknown:
+            break
+        }
     }
 
     // MARK: - Announcement

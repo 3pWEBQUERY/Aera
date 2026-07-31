@@ -3,7 +3,12 @@ import Foundation
 // MARK: - Formatierungs-Helper
 
 enum Format {
-    /// Cents + lowercase-ISO-Währung → lokalisierter Preis, z. B. `"4,99 €"`.
+    /// Währung, wenn der Server keine mitliefert. Die Plattform rechnet in
+    /// Franken (lib/currency.ts) — ein hart verdrahtetes Euro-Zeichen wäre
+    /// schlicht falsch.
+    static let fallbackCurrency = "chf"
+
+    /// Cents + lowercase-ISO-Währung → lokalisierter Preis, z. B. `"4,99 CHF"`.
     static func price(cents: Int, currency: String) -> String {
         let amount = Decimal(cents) / Decimal(100)
         return amount.formatted(.currency(code: currency.uppercased()))

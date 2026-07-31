@@ -195,6 +195,7 @@ struct LeaderboardView: View {
                 if let levelName = entry.member.levelName {
                     LevelChip(levelName: levelName)
                 }
+                BadgeRow(badges: entry.member.badges, size: 20, limit: 3)
             }
 
             Spacer()

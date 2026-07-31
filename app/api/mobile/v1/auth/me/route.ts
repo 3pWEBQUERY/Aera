@@ -1,6 +1,12 @@
 import prisma from "@/lib/prisma";
 import { jsonOk, requireMobileAuth } from "@/lib/mobile/api";
-import { communityCoverMap, toCommunityCard, toUserDto } from "@/lib/mobile/serializers";
+import { badgesForUser } from "@/lib/member-badges";
+import {
+  communityCoverMap,
+  toBadgeDto,
+  toCommunityCard,
+  toUserDto,
+} from "@/lib/mobile/serializers";
 
 // GET /api/mobile/v1/auth/me → { user, memberships: MembershipHome[] }
 
@@ -46,6 +52,16 @@ export async function GET(req: Request) {
   const subMap = new Map<string, (typeof subs)[number]>();
   for (const s of subs) if (!subMap.has(s.tenantId)) subMap.set(s.tenantId, s);
 
+  // Eigene Auszeichnungen je Community — eine Abfrage je Mitgliedschaft, und
+  // davon hat man wenige.
+  const ownBadges = new Map(
+    await Promise.all(
+      memberships.map(
+        async (m) => [m.tenantId, await badgesForUser(m.tenantId, user.id)] as const,
+      ),
+    ),
+  );
+
   return jsonOk({
     user: toUserDto(user),
     memberships: memberships.map((m) => {
@@ -62,10 +78,14 @@ export async function GET(req: Request) {
               name: m.tier.name,
               slug: m.tier.slug,
               priceCents: m.tier.priceCents,
+              // Ohne Waehrung zeigte die App Euro an, auch wenn in Franken
+              // abgerechnet wird.
+              currency: m.tier.currency,
               interval: m.tier.interval,
             }
           : null,
         role: m.role,
+        badges: (ownBadges.get(m.tenantId) ?? []).map(toBadgeDto),
         points: stat?.points ?? 0,
         levelName: stat?.levelName ?? null,
         joinedAt: m.joinedAt.toISOString(),

@@ -87,7 +87,7 @@ struct TipsSpaceView: View {
         guard let preset = pendingPreset else {
             return String(localized: "Trinkgeld senden?")
         }
-        let price = Format.price(cents: preset.amountCents, currency: "eur")
+        let price = Format.price(cents: preset.amountCents, currency: content.currency)
         return String(localized: "\(price) Trinkgeld senden?")
     }
 
@@ -105,7 +105,7 @@ struct TipsSpaceView: View {
                              total: Double(max(goal.targetCents, 1)))
                     .tint(brand.color)
 
-                Text("\(Format.price(cents: goal.raisedCents, currency: "eur")) von \(Format.price(cents: goal.targetCents, currency: "eur"))")
+                Text("\(Format.price(cents: goal.raisedCents, currency: content.currency)) von \(Format.price(cents: goal.targetCents, currency: content.currency))")
                     .font(.system(size: 13, weight: .medium))
                     .monospacedDigit()
                     .foregroundStyle(Theme.ink.opacity(0.6))
@@ -130,7 +130,7 @@ struct TipsSpaceView: View {
                                     Image(systemName: "heart.fill")
                                         .font(.system(size: 13, weight: .semibold))
                                         .foregroundStyle(brand.color)
-                                    Text(Format.price(cents: preset.amountCents, currency: "eur"))
+                                    Text(Format.price(cents: preset.amountCents, currency: content.currency))
                                         .font(.system(size: 24, weight: .bold))
                                         .monospacedDigit()
                                         .kerning(-0.5)
@@ -197,7 +197,7 @@ struct TipsSpaceView: View {
                             .foregroundStyle(Theme.ink.opacity(0.45))
                     }
 
-                    PillLabel(Format.price(cents: tip.amountCents, currency: "eur"),
+                    PillLabel(Format.price(cents: tip.amountCents, currency: content.currency),
                               systemImage: "heart.fill",
                               prominent: true)
 

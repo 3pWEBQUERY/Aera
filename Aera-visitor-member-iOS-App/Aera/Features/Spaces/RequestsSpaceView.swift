@@ -267,7 +267,7 @@ private struct RequestCard: View {
     private var pricedArea: some View {
         HStack(spacing: 12) {
             PriceText(cents: request.priceCents ?? request.unlock?.priceCents ?? 0,
-                      currency: request.unlock?.currency ?? "eur",
+                      currency: request.unlock?.currency ?? Format.fallbackCurrency,
                       size: 18)
 
             if let unlock = request.unlock, unlock.appleProductId != nil {

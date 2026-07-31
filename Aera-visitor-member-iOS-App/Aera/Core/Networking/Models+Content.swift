@@ -297,6 +297,20 @@ struct TipsContent: Decodable, Hashable, Sendable {
     var goal: TipGoal?
     var presets: [TipPreset]
     var tips: [Tip]
+    /// Währung der Plattform; ältere Server liefern sie nicht mit.
+    var currency: String
+
+    private enum CodingKeys: String, CodingKey {
+        case goal, presets, tips, currency
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        goal = try c.decodeIfPresent(TipGoal.self, forKey: .goal)
+        presets = try c.decodeIfPresent([TipPreset].self, forKey: .presets) ?? []
+        tips = try c.decodeIfPresent([Tip].self, forKey: .tips) ?? []
+        currency = try c.decodeIfPresent(String.self, forKey: .currency) ?? Format.fallbackCurrency
+    }
 }
 
 struct TipGoal: Decodable, Hashable, Sendable {

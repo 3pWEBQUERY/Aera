@@ -617,8 +617,66 @@ struct MemberCard: Decodable, Hashable, Sendable, Identifiable {
     var points: Int
     var levelName: String?
     var joinedAt: Date
+    /// Vergebene Auszeichnungen, neueste zuerst.
+    var badges: [Badge]
 
     var id: String { userId }
+
+    private enum CodingKeys: String, CodingKey {
+        case userId, name, avatarUrl, role, tierName, points, levelName, joinedAt, badges
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        userId = try c.decode(String.self, forKey: .userId)
+        name = try c.decode(String.self, forKey: .name)
+        avatarUrl = try c.decodeIfPresent(String.self, forKey: .avatarUrl)
+        role = try c.decode(Role.self, forKey: .role)
+        tierName = try c.decodeIfPresent(String.self, forKey: .tierName)
+        points = try c.decode(Int.self, forKey: .points)
+        levelName = try c.decodeIfPresent(String.self, forKey: .levelName)
+        joinedAt = try c.decode(Date.self, forKey: .joinedAt)
+        badges = try c.decodeIfPresent([Badge].self, forKey: .badges) ?? []
+    }
+}
+
+// MARK: - Auszeichnungen
+
+/// Eine vergebene Auszeichnung. Form, Stufe und Symbol beschreiben, wie die
+/// Plakette gezeichnet wird — es gibt bewusst keine Bilddatei dazu.
+struct Badge: Decodable, Hashable, Sendable, Identifiable {
+    enum Shape: String, Decodable, Hashable, Sendable {
+        case coin = "COIN"
+        case medal = "MEDAL"
+        case hex = "HEX"
+        case seal = "SEAL"
+
+        init(from decoder: Decoder) throws {
+            let raw = try decoder.singleValueContainer().decode(String.self)
+            self = Shape(rawValue: raw) ?? .coin
+        }
+    }
+
+    enum Tier: String, Decodable, Hashable, Sendable {
+        case gold = "GOLD"
+        case silver = "SILVER"
+        case bronze = "BRONZE"
+        case brand = "BRAND"
+        case ink = "INK"
+
+        init(from decoder: Decoder) throws {
+            let raw = try decoder.singleValueContainer().decode(String.self)
+            self = Tier(rawValue: raw) ?? .brand
+        }
+    }
+
+    var id: String
+    var name: String
+    var description: String?
+    var shape: Shape
+    var tier: Tier
+    /// Symbolname aus dem Web-Icon-Satz; die App bildet ihn auf SF Symbols ab.
+    var icon: String
 }
 
 struct Order: Decodable, Hashable, Sendable, Identifiable {
@@ -639,6 +697,8 @@ struct MembershipHome: Decodable, Hashable, Sendable, Identifiable {
         var name: String
         var slug: String
         var priceCents: Int
+        /// Währung der Abrechnung; ältere Server liefern sie nicht mit.
+        var currency: String?
         var interval: TierInterval
     }
 
@@ -853,7 +913,143 @@ struct CommunityResponse: Decodable, Hashable, Sendable {
     var community: CommunityDetail
     var viewer: Viewer
     var spaces: [SpaceSummary]
+    /// Kopfzeilen-Stil und Menüzeile aus dem Layout-Editor des Creators.
+    var header: CommunityHeader?
     var announcement: Announcement?
+}
+
+/// Ausführung der Kopfzeile — dieselben fünf Zustände wie im Web.
+enum HeaderVariant: String, Decodable, Hashable, Sendable {
+    case editorial = "EDITORIAL"
+    case mosaic = "MOSAIC"
+    case spotlight = "SPOTLIGHT"
+    case immersive = "IMMERSIVE"
+    case compact = "COMPACT"
+
+    init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = HeaderVariant(rawValue: raw) ?? .editorial
+    }
+}
+
+struct CommunityHeader: Decodable, Hashable, Sendable {
+    var variant: HeaderVariant
+    /// Bilder des Mosaik-Kopfbereichs, in dieser Reihenfolge.
+    var mosaic: [String]
+    var socials: [SocialLink]
+    var menu: HeroMenu
+
+    private enum CodingKeys: String, CodingKey {
+        case variant, mosaic, socials, menu
+    }
+
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        variant = try c.decodeIfPresent(HeaderVariant.self, forKey: .variant) ?? .editorial
+        mosaic = try c.decodeIfPresent([String].self, forKey: .mosaic) ?? []
+        socials = try c.decodeIfPresent([SocialLink].self, forKey: .socials) ?? []
+        menu = try c.decodeIfPresent(HeroMenu.self, forKey: .menu)
+            ?? HeroMenu(bar: [], more: [], moreLabel: nil)
+    }
+}
+
+struct SocialLink: Decodable, Hashable, Sendable, Identifiable {
+    var platform: String
+    var url: String
+
+    var id: String { url }
+}
+
+/// Die vom Creator zusammengestellte Menüzeile. Der Server liefert sie
+/// bereits auf diesen Betrachter aufgelöst.
+struct HeroMenu: Decodable, Hashable, Sendable {
+    var bar: [HeroMenuItem]
+    var more: [HeroMenuItem]
+    /// Eigene Beschriftung des „…"-Knopfs, sonst `nil`.
+    var moreLabel: String?
+
+    var isEmpty: Bool { bar.isEmpty && more.isEmpty }
+}
+
+enum HeroMenuType: String, Decodable, Hashable, Sendable {
+    case space = "SPACE"
+    case home = "HOME"
+    case members = "MEMBERS"
+    case leaderboard = "LEADERBOARD"
+    case library = "LIBRARY"
+    case live = "LIVE"
+    case search = "SEARCH"
+    case join = "JOIN"
+    case tips = "TIPS"
+    case share = "SHARE"
+    case link = "LINK"
+    /// Vom Server geliefert, dieser App-Version aber unbekannt.
+    case unknown = "__unknown__"
+
+    init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = HeroMenuType(rawValue: raw) ?? .unknown
+    }
+
+    /// Standardbeschriftung, wenn der Creator keine eigene gesetzt hat.
+    var defaultLabel: String {
+        switch self {
+        case .space: String(localized: "Bereich")
+        case .home: String(localized: "Startseite")
+        case .members: String(localized: "Mitglieder")
+        case .leaderboard: String(localized: "Rangliste")
+        case .library: String(localized: "Bibliothek")
+        case .live: String(localized: "Live")
+        case .search: String(localized: "Suche")
+        case .join: String(localized: "Mitglied werden")
+        case .tips: String(localized: "Unterstützen")
+        case .share: String(localized: "Teilen")
+        case .link: String(localized: "Link")
+        case .unknown: String(localized: "Mehr")
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .space: "square.grid.2x2"
+        case .home: "house"
+        case .members: "person.2"
+        case .leaderboard: "trophy"
+        case .library: "books.vertical"
+        case .live: "dot.radiowaves.left.and.right"
+        case .search: "magnifyingglass"
+        case .join: "sparkles"
+        case .tips: "heart"
+        case .share: "square.and.arrow.up"
+        case .link: "arrow.up.right"
+        case .unknown: "ellipsis"
+        }
+    }
+}
+
+enum HeroMenuStyle: String, Decodable, Hashable, Sendable {
+    case solid = "SOLID"
+    case outline = "OUTLINE"
+    case plain = "PLAIN"
+
+    init(from decoder: Decoder) throws {
+        let raw = try decoder.singleValueContainer().decode(String.self)
+        self = HeroMenuStyle(rawValue: raw) ?? .plain
+    }
+}
+
+struct HeroMenuItem: Decodable, Hashable, Sendable, Identifiable {
+    var id: String
+    /// Eigene Beschriftung des Creators, sonst `nil`.
+    var label: String?
+    var type: HeroMenuType
+    var style: HeroMenuStyle
+    /// Nur bei `space` und `tips`.
+    var spaceSlug: String?
+    /// Nur bei `link`.
+    var url: String?
+
+    var title: String { label?.isEmpty == false ? label! : type.defaultLabel }
 }
 
 struct SpaceResponse: Decodable, Sendable {

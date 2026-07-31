@@ -192,7 +192,7 @@ struct StudioRequestsView: View {
                 }
 
                 if let priceCents = request.priceCents, request.status == .priced {
-                    PriceText(cents: priceCents, currency: "eur", size: 18)
+                    PriceText(cents: priceCents, currency: Format.fallbackCurrency, size: 18)
                 }
 
                 actionArea(for: request)

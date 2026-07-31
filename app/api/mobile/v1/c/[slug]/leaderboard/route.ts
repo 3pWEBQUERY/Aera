@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { leaderboard } from "@/lib/gamification";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
-import type { MemberCardDto } from "@/lib/mobile/serializers";
+import { badgesForUsers } from "@/lib/member-badges";
+import { toBadgeDto, type MemberCardDto } from "@/lib/mobile/serializers";
 
 // GET /api/mobile/v1/c/{slug}/leaderboard
 // → { top: [{ rank, member: MemberCard }], me: { rank, points, levelName }|null }
@@ -44,6 +45,8 @@ export async function GET(
         })) + 1
       : null;
 
+  const badges = await badgesForUsers(tenant.id, top.map((t) => t.userId), 3);
+
   return jsonOk({
     top: top.map((row, i) => {
       const m = mMap.get(row.userId);
@@ -56,6 +59,7 @@ export async function GET(
         points: row.points,
         levelName: row.levelName,
         joinedAt: (m?.joinedAt ?? new Date(0)).toISOString(),
+        badges: (badges.get(row.userId) ?? []).map(toBadgeDto),
       };
       return { rank: i + 1, member };
     }),

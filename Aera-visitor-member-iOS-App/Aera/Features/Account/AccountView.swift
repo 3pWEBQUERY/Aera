@@ -616,7 +616,7 @@ struct AccountMembershipsView: View {
         if tier.priceCents <= 0 || tier.interval == .free {
             return String(localized: "\(tier.name) · Kostenlos")
         }
-        let price = Format.price(cents: tier.priceCents, currency: "eur")
+        let price = Format.price(cents: tier.priceCents, currency: tier.currency ?? Format.fallbackCurrency)
         if let suffix = tier.interval.priceSuffix {
             return "\(tier.name) · \(price)\(suffix)"
         }

@@ -8,7 +8,8 @@ import {
   requireMobileAuth,
   resolveTenant,
 } from "@/lib/mobile/api";
-import type { MemberCardDto } from "@/lib/mobile/serializers";
+import { badgesForUsers } from "@/lib/member-badges";
+import { toBadgeDto, type MemberCardDto } from "@/lib/mobile/serializers";
 
 // GET /api/mobile/v1/c/{slug}/members?cursor=
 // → { data: MemberCard[], nextCursor, inviteUrl }
@@ -60,6 +61,10 @@ export async function GET(
 
   // Cursor ist die Membership-ID (nextCursor unten); die Karten selbst
   // enthalten exakt die MemberCard-Felder aus dem Vertrag.
+  // Auszeichnungen aller Karten in einer Abfrage — eine je Person waere hier
+  // das Ende (lib/member-badges.ts).
+  const badges = await badgesForUsers(tenant.id, page.map((m) => m.userId));
+
   const data: MemberCardDto[] = page.map((m) => ({
     userId: m.user.id,
     name: m.user.name,
@@ -69,6 +74,7 @@ export async function GET(
     points: statMap.get(m.userId)?.points ?? 0,
     levelName: statMap.get(m.userId)?.levelName ?? null,
     joinedAt: m.joinedAt.toISOString(),
+    badges: (badges.get(m.userId) ?? []).map(toBadgeDto),
   }));
 
   return jsonOk({

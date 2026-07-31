@@ -153,6 +153,6 @@ private struct StudioCommunityCard: View {
     }
 
     private var revenueLabel: String {
-        String(localized: "\(Format.price(cents: entry.revenueCents30d, currency: "eur")) · 30 Tage")
+        String(localized: "\(Format.price(cents: entry.revenueCents30d, currency: Format.fallbackCurrency)) · 30 Tage")
     }
 }

@@ -14,6 +14,8 @@ import {
   isAnnouncementsOnly,
 } from "@/lib/space-settings";
 import { CATEGORIES, categoryByKey } from "@/lib/categories";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
+import type { MemberBadge } from "@/lib/member-badges";
 import { excerpt } from "@/lib/utils";
 import {
   productAppleProductId,
@@ -23,6 +25,13 @@ import {
 } from "@/lib/apple-products";
 import { env } from "@/lib/env";
 import { liveMobilePlayback } from "@/lib/live";
+import {
+  heroMenuVisible,
+  parseLayout,
+  type HeaderVariant,
+  type HeroMenuItem,
+  type HeroMenuType,
+} from "@/lib/layout";
 import type {
   LiveSession,
   Membership,
@@ -1217,6 +1226,94 @@ export async function chatMessageDtos(
   }));
 }
 
+// ================================================================ Kopfzeile & Menü
+
+/**
+ * Ein Punkt der Menüzeile aus der Community-Kopfzeile.
+ *
+ * Die Auflösung passiert hier: Publikum gefiltert, Ziele geprüft, Punkte
+ * ohne Ziel fallen weg — genau wie in `components/community/hero-actions.tsx`.
+ * Die Beschriftung bleibt bewusst leer, wenn der Creator keine eigene gesetzt
+ * hat: den Standardtext kennt die App in ihrer eigenen Sprache.
+ */
+export interface HeroMenuItemDto {
+  id: string;
+  /** Eigene Beschriftung des Creators, sonst `null`. */
+  label: string | null;
+  type: HeroMenuType;
+  style: "SOLID" | "OUTLINE" | "PLAIN";
+  /** Nur bei `SPACE`. */
+  spaceSlug: string | null;
+  /** Nur bei `LINK`. */
+  url: string | null;
+}
+
+export interface HeroMenuDto {
+  /** Punkte in der Zeile. */
+  bar: HeroMenuItemDto[];
+  /** Punkte hinter dem „…"-Knopf. */
+  more: HeroMenuItemDto[];
+  /** Eigene Beschriftung des „…"-Knopfs, sonst `null`. */
+  moreLabel: string | null;
+}
+
+export interface HeaderDto {
+  variant: HeaderVariant;
+  mode: "PHOTO" | "COVER";
+  /** Bilder des Mosaik-Kopfbereichs, in dieser Reihenfolge. */
+  mosaic: string[];
+  socials: { platform: string; url: string }[];
+  menu: HeroMenuDto;
+}
+
+export function toHeaderDto(
+  tenant: Tenant,
+  spaces: Space[],
+  viewer: { isMember: boolean; isStaff: boolean },
+): HeaderDto {
+  const layout = parseLayout((tenant as unknown as { layout?: unknown }).layout ?? null);
+  const spaceSlugs = new Set(spaces.map((s) => s.slug));
+  // Der Trinkgeld-Space heisst je Community anders; ohne einen solchen hat
+  // der Punkt kein Ziel und faellt weg.
+  const tipsSlug = spaces.find((s) => s.type === "TIPS")?.slug ?? null;
+
+  const resolve = (item: HeroMenuItem): HeroMenuItemDto | null => {
+    if (!heroMenuVisible(item, viewer)) return null;
+    if (item.type === "SPACE" && (!item.value || !spaceSlugs.has(item.value))) return null;
+    if (item.type === "TIPS" && !tipsSlug) return null;
+    if (item.type === "LINK" && !item.value) return null;
+    // Das Dashboard ist die Creator-Verwaltung im Web — in der Mitglieder-App
+    // hat es nichts zu suchen.
+    if (item.type === "DASHBOARD") return null;
+    return {
+      id: item.id,
+      label: item.label.trim() || null,
+      type: item.type,
+      style: item.style,
+      spaceSlug: item.type === "SPACE" ? (item.value ?? null) : item.type === "TIPS" ? tipsSlug : null,
+      url: item.type === "LINK" ? (item.value ?? null) : null,
+    };
+  };
+
+  const resolved = layout.heroMenu.items
+    .map((item) => ({ item, dto: resolve(item) }))
+    .filter((x): x is { item: HeroMenuItem; dto: HeroMenuItemDto } => x.dto !== null);
+
+  return {
+    variant: layout.header.variant,
+    mode: layout.header.mode,
+    mosaic: layout.header.mosaic,
+    socials: layout.header.socials,
+    menu: {
+      bar: resolved.filter((x) => x.item.slot === "BAR").map((x) => x.dto),
+      more: layout.heroMenu.more.enabled
+        ? resolved.filter((x) => x.item.slot === "MORE").map((x) => x.dto)
+        : [],
+      moreLabel: layout.heroMenu.more.label.trim() || null,
+    },
+  };
+}
+
 // ================================================================ Live
 
 /**
@@ -1301,6 +1398,33 @@ export interface MemberCardDto {
   points: number;
   levelName: string | null;
   joinedAt: string;
+  /** Auszeichnungen dieses Mitglieds — gezeichnet, ohne Bilddatei. */
+  badges: BadgeDto[];
+}
+
+/**
+ * Eine vergebene Auszeichnung. Form, Stufe und Symbol beschreiben, wie die
+ * Plakette gezeichnet wird — es gibt bewusst keine Bilddatei dazu
+ * (lib/badges.ts, components/community/badge-medal.tsx).
+ */
+export interface BadgeDto {
+  id: string;
+  name: string;
+  description: string | null;
+  shape: "COIN" | "MEDAL" | "HEX" | "SEAL";
+  tier: "GOLD" | "SILVER" | "BRONZE" | "BRAND" | "INK";
+  icon: string;
+}
+
+export function toBadgeDto(badge: MemberBadge): BadgeDto {
+  return {
+    id: badge.id,
+    name: badge.name,
+    description: badge.description,
+    shape: badge.shape,
+    tier: badge.tier,
+    icon: badge.icon,
+  };
 }
 
 export interface OrderDto {
@@ -1403,6 +1527,8 @@ export type ContentDto =
       kind: "tips";
       goal: { title: string; targetCents: number; raisedCents: number } | null;
       presets: { amountCents: number; appleProductId: string | null }[];
+      /** Waehrung der Plattform (lib/currency.ts). */
+      currency: string;
       tips: { id: string; amountCents: number; message: string | null; author: AuthorDto | null; createdAt: string }[];
     }
   | {
@@ -1817,6 +1943,9 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
               }
             : null,
         presets: tipPresets(),
+        // Die Plattform rechnet in einer Waehrung; ohne sie zeigte die App
+        // Euro an, auch wenn in Franken abgerechnet wird.
+        currency: PLATFORM_CURRENCY,
         tips: tips.map((t) => ({
           id: t.id,
           amountCents: t.amountCents,

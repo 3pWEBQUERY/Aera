@@ -123,6 +123,10 @@ struct MembersView: View {
                             .font(.system(size: 12))
                             .foregroundStyle(Theme.ink.opacity(0.5))
                     }
+                    // Auszeichnungen stehen bei der Person, nicht in einer
+                    // eigenen Zeile — sie gehören zu ihr.
+                    BadgeRow(badges: member.badges, size: 22, limit: 4)
+                        .padding(.top, 2)
                 }
 
                 Spacer()
