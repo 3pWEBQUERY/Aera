@@ -32,8 +32,13 @@ enum OrientationGate {
 
         scene.requestGeometryUpdate(.iOS(interfaceOrientations: mask))
         // Ohne diesen Anstoß bleibt eine bereits gedrehte Ansicht quer stehen,
-        // wenn man sie verlässt.
-        scene.keyWindow?.rootViewController?.setNeedsUpdateOfSupportedInterfaceOrientations()
+        // wenn man sie verlässt. iOS fragt dabei den obersten Controller —
+        // bei offenem Blatt ist das nicht der Wurzel-Controller.
+        var controller = scene.keyWindow?.rootViewController
+        while let presented = controller?.presentedViewController {
+            controller = presented
+        }
+        controller?.setNeedsUpdateOfSupportedInterfaceOrientations()
     }
 }
 

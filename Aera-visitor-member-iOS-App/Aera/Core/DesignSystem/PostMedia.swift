@@ -174,7 +174,9 @@ private struct ZoomableImage: View {
                         }
                     }
             )
-            .simultaneousGesture(
+            // Nur im Zoom greift das Ziehen; sonst gehoert die Geste dem
+            // Blaettern zwischen den Bildern.
+            .highPriorityGesture(
                 DragGesture()
                     .onChanged { value in
                         guard zoom > 1 else { return }
@@ -185,7 +187,8 @@ private struct ZoomableImage: View {
                     }
                     .onEnded { _ in
                         committedOffset = offset
-                    }
+                    },
+                including: zoom > 1 ? .all : .subviews
             )
             .onTapGesture(count: 2) {
                 withAnimation(.snappy(duration: 0.25)) {

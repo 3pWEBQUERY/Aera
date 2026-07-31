@@ -82,13 +82,20 @@ struct MusicSpaceView: View {
             }
         }
         .task(id: currentTrack?.id) {
-            guard let url = currentAudioURL else { return }
+            guard let url = currentAudioURL else {
+                // Gesperrter Titel: es waere sonst der vorherige zu hoeren,
+                // waehrend die Buehne laengst einen anderen zeigt.
+                player.teardown()
+                return
+            }
             player.load(url: url)
             if autoplay {
                 player.play()
             }
         }
         .onDisappear {
+            // Erst die Rueckmeldung loesen, sonst haelt sie die Ansicht fest.
+            player.onFinish = nil
             player.teardown()
         }
         .sheet(isPresented: $showLogin) {
@@ -325,11 +332,6 @@ struct MusicSpaceView: View {
             VStack(spacing: 0) {
                 ForEach(Array(tracks.enumerated()), id: \.element.id) { index, track in
                     trackRow(track, index: index)
-                        .onAppear {
-                            if track.id == tracks.last?.id {
-                                loadMore()
-                            }
-                        }
 
                     if track.id != tracks.last?.id {
                         Divider()
@@ -486,8 +488,12 @@ struct MusicSpaceView: View {
                 .buttonStyle(.secondary)
                 .padding(.vertical, 4)
             } else {
+                // Der Nachschub haengt am Fuss der Liste, nicht an der letzten
+                // Zeile: die Liste ist nicht lazy, sonst laedt sie beim
+                // Oeffnen sofort den ganzen Katalog nach.
                 ProgressView()
                     .padding(.vertical, 12)
+                    .onAppear { loadMore() }
             }
         }
     }

@@ -79,6 +79,9 @@ final class AudioPlayerModel {
 
         Task { [weak self] in
             guard let loaded = try? await item.asset.load(.duration), loaded.isNumeric else { return }
+            // Nur uebernehmen, wenn immer noch derselbe Titel laeuft — sonst
+            // traegt der Regler die Laenge des vorherigen.
+            guard self?.loadedURL == url else { return }
             self?.duration = loaded.seconds
         }
     }

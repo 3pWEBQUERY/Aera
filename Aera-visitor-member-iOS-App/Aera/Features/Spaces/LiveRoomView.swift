@@ -17,7 +17,6 @@ struct LiveRoomView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.brand) private var brand
     @Environment(\.dismiss) private var dismiss
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @State private var session: LiveSession?
     @State private var messages: [ChatMessage] = []
@@ -38,7 +37,9 @@ struct LiveRoomView: View {
         self.sessionId = sessionId
     }
 
-    private var isLandscape: Bool { verticalSizeClass == .compact }
+    /// Quer ist, was breiter als hoch ist. Die Groessenklasse taugt dafuer
+    /// nicht: auf dem iPad ist sie auch im Querformat „regular".
+    private func isLandscape(_ size: CGSize) -> Bool { size.width > size.height }
 
     var body: some View {
         ZStack {
@@ -106,7 +107,7 @@ struct LiveRoomView: View {
             chatLayer(for: session, size: size)
 
             VStack(spacing: 0) {
-                topBar(for: session)
+                topBar(for: session, landscape: isLandscape(size))
                 Spacer(minLength: 0)
             }
         }
@@ -186,7 +187,7 @@ struct LiveRoomView: View {
 
     // MARK: - Kopfzeile
 
-    private func topBar(for session: LiveSession) -> some View {
+    private func topBar(for session: LiveSession, landscape: Bool) -> some View {
         HStack(spacing: 10) {
             Button {
                 dismiss()
@@ -233,6 +234,13 @@ struct LiveRoomView: View {
 
             if hlsURL != nil {
                 circleButton(
+                    icon: stream.isPlaying ? "pause.fill" : "play.fill",
+                    label: stream.isPlaying ? String(localized: "Pause") : String(localized: "Abspielen")
+                ) {
+                    stream.togglePlayback()
+                }
+
+                circleButton(
                     icon: stream.isMuted ? "speaker.slash.fill" : "speaker.wave.2.fill",
                     label: stream.isMuted ? String(localized: "Ton einschalten") : String(localized: "Ton ausschalten")
                 ) {
@@ -255,7 +263,8 @@ struct LiveRoomView: View {
             }
         }
         .padding(.horizontal, 12)
-        .padding(.top, 6)
+        // Quer ist oben wenig Platz — die Leiste rueckt dichter an den Rand.
+        .padding(.top, landscape ? 2 : 6)
     }
 
     private func circleButton(icon: String, label: String, action: @escaping () -> Void) -> some View {
@@ -276,10 +285,10 @@ struct LiveRoomView: View {
     @ViewBuilder
     private func chatLayer(for session: LiveSession, size: CGSize) -> some View {
         if chatVisible {
-            if isLandscape {
+            if isLandscape(size) {
                 HStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    chatColumn(for: session)
+                    chatColumn(for: session, landscape: true)
                         .frame(width: min(340, size.width * 0.42))
                         .background {
                             LinearGradient(
@@ -293,7 +302,7 @@ struct LiveRoomView: View {
             } else {
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    chatColumn(for: session)
+                    chatColumn(for: session, landscape: false)
                         .frame(height: min(size.height * 0.46, 380))
                         .background {
                             LinearGradient(
@@ -308,7 +317,7 @@ struct LiveRoomView: View {
         }
     }
 
-    private func chatColumn(for session: LiveSession) -> some View {
+    private func chatColumn(for session: LiveSession, landscape: Bool) -> some View {
         VStack(spacing: 0) {
             ScrollViewReader { proxy in
                 ScrollView {
@@ -360,7 +369,7 @@ struct LiveRoomView: View {
                     .padding(.vertical, 12)
             }
         }
-        .padding(.bottom, isLandscape ? 8 : 0)
+        .padding(.bottom, landscape ? 8 : 0)
     }
 
     // MARK: - Fehler

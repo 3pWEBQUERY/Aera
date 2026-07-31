@@ -53,16 +53,38 @@ Unlock {                                  // wie ein gesperrtes Objekt freigesch
 Post {
   id, spaceSlug, spaceType: SpaceType,
   title: string|null, body: string|null, bodyHtml: string|null,
-  imageUrl: string|null, videoUrl: string|null, teaserUrl: string|null,
+  imageUrl: string|null, imageUrls: string[],     // imageUrl = das erste Bild
+  videoUrl: string|null, teaserUrl: string|null,
+  coverUrl: string|null,                          // Titelplatte (Blog)
+  coverFocusX: number, coverFocusY: number,       // Bildmitte in Prozent
+  coverZoom: number,                              // 100 = 1:1
   isPinned: boolean, publishedAt: string,
   author: Author,
   likeCount: number, likedByMe: boolean, commentCount: number,
-  locked: boolean, unlock: Unlock|null,
-  score: number|null, myVote: "UP"|"DOWN"|null    // nur FORUM, sonst null
+  locked: boolean,
+  lockKind: "none"|"members"|"paid",              // members: Titelbild bleibt Werbung
+  lockedPreviewUrl: string|null,                  // darf verwischt gezeigt werden
+  priceCents: number, currency: string,
+  unlock: Unlock|null,
+  score: number|null, myVote: "UP"|"DOWN"|null,   // nur FORUM, sonst null
+  readingMinutes: number|null,                    // nur BLOG-Liste
+  poll: Poll|null,                                // nur in der Einzelansicht
+  hideComments: boolean, closeComments: boolean, hideLikes: boolean
 }
 
+Poll { question, multiple: boolean, totalVotes: number,
+       options: [{ index, label, votes }], myVotes: number[] }
+
 Comment { id, postId, parentId: string|null, body, createdAt, author: Author,
-          score: number, myVote: "UP"|"DOWN"|null, children: Comment[] }
+          score: number, myVote: "UP"|"DOWN"|null,
+          likeCount: number, likedByMe: boolean, children: Comment[] }
+
+// Form, Stufe und Symbol beschreiben, wie die Plakette gezeichnet wird — es
+// gibt bewusst keine Bilddatei dazu.
+Badge { id, name, description: string|null,
+        shape: "COIN"|"MEDAL"|"HEX"|"SEAL",
+        tier: "GOLD"|"SILVER"|"BRONZE"|"BRAND"|"INK",
+        icon: string }
 
 Tier {
   id, name, slug, description: string|null, benefits: string[],   // description zeilenweise gesplittet
@@ -100,7 +122,7 @@ Notification { id, type: "POST_COMMENT"|"COMMENT_REPLY"|"REACTION",
                message, href: string|null, actor: Author|null, createdAt, readAt: string|null }
 
 MemberCard { userId, name, avatarUrl: string|null, role: Role, tierName: string|null,
-             points: number, levelName: string|null, joinedAt }
+             points: number, levelName: string|null, joinedAt, badges: Badge[] }
 
 Order { id, description, amountCents, currency, status: "PENDING"|"PAID"|"REFUNDED"|"FAILED",
         createdAt, productName: string|null, downloadUrl: string|null }
@@ -121,8 +143,10 @@ Order { id, description, amountCents, currency, status: "PENDING"|"PAID"|"REFUND
 | `POST /auth/avatar` 🔒 | multipart `file` (+ `tenant` slug einer Mitgliedschaft) | `{ url }` |
 
 ```ts
-MembershipHome { community: CommunityCard, tier: {name, slug, priceCents, interval}|null,
-                 role: Role, points: number, levelName: string|null, joinedAt,
+MembershipHome { community: CommunityCard,
+                 tier: {name, slug, priceCents, currency, interval}|null,
+                 role: Role, badges: Badge[],
+                 points: number, levelName: string|null, joinedAt,
                  subscription: { status, currentPeriodEnd: string|null,
                                  cancelAtPeriodEnd: boolean, isApple: boolean }|null }
 ```
@@ -155,7 +179,24 @@ HomeItem { community: CommunityCard, post: Post }
 
 ### Community (Token optional; gated je nach Viewer)
 
-- `GET /c/{slug}` → `{ community: CommunityCard & { description }, viewer: Viewer, spaces: SpaceSummary[], announcement: { id, message, bgColor, textColor, href: string|null }|null }`
+- `GET /c/{slug}` → `{ community: CommunityCard & { description }, viewer: Viewer, spaces: SpaceSummary[], header: Header, announcement: { id, message, bgColor, textColor, href: string|null }|null }`
+
+```ts
+// Kopfzeile + Menuezeile aus dem Layout-Editor des Creators. Bereits auf
+// diesen Betrachter aufgeloest: Publikum gefiltert, Ziele geprueft, Punkte
+// ohne Ziel entfernt. DASHBOARD wird nie ausgeliefert.
+Header { variant: "EDITORIAL"|"MOSAIC"|"SPOTLIGHT"|"IMMERSIVE"|"COMPACT",
+         mode: "PHOTO"|"COVER",
+         mosaic: string[],                       // Bilder des Mosaik-Kopfbereichs
+         socials: [{ platform, url }],
+         menu: { bar: HeroMenuItem[], more: HeroMenuItem[], moreLabel: string|null } }
+HeroMenuItem { id, label: string|null,           // null = App nutzt ihre eigene Beschriftung
+               type: "SPACE"|"HOME"|"MEMBERS"|"LEADERBOARD"|"LIBRARY"|"LIVE"|"SEARCH"
+                     |"JOIN"|"TIPS"|"SHARE"|"LINK",
+               style: "SOLID"|"OUTLINE"|"PLAIN",
+               spaceSlug: string|null,           // SPACE und TIPS
+               url: string|null }                // LINK
+```
 - `POST /c/{slug}/join-free` 🔒 → tritt Default-/Free-Tier bei → `{ viewer: Viewer }`; 409 `payment_required` wenn kein Free-Tier existiert, 403 `banned`.
 - `GET /c/{slug}/tiers` → `{ data: Tier[] }`
 - `POST /c/{slug}/membership/cancel` 🔒 → `{ ok }` — nur für nicht-Apple-Abos (Stripe→Web-Hinweis via 409 `manage_on_web`); Apple-Abos werden über iOS-Abo-Verwaltung gekündigt.
@@ -177,17 +218,19 @@ EVENTS     → { kind:"events", upcoming: Event[], past: Event[] }
 NEWSLETTER → { kind:"newsletter", campaigns: [{ id, subject, preheader: string|null, bodyHtml, sentAt }] }
 KNOWLEDGE  → { kind:"knowledge", articles: [{ id, title, slug, excerpt, bodyHtml: string|null, locked, updatedAt }] }
 LINKS      → { kind:"links", links: [{ label, url, description: string|null }] }
-LIVE       → { kind:"live", sessions: [{ id, title, description, status:"SCHEDULED"|"LIVE"|"ENDED",
-               scheduledAt: string|null, streamUrl: string|null, replayUrl: string|null, accessible: boolean }] }
+LIVE       → { kind:"live", sessions: LiveSession[] }   // ohne Wiedergabe-Adressen, siehe unten
+MUSIC      → { kind:"posts", … }   // wie PODCAST: Audio in videoUrl, Cover in imageUrl
 CHAT       → { kind:"chat", conversations: [Conversation] }
 REQUESTS   → { kind:"requests", requests: [{ id, title, body, status:"OPEN"|"ACCEPTED"|"PRICED"|"FULFILLED"|"DECLINED",
                score, myVote: "UP"|"DOWN"|null, priceCents: number|null, unlock: Unlock|null,
                author: Author, createdAt }], canCreate: boolean }
 BOOKING    → { kind:"booking", slots: [{ id, title, description, startsAt, durationMin, capacity,
                spotsLeft, priceCents, currency, unlock: Unlock|null, myReservation: "PENDING"|"CONFIRMED"|null }] }
-STORIES    → { kind:"stories", groups: [{ author: Author, stories: [{ id, mediaUrl, mediaType:"IMAGE"|"VIDEO", createdAt, expiresAt }] }] }
+STORIES    → { kind:"stories", groups: [{ author: Author, stories: [{ id, mediaUrl, mediaType:"IMAGE"|"VIDEO",
+               caption: string|null, createdAt, expiresAt: string|null }] }] }   // expiresAt null = dauerhaft
 TIPS       → { kind:"tips", goal: { title, targetCents, raisedCents }|null,
                presets: [{ amountCents, appleProductId: string|null }],
+               currency: string,
                tips: [{ id, amountCents, message: string|null, author: Author|null, createdAt }] }
 CALENDAR   → { kind:"calendar", items: [{ kind:"event"|"live"|"post", date, title, subtitle: string|null,
                spaceSlug: string|null, refId }] }
@@ -195,10 +238,16 @@ CALENDAR   → { kind:"calendar", items: [{ kind:"event"|"live"|"post", date, ti
 
 ### Posts & Engagement 🔒 (außer GET)
 
-- `GET /c/{slug}/posts/{postId}` → `{ post: Post, comments: Comment[] }` (Kommentare verschachtelt, gated Post → Felder genullt + `locked`)
+- `GET /c/{slug}/posts/{postId}` → `{ post: Post, comments: Comment[], related: Post[], popular: Post[] }`
+  (Kommentare verschachtelt, gated Post → Felder genullt + `locked`; `related`/`popular` sind die
+  beiden Reihen weiterer Beitraege desselben Space — `popular` nur mit Likes. Nur hier traegt
+  `post.poll` eine Umfrage; in Listen ist sie `null`.)
 - `POST /c/{slug}/posts` `{ spaceSlug, title?, body }` → `{ post: Post }`
 - `POST /c/{slug}/comments` `{ postId, body, parentId? }` → `{ comment: Comment }`
-- `POST /c/{slug}/reactions/toggle` `{ postId }` → `{ liked: boolean, likeCount: number }`
+- `POST /c/{slug}/reactions/toggle` `{ postId }` **oder** `{ commentId }` → `{ liked: boolean, likeCount: number }`
+- `POST /c/{slug}/posts/{postId}/poll` `{ options: number[] }` → `{ poll: Poll }` — eine erneute Stimme
+  ersetzt die alte; bei Einfachauswahl zaehlt nur die erste Option. 403 `not_member` ohne aktive
+  Mitgliedschaft.
 - `POST /c/{slug}/vote` `{ targetType: "post"|"comment", targetId, postId, dir: "UP"|"DOWN" }` → `{ score, myVote }`
 - `POST /c/{slug}/events/{eventId}/rsvp` → `{ going: boolean, rsvpCount: number }`
 - `POST /c/{slug}/lessons/{lessonId}/complete` → `{ completed: true, progress: { completed, total } }`
@@ -218,7 +267,26 @@ ChatMessage { id, body, createdAt, author: Author, mine: boolean }
 - `GET /c/{slug}/chat/{conversationId}?after={messageId}` → `{ messages: ChatMessage[] }` (Polling, aufsteigend)
 - `POST /c/{slug}/chat/{conversationId}` `{ body }` → `{ message: ChatMessage }`
 - `POST /c/{slug}/chat/direct` `{ userId }` → `{ conversation: Conversation }`
-- `GET /c/{slug}/live/{sessionId}?after=` → `{ session, messages: ChatMessage[] }`
+- `GET /c/{slug}/live/{sessionId}?after=` → `{ session: LiveSession, messages: ChatMessage[] }`
+
+```ts
+// Der Web-Raum spielt eigene Streams ueber WebRTC (WHEP) — dafuer gibt es auf
+// dem Telefon keinen Player, darum steht hier HLS. Fremde Plattformen kommen
+// als fertige Einbettungsadresse (der Twitch-Player braucht den Host der
+// einbettenden Seite, den die App nicht kennt).
+LiveSession { id, title, description: string|null,
+              status: "SCHEDULED"|"LIVE"|"ENDED",
+              source: "AERA"|"EXTERNAL",
+              scheduledAt: string|null, endedAt: string|null,
+              hlsUrl: string|null,        // eigener Stream, live oder Aufzeichnung (AVPlayer)
+              embedUrl: string|null,      // fremde Plattform (WebView)
+              platform: string|null,      // "twitch" | "youtube" | … | null
+              streamUrl: string|null, replayUrl: string|null,
+              accessible: boolean, canChat: boolean }
+```
+
+`hlsUrl`/`embedUrl` liefert **nur** die Einzelabfrage; in der Space-Liste sind sie `null`
+(geschuetzte Sessions kosten je einen Cloudflare-Aufruf fuer das Wiedergabe-Token).
 - `POST /c/{slug}/live/{sessionId}` `{ body }` → `{ message: ChatMessage }`
 
 ### Member-Bereich 🔒
@@ -325,7 +393,7 @@ StudioOrder { id, description, productName: string|null,
 
 **Stories**
 
-- `POST /studio/{slug}/stories` `{ mediaUrl, mediaType: "IMAGE"|"VIDEO", caption? (≤280) }` → `{ id, mediaUrl, mediaType, createdAt, expiresAt }` — Story-Item-Shape wie im `STORIES`-Space-Content der Community-API.
+- `POST /studio/{slug}/stories` `{ mediaUrl, mediaType: "IMAGE"|"VIDEO", caption? (≤280), permanent?, ttlHours? (1–168) }` → `{ id, mediaUrl, mediaType, caption, createdAt, expiresAt }` — Story-Item-Shape wie im `STORIES`-Space-Content. Ohne `permanent`/`ttlHours` gelten die Voreinstellungen des Space; `expiresAt: null` heisst dauerhaft.
   - Persistenz exakt wie die Web-Dashboard-Action (`createStoryAction`): sofort live (`publishAt = now`), Ablauf nach **24 h** (`expiresAt = publishAt + 24h`); Sichtbarkeit ergibt sich wie im Web aus dem Ziel-Space.
   - Ziel-Space = **erster `STORIES`-Space** des Tenants; existiert keiner → **409** `no_stories_space`.
   - `mediaUrl` muss eine eigene Upload-URL sein (`/api/media/…` oder `/uploads/…`, aus `POST /studio/{slug}/upload` mit `purpose: "story"`) — sonst 400 `validation`.

@@ -57,16 +57,36 @@ Root `TabView` (systemseitig Liquid Glass):
 3. **Konto** (`person.crop.circle`) — Profil, Bestellungen, Einstellungen.
 
 **Community-Screen** (Push in NavigationStack, eigener Brand-Kontext):
-- Hero: Cover 16:9 (Radius 24) bzw. Brand-Fläche mit Serif-Initiale; Logo (Radius 8) + Name in Display-Serif 28; Tagline; Mitglieder/Punkte-Chips.
+- Hero: fünf Ausführungen, gewählt vom Creator (`header.variant`, `CommunityHero.swift`):
+  **EDITORIAL** Cover 16:9 (Radius 24) + Logo/Name darunter · **MOSAIC** Bildraster 230 pt (ohne
+  Bilder fällt es auf EDITORIAL zurück) · **SPOTLIGHT** Name und Logo auf dem Bild ·
+  **IMMERSIVE** hohes Bild (320 pt) mit Verlauf · **COMPACT** ohne Bild.
+  Immer: Logo (Radius 8), Name in Display-Serif 28, Tagline, Mitglieder/Punkte-Chips.
+- Darunter die **Menüzeile** aus dem Layout-Editor (`header.menu`): waagerecht scrollend, drei Stile
+  (SOLID = Brand-Kapsel, OUTLINE, PLAIN), rechts der „…"-Knopf mit dem Rest als Blatt. Bereiche
+  wählen die Chip-Leiste um, Seiten werden gepusht, „Teilen" öffnet das System-Blatt.
 - Darunter **sticky Space-Chip-Bar** (Glass, horizontal): ein Chip je zugänglichem/angezeigtem Space, Icon per Space-Typ (SF Symbols Mapping unten), Lock-Badge bei gesperrten. Auswahl rendert den Space-Content **inline** darunter (kein Push) — entspricht der Web-Topnav.
 - Toolbar rechts: Glocke (Badge = unreadNotifications), Suche; Nichtmitglieder: prominenter „Beitreten"-Button (Brand-Kapsel) statt Glocke.
 - Post-/Kurs-/Event-Details, Chat-Threads, Leaderboard, Members etc. = Push.
 
-**SF-Symbol-Mapping** (Space-Typ → Icon): FEED `square.text.square`, FORUM `bubble.left.and.bubble.right`, BLOG `text.book.closed`, VIDEOS `play.rectangle`, PODCAST `waveform`, GALLERY `photo.on.rectangle.angled`, COURSE `graduationcap`, SHOP `bag`, EVENTS `calendar`, NEWSLETTER `envelope.open`, KNOWLEDGE `books.vertical`, LINKS `link`, LIVE `dot.radiowaves.left.and.right`, CHAT `message`, REQUESTS `lightbulb`, BOOKING `clock.badge.checkmark`, STORIES `circle.dashed.rectangle.portrait` (fallback `rectangle.portrait.on.rectangle.portrait`), TIPS `heart`, CALENDAR `calendar.day.timeline.left`.
+**SF-Symbol-Mapping** (Space-Typ → Icon): FEED `square.text.square`, FORUM `bubble.left.and.bubble.right`, BLOG `text.book.closed`, VIDEOS `play.rectangle`, PODCAST `waveform`, GALLERY `photo.on.rectangle.angled`, COURSE `graduationcap`, SHOP `bag`, EVENTS `calendar`, NEWSLETTER `envelope.open`, KNOWLEDGE `books.vertical`, LINKS `link`, LIVE `dot.radiowaves.left.and.right`, CHAT `message`, REQUESTS `lightbulb`, BOOKING `clock.badge.checkmark`, STORIES `circle.dashed.rectangle.portrait` (fallback `rectangle.portrait.on.rectangle.portrait`), TIPS `heart`, CALENDAR `calendar.day.timeline.left`, MUSIC `music.note`.
+
+**Live-Raum** (`LiveRoomView`): das Bild füllt den Schirm, der Chat liegt darauf — hochkant unten
+(max. 46 % der Höhe, nach oben ausgeblendet), quer als Spalte rechts (min(340 pt, 42 %)). Für diese
+eine Ansicht darf sich das Telefon drehen (`allowsLandscape()`, sonst ist die App hochkant).
+Kopfzeile auf Glas: Zurück, Titel, LIVE-Punkt, Plattform-Marke, Ton, Bild füllen/einpassen, Chat.
+
+**Musik** (`MusicSpaceView`): Cover einmal verwischt als Bühne, einmal scharf als Platte darauf,
+darunter die Titelliste mit durchlaufender Wiedergabe.
 
 ## 5. Wiederverwendbare Komponenten (Core/DesignSystem)
 
-`AeraCard`, `AvatarView`, `BrandButtonStyle` / `SecondaryButtonStyle`, `PillLabel`, `EyebrowLabel`, `LockedOverlay(unlock:)`, `EmptyStateView(icon:title:message:)` (gestrichelte Border, Brand-Icon-Badge), `SectionHeader(serif title + optional trailing)`, `PriceText(cents:currency:interval:)`, `LevelChip`, `RoleBadge`, `AsyncImageView` (AsyncImage + paper-Placeholder mit ProgressView), `HTMLTextView` (AttributedString aus HTML für Blog/Newsletter/Knowledge, Serif-Body 17 pt, line-height ~1.7), `RemoteVideoPlayer` (AVKit `VideoPlayer`), `AudioPlayerBar` (Podcast, AVPlayer + Play/Pause/Progress).
+`AeraCard`, `AvatarView`, `BrandButtonStyle` / `SecondaryButtonStyle`, `PillLabel`, `EyebrowLabel`, `LockedOverlay(unlock:)`, `EmptyStateView(icon:title:message:)` (gestrichelte Border, Brand-Icon-Badge), `SectionHeader(serif title + optional trailing)`, `PriceText(cents:currency:interval:)`, `LevelChip`, `RoleBadge`, `AsyncImageView` (AsyncImage + paper-Placeholder mit ProgressView), `HTMLTextView` (AttributedString aus HTML für Blog/Newsletter/Knowledge, Serif-Body 17 pt, line-height ~1.7), `RemoteVideoPlayer` (AVKit `VideoPlayer`), `AudioPlayerBar` (Podcast/Musik, AVPlayer + Play/Pause/Progress),
+`HLSPlayerView` + `LiveStreamModel` (Live-HLS ohne Systemsteuerung), `WebEmbedView` (fremde
+Streaming-Plattformen im WKWebView), `LiveCountdownText`, `LivePulseDot`, `PostImageGrid` +
+`ImageLightbox` (mehrere Bilder, Vollbild mit Zoom), `PostCoverImage` (Titelplatte mit
+Bildausschnitt), `PostPriceBadge`, `PollBlock` (Umfrage), `BadgeMedal` + `BadgeRow` (gezeichnete
+Auszeichnungen: Form, Metallton, Symbol — keine Bilddatei).
 
 Leaderboard-Medaillen: 1 amber, 2 grau, 3 orange — Kreis-Badges wie Web.
 

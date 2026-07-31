@@ -68,14 +68,6 @@ final class LiveStreamModel {
         player.isMuted = isMuted
     }
 
-    /// Springt ans Live-Ende — nach einer Pause hinkt der Puffer sonst hinterher.
-    func jumpToLive() {
-        guard let item = player.currentItem else { return }
-        let end = item.seekableTimeRanges.last?.timeRangeValue
-        guard let end else { return }
-        player.seek(to: CMTimeRangeGetEnd(end))
-    }
-
     func teardown() {
         if let failObserver {
             NotificationCenter.default.removeObserver(failObserver)
@@ -86,7 +78,9 @@ final class LiveStreamModel {
         loadedURL = nil
         isPlaying = false
         failed = false
-        try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        // Die Audio-Sitzung bleibt bewusst stehen: sie gehoert der ganzen App,
+        // und ein Abschalten hier wuerde eine laufende Podcast-Wiedergabe
+        // mitreissen.
     }
 }
 

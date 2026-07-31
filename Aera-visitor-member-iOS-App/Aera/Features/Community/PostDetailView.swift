@@ -281,19 +281,22 @@ struct PostDetailView: View {
 
     private func likeRow(_ post: Post) -> some View {
         HStack(spacing: 18) {
-            Button {
-                toggleLike()
-            } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: post.likedByMe ? "heart.fill" : "heart")
-                        .foregroundStyle(post.likedByMe ? activeBrand.color : Theme.ink.opacity(0.5))
-                    Text(Format.compactCount(post.likeCount))
-                        .monospacedDigit()
-                        .contentTransition(.numericText())
+            // Der Creator kann Likes je Beitrag ausblenden.
+            if !post.hideLikes {
+                Button {
+                    toggleLike()
+                } label: {
+                    HStack(spacing: 5) {
+                        Image(systemName: post.likedByMe ? "heart.fill" : "heart")
+                            .foregroundStyle(post.likedByMe ? activeBrand.color : Theme.ink.opacity(0.5))
+                        Text(Format.compactCount(post.likeCount))
+                            .monospacedDigit()
+                            .contentTransition(.numericText())
+                    }
                 }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text(post.likedByMe ? "Gefällt mir entfernen" : "Gefällt mir"))
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text(post.likedByMe ? "Gefällt mir entfernen" : "Gefällt mir"))
 
             HStack(spacing: 5) {
                 Image(systemName: "bubble.right")
@@ -431,8 +434,11 @@ struct PostDetailView: View {
 
     // MARK: - Eingabeleiste
 
+    /// Kommentieren darf, wer aktives Mitglied ist — und nur, solange der
+    /// Creator die Kommentare nicht geschlossen oder ausgeblendet hat.
     private var canComment: Bool {
-        viewer?.isMember == true && viewer?.status == .active
+        guard let post = detail?.post, !post.closeComments, !post.hideComments else { return false }
+        return viewer?.isMember == true && viewer?.status == .active
     }
 
     @ViewBuilder

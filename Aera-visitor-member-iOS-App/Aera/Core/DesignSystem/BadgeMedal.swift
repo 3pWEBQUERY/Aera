@@ -98,10 +98,10 @@ struct BadgeMedal: View {
 /// und ein einziger Typ hält die Ränder (`strokeBorder`) sauber.
 private struct BadgePlaqueShape: InsettableShape {
     let kind: Badge.Shape
-    var inset: CGFloat = 0
+    var insetAmount: CGFloat = 0
 
     func path(in rect: CGRect) -> Path {
-        let r = rect.insetBy(dx: inset, dy: inset)
+        let r = rect.insetBy(dx: insetAmount, dy: insetAmount)
         switch kind {
         case .coin:
             return Path(ellipseIn: r)
@@ -130,7 +130,7 @@ private struct BadgePlaqueShape: InsettableShape {
 
     func inset(by amount: CGFloat) -> BadgePlaqueShape {
         var copy = self
-        copy.inset += amount
+        copy.insetAmount += amount
         return copy
     }
 }
@@ -154,6 +154,14 @@ struct BadgeRow: View {
                         BadgeMedal(badge: badge, size: size)
                     }
                     .buttonStyle(.plain)
+                    // Das Blatt haengt an der angetippten Plakette, nicht an
+                    // der Reihe — sonst zeigt der Pfeil ins Leere.
+                    .popover(item: Binding(
+                        get: { selected?.id == badge.id ? selected : nil },
+                        set: { selected = $0 }
+                    )) { badge in
+                        badgeCard(badge)
+                    }
                 }
 
                 if badges.count > limit {
@@ -163,24 +171,25 @@ struct BadgeRow: View {
                         .foregroundStyle(Theme.ink.opacity(0.45))
                 }
             }
-            .popover(item: $selected) { badge in
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 10) {
-                        BadgeMedal(badge: badge, size: 40)
-                        Text(badge.name)
-                            .font(.displaySerif(18))
-                            .foregroundStyle(Theme.ink)
-                    }
-                    if let description = badge.description, !description.isEmpty {
-                        Text(description)
-                            .font(.system(size: 13))
-                            .foregroundStyle(Theme.ink.opacity(0.65))
-                    }
-                }
-                .padding(16)
-                .frame(maxWidth: 260)
-                .presentationCompactAdaptation(.popover)
+        }
+    }
+
+    private func badgeCard(_ badge: Badge) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 10) {
+                BadgeMedal(badge: badge, size: 40)
+                Text(badge.name)
+                    .font(.displaySerif(18))
+                    .foregroundStyle(Theme.ink)
+            }
+            if let description = badge.description, !description.isEmpty {
+                Text(description)
+                    .font(.system(size: 13))
+                    .foregroundStyle(Theme.ink.opacity(0.65))
             }
         }
+        .padding(16)
+        .frame(maxWidth: 260)
+        .presentationCompactAdaptation(.popover)
     }
 }

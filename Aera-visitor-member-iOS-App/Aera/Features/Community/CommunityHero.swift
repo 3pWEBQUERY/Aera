@@ -248,18 +248,7 @@ struct HeroMenuBar: View {
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
                 ForEach(menu.bar) { item in
-                    Button {
-                        onSelect(item)
-                    } label: {
-                        Label {
-                            Text(item.title)
-                        } icon: {
-                            Image(systemName: item.type.symbolName)
-                        }
-                        .font(.system(size: 14, weight: .semibold))
-                        .labelStyle(.titleAndIcon)
-                    }
-                    .buttonStyle(style(for: item.style))
+                    barButton(item)
                 }
 
                 if !menu.more.isEmpty {
@@ -286,12 +275,32 @@ struct HeroMenuBar: View {
         }
     }
 
-    private func style(for style: HeroMenuStyle) -> AnyButtonStyle {
-        switch style {
-        case .solid: AnyButtonStyle(BrandButtonStyle())
-        case .outline: AnyButtonStyle(SecondaryButtonStyle())
-        case .plain: AnyButtonStyle(GhostButtonStyle())
+    /// Die drei Stile werden einzeln gesetzt statt typgeloescht: ein
+    /// eingepackter Stil bekommt die Umgebung nicht mit — die Community-Farbe
+    /// waere dann weg.
+    @ViewBuilder
+    private func barButton(_ item: HeroMenuItem) -> some View {
+        switch item.style {
+        case .solid:
+            Button { onSelect(item) } label: { barLabel(item) }
+                .buttonStyle(BrandButtonStyle())
+        case .outline:
+            Button { onSelect(item) } label: { barLabel(item) }
+                .buttonStyle(SecondaryButtonStyle())
+        case .plain:
+            Button { onSelect(item) } label: { barLabel(item) }
+                .buttonStyle(GhostButtonStyle())
         }
+    }
+
+    private func barLabel(_ item: HeroMenuItem) -> some View {
+        Label {
+            Text(item.title)
+        } icon: {
+            Image(systemName: item.type.symbolName)
+        }
+        .font(.system(size: 14, weight: .semibold))
+        .labelStyle(.titleAndIcon)
     }
 
     private var moreSheet: some View {
@@ -351,17 +360,3 @@ struct ShareSheet: UIViewControllerRepresentable {
     func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
-/// Typgelöschter Button-Stil — die Zeile mischt drei Stile in einer Schleife.
-struct AnyButtonStyle: ButtonStyle {
-    private let bodyBuilder: (Configuration) -> AnyView
-
-    init<S: ButtonStyle>(_ style: S) {
-        bodyBuilder = { configuration in
-            AnyView(style.makeBody(configuration: configuration))
-        }
-    }
-
-    func makeBody(configuration: Configuration) -> some View {
-        bodyBuilder(configuration)
-    }
-}
