@@ -280,27 +280,43 @@ struct HeroMenuBar: View {
     /// waere dann weg.
     @ViewBuilder
     private func barButton(_ item: HeroMenuItem) -> some View {
+        let iconOnly = isIconOnly(item)
         switch item.style {
         case .solid:
             Button { onSelect(item) } label: { barLabel(item) }
-                .buttonStyle(BrandButtonStyle())
+                .buttonStyle(BrandButtonStyle(iconOnly: iconOnly))
         case .outline:
             Button { onSelect(item) } label: { barLabel(item) }
-                .buttonStyle(SecondaryButtonStyle())
+                .buttonStyle(SecondaryButtonStyle(iconOnly: iconOnly))
         case .plain:
             Button { onSelect(item) } label: { barLabel(item) }
-                .buttonStyle(GhostButtonStyle())
+                .buttonStyle(GhostButtonStyle(iconOnly: iconOnly))
         }
     }
 
+    /// Unterstützen und Teilen stehen als reine Symbole in der Zeile: beide
+    /// sind am Symbol erkennbar, und der Platz gehört den Bereichen und dem
+    /// Beitritt. Die Beschriftung bleibt als Vorlesetext erhalten.
+    private func isIconOnly(_ item: HeroMenuItem) -> Bool {
+        item.type == .tips || item.type == .share
+    }
+
+    @ViewBuilder
     private func barLabel(_ item: HeroMenuItem) -> some View {
-        Label {
+        let label = Label {
             Text(item.title)
         } icon: {
             Image(systemName: item.type.symbolName)
         }
         .font(.system(size: 14, weight: .semibold))
-        .labelStyle(.titleAndIcon)
+
+        if isIconOnly(item) {
+            label
+                .labelStyle(.iconOnly)
+                .accessibilityLabel(Text(item.title))
+        } else {
+            label.labelStyle(.titleAndIcon)
+        }
     }
 
     private var moreSheet: some View {

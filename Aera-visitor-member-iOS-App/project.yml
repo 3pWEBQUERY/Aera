@@ -4,6 +4,11 @@ options:
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
+# Ohne diese Marke haelt Xcode das Projekt fuer veraltet und blendet
+# „Update to recommended settings" ein. Die Einstellungen darunter sind
+# genau die, die Xcode dabei vorschlaegt — beim Anheben mitziehen.
+attributes:
+  LastUpgradeCheck: "2660"
 settings:
   base:
     SWIFT_VERSION: "5.0"
@@ -11,6 +16,11 @@ settings:
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
+    DEAD_CODE_STRIPPING: YES
+    GCC_C_LANGUAGE_STANDARD: gnu17
+    CLANG_CXX_LANGUAGE_STANDARD: "gnu++20"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+    ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS: YES
 targets:
   Aera:
     type: application
@@ -29,8 +39,6 @@ targets:
         # Quer dreht allein der Live-Raum.
         INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight
         INFOPLIST_KEY_CFBundleDisplayName: Aera
-        INFOPLIST_KEY_NSCameraUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera dein Kamerabild an deine Mitglieder."
-        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera deinen Ton an deine Mitglieder."
         SWIFT_EMIT_LOC_STRINGS: YES
         CODE_SIGN_STYLE: Automatic
     info:
@@ -38,6 +46,13 @@ targets:
       properties:
         CFBundleDevelopmentRegion: de
         CFBundleDisplayName: Aera
+        # Muss hier stehen, nicht als INFOPLIST_KEY_*-Build-Setting: das Ziel
+        # hat ein eigenes Info.plist, die Schlüssel-Settings greifen nur bei
+        # GENERATE_INFOPLIST_FILE. Ohne die beiden Texte blendet WKWebView
+        # `navigator.mediaDevices` aus — dann kommt im Studio
+        # „undefined is not an object (getUserMedia)".
+        NSCameraUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera dein Kamerabild an deine Mitglieder."
+        NSMicrophoneUsageDescription: "Für Live-Sendungen aus dem Studio überträgt Aera deinen Ton an deine Mitglieder."
         UILaunchScreen:
           UIColorName: LaunchBackground
           UIImageName: LaunchLogo

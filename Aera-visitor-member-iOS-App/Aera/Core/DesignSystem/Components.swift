@@ -87,18 +87,27 @@ struct AvatarView: View {
 
 // MARK: - Button-Styles
 
+/// Kantenlänge eines reinen Symbolknopfs — dieselbe Höhe wie ein
+/// beschrifteter Knopf (15 pt Schrift + 2 × 12 pt Innenabstand), damit
+/// beide in einer Zeile auf einer Linie liegen.
+private let iconButtonSide: CGFloat = 44
+
 /// Primär: Kapsel, Fill `brand.color`, weiß; gedrückt → `brand.hover`.
+/// `iconOnly` macht daraus einen runden Symbolknopf.
 struct BrandButtonStyle: ButtonStyle {
     var fullWidth: Bool = false
+    var iconOnly: Bool = false
 
     @Environment(\.brand) private var brand
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 15, weight: .semibold))
+            .font(.system(size: iconOnly ? 17 : 15, weight: .semibold))
             .foregroundStyle(.white)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, iconOnly ? 0 : 20)
+            .padding(.vertical, iconOnly ? 0 : 12)
+            .frame(width: iconOnly ? iconButtonSide : nil,
+                   height: iconOnly ? iconButtonSide : nil)
             .frame(maxWidth: fullWidth ? .infinity : nil)
             .background(configuration.isPressed ? brand.hover : brand.color, in: .capsule)
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
@@ -107,15 +116,19 @@ struct BrandButtonStyle: ButtonStyle {
 }
 
 /// Sekundär: weiß + Hairline; gedrückt → `softFill`.
+/// `iconOnly` macht daraus einen runden Symbolknopf.
 struct SecondaryButtonStyle: ButtonStyle {
     var fullWidth: Bool = false
+    var iconOnly: Bool = false
 
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 15, weight: .semibold))
+            .font(.system(size: iconOnly ? 17 : 15, weight: .semibold))
             .foregroundStyle(Theme.ink)
-            .padding(.horizontal, 20)
-            .padding(.vertical, 12)
+            .padding(.horizontal, iconOnly ? 0 : 20)
+            .padding(.vertical, iconOnly ? 0 : 12)
+            .frame(width: iconOnly ? iconButtonSide : nil,
+                   height: iconOnly ? iconButtonSide : nil)
             .frame(maxWidth: fullWidth ? .infinity : nil)
             .background(configuration.isPressed ? Theme.softFill : Theme.card, in: .capsule)
             .overlay(Capsule().strokeBorder(Theme.border, lineWidth: 1))
@@ -124,12 +137,18 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
-/// Ghost: nur Text `ink @ 0.6`.
+/// Ghost: nur Text `ink @ 0.6`. `iconOnly` gibt dem Symbol eine volle
+/// Trefferfläche, obwohl kein Hintergrund zu sehen ist.
 struct GhostButtonStyle: ButtonStyle {
+    var iconOnly: Bool = false
+
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 15, weight: .medium))
+            .font(.system(size: iconOnly ? 17 : 15, weight: iconOnly ? .semibold : .medium))
             .foregroundStyle(Theme.ink.opacity(configuration.isPressed ? 0.35 : 0.6))
+            .frame(width: iconOnly ? iconButtonSide : nil,
+                   height: iconOnly ? iconButtonSide : nil)
+            .contentShape(.rect)
             .animation(.snappy(duration: 0.25), value: configuration.isPressed)
     }
 }

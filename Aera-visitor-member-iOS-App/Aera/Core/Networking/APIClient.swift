@@ -701,6 +701,20 @@ final class APIClient {
         return try await perform(request)
     }
 
+    /// Ein abgelaufenes oder zurückgezogenes Token meldet der Server als 401
+    /// `unauthorized`. Ohne diese Stelle blieb die App scheinbar angemeldet und
+    /// jeder Bildschirm zeigte nur noch Fehler — der Nutzer kam da nur über
+    /// „Abmelden" wieder heraus. Jetzt endet die Session sofort, und die
+    /// Features bieten wie gewohnt ihr Anmelde-Blatt an.
+    ///
+    /// Nur `unauthorized`: Falsche Zugangsdaten (`invalid_credentials`) und
+    /// die TOTP-Rückfrage (`totp_required`) kommen ebenfalls als 401, dürfen
+    /// eine bestehende Session aber nicht anfassen.
+    private func expireSessionIfNeeded(_ code: APIError.Code) {
+        guard code == .unauthorized, sessionStore.token != nil else { return }
+        sessionStore.clear()
+    }
+
     private func perform<T: Decodable>(_ request: URLRequest) async throws -> T {
         let data: Data
         let response: URLResponse
@@ -723,12 +737,15 @@ final class APIClient {
         guard (200..<300).contains(http.statusCode) else {
             if let envelope = try? JSONDecoder.aera.decode(ErrorEnvelope.self, from: data) {
                 let code = APIError.Code(rawValue: envelope.error.code) ?? .unknown
+                expireSessionIfNeeded(code)
                 throw APIError(code: code,
                                message: envelope.error.message,
                                status: http.statusCode,
                                responseBody: data)
             }
-            throw APIError(code: http.statusCode == 401 ? .unauthorized : .unknown,
+            let code: APIError.Code = http.statusCode == 401 ? .unauthorized : .unknown
+            expireSessionIfNeeded(code)
+            throw APIError(code: code,
                            message: String(localized: "Serverfehler (\(http.statusCode))."),
                            status: http.statusCode,
                            responseBody: data)

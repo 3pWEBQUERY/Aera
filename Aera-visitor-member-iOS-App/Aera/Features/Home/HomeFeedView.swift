@@ -26,6 +26,11 @@ struct HomeFeedView: View {
     @State private var purchaseError: String?
     @State private var likeTrigger = 0
     @State private var successCount = 0
+    /// Verwaltete Communities **mit** Live-Bereich. Leer oder `nil` heißt:
+    /// nichts zu senden — dann bleibt die Kopfzeile leer.
+    @State private var studioCommunities: [StudioCommunity]?
+    @State private var showLivePicker = false
+    @State private var liveTarget: StudioCommunity?
 
     @Namespace private var underlineNamespace
 
@@ -46,21 +51,33 @@ struct HomeFeedView: View {
             .scrollEdgeEffectStyle(.soft, for: .top)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    NavigationLink {
-                        DiscoverView(embedded: true)
-                    } label: {
-                        Image(systemName: "magnifyingglass")
+                if let studioCommunities, !studioCommunities.isEmpty {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        goLiveButton(studioCommunities)
                     }
-                    .accessibilityLabel(Text("Communities suchen"))
+                    // Ohne das läge die rote Kapsel in der Glaskapsel der
+                    // Leiste — zwei Pillen ineinander.
+                    .sharedBackgroundVisibility(.hidden)
                 }
             }
             .refreshable { await load(tab: selectedTab) }
             .task(id: loadKey) { await loadIfNeeded() }
+            .task(id: appState.session.isLoggedIn) { await loadStudioCommunities() }
             .onChange(of: appState.session.isLoggedIn) { _, _ in
                 // Login/Logout ändert isMember-Flags und den Mitglieder-Feed.
                 homeFeed = TabFeed()
                 membersFeed = TabFeed()
+            }
+            .confirmationDialog("Wo willst du live gehen?",
+                                isPresented: $showLivePicker,
+                                titleVisibility: .visible) {
+                ForEach(studioCommunities ?? []) { entry in
+                    Button(entry.community.name) { liveTarget = entry }
+                }
+                Button("Abbrechen", role: .cancel) {}
+            }
+            .navigationDestination(item: $liveTarget) { entry in
+                StudioLiveView(community: entry)
             }
             .navigationDestination(item: $joinTarget) { community in
                 CommunityView(slug: community.slug)
@@ -79,6 +96,69 @@ struct HomeFeedView: View {
                 Text(purchaseError ?? "")
             }
         }
+    }
+
+    // MARK: - Live gehen
+
+    /// Der Knopf ersetzt in der Kopfzeile die frühere Lupe — gesucht wird über
+    /// den Such-Tab. Rot mit pulsierendem Punkt, damit auf einen Blick klar
+    /// ist, wofür er da ist. Verwaltet der Creator mehrere Communities, fragt
+    /// er vorher, für welche gesendet wird.
+    private func goLiveButton(_ communities: [StudioCommunity]) -> some View {
+        Button {
+            if communities.count == 1 {
+                liveTarget = communities.first
+            } else {
+                showLivePicker = true
+            }
+        } label: {
+            HStack(spacing: 6) {
+                LivePulseDot(size: 7)
+                Text("Live gehen")
+                    .font(.system(size: 13, weight: .bold))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 7)
+            .background(Theme.danger, in: .capsule)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Live gehen"))
+    }
+
+    /// Lädt die verwalteten Communities und behält nur die, die auch einen
+    /// Live-Bereich haben — ohne den gäbe es nichts zu senden, und der Knopf
+    /// führte ins Leere. Die Prüfungen laufen nebeneinander, die Reihenfolge
+    /// aus `GET /studio` bleibt erhalten.
+    ///
+    /// Fehler bleiben still: der Knopf ist eine Zugabe, keine Pflicht.
+    private func loadStudioCommunities() async {
+        guard appState.session.isLoggedIn else {
+            studioCommunities = nil
+            return
+        }
+        guard let managed = try? await appState.api.studioCommunities() else {
+            studioCommunities = nil
+            return
+        }
+
+        let api = appState.api
+        let withLiveSpace = await withTaskGroup(of: (Int, StudioCommunity)?.self) { group in
+            for (index, entry) in managed.enumerated() {
+                group.addTask { @MainActor in
+                    let overview = try? await api.studioLive(slug: entry.community.slug)
+                    guard overview?.spaces.isEmpty == false else { return nil }
+                    return (index, entry)
+                }
+            }
+            var found: [(Int, StudioCommunity)] = []
+            for await result in group {
+                if let result { found.append(result) }
+            }
+            return found.sorted { $0.0 < $1.0 }.map(\.1)
+        }
+
+        studioCommunities = withLiveSpace
     }
 
     // MARK: - Tab-Leiste

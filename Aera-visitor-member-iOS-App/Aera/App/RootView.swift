@@ -8,6 +8,11 @@ import UIKit
 ///
 /// Der „Konto"-Tab zeigt bei angemeldeten Nutzern das Profilbild —
 /// wie im Web als **abgerundetes Quadrat** (Radius ≈ 27 %), nicht rund.
+///
+/// „Entdecken" traegt die Rolle `search`: iOS stellt den Tab dann — wie
+/// Apple Music und der App Store — in eine eigene Kapsel am rechten Rand,
+/// abgesetzt von den vier Zielen. Beim Scrollen zieht sich die Leiste
+/// zusammen und gibt den Inhalt frei.
 struct RootView: View {
     @Environment(AppState.self) private var appState
 
@@ -17,9 +22,6 @@ struct RootView: View {
         TabView {
             Tab("Startseite", systemImage: "house") {
                 HomeFeedView()
-            }
-            Tab("Entdecken", systemImage: "magnifyingglass") {
-                DiscoverView()
             }
             Tab("Communities", systemImage: "person.2") {
                 MyCommunitiesView()
@@ -40,7 +42,13 @@ struct RootView: View {
                     Label("Konto", systemImage: "person.crop.circle")
                 }
             }
+
+            // Zuletzt deklariert, weil die Suchrolle immer aussen sitzt.
+            Tab("Entdecken", systemImage: "magnifyingglass", role: .search) {
+                DiscoverView()
+            }
         }
+        .tabBarMinimizeBehavior(.onScrollDown)
         .task {
             await appState.refreshSession()
         }

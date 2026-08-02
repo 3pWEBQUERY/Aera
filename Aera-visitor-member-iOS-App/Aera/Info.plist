@@ -44,6 +44,10 @@
 	<string>1</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>Für Live-Sendungen aus dem Studio überträgt Aera dein Kamerabild an deine Mitglieder.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Für Live-Sendungen aus dem Studio überträgt Aera deinen Ton an deine Mitglieder.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -56,10 +60,6 @@
 		<key>UIImageName</key>
 		<string>LaunchLogo</string>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Für Live-Sendungen aus dem Studio überträgt Aera dein Kamerabild an deine Mitglieder.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>Für Live-Sendungen aus dem Studio überträgt Aera deinen Ton an deine Mitglieder.</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -115,7 +115,7 @@ struct LiveRoomView: View {
 
     @ViewBuilder
     private func playerLayer(for session: LiveSession) -> some View {
-        if let hlsURL {
+        if hlsURL != nil {
             ZStack {
                 HLSPlayerView(
                     player: stream.player,

@@ -122,6 +122,9 @@ struct AccountView: View {
                 }
                 .padding(.horizontal, 32)
                 .padding(.top, 8)
+
+                legalFooter
+                    .padding(.top, 24)
             }
             .frame(maxWidth: .infinity)
         }
@@ -138,7 +141,10 @@ struct AccountView: View {
 
                 logoutButton
 
-                versionFooter
+                VStack(spacing: 10) {
+                    legalFooter
+                    versionFooter
+                }
             }
             .padding(16)
         }
@@ -148,11 +154,16 @@ struct AccountView: View {
     // MARK: - Profil-Header
 
     private var profileHeader: some View {
-        HStack(spacing: 16) {
+        // Der PhotosPicker baut sein Label ausserhalb der Main-Actor-Isolation
+        // der View auf. Darum den Nutzer einmal herausziehen, statt im Label
+        // erneut auf die Session zuzugreifen.
+        let user = appState.session.currentUser
+
+        return HStack(spacing: 16) {
             PhotosPicker(selection: $avatarPickerItem, matching: .images) {
                 ZStack(alignment: .bottomTrailing) {
-                    AvatarView(url: appState.session.currentUser?.avatarUrl,
-                               name: appState.session.currentUser?.name ?? "?",
+                    AvatarView(url: user?.avatarUrl,
+                               name: user?.name ?? "?",
                                size: 72)
                         .overlay {
                             if isUploadingAvatar {
@@ -176,12 +187,12 @@ struct AccountView: View {
             .accessibilityLabel(Text("Profilbild ändern"))
 
             VStack(alignment: .leading, spacing: 4) {
-                Text(appState.session.currentUser?.name ?? "")
+                Text(user?.name ?? "")
                     .font(.displaySerif(24))
                     .kerning(-0.4)
                     .foregroundStyle(Theme.ink)
                     .lineLimit(1)
-                Text(appState.session.currentUser?.email ?? "")
+                Text(user?.email ?? "")
                     .font(.system(size: 14))
                     .foregroundStyle(Theme.ink.opacity(0.5))
                     .lineLimit(1)
@@ -292,6 +303,44 @@ struct AccountView: View {
                 .overlay(Capsule().strokeBorder(Theme.danger.opacity(0.3), lineWidth: 1))
         }
         .buttonStyle(.plain)
+    }
+
+    /// Rechtstexte und Hilfe müssen aus der App heraus erreichbar sein — für
+    /// die Prüfung im App Store wie rechtlich. Sie stehen auf aera.so, die App
+    /// verlinkt die Seiten dort (`app/(marketing)/…` im Web-Projekt).
+    ///
+    /// Bewusst `defaultBaseURL` statt `baseURL`: Die Entwickler-Einstellung im
+    /// Konto zeigt auf einen lokalen Server, dort gibt es diese Seiten nicht.
+    private var legalFooter: some View {
+        VStack(spacing: 8) {
+            HStack(spacing: 6) {
+                legalLink("Datenschutz", path: "datenschutz")
+                legalSeparator
+                legalLink("AGB", path: "agb")
+                legalSeparator
+                legalLink("Widerruf", path: "widerruf")
+            }
+            HStack(spacing: 6) {
+                legalLink("Impressum", path: "impressum")
+                legalSeparator
+                legalLink("Hilfe & Kontakt", path: "hilfe/kontakt")
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var legalSeparator: some View {
+        Text(verbatim: "·")
+            .font(.system(size: 12))
+            .foregroundStyle(Theme.ink.opacity(0.3))
+    }
+
+    private func legalLink(_ title: LocalizedStringKey, path: String) -> some View {
+        Link(destination: AppConfig.defaultBaseURL.appending(path: path)) {
+            Text(title)
+                .font(.system(size: 12))
+                .foregroundStyle(Theme.ink.opacity(0.55))
+        }
     }
 
     private var versionFooter: some View {

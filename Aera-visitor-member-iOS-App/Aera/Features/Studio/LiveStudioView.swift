@@ -25,9 +25,15 @@ struct LiveStudioView: View {
     @State private var bridge = StudioWebBridge()
     @State private var phase: StudioPhase = .idle
     @State private var seconds = 0
-    @State private var showChat = false
+    /// Der Chat liegt auf dem Bild und ist von Anfang an da — der Creator soll
+    /// mitlesen, ohne die Sendung aus den Augen zu lassen. Abschaltbar, weil
+    /// ein freies Bild manchmal wichtiger ist.
+    @State private var chatVisible = true
     @State private var showLeaveConfirm = false
     @State private var ticker: Task<Void, Never>?
+    /// Kameras, die die Bühne im Gerät findet — eingebaute und angeschlossene.
+    @State private var cameras: [StudioCamera] = []
+    @State private var activeCameraId: String?
 
     init(slug: String,
          session: StudioLiveSession,
@@ -48,6 +54,8 @@ struct LiveStudioView: View {
                     handle(event)
                 }
                 .ignoresSafeArea(edges: .bottom)
+                // Ohne das schöbe die Tastatur des Chats die ganze Bühne hoch.
+                .ignoresSafeArea(.keyboard, edges: .bottom)
             } else {
                 missingTokenNotice
             }
@@ -60,14 +68,17 @@ struct LiveStudioView: View {
 
             topBar
         }
+        .overlay(alignment: .bottom) {
+            if chatVisible, appState.session.token != nil {
+                StudioChatOverlay(slug: slug, sessionId: session.id)
+                    // Darunter liegt die Knopfreihe der Bühne (Mikrofon,
+                    // Beenden, Kamera) — die bleibt frei.
+                    .padding(.bottom, Self.stageControlsInset)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+            }
+        }
         .environment(\.colorScheme, .dark)
         .brandTheme(brand)
-        .sheet(isPresented: $showChat) {
-            // Das Studio ist dunkel, der Chat ist eine gewoehnliche Aera-Fläche —
-            // ohne diese Zeile erbt er das dunkle Schema und wird unleserlich.
-            StudioLiveChatSheet(slug: slug, sessionId: session.id, brand: brand)
-                .environment(\.colorScheme, .light)
-        }
         .confirmationDialog("Sendung beenden?",
                             isPresented: $showLeaveConfirm,
                             titleVisibility: .visible) {
@@ -127,10 +138,18 @@ struct LiveStudioView: View {
 
             Spacer(minLength: 4)
 
+            // Nur zeigen, wenn es etwas zu wählen gibt — bei einer einzigen
+            // Kamera bleibt der Knopf der Bühne (Vorne/Hinten) genug.
+            if cameras.count > 1 {
+                cameraMenu
+            }
+
             Button {
-                showChat = true
+                withAnimation(.snappy(duration: 0.25)) { chatVisible.toggle() }
             } label: {
-                Image(systemName: "bubble.left.and.bubble.right")
+                Image(systemName: chatVisible
+                      ? "bubble.left.and.bubble.right.fill"
+                      : "bubble.left.and.bubble.right")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(.white)
                     .frame(width: 44, height: 44)
@@ -138,10 +157,42 @@ struct LiveStudioView: View {
                     .contentShape(.circle)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(Text("Live-Chat"))
+            .accessibilityLabel(Text(chatVisible ? "Chat ausblenden" : "Chat einblenden"))
         }
         .padding(.horizontal, 12)
         .padding(.top, 6)
+    }
+
+    /// Kameraauswahl. Was hier steht, meldet die Bühne aus dem Gerät: die
+    /// eingebauten Kameras und alles, was angeschlossen ist. Der Haken zeigt,
+    /// welche gerade sendet; der Wechsel läuft auch mitten in der Sendung.
+    private var cameraMenu: some View {
+        Menu {
+            Picker("Kamera", selection: cameraSelection) {
+                ForEach(cameras) { camera in
+                    Text(camera.label).tag(camera.id as String?)
+                }
+            }
+        } label: {
+            Image(systemName: "camera.fill")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: 44, height: 44)
+                .glassEffect(.regular, in: .circle)
+                .contentShape(.circle)
+        }
+        .accessibilityLabel(Text("Kamera wählen"))
+    }
+
+    private var cameraSelection: Binding<String?> {
+        Binding(
+            get: { activeCameraId },
+            set: { newValue in
+                guard let newValue, newValue != activeCameraId else { return }
+                activeCameraId = newValue
+                bridge.selectCamera(newValue)
+            }
+        )
     }
 
     private var missingTokenNotice: some View {
@@ -159,6 +210,11 @@ struct LiveStudioView: View {
     private var clock: String {
         String(format: "%02d:%02d", seconds / 60, seconds % 60)
     }
+
+    /// Abstand nach unten, gerechnet ab dem unteren Sicherheitsrand: Die Bühne
+    /// legt ihre Knopfreihe 32 pt über den eigenen Rand, die Knöpfe sind 48 pt
+    /// hoch. Dazu 12 pt Luft, damit sich Chat und Knöpfe nicht berühren.
+    private static let stageControlsInset: CGFloat = 92
 
     // MARK: - Ereignisse der Bühne
 
@@ -178,6 +234,11 @@ struct LiveStudioView: View {
             stopTicking()
             // Die Bühne hat sauber abgemeldet — jetzt darf das Studio zu.
             close(force: true)
+        case "cameras":
+            cameras = event.cameras
+            // Die Bühne meldet, was wirklich sendet — auch wenn sie selbst
+            // umgeschaltet hat (Knopf „Kamera wechseln").
+            if let active = event.activeCameraId { activeCameraId = active }
         case "error":
             if phase == .starting { phase = .idle }
         default:
@@ -221,9 +282,9 @@ struct LiveStudioView: View {
         Task {
             try? await Task.sleep(for: .seconds(3))
             guard phase == .live else { return }
-            try? await appState.api.setStudioLiveStatus(slug: slug,
-                                                        sessionId: session.id,
-                                                        status: .ended)
+            _ = try? await appState.api.setStudioLiveStatus(slug: slug,
+                                                            sessionId: session.id,
+                                                            status: .ended)
             phase = .idle
             close(force: true)
         }
@@ -239,19 +300,36 @@ private enum StudioPhase: String {
     case error
 }
 
+/// Eine im Gerät gefundene Kamera, wie die Bühne sie meldet.
+struct StudioCamera: Identifiable, Hashable, Sendable {
+    let id: String
+    let label: String
+}
+
 /// Eine Nachricht der Bühne an die App.
 struct StudioEvent {
     let type: String
     let phase: String?
+    var cameras: [StudioCamera] = []
+    var activeCameraId: String?
 }
 
-/// Griff auf das WebView, um die Sendung von außen zu beenden.
+/// Griff auf das WebView: Sendung von außen beenden, Kamera umstellen.
 @MainActor
 final class StudioWebBridge {
     weak var webView: WKWebView?
 
     func end() {
         webView?.evaluateJavaScript("window.aeraStudioEnd && window.aeraStudioEnd()")
+    }
+
+    /// Stellt die Bühne auf ein bestimmtes Aufnahmegerät um — auch mitten in
+    /// der Sendung, die Bühne tauscht die Spur im laufenden Stream.
+    func selectCamera(_ deviceId: String) {
+        let data = (try? JSONSerialization.data(withJSONObject: [deviceId])) ?? Data()
+        let array = String(data: data, encoding: .utf8) ?? "[\"\"]"
+        let literal = String(array.dropFirst().dropLast())
+        webView?.evaluateJavaScript("window.__aeraSelectCamera && window.__aeraSelectCamera(\(literal))")
     }
 }
 
@@ -277,6 +355,12 @@ struct StudioWebView: UIViewRepresentable {
         let payload = "window.__aeraStudio = { token: \(jsString(token)), slug: \(jsString(slug)) };"
         controller.addUserScript(
             WKUserScript(source: payload, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        )
+        controller.addUserScript(
+            WKUserScript(source: hideStageBadgeScript, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+        )
+        controller.addUserScript(
+            WKUserScript(source: cameraChoiceScript, injectionTime: .atDocumentStart, forMainFrameOnly: true)
         )
         controller.add(context.coordinator, name: "aeraStudio")
 
@@ -311,6 +395,104 @@ struct StudioWebView: UIViewRepresentable {
         webView.stopLoading()
     }
 
+    /// Sobald gesendet wird, legt die Bühne oben links ihr eigenes rotes
+    /// „Auf Sendung"-Abzeichen ab (`<span>` direkt hinter dem `<video>`).
+    /// Genau dort steht die Kopfzeile der App mit demselben Zustand und dem
+    /// Schließen-Knopf — beides übereinander ist unleserlich. Die App gewinnt,
+    /// weil sie den Knopf trägt; das Abzeichen der Seite wird ausgeblendet.
+    ///
+    /// Der Selektor hängt an der Struktur, nicht an Tailwind-Klassen: die
+    /// Fehlermeldung der Bühne ist ein `<div>` und bleibt sichtbar.
+    private var hideStageBadgeScript: String {
+        """
+        (function () {
+          var style = document.createElement('style');
+          style.textContent = 'video + span { display: none !important; }';
+          document.documentElement.appendChild(style);
+        })();
+        """
+    }
+
+    /// Kameraauswahl für die Bühne.
+    ///
+    /// Die Bühne fragt nur nach `facingMode` (vorne/hinten) und kennt damit
+    /// keine angeschlossenen Kameras. Statt die Seite zu ändern, legt die App
+    /// sich um `getUserMedia`: ist in der App ein Gerät gewählt, ersetzt der
+    /// Mantel `facingMode` durch dessen `deviceId`. Umgeschaltet wird über den
+    /// eigenen Knopf der Bühne — der tauscht die Spur im laufenden Stream aus,
+    /// die Sendung reißt also nicht ab.
+    ///
+    /// Nebenbei wird die Spiegelung geradegezogen: die Seite spiegelt nach
+    /// ihrem eigenen Schalter, richtig ist die Frontkamera. Gespiegelt wird
+    /// ohnehin nur die Vorschau, nie das gesendete Bild.
+    private var cameraChoiceScript: String {
+        """
+        (function () {
+          var md = navigator.mediaDevices;
+          if (!md || !md.getUserMedia) { return; }
+
+          var style = document.createElement('style');
+          style.textContent = 'html.aera-no-mirror video { transform: none !important; }';
+          document.documentElement.appendChild(style);
+
+          var chosen = null;
+          var original = md.getUserMedia.bind(md);
+
+          function post(payload) {
+            try { window.webkit.messageHandlers.aeraStudio.postMessage(payload); } catch (e) {}
+          }
+
+          function report(active) {
+            md.enumerateDevices().then(function (devices) {
+              var index = 0;
+              var cameras = devices.filter(function (d) { return d.kind === 'videoinput'; })
+                .map(function (d) {
+                  index += 1;
+                  return { id: d.deviceId, label: d.label || ('Kamera ' + index) };
+                })
+                .filter(function (c) { return c.id; });
+              post({ type: 'cameras', cameras: cameras, active: active || null });
+            }).catch(function () {});
+          }
+
+          md.getUserMedia = function (constraints) {
+            var request = constraints;
+            if (chosen && request && request.video && typeof request.video === 'object') {
+              var video = {};
+              for (var key in request.video) {
+                if (key !== 'facingMode') { video[key] = request.video[key]; }
+              }
+              video.deviceId = { exact: chosen };
+              request = {};
+              for (var outer in constraints) { request[outer] = constraints[outer]; }
+              request.video = video;
+            }
+            return original(request).then(function (stream) {
+              try {
+                var track = stream.getVideoTracks()[0];
+                var settings = track && track.getSettings ? track.getSettings() : {};
+                document.documentElement.classList.toggle('aera-no-mirror',
+                                                          settings.facingMode !== 'user');
+                report(settings.deviceId || null);
+              } catch (e) {}
+              return stream;
+            });
+          };
+
+          // Der Knopf „Kamera wechseln" der Bühne steht als letzter in der
+          // Knopfreihe; ihn zu drücken ist der getestete Weg, die Aufnahme neu
+          // zu holen — samt Spurtausch im laufenden Stream.
+          window.__aeraSelectCamera = function (deviceId) {
+            chosen = deviceId;
+            var buttons = document.querySelectorAll('button');
+            if (buttons.length) { buttons[buttons.length - 1].click(); }
+          };
+
+          md.addEventListener && md.addEventListener('devicechange', function () { report(null); });
+        })();
+        """
+    }
+
     /// String sicher in JavaScript einbetten.
     private func jsString(_ value: String) -> String {
         let data = (try? JSONSerialization.data(withJSONObject: [value])) ?? Data()
@@ -342,7 +524,14 @@ struct StudioWebView: UIViewRepresentable {
                                    didReceive message: WKScriptMessage) {
             guard let body = message.body as? [String: Any],
                   let type = body["type"] as? String else { return }
-            onEvent(StudioEvent(type: type, phase: body["phase"] as? String))
+            let cameras = (body["cameras"] as? [[String: Any]] ?? []).compactMap { entry -> StudioCamera? in
+                guard let id = entry["id"] as? String, !id.isEmpty else { return nil }
+                return StudioCamera(id: id, label: entry["label"] as? String ?? id)
+            }
+            onEvent(StudioEvent(type: type,
+                                phase: body["phase"] as? String,
+                                cameras: cameras,
+                                activeCameraId: body["active"] as? String))
         }
 
         /// Kamera und Mikrofon freigeben — aber nur der eigenen Seite. Das
@@ -357,67 +546,46 @@ struct StudioWebView: UIViewRepresentable {
     }
 }
 
-// MARK: - Zuschauer-Chat
+// MARK: - Zuschauer-Chat auf dem Bild
 
-/// Der Chat der laufenden Session — damit der Creator reagieren kann, ohne die
-/// Sendung aus den Augen zu lassen.
-private struct StudioLiveChatSheet: View {
+/// Der Chat der Zuschauer, direkt auf der Sendung — wie der Creator ihn aus
+/// den grossen Live-Apps kennt: neue Nachrichten laufen unten links herein,
+/// ältere wandern nach oben aus dem Bild.
+///
+/// Bewusst schmal und links: die rechte Bildhälfte gehört dem Motiv, und die
+/// Knopfreihe der Bühne bleibt frei. Über der Liste liegt ein Verlauf, damit
+/// die Schrift auch auf hellem Bild lesbar bleibt.
+private struct StudioChatOverlay: View {
     let slug: String
     let sessionId: String
-    let brand: BrandTheme
 
     @Environment(AppState.self) private var appState
-    @Environment(\.dismiss) private var dismiss
 
     @State private var messages: [ChatMessage] = []
     @State private var knownIds: Set<String> = []
     @State private var draft = ""
     @State private var isSending = false
     @State private var sendSuccessCount = 0
+    @FocusState private var replyFocused: Bool
+
+    /// Mehr als das passt nicht ins Bild, ohne die Sendung zuzudecken.
+    private static let visibleCount = 6
+
+    private var recent: [ChatMessage] {
+        Array(messages.suffix(Self.visibleCount))
+    }
+
+    private var trimmedDraft: String {
+        draft.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
 
     var body: some View {
-        NavigationStack {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 10) {
-                        if messages.isEmpty {
-                            Text("Noch keine Nachrichten.")
-                                .font(.system(size: 13))
-                                .foregroundStyle(Theme.ink.opacity(0.45))
-                                .padding(.top, 24)
-                        } else {
-                            ForEach(messages) { message in
-                                ChatBubbleRow(message: message)
-                                    .id(message.id)
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                }
-                .defaultScrollAnchor(.bottom)
-                .onChange(of: messages.count) {
-                    if let lastId = messages.last?.id {
-                        withAnimation(.snappy(duration: 0.25)) {
-                            proxy.scrollTo(lastId, anchor: .bottom)
-                        }
-                    }
-                }
-            }
-            .background(Theme.paper.ignoresSafeArea())
-            .safeAreaInset(edge: .bottom) {
-                ChatInputBar(text: $draft, isSending: isSending, onSend: send)
-            }
-            .navigationTitle("Live-Chat")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Fertig") { dismiss() }
-                }
-            }
-            .brandTheme(brand)
+        VStack(alignment: .leading, spacing: 10) {
+            messageList
+            replyBar
         }
-        .presentationDetents([.medium, .large])
+        .padding(.horizontal, 12)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .sensoryFeedback(.success, trigger: sendSuccessCount)
         .task {
             while !Task.isCancelled {
@@ -426,6 +594,95 @@ private struct StudioLiveChatSheet: View {
             }
         }
     }
+
+    // MARK: - Nachrichten
+
+    @ViewBuilder
+    private var messageList: some View {
+        if !recent.isEmpty {
+            VStack(alignment: .leading, spacing: 6) {
+                ForEach(recent) { message in
+                    row(message)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
+                }
+            }
+            .frame(maxWidth: 290, alignment: .leading)
+            .animation(.snappy(duration: 0.3), value: recent.map(\.id))
+            // Nach oben ausblenden: die älteste Zeile verliert sich im Bild,
+            // statt hart abzuschneiden.
+            .mask(
+                LinearGradient(colors: [.clear, .black, .black],
+                               startPoint: .top,
+                               endPoint: .center)
+            )
+        }
+    }
+
+    private func row(_ message: ChatMessage) -> some View {
+        HStack(alignment: .top, spacing: 8) {
+            AvatarView(url: message.author.avatarUrl,
+                       name: message.author.name,
+                       size: 26)
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text(message.author.name)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.7))
+                    .lineLimit(1)
+                Text(message.body)
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white)
+                    .lineLimit(4)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .background(.black.opacity(0.35), in: .rect(cornerRadius: 16, style: .continuous))
+        .shadow(color: .black.opacity(0.35), radius: 6, y: 2)
+    }
+
+    // MARK: - Antworten
+
+    private var replyBar: some View {
+        HStack(spacing: 8) {
+            TextField("Antworten…", text: $draft, axis: .vertical)
+                .lineLimit(1...3)
+                .font(.system(size: 14))
+                .foregroundStyle(.white)
+                .tint(.white)
+                .focused($replyFocused)
+                .submitLabel(.send)
+                .onSubmit(send)
+                .padding(.horizontal, 14)
+                .padding(.vertical, 9)
+                .glassEffect(.regular, in: .capsule)
+
+            if !trimmedDraft.isEmpty || isSending {
+                Button(action: send) {
+                    Group {
+                        if isSending {
+                            ProgressView().tint(.white)
+                        } else {
+                            Image(systemName: "arrow.up")
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(.white)
+                        }
+                    }
+                    .frame(width: 38, height: 38)
+                    .background(Theme.danger, in: .circle)
+                }
+                .buttonStyle(.plain)
+                .disabled(isSending)
+                .accessibilityLabel(Text("Senden"))
+                .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .frame(maxWidth: 320, alignment: .leading)
+        .animation(.snappy(duration: 0.2), value: trimmedDraft.isEmpty)
+    }
+
+    // MARK: - Laden & Senden
 
     private func poll() async {
         do {
@@ -442,7 +699,7 @@ private struct StudioLiveChatSheet: View {
     }
 
     private func send() {
-        let text = draft.trimmingCharacters(in: .whitespacesAndNewlines)
+        let text = trimmedDraft
         guard !text.isEmpty, !isSending else { return }
         isSending = true
         Task {
