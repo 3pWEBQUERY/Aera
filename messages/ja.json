@@ -2601,6 +2601,7 @@
       "viewCommunity": "コミュニティを見る"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "マイサブスク",
       "switchCommunities": "コミュニティを切り替え",
       "logout": "ログアウト"

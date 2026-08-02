@@ -2601,6 +2601,7 @@
       "viewCommunity": "查看社区"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "我的订阅",
       "switchCommunities": "切换社区",
       "logout": "退出登录"

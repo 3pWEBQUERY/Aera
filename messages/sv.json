@@ -2601,6 +2601,7 @@
       "viewCommunity": "Visa community"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Min prenumeration",
       "switchCommunities": "Byt community",
       "logout": "Logga ut"

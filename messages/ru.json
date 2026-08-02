@@ -2601,6 +2601,7 @@
       "viewCommunity": "Открыть сообщество"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Моя подписка",
       "switchCommunities": "Сменить сообщество",
       "logout": "Выйти"

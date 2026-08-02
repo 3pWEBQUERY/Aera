@@ -63,6 +63,19 @@ export function UserMenu({
               <Icon name="external" size={16} className="text-slate-400" />
               {t("topbar.viewCommunity")}
             </Link>
+            {/*
+             * Fuehrt auf die Konto-Ansicht, die sich als Vollbild-Overlay ueber
+             * die aufrufende Seite legt. `from` traegt den Rueckweg, damit das
+             * Schliessen-X wieder im Dashboard dieser Community landet.
+             */}
+            <Link
+              href={`/member/account?from=${encodeURIComponent(`/dashboard/${slug}`)}`}
+              className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
+              onClick={() => setOpen(false)}
+            >
+              <Icon name="account" size={16} className="text-slate-400" />
+              {t("userMenu.myAccount")}
+            </Link>
             {subscription && (
               <button
                 type="button"

@@ -2601,6 +2601,7 @@
       "viewCommunity": "Se fellesskap"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Abonnementet mitt",
       "switchCommunities": "Bytt fellesskap",
       "logout": "Logg ut"

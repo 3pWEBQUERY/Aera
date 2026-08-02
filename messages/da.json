@@ -2601,6 +2601,7 @@
       "viewCommunity": "Se fællesskab"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Mit abonnement",
       "switchCommunities": "Skift fællesskab",
       "logout": "Log ud"

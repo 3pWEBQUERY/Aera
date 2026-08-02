@@ -31,6 +31,12 @@ const paths = {
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </>
   ),
+  account: (
+    <>
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </>
+  ),
   tiers: (
     <>
       <path d="M6 3h12l4 6-10 13L2 9Z" />

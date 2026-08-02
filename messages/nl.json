@@ -2601,6 +2601,7 @@
       "viewCommunity": "Community bekijken"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Mijn abonnement",
       "switchCommunities": "Van community wisselen",
       "logout": "Uitloggen"

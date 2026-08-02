@@ -2601,6 +2601,7 @@
       "viewCommunity": "Voir la communauté"
     },
     "userMenu": {
+      "myAccount": "My account",
       "mySubscription": "Mon abonnement",
       "switchCommunities": "Changer de communauté",
       "logout": "Se déconnecter"
