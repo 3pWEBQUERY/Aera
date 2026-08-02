@@ -232,12 +232,28 @@ export function LayoutEditor({
       {/* Top bar */}
       <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-3">
         <div className="flex min-w-0 flex-1 items-center gap-2">
-          {view !== "hub" && (
+          {/*
+           * Der Pfeil steht immer an derselben Stelle und meint immer "eine
+           * Ebene zurueck" — aus einem Bereich zur Uebersicht, aus der
+           * Uebersicht ins Dashboard. Vorher fehlte er auf der Uebersicht
+           * ganz, und der einzige Weg hinaus war "Abbrechen" am rechten Rand.
+           */}
+          {view === "hub" ? (
+            <Link
+              href={`/dashboard/${slug}`}
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
+              aria-label={t("backToDashboard")}
+              title={t("backToDashboard")}
+            >
+              <Icon name="chevron" size={18} className="rotate-90" />
+            </Link>
+          ) : (
             <button
               type="button"
               onClick={() => setView("hub")}
-              className="flex h-9 w-9 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
               aria-label={t("back")}
+              title={t("back")}
             >
               <Icon name="chevron" size={18} className="rotate-90" />
             </button>
