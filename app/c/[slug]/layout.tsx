@@ -13,7 +13,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { unreadNotificationCount } from "@/lib/notifications";
 import { getTranslations } from "next-intl/server";
-import { parseLayout, resolveNavHref, NAV_TYPE_ICON } from "@/lib/layout";
+import { parseLayout, resolveNavHref, bannerVisible, NAV_TYPE_ICON } from "@/lib/layout";
+import { CommunityBanners } from "@/components/community/community-banners";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { readPreviewOverride } from "@/lib/preview";
 import type { Metadata } from "next";
@@ -101,6 +102,13 @@ export default async function CommunityLayout({
   const displayName = preview?.name ?? tenant.name;
   const displayLogo = preview?.logoUrl !== undefined ? preview.logoUrl : tenant.logoUrl;
   const displayColor = preview?.primaryColor ?? tenant.primaryColor;
+
+  // Zielgruppe und Zeitraum werden hier entschieden, nicht im Browser: was ein
+  // Besucher nicht sehen soll, steht dann auch nicht in seinem Quelltext.
+  const today = new Date().toISOString().slice(0, 10);
+  const visibleBanners = (preview ? preview.config : savedLayout).banners.filter((b) =>
+    bannerVisible(b, { isMember: ctx.membership?.status === "ACTIVE", isStaff: ctx.isStaff }, today),
+  );
 
   const autoItems: SidebarItem[] = [
     { href: `/c/${slug}`, label: tn("home"), icon: "home", exact: true },
@@ -259,6 +267,15 @@ export default async function CommunityLayout({
             edge-to-edge like the reference design. */}
         <main className="min-w-0 flex-1">{children}</main>
       </div>
+
+      {/*
+       * Einblendungen des Creators. Im Layout und nicht auf der Startseite,
+       * damit sie ueberall in der Community gelten — die Wahl, wo sie
+       * erscheinen, trifft der Creator ueber Zielgruppe und Zeitpunkt, nicht
+       * die Ablage der Komponente. Wer sie nicht sehen darf, bekommt sie gar
+       * nicht erst geschickt.
+       */}
+      {visibleBanners.length > 0 && <CommunityBanners banners={visibleBanners} />}
     </div>
   );
 }

@@ -13,6 +13,7 @@ import {
   SocialGlyph,
 } from "./social-icons";
 import { Icon, type IconName } from "./icons";
+import { BannerPanel } from "./banner-panel";
 import { PagesPanel, type EditablePage } from "./pages-panel";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
@@ -44,13 +45,14 @@ import {
   type HeroMenuSlot,
   type HeroMenuStyle,
   type HeroMenuType,
+  type BannerConfig,
 } from "@/lib/layout";
 
 const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#059669", "#0891b2", "#111827"];
 
 // Space type → icon (matches the Spaces dashboard).
 
-type View = "hub" | "header" | "sections" | "pages" | "nav" | "menu";
+type View = "hub" | "header" | "sections" | "pages" | "nav" | "menu" | "banner";
 
 export interface LayoutEditorInitial {
   name: string;
@@ -72,6 +74,8 @@ export interface LayoutEditorInitial {
   tipsSlug: string | null;
   /** Frei gebaute Seiten dieser Community. */
   pages: EditablePage[];
+  /** Einblendungen auf der Community-Seite. */
+  banners: BannerConfig[];
 }
 
 const initialState: LayoutState = {};
@@ -91,6 +95,7 @@ export function LayoutEditor({
   const [audience, setAudience] = useState<Audience>("FREE");
   const t = useTranslations("dashboard.layout");
   const tPages = useTranslations("dashboard.pages");
+  const tBanners = useTranslations("dashboard.banners");
 
   const [name, setName] = useState(initial.name);
   const nameCheck = useNameAvailability(name, slug);
@@ -123,6 +128,7 @@ export function LayoutEditor({
   // Seiten liegen in einer eigenen Tabelle und werden vom Panel sofort
   // gespeichert — sie gehen deshalb nicht in `payload` ein.
   const [pages, setPages] = useState<EditablePage[]>(initial.pages);
+  const [banners, setBanners] = useState<BannerConfig[]>(initial.banners);
 
   const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
   const [flash, setFlash] = useState(false);
@@ -145,8 +151,9 @@ export function LayoutEditor({
         sectionsByAudience,
         nav,
         heroMenu,
+        banners,
       }),
-    [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu],
+    [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, banners],
   );
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
@@ -161,9 +168,10 @@ export function LayoutEditor({
         sectionsByAudience,
         nav,
         heroMenu,
+        banners,
         audience,
       }),
-    [name, logoUrl, primaryColor, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, audience],
+    [name, logoUrl, primaryColor, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, banners, audience],
   );
 
   const [previewNonce, setPreviewNonce] = useState(0);
@@ -209,6 +217,7 @@ export function LayoutEditor({
     pages: tPages("title"),
     nav: t("titleNav"),
     menu: t("titleMenu"),
+    banner: tBanners("title"),
   };
 
   return (
@@ -325,6 +334,7 @@ export function LayoutEditor({
               onChanged={refreshPreview}
             />
           )}
+          {view === "banner" && <BannerPanel banners={banners} setBanners={setBanners} />}
           {view === "nav" && <NavPanel nav={nav} setNav={setNav} spaces={spaces} />}
           {view === "menu" && (
             <MenuPanel menu={heroMenu} setMenu={setHeroMenu} spaces={spaces} tipsSlug={initial.tipsSlug} />
@@ -401,12 +411,14 @@ function AudienceSelect({
 function Hub({ onOpen }: { onOpen: (v: View) => void }) {
   const t = useTranslations("dashboard.layout");
   const tPages = useTranslations("dashboard.pages");
+  const tBanners = useTranslations("dashboard.banners");
   const rows: { view: View; label: string; icon: IconName }[] = [
     { view: "header", label: t("hubHeader"), icon: "branding" },
     { view: "sections", label: t("hubSections"), icon: "layout" },
     // Direkt unter dem Seitenlayout: beides beantwortet "was steht auf meiner
     // Seite", nur einmal fuer die Startseite und einmal daneben.
     { view: "pages", label: tPages("hub"), icon: "knowledge" },
+    { view: "banner", label: tBanners("hub"), icon: "megaphone" },
     { view: "nav", label: t("hubNav"), icon: "menu" },
     { view: "menu", label: t("hubMenu"), icon: "more" },
   ];

@@ -44,6 +44,7 @@ export async function readPreviewOverride(
     nav: data.nav,
     header: data.header,
     heroMenu: data.heroMenu,
+    banners: data.banners,
   });
   const audience = AUDIENCES.includes(data.audience as Audience)
     ? (data.audience as Audience)

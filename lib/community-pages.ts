@@ -1,4 +1,4 @@
-import { slugify } from "./utils";
+import { safeLinkHref, slugify } from "./utils";
 
 /**
  * Die Inhaltsbausteine frei gebauter Community-Seiten.
@@ -179,37 +179,10 @@ function str(value: unknown, max: number): string {
   return typeof value === "string" ? value.slice(0, max) : "";
 }
 
-/**
- * Adresse eines vom Creator gesetzten Links oder Mediums.
- *
- * Alles ausser http(s), mailto und plattformeigenen Pfaden faellt auf den
- * leeren Text zurueck. Ohne diese Pruefung landete ein `javascript:`-Link
- * ungefiltert im `href` der oeffentlichen Seite — die Bausteine sind zwar vom
- * Creator geschrieben, aber "vom Creator" ist keine Zusicherung, sondern nur
- * eine Herkunft. `//host` ist ebenfalls draussen: das ist kein eigener Pfad,
- * sondern eine fremde Domain in Pfad-Verkleidung.
- */
-function safeHref(value: unknown, max: number): string {
-  const raw = str(value, max).trim();
-  if (!raw) return "";
-  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
-  try {
-    const scheme = new URL(raw).protocol;
-    return scheme === "http:" || scheme === "https:" || scheme === "mailto:" ? raw : "";
-  } catch {
-    return "";
-  }
-}
-
-/** Wie `safeHref`, aber ohne `mailto:` — fuer Bild- und Videoquellen. */
+/** Wie `safeLinkHref`, aber ohne `mailto:` — fuer Bild- und Videoquellen. */
 function safeMediaUrl(value: unknown, max: number): string {
-  const href = safeHref(value, max);
+  const href = safeLinkHref(value, max);
   return href.startsWith("mailto:") ? "" : href;
-}
-
-/** Ein Link zeigt aus der Plattform hinaus und braucht dann `target="_blank"`. */
-export function isExternalHref(href: string): boolean {
-  return !href.startsWith("/");
 }
 
 function pick<T extends string>(value: unknown, allowed: readonly T[], fallback: T): T {
@@ -338,7 +311,7 @@ export function parsePageBlocks(raw: unknown): PageBlock[] {
           title: str(e.title, MAX_LINE),
           text: str(e.text, MAX_TEXT),
           label: str(e.label, MAX_LINE),
-          href: safeHref(e.href, MAX_URL),
+          href: safeLinkHref(e.href, MAX_URL),
           style: pick<CtaStyle>(e.style, ["SOLID", "OUTLINE"], "SOLID"),
         });
         break;
@@ -351,7 +324,7 @@ export function parsePageBlocks(raw: unknown): PageBlock[] {
             id: itemId,
             label: str(item.label, MAX_LINE),
             description: str(item.description, MAX_LINE),
-            href: safeHref(item.href, MAX_URL),
+            href: safeLinkHref(item.href, MAX_URL),
           })),
         });
         break;

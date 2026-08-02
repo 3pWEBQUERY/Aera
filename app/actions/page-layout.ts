@@ -57,6 +57,9 @@ export async function saveLayoutAction(
     // Menüzeile nicht mit. Dann bleibt der gespeicherte Stand stehen, statt
     // auf die Standardbelegung zurückzufallen.
     heroMenu: payload.heroMenu ?? (tenant.layout as { heroMenu?: unknown } | null)?.heroMenu,
+    // Wie bei der Menuezeile: ein Tab von vor dem Deploy schickt keine Banner
+    // mit. Dann bleibt der gespeicherte Stand stehen, statt geloescht zu werden.
+    banners: payload.banners ?? (tenant.layout as { banners?: unknown } | null)?.banners,
   });
 
   const name = String(payload.name ?? tenant.name).trim().slice(0, 60) || tenant.name;

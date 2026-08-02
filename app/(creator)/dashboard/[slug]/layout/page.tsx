@@ -51,6 +51,7 @@ export default async function LayoutBuilderPage({
         nav: config.nav,
         header: config.header,
         heroMenu: config.heroMenu,
+        banners: config.banners,
         tipsSlug: tipsSpace?.slug ?? null,
         pages: pageRows.map((p) => ({
           id: p.id,

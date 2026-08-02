@@ -1,4 +1,5 @@
 import type { IconName } from "@/components/dashboard/icons";
+import { safeLinkHref } from "./utils";
 
 /**
  * Community page-builder config, stored on `Tenant.layout` (JSON).
@@ -233,6 +234,175 @@ export function heroMenuVisible(
   }
 }
 
+/* ------------------------------------------------------------------ Banner */
+
+/**
+ * Einblendungen auf der Community-Seite: die angeheftete Leiste unten, eine
+ * Leiste oben, ein Fenster in der Mitte, eine kleine Karte in der Ecke.
+ *
+ * Sie stehen in der Layout-Konfiguration und nicht in einer eigenen Tabelle,
+ * weil sie Einstellung sind und kein Inhalt — ein paar Zeilen Text, ein Ziel,
+ * ein Zeitpunkt. Das hat einen konkreten Vorteil: die Live-Vorschau des
+ * Editors reicht die Konfiguration ohnehin schon an den Server weiter, der
+ * Creator sieht seinen Banner also beim Bauen.
+ */
+export type BannerPlacement = "BOTTOM" | "TOP" | "CENTER" | "CORNER";
+/** Wodurch die Einblendung ausgeloest wird. */
+export type BannerTrigger = "IMMEDIATE" | "DELAY" | "SCROLL" | "EXIT";
+/** Wie oft ein Besucher sie zu sehen bekommt. */
+export type BannerFrequency = "ALWAYS" | "SESSION" | "DISMISSED";
+export type BannerTone = "BRAND" | "DARK" | "LIGHT";
+
+export interface BannerConfig {
+  id: string;
+  enabled: boolean;
+  placement: BannerPlacement;
+  tone: BannerTone;
+  audience: HeroMenuAudience;
+  title: string;
+  text: string;
+  /** Beschriftung des Knopfes. Leer heisst: kein Knopf, nur Text. */
+  label: string;
+  href: string;
+  /** Zweite, leise Beschriftung ("Später"). Leer heisst: nur das Kreuz. */
+  secondaryLabel: string;
+  /** Ohne Schliessen-Kreuz bleibt die Einblendung stehen. */
+  dismissible: boolean;
+  trigger: BannerTrigger;
+  /** Sekunden bei DELAY, Prozent der Seitenhoehe bei SCROLL. */
+  triggerValue: number;
+  frequency: BannerFrequency;
+  /** Tag im Format JJJJ-MM-TT, oder leer fuer "ab sofort" / "ohne Ende". */
+  startAt: string;
+  endAt: string;
+}
+
+/** Mehr Einblendungen als das kann keine Seite vertragen. */
+export const BANNER_MAX = 6;
+
+export const BANNER_PLACEMENTS: BannerPlacement[] = ["BOTTOM", "TOP", "CENTER", "CORNER"];
+export const BANNER_TRIGGERS: BannerTrigger[] = ["IMMEDIATE", "DELAY", "SCROLL", "EXIT"];
+export const BANNER_FREQUENCIES: BannerFrequency[] = ["ALWAYS", "SESSION", "DISMISSED"];
+export const BANNER_TONES: BannerTone[] = ["BRAND", "DARK", "LIGHT"];
+
+/** Standardwerte eines frisch angelegten Banners. */
+export function emptyBanner(id: string): BannerConfig {
+  return {
+    id,
+    enabled: true,
+    placement: "BOTTOM",
+    tone: "DARK",
+    audience: "GUESTS",
+    title: "",
+    text: "",
+    label: "",
+    href: "",
+    secondaryLabel: "",
+    dismissible: true,
+    trigger: "DELAY",
+    triggerValue: 8,
+    frequency: "DISMISSED",
+    startAt: "",
+    endAt: "",
+  };
+}
+
+/**
+ * Liest die Bannerliste zurueck.
+ *
+ * `triggerValue` wird je nach Ausloeser in verschiedene Grenzen gezwungen:
+ * 300 Sekunden Wartezeit sind lang, aber denkbar; 300 Prozent Scrolltiefe
+ * gibt es nicht.
+ */
+export function parseBanners(raw: unknown): BannerConfig[] {
+  if (!Array.isArray(raw)) return [];
+  const out: BannerConfig[] = [];
+  const seen = new Set<string>();
+
+  for (const entry of raw) {
+    if (out.length >= BANNER_MAX) break;
+    const r = asRecord(entry);
+    let id = typeof r.id === "string" ? r.id.slice(0, 40) : "";
+    if (!id || seen.has(id)) id = `b-${out.length}`;
+    seen.add(id);
+
+    const trigger: BannerTrigger = BANNER_TRIGGERS.includes(r.trigger as BannerTrigger)
+      ? (r.trigger as BannerTrigger)
+      : "DELAY";
+    const rawValue = typeof r.triggerValue === "number" ? Math.round(r.triggerValue) : 8;
+    const triggerValue =
+      trigger === "SCROLL"
+        ? Math.min(100, Math.max(1, rawValue))
+        : Math.min(300, Math.max(0, rawValue));
+
+    out.push({
+      id,
+      enabled: r.enabled !== false,
+      placement: BANNER_PLACEMENTS.includes(r.placement as BannerPlacement)
+        ? (r.placement as BannerPlacement)
+        : "BOTTOM",
+      tone: BANNER_TONES.includes(r.tone as BannerTone) ? (r.tone as BannerTone) : "DARK",
+      audience:
+        r.audience === "GUESTS" || r.audience === "MEMBERS" || r.audience === "STAFF"
+          ? r.audience
+          : "ALL",
+      title: typeof r.title === "string" ? r.title.slice(0, 80) : "",
+      text: typeof r.text === "string" ? r.text.slice(0, 240) : "",
+      label: typeof r.label === "string" ? r.label.slice(0, 40) : "",
+      href: safeLinkHref(r.href, 500),
+      secondaryLabel: typeof r.secondaryLabel === "string" ? r.secondaryLabel.slice(0, 40) : "",
+      dismissible: r.dismissible !== false,
+      trigger,
+      triggerValue,
+      frequency: BANNER_FREQUENCIES.includes(r.frequency as BannerFrequency)
+        ? (r.frequency as BannerFrequency)
+        : "DISMISSED",
+      startAt: isDay(r.startAt) ? r.startAt : "",
+      endAt: isDay(r.endAt) ? r.endAt : "",
+    });
+  }
+  return out;
+}
+
+/** Tagesangabe im Format JJJJ-MM-TT? */
+function isDay(value: unknown): value is string {
+  return typeof value === "string" && /^\d{4}-\d{2}-\d{2}$/.test(value);
+}
+
+/**
+ * Faellt der Tag `today` (JJJJ-MM-TT) in den eingestellten Zeitraum?
+ *
+ * Bewusst auf Tagesebene und als Zeichenkettenvergleich: der Creator denkt in
+ * Tagen, nicht in Zeitzonen. Ein Vergleich ueber `Date` haette hier nur die
+ * Frage aufgeworfen, wessen Mitternacht gemeint ist.
+ */
+export function bannerInSchedule(banner: BannerConfig, today: string): boolean {
+  if (banner.startAt && today < banner.startAt) return false;
+  if (banner.endAt && today > banner.endAt) return false;
+  return true;
+}
+
+/** Gilt die Einblendung fuer diesen Betrachter, heute, in diesem Zustand? */
+export function bannerVisible(
+  banner: BannerConfig,
+  viewer: { isMember: boolean; isStaff: boolean },
+  today: string,
+): boolean {
+  if (!banner.enabled) return false;
+  if (!banner.title.trim() && !banner.text.trim()) return false;
+  if (!bannerInSchedule(banner, today)) return false;
+  switch (banner.audience) {
+    case "GUESTS":
+      return !viewer.isMember;
+    case "MEMBERS":
+      return viewer.isMember;
+    case "STAFF":
+      return viewer.isStaff;
+    case "ALL":
+      return true;
+  }
+}
+
 export type HeaderMode = "PHOTO" | "COVER";
 
 /**
@@ -292,6 +462,8 @@ export interface LayoutConfig {
   header: LayoutHeader;
   /** Die Menüzeile der Kopfzeile — gilt für jeden Kopfzeilen-Stil. */
   heroMenu: HeroMenuConfig;
+  /** Einblendungen auf der Community-Seite. */
+  banners: BannerConfig[];
 }
 
 // ---------------------------------------------------------------- Catalogs
@@ -373,6 +545,9 @@ export function defaultLayout(): LayoutConfig {
     nav: [],
     header: defaultHeader(),
     heroMenu: defaultHeroMenu(),
+    // Keine Einblendung ist der richtige Ausgangszustand: eine Community, die
+    // nichts eingestellt hat, soll niemandem etwas vor die Seite schieben.
+    banners: [],
   };
 }
 
@@ -482,6 +657,7 @@ export function parseLayout(raw: unknown): LayoutConfig {
     nav,
     header: { mode, variant, mosaic, socials },
     heroMenu: parseHeroMenu(obj.heroMenu),
+    banners: parseBanners(obj.banners),
   };
 }
 
@@ -504,7 +680,11 @@ export function parseHeroMenu(raw: unknown): HeroMenuConfig {
     const r = asRecord(entry);
     const type = r.type as HeroMenuType;
     if (!HERO_MENU_TYPES.includes(type)) continue;
-    const value = typeof r.value === "string" ? r.value.trim().slice(0, 300) : undefined;
+    // Bei LINK ist `value` eine frei gesetzte Adresse und geht deshalb durch
+    // dieselbe Schema-Pruefung wie jeder andere Creator-Link: ohne sie landete
+    // ein `javascript:`-Ziel ungefiltert im href der Kopfzeile.
+    const rawValue = typeof r.value === "string" ? r.value.trim().slice(0, 300) : undefined;
+    const value = type === "LINK" ? safeLinkHref(rawValue, 300) || undefined : rawValue;
     // Ein Punkt ohne Ziel führt ins Leere und wird stillschweigend verworfen.
     if ((type === "SPACE" || type === "LINK") && !value) continue;
     let id = typeof r.id === "string" ? r.id.slice(0, 40) : "";

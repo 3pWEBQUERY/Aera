@@ -22,6 +22,32 @@ export function isPathActive(pathname: string, href: string, exact = false): boo
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/**
+ * Adresse aus Creator-Hand, auf unbedenkliche Schemata eingegrenzt.
+ *
+ * Alles ausser http(s), mailto und plattformeigenen Pfaden faellt auf den
+ * leeren Text zurueck. Ohne diese Pruefung landete ein `javascript:`-Ziel
+ * ungefiltert im `href` einer oeffentlichen Seite — creator-geschrieben ist
+ * eine Herkunft und keine Zusicherung. `//host` ist ebenfalls draussen: das
+ * ist kein eigener Pfad, sondern eine fremde Domain in Pfad-Verkleidung.
+ */
+export function safeLinkHref(value: unknown, max = 500): string {
+  const raw = typeof value === "string" ? value.slice(0, max).trim() : "";
+  if (!raw) return "";
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  try {
+    const scheme = new URL(raw).protocol;
+    return scheme === "http:" || scheme === "https:" || scheme === "mailto:" ? raw : "";
+  } catch {
+    return "";
+  }
+}
+
+/** Zeigt die Adresse aus der Plattform hinaus und braucht `target="_blank"`? */
+export function isExternalHref(href: string): boolean {
+  return !href.startsWith("/");
+}
+
 export function slugify(input: string): string {
   return input
     .toLowerCase()

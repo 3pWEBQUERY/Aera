@@ -2425,6 +2425,74 @@
         }
       }
     },
+    "banners": {
+      "title": "Banners",
+      "hub": "Banners",
+      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
+      "empty": "No banners yet.",
+      "add": "Add banner",
+      "full": "Limit reached",
+      "remove": "Remove banner",
+      "untitled": "Banner {n}",
+      "enabled": "Active",
+      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
+      "fieldTitle": "Heading",
+      "titlePlaceholder": "Become part of the community",
+      "fieldText": "Text",
+      "textPlaceholder": "One sentence on why it is worth it.",
+      "fieldLabel": "Button",
+      "labelPlaceholder": "Become a member",
+      "fieldSecondary": "Second button",
+      "secondaryPlaceholder": "Later",
+      "fieldHref": "Button target",
+      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
+      "fieldPlacement": "Where",
+      "placement": {
+        "BOTTOM": "Bottom",
+        "TOP": "Top",
+        "CENTER": "Middle",
+        "CORNER": "Corner"
+      },
+      "fieldTone": "Colour",
+      "tone": {
+        "BRAND": "Brand",
+        "DARK": "Dark",
+        "LIGHT": "Light"
+      },
+      "fieldAudience": "For whom",
+      "audience": {
+        "ALL": "Everyone",
+        "GUESTS": "Guests",
+        "MEMBERS": "Members",
+        "STAFF": "Team"
+      },
+      "fieldTrigger": "When",
+      "trigger": {
+        "IMMEDIATE": "At once",
+        "DELAY": "After time",
+        "SCROLL": "On scrolling",
+        "EXIT": "On leaving"
+      },
+      "fieldSeconds": "Delay",
+      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
+      "fieldPercent": "Scroll depth",
+      "fieldPercentHint": "How far the visitor has read before the banner appears.",
+      "fieldFrequency": "How often",
+      "frequency": {
+        "ALWAYS": "Every time",
+        "SESSION": "Once per visit",
+        "DISMISSED": "Until dismissed"
+      },
+      "frequencyHint": {
+        "ALWAYS": "Appears again on every page load. Use sparingly.",
+        "SESSION": "Appears once per browser session.",
+        "DISMISSED": "Whoever dismisses it will not see it again."
+      },
+      "fieldStart": "From",
+      "fieldEnd": "Until",
+      "fieldDismissible": "Allow closing",
+      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters."
+    },
     "analytics": {
       "metaTitle": "Analytics",
       "title": "Analytics",
@@ -4134,6 +4202,10 @@
       "navAria": "Pages of this community",
       "draftNotice": "Draft — only visible to you.",
       "emptyPage": "This page has no content yet."
+    },
+    "banner": {
+      "close": "Close",
+      "aria": "Community notice"
     }
   },
   "notifications": {

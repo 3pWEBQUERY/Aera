@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Icon } from "@/components/dashboard/icons";
+import { isExternalHref } from "@/lib/utils";
 import {
   isBlockEmpty,
-  isExternalHref,
   type CtaBlock,
   type FaqBlock,
   type GalleryBlock,

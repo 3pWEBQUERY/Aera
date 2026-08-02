@@ -2,7 +2,6 @@ import { describe, it, expect } from "vitest";
 import {
   emptyBlock,
   isBlockEmpty,
-  isExternalHref,
   MAX_BLOCKS,
   PAGE_BLOCK_TYPES,
   pageSlugFrom,
@@ -10,6 +9,7 @@ import {
   uniquePageSlug,
   type PageBlock,
 } from "@/lib/community-pages";
+import { isExternalHref } from "@/lib/utils";
 
 describe("parsePageBlocks", () => {
   it("gibt fuer alles Unbrauchbare eine leere Liste zurueck", () => {

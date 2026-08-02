@@ -2425,6 +2425,74 @@
         }
       }
     },
+    "banners": {
+      "title": "Banner",
+      "hub": "Banner",
+      "intro": "Einblendungen auf deiner Community-Seite — eine Leiste unten, oben, ein Fenster in der Mitte oder eine Karte in der Ecke. Du bestimmst Inhalt, Publikum und Zeitpunkt.",
+      "empty": "Noch kein Banner.",
+      "add": "Banner hinzufügen",
+      "full": "Höchstzahl erreicht",
+      "remove": "Banner entfernen",
+      "untitled": "Banner {n}",
+      "enabled": "Aktiv",
+      "orderHint": "Es wird immer nur ein Banner gezeigt — der oberste, der auf den Besucher zutrifft. Wer einen weggeklickt hat, bekommt beim selben Besuch keinen zweiten.",
+      "fieldTitle": "Überschrift",
+      "titlePlaceholder": "Werde Teil der Community",
+      "fieldText": "Text",
+      "textPlaceholder": "Ein Satz, warum es sich lohnt.",
+      "fieldLabel": "Knopf",
+      "labelPlaceholder": "Mitglied werden",
+      "fieldSecondary": "Zweiter Knopf",
+      "secondaryPlaceholder": "Später",
+      "fieldHref": "Ziel des Knopfes",
+      "fieldHrefHint": "Ganze Adresse oder eigener Pfad wie /c/deine-community/join",
+      "fieldPlacement": "Wo",
+      "placement": {
+        "BOTTOM": "Unten",
+        "TOP": "Oben",
+        "CENTER": "Mitte",
+        "CORNER": "Ecke"
+      },
+      "fieldTone": "Farbe",
+      "tone": {
+        "BRAND": "Marke",
+        "DARK": "Dunkel",
+        "LIGHT": "Hell"
+      },
+      "fieldAudience": "Für wen",
+      "audience": {
+        "ALL": "Alle",
+        "GUESTS": "Gäste",
+        "MEMBERS": "Mitglieder",
+        "STAFF": "Team"
+      },
+      "fieldTrigger": "Wann",
+      "trigger": {
+        "IMMEDIATE": "Sofort",
+        "DELAY": "Nach Zeit",
+        "SCROLL": "Beim Scrollen",
+        "EXIT": "Beim Verlassen"
+      },
+      "fieldSeconds": "Wartezeit",
+      "fieldSecondsHint": "So lange ist ein Besucher auf der Seite, bevor der Banner kommt.",
+      "fieldPercent": "Scrolltiefe",
+      "fieldPercentHint": "So weit hat der Besucher die Seite gelesen, bevor der Banner kommt.",
+      "fieldFrequency": "Wie oft",
+      "frequency": {
+        "ALWAYS": "Jedes Mal",
+        "SESSION": "Einmal pro Besuch",
+        "DISMISSED": "Bis weggeklickt"
+      },
+      "frequencyHint": {
+        "ALWAYS": "Erscheint bei jedem Seitenaufruf erneut. Sparsam verwenden.",
+        "SESSION": "Erscheint einmal pro Browser-Sitzung.",
+        "DISMISSED": "Wer ihn wegklickt, sieht ihn nicht wieder."
+      },
+      "fieldStart": "Ab",
+      "fieldEnd": "Bis",
+      "fieldDismissible": "Schliessen erlauben",
+      "fieldDismissibleHint": "Ohne Kreuz bleibt der Banner stehen. Nur für wirklich Wichtiges."
+    },
     "analytics": {
       "metaTitle": "Statistiken",
       "title": "Statistiken",
@@ -4134,6 +4202,10 @@
       "navAria": "Seiten dieser Community",
       "draftNotice": "Entwurf — nur für dich sichtbar.",
       "emptyPage": "Diese Seite hat noch keinen Inhalt."
+    },
+    "banner": {
+      "close": "Schliessen",
+      "aria": "Hinweis der Community"
     }
   },
   "notifications": {
