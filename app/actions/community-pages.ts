@@ -90,6 +90,20 @@ export async function createCommunityPageAction(
   const title = String(fd.get("title") || "").trim().slice(0, MAX_TITLE);
   if (!title) return { error: await tErr("invalidData") };
 
+  // Aus einer Vorlage angelegt: die Bausteine kommen fertig mit. Sie gehen
+  // durch dieselbe Pruefung wie beim Speichern — dass sie aus unserer eigenen
+  // Vorlage stammen, weiss hier niemand, und darauf soll sich auch niemand
+  // verlassen muessen.
+  const raw = fd.get("blocks");
+  let blocks: PageBlock[] = [];
+  if (typeof raw === "string" && raw) {
+    try {
+      blocks = sanitizeBlocks(parsePageBlocks(JSON.parse(raw)));
+    } catch {
+      return { error: await tErr("invalidData") };
+    }
+  }
+
   const pageSlug = uniquePageSlug(
     pageSlugFrom(title),
     existing.map((p) => p.slug),
@@ -102,7 +116,7 @@ export async function createCommunityPageAction(
       slug: pageSlug,
       title,
       sortOrder,
-      blocks: [],
+      blocks: blocks as unknown as object,
     },
     select: { id: true },
   });
@@ -113,7 +127,7 @@ export async function createCommunityPageAction(
     action: "page.create",
     targetType: "CommunityPage",
     targetId: created.id,
-    metadata: { slug: pageSlug, title },
+    metadata: { slug: pageSlug, title, blocks: blocks.length },
   });
 
   revalidatePage(slug);

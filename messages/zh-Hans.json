@@ -2124,6 +2124,107 @@
         "LINKS": "List of linked cards",
         "STATS": "Figures side by side",
         "DIVIDER": "Line, space or dots"
+      },
+      "templates": {
+        "pick": "Where do you start?",
+        "pickHint": "Every template comes with ready-made blocks and placeholders. You can change, extend or throw away anything afterwards.",
+        "BLANK": {
+          "name": "Blank page",
+          "hint": "Start with no blocks",
+          "title": "New page"
+        },
+        "ABOUT": {
+          "name": "About me",
+          "hint": "Who you are and what you do",
+          "title": "About me"
+        },
+        "FAQ": {
+          "name": "Common questions",
+          "hint": "The questions that always come up",
+          "title": "Common questions"
+        },
+        "MEMBERSHIP": {
+          "name": "What you get",
+          "hint": "What the membership holds",
+          "title": "What you get"
+        },
+        "WORK": {
+          "name": "My work",
+          "hint": "Images and videos of your work",
+          "title": "My work"
+        },
+        "RULES": {
+          "name": "Community rules",
+          "hint": "How you treat each other here",
+          "title": "Community rules"
+        },
+        "CONTACT": {
+          "name": "Contact",
+          "hint": "How to reach you",
+          "title": "Contact"
+        },
+        "content": {
+          "aboutIntroTitle": "Hi, I am …",
+          "aboutIntroBody": "Two or three sentences about who you are and what you do.",
+          "aboutIntroBody2": "And one sentence on why this community exists.",
+          "aboutImageCaption": "A picture of you or your work",
+          "aboutStatsTitle": "In numbers",
+          "aboutStat1": "Here since",
+          "aboutStat2": "Posts",
+          "aboutStat3": "Members",
+          "aboutQuote": "The one sentence you stand for.",
+          "aboutCtaTitle": "Come along",
+          "aboutCtaText": "Say what someone gets out of being here.",
+          "aboutCtaLabel": "Become a member",
+          "faqIntro": "The questions I get asked most often.",
+          "faqTitle": "Questions and answers",
+          "faqQ1": "What do I get as a member?",
+          "faqA1": "Briefly describe what the membership holds.",
+          "faqQ2": "How often do you publish?",
+          "faqA2": "Say what to expect — honest beats optimistic.",
+          "faqQ3": "Can I cancel any time?",
+          "faqA3": "Answer this clearly. It often decides whether someone joins.",
+          "faqQ4": "How do I reach you?",
+          "faqA4": "Name the channel where you actually reply.",
+          "faqCtaTitle": "Still a question left?",
+          "faqCtaText": "Write to me — whatever is missing here goes on the list.",
+          "faqCtaLabel": "To the community",
+          "memberIntroTitle": "What the membership holds",
+          "memberIntroBody": "A paragraph on what someone gets — and what they do not. Both build trust.",
+          "memberLinksTitle": "This is included",
+          "memberLink1": "Every post",
+          "memberLink1Hint": "What you publish regularly",
+          "memberLink2": "Talking to others",
+          "memberLink2Hint": "Chat, forum or whatever you use",
+          "memberLink3": "Something only found here",
+          "memberLink3Hint": "The reason someone stays",
+          "memberCtaTitle": "Ready?",
+          "memberCtaText": "Pick the tier that fits you.",
+          "memberCtaLabel": "See membership",
+          "workIntroTitle": "What I work on",
+          "workIntroBody": "A short paragraph on what there is to see here.",
+          "workGalleryTitle": "Selected work",
+          "workVideoTitle": "A closer look",
+          "rulesIntroTitle": "What this is about",
+          "rulesIntroBody": "One sentence on what makes this community — the rules usually follow from it.",
+          "rulesListTitle": "The rules",
+          "rulesItem1": "Be kind. Disagreement yes, belittling no.",
+          "rulesItem2": "No promotion without asking first.",
+          "rulesItem3": "What is shared here stays here.",
+          "rulesItem4": "Add the rule that actually matters to you.",
+          "rulesConsequencesTitle": "If it happens anyway",
+          "rulesConsequencesBody": "Say what follows: a note, a warning, removal. Clarity up front saves arguments later.",
+          "contactIntroTitle": "How to reach me",
+          "contactIntroBody": "Say what you can be contacted about and roughly how long a reply takes.",
+          "contactLinksTitle": "Direct ways",
+          "contactLink1": "Email",
+          "contactLink1Hint": "Put your address here",
+          "contactLink2": "Social media",
+          "contactLink2Hint": "Where else you can be reached",
+          "contactCtaTitle": "Rather ask in public?",
+          "contactCtaText": "Ask in the community — often someone has answered it already.",
+          "contactCtaLabel": "To the community"
+        }
       }
     },
     "analytics": {

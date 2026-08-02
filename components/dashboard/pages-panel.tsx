@@ -16,6 +16,12 @@ import {
   type PageBlockType,
 } from "@/lib/community-pages";
 import {
+  PAGE_TEMPLATES,
+  TEMPLATE_ICON,
+  templateBlocks,
+  type PageTemplateKey,
+} from "@/lib/community-page-templates";
+import {
   createCommunityPageAction,
   deleteCommunityPageAction,
   reorderCommunityPagesAction,
@@ -1014,21 +1020,30 @@ export function PagesPanel({
   const t = useTranslations("dashboard.pages");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const dragFrom = useRef<number | null>(null);
+  const tTpl = useTranslations("dashboard.pages.templates");
 
   const editing = pages.find((p) => p.id === editingId) ?? null;
 
-  function create() {
-    const title = newTitle.trim();
-    if (!title) return;
+  /**
+   * Legt eine Seite aus einer Vorlage an.
+   *
+   * Die Bausteine entstehen hier im Browser, weil die Vorlagentexte in der
+   * Sprache des Creators aufgeloest werden muessen und der Uebersetzer hier
+   * schon steht. Geprueft werden sie trotzdem serverseitig — die Vertrauens-
+   * grenze verschiebt sich dadurch nicht.
+   */
+  function createFrom(template: PageTemplateKey) {
+    const title = tTpl(`${template}.title`);
     setError(null);
     start(async () => {
+      const blocks = templateBlocks(template, (k) => tTpl(`content.${k}`), slug);
       const fd = new FormData();
       fd.set("tenant", slug);
       fd.set("title", title);
+      if (blocks.length > 0) fd.set("blocks", JSON.stringify(blocks));
       const res = await createCommunityPageAction({}, fd);
       if (res.error || !res.createdId) {
         setError(res.error ?? null);
@@ -1049,10 +1064,9 @@ export function PagesPanel({
         status: "DRAFT",
         visibility: "PUBLIC",
         showInNav: true,
-        blocks: [],
+        blocks,
       };
       setPages([...pages, page]);
-      setNewTitle("");
       setAdding(false);
       setEditingId(page.id);
       onChanged();
@@ -1172,42 +1186,42 @@ export function PagesPanel({
       {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
 
       {adding ? (
-        <div className="mt-3 rounded-2xl border border-slate-200 p-3">
-          <Field label={t("fieldTitle")}>
-            <input
-              autoFocus
-              className={INPUT}
-              value={newTitle}
-              onChange={(e) => setNewTitle(e.target.value)}
-              placeholder={t("newPagePlaceholder")}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  create();
-                }
-              }}
-            />
-          </Field>
-          <div className="mt-3 flex items-center gap-2">
+        <div className="mt-3">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="text-sm font-bold text-slate-900">{tTpl("pick")}</h3>
             <button
               type="button"
-              onClick={create}
-              disabled={pending || !newTitle.trim()}
-              className="flex-1 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
-            >
-              {pending ? t("creating") : t("create")}
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setAdding(false);
-                setNewTitle("");
-              }}
-              className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+              onClick={() => setAdding(false)}
+              className="text-sm font-semibold text-slate-500 transition hover:text-slate-900"
             >
               {t("cancel")}
             </button>
           </div>
+          <p className="mb-3 text-xs leading-5 text-slate-400">{tTpl("pickHint")}</p>
+          <div className="grid grid-cols-2 gap-2">
+            {PAGE_TEMPLATES.map((key) => (
+              <button
+                key={key}
+                type="button"
+                disabled={pending}
+                onClick={() => createFrom(key)}
+                className="group flex flex-col gap-2 rounded-2xl border border-slate-200 p-3 text-left transition hover:border-[var(--brand)] hover:bg-slate-50 disabled:opacity-50"
+              >
+                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600 transition group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
+                  <Icon name={TEMPLATE_ICON[key]} size={17} />
+                </span>
+                <span>
+                  <span className="block text-sm font-semibold text-slate-800">
+                    {tTpl(`${key}.name`)}
+                  </span>
+                  <span className="mt-0.5 block text-xs leading-4 text-slate-400">
+                    {tTpl(`${key}.hint`)}
+                  </span>
+                </span>
+              </button>
+            ))}
+          </div>
+          {pending && <p className="mt-3 text-sm text-slate-400">{t("creating")}</p>}
         </div>
       ) : (
         <button

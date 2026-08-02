@@ -2322,6 +2322,107 @@
         "LINKS": "Liste verlinkter Karten",
         "STATS": "Zahlen nebeneinander",
         "DIVIDER": "Linie, Abstand oder Punkte"
+      },
+      "templates": {
+        "pick": "Womit fängst du an?",
+        "pickHint": "Jede Vorlage bringt fertige Bausteine mit Platzhaltern mit. Du kannst danach alles ändern, ergänzen oder wegwerfen.",
+        "BLANK": {
+          "name": "Leere Seite",
+          "hint": "Ohne Bausteine anfangen",
+          "title": "Neue Seite"
+        },
+        "ABOUT": {
+          "name": "Über mich",
+          "hint": "Wer du bist und was du machst",
+          "title": "Über mich"
+        },
+        "FAQ": {
+          "name": "Häufige Fragen",
+          "hint": "Die Fragen, die immer kommen",
+          "title": "Häufige Fragen"
+        },
+        "MEMBERSHIP": {
+          "name": "Was du bekommst",
+          "hint": "Was in der Mitgliedschaft steckt",
+          "title": "Was du bekommst"
+        },
+        "WORK": {
+          "name": "Meine Arbeit",
+          "hint": "Bilder und Videos deiner Arbeit",
+          "title": "Meine Arbeit"
+        },
+        "RULES": {
+          "name": "Community-Regeln",
+          "hint": "Wie ihr hier miteinander umgeht",
+          "title": "Community-Regeln"
+        },
+        "CONTACT": {
+          "name": "Kontakt",
+          "hint": "Wie man dich erreicht",
+          "title": "Kontakt"
+        },
+        "content": {
+          "aboutIntroTitle": "Hallo, ich bin …",
+          "aboutIntroBody": "Zwei, drei Sätze darüber, wer du bist und was du machst.",
+          "aboutIntroBody2": "Und ein Satz dazu, warum es diese Community gibt.",
+          "aboutImageCaption": "Ein Bild von dir oder deiner Arbeit",
+          "aboutStatsTitle": "In Zahlen",
+          "aboutStat1": "Dabei seit",
+          "aboutStat2": "Beiträge",
+          "aboutStat3": "Mitglieder",
+          "aboutQuote": "Der eine Satz, für den du stehst.",
+          "aboutCtaTitle": "Komm dazu",
+          "aboutCtaText": "Sag hier, was jemand davon hat, dabei zu sein.",
+          "aboutCtaLabel": "Mitglied werden",
+          "faqIntro": "Die Fragen, die mir am häufigsten gestellt werden.",
+          "faqTitle": "Fragen und Antworten",
+          "faqQ1": "Was bekomme ich als Mitglied?",
+          "faqA1": "Beschreibe kurz, was hinter der Mitgliedschaft steckt.",
+          "faqQ2": "Wie oft veröffentlichst du etwas?",
+          "faqA2": "Sag, womit man rechnen kann — lieber ehrlich als optimistisch.",
+          "faqQ3": "Kann ich jederzeit kündigen?",
+          "faqA3": "Beantworte das klar. Diese Frage entscheidet oft über den Beitritt.",
+          "faqQ4": "Wie erreiche ich dich?",
+          "faqA4": "Nenne den Weg, auf dem du wirklich antwortest.",
+          "faqCtaTitle": "Noch eine Frage offen?",
+          "faqCtaText": "Schreib mir — was hier fehlt, kommt in die Liste.",
+          "faqCtaLabel": "Zur Community",
+          "memberIntroTitle": "Was in der Mitgliedschaft steckt",
+          "memberIntroBody": "Ein Absatz darüber, was jemand bekommt — und was er nicht bekommt. Beides schafft Vertrauen.",
+          "memberLinksTitle": "Das ist dabei",
+          "memberLink1": "Alle Beiträge",
+          "memberLink1Hint": "Was du regelmäßig veröffentlichst",
+          "memberLink2": "Austausch mit anderen",
+          "memberLink2Hint": "Chat, Forum oder was ihr nutzt",
+          "memberLink3": "Etwas, das es nur hier gibt",
+          "memberLink3Hint": "Der Grund, warum jemand bleibt",
+          "memberCtaTitle": "Bereit?",
+          "memberCtaText": "Such dir die Stufe aus, die zu dir passt.",
+          "memberCtaLabel": "Mitgliedschaft ansehen",
+          "workIntroTitle": "Woran ich arbeite",
+          "workIntroBody": "Ein kurzer Absatz darüber, was man hier zu sehen bekommt.",
+          "workGalleryTitle": "Ausgewählte Arbeiten",
+          "workVideoTitle": "Ein Einblick",
+          "rulesIntroTitle": "Worum es hier geht",
+          "rulesIntroBody": "Ein Satz dazu, was diese Community ausmacht — die Regeln ergeben sich meistens daraus.",
+          "rulesListTitle": "Die Regeln",
+          "rulesItem1": "Sei freundlich. Widerspruch ja, Herabsetzung nein.",
+          "rulesItem2": "Keine Werbung ohne Absprache.",
+          "rulesItem3": "Was hier geteilt wird, bleibt hier.",
+          "rulesItem4": "Ergänze die Regel, die dir wirklich wichtig ist.",
+          "rulesConsequencesTitle": "Wenn es doch mal passiert",
+          "rulesConsequencesBody": "Sag, was dann geschieht: Hinweis, Verwarnung, Ausschluss. Klarheit vorher erspart Streit hinterher.",
+          "contactIntroTitle": "So erreichst du mich",
+          "contactIntroBody": "Sag, wofür man dich anschreiben kann und wie lange eine Antwort ungefähr dauert.",
+          "contactLinksTitle": "Direkte Wege",
+          "contactLink1": "E-Mail",
+          "contactLink1Hint": "Trage hier deine Adresse ein",
+          "contactLink2": "Social Media",
+          "contactLink2Hint": "Wo du sonst noch erreichbar bist",
+          "contactCtaTitle": "Lieber öffentlich fragen?",
+          "contactCtaText": "Stell deine Frage in der Community — oft hat sie jemand schon beantwortet.",
+          "contactCtaLabel": "Zur Community"
+        }
       }
     },
     "analytics": {
