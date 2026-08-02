@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import {
   BANNER_MAX,
+  bannerHref,
   bannerInSchedule,
   bannerVisible,
   emptyBanner,
@@ -107,6 +108,84 @@ describe("parseBanners", () => {
   it("ueberlebt einen Umlauf unveraendert", () => {
     const original = [banner({ id: "a" }), banner({ id: "b", placement: "CENTER" })];
     expect(parseBanners(JSON.parse(JSON.stringify(original)))).toEqual(original);
+  });
+});
+
+describe("Ziel des Knopfes", () => {
+  it("leitet feste Ziele aus dem Adressteil der Community ab", () => {
+    const cases: [BannerConfig["targetType"], string][] = [
+      ["JOIN", "/c/aera/join"],
+      ["HOME", "/c/aera"],
+      ["MEMBERS", "/c/aera/members"],
+      ["LEADERBOARD", "/c/aera/leaderboard"],
+      ["LIBRARY", "/c/aera/library"],
+      ["LIVE", "/c/aera/live"],
+      ["SEARCH", "/c/aera/search"],
+    ];
+    for (const [targetType, expected] of cases) {
+      expect(bannerHref(banner({ targetType }), "aera", null)).toBe(expected);
+    }
+  });
+
+  it("setzt Space und eigene Seite zusammen", () => {
+    expect(bannerHref(banner({ targetType: "SPACE", targetValue: "forum" }), "aera", null)).toBe(
+      "/c/aera/s/forum",
+    );
+    expect(bannerHref(banner({ targetType: "PAGE", targetValue: "ueber-mich" }), "aera", null)).toBe(
+      "/c/aera/p/ueber-mich",
+    );
+  });
+
+  it("nimmt die Trinkgeld-Adresse von aussen entgegen", () => {
+    expect(bannerHref(banner({ targetType: "TIPS" }), "aera", "/c/aera/s/danke")).toBe(
+      "/c/aera/s/danke",
+    );
+    // Ohne Trinkgeld-Space gibt es nichts zu verlinken.
+    expect(bannerHref(banner({ targetType: "TIPS" }), "aera", null)).toBeNull();
+  });
+
+  it("gibt die frei gesetzte Adresse unveraendert zurueck", () => {
+    expect(
+      bannerHref(banner({ targetType: "LINK", href: "https://example.test" }), "aera", null),
+    ).toBe("https://example.test");
+  });
+
+  /**
+   * Ein Ziel, dessen Space geloescht oder dessen Seite umbenannt wurde, wird zu
+   * einem Banner ohne Knopf — nicht zu einem Knopf auf eine Fehlerseite.
+   */
+  it("liefert kein Ziel, wenn die Auswahl fehlt", () => {
+    expect(bannerHref(banner({ targetType: "SPACE", targetValue: "" }), "aera", null)).toBeNull();
+    expect(bannerHref(banner({ targetType: "PAGE", targetValue: "" }), "aera", null)).toBeNull();
+    expect(bannerHref(banner({ targetType: "LINK", href: "" }), "aera", null)).toBeNull();
+    expect(bannerHref(banner({ targetType: "NONE" }), "aera", null)).toBeNull();
+  });
+
+  it("haelt Wert und Art zusammen", () => {
+    // Ein Space-Slug an einem festen Ziel hat keine Bedeutung und faellt weg.
+    expect(parseBanners([{ targetType: "JOIN", targetValue: "forum" }])[0].targetValue).toBe("");
+    // Eine Adresse bleibt nur, wo sie hingehoert.
+    expect(parseBanners([{ targetType: "JOIN", href: "https://x.test" }])[0].href).toBe("");
+    expect(parseBanners([{ targetType: "LINK", href: "https://x.test" }])[0].href).toBe(
+      "https://x.test",
+    );
+  });
+
+  /**
+   * Banner aus der Zeit vor der Zielauswahl kennen nur `href`. Sie duerfen
+   * nicht still auf den Standard zurueckfallen — der Knopf zeigte sonst
+   * woanders hin als am Tag, an dem der Creator ihn gesetzt hat.
+   */
+  describe("Banner von vorher", () => {
+    it("liest eine gespeicherte Adresse als freien Link", () => {
+      const [b] = parseBanners([{ title: "t", href: "https://alt.test" }]);
+      expect(b.targetType).toBe("LINK");
+      expect(bannerHref(b, "aera", null)).toBe("https://alt.test");
+    });
+
+    it("wird ohne Adresse zu einem Banner ohne Knopf", () => {
+      expect(parseBanners([{ title: "t" }])[0].targetType).toBe("NONE");
+    });
   });
 });
 

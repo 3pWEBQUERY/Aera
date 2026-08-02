@@ -2293,7 +2293,26 @@
       "fieldStart": "From",
       "fieldEnd": "Until",
       "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters."
+      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
+      "fieldTarget": "Button target",
+      "target": {
+        "NONE": "No button",
+        "JOIN": "Become a member",
+        "TIPS": "Support",
+        "PAGE": "Own page",
+        "SPACE": "Space",
+        "HOME": "Home",
+        "MEMBERS": "Members",
+        "LEADERBOARD": "Leaderboard",
+        "LIBRARY": "Library",
+        "LIVE": "Live",
+        "SEARCH": "Search",
+        "LINK": "Own address"
+      },
+      "targetNoneHint": "The banner shows text only — no button.",
+      "fieldSpace": "Which space",
+      "fieldPage": "Which page",
+      "choose": "Please choose"
     },
     "analytics": {
       "metaTitle": "统计",

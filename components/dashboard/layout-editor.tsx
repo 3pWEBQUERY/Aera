@@ -334,7 +334,14 @@ export function LayoutEditor({
               onChanged={refreshPreview}
             />
           )}
-          {view === "banner" && <BannerPanel banners={banners} setBanners={setBanners} />}
+          {view === "banner" && (
+            <BannerPanel
+              banners={banners}
+              setBanners={setBanners}
+              spaces={spaces.map((s) => ({ slug: s.slug, name: s.name }))}
+              pages={pages.map((p) => ({ slug: p.slug, name: p.title }))}
+            />
+          )}
           {view === "nav" && <NavPanel nav={nav} setNav={setNav} spaces={spaces} />}
           {view === "menu" && (
             <MenuPanel menu={heroMenu} setMenu={setHeroMenu} spaces={spaces} tipsSlug={initial.tipsSlug} />

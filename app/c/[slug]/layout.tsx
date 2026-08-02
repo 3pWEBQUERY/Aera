@@ -13,7 +13,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { unreadNotificationCount } from "@/lib/notifications";
 import { getTranslations } from "next-intl/server";
-import { parseLayout, resolveNavHref, bannerVisible, NAV_TYPE_ICON } from "@/lib/layout";
+import { parseLayout, resolveNavHref, bannerVisible, bannerHref, NAV_TYPE_ICON } from "@/lib/layout";
 import { CommunityBanners } from "@/components/community/community-banners";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { readPreviewOverride } from "@/lib/preview";
@@ -106,9 +106,15 @@ export default async function CommunityLayout({
   // Zielgruppe und Zeitraum werden hier entschieden, nicht im Browser: was ein
   // Besucher nicht sehen soll, steht dann auch nicht in seinem Quelltext.
   const today = new Date().toISOString().slice(0, 10);
-  const visibleBanners = (preview ? preview.config : savedLayout).banners.filter((b) =>
-    bannerVisible(b, { isMember: ctx.membership?.status === "ACTIVE", isStaff: ctx.isStaff }, today),
-  );
+  const tipsSpace = spaceRows.find((s) => s.type === "TIPS");
+  const visibleBanners = (preview ? preview.config : savedLayout).banners
+    .filter((b) => bannerVisible(b, { isMember, isStaff: ctx.isStaff }, today))
+    // Feste Ziele werden hier aufgeloest: der Browser kennt weder den
+    // Trinkgeld-Space noch die Adressform der Plattformseiten.
+    .map((b) => ({
+      ...b,
+      href: bannerHref(b, slug, tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null) ?? "",
+    }));
 
   const autoItems: SidebarItem[] = [
     { href: `/c/${slug}`, label: tn("home"), icon: "home", exact: true },

@@ -2491,7 +2491,26 @@
       "fieldStart": "Ab",
       "fieldEnd": "Bis",
       "fieldDismissible": "Schliessen erlauben",
-      "fieldDismissibleHint": "Ohne Kreuz bleibt der Banner stehen. Nur für wirklich Wichtiges."
+      "fieldDismissibleHint": "Ohne Kreuz bleibt der Banner stehen. Nur für wirklich Wichtiges.",
+      "fieldTarget": "Ziel des Knopfes",
+      "target": {
+        "NONE": "Kein Knopf",
+        "JOIN": "Mitglied werden",
+        "TIPS": "Unterstützen",
+        "PAGE": "Eigene Seite",
+        "SPACE": "Space",
+        "HOME": "Startseite",
+        "MEMBERS": "Mitglieder",
+        "LEADERBOARD": "Rangliste",
+        "LIBRARY": "Bibliothek",
+        "LIVE": "Live",
+        "SEARCH": "Suche",
+        "LINK": "Eigene Adresse"
+      },
+      "targetNoneHint": "Der Banner zeigt nur Text — ohne Knopf.",
+      "fieldSpace": "Welcher Space",
+      "fieldPage": "Welche Seite",
+      "choose": "Bitte wählen"
     },
     "analytics": {
       "metaTitle": "Statistiken",

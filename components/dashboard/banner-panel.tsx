@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
 import {
   BANNER_FREQUENCIES,
+  BANNER_TARGETS,
+  BANNER_TARGET_ICON,
   BANNER_MAX,
   BANNER_PLACEMENTS,
   BANNER_TONES,
@@ -109,6 +111,127 @@ function PlacementSketch({ placement }: { placement: BannerPlacement }) {
   );
 }
 
+export interface BannerLinkTarget {
+  slug: string;
+  name: string;
+}
+
+/**
+ * Wohin der Knopf fuehrt.
+ *
+ * Die Seiten der Plattform stehen als feste Punkte zur Wahl, weil ihre
+ * Adressen aus dem Community-Slug folgen — wer sie abtippt, vertippt sich
+ * irgendwann, und der Fehler faellt erst dem Besucher auf. Das Adressfeld
+ * erscheint nur, wenn es auch gebraucht wird.
+ */
+function TargetPicker({
+  banner,
+  patch,
+  spaces,
+  pages,
+}: {
+  banner: BannerConfig;
+  patch: (fields: Partial<BannerConfig>) => void;
+  spaces: BannerLinkTarget[];
+  pages: BannerLinkTarget[];
+}) {
+  const t = useTranslations("dashboard.banners");
+  const [open, setOpen] = useState(false);
+
+  // Ein Ziel, fuer das es nichts auszuwaehlen gibt, waere eine Sackgasse.
+  const targets = BANNER_TARGETS.filter(
+    (k) => (k !== "SPACE" || spaces.length > 0) && (k !== "PAGE" || pages.length > 0),
+  );
+  const options = banner.targetType === "SPACE" ? spaces : pages;
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <span className="mb-1.5 block text-sm font-semibold text-slate-800">
+          {t("fieldTarget")}
+        </span>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            onBlur={() => setTimeout(() => setOpen(false), 160)}
+            className="flex w-full items-center gap-2.5 rounded-xl border border-slate-300 px-3 py-2 text-left text-sm text-slate-800 transition hover:bg-slate-50"
+          >
+            <Icon
+              name={BANNER_TARGET_ICON[banner.targetType]}
+              size={16}
+              className="shrink-0 text-slate-400"
+            />
+            <span className="min-w-0 flex-1 truncate font-medium">
+              {t(`target.${banner.targetType}`)}
+            </span>
+            <Icon
+              name="chevron"
+              size={14}
+              className={cn("shrink-0 text-slate-400 transition", open && "rotate-180")}
+            />
+          </button>
+          {open && (
+            <div className="absolute left-0 right-0 top-11 z-30 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl">
+              {targets.map((key) => (
+                <button
+                  key={key}
+                  type="button"
+                  onMouseDown={() => {
+                    // Beim Wechsel den Wert der alten Art wegwerfen: ein
+                    // Space-Slug im Seitenfeld zeigt ins Leere.
+                    patch({ targetType: key, targetValue: "", href: "" });
+                    setOpen(false);
+                  }}
+                  className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-50"
+                >
+                  <Icon name={BANNER_TARGET_ICON[key]} size={16} className="shrink-0 text-slate-400" />
+                  <span className="min-w-0 flex-1 truncate font-medium">{t(`target.${key}`)}</span>
+                  {key === banner.targetType && (
+                    <Icon name="check" size={15} className="shrink-0 text-slate-900" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {(banner.targetType === "SPACE" || banner.targetType === "PAGE") && (
+        <Field label={banner.targetType === "SPACE" ? t("fieldSpace") : t("fieldPage")}>
+          <select
+            className={INPUT}
+            value={banner.targetValue}
+            onChange={(e) => patch({ targetValue: e.target.value })}
+          >
+            <option value="">{t("choose")}</option>
+            {options.map((o) => (
+              <option key={o.slug} value={o.slug}>
+                {o.name}
+              </option>
+            ))}
+          </select>
+        </Field>
+      )}
+
+      {banner.targetType === "LINK" && (
+        <Field label={t("fieldHref")} hint={t("fieldHrefHint")}>
+          <input
+            className={INPUT}
+            value={banner.href}
+            onChange={(e) => patch({ href: e.target.value })}
+            placeholder="https://…"
+          />
+        </Field>
+      )}
+
+      {banner.targetType === "NONE" && (
+        <p className="text-xs leading-5 text-slate-400">{t("targetNoneHint")}</p>
+      )}
+    </div>
+  );
+}
+
 function BannerCard({
   banner,
   index,
@@ -117,6 +240,8 @@ function BannerCard({
   onChange,
   onRemove,
   dragProps,
+  spaces,
+  pages,
 }: {
   banner: BannerConfig;
   index: number;
@@ -125,6 +250,8 @@ function BannerCard({
   onChange: (next: BannerConfig) => void;
   onRemove: () => void;
   dragProps: React.HTMLAttributes<HTMLDivElement>;
+  spaces: BannerLinkTarget[];
+  pages: BannerLinkTarget[];
 }) {
   const t = useTranslations("dashboard.banners");
   const patch = (fields: Partial<BannerConfig>) => onChange({ ...banner, ...fields });
@@ -222,14 +349,7 @@ function BannerCard({
               />
             </Field>
           </div>
-          <Field label={t("fieldHref")} hint={t("fieldHrefHint")}>
-            <input
-              className={INPUT}
-              value={banner.href}
-              onChange={(e) => patch({ href: e.target.value })}
-              placeholder="https://…"
-            />
-          </Field>
+          <TargetPicker banner={banner} patch={patch} spaces={spaces} pages={pages} />
 
           {/* --------------------------------------------------- Auftritt */}
           <div>
@@ -360,9 +480,13 @@ function BannerCard({
 export function BannerPanel({
   banners,
   setBanners,
+  spaces,
+  pages,
 }: {
   banners: BannerConfig[];
   setBanners: (next: BannerConfig[]) => void;
+  spaces: BannerLinkTarget[];
+  pages: BannerLinkTarget[];
 }) {
   const t = useTranslations("dashboard.banners");
   const [openId, setOpenId] = useState<string | null>(null);
@@ -393,6 +517,8 @@ export function BannerPanel({
               setBanners(copy);
             }}
             onRemove={() => setBanners(banners.filter((b) => b.id !== banner.id))}
+            spaces={spaces}
+            pages={pages}
             dragProps={{
               draggable: true,
               onDragStart: () => {

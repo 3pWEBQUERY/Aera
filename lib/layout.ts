@@ -247,6 +247,27 @@ export function heroMenuVisible(
  * Creator sieht seinen Banner also beim Bauen.
  */
 export type BannerPlacement = "BOTTOM" | "TOP" | "CENTER" | "CORNER";
+/**
+ * Ziel des Knopfes.
+ *
+ * Dieselbe Idee wie bei der Menuezeile der Kopfzeile: die Seiten der Plattform
+ * stehen als feste Punkte zur Wahl, weil ihre Adressen aus dem Community-Slug
+ * folgen und niemand sie abtippen sollte. `LINK` bleibt fuer alles daneben,
+ * `NONE` fuer einen Banner, der nur etwas mitteilt.
+ */
+export type BannerTarget =
+  | "NONE"
+  | "JOIN"
+  | "HOME"
+  | "MEMBERS"
+  | "LEADERBOARD"
+  | "LIBRARY"
+  | "LIVE"
+  | "SEARCH"
+  | "TIPS"
+  | "SPACE"
+  | "PAGE"
+  | "LINK";
 /** Wodurch die Einblendung ausgeloest wird. */
 export type BannerTrigger = "IMMEDIATE" | "DELAY" | "SCROLL" | "EXIT";
 /** Wie oft ein Besucher sie zu sehen bekommt. */
@@ -263,6 +284,15 @@ export interface BannerConfig {
   text: string;
   /** Beschriftung des Knopfes. Leer heisst: kein Knopf, nur Text. */
   label: string;
+  /**
+   * Wohin der Knopf fuehrt. Feste Ziele werden aus dem Adressteil der
+   * Community abgeleitet — der Creator soll `/c/seine-community/join` nicht
+   * abtippen und sich dabei vertippen muessen.
+   */
+  targetType: BannerTarget;
+  /** Space- bzw. Seitenadresse bei SPACE und PAGE. Sonst leer. */
+  targetValue: string;
+  /** Frei gesetzte Adresse. Nur bei LINK gefuellt. */
   href: string;
   /** Zweite, leise Beschriftung ("Später"). Leer heisst: nur das Kreuz. */
   secondaryLabel: string;
@@ -281,6 +311,77 @@ export interface BannerConfig {
 export const BANNER_MAX = 6;
 
 export const BANNER_PLACEMENTS: BannerPlacement[] = ["BOTTOM", "TOP", "CENTER", "CORNER"];
+export const BANNER_TARGETS: BannerTarget[] = [
+  "JOIN",
+  "TIPS",
+  "PAGE",
+  "SPACE",
+  "HOME",
+  "MEMBERS",
+  "LEADERBOARD",
+  "LIBRARY",
+  "LIVE",
+  "SEARCH",
+  "LINK",
+  "NONE",
+];
+
+export const BANNER_TARGET_ICON: Record<BannerTarget, IconName> = {
+  NONE: "eraser",
+  JOIN: "tiers",
+  HOME: "home",
+  MEMBERS: "members",
+  LEADERBOARD: "trophy",
+  LIBRARY: "gallery",
+  LIVE: "broadcast",
+  SEARCH: "search",
+  TIPS: "heart",
+  SPACE: "spaces",
+  PAGE: "knowledge",
+  LINK: "external",
+};
+
+/**
+ * Die endgueltige Adresse des Knopfes.
+ *
+ * `tipsHref` kommt von aussen, weil der Trinkgeld-Space in jeder Community
+ * anders heisst — dieselbe Ausnahme wie bei der Menuezeile der Kopfzeile.
+ * `null` heisst: kein Knopf. Ein Ziel, das ins Leere zeigt (Space geloescht,
+ * Seite umbenannt), wird so zu einem Banner ohne Knopf statt zu einem Knopf,
+ * der auf eine Fehlerseite fuehrt.
+ */
+export function bannerHref(
+  banner: BannerConfig,
+  slug: string,
+  tipsHref: string | null,
+): string | null {
+  switch (banner.targetType) {
+    case "NONE":
+      return null;
+    case "LINK":
+      return banner.href || null;
+    case "SPACE":
+      return banner.targetValue ? `/c/${slug}/s/${banner.targetValue}` : null;
+    case "PAGE":
+      return banner.targetValue ? `/c/${slug}/p/${banner.targetValue}` : null;
+    case "TIPS":
+      return tipsHref;
+    case "HOME":
+      return `/c/${slug}`;
+    case "JOIN":
+      return `/c/${slug}/join`;
+    case "MEMBERS":
+      return `/c/${slug}/members`;
+    case "LEADERBOARD":
+      return `/c/${slug}/leaderboard`;
+    case "LIBRARY":
+      return `/c/${slug}/library`;
+    case "LIVE":
+      return `/c/${slug}/live`;
+    case "SEARCH":
+      return `/c/${slug}/search`;
+  }
+}
 export const BANNER_TRIGGERS: BannerTrigger[] = ["IMMEDIATE", "DELAY", "SCROLL", "EXIT"];
 export const BANNER_FREQUENCIES: BannerFrequency[] = ["ALWAYS", "SESSION", "DISMISSED"];
 export const BANNER_TONES: BannerTone[] = ["BRAND", "DARK", "LIGHT"];
@@ -296,6 +397,10 @@ export function emptyBanner(id: string): BannerConfig {
     title: "",
     text: "",
     label: "",
+    // Der haeufigste Banner wirbt um Mitglieder — und die Zielgruppe steht
+    // oben schon auf "Gäste". Ein anderes Standardziel waere Widerspruch.
+    targetType: "JOIN",
+    targetValue: "",
     href: "",
     secondaryLabel: "",
     dismissible: true,
@@ -349,7 +454,7 @@ export function parseBanners(raw: unknown): BannerConfig[] {
       title: typeof r.title === "string" ? r.title.slice(0, 80) : "",
       text: typeof r.text === "string" ? r.text.slice(0, 240) : "",
       label: typeof r.label === "string" ? r.label.slice(0, 40) : "",
-      href: safeLinkHref(r.href, 500),
+      ...parseBannerTarget(r),
       secondaryLabel: typeof r.secondaryLabel === "string" ? r.secondaryLabel.slice(0, 40) : "",
       dismissible: r.dismissible !== false,
       trigger,
@@ -362,6 +467,32 @@ export function parseBanners(raw: unknown): BannerConfig[] {
     });
   }
   return out;
+}
+
+/**
+ * Ziel eines Banners einlesen.
+ *
+ * Banner aus der Zeit vor der Zielauswahl kennen nur `href`. Sie werden als
+ * frei gesetzter Link gelesen — genau das waren sie —, statt still auf den
+ * Standard zurueckzufallen und den Knopf woanders hinzuschicken.
+ */
+function parseBannerTarget(r: Record<string, unknown>): {
+  targetType: BannerTarget;
+  targetValue: string;
+  href: string;
+} {
+  const href = safeLinkHref(r.href, 500);
+  const stored = BANNER_TARGETS.includes(r.targetType as BannerTarget)
+    ? (r.targetType as BannerTarget)
+    : undefined;
+  const targetType: BannerTarget = stored ?? (href ? "LINK" : "NONE");
+  const targetValue =
+    targetType === "SPACE" || targetType === "PAGE"
+      ? typeof r.targetValue === "string"
+        ? r.targetValue.trim().slice(0, 80)
+        : ""
+      : "";
+  return { targetType, targetValue, href: targetType === "LINK" ? href : "" };
 }
 
 /** Tagesangabe im Format JJJJ-MM-TT? */
