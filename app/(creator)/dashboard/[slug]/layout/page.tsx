@@ -2,6 +2,7 @@ import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
 import { getCommunityCoverUrl } from "@/lib/tenant";
 import { parseLayout } from "@/lib/layout";
+import { parsePageBlocks } from "@/lib/community-pages";
 import { LayoutEditor } from "@/components/dashboard/layout-editor";
 
 export default async function LayoutBuilderPage({
@@ -12,7 +13,7 @@ export default async function LayoutBuilderPage({
   const { slug } = await params;
   const { tenant } = await requireTenantAdmin(slug);
 
-  const [coverUrl, spaceRows, tipsSpace] = await Promise.all([
+  const [coverUrl, spaceRows, tipsSpace, pageRows] = await Promise.all([
     getCommunityCoverUrl(tenant.id),
     prisma.space.findMany({
       where: { tenantId: tenant.id, isArchived: false },
@@ -24,6 +25,11 @@ export default async function LayoutBuilderPage({
     prisma.space.findFirst({
       where: { tenantId: tenant.id, type: "TIPS", isArchived: false },
       select: { slug: true },
+    }),
+    // Frei gebaute Seiten — der Bereich "Seiten" im Editor.
+    prisma.communityPage.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     }),
   ]);
 
@@ -46,6 +52,16 @@ export default async function LayoutBuilderPage({
         header: config.header,
         heroMenu: config.heroMenu,
         tipsSlug: tipsSpace?.slug ?? null,
+        pages: pageRows.map((p) => ({
+          id: p.id,
+          slug: p.slug,
+          title: p.title,
+          description: p.description ?? "",
+          status: p.status,
+          visibility: p.visibility as "PUBLIC" | "MEMBERS" | "PAID",
+          showInNav: p.showInNav,
+          blocks: parsePageBlocks(p.blocks),
+        })),
       }}
     />
   );

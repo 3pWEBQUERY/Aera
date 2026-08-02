@@ -19,7 +19,7 @@ import { MediaSlider } from "@/components/community/media-slider";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { LiveSessionCard } from "@/components/community/live-session-card";
 import { SpaceSectionPreview } from "@/components/community/space-section-preview";
-import { CommunityHero, type CommunityHeroData } from "@/components/community/community-hero";
+import { CommunityHero } from "@/components/community/community-hero";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { badgesForUsers } from "@/lib/member-badges";
 import { BadgeRow } from "@/components/community/badge-row";
@@ -29,6 +29,9 @@ import { SpaceSlider, type SpaceCardData } from "@/components/community/space-sl
 import { ShopSection, type ShopProduct, type ShopNotice } from "@/components/community/shop-section";
 import { parseLayout, orderedSections, audienceFor, type SectionType } from "@/lib/layout";
 import { readPreviewOverride } from "@/lib/preview";
+import { buildCommunityHeroData } from "@/lib/community-hero";
+import { listPageNav } from "@/lib/community-page-queries";
+import { CommunityPageTabs } from "@/components/community/page-tabs";
 import { ButtonLink } from "@/components/ui/button";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Icon, type IconName } from "@/components/dashboard/icons";
@@ -71,7 +74,7 @@ export default async function CommunityHome({
   const tLegal = await getTranslations("legalPurchase");
   const locale = await getLocale();
 
-  const [spacesAll, coverUrl, memberCount, postCount, cheapestPaidTier] =
+  const [spacesAll, coverUrl, memberCount, postCount, cheapestPaidTier, navPages] =
     await Promise.all([
       prisma.space.findMany({
         where: { tenantId: tenant.id, isArchived: false },
@@ -86,6 +89,8 @@ export default async function CommunityHome({
         orderBy: { priceCents: "asc" },
         select: { priceCents: true, currency: true, interval: true },
       }),
+      // Reiter unter dem Kopfbereich: die frei gebauten Seiten dieser Community.
+      listPageNav(tenant.id, ctx),
     ]);
 
   // Banner-only and ad spaces are invisible in the space lists; ads render
@@ -329,38 +334,22 @@ export default async function CommunityHome({
   // Das Mosaik zeigt ausschliesslich die Bilder, die der Creator dafuer
   // hochgeladen hat. Keine automatisch eingesammelten Beitragsbilder: was
   // ueber der Seite steht, soll niemanden ueberraschen.
-  const heroData: CommunityHeroData = {
+  //
+  // Zusammengebaut in lib/community-hero.ts, weil die frei gebauten Seiten
+  // denselben Kopfbereich tragen.
+  const heroData = await buildCommunityHeroData({
     slug,
-    name: displayName,
-    tagline: tenant.tagline ?? tenant.description ?? null,
-    logoUrl: preview?.logoUrl !== undefined ? preview.logoUrl : tenant.logoUrl,
-    // "Profilfoto verwenden" heisst genau das: kein Titelbild. Die Einstellung
-    // gab es schon, gelesen hat sie bisher niemand — die Kopfzeile zeigte das
-    // Titelbild auch dann, wenn der Creator sich dagegen entschieden hatte.
-    coverUrl: layoutConfig.header.mode === "PHOTO" ? null : coverUrl,
-    primaryColor: preview?.primaryColor ?? tenant.primaryColor,
-    menu: layoutConfig.heroMenu,
+    tenant,
+    layout: layoutConfig,
+    preview,
+    coverUrl,
     memberCount,
     postCount,
-    priceLabel: cheapestPaidTier
-      ? `${formatPrice(cheapestPaidTier.priceCents, cheapestPaidTier.currency, locale)}${
-          cheapestPaidTier.interval === "MONTH"
-            ? t("perMonth")
-            : cheapestPaidTier.interval === "YEAR"
-              ? t("perYear")
-              : ""
-        }`
-      : null,
-    mosaic: layoutConfig.header.mosaic,
-    socials: layoutConfig.header.socials,
+    cheapestPaidTier,
+    tipsHref: tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null,
     isMember,
     isStaff: ctx.isStaff,
-    tipsHref: tipsSpace ? `/c/${slug}/s/${tipsSpace.slug}` : null,
-    labels: {
-      posts: t("postsCount", { count: nf.format(postCount) }),
-      members: t("membersCount", { count: memberCount }),
-    },
-  };
+  });
 
   const recentSection =
     recent.length === 0 ? (
@@ -821,6 +810,7 @@ export default async function CommunityHome({
   return (
     <div>
       <CommunityHero variant={layoutConfig.header.variant} data={heroData} />
+      <CommunityPageTabs slug={slug} pages={navPages} />
 
       {/* ------------------------------------ Paid-tier upsell (full-bleed) */}
       {showUpsell && (

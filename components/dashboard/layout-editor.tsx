@@ -13,6 +13,7 @@ import {
   SocialGlyph,
 } from "./social-icons";
 import { Icon, type IconName } from "./icons";
+import { PagesPanel, type EditablePage } from "./pages-panel";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
@@ -49,7 +50,7 @@ const COLOR_PRESETS = ["#6d28d9", "#2563eb", "#db2777", "#dc2626", "#ea580c", "#
 
 // Space type → icon (matches the Spaces dashboard).
 
-type View = "hub" | "header" | "sections" | "nav" | "menu";
+type View = "hub" | "header" | "sections" | "pages" | "nav" | "menu";
 
 export interface LayoutEditorInitial {
   name: string;
@@ -69,6 +70,8 @@ export interface LayoutEditorInitial {
   heroMenu: HeroMenuConfig;
   /** Adresse des Trinkgeld-Space, falls die Community einen hat. */
   tipsSlug: string | null;
+  /** Frei gebaute Seiten dieser Community. */
+  pages: EditablePage[];
 }
 
 const initialState: LayoutState = {};
@@ -87,6 +90,7 @@ export function LayoutEditor({
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
   const [audience, setAudience] = useState<Audience>("FREE");
   const t = useTranslations("dashboard.layout");
+  const tPages = useTranslations("dashboard.pages");
 
   const [name, setName] = useState(initial.name);
   const nameCheck = useNameAvailability(name, slug);
@@ -116,6 +120,9 @@ export function LayoutEditor({
     initial.nav.length > 0 ? initial.nav : [{ id: uid(), label: t("navTypes.HOME"), type: "HOME" }],
   );
   const [heroMenu, setHeroMenu] = useState<HeroMenuConfig>(initial.heroMenu);
+  // Seiten liegen in einer eigenen Tabelle und werden vom Panel sofort
+  // gespeichert — sie gehen deshalb nicht in `payload` ein.
+  const [pages, setPages] = useState<EditablePage[]>(initial.pages);
 
   const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
   const [flash, setFlash] = useState(false);
@@ -185,10 +192,21 @@ export function LayoutEditor({
     return () => clearTimeout(t);
   }, [previewPayload, previewReady, writeCookie]);
 
+  /**
+   * Laedt die Vorschau neu.
+   *
+   * Seiten stehen nicht im Vorschau-Cookie, sondern schon in der Datenbank —
+   * ein Neuladen des Rahmens reicht also, um sie zu zeigen. Der Umweg ueber
+   * das Cookie waere hier auch nicht gangbar: ein einziger Textbaustein
+   * sprengt dessen Groessengrenze.
+   */
+  const refreshPreview = useCallback(() => setPreviewNonce((n) => n + 1), []);
+
   const titles: Record<View, string> = {
     hub: t("titleHub"),
     header: t("titleHeader"),
     sections: t("titleSections"),
+    pages: tPages("title"),
     nav: t("titleNav"),
     menu: t("titleMenu"),
   };
@@ -299,6 +317,14 @@ export function LayoutEditor({
               setApplyAll={setApplyAllAudiences}
             />
           )}
+          {view === "pages" && (
+            <PagesPanel
+              slug={slug}
+              pages={pages}
+              setPages={setPages}
+              onChanged={refreshPreview}
+            />
+          )}
           {view === "nav" && <NavPanel nav={nav} setNav={setNav} spaces={spaces} />}
           {view === "menu" && (
             <MenuPanel menu={heroMenu} setMenu={setHeroMenu} spaces={spaces} tipsSlug={initial.tipsSlug} />
@@ -374,9 +400,13 @@ function AudienceSelect({
 // ---------------------------------------------------------------- Hub
 function Hub({ onOpen }: { onOpen: (v: View) => void }) {
   const t = useTranslations("dashboard.layout");
+  const tPages = useTranslations("dashboard.pages");
   const rows: { view: View; label: string; icon: IconName }[] = [
     { view: "header", label: t("hubHeader"), icon: "branding" },
     { view: "sections", label: t("hubSections"), icon: "layout" },
+    // Direkt unter dem Seitenlayout: beides beantwortet "was steht auf meiner
+    // Seite", nur einmal fuer die Startseite und einmal daneben.
+    { view: "pages", label: tPages("hub"), icon: "knowledge" },
     { view: "nav", label: t("hubNav"), icon: "menu" },
     { view: "menu", label: t("hubMenu"), icon: "more" },
   ];

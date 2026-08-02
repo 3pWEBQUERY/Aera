@@ -507,6 +507,7 @@ model Tenant {
   pendingCreatorCheckouts   PendingCreatorCheckout[]
   pollVotes                 PollVote[]
   promoRedemptions          PromoCodeRedemption[]
+  pages                     CommunityPage[]
 
   @@index([slug])
   @@index([category])
@@ -609,6 +610,44 @@ model Space {
 
   @@unique([tenantId, slug])
   @@index([tenantId])
+}
+
+enum CommunityPageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// Frei gebaute Seite einer Community — "Ueber uns", "FAQ", "Presse".
+///
+/// Bewusst eine eigene Tabelle statt eines weiteren Felds in `Tenant.layout`:
+/// die Vorschau des Layout-Editors reicht ihren Stand als Cookie an den Server
+/// weiter, und Cookies sind auf rund 4 KB begrenzt. Ein einziger Textbaustein
+/// sprengt das. Ausserdem sind Seiten Inhalt und keine Layout-Einstellung —
+/// sie haben eine eigene Adresse, eigene Sichtbarkeit und einen Entwurfsstand.
+model CommunityPage {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  /// Letzter Teil der Adresse: /c/{community}/p/{slug}
+  slug     String
+  title    String
+  /// Kurzbeschreibung fuer Suchmaschinen und Linkvorschauen.
+  description String?
+  status      CommunityPageStatus @default(DRAFT)
+  visibility  Visibility          @default(PUBLIC)
+  /// Optionaler Schluessel, wenn die Seite an eine bestimmte Stufe haengt.
+  requiredEntitlementKey String?
+  /// Im Reitermenue unter dem Kopfbereich zeigen. Aus = Seite bleibt
+  /// erreichbar, taucht aber nur ueber einen selbst gesetzten Link auf.
+  showInNav Boolean @default(true)
+  sortOrder Int     @default(0)
+  /// Inhaltsbausteine in Reihenfolge. Aufbau: lib/community-pages.ts
+  blocks    Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, slug])
+  @@index([tenantId, status, sortOrder])
 }
 
 enum RequestStatus {

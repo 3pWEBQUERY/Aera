@@ -54,6 +54,7 @@ export function RichTextEditor({
   onPollClick,
   pollActive = false,
   hideUploads = false,
+  onChange,
 }: {
   tenant: string;
   name?: string;
@@ -78,6 +79,13 @@ export function RichTextEditor({
   /** Hide media-upload buttons (image/video/attach/record) — e.g. for members
    *  who may not upload; keeps formatting, emoji, GIF and links. */
   hideUploads?: boolean;
+  /**
+   * Meldet jede Aenderung am HTML. Fuer Oberflaechen, die den Text nicht ueber
+   * ein <form> abschicken, sondern selbst im Zustand halten — der
+   * Seiten-Editor etwa steht im Layout-Editor, und ein Formular im Formular
+   * gibt es in HTML nicht.
+   */
+  onChange?: (html: string) => void;
 }) {
   const t = useTranslations("dashboard.rte");
   const editorRef = useRef<HTMLDivElement>(null);
@@ -112,6 +120,15 @@ export function RichTextEditor({
     setHtml(defaultHtml);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // Bewusst am Zustand und nicht an jedem Tastendruck: `html` aendert sich auch
+  // durch Werkzeugleiste, Uploads und das Slash-Menue. Ein Ruf pro tatsaechlicher
+  // Aenderung, egal woher sie kam.
+  const notify = useRef(onChange);
+  notify.current = onChange;
+  useEffect(() => {
+    notify.current?.(html);
+  }, [html]);
 
   const hasMedia = /<(img|video)/i.test(html);
   const isEmpty = !hasMedia && html.replace(/<[^>]*>/g, "").replace(/(\s|&nbsp;)/g, "") === "";
