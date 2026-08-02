@@ -13,6 +13,7 @@ import { Sheet } from "./sheet";
 import { Icon, type IconName } from "./icons";
 import { ImageUpload } from "./image-upload";
 import { Input, Label, Textarea } from "@/components/ui/field";
+import { Select } from "@/components/ui/select";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 
@@ -281,18 +282,17 @@ function PillSelect({
   options: { value: string; label: string }[];
 }) {
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-600 outline-none transition hover:bg-slate-50 focus:border-slate-900"
-    >
+    // Eigenes Menue statt <select>: die native Liste zeichnet jedes System
+    // anders — graue Kaesten unter Windows, Vollbild-Walze auf dem Telefon —
+    // und keine davon passt zu den runden Filterpillen daneben.
+    <Select variant="pill" value={value} onChange={onChange}>
       <option value="">{allLabel}</option>
       {options.map((o) => (
         <option key={o.value} value={o.value}>
           {o.label}
         </option>
       ))}
-    </select>
+    </Select>
   );
 }
 
@@ -424,19 +424,19 @@ function PlanForm({
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="pl-type">{t("typeLabel")}</Label>
-              <select id="pl-type" name="type" value={type} onChange={(e) => setType(e.target.value as PlanType)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+              <Select id="pl-type" name="type" value={type} onChange={(v) => setType(v as PlanType)}>
                 {TYPES.map((x) => (
                   <option key={x} value={x}>{t(`type.${x}`)}</option>
                 ))}
-              </select>
+              </Select>
             </div>
             <div>
               <Label htmlFor="pl-status">{t("statusLabel")}</Label>
-              <select id="pl-status" name="status" value={status} onChange={(e) => setStatus(e.target.value as PlanStatus)} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+              <Select id="pl-status" name="status" value={status} onChange={(v) => setStatus(v as PlanStatus)}>
                 {STATUSES.map((x) => (
                   <option key={x} value={x}>{t(`status.${x}`)}</option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 
@@ -448,12 +448,12 @@ function PlanForm({
             </div>
             <div>
               <Label htmlFor="pl-space">{t("spaceLabel")}</Label>
-              <select id="pl-space" name="spaceId" defaultValue={plan?.spaceId ?? ""} className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm">
+              <Select id="pl-space" name="spaceId" defaultValue={plan?.spaceId ?? ""}>
                 <option value="">{t("spaceNone")}</option>
                 {spaces.map((s) => (
                   <option key={s.id} value={s.id}>{s.name}</option>
                 ))}
-              </select>
+              </Select>
             </div>
           </div>
 

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
+import { Select } from "@/components/ui/select";
 import {
   BANNER_FREQUENCIES,
   BANNER_TARGETS,
@@ -199,10 +200,9 @@ function TargetPicker({
 
       {(banner.targetType === "SPACE" || banner.targetType === "PAGE") && (
         <Field label={banner.targetType === "SPACE" ? t("fieldSpace") : t("fieldPage")}>
-          <select
-            className={INPUT}
+          <Select
             value={banner.targetValue}
-            onChange={(e) => patch({ targetValue: e.target.value })}
+            onChange={(targetValue) => patch({ targetValue })}
           >
             <option value="">{t("choose")}</option>
             {options.map((o) => (
@@ -210,7 +210,7 @@ function TargetPicker({
                 {o.name}
               </option>
             ))}
-          </select>
+          </Select>
         </Field>
       )}
 

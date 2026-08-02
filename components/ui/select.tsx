@@ -16,6 +16,14 @@ interface Opt {
   label: string;
 }
 
+/**
+ * "field" ist das ausgewachsene Formularfeld ueber die volle Breite.
+ * "pill" ist die kompakte Filterpille, wie sie reihenweise ueber Listen steht:
+ * so breit wie ihr Text, rund, und mit einem Menue, das sich nach dem
+ * laengsten Eintrag richtet statt nach der Pille.
+ */
+export type SelectVariant = "field" | "pill";
+
 export function Select({
   name,
   id,
@@ -27,6 +35,7 @@ export function Select({
   placeholder,
   disabled,
   required,
+  variant = "field",
 }: {
   name?: string;
   id?: string;
@@ -38,6 +47,7 @@ export function Select({
   placeholder?: string;
   disabled?: boolean;
   required?: boolean;
+  variant?: SelectVariant;
 }) {
   const options: Opt[] = [];
   Children.forEach(children, (child) => {
@@ -100,8 +110,10 @@ export function Select({
     }
   }
 
+  const pill = variant === "pill";
+
   return (
-    <div ref={ref} className={cn("relative", className)}>
+    <div ref={ref} className={cn(pill ? "relative inline-block" : "relative", className)}>
       {/* Ein deaktiviertes Feld darf nichts senden — sonst uebertraegt das
           versteckte Input weiter einen Wert, obwohl die Bedienung gesperrt ist. */}
       {name && (
@@ -122,7 +134,10 @@ export function Select({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={cn(
-          "flex w-full items-center justify-between gap-2 rounded-lg border bg-white px-3 py-2 text-left text-sm outline-none transition",
+          "flex items-center justify-between gap-2 border bg-white text-left outline-none transition",
+          pill
+            ? "rounded-full px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            : "w-full rounded-lg px-3 py-2 text-sm",
           open
             ? "border-[var(--brand)] ring-2 ring-[var(--brand-ring)]"
             : "border-slate-300 hover:border-slate-400",
@@ -134,7 +149,7 @@ export function Select({
         </span>
         <Icon
           name="chevron"
-          size={16}
+          size={pill ? 13 : 16}
           className={cn("shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
         />
       </button>
@@ -142,7 +157,12 @@ export function Select({
       {open && (
         <ul
           role="listbox"
-          className="absolute z-50 mt-1.5 max-h-64 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg"
+          className={cn(
+            "absolute z-50 mt-1.5 max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg",
+            // Eine Pille ist so schmal wie ihr Text; ein Menue in derselben
+            // Breite wuerde jeden laengeren Eintrag abschneiden.
+            pill ? "w-max min-w-full" : "w-full",
+          )}
         >
           {options.map((o, i) => {
             const isSel = o.value === selected;
