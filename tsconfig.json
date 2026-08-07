@@ -42,6 +42,11 @@
   ],
   "exclude": [
     "node_modules",
-    "app/generated"
+    "app/generated",
+    // Aeli (aeli.so/) ist eine eigenstaendige Next.js-App mit eigenem
+    // tsconfig, eigenem Prisma-Client und eigenem node_modules. Ohne diesen
+    // Ausschluss zieht `**/*.ts` sie in Aeras Typpruefung — und dann loest
+    // ihr `@/lib/...` gegen Aeras Wurzel auf, nicht gegen ihre eigene.
+    "aeli.so"
   ]
 }

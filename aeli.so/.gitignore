@@ -1,0 +1,11 @@
+# Die Wurzel-.gitignore verankert `app/generated`, `.next` & Co. am Repo-Root.
+# Muster mit Schraegstrich gelten nur relativ zu ihrer eigenen .gitignore, also
+# braucht die Aeli-App eine eigene.
+node_modules
+.next
+app/generated
+.env
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store

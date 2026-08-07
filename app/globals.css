@@ -3,6 +3,9 @@
 /* Tailwind's source scanner walks every non-ignored file and would extract
    garbage class names from binary content (macOS .DS_Store, stray build
    caches), which breaks the CSS build. Exclude anything binary explicitly. */
+/* Aeli ist eine eigene App mit eigenem Stylesheet. Ohne diesen Ausschluss
+   liest Tailwind ihre Klassennamen mit ein und baut sie in Aeras CSS ein. */
+@source not "../aeli.so/**";
 @source not "../**/.DS_Store";
 @source not "../private/**";
 @source not "../memory-bank/**";

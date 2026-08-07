@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "aeli",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["--prefix", "aeli.so", "run", "dev"],
+      "port": 3001,
+      "autoPort": true
+    },
+    {
+      "name": "aera",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

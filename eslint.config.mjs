@@ -12,6 +12,8 @@ export default defineConfig([
     "app/generated/**",
     "public/**",
     "Aera-visitor-member-iOS-App/**",
+    // Eigene App, eigene eslint.config.mjs (aeli.so/).
+    "aeli.so/**",
   ]),
   {
     // These React Compiler diagnostics were introduced after the existing UI

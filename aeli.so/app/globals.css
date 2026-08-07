@@ -1,0 +1,456 @@
+@import "tailwindcss";
+
+@source not "../**/.DS_Store";
+@source not "../app/generated/**";
+
+/* ==========================================================================
+   Aeli — zwei Welten, ein Stylesheet
+
+   1. Die APP (Marketing, Anmeldung, Studio) hat eine feste Identität:
+      Tiefschwarz, ein einziges Signalgrün, viel Luft. Sie soll nach Werkzeug
+      aussehen, nicht nach Vorlage.
+   2. Die ÖFFENTLICHE SEITE gehört dem Creator. Sie liest ausschließlich
+      `--aeli-*`-Variablen, die pro Profil aus dem Theme gesetzt werden — hier
+      steht deshalb nur, WIE die Variablen benutzt werden, nie WELCHE Werte
+      sie tragen.
+
+   Die Trennung ist bewusst hart: keine App-Farbe darf in eine Bio-Seite
+   durchschlagen, sonst tragen alle Seiten am Ende dieselbe Handschrift.
+   ========================================================================== */
+
+@theme {
+  /* -- App-Palette ------------------------------------------------------ */
+  --color-ink: #08080b;
+  --color-ink-2: #101015;
+  --color-ink-3: #17171d;
+  --color-line: #24242d;
+  --color-chalk: #f6f5f1;
+  --color-ash: #8f8f9c;
+
+  /* Ein Signal, nicht drei. Alles, was klickbar und wichtig ist, ist grün;
+     alles andere ist grau. Damit muss niemand raten, wo es weitergeht. */
+  --color-signal: #c9f24d;
+  --color-signal-deep: #a8d128;
+  --color-ember: #ff7a5a;
+
+  --font-display:
+    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  --font-mono:
+    ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-display);
+  background: var(--color-ink);
+  color: var(--color-chalk);
+  /* Ziffern in Statistiken sollen beim Hochzählen nicht springen. */
+  font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Ein sichtbarer, kontrastreicher Fokus — überall, ohne Ausnahme. Ein
+   `outline: none` ohne Ersatz ist der schnellste Weg, eine Seite für
+   Tastaturnutzung unbenutzbar zu machen. */
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--color-signal);
+  color: #08080b;
+}
+
+.skip-link {
+  position: fixed;
+  left: 1rem;
+  top: 1rem;
+  z-index: 999;
+  transform: translateY(calc(-100% - 2rem));
+  border-radius: 10px;
+  background: var(--color-signal);
+  color: #08080b;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: transform 0.15s ease-out;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Bewegung — sparsam und mit Grund
+   ========================================================================== */
+
+@keyframes aeli-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aeli-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes aeli-drift {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1.05);
+  }
+  50% {
+    transform: translate3d(4%, 3%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-4%, -2%, 0) scale(1.05);
+  }
+}
+
+@keyframes aeli-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.82);
+  }
+}
+
+/* Die Blöcke einer frisch geladenen Bio-Seite steigen einmal nacheinander ein.
+   Die Verzögerung kommt als `--i` aus dem Markup, damit die Reihenfolge der
+   Blöcke sie bestimmt und nicht eine Liste fester Klassen. */
+.aeli-rise {
+  animation: aeli-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+.aeli-fade {
+  animation: aeli-fade 0.4s ease-out backwards;
+  animation-delay: calc(var(--i, 0) * 40ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aeli-rise,
+  .aeli-fade {
+    animation: none;
+  }
+  .aeli-backdrop::before,
+  .aeli-backdrop::after {
+    animation: none !important;
+  }
+}
+
+/* ==========================================================================
+   Öffentliche Seite
+   Alles hier liest `--aeli-*`. Werte kommen aus lib/themes.ts.
+   ========================================================================== */
+
+.aeli-page {
+  min-height: 100dvh;
+  /* Die Grundfarbe bleibt als Rückfall stehen — sie ist auch das, was während
+     des Ladens eines Hintergrundbildes zu sehen ist. */
+  background: var(--aeli-bg);
+  color: var(--aeli-fg);
+  font-family: var(--aeli-font-body);
+  position: relative;
+  isolation: isolate;
+}
+
+/* Die Hintergrundfläche: Farbe, Verlauf oder Foto.
+
+   Als eigene, fixierte Ebene statt als `background` des Containers — nur so
+   lassen sich Weichzeichnen und Abdunkeln darauf anwenden, ohne dass Text und
+   Knöpfe darüber mitverschwimmen. `fixed` heißt außerdem: beim Scrollen bleibt
+   die Fläche stehen, statt mit der Liste nach oben zu laufen. */
+.aeli-bg-layer {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background: var(--aeli-bg-css, var(--aeli-bg));
+  background-size: cover;
+  background-position: center;
+  pointer-events: none;
+}
+
+/* Weichgezeichnete Fotos werden über den Rand hinaus vergrößert: sonst zieht
+   der Weichzeichner die durchsichtige Kante nach innen und es entsteht ein
+   heller Rahmen um die ganze Seite. */
+.aeli-bg-layer[data-blurred="true"] {
+  transform: scale(1.08);
+}
+
+/* Die Abdunklung liegt über dem Bild, aber unter dem Inhalt. */
+.aeli-bg-dim {
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background: #000;
+  pointer-events: none;
+}
+
+.aeli-page h1,
+.aeli-page h2,
+.aeli-page .aeli-display {
+  font-family: var(--aeli-font-display);
+}
+
+/* -- Hintergründe ------------------------------------------------------- */
+/* Vier Stimmungen, alle rein aus CSS: kein Bild, kein Netzwerkzugriff, keine
+   Layoutverschiebung beim Laden. Sie liegen hinter dem Inhalt (`z-index: -1`)
+   und fangen keine Klicks ab. */
+
+.aeli-backdrop::before,
+.aeli-backdrop::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.aeli-backdrop-aurora::before {
+  background:
+    radial-gradient(38% 32% at 22% 18%, color-mix(in oklab, var(--aeli-accent) 55%, transparent), transparent 70%),
+    radial-gradient(42% 36% at 82% 26%, color-mix(in oklab, var(--aeli-bg-alt) 90%, white 10%), transparent 72%),
+    radial-gradient(46% 40% at 50% 92%, color-mix(in oklab, var(--aeli-accent) 30%, transparent), transparent 70%);
+  filter: blur(40px) saturate(120%);
+  opacity: 0.55;
+  animation: aeli-drift 24s ease-in-out infinite;
+}
+
+.aeli-backdrop-mesh::before {
+  background:
+    radial-gradient(30% 30% at 15% 12%, var(--aeli-bg-alt), transparent 68%),
+    radial-gradient(34% 34% at 88% 20%, color-mix(in oklab, var(--aeli-accent) 34%, transparent), transparent 70%),
+    radial-gradient(40% 34% at 70% 88%, var(--aeli-bg-alt), transparent 70%);
+  filter: blur(28px);
+  opacity: 0.85;
+}
+
+.aeli-backdrop-rings::before {
+  background: repeating-radial-gradient(
+    circle at 50% 0%,
+    color-mix(in oklab, var(--aeli-accent) 12%, transparent) 0 1px,
+    transparent 1px 84px
+  );
+  opacity: 0.5;
+}
+
+/* Filmkorn als SVG-Rauschen in einer data:-URL — deshalb braucht die CSP hier
+   kein zusätzliches img-src. */
+.aeli-backdrop-grain::after {
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.12;
+  mix-blend-mode: overlay;
+}
+
+/* -- Knöpfe -------------------------------------------------------------- */
+/* Ein Link ist auf dieser Seite das Hauptereignis. Er bekommt deshalb die
+   volle Breite, eine ruhige Fläche und genau eine Reaktion beim Anfassen:
+   er hebt sich einen Millimeter. Kein Farbwechsel, kein Wackeln. */
+
+.aeli-link {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 1rem 1.125rem;
+  border-radius: var(--aeli-radius);
+  text-align: left;
+  font-weight: 600;
+  line-height: 1.3;
+  transition:
+    transform 0.18s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.18s ease,
+    background-color 0.18s ease;
+  will-change: transform;
+}
+
+.aeli-link:hover {
+  transform: translateY(-2px);
+}
+.aeli-link:active {
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aeli-link {
+    transition: none;
+  }
+  .aeli-link:hover {
+    transform: none;
+  }
+}
+
+.aeli-btn-solid {
+  background: var(--aeli-accent);
+  color: var(--aeli-accent-fg);
+  box-shadow: 0 10px 30px -18px color-mix(in oklab, var(--aeli-accent) 90%, black);
+}
+.aeli-btn-solid:hover {
+  box-shadow: 0 18px 38px -18px color-mix(in oklab, var(--aeli-accent) 90%, black);
+}
+
+.aeli-btn-outline {
+  background: transparent;
+  color: var(--aeli-fg);
+  border: 1.5px solid var(--aeli-fg);
+}
+.aeli-btn-outline:hover {
+  background: color-mix(in oklab, var(--aeli-fg) 8%, transparent);
+}
+
+.aeli-btn-soft {
+  background: var(--aeli-surface);
+  color: var(--aeli-fg);
+  border: 1px solid var(--aeli-border);
+}
+.aeli-btn-soft:hover {
+  background: color-mix(in oklab, var(--aeli-surface) 80%, var(--aeli-accent) 20%);
+}
+
+.aeli-btn-glass {
+  background: color-mix(in oklab, var(--aeli-surface) 70%, transparent);
+  color: var(--aeli-fg);
+  border: 1px solid color-mix(in oklab, var(--aeli-fg) 12%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+}
+.aeli-btn-glass:hover {
+  background: color-mix(in oklab, var(--aeli-surface) 88%, transparent);
+}
+
+.aeli-surface {
+  background: var(--aeli-surface);
+  border: 1px solid var(--aeli-border);
+  border-radius: var(--aeli-radius);
+}
+
+.aeli-live-dot {
+  animation: aeli-pulse-dot 1.6s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   Studio
+   ========================================================================== */
+
+/* Der Griff zum Ziehen. `grab`/`grabbing` ist die einzige Rückmeldung, die
+   Leute ohne Erklärung verstehen. */
+.aeli-grip {
+  cursor: grab;
+  touch-action: none;
+}
+.aeli-grip:active {
+  cursor: grabbing;
+}
+
+/* Der gezogene Block bleibt sichtbar, wird aber leicht — sonst verliert man
+   beim Sortieren aus den Augen, was man gerade in der Hand hält. */
+.aeli-dragging {
+  opacity: 0.4;
+}
+
+/* Die Einfügemarke. Eine Linie statt einer verschobenen Karte: sie sagt
+   „hierhin“, ohne die Liste unter dem Cursor umzubauen. */
+.aeli-drop-before {
+  box-shadow: inset 0 3px 0 -1px var(--color-signal);
+}
+.aeli-drop-after {
+  box-shadow: inset 0 -3px 0 -1px var(--color-signal);
+}
+
+/* Das Telefon in der Vorschau.
+
+   Der Bildschirm darin ist 390 × 844 — die Maße eines echten iPhone — und wird
+   per `zoom` auf die Rahmenbreite geschrumpft. Ohne diesen Umweg würde die
+   Seite bei 320 px Rahmenbreite auch WIE 320 px umbrechen: Titel kürzen sich
+   ab, Knöpfe werden zweizeilig, und die Vorschau zeigt Probleme, die auf einem
+   echten Gerät gar nicht existieren. */
+.aeli-phone {
+  aspect-ratio: 390 / 844;
+  border-radius: 2.25rem;
+  border: 8px solid #191920;
+  background: #000;
+  overflow: hidden;
+  box-shadow:
+    0 40px 80px -40px rgb(0 0 0 / 0.9),
+    0 0 0 1px #2a2a33;
+}
+
+/* Dieselbe Kontur, aber unten offen: das Gerät läuft aus dem Bild heraus,
+   statt eine vollständige Umrandung zu zeigen, für die die Höhe fehlt. */
+.aeli-phone-top {
+  aspect-ratio: 390 / 640;
+  border-radius: 2.25rem 2.25rem 0 0;
+  border: 8px solid #191920;
+  border-bottom: 0;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px #2a2a33;
+}
+
+.aeli-phone-screen {
+  width: 390px;
+  /* Die sichtbare Hoehe des Geraets in Geraete-Pixeln. Der volle Rahmen zeigt
+     844 (iPhone), die Buehne im Design-Bereich nur den oberen Ausschnitt —
+     gescrollt wird in beiden Faellen innerhalb dieser Flaeche. */
+  height: var(--phone-screen-h, 844px);
+  zoom: var(--phone-zoom, 1);
+  overflow-y: auto;
+  /* `contain: paint` schneidet die fixierten Hintergründe der Bio-Seite auf den
+     Rahmen zu — ohne das legt sich das Aurora-Leuchten über das ganze Studio. */
+  contain: paint;
+  scrollbar-width: none;
+}
+.aeli-phone-screen::-webkit-scrollbar {
+  display: none;
+}
+
+/* Zahlenreihen in der Statistik: die Balken wachsen einmal beim Laden von
+   unten heraus, damit die Form lesbar wird, bevor man die Zahlen liest. */
+@keyframes aeli-bar-grow {
+  from {
+    transform: scaleY(0.02);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+.aeli-bar {
+  transform-origin: bottom;
+  animation: aeli-bar-grow 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+  animation-delay: calc(var(--i, 0) * 12ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .aeli-bar {
+    animation: none;
+  }
+}

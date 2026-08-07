@@ -1,0 +1,24 @@
+# Aeli als eigener Railway-Service im Projekt „Aeli.so".
+#
+# Bewusst OHNE `preDeployCommand`: das Datenbankschema gehoert Aera und wird
+# von dort ausgerollt (`npm run db:deploy` im Wurzelverzeichnis). Zwei Dienste,
+# die dieselben Migrationen anwenden wollen, sind ein Wettlauf ohne Gewinner.
+#
+# Der Service braucht als Root-Verzeichnis `aeli.so` (Settings → Root Directory),
+# damit Build und Start in diesem Ordner laufen und nicht in Aeras.
+
+[build]
+builder = "RAILPACK"
+buildCommand = "npm run build"
+
+[deploy]
+startCommand = "npm run start"
+# Prueft nur die Datenbank. Der Bucket taucht in der Antwort auf, entscheidet
+# aber nicht — sonst waere eine kurz nicht erreichbare Objektablage ein Grund,
+# eine funktionierende Version nicht auszurollen.
+healthcheckPath = "/api/health"
+healthcheckTimeout = 120
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+overlapSeconds = 30
+drainingSeconds = 20

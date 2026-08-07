@@ -1,0 +1,276 @@
+// Aeli — Spiegelschema
+//
+// ACHTUNG: Hier wird NICHT migriert. Die Wahrheit ueber das Datenbankschema
+// steht in `../../prisma/schema.prisma` (Aera); dort liegen auch die
+// Migrationen, und beide Apps sprechen mit derselben PostgreSQL-Datenbank.
+//
+// Diese Datei existiert nur, damit die Aeli-App einen eigenen, schlanken
+// Prisma-Client bekommt. Sie enthaelt bewusst nur die Modelle, die Aeli
+// tatsaechlich anfasst — Prisma braucht nicht jede Spalte einer Tabelle zu
+// kennen, um sie zu lesen. Was fehlt, ist also kein Versehen, sondern die
+// Zusicherung, dass diese App den Rest der Plattform nicht anfassen kann.
+//
+// Nach einer Schemaaenderung an den Aeli-Modellen in Aera:
+//   1. Migration dort schreiben und ausrollen
+//   2. den geaenderten Modellblock hierher spiegeln
+//   3. `npm run prisma:generate`
+// `npm run db:rls` meldet, wenn Rolle, Policies oder Grants nicht mehr passen.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  // url kommt aus prisma.config.ts
+}
+
+// ----------------------------------------------------------------------------
+// Geteilte Identitaet (Aera-Tabellen, hier nur so weit wie noetig)
+// ----------------------------------------------------------------------------
+
+enum AccountStatus {
+  ACTIVE
+  DELETING
+  DELETED
+}
+
+enum TenantStatus {
+  ACTIVE
+  SUSPENDED
+  DELETING
+}
+
+enum LiveStatus {
+  SCHEDULED
+  LIVE
+  ENDED
+}
+
+/// Dasselbe Konto wie auf aera.so. Wer dort registriert ist, meldet sich hier
+/// mit denselben Zugangsdaten an — es gibt kein zweites Passwort.
+model User {
+  id              String        @id @default(cuid())
+  email           String        @unique
+  passwordHash    String
+  name            String
+  avatarUrl       String?
+  emailVerifiedAt DateTime?
+  /// Nur zum Pruefen beim Login (lib/totp.ts). Aeli richtet Zwei-Faktor nicht
+  /// ein und schreibt diese Spalte niemals.
+  totpSecret      String?
+  totpEnabledAt   DateTime?
+  sessionVersion  Int           @default(0)
+  accountStatus   AccountStatus @default(ACTIVE)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  aeliProfile      AeliProfile?
+  legalAcceptances LegalAcceptance[]
+  ownedTenants     Tenant[]          @relation("TenantOwner")
+}
+
+/// Nachweis, dass jemand AGB und Datenschutzhinweis zugestimmt hat. Aeli
+/// schreibt hier mit `source = "AELI_SIGNUP"`.
+model LegalAcceptance {
+  id         String   @id @default(cuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  document   String
+  version    String
+  source     String
+  acceptedAt DateTime @default(now())
+
+  @@unique([userId, document, version])
+}
+
+/// Eine Aera-Community. Aeli liest nur, und nur fuer die Bruecken-Bloecke.
+model Tenant {
+  id           String       @id @default(cuid())
+  name         String       @unique
+  slug         String       @unique
+  subdomain    String?      @unique
+  customDomain String?      @unique
+  tagline      String?
+  logoUrl      String?
+  primaryColor String       @default("#6d28d9")
+  accentColor  String       @default("#ec4899")
+  status       TenantStatus @default(ACTIVE)
+
+  ownerId String
+  owner   User   @relation("TenantOwner", fields: [ownerId], references: [id])
+
+  liveSessions LiveSession[]
+  aeliProfiles AeliProfile[] @relation("AeliLinkedTenant")
+}
+
+/// Nur fuer den LIVE_NOW-Block: laeuft gerade eine Uebertragung?
+model LiveSession {
+  id        String     @id @default(cuid())
+  tenantId  String
+  tenant    Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title     String
+  status    LiveStatus @default(SCHEDULED)
+  startsAt  DateTime?
+  createdAt DateTime   @default(now())
+
+  @@index([tenantId, status])
+}
+
+// ----------------------------------------------------------------------------
+// Aeli
+// ----------------------------------------------------------------------------
+
+enum AeliStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum AeliBlockType {
+  LINK
+  HEADER
+  TEXT
+  SOCIAL_ROW
+  DIVIDER
+  EMBED
+  IMAGE
+  COMMUNITY_CTA
+  NEWSLETTER
+  TIP
+  PRODUCT
+  BOOKING
+  LIVE_NOW
+  MUSIC
+  CONTACT
+  QR_SHARE
+}
+
+enum AeliEventKind {
+  VIEW
+  CLICK
+}
+
+enum AeliDevice {
+  MOBILE
+  TABLET
+  DESKTOP
+  UNKNOWN
+}
+
+enum AeliGate {
+  NONE
+  PASSWORD
+  AGE
+  EMAIL
+}
+
+model AeliProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  handle      String  @unique
+  displayName String
+  bio         String?
+  avatarUrl   String?
+  bannerUrl   String?
+
+  theme   Json?
+  socials Json?
+
+  status      AeliStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  linkedTenantId String?
+  linkedTenant   Tenant? @relation("AeliLinkedTenant", fields: [linkedTenantId], references: [id], onDelete: SetNull)
+
+  seoTitle       String?
+  seoDescription String?
+  seoImageUrl    String?
+  seoNoindex     Boolean @default(false)
+
+  gate             AeliGate @default(NONE)
+  gatePasswordHash String?
+
+  smartSort    Boolean @default(false)
+  showBranding Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blocks AeliBlock[]
+  events AeliClick[]
+  leads  AeliLead[]
+
+  @@index([status, publishedAt])
+  @@index([linkedTenantId])
+}
+
+model AeliBlock {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  type     AeliBlockType
+  title    String?
+  subtitle String?
+  href     String?
+  mediaUrl String?
+  icon     String?
+  config   Json?
+
+  sortOrder Int     @default(0)
+  isVisible Boolean @default(true)
+
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  clickCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events AeliClick[]
+
+  @@index([profileId, sortOrder])
+  @@index([profileId, clickCount])
+}
+
+model AeliClick {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  blockId   String?
+  block     AeliBlock?  @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  kind AeliEventKind
+
+  ts DateTime @default(now())
+
+  referrerHost String?
+  visitorHash  String?
+  country      String?
+  device       AeliDevice @default(UNKNOWN)
+
+  @@index([profileId, ts])
+  @@index([profileId, kind, ts])
+  @@index([blockId, ts])
+}
+
+model AeliLead {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  blockId   String?
+
+  email   String
+  name    String?
+  message String?
+  source  String
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, createdAt])
+  @@index([profileId, email])
+}

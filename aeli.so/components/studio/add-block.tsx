@@ -1,0 +1,96 @@
+"use client";
+
+import { useState, useTransition } from "react";
+import { addBlockAction } from "@/app/actions/profile";
+import { BLOCK_CATALOG, BLOCK_GROUPS } from "@/lib/blocks";
+import { Button } from "@/components/ui/button";
+
+/**
+ * Der Baukasten.
+ *
+ * Ausgeklappt statt in einem Menü versteckt: die Bausteine sind das, was Aeli
+ * von einer Linkliste unterscheidet, und was in einem Untermenü liegt, findet
+ * niemand. Gruppiert nach dem Zweck („Verdienen“, „Kontakt“), nicht nach der
+ * technischen Herkunft.
+ *
+ * Bausteine, die eine verknüpfte Community brauchen, verschwinden nicht, wenn
+ * keine da ist — sie stehen ausgegraut mit dem Grund dabei. Ein fehlender
+ * Eintrag wirft die Frage auf, ob es ihn überhaupt gibt.
+ */
+export function AddBlock({ hasCommunity }: { hasCommunity: boolean }) {
+  const [open, setOpen] = useState(false);
+  const [pending, startTransition] = useTransition();
+
+  if (!open) {
+    return (
+      <Button tone="ghost" onClick={() => setOpen(true)} className="w-full">
+        <span aria-hidden className="text-base leading-none">
+          +
+        </span>
+        Baustein hinzufügen
+      </Button>
+    );
+  }
+
+  return (
+    <section className="rounded-xl border border-line bg-ink-2 p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-sm font-semibold text-chalk">Was soll auf die Seite?</h2>
+        <button
+          type="button"
+          onClick={() => setOpen(false)}
+          className="rounded-lg px-2 py-1 text-xs text-ash transition-colors hover:text-chalk"
+        >
+          Schließen
+        </button>
+      </div>
+
+      <div className="space-y-5">
+        {BLOCK_GROUPS.map((group) => {
+          const entries = BLOCK_CATALOG.filter((entry) => entry.group === group.key);
+          if (entries.length === 0) return null;
+
+          return (
+            <div key={group.key}>
+              <h3 className="mb-2 text-xs font-medium tracking-wider text-ash uppercase">
+                {group.label}
+              </h3>
+              <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
+                {entries.map((entry) => {
+                  const blocked = entry.needsCommunity && !hasCommunity;
+                  return (
+                    <button
+                      key={entry.type}
+                      type="button"
+                      disabled={blocked || pending}
+                      onClick={() => {
+                        const form = new FormData();
+                        form.append("type", entry.type);
+                        startTransition(() => addBlockAction(form));
+                        setOpen(false);
+                      }}
+                      className="group flex gap-3 rounded-lg border border-line bg-ink p-3 text-left transition-colors enabled:hover:border-signal/60 enabled:hover:bg-ink-3 disabled:cursor-not-allowed disabled:opacity-45"
+                    >
+                      <span
+                        aria-hidden
+                        className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-line text-sm text-ash transition-colors group-enabled:group-hover:border-signal/50 group-enabled:group-hover:text-signal"
+                      >
+                        {entry.icon}
+                      </span>
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium text-chalk">{entry.label}</span>
+                        <span className="mt-0.5 block text-xs leading-snug text-ash">
+                          {blocked ? "Braucht eine verknüpfte Community." : entry.hint}
+                        </span>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
+}
