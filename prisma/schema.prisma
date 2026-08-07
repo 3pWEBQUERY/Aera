@@ -376,6 +376,10 @@ model User {
   platformSeoEdits          PlatformSeo[]              @relation("PlatformSeoEditor")
   supportTickets            SupportTicket[]            @relation("SupportTicketAuthor")
   supportMessages           SupportMessage[]           @relation("SupportMessageAuthor")
+  /// Aeli (aeli.so) teilt sich diese Identitaet mit Aera. Ein Konto, zwei
+  /// Produkte: wer hier registriert ist, kann sich auf aeli.so einloggen,
+  /// ohne ein zweites Passwort zu fuehren.
+  aeliProfile               AeliProfile?
 }
 
 /// Versioned evidence that a user accepted a contract document or confirmed
@@ -508,6 +512,8 @@ model Tenant {
   pollVotes                 PollVote[]
   promoRedemptions          PromoCodeRedemption[]
   pages                     CommunityPage[]
+  /// Aeli-Profile, die auf diese Community zeigen (Bruecken-Bloecke).
+  aeliProfiles              AeliProfile[]              @relation("AeliLinkedTenant")
 
   @@index([slug])
   @@index([category])
@@ -625,26 +631,26 @@ enum CommunityPageStatus {
 /// sprengt das. Ausserdem sind Seiten Inhalt und keine Layout-Einstellung —
 /// sie haben eine eigene Adresse, eigene Sichtbarkeit und einen Entwurfsstand.
 model CommunityPage {
-  id       String @id @default(cuid())
-  tenantId String
-  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  id                     String              @id @default(cuid())
+  tenantId               String
+  tenant                 Tenant              @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   /// Letzter Teil der Adresse: /c/{community}/p/{slug}
-  slug     String
-  title    String
+  slug                   String
+  title                  String
   /// Kurzbeschreibung fuer Suchmaschinen und Linkvorschauen.
-  description String?
-  status      CommunityPageStatus @default(DRAFT)
-  visibility  Visibility          @default(PUBLIC)
+  description            String?
+  status                 CommunityPageStatus @default(DRAFT)
+  visibility             Visibility          @default(PUBLIC)
   /// Optionaler Schluessel, wenn die Seite an eine bestimmte Stufe haengt.
   requiredEntitlementKey String?
   /// Im Reitermenue unter dem Kopfbereich zeigen. Aus = Seite bleibt
   /// erreichbar, taucht aber nur ueber einen selbst gesetzten Link auf.
-  showInNav Boolean @default(true)
-  sortOrder Int     @default(0)
+  showInNav              Boolean             @default(true)
+  sortOrder              Int                 @default(0)
   /// Inhaltsbausteine in Reihenfolge. Aufbau: lib/community-pages.ts
-  blocks    Json
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  blocks                 Json
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
 
   @@unique([tenantId, slug])
   @@index([tenantId, status, sortOrder])
@@ -816,23 +822,23 @@ model BookingReservation {
 
 // STORIES space: ephemeral posts that expire (typically after 24h).
 model Story {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   tenantId  String
-  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant    Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   spaceId   String
-  space     Space    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  space     Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   authorId  String
-  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   imageUrl  String?
   videoUrl  String?
   caption   String?
   /// Go-live time. `publishAt > now` = scheduled; `publishAt <= now < expiresAt`
   /// = active; `expiresAt <= now` = archived. State is purely time-derived.
-  publishAt DateTime @default(now())
+  publishAt DateTime  @default(now())
   /// Ablauf. `null` heisst: laeuft nie ab und bleibt dauerhaft sichtbar —
   /// das Fehlen eines Ablaufs ist ehrlicher als ein Datum im Jahr 3000.
   expiresAt DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   @@index([tenantId, spaceId])
   @@index([tenantId, expiresAt])
@@ -909,70 +915,70 @@ model MediaItem {
 }
 
 model Post {
-  id             String    @id @default(cuid())
-  tenantId       String
-  tenant         Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  spaceId        String
-  space          Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  authorId       String
-  author         User      @relation(fields: [authorId], references: [id])
-  title          String?
-  body           String    @default("") // plain text (search / excerpts)
-  bodyHtml       String? // rich HTML for blog posts (WYSIWYG)
-  imageUrl       String? // gallery image / post attachment
+  id                String     @id @default(cuid())
+  tenantId          String
+  tenant            Tenant     @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  spaceId           String
+  space             Space      @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  authorId          String
+  author            User       @relation(fields: [authorId], references: [id])
+  title             String?
+  body              String     @default("") // plain text (search / excerpts)
+  bodyHtml          String? // rich HTML for blog posts (WYSIWYG)
+  imageUrl          String? // gallery image / post attachment
   /// Alle Bilder eines Beitrags in Anzeigereihenfolge. `imageUrl` bleibt mit
   /// dem ersten Eintrag gleichgeschaltet, damit Kacheln, Suche, mobile API
   /// und Vorschaubilder unveraendert weiterlaufen — dort zaehlt genau ein
   /// Bild, und das ist immer das erste.
-  imageUrls      String[]  @default([])
-  videoUrl       String? // video post
-  isPinned       Boolean   @default(false)
-  isPublished    Boolean   @default(true)
-  publishedAt    DateTime  @default(now())
+  imageUrls         String[]   @default([])
+  videoUrl          String? // video post
+  isPinned          Boolean    @default(false)
+  isPublished       Boolean    @default(true)
+  publishedAt       DateTime   @default(now())
   // Scheduled go-live: when set and in the future the post stays hidden until a
   // cron flips isPublished. Public queries additionally require publishedAt <= now.
-  scheduledAt    DateTime?
+  scheduledAt       DateTime?
   /// Wer den Beitrag lesen darf. PUBLIC = jeder, der den Space sieht;
   /// MEMBERS = aktive Mitgliedschaft noetig; PAID = bezahlter Zugang noetig.
   /// Unabhaengig von priceCents: ein Beitrag kann "nur fuer Mitglieder" sein,
   /// ohne einzeln verkauft zu werden.
-  visibility     Visibility @default(PUBLIC)
+  visibility        Visibility @default(PUBLIC)
   // Pay-per-view / pay-per-post: 0 = free. When > 0 the body/media are gated
   // behind `entitlementKey` (video:{id} for VIDEOS spaces, post:{id} otherwise).
-  priceCents     Int       @default(0)
-  currency       String    @default("eur")
-  entitlementKey String? // set on create when priceCents > 0
-  teaserUrl      String? // public teaser image/poster shown to non-buyers
+  priceCents        Int        @default(0)
+  currency          String     @default("eur")
+  entitlementKey    String? // set on create when priceCents > 0
+  teaserUrl         String? // public teaser image/poster shown to non-buyers
   // Poll attached to this post: pollQuestion set => the post has a poll,
   // pollOptions holds the option labels, votes live in PollVote.
-  pollQuestion   String?
-  pollOptions    String[]  @default([])
-  pollMultiple   Boolean   @default(false)
+  pollQuestion      String?
+  pollOptions       String[]   @default([])
+  pollMultiple      Boolean    @default(false)
   // Per-post settings authored in the composer's "Settings" panel.
   customSlug        String?
   customHtml        String?
-  hideComments      Boolean  @default(false)
-  closeComments     Boolean  @default(false)
-  hideLikes         Boolean  @default(false)
-  hideMetaInfo      Boolean  @default(false)
-  hideFromFeatured  Boolean  @default(false)
-  disableTruncation Boolean  @default(false)
+  hideComments      Boolean    @default(false)
+  closeComments     Boolean    @default(false)
+  hideLikes         Boolean    @default(false)
+  hideMetaInfo      Boolean    @default(false)
+  hideFromFeatured  Boolean    @default(false)
+  disableTruncation Boolean    @default(false)
   // Cover image (banner) with a stored focal point + zoom for object-cover.
   coverUrl          String?
-  coverOffsetX      Int      @default(50)
-  coverOffsetY      Int      @default(50)
-  coverZoom         Int      @default(100)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  coverOffsetX      Int        @default(50)
+  coverOffsetY      Int        @default(50)
+  coverZoom         Int        @default(100)
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
 
   comments  Comment[]
   reactions Reaction[]
   pollVotes PollVote[]
 
+  @@unique([tenantId, customSlug])
   @@index([tenantId, spaceId])
   @@index([tenantId, createdAt])
   @@index([tenantId, authorId])
-  @@unique([tenantId, customSlug])
 }
 
 model Comment {
@@ -1261,21 +1267,21 @@ model Entitlement {
 // Newsletter
 // ----------------------------------------------------------------------------
 model NewsletterCampaign {
-  id             String         @id @default(cuid())
+  id             String             @id @default(cuid())
   tenantId       String
-  tenant         Tenant         @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  tenant         Tenant             @relation(fields: [tenantId], references: [id], onDelete: Cascade)
   subject        String
   body           String // Text (Absätze) oder kompletter HTML-Code, je nach bodyFormat
   bodyFormat     CampaignBodyFormat @default(TEXT)
-  status         CampaignStatus @default(DRAFT)
+  status         CampaignStatus     @default(DRAFT)
   segmentId      String?
-  segment        Segment?       @relation(fields: [segmentId], references: [id], onDelete: SetNull)
+  segment        Segment?           @relation(fields: [segmentId], references: [id], onDelete: SetNull)
   scheduledAt    DateTime?
   sentAt         DateTime?
-  recipientCount Int            @default(0)
+  recipientCount Int                @default(0)
   createdById    String
-  createdBy      User           @relation(fields: [createdById], references: [id])
-  createdAt      DateTime       @default(now())
+  createdBy      User               @relation(fields: [createdById], references: [id])
+  createdAt      DateTime           @default(now())
 
   emailEvents EmailEvent[]
   deliveries  NewsletterDelivery[]
@@ -2333,14 +2339,14 @@ model PromoCode {
 
   /// Access duration in days from redemption. Null = for as long as the code
   /// stays active (lifetime grant).
-  durationDays   Int?
+  durationDays    Int?
   /// How many communities may redeem this code in total.
-  maxRedemptions Int  @default(1)
+  maxRedemptions  Int       @default(1)
   /// Denormalised counter kept in the same transaction as the redemption row.
-  redemptionCount Int @default(0)
+  redemptionCount Int       @default(0)
   /// Code can no longer be redeemed after this moment (existing grants stay).
-  expiresAt      DateTime?
-  isActive       Boolean   @default(true)
+  expiresAt       DateTime?
+  isActive        Boolean   @default(true)
 
   createdById String?
   createdBy   User?   @relation("PromoCodeAuthor", fields: [createdById], references: [id], onDelete: SetNull)
@@ -2443,14 +2449,14 @@ model SupportTicket {
 }
 
 model SupportMessage {
-  id       String        @id @default(cuid())
-  ticketId String
-  ticket   SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  id        String        @id @default(cuid())
+  ticketId  String
+  ticket    SupportTicket @relation(fields: [ticketId], references: [id], onDelete: Cascade)
   /// true = vom Plattform-Team. Bestimmt Darstellung UND welche Seite die
   /// Nachricht als ungelesen zaehlt.
-  fromStaff Boolean      @default(false)
+  fromStaff Boolean       @default(false)
   authorId  String?
-  author    User?        @relation("SupportMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+  author    User?         @relation("SupportMessageAuthor", fields: [authorId], references: [id], onDelete: SetNull)
   body      String
 
   /// Gelesen-Marken pro Seite. Ungelesen fuer uns = !fromStaff && readByStaffAt
@@ -2462,4 +2468,228 @@ model SupportMessage {
 
   @@index([ticketId, createdAt])
   @@index([fromStaff, readByStaffAt])
+}
+
+// ----------------------------------------------------------------------------
+// Aeli — Link-in-Bio auf aeli.so
+//
+// Aeli ist eine eigenstaendige Next.js-App (Ordner `aeli.so/`), die auf
+// derselben Datenbank arbeitet. Die Migrationen leben ausschliesslich hier:
+// `aeli.so/prisma/schema.prisma` ist ein bewusst reduziertes Spiegelschema,
+// das nur den Client generiert und niemals migriert.
+//
+// Anders als alles darueber ist Aeli NICHT tenant-scoped. Die Isolation laeuft
+// ueber `userId` (Besitzer) bzw. `status = PUBLISHED` (Oeffentlichkeit); in der
+// Datenbank durchgesetzt von der Rolle `aeli_app` und dem GUC `aeli.user_id`
+// (siehe Migration 20260807120000_aeli_link_in_bio).
+// ----------------------------------------------------------------------------
+
+enum AeliStatus {
+  DRAFT
+  PUBLISHED
+}
+
+/// Bausteine einer Aeli-Seite. Die Reihenfolge hier ist ohne Bedeutung; die
+/// Darstellung entscheidet `aeli.so/lib/blocks.ts`.
+enum AeliBlockType {
+  /// Ein Ziel, ein Titel — die Grundform.
+  LINK
+  /// Zwischenueberschrift, gliedert lange Seiten.
+  HEADER
+  /// Freier Text (Absatz), z. B. eine kurze Ansage.
+  TEXT
+  /// Zeile aus Social-Icons, ohne eigene Karten.
+  SOCIAL_ROW
+  DIVIDER
+  /// YouTube/Spotify/Vimeo & Co. — Allowlist in lib/embed.ts.
+  EMBED
+  /// Bild in voller Breite, optional verlinkt.
+  IMAGE
+  /// Bruecke in eine Aera-Community (linkedTenantId).
+  COMMUNITY_CTA
+  /// E-Mail-Sammlung -> AeliLead.
+  NEWSLETTER
+  /// Trinkgeld / Unterstuetzung.
+  TIP
+  PRODUCT
+  BOOKING
+  /// Zeigt sich nur, solange die verknuepfte Community live ist.
+  LIVE_NOW
+  MUSIC
+  /// Kontaktformular -> AeliLead.
+  CONTACT
+  /// QR-Code der eigenen Seite zum Abfotografieren.
+  QR_SHARE
+}
+
+/// Ein einziges append-only Ereignis-Log traegt Seitenaufrufe UND Klicks.
+/// Getrennte Tabellen waeren zwei Schreibpfade, zwei Indizes und zwei
+/// Aggregationen fuer dieselbe Frage ("wie viele davon haben geklickt?").
+enum AeliEventKind {
+  VIEW
+  CLICK
+}
+
+enum AeliDevice {
+  MOBILE
+  TABLET
+  DESKTOP
+  UNKNOWN
+}
+
+/// Wie ein Besucher an die Seite kommt.
+enum AeliGate {
+  NONE
+  /// Passwort, das der Creator vergibt.
+  PASSWORD
+  /// Bestaetigung "ich bin 18+" vor dem ersten Blick.
+  AGE
+  /// E-Mail vor dem Entsperren (erzeugt einen AeliLead).
+  EMAIL
+}
+
+model AeliProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Die Subdomain: {handle}.aeli.so. 3-30 Zeichen, [a-z0-9-], nicht
+  /// reserviert (siehe aeli.so/lib/handle.ts).
+  handle      String  @unique
+  displayName String
+  bio         String?
+  avatarUrl   String?
+  /// Optionales Titelbild hinter dem Avatar.
+  bannerUrl   String?
+
+  /// Theme-Preset + Feintuning. Struktur: aeli.so/lib/themes.ts (AeliTheme).
+  /// Json statt Spalten, weil sich hier die Gestaltung schneller bewegt als
+  /// das Schema — die Bloecke selbst bleiben bewusst normalisiert.
+  theme Json?
+
+  /// Social-Profile als [{ platform, url }] — gerendert vom SOCIAL_ROW-Block
+  /// und im Kopf der Seite.
+  socials Json?
+
+  status      AeliStatus @default(DRAFT)
+  publishedAt DateTime?
+
+  /// Bruecke nach Aera: gesetzt, wenn der Creator eine eigene Community
+  /// verknuepft hat. COMMUNITY_CTA und LIVE_NOW brauchen das.
+  linkedTenantId String?
+  linkedTenant   Tenant? @relation("AeliLinkedTenant", fields: [linkedTenantId], references: [id], onDelete: SetNull)
+
+  seoTitle       String?
+  seoDescription String?
+  seoImageUrl    String?
+  seoNoindex     Boolean @default(false)
+
+  /// Zugangsschranke vor der Seite.
+  gate             AeliGate @default(NONE)
+  /// bcrypt-Hash, nur bei gate = PASSWORD.
+  gatePasswordHash String?
+
+  /// "Meistgeklickt oben": sortiert LINK-Bloecke zur Laufzeit nach clickCount,
+  /// ohne die vom Creator gesetzte Reihenfolge zu zerstoeren.
+  smartSort    Boolean @default(false)
+  /// Freemium: Aeli-Hinweis im Fuss. Pro (bzw. Aera PRO+) darf ihn abschalten.
+  showBranding Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blocks AeliBlock[]
+  events AeliClick[]
+  leads  AeliLead[]
+
+  @@index([status, publishedAt])
+  @@index([linkedTenantId])
+}
+
+model AeliBlock {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  type     AeliBlockType
+  title    String?
+  subtitle String?
+  href     String?
+  mediaUrl String?
+  /// Emoji oder Icon-Schluessel (lib/icons.ts). Bewusst ein String, kein Upload.
+  icon     String?
+
+  /// Typabhaengige Extras (Embed-Provider, Preisangabe, Formularfelder,
+  /// A/B-Variante). Was jeder Typ liest, steht in aeli.so/lib/blocks.ts.
+  config Json?
+
+  sortOrder Int     @default(0)
+  isVisible Boolean @default(true)
+
+  /// Zeitfenster. Ausserhalb ist der Block unsichtbar, ohne dass jemand ihn
+  /// loeschen oder ausblenden muss.
+  startsAt DateTime?
+  endsAt   DateTime?
+
+  /// Denormalisierter Zaehler. Das Ereignis-Log bleibt die Wahrheit; dieser
+  /// Wert existiert, damit Studio-Liste und Smart-Sort nicht bei jedem Aufruf
+  /// ueber AeliClick aggregieren muessen.
+  clickCount Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events AeliClick[]
+
+  @@index([profileId, sortOrder])
+  @@index([profileId, clickCount])
+}
+
+/// Append-only Ereignis-Log. Bewusst ohne IP und ohne Roh-User-Agent: fuer
+/// "wie viele verschiedene Leute" reicht ein tagesrotierender Hash, und ohne
+/// Rohdaten gibt es auch nichts, was spaeter ausgeleitet werden koennte.
+model AeliClick {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Null bei kind = VIEW.
+  blockId   String?
+  block     AeliBlock?  @relation(fields: [blockId], references: [id], onDelete: Cascade)
+
+  kind AeliEventKind
+
+  ts DateTime @default(now())
+
+  /// Nur der Host der Herkunft ("instagram.com"), nie die volle URL: Pfade
+  /// tragen fremde Nutzerdaten.
+  referrerHost String?
+  /// HMAC(uaHash) = f(UserAgent + Salt + Tag). Rotiert taeglich, nicht
+  /// rueckrechenbar, taugt genau fuer "unique am selben Tag".
+  visitorHash  String?
+  country      String?
+  device       AeliDevice @default(UNKNOWN)
+
+  @@index([profileId, ts])
+  @@index([profileId, kind, ts])
+  @@index([blockId, ts])
+}
+
+/// E-Mail-/Kontakt-Einsendungen aus NEWSLETTER-, CONTACT- und EMAIL-Gate.
+model AeliLead {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Aus welchem Block die Einsendung kam (null beim Gate).
+  blockId   String?
+
+  email   String
+  name    String?
+  message String?
+  /// "NEWSLETTER" | "CONTACT" | "GATE" — woher der Lead stammt.
+  source  String
+
+  createdAt DateTime @default(now())
+
+  @@index([profileId, createdAt])
+  @@index([profileId, email])
 }

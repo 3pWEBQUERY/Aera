@@ -21,3 +21,23 @@
 -- New tenant tables must enable RLS, add this policy and grant their required
 -- operations to aera_app in the same migration. There are intentionally no
 -- blanket default table grants.
+
+-- ---------------------------------------------------------------------------
+-- Aeli (aeli.so) — zweite Rolle, anderes Kriterium
+-- ---------------------------------------------------------------------------
+-- Die Aeli-Tabellen (AeliProfile/AeliBlock/AeliClick/AeliLead) sind nicht
+-- tenant-scoped. Sie kennen einen Besitzer und eine Oeffentlichkeit, also
+-- laufen sie unter der eigenen Rolle `aeli_app` mit dem GUC `aeli.user_id`:
+--
+--   SET LOCAL ROLE aeli_app;
+--   SELECT set_config('aeli.user_id', '<user-id>', TRUE);   -- nur im Studio
+--
+-- Ohne gesetzten GUC bleibt sichtbar, was `status = 'PUBLISHED'` traegt — das
+-- ist der oeffentliche Lesepfad der Bio-Seite. `aeli_app` bekommt bewusst
+-- keinerlei Zugriff auf `User`; die Aeli-Tabellen tragen Anzeigename und Avatar
+-- selbst, und Login/Registrierung laufen ueber die privilegierte Verbindung.
+--
+-- Quelle: prisma/migrations/20260807120000_aeli_link_in_bio/migration.sql
+-- Pruefung: aeli.so/scripts/check-rls.ts (nicht scripts/apply-rls.ts — der
+-- prueft ausschliesslich die Aera-Seite und meldete jeden Aeli-Grant an
+-- `aera_app` zu Recht als Drift).
