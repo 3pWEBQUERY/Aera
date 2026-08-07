@@ -11,6 +11,9 @@ import { SettingsTabs, type SettingsSection } from "@/components/dashboard/setti
 import { StripeConnectionTest } from "@/components/dashboard/stripe-test";
 import { getConnectStatus, createDashboardLoginLink } from "@/lib/stripe";
 import { startStripeConnectAction, disconnectStripeAction } from "@/app/actions/stripe-connect";
+import { AeliPanel } from "@/components/dashboard/aeli-panel";
+import { getAeliConnection, aeliPageUrl, aeliStudioUrl } from "@/lib/aeli";
+import { normalizeHandle } from "@/lib/aeli-handle";
 
 function StatusChip({ ok, label }: { ok: boolean; label: string }) {
   return (
@@ -39,7 +42,7 @@ export default async function SettingsPage({
 }) {
   const { slug } = await params;
   const { tab, connect } = await searchParams;
-  const { tenant, role } = await requireTenantAdmin(slug);
+  const { tenant, role, user } = await requireTenantAdmin(slug);
   const coverUrl = await getCommunityCoverUrl(tenant.id);
   const t = await getTranslations("dashboard.settings");
 
@@ -53,6 +56,12 @@ export default async function SettingsPage({
     role === "OWNER" && stripeReady && tenant.stripeAccountId
       ? await createDashboardLoginLink(tenant.stripeAccountId)
       : null;
+
+  // Die Aeli-Verbindung gehört dem Besitzer der Community: eine Bio-Seite, die
+  // hierher zeigt, ist ihr öffentliches Gesicht an anderer Stelle.
+  const aeliConnection = role === "OWNER" ? await getAeliConnection(user.id, tenant.id) : null;
+  const aeliSuffix =
+    env.AELI_ROOT_DOMAIN && env.AELI_ROOT_DOMAIN !== "localhost" ? env.AELI_ROOT_DOMAIN : "aeli.so";
 
   const integrations: {
     name: string;
@@ -93,6 +102,20 @@ export default async function SettingsPage({
         {t("activeNote")}
       </p>
       {role === "OWNER" && <StripeConnectionTest slug={slug} />}
+
+      {aeliConnection && (
+        <AeliPanel
+          slug={slug}
+          tenantName={tenant.name}
+          connection={aeliConnection}
+          pageUrl={aeliConnection.own ? aeliPageUrl(aeliConnection.own.handle) : null}
+          studioUrl={aeliStudioUrl()}
+          handleSuffix={aeliSuffix}
+          // Der Community-Slug als Vorschlag: wer die Seite von hier aus
+          // anlegt, will meistens genau diesen Namen.
+          suggestedHandle={normalizeHandle(tenant.slug)}
+        />
+      )}
 
       {role === "OWNER" && <div className="mt-6 border-t border-slate-100 pt-6">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">

@@ -75,6 +75,17 @@ export const env = {
     .map((e) => e.trim().toLowerCase())
     .filter(Boolean),
   APP_URL: process.env.APP_URL ?? "http://localhost:3000",
+
+  /**
+   * Aeli (aeli.so) — dieselbe Datenbank, eigene App. Aera braucht davon nur
+   * die Adressen, um aus dem Dashboard dorthin zu verlinken.
+   */
+  AELI_ROOT_DOMAIN: (process.env.NEXT_PUBLIC_AELI_ROOT_DOMAIN ?? "")
+    .trim()
+    .replace(/^https?:\/\//i, "")
+    .replace(/[/:].*$/, "")
+    .toLowerCase(),
+  AELI_APP_URL: (process.env.AELI_APP_URL ?? "https://aeli.so").replace(/\/+$/, ""),
   DOMAIN_RESOLVER_ORIGIN: process.env.DOMAIN_RESOLVER_ORIGIN ?? "http://localhost:3000",
   PLATFORM_FEE_PERCENT: Number.isFinite(Number(process.env.AERA_PLATFORM_FEE_PERCENT ?? "5"))
     ? Number(process.env.AERA_PLATFORM_FEE_PERCENT ?? "5")
