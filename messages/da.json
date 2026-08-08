@@ -1738,7 +1738,6 @@
         "networkError": "Forbindelse mislykkedes (netværksfejl)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "Én side med alle dine links, på <strong>{example}</strong>. Forbundet med dette fællesskab bliver den til en tilmeldingsknap — og et “Live nu”, så snart du sender.",
         "stateLinked": "Forbundet",
         "stateUnlinked": "Ikke forbundet",

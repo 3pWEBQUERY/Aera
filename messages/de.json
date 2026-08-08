@@ -1936,7 +1936,6 @@
         "networkError": "Verbindung fehlgeschlagen (Netzwerkfehler)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "Eine Seite mit allen deinen Links, unter <strong>{example}</strong>. Verknüpft mit dieser Community wird daraus ein Beitritts-Knopf — und ein „Jetzt live“, sobald du sendest.",
         "stateLinked": "Verknüpft",
         "stateUnlinked": "Nicht verknüpft",

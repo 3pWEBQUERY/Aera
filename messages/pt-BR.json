@@ -1738,7 +1738,6 @@
         "networkError": "Falha na conexão (erro de rede)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "Uma página com todos os seus links, em <strong>{example}</strong>. Vinculada a esta comunidade, vira um botão de entrada — e um “Ao vivo agora” assim que você transmitir.",
         "stateLinked": "Vinculada",
         "stateUnlinked": "Não vinculada",

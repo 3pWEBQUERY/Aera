@@ -1936,7 +1936,6 @@
         "networkError": "Connection failed (network error)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "One page for all your links, at <strong>{example}</strong>. Linked to this community it becomes a join button — and a “Live now” the moment you go on air.",
         "stateLinked": "Linked",
         "stateUnlinked": "Not linked",

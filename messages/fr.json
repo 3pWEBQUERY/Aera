@@ -1738,7 +1738,6 @@
         "networkError": "Échec de la connexion (erreur réseau)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "Une page avec tous vos liens, sur <strong>{example}</strong>. Reliée à cette communauté, elle devient un bouton d'adhésion — et un « En direct » dès que vous diffusez.",
         "stateLinked": "Reliée",
         "stateUnlinked": "Non reliée",

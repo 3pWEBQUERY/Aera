@@ -12,6 +12,7 @@ import {
 } from "@/app/actions/aeli";
 import { normalizeHandle } from "@/lib/aeli-handle";
 import { Icon } from "@/components/dashboard/icons";
+import { AeliWordmark } from "@/components/dashboard/aeli-wordmark";
 import { Pill } from "@/components/ui/misc";
 import { Input, Label } from "@/components/ui/field";
 import type { AeliConnection, AeliPageSummary } from "@/lib/aeli";
@@ -65,8 +66,11 @@ export function AeliPanel({
     <section className="mt-6 border-t border-slate-100 pt-6">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="flex items-center gap-2 font-medium text-slate-900">
-            {t("heading")}
+          {/* Die Wortmarke statt des Wortes „Aeli": in Aeras Dashboard steht
+              hier ein fremdes Produkt, und das erkennt man an seinem Zeichen
+              schneller als an seinem Namen. */}
+          <p className="flex items-baseline gap-2 text-slate-900">
+            <AeliWordmark className="text-base" />
             <span className="text-xs font-normal text-slate-400">aeli.so</span>
           </p>
           <p className="mt-0.5 max-w-xl text-sm text-slate-500">

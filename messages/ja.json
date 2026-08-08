@@ -1738,7 +1738,6 @@
         "networkError": "接続に失敗しました（ネットワークエラー）。"
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "すべてのリンクをまとめた1ページを <strong>{example}</strong> に。このコミュニティと連携すると参加ボタンになり、配信を始めた瞬間に「ライブ中」が表示されます。",
         "stateLinked": "連携済み",
         "stateUnlinked": "未連携",

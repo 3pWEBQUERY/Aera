@@ -1738,7 +1738,6 @@
         "networkError": "连接失败（网络错误）。"
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "把你所有的链接放在一个页面上，地址是 <strong>{example}</strong>。与这个社区关联后，它会变成一个加入按钮——你一开播就会显示“正在直播”。",
         "stateLinked": "已关联",
         "stateUnlinked": "未关联",

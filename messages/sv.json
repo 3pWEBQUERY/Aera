@@ -1738,7 +1738,6 @@
         "networkError": "Anslutning misslyckades (nätverksfel)."
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "En sida med alla dina länkar, på <strong>{example}</strong>. Kopplad till den här gemenskapen blir den en anslutningsknapp — och ett “Live nu” så snart du sänder.",
         "stateLinked": "Kopplad",
         "stateUnlinked": "Inte kopplad",

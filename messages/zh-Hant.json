@@ -1738,7 +1738,6 @@
         "networkError": "連線失敗（網路錯誤）。"
       },
       "aeli": {
-        "heading": "Aeli",
         "desc": "把你所有的連結放在一個頁面上，網址是 <strong>{example}</strong>。與這個社群連結後，它會變成一個加入按鈕——你一開播就會顯示「正在直播」。",
         "stateLinked": "已連結",
         "stateUnlinked": "未連結",
