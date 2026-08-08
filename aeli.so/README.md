@@ -90,6 +90,11 @@ Dazu zwei eng gefasste Stellen: der Klickzähler in `api/track` (ein `UPDATE`
 mit ausgeschriebener Policy-Bedingung) und die Besitzprüfung beim Verknüpfen
 einer Community.
 
+`lib/aera-content.ts` gehört ausdrücklich **nicht** dazu: die Inhalte der
+`AERA_*`-Bausteine kommen über `aeli_app` und damit durch die Policies. Der
+Unterschied zu `tenantIsLive` ist der Umfang — ein Ja/Nein durfte eine
+Ausnahme sein, fünf Inhaltstabellen nicht.
+
 ## Bilder
 
 Profil- und Titelbild werden im Studio hochgeladen (Design → „Wer bist du?").
@@ -161,10 +166,42 @@ die Route wird nicht mehr aufgerufen.
 Beide Produkte teilen sich die `User`-Tabelle. Wer sich auf aera.so anmeldet,
 **ist** auf aeli.so dieselbe Person — „Konten verknüpfen“ gibt es deshalb gar
 nicht. Was es gibt, ist `AeliProfile.linkedTenantId`: der Zeiger von einer
-Bio-Seite auf eine Community. Er schaltet die Bausteine `COMMUNITY_CTA` und
-`LIVE_NOW` frei.
+Bio-Seite auf eine Community. Er schaltet sieben Bausteine frei.
 
-Gesetzt werden kann er von beiden Seiten:
+### Die sieben Bausteine, die eine Community brauchen
+
+| Baustein | Zeigt | Quelle |
+|---|---|---|
+| `COMMUNITY_CTA` | Beitreten-Knopf mit Logo und Tagline | `Tenant` |
+| `LIVE_NOW` | Erscheint nur, solange gesendet wird | `LiveSession` |
+| `AERA_EVENTS` | Kommende Termine, Abrisskalender | `Event` |
+| `AERA_TIERS` | Öffentliche Stufen mit Preis | `MembershipTier` |
+| `AERA_SHOP` | Produkte als Kachelraster | `Product` |
+| `AERA_COURSES` | Veröffentlichte Kurse | `Course` |
+| `AERA_SPACES` | Öffentliche Räume als Chips | `Space` |
+
+Die fünf `AERA_*` tragen keinen eigenen Inhalt. Der Creator stellt sie einmal
+hin, danach zeigen sie, was gerade in Aera steht — ein verschobener Termin
+verschiebt sich mit, ein zurückgezogenes Produkt verschwindet. Genau darum
+geht es: abgetippte Inhalte laufen auseinander, sobald sich das Original
+ändert. Ist eine Liste leer, rendert der Baustein **nichts** — eine Community
+ohne kommenden Termin ist kein Fehler.
+
+Sichtbar wird dabei ausschließlich, was ein abgemeldeter Besucher auf der
+Community-Seite ohnehin sähe. Das steht nicht in den `where`-Klauseln von
+[`lib/aera-content.ts`](lib/aera-content.ts), sondern in den RLS-Policies der
+Migration `20260808120000_aeli_aera_blocks`: öffentlicher, nicht archivierter
+Raum ohne Bezahlschranke, veröffentlichter Inhalt, aktiver Tenant. Die Spalten
+mit Zugriffscharakter — `meetingUrl`, `downloadUrl`, `streamUrl`, die
+Stripe-Kennungen, die Entitlement-Schlüssel — sind der Rolle `aeli_app` gar
+nicht erst gewährt; eine kaputte Policy könnte sie nicht ausliefern.
+
+Das Spiegelschema führt für diese fünf Tabellen deshalb nur die gewährten
+Spalten. `npm test` prüft das gegeneinander: ein Feld im Spiegel, das kein
+`GRANT` deckt, wäre eine Abfrage, die in Produktion mit „permission denied"
+mitten im Seitenaufbau scheitert.
+
+Gesetzt werden kann der Zeiger von beiden Seiten:
 
 | Von wo | Wann |
 |---|---|

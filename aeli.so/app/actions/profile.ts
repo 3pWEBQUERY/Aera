@@ -503,6 +503,11 @@ const BLOCK_TYPES: AeliBlockType[] = [
   "MUSIC",
   "CONTACT",
   "QR_SHARE",
+  "AERA_EVENTS",
+  "AERA_TIERS",
+  "AERA_SHOP",
+  "AERA_COURSES",
+  "AERA_SPACES",
 ];
 
 export async function addBlockAction(formData: FormData): Promise<void> {
@@ -565,6 +570,7 @@ export async function updateBlockAction(_prev: FormState, form: FormData): Promi
       priceCents: priceToCents(text(form, "price", 20)),
       currency: text(form, "currency", 3).toUpperCase() || undefined,
       amounts: parseAmounts(text(form, "amounts", 80)),
+      limit: parseLimit(text(form, "limit", 3)),
     });
 
     const startsAt = parseDateTime(text(form, "startsAt", 40));
@@ -590,6 +596,19 @@ export async function updateBlockAction(_prev: FormState, form: FormData): Promi
     revalidateProfile(profile.handle);
     return { notice: "Gespeichert." };
   });
+}
+
+/**
+ * Wie viele Einträge ein AERA_*-Baustein zeigt.
+ *
+ * Leer heißt „Voreinstellung", nicht „null" — deshalb `undefined` und nicht 0.
+ * Alles ausserhalb von 1..6 verwirft das Schema ohnehin; hier fällt nur weg,
+ * was gar keine Zahl ist.
+ */
+function parseLimit(raw: string): number | undefined {
+  if (!raw) return undefined;
+  const value = Number.parseInt(raw, 10);
+  return Number.isFinite(value) ? value : undefined;
 }
 
 export async function toggleBlockAction(formData: FormData): Promise<void> {

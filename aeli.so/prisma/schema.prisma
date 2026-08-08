@@ -48,6 +48,51 @@ enum LiveStatus {
   ENDED
 }
 
+enum Visibility {
+  PUBLIC
+  MEMBERS
+  PAID
+}
+
+enum BillingInterval {
+  FREE
+  MONTH
+  YEAR
+  ONE_TIME
+}
+
+enum SpaceType {
+  FEED
+  FORUM
+  COURSE
+  SHOP
+  NEWSLETTER
+  EVENTS
+  BLOG
+  KNOWLEDGE
+  GALLERY
+  VIDEOS
+  CHAT
+  PODCAST
+  MUSIC
+  LINKS
+  ADS
+  LIVE
+  REQUESTS
+  BOOKING
+  STORIES
+  TIPS
+  CALENDAR
+}
+
+enum ProductType {
+  DIGITAL
+  PHYSICAL
+  BUNDLE
+  COURSE_ACCESS
+  TIER_GRANT
+}
+
 /// Dasselbe Konto wie auf aera.so. Wer dort registriert ist, meldet sich hier
 /// mit denselben Zugangsdaten an — es gibt kein zweites Passwort.
 model User {
@@ -103,6 +148,12 @@ model Tenant {
 
   liveSessions LiveSession[]
   aeliProfiles AeliProfile[] @relation("AeliLinkedTenant")
+
+  spaces   Space[]
+  events   Event[]
+  tiers    MembershipTier[]
+  products Product[]
+  courses  Course[]
 }
 
 /// Nur fuer den LIVE_NOW-Block: laeuft gerade eine Uebertragung?
@@ -116,6 +167,120 @@ model LiveSession {
   createdAt DateTime   @default(now())
 
   @@index([tenantId, status])
+}
+
+// ----------------------------------------------------------------------------
+// Aera-Inhalte fuer die AERA_*-Bausteine
+//
+// Diese fuenf Modelle sind der schmalste Teil des Spiegels: sie fuehren NUR die
+// Spalten, die `aeli_app` ueberhaupt gewaehrt bekommen hat (Migration
+// 20260808120000_aeli_aera_blocks). Das ist kein Ordnungssinn, sondern eine
+// Bremse — eine Abfrage ohne `select` zieht in Prisma alle deklarierten Felder,
+// und ein Feld, das hier nicht steht, kann so auch nicht versehentlich
+// angefragt werden und die Abfrage an einem fehlenden Grant zerschellen lassen.
+//
+// Geschrieben wird hier nie. Was sichtbar ist, entscheiden die Policies, nicht
+// die `where`-Klauseln in lib/aera-content.ts.
+// ----------------------------------------------------------------------------
+
+model Space {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name        String
+  slug        String
+  type        SpaceType
+  description String?
+  icon        String?
+  visibility  Visibility @default(MEMBERS)
+  sortOrder   Int        @default(0)
+  isArchived  Boolean    @default(false)
+
+  requiredEntitlementKey String?
+
+  events   Event[]
+  products Product[]
+  courses  Course[]
+
+  @@index([tenantId])
+}
+
+model Event {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  spaceId  String
+  space    Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  title       String
+  slug        String
+  description String?
+  coverUrl    String?
+  startsAt    DateTime
+  endsAt      DateTime?
+  location    String?
+  isOnline    Boolean   @default(true)
+
+  requiredEntitlementKey String?
+
+  @@index([tenantId, startsAt])
+}
+
+model MembershipTier {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+
+  name          String
+  slug          String
+  description   String?
+  coverUrl      String?
+  isRecommended Boolean         @default(false)
+  priceCents    Int             @default(0)
+  currency      String          @default("eur")
+  interval      BillingInterval @default(FREE)
+  sortOrder     Int             @default(0)
+  isPublic      Boolean         @default(true)
+
+  @@index([tenantId])
+}
+
+model Product {
+  id       String  @id @default(cuid())
+  tenantId String
+  tenant   Tenant  @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  spaceId  String?
+  space    Space?  @relation(fields: [spaceId], references: [id], onDelete: SetNull)
+
+  name        String
+  slug        String
+  description String?
+  coverUrl    String?
+  priceCents  Int         @default(0)
+  currency    String      @default("eur")
+  type        ProductType @default(DIGITAL)
+  isPublished Boolean     @default(true)
+
+  @@index([tenantId])
+}
+
+model Course {
+  id       String @id @default(cuid())
+  tenantId String
+  tenant   Tenant @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  spaceId  String
+  space    Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  title       String
+  slug        String
+  description String?
+  coverUrl    String?
+  isPublished Boolean @default(false)
+
+  requiredEntitlementKey String?
+
+  @@index([tenantId, spaceId])
 }
 
 // ----------------------------------------------------------------------------
@@ -144,6 +309,11 @@ enum AeliBlockType {
   MUSIC
   CONTACT
   QR_SHARE
+  AERA_EVENTS
+  AERA_TIERS
+  AERA_SHOP
+  AERA_COURSES
+  AERA_SPACES
 }
 
 enum AeliEventKind {

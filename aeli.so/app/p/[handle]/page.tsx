@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPublicProfile } from "@/lib/profile";
-import { publicStrings } from "@/lib/i18n";
+import { getPublicProfile, profileAeraContent } from "@/lib/profile";
+import { publicLocale } from "@/lib/i18n";
+import { PUBLIC_STRINGS } from "@/lib/public-strings";
 import { isUnlocked } from "@/lib/gate";
 import { parseBlockConfig } from "@/lib/blocks";
 import { communityUrl, profileUrl } from "@/lib/url";
@@ -88,7 +89,8 @@ export default async function PublicProfilePage({
   const profile = await getPublicProfile(handle);
   if (!profile) notFound();
 
-  const strings = await publicStrings();
+  const locale = await publicLocale();
+  const strings = PUBLIC_STRINGS[locale];
 
   if (profile.gate !== "NONE" && !(await isUnlocked(profile.id, profile.gate))) {
     return (
@@ -133,6 +135,7 @@ export default async function PublicProfilePage({
         }
       : null,
     isLive: profile.isLive,
+    aera: await profileAeraContent(profile, locale),
     publicUrl: profileUrl(profile.handle),
   };
 

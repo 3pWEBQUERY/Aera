@@ -2,6 +2,13 @@ import { resolveEmbed } from "@/lib/embed";
 import { SocialIcon } from "@/components/social-icon";
 import { LeadForm } from "./lead-form";
 import { ShareBlock } from "./share-block";
+import {
+  AeraCoursesBlock,
+  AeraEventsBlock,
+  AeraShopBlock,
+  AeraSpacesBlock,
+  AeraTiersBlock,
+} from "./aera-blocks";
 import type { PageBlock, PageData, PageMode } from "./types";
 import type { PublicStrings } from "@/lib/public-strings";
 
@@ -284,6 +291,20 @@ export function BlockView({
         </a>
       );
     }
+
+    // Die fünf Aera-Bausteine liegen in einer eigenen Datei: sie bringen je
+    // eine eigene Bauform mit, und fünf davon hier hätten diese Funktion
+    // verdoppelt. Was sie eint, steht dort im Kopfkommentar.
+    case "AERA_EVENTS":
+      return <AeraEventsBlock block={block} page={page} strings={strings} style={style} />;
+    case "AERA_TIERS":
+      return <AeraTiersBlock block={block} page={page} strings={strings} style={style} />;
+    case "AERA_SHOP":
+      return <AeraShopBlock block={block} page={page} strings={strings} style={style} />;
+    case "AERA_COURSES":
+      return <AeraCoursesBlock block={block} page={page} strings={strings} style={style} />;
+    case "AERA_SPACES":
+      return <AeraSpacesBlock block={block} page={page} strings={strings} style={style} />;
 
     case "PRODUCT":
       if (!block.href) return null;

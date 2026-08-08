@@ -37,7 +37,16 @@
 -- keinerlei Zugriff auf `User`; die Aeli-Tabellen tragen Anzeigename und Avatar
 -- selbst, und Login/Registrierung laufen ueber die privilegierte Verbindung.
 --
+-- Auf Aera-Inhalte hat `aeli_app` einen zweiten, eng geschnittenen Lesepfad:
+-- `Space`, `Event`, `MembershipTier`, `Product` und `Course`, jeweils nur die
+-- Zeilen, die ein abgemeldeter Besucher auf der Community-Seite ohnehin saehe
+-- (oeffentlicher, nicht archivierter Raum ohne Bezahlschranke; veroeffentlicht;
+-- Tenant aktiv). Die Spalten mit Zugriffscharakter — `meetingUrl`,
+-- `downloadUrl`, `streamUrl`, Stripe-/Apple-Kennungen, Entitlement-Schluessel —
+-- sind gar nicht erst gewaehrt.
+--
 -- Quelle: prisma/migrations/20260807120000_aeli_link_in_bio/migration.sql
+--         prisma/migrations/20260808120000_aeli_aera_blocks/migration.sql
 -- Pruefung: aeli.so/scripts/check-rls.ts (nicht scripts/apply-rls.ts — der
 -- prueft ausschliesslich die Aera-Seite und meldete jeden Aeli-Grant an
 -- `aera_app` zu Recht als Drift).

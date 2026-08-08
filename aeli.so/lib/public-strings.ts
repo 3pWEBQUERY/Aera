@@ -12,6 +12,12 @@
 
 export const PUBLIC_STRINGS = {
   de: {
+    /**
+     * Das BCP-47-Kuerzel dieses Satzes. Preise und Zahlen werden damit in den
+     * Komponenten formatiert; ohne diesen Eintrag muesste jede davon raten
+     * oder Deutsch annehmen.
+     */
+    locale: "de-DE",
     newsletterPlaceholder: "Deine E-Mail-Adresse",
     newsletterButton: "Eintragen",
     newsletterDone: "Danke! Du bist dabei.",
@@ -33,6 +39,17 @@ export const PUBLIC_STRINGS = {
     gateUnlock: "Weiter",
     gateWrong: "Das war leider nicht richtig.",
     liveNow: "Jetzt live",
+    aeraEvents: "Termine",
+    aeraTiers: "Mitglied werden",
+    aeraShop: "Shop",
+    aeraCourses: "Kurse",
+    aeraSpaces: "In der Community",
+    aeraEventOnline: "Online",
+    tierFree: "kostenlos",
+    tierMonth: "pro Monat",
+    tierYear: "pro Jahr",
+    tierOnce: "einmalig",
+    tierRecommended: "Empfohlen",
     shareTitle: "Seite teilen",
     shareCopy: "Adresse kopieren",
     shareCopied: "Kopiert",
@@ -44,6 +61,7 @@ export const PUBLIC_STRINGS = {
     notFoundCta: "Handle sichern",
   },
   en: {
+    locale: "en-GB",
     newsletterPlaceholder: "Your email address",
     newsletterButton: "Subscribe",
     newsletterDone: "Thanks — you're in.",
@@ -65,6 +83,17 @@ export const PUBLIC_STRINGS = {
     gateUnlock: "Continue",
     gateWrong: "That wasn't right.",
     liveNow: "Live now",
+    aeraEvents: "Upcoming",
+    aeraTiers: "Become a member",
+    aeraShop: "Shop",
+    aeraCourses: "Courses",
+    aeraSpaces: "Inside the community",
+    aeraEventOnline: "Online",
+    tierFree: "free",
+    tierMonth: "per month",
+    tierYear: "per year",
+    tierOnce: "one-time",
+    tierRecommended: "Recommended",
     shareTitle: "Share page",
     shareCopy: "Copy address",
     shareCopied: "Copied",

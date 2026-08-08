@@ -242,6 +242,26 @@ export function BlockEditor({ block, onDone }: { block: StudioBlock; onDone: () 
         </Field>
       )}
 
+      {has("limit") && (
+        <Field
+          id={`limit-${block.id}`}
+          label="Wie viele Einträge"
+          optional
+          hint="Höchstens sechs. Leer bedeutet drei — genug, um etwas zu zeigen, wenig genug, um nicht die Seite zu übernehmen."
+        >
+          <Input
+            id={`limit-${block.id}`}
+            name="limit"
+            type="number"
+            min={1}
+            max={6}
+            defaultValue={block.config.limit ?? ""}
+            className="max-w-24"
+            aria-describedby={`limit-${block.id}-note`}
+          />
+        </Field>
+      )}
+
       {has("highlight") && (
         <Checkbox
           name="highlight"
@@ -313,6 +333,7 @@ type EditorField =
   | "form"
   | "cta"
   | "highlight"
+  | "limit"
   | "schedule";
 
 /**
@@ -339,4 +360,11 @@ const FIELDS: Record<StudioBlock["type"], EditorField[]> = {
   BOOKING: ["title", "subtitle", "href", "decor", "schedule"],
   COMMUNITY_CTA: ["title", "subtitle", "cta", "schedule"],
   LIVE_NOW: ["title"],
+  // Die AERA_*-Bausteine haben keinen Inhalt zum Bearbeiten. Zu setzen gibt es
+  // nur die Überschrift, wie viele Einträge erscheinen — und wann.
+  AERA_EVENTS: ["title", "limit", "schedule"],
+  AERA_TIERS: ["title", "limit", "schedule"],
+  AERA_SHOP: ["title", "limit", "schedule"],
+  AERA_COURSES: ["title", "limit", "schedule"],
+  AERA_SPACES: ["title", "limit", "schedule"],
 };

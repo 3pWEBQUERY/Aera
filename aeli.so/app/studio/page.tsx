@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { requireProfile } from "@/lib/profile";
+import { profileAeraContent, requireProfile } from "@/lib/profile";
 import { studioPageData } from "@/lib/page-data";
 import { parseBlockConfig } from "@/lib/blocks";
 import { BlockList } from "@/components/studio/block-list";
@@ -18,6 +18,9 @@ export const metadata: Metadata = { title: "Seite", robots: { index: false } };
  */
 export default async function StudioPage() {
   const profile = await requireProfile();
+  // Das Studio ist deutsch (lib/i18n.ts) — die Vorschau zeigt Termine so,
+  // wie sie ein deutschsprachiger Besucher saehe.
+  const aera = await profileAeraContent(profile, "de");
 
   const blocks: StudioBlock[] = profile.blocks.map((block) => ({
     id: block.id,
@@ -61,7 +64,7 @@ export default async function StudioPage() {
           die Liste lang wird. */}
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <PhonePreview
-          page={studioPageData(profile, { onlyVisible: true })}
+          page={studioPageData(profile, { onlyVisible: true, aera })}
           label="So sieht sie auf dem Handy aus"
         />
       </aside>

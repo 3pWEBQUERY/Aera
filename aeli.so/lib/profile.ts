@@ -6,7 +6,10 @@ import { getCurrentUser } from "./auth";
 import { isBlockLive } from "./blocks";
 import { parseTheme, resolveTheme, DEFAULT_THEME } from "./themes";
 import { parseSocials } from "./socials";
-import type { AeliBlock, AeliProfile, Tenant } from "@/app/generated/prisma/client";
+import { loadAeraContent } from "./aera-content";
+import { EMPTY_AERA_CONTENT, type AeraContent } from "@/components/page/types";
+import type { PublicLocale } from "./public-strings";
+import type { AeliBlock, AeliBlockType, AeliProfile, Tenant } from "@/app/generated/prisma/client";
 
 /**
  * Die Datenzugriffe rund um ein Profil — an einer Stelle, weil hier die
@@ -181,6 +184,26 @@ async function tenantIsLive(tenantId: string): Promise<boolean> {
     select: { id: true },
   });
   return Boolean(running);
+}
+
+/**
+ * Die Community-Inhalte für ein geladenes Profil.
+ *
+ * Getrennt von `getPublicProfile`, weil es zwei verschiedene Fragen sind: was
+ * steht auf dieser Seite (einmal pro Anfrage, gecacht) und was zeigt die
+ * Community gerade (hängt an den Bausteinen). Ohne verknüpfte Community und
+ * ohne AERA_*-Baustein kostet der Aufruf keine einzige Abfrage.
+ */
+export function profileAeraContent(
+  profile: Pick<ProfileWithBlocks, "linkedTenant"> & { blocks: { type: AeliBlockType }[] },
+  locale: PublicLocale,
+): Promise<AeraContent> {
+  if (!profile.linkedTenant) return Promise.resolve(EMPTY_AERA_CONTENT);
+  return loadAeraContent(
+    profile.linkedTenant,
+    profile.blocks.map((block) => block.type),
+    locale,
+  );
 }
 
 /** Für Skripte und Hintergrundarbeit: Profil im Kontext seines Besitzers laden. */

@@ -196,7 +196,101 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     needsCommunity: true,
     defaults: { title: "Jetzt live" },
   },
+  // Die fuenf Bausteine, die ihren Inhalt nicht mitbringen, sondern holen.
+  // Sie haben bewusst keinen `subtitle` in den Defaults: was drunter steht,
+  // steht in Aera.
+  {
+    type: "AERA_EVENTS",
+    label: "Termine",
+    hint: "Deine nächsten Veranstaltungen — aktualisiert sich von allein.",
+    // Nicht das ▤ des BOOKING-Bausteins: „Termin" und „Termine" stehen im
+    // selben Baukasten, da darf nicht auch noch das Zeichen dasselbe sein.
+    icon: "◷",
+    group: "community",
+    needsHref: false,
+    needsCommunity: true,
+    defaults: { title: "Nächste Termine" },
+  },
+  {
+    type: "AERA_TIERS",
+    label: "Mitgliedschaft",
+    hint: "Deine öffentlichen Stufen mit Preis, direkt zum Beitreten.",
+    icon: "◇",
+    group: "community",
+    needsHref: false,
+    needsCommunity: true,
+    defaults: { title: "Mitglied werden" },
+  },
+  {
+    type: "AERA_SHOP",
+    label: "Shop",
+    hint: "Produkte aus deiner Community, mit Bild und Preis.",
+    // Die offene Fassung von PRODUCTs ⬢ — dieselbe Sache, nur aus Aera.
+    icon: "⬡",
+    group: "community",
+    needsHref: false,
+    needsCommunity: true,
+    defaults: { title: "Aus dem Shop" },
+  },
+  {
+    type: "AERA_COURSES",
+    label: "Kurse",
+    hint: "Deine veröffentlichten Kurse als Karten.",
+    icon: "▥",
+    group: "community",
+    needsHref: false,
+    needsCommunity: true,
+    defaults: { title: "Kurse" },
+  },
+  {
+    type: "AERA_SPACES",
+    label: "Räume",
+    hint: "Wegweiser in die öffentlichen Bereiche deiner Community.",
+    icon: "⌗",
+    group: "community",
+    needsHref: false,
+    needsCommunity: true,
+    defaults: { title: "In der Community" },
+  },
 ] as const;
+
+/**
+ * Bausteine, deren Inhalt aus Aera kommt.
+ *
+ * Sie unterscheiden sich in einem Punkt von allen anderen: sie koennen leer
+ * sein, ohne dass etwas kaputt ist — eine Community ohne kommende Termine hat
+ * eben keine. Der Baustein rendert dann nichts, statt einen Fehler zu
+ * behaupten.
+ */
+export type AeraContentKind = "events" | "tiers" | "products" | "courses" | "spaces";
+
+/**
+ * Welcher Baustein welche Liste braucht. Steht hier und nicht in
+ * `lib/aera-content.ts`, weil dieses Modul die Tabelle „Typ -> was er liest"
+ * ohnehin fuehrt — und weil es ohne `server-only` auskommt und damit pruefbar
+ * ist.
+ */
+const AERA_CONTENT: Partial<Record<AeliBlockType, AeraContentKind>> = {
+  AERA_EVENTS: "events",
+  AERA_TIERS: "tiers",
+  AERA_SHOP: "products",
+  AERA_COURSES: "courses",
+  AERA_SPACES: "spaces",
+};
+
+export function aeraContentKind(type: AeliBlockType): AeraContentKind | null {
+  return AERA_CONTENT[type] ?? null;
+}
+
+/**
+ * Wie viele Eintraege ueberhaupt geholt werden.
+ *
+ * Der Baustein zeigt weniger (`config.limit`), aber die Abfrage laeuft einmal
+ * pro Seite — auch wenn jemand zwei Termin-Bausteine mit verschiedenen Laengen
+ * hinstellt. Sechs ist die Obergrenze dessen, was auf einer Bio-Seite noch als
+ * Liste durchgeht und nicht als Archiv; dieselbe Zahl begrenzt `limit` oben.
+ */
+export const AERA_FETCH_LIMIT = 6;
 
 export function blockDescriptor(type: AeliBlockType): BlockDescriptor {
   return BLOCK_CATALOG.find((entry) => entry.type === type) ?? BLOCK_CATALOG[0]!;
@@ -246,6 +340,14 @@ export const blockConfigSchema = z
 
     /** COMMUNITY_CTA: Beschriftung des Knopfs. */
     ctaLabel: z.string().max(40).optional(),
+
+    /**
+     * AERA_*: wie viele Eintraege der Baustein zeigt.
+     *
+     * Die Obergrenze ist dieselbe wie beim Laden (AERA_FETCH_LIMIT) — eine
+     * groessere Zahl waere eine Zusage, die die Abfrage nicht einloest.
+     */
+    limit: z.number().int().min(1).max(AERA_FETCH_LIMIT).optional(),
   })
   .strip();
 

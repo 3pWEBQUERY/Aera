@@ -2520,6 +2520,22 @@ enum AeliBlockType {
   CONTACT
   /// QR-Code der eigenen Seite zum Abfotografieren.
   QR_SHARE
+
+  // --- Bausteine, die Inhalte der verknuepften Community ziehen -------------
+  // Sie tragen keinen eigenen Inhalt: der Creator waehlt den Typ, den Rest
+  // liest Aeli bei jedem Aufruf frisch aus Aera. Was sie sehen duerfen, steht
+  // nicht in der Abfrage, sondern in den RLS-Policies der Migration
+  // 20260808120000_aeli_aera_blocks — oeffentlich heisst dort oeffentlich.
+  /// Kommende Termine aus oeffentlichen Event-Spaces.
+  AERA_EVENTS
+  /// Oeffentliche Mitgliedsstufen mit Preis, verlinkt auf die Beitrittsseite.
+  AERA_TIERS
+  /// Veroeffentlichte Produkte aus oeffentlichen Shop-Spaces.
+  AERA_SHOP
+  /// Veroeffentlichte Kurse aus oeffentlichen Kurs-Spaces.
+  AERA_COURSES
+  /// Die oeffentlichen Raeume der Community als Wegweiser.
+  AERA_SPACES
 }
 
 /// Ein einziges append-only Ereignis-Log traegt Seitenaufrufe UND Klicks.

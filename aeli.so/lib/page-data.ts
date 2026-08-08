@@ -2,7 +2,7 @@ import { parseBlockConfig } from "./blocks";
 import { parseSocials } from "./socials";
 import { parseTheme, resolveTheme, type AeliTheme } from "./themes";
 import { communityUrl, profileUrl } from "./url";
-import type { PageData } from "@/components/page/types";
+import { EMPTY_AERA_CONTENT, type AeraContent, type PageData } from "@/components/page/types";
 import type { ProfileWithBlocks } from "./profile";
 
 /**
@@ -17,7 +17,12 @@ import type { ProfileWithBlocks } from "./profile";
  */
 export function studioPageData(
   profile: ProfileWithBlocks,
-  options: { theme?: AeliTheme; onlyVisible?: boolean; isLive?: boolean } = {},
+  options: {
+    theme?: AeliTheme;
+    onlyVisible?: boolean;
+    isLive?: boolean;
+    aera?: AeraContent;
+  } = {},
 ): PageData {
   const blocks = options.onlyVisible
     ? profile.blocks.filter((block) => block.isVisible)
@@ -55,6 +60,7 @@ export function studioPageData(
     // In der Vorschau ist „live“ eine Behauptung des Studios, keine Messung:
     // der LIVE_NOW-Block soll sich zeigen, damit man ihn gestalten kann.
     isLive: options.isLive ?? Boolean(profile.linkedTenant),
+    aera: options.aera ?? EMPTY_AERA_CONTENT,
     publicUrl: profileUrl(profile.handle),
   };
 }

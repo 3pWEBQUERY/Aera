@@ -1,5 +1,5 @@
 import { resolveTheme } from "./themes";
-import type { PageData } from "@/components/page/types";
+import { EMPTY_AERA_CONTENT, type PageData } from "@/components/page/types";
 
 /**
  * Die Beispielseite im Hero.
@@ -55,6 +55,16 @@ export function demoPage(): PageData {
         config: {},
       },
       {
+        id: "demo-5",
+        type: "AERA_EVENTS",
+        title: "Nächste Termine",
+        subtitle: null,
+        href: null,
+        mediaUrl: null,
+        icon: null,
+        config: { limit: 2 },
+      },
+      {
         id: "demo-4",
         type: "NEWSLETTER",
         title: "Einmal im Monat",
@@ -74,6 +84,37 @@ export function demoPage(): PageData {
       tagline: "Die Community hinter den Workshops",
     },
     isLive: false,
+    // Auf einer echten Seite stünde hier, was gerade in Aera steht. Im Hero
+    // sind es feste Werte — das Bild soll morgen dasselbe zeigen wie heute.
+    aera: {
+      ...EMPTY_AERA_CONTENT,
+      events: [
+        {
+          id: "demo-event-1",
+          title: "Available Light — Abendworkshop",
+          dayLabel: "14",
+          monthLabel: "Sep",
+          timeLabel: "19:00",
+          dateLabel: "Do, 14. Sep 2026, 19:00",
+          startsAt: "2026-09-14T17:00:00.000Z",
+          location: "Leipzig, Spinnerei",
+          isOnline: false,
+          url: "https://example.com",
+        },
+        {
+          id: "demo-event-2",
+          title: "Portfolio-Runde",
+          dayLabel: "30",
+          monthLabel: "Sep",
+          timeLabel: "20:00",
+          dateLabel: "Di, 30. Sep 2026, 20:00",
+          startsAt: "2026-09-30T18:00:00.000Z",
+          location: null,
+          isOnline: true,
+          url: "https://example.com",
+        },
+      ],
+    },
     publicUrl: "https://marie.aeli.so",
   };
 }

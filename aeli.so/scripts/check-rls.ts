@@ -26,6 +26,25 @@ const EXPECTED_GRANTS: Record<string, string[]> = {
   AeliLead: ["SELECT", "INSERT", "DELETE"],
 };
 
+/**
+ * Aera-Tabellen, die `aeli_app` lesen darf — und die Spalten, die es dort
+ * NICHT geben darf. Die Liste ist die eigentliche Aussage dieser Prüfung: eine
+ * Policy kann man versehentlich zu weit fassen, eine fehlende Spalte nicht
+ * versehentlich ausliefern.
+ */
+const FORBIDDEN_COLUMNS: [string, string[]][] = [
+  // Der Zugang zum Termin ist nicht dasselbe wie der Termin.
+  ["Event", ["meetingUrl"]],
+  // Die Datei ist die Ware. Wer sie lesen kann, braucht nicht zu kaufen.
+  ["Product", ["downloadUrl", "stripePriceId", "grantsEntitlementKey"]],
+  ["Course", ["videoUrl", "streamUrl", "address"]],
+  ["MembershipTier", ["stripePriceId", "appleProductId", "entitlementKey"]],
+  ["Space", ["settings"]],
+];
+
+/** Tabellen, auf die `aeli_app` überhaupt keinen Blick haben darf. */
+const OFF_LIMITS = ["User", "Membership", "Post", "Order", "Subscription", "Entitlement"];
+
 const EXPECTED_POLICIES: [string, string][] = [
   ["AeliProfile", "aeli_owner_profile"],
   ["AeliProfile", "aeli_public_profile"],
@@ -36,6 +55,11 @@ const EXPECTED_POLICIES: [string, string][] = [
   ["AeliLead", "aeli_owner_lead"],
   ["AeliLead", "aeli_public_lead_insert"],
   ["Tenant", "aeli_public_tenant"],
+  ["Space", "aeli_public_space"],
+  ["Event", "aeli_public_event"],
+  ["MembershipTier", "aeli_public_tier"],
+  ["Product", "aeli_public_product"],
+  ["Course", "aeli_public_course"],
 ];
 
 async function main(): Promise<void> {
@@ -136,22 +160,50 @@ async function main(): Promise<void> {
     }
 
     // Alles, was nicht in der Liste steht, darf aeli_app auf Tabellenebene
-    // gar nicht sehen. `Tenant` ist die einzige Ausnahme — und die nur
-    // spaltenweise, deshalb taucht sie hier nicht auf.
+    // gar nicht sehen. `Tenant` und die fünf Aera-Inhaltstabellen sind die
+    // Ausnahme — bei ihnen gibt es nur Spalten-Grants, und die stehen nicht in
+    // `role_table_grants`.
     for (const [table] of actual) {
       if (!(table in EXPECTED_GRANTS)) {
         failures.push(`${table}: aeli_app hat unerwartete Tabellenrechte`);
       }
     }
 
-    // --- User bleibt tabu -------------------------------------------------
-    const userAccess = await client.query<{ any_column: boolean }>(
-      `SELECT bool_or(has_column_privilege('aeli_app', '"public"."User"', column_name, 'SELECT')) AS any_column
-       FROM information_schema.columns
-       WHERE table_schema = 'public' AND table_name = 'User'`,
-    );
-    if (userAccess.rows[0]?.any_column) {
-      failures.push("aeli_app kann Spalten von User lesen — das soll ausgeschlossen sein");
+    // --- Aera-Inhalte: lesen ja, schreiben nie ----------------------------
+    for (const [table] of FORBIDDEN_COLUMNS) {
+      for (const privilege of ["INSERT", "UPDATE", "DELETE"]) {
+        const allowed = await client.query<{ allowed: boolean }>(
+          `SELECT has_table_privilege('aeli_app', format('public.%I', $1::text), $2) AS allowed`,
+          [table, privilege],
+        );
+        if (allowed.rows[0]?.allowed) {
+          failures.push(`${table}: aeli_app darf ${privilege} — das ist ein reiner Lesepfad`);
+        }
+      }
+    }
+
+    for (const [table, columns] of FORBIDDEN_COLUMNS) {
+      for (const column of columns) {
+        const allowed = await client.query<{ allowed: boolean }>(
+          `SELECT has_column_privilege('aeli_app', format('public.%I', $1::text), $2, 'SELECT') AS allowed`,
+          [table, column],
+        );
+        if (allowed.rows[0]?.allowed) {
+          failures.push(`${table}.${column}: aeli_app soll diese Spalte nicht lesen können`);
+        }
+      }
+    }
+
+    for (const table of OFF_LIMITS) {
+      const any = await client.query<{ any_column: boolean }>(
+        `SELECT bool_or(has_column_privilege('aeli_app', format('public.%I', $1::text), column_name, 'SELECT')) AS any_column
+         FROM information_schema.columns
+         WHERE table_schema = 'public' AND table_name = $1`,
+        [table],
+      );
+      if (any.rows[0]?.any_column) {
+        failures.push(`${table}: aeli_app kann Spalten lesen — diese Tabelle ist tabu`);
+      }
     }
 
     // --- Tenant: nur die Anzeigespalten -----------------------------------
@@ -177,7 +229,7 @@ async function main(): Promise<void> {
 
   console.log(
     `✅ Aeli-RLS geprüft: Rolle aeli_app, ${EXPECTED_POLICIES.length} Policies, ` +
-      "Rechte auf das Nötigste begrenzt, kein Zugriff auf User.",
+      `Aera-Inhalte nur lesend, ${OFF_LIMITS.length} Tabellen tabu.`,
   );
 }
 
