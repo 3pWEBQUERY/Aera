@@ -12,7 +12,7 @@ import { handleStatus, HANDLE_PROBLEM_TEXT } from "@/lib/handle-availability";
 import { parseSocials, socialLinkSchema } from "@/lib/socials";
 import { parseTheme, THEME_PRESETS } from "@/lib/themes";
 import { blockConfigSchema, blockDescriptor } from "@/lib/blocks";
-import { normalizeExternalUrl } from "@/lib/url";
+import { normalizeExternalUrl, profileUrlLabel } from "@/lib/url";
 import { deleteObject, keyFromMediaUrl } from "@/lib/storage";
 import { linkCodesConfigured, verifyLinkCode } from "@/lib/link-code";
 import { checkbox, formError, text, type FormState } from "@/lib/action-state";
@@ -182,9 +182,11 @@ export async function updateHandleAction(_prev: FormState, form: FormData): Prom
     revalidateProfile(profile.handle);
     revalidateProfile(handle);
     // Die alte Adresse führt ab jetzt ins Leere — das ist die eine Änderung, bei
-    // der ein beiläufiges „Gespeichert“ zu wenig wäre.
+    // der ein beiläufiges „Gespeichert“ zu wenig wäre. Genannt wird die ganze
+    // Adresse, nicht nur der Handle: sie ist das, was der Creator gleich
+    // irgendwo hineinkopiert.
     return {
-      notice: `Deine Seite liegt jetzt auf ${handle}. Die alte Adresse funktioniert nicht mehr.`,
+      notice: `Deine Seite liegt jetzt auf ${profileUrlLabel(handle)}. Die alte Adresse funktioniert nicht mehr.`,
     };
   });
 }

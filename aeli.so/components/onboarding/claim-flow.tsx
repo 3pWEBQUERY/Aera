@@ -33,11 +33,18 @@ interface CheckResult {
 export function ClaimFlow({
   defaultName,
   wishHandle,
-  previewSuffix,
+  url,
 }: {
   defaultName: string;
   wishHandle: string;
-  previewSuffix: string;
+  /**
+   * Die Adresse, zerlegt um die Stelle des Handles herum
+   * (`profileUrlLabelParts`). Zerlegt und nicht als Suffix, weil die beiden
+   * Formen verschieden herum stehen: in Produktion folgt `.aeli.so` auf den
+   * Handle, lokal geht `localhost:3001/p/` ihm voraus. Ein Feld, das immer
+   * nur ein Suffix anhaengt, behauptet lokal eine Adresse, die es nicht gibt.
+   */
+  url: { prefix: string; suffix: string };
 }) {
   const [state, action] = useActionState(claimHandleAction, EMPTY_STATE);
   const [handle, setHandle] = useState(() => normalizeHandle(wishHandle || defaultName));
@@ -91,6 +98,9 @@ export function ClaimFlow({
             problem ? "border-ember" : isFree ? "border-signal" : "border-line focus-within:border-ash"
           }`}
         >
+          {url.prefix && (
+            <span className="shrink-0 pr-0.5 text-lg text-ash">{url.prefix}</span>
+          )}
           <input
             id={fieldId}
             name="handle"
@@ -105,7 +115,9 @@ export function ClaimFlow({
             placeholder="deinname"
             className="min-w-0 flex-1 bg-transparent py-4 text-lg font-semibold tracking-tight text-chalk placeholder:text-ash/60 focus:outline-none"
           />
-          <span className="shrink-0 pl-1 text-lg text-ash">.{previewSuffix}</span>
+          {url.suffix && (
+            <span className="shrink-0 pl-1 text-lg text-ash">{url.suffix}</span>
+          )}
           <span className="ml-3 flex w-5 shrink-0 justify-center" aria-hidden>
             {checking ? (
               <span className="size-2 animate-pulse rounded-full bg-ash" />

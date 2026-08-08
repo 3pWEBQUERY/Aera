@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { normalizeExternalUrl, referrerHost } from "@/lib/url";
+import {
+  normalizeExternalUrl,
+  profileUrlLabel,
+  profileUrlLabelParts,
+  referrerHost,
+} from "@/lib/url";
 
 /**
  * Jedes Link-Ziel auf einer Bio-Seite kommt aus einem Textfeld. Was diese
@@ -41,5 +46,32 @@ describe("referrerHost", () => {
   it("kommt mit fehlendem oder kaputtem Referrer klar", () => {
     expect(referrerHost(null)).toBeNull();
     expect(referrerHost("kein-url")).toBeNull();
+  });
+});
+
+/**
+ * Die Adresse, zerlegt für die Formulare, die den Handle setzen.
+ *
+ * Der Test hält die eine Eigenschaft fest, an der es vorher scheiterte:
+ * zusammengesetzt muss dasselbe herauskommen wie bei `profileUrlLabel`. Die
+ * Formulare bauten die Adresse früher selbst aus einem Suffix und fielen dabei
+ * auf „aeli.so" zurück — lokal versprachen sie damit `marie.aeli.so`, während
+ * Kopfzeile und QR-Code `localhost:3001/p/marie` nannten.
+ */
+describe("profileUrlLabelParts", () => {
+  it("ergibt zusammengesetzt dieselbe Adresse wie profileUrlLabel", () => {
+    const { prefix, suffix } = profileUrlLabelParts();
+    for (const handle of ["marie", "a", "sehr-langer-handle-mit-strichen"]) {
+      expect(`${prefix}${handle}${suffix}`).toBe(profileUrlLabel(handle));
+    }
+  });
+
+  it("legt den Handle genau einmal in die Lücke", () => {
+    const { prefix, suffix } = profileUrlLabelParts();
+    // Stünde der Handle schon in einem der beiden Teile, käme er doppelt
+    // heraus — genau der Fehler, den eine Zerlegung per Textsuche machen kann.
+    expect(prefix).not.toContain("marie");
+    expect(suffix).not.toContain("marie");
+    expect(prefix + suffix).not.toContain(" ");
   });
 });

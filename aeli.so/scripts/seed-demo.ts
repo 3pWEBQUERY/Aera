@@ -159,6 +159,13 @@ async function seedCommunity(prisma: PrismaClient, ownerId: string): Promise<str
     create: { name: "Lichtwerk", slug: COMMUNITY_SLUG, ownerId, tagline: "Die Community hinter den Workshops" },
   });
 
+  // Erst leeren, dann fuellen — das Skript soll zweimal hintereinander laufen
+  // koennen. `Product.spaceId` haengt mit `SET NULL` am Raum und ueberlebt
+  // dessen Loeschung; ohne die eigene Zeile hier scheitert der zweite Lauf an
+  // der Eindeutigkeit von (tenantId, slug).
+  await prisma.product.deleteMany({ where: { tenantId: tenant.id } });
+  await prisma.course.deleteMany({ where: { tenantId: tenant.id } });
+  await prisma.event.deleteMany({ where: { tenantId: tenant.id } });
   await prisma.space.deleteMany({ where: { tenantId: tenant.id } });
   await prisma.membershipTier.deleteMany({ where: { tenantId: tenant.id } });
 

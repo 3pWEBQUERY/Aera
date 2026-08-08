@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getOwnProfile } from "@/lib/profile";
-import { env } from "@/lib/env";
+import { profileUrlLabelParts } from "@/lib/url";
 import { BrandLink } from "@/components/brand";
 import { ClaimFlow } from "@/components/onboarding/claim-flow";
 
@@ -21,11 +21,6 @@ export default async function OnboardingPage({
   // Wer schon eine Seite hat, hat hier nichts mehr zu holen — ein zweites
   // Profil pro Konto gibt es nicht (`AeliProfile.userId` ist unique).
   if (await getOwnProfile()) redirect("/studio");
-
-  const suffix =
-    env.AELI_ROOT_DOMAIN && env.AELI_ROOT_DOMAIN !== "localhost"
-      ? env.AELI_ROOT_DOMAIN
-      : "aeli.so";
 
   return (
     <div className="min-h-dvh">
@@ -52,7 +47,7 @@ export default async function OnboardingPage({
             // vorgeschlagen — besser als ein leeres Feld, an dem man hängen
             // bleibt, bevor man überhaupt angefangen hat.
             wishHandle={(await searchParams).h ?? ""}
-            previewSuffix={suffix}
+            url={profileUrlLabelParts()}
           />
         </div>
       </main>

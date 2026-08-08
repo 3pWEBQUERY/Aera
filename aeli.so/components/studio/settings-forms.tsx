@@ -42,9 +42,30 @@ function SaveRow({ label, notice, error }: { label: string; notice?: string; err
  * Bios, auf gedruckten Karten und in QR-Codes, die niemand zurückrufen kann.
  * Wer ihn ändert, soll das wissen, bevor er speichert — nicht danach.
  */
-export function HandleForm({ handle, suffix }: { handle: string; suffix: string }) {
+/**
+ * Der Handle — und damit die Adresse.
+ *
+ * `url` kommt zerlegt vom Server (`profileUrlLabelParts`), statt hier aus
+ * einem Suffix zusammengebaut zu werden. Genau das war vorher der Fehler: das
+ * Formular versprach `marie.aeli.so`, während Kopfzeile, QR-Code und
+ * Teilen-Knopf `localhost:3001/p/marie` nannten. Der Handle änderte sich
+ * durchaus — nur die Adresse, die hier stand, gab es nicht.
+ */
+export function HandleForm({
+  handle,
+  url,
+}: {
+  handle: string;
+  url: { prefix: string; suffix: string };
+}) {
   const [state, action] = useActionState(updateHandleAction, EMPTY_STATE);
   const [value, setValue] = useState(handle);
+  const address = (name: string) => `${url.prefix}${name}${url.suffix}`;
+
+  // Nach einer erfolgreichen Änderung lädt der Server die Seite neu und
+  // `handle` trägt den neuen Wert. Bis dahin ist `value` das, was im Feld
+  // steht — beide auseinanderzuhalten ist der ganze Sinn der Warnung unten.
+  const changed = value !== handle;
 
   return (
     <form action={action} className="space-y-4">
@@ -52,7 +73,11 @@ export function HandleForm({ handle, suffix }: { handle: string; suffix: string 
         id="handle"
         label="Handle"
         error={state.fieldErrors?.handle}
-        hint={`Deine Seite liegt dann auf ${value || "…"}.${suffix}`}
+        hint={
+          value
+            ? `${changed ? "Deine Seite liegt dann auf" : "Deine Seite liegt auf"} ${address(value)}`
+            : "Ohne Handle gibt es keine Adresse."
+        }
       >
         <Input
           id="handle"
@@ -65,9 +90,9 @@ export function HandleForm({ handle, suffix }: { handle: string; suffix: string 
         />
       </Field>
 
-      {value !== handle && (
+      {changed && (
         <p className="rounded-lg border border-ember/40 bg-ember/10 px-3 py-2 text-xs text-ember">
-          Die alte Adresse <span className="font-medium">{handle}.{suffix}</span> führt danach ins
+          Die alte Adresse <span className="font-medium">{address(handle)}</span> führt danach ins
           Leere. Links, die andere schon gesetzt haben, funktionieren nicht mehr.
         </p>
       )}

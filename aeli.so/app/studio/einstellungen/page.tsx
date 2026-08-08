@@ -3,6 +3,7 @@ import { requireProfile } from "@/lib/profile";
 import { getCurrentUser } from "@/lib/auth";
 import { systemPrisma } from "@/lib/prisma";
 import { env } from "@/lib/env";
+import { profileUrlLabelParts } from "@/lib/url";
 import {
   CommunityForm,
   GateForm,
@@ -27,8 +28,9 @@ export default async function SettingsPage() {
     orderBy: { name: "asc" },
   });
 
-  const suffix =
-    env.AELI_ROOT_DOMAIN && env.AELI_ROOT_DOMAIN !== "localhost" ? env.AELI_ROOT_DOMAIN : "aeli.so";
+  // Nicht selbst zusammengebaut: dieselbe Adresse, die die Kopfzeile, der
+  // QR-Code und der Teilen-Knopf zeigen. Begruendung in lib/url.ts.
+  const url = profileUrlLabelParts();
 
   return (
     <div className="max-w-2xl space-y-8">
@@ -38,7 +40,7 @@ export default async function SettingsPage() {
       </header>
 
       <Section title="Adresse">
-        <HandleForm handle={profile.handle} suffix={suffix} />
+        <HandleForm handle={profile.handle} url={url} />
       </Section>
 
       <Section title="Auffindbarkeit" hint="Was in Suchergebnissen und geteilten Links steht.">
