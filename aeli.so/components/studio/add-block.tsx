@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { addBlockAction } from "@/app/actions/profile";
 import { BLOCK_CATALOG, BLOCK_GROUPS } from "@/lib/blocks";
 import { Button } from "@/components/ui/button";
+import { AeraMark } from "@/components/aera-mark";
 
 /**
  * Der Baukasten.
@@ -69,7 +70,7 @@ export function AddBlock({ hasCommunity }: { hasCommunity: boolean }) {
                         startTransition(() => addBlockAction(form));
                         setOpen(false);
                       }}
-                      className="group flex gap-3 rounded-lg border border-line bg-ink p-3 text-left transition-colors enabled:hover:border-signal/60 enabled:hover:bg-ink-3 disabled:cursor-not-allowed disabled:opacity-45"
+                      className="group relative flex gap-3 rounded-lg border border-line bg-ink p-3 text-left transition-colors enabled:hover:border-signal/60 enabled:hover:bg-ink-3 disabled:cursor-not-allowed disabled:opacity-45"
                     >
                       <span
                         aria-hidden
@@ -77,7 +78,15 @@ export function AddBlock({ hasCommunity }: { hasCommunity: boolean }) {
                       >
                         {entry.icon}
                       </span>
-                      <span className="min-w-0">
+                      {/* Aeras Zeichen an den Bausteinen, die ohne Aera nicht
+                          funktionieren. `needsCommunity` ist genau diese Menge —
+                          ein zweites Feld daneben könnte nur auseinanderlaufen.
+                          Die Kachel ist minimal heller als die Karte; der Ring
+                          gibt ihr eine Kante, ohne das Zeichen anzufassen. */}
+                      {entry.needsCommunity && (
+                        <AeraMark className="absolute top-2.5 right-2.5 size-5 rounded-[4px] ring-1 ring-white/10" />
+                      )}
+                      <span className={`min-w-0 ${entry.needsCommunity ? "pr-5" : ""}`}>
                         <span className="block text-sm font-medium text-chalk">{entry.label}</span>
                         <span className="mt-0.5 block text-xs leading-snug text-ash">
                           {blocked ? "Braucht eine verknüpfte Community." : entry.hint}

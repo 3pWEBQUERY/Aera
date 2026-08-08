@@ -390,10 +390,10 @@ body {
 /* Das Telefon in der Vorschau.
 
    Der Bildschirm darin ist 390 × 844 — die Maße eines echten iPhone — und wird
-   per `zoom` auf die Rahmenbreite geschrumpft. Ohne diesen Umweg würde die
-   Seite bei 320 px Rahmenbreite auch WIE 320 px umbrechen: Titel kürzen sich
-   ab, Knöpfe werden zweizeilig, und die Vorschau zeigt Probleme, die auf einem
-   echten Gerät gar nicht existieren. */
+   auf die Rahmenbreite geschrumpft. Ohne diesen Umweg würde die Seite bei
+   320 px Rahmenbreite auch WIE 320 px umbrechen: Titel kürzen sich ab, Knöpfe
+   werden zweizeilig, und die Vorschau zeigt Probleme, die auf einem echten
+   Gerät gar nicht existieren. */
 .aeli-phone {
   aspect-ratio: 390 / 844;
   border-radius: 2.25rem;
@@ -423,7 +423,20 @@ body {
      844 (iPhone), die Buehne im Design-Bereich nur den oberen Ausschnitt —
      gescrollt wird in beiden Faellen innerhalb dieser Flaeche. */
   height: var(--phone-screen-h, 844px);
-  zoom: var(--phone-zoom, 1);
+  /* Verkleinert wird mit `transform`, nicht mit `zoom`.
+
+     `zoom` verändert für eingebettete iframes das, was `window.innerWidth`
+     darin meldet: das Dokument wird bei 390 px umbrochen, aber der Player
+     drinnen misst die verkleinerte Zahl und baut sich entsprechend schmaler
+     auf. Bei YouTube blieb rechts und unten ein weißer Streifen in genau der
+     Breite des Verkleinerungsfaktors stehen.
+
+     `transform` fasst die Innenmaße nicht an — der iframe rechnet mit seinen
+     echten 390 px, und skaliert wird erst das fertige Bild. Der Preis ist,
+     dass das Kästchen im Layout weiterhin die vollen 390 × 844 belegt; der
+     Rahmen ringsum schneidet es mit `overflow: hidden` zu. */
+  transform: scale(var(--phone-zoom, 1));
+  transform-origin: top left;
   overflow-y: auto;
   /* `contain: paint` schneidet die fixierten Hintergründe der Bio-Seite auf den
      Rahmen zu — ohne das legt sich das Aurora-Leuchten über das ganze Studio. */

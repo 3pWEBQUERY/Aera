@@ -43,3 +43,24 @@ describe("resolveEmbed", () => {
     expect(resolveEmbed("https://www.youtube.com/watch?v=../../etc")).toBeNull();
   });
 });
+
+/**
+ * Der Telefonrahmen der Vorschau skaliert die Seite. Wie er das tut, ist für
+ * Einbettungen keine Geschmacksfrage: `zoom` verändert, was `window.innerWidth`
+ * innerhalb eines iframes meldet, und Player wie YouTube bauen sich danach auf.
+ * Das Ergebnis war ein weißer Streifen rechts und unten, genau so breit wie der
+ * Verkleinerungsfaktor. `transform` fasst die Innenmaße nicht an.
+ *
+ * Der Test liest das CSS, weil es dafür keine andere Stelle gibt — und weil der
+ * Rückweg zu `zoom` naheliegt: es ist die kürzere Zeile.
+ */
+describe("Telefonrahmen der Vorschau", () => {
+  it("skaliert mit transform, nicht mit zoom", async () => {
+    const { readFile } = await import("node:fs/promises");
+    const css = await readFile(new URL("../app/globals.css", import.meta.url), "utf8");
+    const rule = css.match(/\.aeli-phone-screen\s*\{[^}]*\}/)?.[0];
+    expect(rule, ".aeli-phone-screen fehlt in globals.css").toBeTruthy();
+    expect(rule).toContain("transform: scale(var(--phone-zoom");
+    expect(rule).not.toMatch(/^\s*zoom:/m);
+  });
+});
