@@ -4,6 +4,10 @@ import { getCurrentUser } from "@/lib/auth";
 import { systemPrisma } from "@/lib/prisma";
 import { env } from "@/lib/env";
 import { profileUrlLabelParts } from "@/lib/url";
+import { paymentsConfigured } from "@/lib/env";
+import { linkedCommunityPayout, ownPayoutAccountId, resolvePayoutAccount } from "@/lib/payouts";
+import { canReceive, getConnectStatus } from "@/lib/stripe";
+import { PayoutPanel, type PayoutView } from "@/components/studio/payout-panel";
 import {
   CommunityForm,
   GateForm,
@@ -32,6 +36,27 @@ export default async function SettingsPage() {
   // QR-Code und der Teilen-Knopf zeigen. Begruendung in lib/url.ts.
   const url = profileUrlLabelParts();
 
+  // Drei Fragen, eine Antwort: welches Konto gilt gerade, gibt es ein eigenes,
+  // und was steuert die verknuepfte Community bei. Die Statusabfrage bei
+  // Stripe kostet einen Netzwerkaufruf — sie laeuft deshalb nur, wenn es
+  // ueberhaupt ein eigenes Konto gibt.
+  const owner = { userId: user.id, linkedTenantId: profile.linkedTenantId };
+  const [active, ownAccountId, linkedCommunity] = await Promise.all([
+    resolvePayoutAccount(owner),
+    ownPayoutAccountId(user.id),
+    linkedCommunityPayout(owner),
+  ]);
+  const ownAccountReady = ownAccountId ? canReceive(await getConnectStatus(ownAccountId)) : false;
+
+  const payout: PayoutView = {
+    source: active?.source ?? null,
+    communityName: active?.communityName ?? null,
+    hasOwnAccount: Boolean(ownAccountId),
+    ownAccountReady,
+    linkedCommunity,
+    configured: paymentsConfigured(),
+  };
+
   return (
     <div className="max-w-2xl space-y-8">
       <header>
@@ -51,6 +76,13 @@ export default async function SettingsPage() {
           seoNoindex={profile.seoNoindex}
           fallbackTitle={profile.displayName}
         />
+      </Section>
+
+      <Section
+        title="Zahlungen"
+        hint="Wohin Trinkgelder gehen. Betrifft nur den Baustein „Trinkgeld“."
+      >
+        <PayoutPanel view={payout} />
       </Section>
 
       <Section title="Verhalten">

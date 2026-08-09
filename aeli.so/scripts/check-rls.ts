@@ -14,7 +14,14 @@
  */
 import { Client } from "pg";
 
-const AELI_TABLES = ["AeliProfile", "AeliBlock", "AeliClick", "AeliLead"] as const;
+const AELI_TABLES = [
+  "AeliProfile",
+  "AeliBlock",
+  "AeliClick",
+  "AeliLead",
+  "AeliPayoutAccount",
+  "AeliTip",
+] as const;
 
 /** Was `aeli_app` auf den Aeli-Tabellen genau dürfen soll — nicht mehr. */
 const EXPECTED_GRANTS: Record<string, string[]> = {
@@ -24,6 +31,11 @@ const EXPECTED_GRANTS: Record<string, string[]> = {
   AeliClick: ["SELECT", "INSERT"],
   // Leads darf der Creator löschen, aber nicht nachträglich ändern.
   AeliLead: ["SELECT", "INSERT", "DELETE"],
+  // Geld: nur lesen. Angelegt und fortgeschrieben wird ueber die
+  // privilegierte Verbindung, weil dafuer `Tenant.ownerId` noetig ist —
+  // die Begruendung steht in der Migration 20260809120000_aeli_tips.
+  AeliPayoutAccount: ["SELECT"],
+  AeliTip: ["SELECT"],
 };
 
 /**
@@ -40,6 +52,10 @@ const FORBIDDEN_COLUMNS: [string, string[]][] = [
   ["Course", ["videoUrl", "streamUrl", "address"]],
   ["MembershipTier", ["stripePriceId", "appleProductId", "entitlementKey"]],
   ["Space", ["settings"]],
+  // Das Auszahlungskonto der Community und wem sie gehoert: beides entscheidet
+  // ueber Geld und bleibt der Rolle verschlossen. Gelesen wird es nur ueber die
+  // privilegierte Verbindung in lib/payouts.ts.
+  ["Tenant", ["stripeAccountId", "ownerId", "platformFeePercent"]],
 ];
 
 /** Tabellen, auf die `aeli_app` überhaupt keinen Blick haben darf. */
@@ -60,6 +76,8 @@ const EXPECTED_POLICIES: [string, string][] = [
   ["MembershipTier", "aeli_public_tier"],
   ["Product", "aeli_public_product"],
   ["Course", "aeli_public_course"],
+  ["AeliPayoutAccount", "aeli_owner_payout"],
+  ["AeliTip", "aeli_owner_tip"],
 ];
 
 async function main(): Promise<void> {
@@ -206,16 +224,6 @@ async function main(): Promise<void> {
       }
     }
 
-    // --- Tenant: nur die Anzeigespalten -----------------------------------
-    for (const column of ["stripeAccountId", "platformFeePercent", "ownerId"]) {
-      const allowed = await client.query<{ allowed: boolean }>(
-        `SELECT has_column_privilege('aeli_app', '"public"."Tenant"', $1, 'SELECT') AS allowed`,
-        [column],
-      );
-      if (allowed.rows[0]?.allowed) {
-        failures.push(`Tenant.${column}: aeli_app soll diese Spalte nicht lesen können`);
-      }
-    }
   } finally {
     await client.end();
   }

@@ -56,6 +56,13 @@ export const IMAGE_VARIANTS = {
    * bekommt es zugeschnitten statt in einem grauen Rahmen zentriert.
    */
   social: { width: 1200, height: 630, maxBytes: 12 * MB, quality: 82 },
+  /**
+   * Das kleine Bild links in einem Baustein. Es wird mit 40 CSS-Pixeln
+   * dargestellt — 320 reichen damit bis zu vierfacher Pixeldichte, und mehr
+   * waere Bytes fuer nichts. Quadratisch, weil der Platz im Knopf quadratisch
+   * ist: ein Querformat wuerde ohnehin beschnitten, nur eben im Browser.
+   */
+  thumbnail: { width: 320, height: 320, maxBytes: 8 * MB, quality: 82 },
 } as const satisfies Record<string, ImageVariant>;
 
 export type ImagePurpose = keyof typeof IMAGE_VARIANTS;

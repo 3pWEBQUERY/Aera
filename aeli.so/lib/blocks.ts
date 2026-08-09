@@ -149,10 +149,13 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
   {
     type: "TIP",
     label: "Trinkgeld",
-    hint: "Ein Betrag, ein Klick, fertig.",
+    hint: "Ein Betrag, ein Klick, fertig — direkt über Stripe.",
     icon: "♡",
     group: "geld",
-    needsHref: true,
+    // Kein Pflichtziel mehr: mit verbundenem Auszahlungskonto kassiert der
+    // Baustein selbst. Der Link bleibt als Rueckfallebene erlaubt, aber ihn zu
+    // verlangen hiesse, nach etwas zu fragen, das die meisten nicht brauchen.
+    needsHref: false,
     needsCommunity: false,
     defaults: { title: "Unterstütze mich" },
   },

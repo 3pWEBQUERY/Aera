@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { profileAeraContent, requireProfile } from "@/lib/profile";
+import { profileAeraContent, profileTipsEnabled, requireProfile } from "@/lib/profile";
 import { studioPageData } from "@/lib/page-data";
 import { parseTheme } from "@/lib/themes";
 import { parseSocials } from "@/lib/socials";
@@ -10,7 +10,10 @@ export const metadata: Metadata = { title: "Design", robots: { index: false } };
 
 export default async function DesignPage() {
   const profile = await requireProfile();
-  const aera = await profileAeraContent(profile, "de");
+  const [aera, tipsEnabled] = await Promise.all([
+    profileAeraContent(profile, "de"),
+    profileTipsEnabled(profile),
+  ]);
 
   return (
     <>
@@ -22,7 +25,7 @@ export default async function DesignPage() {
       </header>
 
       <DesignStudio
-        page={studioPageData(profile, { onlyVisible: true, aera })}
+        page={studioPageData(profile, { onlyVisible: true, aera, tipsEnabled })}
         initialTheme={parseTheme(profile.theme)}
         identity={{
           displayName: profile.displayName,

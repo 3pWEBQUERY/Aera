@@ -124,6 +124,12 @@ export interface PageData {
     tagline: string | null;
   } | null;
   isLive: boolean;
+  /**
+   * Kann diese Seite Geld annehmen? Hängt an einem verbundenen Stripe-Konto —
+   * entweder dem eigenen oder dem der eigenen Aera-Community (lib/payouts.ts).
+   * Ohne das ist der Trinkgeld-Baustein nur ein Link.
+   */
+  tipsEnabled: boolean;
   /** Was die verknüpfte Community gerade zeigt. Leer, wenn keine da ist. */
   aera: AeraContent;
   /** Absolute Adresse — für QR-Code und Teilen. */

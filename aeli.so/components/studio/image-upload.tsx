@@ -41,8 +41,8 @@ export function ImageUpload({
   hint: string;
   value: string;
   onChange: (url: string) => void;
-  purpose: "avatar" | "banner" | "background" | "social";
-  shape: "circle" | "wide";
+  purpose: "avatar" | "banner" | "background" | "social" | "thumbnail";
+  shape: "circle" | "square" | "wide";
 }) {
   const [state, setState] = useState<"idle" | "uploading" | "error">("idle");
   const [progress, setProgress] = useState(0);
@@ -189,14 +189,16 @@ function Preview({
   progress,
 }: {
   url: string;
-  shape: "circle" | "wide";
+  shape: "circle" | "square" | "wide";
   busy: boolean;
   progress: number;
 }) {
+  // Die Vorschau hat die Form, die das Bild spaeter hat. Ein rundes Kaestchen
+  // fuer ein eckiges Vorschaubild waere eine Zusage, die die Seite bricht.
   const frame =
-    shape === "circle"
-      ? "size-16 rounded-full"
-      : "h-16 w-28 rounded-lg";
+    shape === "circle" ? "size-16 rounded-full"
+    : shape === "square" ? "size-16 rounded-lg"
+    : "h-16 w-28 rounded-lg";
 
   return (
     <div className={`relative shrink-0 overflow-hidden border border-line bg-ink ${frame}`}>

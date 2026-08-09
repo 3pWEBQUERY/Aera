@@ -111,8 +111,9 @@ model User {
   createdAt       DateTime      @default(now())
   updatedAt       DateTime      @updatedAt
 
-  aeliProfile      AeliProfile?
-  legalAcceptances LegalAcceptance[]
+  aeliProfile       AeliProfile?
+  aeliPayoutAccount AeliPayoutAccount?
+  legalAcceptances  LegalAcceptance[]
   ownedTenants     Tenant[]          @relation("TenantOwner")
 }
 
@@ -131,6 +132,13 @@ model LegalAcceptance {
 }
 
 /// Eine Aera-Community. Aeli liest nur, und nur fuer die Bruecken-Bloecke.
+///
+/// ACHTUNG, Ausnahme: `ownerId` und `stripeAccountId` sind fuer die Rolle
+/// `aeli_app` NICHT gewaehrt (siehe scripts/check-rls.ts). Sie stehen hier
+/// trotzdem, weil beide gebraucht werden, um ein Auszahlungskonto zu bestimmen
+/// — und dieser eine Weg laeuft ueber `systemPrisma`. Jede Abfrage auf `Tenant`
+/// in dieser App muss deshalb ueber die privilegierte Verbindung gehen; ein
+/// Test in tests/payouts.test.ts haelt das fest.
 model Tenant {
   id           String       @id @default(cuid())
   name         String       @unique
@@ -143,8 +151,9 @@ model Tenant {
   accentColor  String       @default("#ec4899")
   status       TenantStatus @default(ACTIVE)
 
-  ownerId String
-  owner   User   @relation("TenantOwner", fields: [ownerId], references: [id])
+  ownerId         String
+  owner           User    @relation("TenantOwner", fields: [ownerId], references: [id])
+  stripeAccountId String?
 
   liveSessions LiveSession[]
   aeliProfiles AeliProfile[] @relation("AeliLinkedTenant")
@@ -372,6 +381,7 @@ model AeliProfile {
   blocks AeliBlock[]
   events AeliClick[]
   leads  AeliLead[]
+  tips   AeliTip[]
 
   @@index([status, publishedAt])
   @@index([linkedTenantId])
@@ -426,6 +436,52 @@ model AeliClick {
   @@index([profileId, ts])
   @@index([profileId, kind, ts])
   @@index([blockId, ts])
+}
+
+enum AeliTipStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+/// Das Stripe-Konto, auf das Trinkgelder ausgezahlt werden. Eigene Tabelle,
+/// damit die Kontokennung nicht in der oeffentlich lesbaren `AeliProfile`-Zeile
+/// steht — Begruendung in der Migration 20260809120000_aeli_tips.
+model AeliPayoutAccount {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  stripeAccountId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AeliTip {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  blockId   String?
+
+  amountCents    Int
+  currency       String  @default("eur")
+  message        String?
+  supporterEmail String?
+
+  status AeliTipStatus @default(PENDING)
+
+  stripeSessionId       String? @unique
+  stripePaymentIntentId String?
+
+  destinationAccountId String
+  platformFeeCents     Int    @default(0)
+
+  createdAt DateTime  @default(now())
+  paidAt    DateTime?
+
+  @@index([profileId, createdAt])
+  @@index([profileId, status])
 }
 
 model AeliLead {

@@ -7,6 +7,7 @@ import { isBlockLive } from "./blocks";
 import { parseTheme, resolveTheme, DEFAULT_THEME } from "./themes";
 import { parseSocials } from "./socials";
 import { loadAeraContent } from "./aera-content";
+import { resolvePayoutAccount } from "./payouts";
 import { EMPTY_AERA_CONTENT, type AeraContent } from "@/components/page/types";
 import type { PublicLocale } from "./public-strings";
 import type { AeliBlock, AeliBlockType, AeliProfile, Tenant } from "@/app/generated/prisma/client";
@@ -79,6 +80,14 @@ export async function requireProfile(): Promise<ProfileWithBlocks> {
 
 export interface PublicProfile {
   id: string;
+  /**
+   * Wem die Seite gehört. Wird nie gerendert — gebraucht wird es nur, um das
+   * Auszahlungskonto zu bestimmen (lib/payouts.ts). Die Angabe verlässt den
+   * Server nicht: `app/p/[handle]/page.tsx` baut daraus ein `PageData` und
+   * übernimmt nur `tipsEnabled`, nicht die Kennung selbst.
+   */
+  userId: string;
+  linkedTenantId: string | null;
   handle: string;
   displayName: string;
   bio: string | null;
@@ -128,6 +137,8 @@ export const getPublicProfile = cache(async (handle: string): Promise<PublicProf
 
   return {
     id: profile.id,
+    userId: profile.userId,
+    linkedTenantId: profile.linkedTenantId,
     handle: profile.handle,
     displayName: profile.displayName,
     bio: profile.bio,
@@ -184,6 +195,26 @@ async function tenantIsLive(tenantId: string): Promise<boolean> {
     select: { id: true },
   });
   return Boolean(running);
+}
+
+/**
+ * Kann diese Seite Geld annehmen?
+ *
+ * Nur gefragt, wenn ueberhaupt ein Trinkgeld-Baustein da ist — sonst waere es
+ * eine Abfrage fuer eine Antwort, die niemand liest. Die Frage selbst
+ * beantwortet `lib/payouts.ts`; hier steht nur, wann sie gestellt wird.
+ */
+export async function profileTipsEnabled(
+  profile: Pick<ProfileWithBlocks, "userId" | "linkedTenantId"> & {
+    blocks: { type: AeliBlockType }[];
+  },
+): Promise<boolean> {
+  if (!profile.blocks.some((block) => block.type === "TIP")) return false;
+  const payout = await resolvePayoutAccount({
+    userId: profile.userId,
+    linkedTenantId: profile.linkedTenantId,
+  });
+  return payout !== null;
 }
 
 /**

@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { updateBlockAction } from "@/app/actions/profile";
 import { EMPTY_STATE } from "@/lib/action-state";
@@ -9,6 +9,8 @@ import { EMBED_PROVIDERS } from "@/lib/embed";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
 import { ScheduleFields } from "./schedule-fields";
+import { EmojiPicker } from "./emoji-picker";
+import { ImageUpload } from "./image-upload";
 import type { StudioBlock } from "./types";
 
 /**
@@ -19,8 +21,20 @@ import type { StudioBlock } from "./types";
  * Feld, das nichts bewirkt, wäre eine Frage, auf die es keine richtige Antwort
  * gibt.
  */
-export function BlockEditor({ block, onDone }: { block: StudioBlock; onDone: () => void }) {
+export function BlockEditor({
+  block,
+  tipsEnabled,
+  onDone,
+}: {
+  block: StudioBlock;
+  tipsEnabled: boolean;
+  onDone: () => void;
+}) {
   const [state, action] = useActionState(updateBlockAction, EMPTY_STATE);
+  // Das Vorschaubild reist nicht als Dateiauswahl mit, sondern als Adresse in
+  // einem versteckten Feld — hochgeladen wird sofort, gespeichert erst mit dem
+  // Formular. Deshalb hier ein Zustand statt eines `defaultValue`.
+  const [thumbnail, setThumbnail] = useState(block.config.thumbnailUrl ?? "");
   const descriptor = blockDescriptor(block.type);
   const errors = state.fieldErrors ?? {};
 
@@ -124,34 +138,35 @@ export function BlockEditor({ block, onDone }: { block: StudioBlock; onDone: () 
       )}
 
       {has("decor") && (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Field id={`icon-${block.id}`} label="Emoji" optional>
-            <Input
-              id={`icon-${block.id}`}
-              name="icon"
-              defaultValue={block.icon ?? ""}
-              maxLength={4}
-              placeholder="🎧"
-              className="text-center text-lg"
-            />
-          </Field>
-          <Field id={`badge-${block.id}`} label="Etikett" optional>
-            <Input
-              id={`badge-${block.id}`}
-              name="badge"
-              defaultValue={block.config.badge ?? ""}
-              maxLength={24}
-              placeholder="neu"
-            />
-          </Field>
-          <Field id={`thumb-${block.id}`} label="Vorschaubild" optional>
-            <Input
-              id={`thumb-${block.id}`}
-              name="thumbnailUrl"
-              defaultValue={block.config.thumbnailUrl ?? ""}
-              inputMode="url"
-            />
-          </Field>
+        <div className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            {/* Emoji und Etikett stehen nebeneinander, weil sie dasselbe tun:
+                dem Knopf ein Erkennungszeichen geben. Das Vorschaubild
+                darunter ist die dritte Möglichkeit — und die einzige, die
+                Platz braucht. */}
+            <Field id={`icon-${block.id}`} label="Emoji" optional>
+              <EmojiPicker name="icon" defaultValue={block.icon ?? ""} />
+            </Field>
+            <Field id={`badge-${block.id}`} label="Etikett" optional>
+              <Input
+                id={`badge-${block.id}`}
+                name="badge"
+                defaultValue={block.config.badge ?? ""}
+                maxLength={24}
+                placeholder="neu"
+              />
+            </Field>
+          </div>
+
+          <ImageUpload
+            name="thumbnailUrl"
+            label="Vorschaubild"
+            hint="Steht links im Knopf, quadratisch. Ein Emoji tut es meistens auch."
+            value={thumbnail}
+            onChange={setThumbnail}
+            purpose="thumbnail"
+            shape="square"
+          />
         </div>
       )}
 
@@ -180,6 +195,22 @@ export function BlockEditor({ block, onDone }: { block: StudioBlock; onDone: () 
             />
           </Field>
         </div>
+      )}
+
+      {block.type === "TIP" && !tipsEnabled && (
+        // Der Baustein ist nicht kaputt, er ist nur nicht angeschlossen. Ohne
+        // diesen Satz sucht der Creator den Fehler an den Beträgen.
+        <p className="rounded-lg border border-line bg-ink px-3 py-2.5 text-xs leading-relaxed text-ash">
+          Es ist noch kein Auszahlungskonto verbunden — dieser Baustein zeigt deshalb nur den
+          Link oben.{" "}
+          <a
+            href="/studio/einstellungen"
+            className="text-chalk underline underline-offset-4 hover:text-signal"
+          >
+            Unter Einstellungen → Zahlungen
+          </a>{" "}
+          richtest du ein, wohin das Geld geht.
+        </p>
       )}
 
       {has("amounts") && (

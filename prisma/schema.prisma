@@ -380,6 +380,7 @@ model User {
   /// Produkte: wer hier registriert ist, kann sich auf aeli.so einloggen,
   /// ohne ein zweites Passwort zu fuehren.
   aeliProfile               AeliProfile?
+  aeliPayoutAccount         AeliPayoutAccount?
 }
 
 /// Versioned evidence that a user accepted a contract document or confirmed
@@ -2617,6 +2618,7 @@ model AeliProfile {
   blocks AeliBlock[]
   events AeliClick[]
   leads  AeliLead[]
+  tips   AeliTip[]
 
   @@index([status, publishedAt])
   @@index([linkedTenantId])
@@ -2708,4 +2710,70 @@ model AeliLead {
 
   @@index([profileId, createdAt])
   @@index([profileId, email])
+}
+
+/// Das Stripe-Konto, auf das Trinkgelder einer Bio-Seite ausgezahlt werden.
+///
+/// Eigene Tabelle und nicht eine Spalte auf `AeliProfile`, aus einem Grund:
+/// die oeffentliche Policy auf `AeliProfile` gibt eine veroeffentlichte Zeile
+/// vollstaendig heraus. Eine Kontokennung gehoert dort nicht hinein, und
+/// PostgreSQL kennt keine Policy je Spalte.
+///
+/// Verbunden ist es mit dem KONTO, nicht mit dem Profil: es ueberlebt einen
+/// Handle-Wechsel und ist dieselbe Zusage wie in Aera, wo `stripeAccountId`
+/// am Tenant haengt.
+model AeliPayoutAccount {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// `acct_…` derselben Stripe-Plattform, die auch Aera benutzt. Nur so kann
+  /// eine Bio-Seite das Konto ihrer Aera-Community mitbenutzen.
+  stripeAccountId String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum AeliTipStatus {
+  PENDING
+  PAID
+  REFUNDED
+}
+
+/// Ein Trinkgeld ueber den TIP-Baustein.
+///
+/// Die Zeile entsteht VOR dem Bezahlen und bleibt `PENDING`, bis Stripe den
+/// Abschluss meldet. Abgebrochene Zahlungen bleiben also stehen — das ist
+/// gewollt: eine Zeile, die es nicht gibt, kann ein Webhook nicht finden.
+model AeliTip {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Aus welchem Baustein — eine Seite darf mehrere haben.
+  blockId   String?
+
+  amountCents Int
+  currency    String @default("eur")
+  /// Optionaler Gruss. Der Absender bleibt sonst anonym.
+  message     String?
+  /// Nur, was Stripe zurueckmeldet; niemand tippt hier eine Adresse ein.
+  supporterEmail String?
+
+  status AeliTipStatus @default(PENDING)
+
+  stripeSessionId       String? @unique
+  stripePaymentIntentId String?
+
+  /// Wohin das Geld ging, festgehalten zum Zeitpunkt der Zahlung. Wechselt der
+  /// Creator spaeter sein Auszahlungskonto, bleibt nachvollziehbar, wohin die
+  /// alten Betraege geflossen sind.
+  destinationAccountId String
+  platformFeeCents     Int    @default(0)
+
+  createdAt DateTime  @default(now())
+  paidAt    DateTime?
+
+  @@index([profileId, createdAt])
+  @@index([profileId, status])
 }

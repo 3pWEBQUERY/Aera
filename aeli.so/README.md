@@ -40,7 +40,7 @@ aeli.so/
 
 Das Schema lebt in Aera (`../prisma/schema.prisma`), die Migrationen ebenfalls.
 `aeli.so/prisma/schema.prisma` ist eine bewusst reduzierte Spiegelung, die nur
-den Client erzeugt: sie enthält die vier Aeli-Tabellen plus so viel von `User`
+den Client erzeugt: sie enthält die sechs Aeli-Tabellen plus so viel von `User`
 und `Tenant`, wie die App wirklich anfasst.
 
 Ausrollen — **aus dem Wurzelverzeichnis**, nicht von hier:
@@ -76,15 +76,16 @@ eigene `where`-Klausel, um sicher zu sein.
 laufen über die privilegierte Verbindung; `AeliProfile` trägt Anzeigename und
 Avatar selbst.
 
-### Die drei privilegierten Pfade
+### Die privilegierten Pfade
 
-Alles andere läuft unter `aeli_app`. Diese drei nicht, jeweils mit Grund:
+Alles andere läuft unter `aeli_app`. Diese vier nicht, jeweils mit Grund:
 
 | Wo | Warum |
 |---|---|
 | `lib/auth.ts` | schreibt und liest `User` — für `aeli_app` gesperrt |
 | `lib/handle-availability.ts` | „ist der Handle frei?“ muss auch fremde **Entwürfe** sehen; gibt nur ja/nein zurück |
 | `lib/profile.ts` → `tenantIsLive` | `LiveSession` ist eine tenant-scoped Aera-Tabelle; die Frage ist auf eine `tenantId` begrenzt |
+| `lib/payouts.ts`, `lib/tips.ts` | wohin Geld geht, hängt an `Tenant.ownerId` und `Tenant.stripeAccountId` — beide für `aeli_app` gesperrt |
 
 Dazu zwei eng gefasste Stellen: der Klickzähler in `api/track` (ein `UPDATE`
 mit ausgeschriebener Policy-Bedingung) und die Besitzprüfung beim Verknüpfen
@@ -94,6 +95,72 @@ einer Community.
 `AERA_*`-Bausteine kommen über `aeli_app` und damit durch die Policies. Der
 Unterschied zu `tenantIsLive` ist der Umfang — ein Ja/Nein durfte eine
 Ausnahme sein, fünf Inhaltstabellen nicht.
+
+## Trinkgeld und Stripe
+
+Der Baustein `TIP` ist der einzige, bei dem Geld fließt. Er kennt zwei
+Zustände, und den Unterschied macht nicht ein Feld, sondern ein verbundenes
+Auszahlungskonto:
+
+| Konto verbunden | Was der Baustein ist |
+|---|---|
+| ja | Beträge zum Antippen, freier Betrag, Gruß — Checkout bei Stripe |
+| nein | der Link, der beim Baustein hinterlegt ist (das, was er vorher war) |
+
+### Woher das Konto kommt
+
+`lib/payouts.ts`, in dieser Reihenfolge:
+
+1. ein Stripe-Konto, das der Creator **in Aeli** verbunden hat
+   (Einstellungen → Zahlungen);
+2. das Konto der **verknüpften Aera-Community** — aber nur, wenn sie
+   demselben Konto gehört.
+
+Punkt zwei ist der Grund für die ganze Datei. `AeliProfile.linkedTenantId`
+kann über einen Verbindungscode auf eine **fremde** Community zeigen. Ohne den
+Besitzvergleich liefe jedes Trinkgeld an eine solche Seite auf das Stripe-Konto
+eines Dritten. Der Vergleich steht deshalb in der `where`-Klausel und nicht in
+einem `if` danach — ein Test in `tests/tips.test.ts` hält beides fest.
+
+Beide Apps benutzen **dieselbe Stripe-Plattform** (`STRIPE_SECRET_KEY`, gleicher
+Variablenname wie in Aera). Anders ginge Punkt zwei nicht: eine
+`acct_…`-Kennung gilt nur innerhalb der Plattform, die sie angelegt hat.
+
+### Der Weg einer Zahlung
+
+```
+Besucher wählt Betrag
+  → app/actions/tip.ts        Grenze pro Herkunft, Betrag prüfen
+  → lib/tips.ts               Profil veröffentlicht? Baustein sichtbar?
+                              Konto bestimmt? Bei Stripe freigegeben?
+  → AeliTip (PENDING)         mit destinationAccountId und Gebühr
+  → Stripe Checkout           Destination-Charge, application_fee
+  → zurück auf die Bio-Seite  ?danke=1
+  → Webhook                   checkout.session.completed → PAID
+```
+
+`AeliTip` und `AeliPayoutAccount` sind für `aeli_app` **nur lesbar**.
+Angelegt und fortgeschrieben wird über die privilegierte Verbindung — wer
+`Tenant.ownerId` braucht, um ein Ziel zu bestimmen, kann nicht unter einer
+Rolle laufen, die diese Spalte nicht sieht.
+
+### Einrichten
+
+```bash
+STRIPE_SECRET_KEY=sk_test_…            # derselbe wie in Aera
+AELI_STRIPE_WEBHOOK_SECRET=whsec_…     # EIGENER Endpunkt, nicht Aeras
+AELI_PLATFORM_FEE_PERCENT=5            # optional, Voreinstellung 5
+```
+
+Der Webhook-Endpunkt zeigt auf `POST /api/stripe/webhook` und braucht
+`checkout.session.completed` und `charge.refunded`. Lokal:
+
+```bash
+stripe listen --forward-to localhost:3001/api/stripe/webhook
+```
+
+Ohne `STRIPE_SECRET_KEY` bleibt alles davon aus — der Trinkgeld-Baustein ist
+dann ein Link, und die Einstellungen sagen das auch.
 
 ## Bilder
 

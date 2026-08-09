@@ -21,6 +21,7 @@ export function studioPageData(
     theme?: AeliTheme;
     onlyVisible?: boolean;
     isLive?: boolean;
+    tipsEnabled?: boolean;
     aera?: AeraContent;
   } = {},
 ): PageData {
@@ -60,6 +61,7 @@ export function studioPageData(
     // In der Vorschau ist „live“ eine Behauptung des Studios, keine Messung:
     // der LIVE_NOW-Block soll sich zeigen, damit man ihn gestalten kann.
     isLive: options.isLive ?? Boolean(profile.linkedTenant),
+    tipsEnabled: options.tipsEnabled ?? false,
     aera: options.aera ?? EMPTY_AERA_CONTENT,
     publicUrl: profileUrl(profile.handle),
   };

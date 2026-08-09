@@ -84,6 +84,7 @@ export function demoPage(): PageData {
       tagline: "Die Community hinter den Workshops",
     },
     isLive: false,
+    tipsEnabled: false,
     // Auf einer echten Seite stünde hier, was gerade in Aera steht. Im Hero
     // sind es feste Werte — das Bild soll morgen dasselbe zeigen wie heute.
     aera: {

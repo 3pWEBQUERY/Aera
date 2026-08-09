@@ -28,7 +28,17 @@ import type { StudioBlock } from "./types";
  * offenen Fenstern gewinnt damit die zuletzt gespeicherte Liste, statt dass
  * sich zwei Verschiebungen zu einer dritten Reihenfolge addieren.
  */
-export function BlockList({ blocks: incoming }: { blocks: StudioBlock[] }) {
+export function BlockList({
+  blocks: incoming,
+  tipsEnabled,
+}: {
+  blocks: StudioBlock[];
+  /**
+   * Nur für den Hinweis am Trinkgeld-Baustein. Ohne verbundenes Konto zeigt er
+   * auf der Seite nichts an, und das sieht von hier aus wie ein Fehler.
+   */
+  tipsEnabled: boolean;
+}) {
   const [blocks, setBlocks] = useState(incoming);
   const [openId, setOpenId] = useState<string | null>(null);
   const [dragId, setDragId] = useState<string | null>(null);
@@ -211,7 +221,13 @@ export function BlockList({ blocks: incoming }: { blocks: StudioBlock[] }) {
               </RowAction>
             </div>
 
-            {isOpen && <BlockEditor block={block} onDone={() => setOpenId(null)} />}
+            {isOpen && (
+              <BlockEditor
+                block={block}
+                tipsEnabled={tipsEnabled}
+                onDone={() => setOpenId(null)}
+              />
+            )}
           </article>
         );
       })}

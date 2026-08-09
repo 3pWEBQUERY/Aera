@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { profileAeraContent, requireProfile } from "@/lib/profile";
+import { profileAeraContent, profileTipsEnabled, requireProfile } from "@/lib/profile";
 import { studioPageData } from "@/lib/page-data";
 import { parseBlockConfig } from "@/lib/blocks";
 import { BlockList } from "@/components/studio/block-list";
@@ -20,7 +20,10 @@ export default async function StudioPage() {
   const profile = await requireProfile();
   // Das Studio ist deutsch (lib/i18n.ts) — die Vorschau zeigt Termine so,
   // wie sie ein deutschsprachiger Besucher saehe.
-  const aera = await profileAeraContent(profile, "de");
+  const [aera, tipsEnabled] = await Promise.all([
+    profileAeraContent(profile, "de"),
+    profileTipsEnabled(profile),
+  ]);
 
   const blocks: StudioBlock[] = profile.blocks.map((block) => ({
     id: block.id,
@@ -53,7 +56,7 @@ export default async function StudioPage() {
             Noch nichts drauf. Fang mit einem Link an — alles andere kommt von selbst dazu.
           </p>
         ) : (
-          <BlockList blocks={blocks} />
+          <BlockList blocks={blocks} tipsEnabled={tipsEnabled} />
         )}
 
         <AddBlock hasCommunity={Boolean(profile.linkedTenantId)} />
@@ -64,7 +67,7 @@ export default async function StudioPage() {
           die Liste lang wird. */}
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <PhonePreview
-          page={studioPageData(profile, { onlyVisible: true, aera })}
+          page={studioPageData(profile, { onlyVisible: true, aera, tipsEnabled })}
           label="So sieht sie auf dem Handy aus"
         />
       </aside>

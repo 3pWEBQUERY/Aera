@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getPublicProfile, profileAeraContent } from "@/lib/profile";
+import { getPublicProfile, profileAeraContent, profileTipsEnabled } from "@/lib/profile";
 import { publicLocale } from "@/lib/i18n";
 import { PUBLIC_STRINGS } from "@/lib/public-strings";
 import { isUnlocked } from "@/lib/gate";
@@ -8,6 +8,7 @@ import { parseBlockConfig } from "@/lib/blocks";
 import { communityUrl, profileUrl } from "@/lib/url";
 import { ProfilePage } from "@/components/page/profile-page";
 import { PageTracker } from "@/components/page/tracker";
+import { TipNotice } from "@/components/page/tip-notice";
 import { GateScreen } from "@/components/page/gate-screen";
 import type { PageData } from "@/components/page/types";
 
@@ -82,8 +83,10 @@ export async function generateMetadata({
 
 export default async function PublicProfilePage({
   params,
+  searchParams,
 }: {
   params: Promise<{ handle: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
   const { handle } = await params;
   const profile = await getPublicProfile(handle);
@@ -135,12 +138,26 @@ export default async function PublicProfilePage({
         }
       : null,
     isLive: profile.isLive,
+    tipsEnabled: await profileTipsEnabled(profile),
     aera: await profileAeraContent(profile, locale),
     publicUrl: profileUrl(profile.handle),
   };
 
+  // Stripe schickt den Besucher hierher zurück. Was er dann sieht, ist die
+  // Seite — nur mit einer Zeile darüber. Eine eigene Danke-Seite wäre eine
+  // Sackgasse: der Besucher wollte hierher, nicht woandershin.
+  const query = await searchParams;
+  const back = query.danke ? "danke" : query.abgebrochen ? "abgebrochen" : null;
+
   return (
     <>
+      {back && (
+        <TipNotice
+          kind={back}
+          theme={profile.theme}
+          text={back === "danke" ? strings.tipThanks : strings.tipCancelled}
+        />
+      )}
       <ProfilePage page={page} mode="live" strings={strings} />
       <PageTracker profileId={profile.id} />
     </>

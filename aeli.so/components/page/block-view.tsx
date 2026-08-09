@@ -2,6 +2,7 @@ import { resolveEmbed } from "@/lib/embed";
 import { SocialIcon } from "@/components/social-icon";
 import { LeadForm } from "./lead-form";
 import { ShareBlock } from "./share-block";
+import { TipForm } from "./tip-form";
 import {
   AeraCoursesBlock,
   AeraEventsBlock,
@@ -343,6 +344,16 @@ export function BlockView({
       );
 
     case "TIP":
+      // Mit verbundenem Auszahlungskonto ist das ein Bezahlvorgang, ohne bleibt
+      // es der Link auf eine fremde Spendenseite, der es vorher war. Die
+      // Entscheidung faellt an `tipsEnabled` und damit an der Datenbank — nicht
+      // daran, ob der Creator ein Feld ausgefuellt hat.
+      if (page.tipsEnabled) {
+        return <TipForm block={block} page={page} mode={mode} style={style} />;
+      }
+      if (!block.href) return null;
+      return <LinkBlock block={block} page={page} style={style} href={block.href} />;
+
     case "BOOKING":
     case "LINK":
     default:

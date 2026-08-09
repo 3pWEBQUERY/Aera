@@ -87,7 +87,45 @@ export const env = {
    * auch mit einem privaten Bucket funktioniert (Railway-Standard).
    */
   S3_PUBLIC_URL: (process.env.S3_PUBLIC_URL ?? "").replace(/\/+$/, ""),
+
+  /**
+   * Stripe — DIESELBE Plattform wie Aera, deshalb derselbe Variablenname.
+   *
+   * Das ist keine Sparsamkeit, sondern die Voraussetzung: eine Bio-Seite darf
+   * das Auszahlungskonto ihrer Aera-Community mitbenutzen, und eine
+   * `acct_…`-Kennung gilt nur innerhalb der Plattform, die sie angelegt hat.
+   * Zwei Stripe-Konten hiessen: zwei Onboardings fuer denselben Creator.
+   */
+  STRIPE_SECRET_KEY: (process.env.STRIPE_SECRET_KEY ?? "").trim(),
+  /**
+   * Eigener Endpunkt, eigenes Geheimnis. Aeras Webhook hoert auf andere
+   * Ereignisse und wuerde die Aeli-Zahlungen weder kennen noch verbuchen;
+   * ein geteiltes Secret wuerde nur verdecken, dass es zwei Empfaenger sind.
+   */
+  AELI_STRIPE_WEBHOOK_SECRET: (process.env.AELI_STRIPE_WEBHOOK_SECRET ?? "").trim(),
+  /**
+   * Anteil, den die Plattform vom Trinkgeld einbehaelt. Aeras Voreinstellung
+   * ist dieselbe Zahl (`Tenant.platformFeePercent`), aber es ist bewusst eine
+   * eigene: die Vereinbarung zwischen Aera und einer Community ist nicht die
+   * Vereinbarung zwischen Aeli und einer Bio-Seite.
+   */
+  AELI_PLATFORM_FEE_PERCENT: clampPercent(process.env.AELI_PLATFORM_FEE_PERCENT, 5),
 } as const;
+
+/** Ein Prozentsatz, der keiner ist, waere hier eine falsche Abrechnung. */
+function clampPercent(raw: string | undefined, fallback: number): number {
+  const value = Number.parseFloat((raw ?? "").trim());
+  if (!Number.isFinite(value) || value < 0 || value > 100) return fallback;
+  return value;
+}
+
+/**
+ * Ohne Schluessel keine Zahlungen. Der Trinkgeld-Baustein faellt dann auf das
+ * zurueck, was er vorher war: ein Link auf eine fremde Spendenseite.
+ */
+export function paymentsConfigured(): boolean {
+  return env.STRIPE_SECRET_KEY.startsWith("sk_");
+}
 
 /** Uploads brauchen alle vier Werte — sonst bleibt der Bild-Upload aus. */
 export function storageConfigured(): boolean {
