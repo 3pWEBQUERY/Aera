@@ -19,6 +19,7 @@ const AELI_TABLES = [
   "AeliBlock",
   "AeliClick",
   "AeliLead",
+  "AeliCard",
   "AeliPayoutAccount",
   "AeliTip",
 ] as const;
@@ -27,6 +28,7 @@ const AELI_TABLES = [
 const EXPECTED_GRANTS: Record<string, string[]> = {
   AeliProfile: ["SELECT", "INSERT", "UPDATE", "DELETE"],
   AeliBlock: ["SELECT", "INSERT", "UPDATE", "DELETE"],
+  AeliCard: ["SELECT", "INSERT", "UPDATE", "DELETE"],
   // Append-only: das Ereignis-Log wird nie umgeschrieben.
   AeliClick: ["SELECT", "INSERT"],
   // Leads darf der Creator löschen, aber nicht nachträglich ändern.
@@ -66,6 +68,8 @@ const EXPECTED_POLICIES: [string, string][] = [
   ["AeliProfile", "aeli_public_profile"],
   ["AeliBlock", "aeli_owner_block"],
   ["AeliBlock", "aeli_public_block"],
+  ["AeliCard", "aeli_owner_card"],
+  ["AeliCard", "aeli_public_card"],
   ["AeliClick", "aeli_owner_event"],
   ["AeliClick", "aeli_public_event_insert"],
   ["AeliLead", "aeli_owner_lead"],

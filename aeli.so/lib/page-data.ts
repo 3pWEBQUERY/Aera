@@ -1,6 +1,6 @@
-import { parseBlockConfig } from "./blocks";
 import { parseSocials } from "./socials";
 import { parseTheme, resolveTheme, type AeliTheme } from "./themes";
+import { toPageCards } from "./cards";
 import { communityUrl, profileUrl } from "./url";
 import { EMPTY_AERA_CONTENT, type AeraContent, type PageData } from "@/components/page/types";
 import type { ProfileWithBlocks } from "./profile";
@@ -18,16 +18,56 @@ import type { ProfileWithBlocks } from "./profile";
 export function studioPageData(
   profile: ProfileWithBlocks,
   options: {
+    /**
+     * Ein Entwurf, der noch nicht gespeichert ist. Er gilt für die Karte in
+     * `themeForCardId` — oder für die Seite, wenn keine genannt ist.
+     */
     theme?: AeliTheme;
+    themeForCardId?: string;
     onlyVisible?: boolean;
     isLive?: boolean;
     tipsEnabled?: boolean;
     aera?: AeraContent;
+    /** Welche Karte in der Vorschau im Bild steht. */
+    activeCardId?: string;
+    /**
+     * Nur diese eine Karte zeigen.
+     *
+     * Im Studio arbeitet man an genau einer, und die Vorschau soll sie zeigen
+     * — auch wenn sie versteckt ist. Den ganzen Stapel gaebe es sonst nur mit
+     * einer Sonderregel fuer „versteckt, aber gerade in Arbeit", und die waere
+     * schwerer zu erklaeren als die Einschraenkung selbst.
+     */
+    onlyCardId?: string;
   } = {},
 ): PageData {
-  const blocks = options.onlyVisible
-    ? profile.blocks.filter((block) => block.isVisible)
-    : profile.blocks;
+  const pageTheme = parseTheme(profile.theme);
+
+  const source = options.onlyCardId
+    ? profile.cards.filter((card) => card.id === options.onlyCardId)
+    : options.onlyVisible
+      ? profile.cards.filter((card) => card.isVisible)
+      : profile.cards;
+
+  const rows = source.map((card) => ({
+    id: card.id,
+    slug: card.slug,
+    title: card.title,
+    icon: card.icon,
+    // Der Entwurf schlägt das Gespeicherte, aber nur auf der Karte, an der
+    // gerade gearbeitet wird. Auf allen anderen bliebe er eine Behauptung.
+    theme:
+      options.theme && (!options.themeForCardId || options.themeForCardId === card.id)
+        ? options.theme
+        : card.theme,
+    blocks: options.onlyVisible ? card.blocks.filter((block) => block.isVisible) : card.blocks,
+  }));
+
+  const cards = toPageCards(rows, pageTheme);
+  const activeCardIndex = Math.max(
+    0,
+    cards.findIndex((card) => card.id === options.activeCardId),
+  );
 
   return {
     profileId: profile.id,
@@ -37,17 +77,9 @@ export function studioPageData(
     avatarUrl: profile.avatarUrl,
     bannerUrl: profile.bannerUrl,
     socials: parseSocials(profile.socials),
-    theme: resolveTheme(options.theme ?? parseTheme(profile.theme)),
-    blocks: blocks.map((block) => ({
-      id: block.id,
-      type: block.type,
-      title: block.title,
-      subtitle: block.subtitle,
-      href: block.href,
-      mediaUrl: block.mediaUrl,
-      icon: block.icon,
-      config: parseBlockConfig(block.config),
-    })),
+    theme: resolveTheme(pageTheme),
+    cards,
+    activeCardIndex,
     showBranding: profile.showBranding,
     gate: profile.gate,
     community: profile.linkedTenant

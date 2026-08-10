@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs";
 import { z } from "zod";
 import prisma, { systemPrisma, withAeliTransaction, withUserContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { getOwnProfile, type ProfileWithBlocks } from "@/lib/profile";
+import { allBlocks, getOwnProfile, type ProfileWithBlocks } from "@/lib/profile";
 import { normalizeHandle } from "@/lib/handle";
 import { handleStatus, HANDLE_PROBLEM_TEXT } from "@/lib/handle-availability";
 import { parseSocials, socialLinkSchema } from "@/lib/socials";
@@ -69,30 +69,37 @@ export async function claimHandleAction(_prev: FormState, form: FormData): Promi
     // Auch das Anlegen braucht den Kontext: die `WITH CHECK`-Bedingung der
     // Besitzer-Policy vergleicht `userId` mit `aeli.user_id`. Ohne ihn wäre
     // schon die allererste Zeile dieses Kontos nicht schreibbar.
-    await withUserContext(user.id, () =>
-      prisma.aeliProfile.create({
+    await withUserContext(user.id, async () => {
+      const created = await prisma.aeliProfile.create({
         data: {
           userId: user.id,
           handle,
           displayName,
           avatarUrl: user.avatarUrl,
           theme: { preset: theme.key },
-          // Der erste Block ist kein Beispieltext, sondern eine leere Zeile mit
-          // Aufforderung: eine Seite mit „Lorem ipsum“ veröffentlicht niemand,
-          // eine mit einem unfertigen Link schon.
-          blocks: {
-            create: [
-              {
-                type: "LINK",
-                title: "Mein erster Link",
-                sortOrder: 0,
-                isVisible: true,
-              },
-            ],
-          },
+          // Eine Seite ohne Karte gibt es nicht — der Stapel beginnt mit
+          // genau einer.
+          cards: { create: [{ slug: "start", title: "Start", sortOrder: 0 }] },
         },
-      }),
-    );
+        include: { cards: true },
+      });
+
+      // Der erste Block getrennt, weil er BEIDE Fremdschluessel braucht und
+      // `profileId` beim verschachtelten Anlegen unter der Karte noch nicht
+      // feststeht. Er ist kein Beispieltext, sondern eine leere Zeile mit
+      // Aufforderung: eine Seite mit „Lorem ipsum" veroeffentlicht niemand,
+      // eine mit einem unfertigen Link schon.
+      await prisma.aeliBlock.create({
+        data: {
+          profileId: created.id,
+          cardId: created.cards[0]!.id,
+          type: "LINK",
+          title: "Mein erster Link",
+          sortOrder: 0,
+          isVisible: true,
+        },
+      });
+    });
   } catch (e) {
     if ((e as { code?: string }).code === "P2002") {
       return {
@@ -517,17 +524,24 @@ export async function addBlockAction(formData: FormData): Promise<void> {
     const type = String(formData.get("type") ?? "");
     if (!BLOCK_TYPES.includes(type as AeliBlockType)) return;
 
+    // Auf welche Karte. Ohne Angabe die erste — aber der Baukasten schickt sie
+    // immer mit, weil ein Baustein sonst auf einer Karte landen koennte, die
+    // der Creator gerade gar nicht ansieht.
+    const card = pickCard(profile, text(formData, "cardId", 40));
+    if (!card) return;
+
     const descriptor = blockDescriptor(type as AeliBlockType);
     if (descriptor.needsCommunity && !profile.linkedTenantId) return;
 
-    // Neue Blöcke kommen ans Ende. Das ist die Erwartung beim Klick auf
-    // „Hinzufügen“ — und der einzige Platz, der keine bestehende Reihenfolge
-    // durcheinanderbringt.
-    const nextOrder = profile.blocks.reduce((max, block) => Math.max(max, block.sortOrder), -1) + 1;
+    // Neue Blöcke kommen ans Ende IHRER Karte. Das ist die Erwartung beim Klick
+    // auf „Hinzufügen“ — und der einzige Platz, der keine bestehende
+    // Reihenfolge durcheinanderbringt.
+    const nextOrder = card.blocks.reduce((max, block) => Math.max(max, block.sortOrder), -1) + 1;
 
     await prisma.aeliBlock.create({
       data: {
         profileId: profile.id,
+        cardId: card.id,
         type: type as AeliBlockType,
         title: descriptor.defaults.title ?? null,
         subtitle: descriptor.defaults.subtitle ?? null,
@@ -539,10 +553,15 @@ export async function addBlockAction(formData: FormData): Promise<void> {
   });
 }
 
+/** Die genannte Karte, sonst die erste. `null` nur bei einem Profil ohne. */
+function pickCard(profile: ProfileWithBlocks, cardId: string) {
+  return profile.cards.find((card) => card.id === cardId) ?? profile.cards[0] ?? null;
+}
+
 export async function updateBlockAction(_prev: FormState, form: FormData): Promise<FormState> {
   return asOwner(async (profile) => {
     const id = text(form, "id", 40);
-    const block = profile.blocks.find((entry) => entry.id === id);
+    const block = allBlocks(profile).find((entry) => entry.id === id);
     if (!block) return formError("Diesen Block gibt es nicht mehr.");
 
     const descriptor = blockDescriptor(block.type);
@@ -616,7 +635,7 @@ function parseLimit(raw: string): number | undefined {
 export async function toggleBlockAction(formData: FormData): Promise<void> {
   return asOwner(async (profile) => {
     const id = String(formData.get("id") ?? "");
-    const block = profile.blocks.find((entry) => entry.id === id);
+    const block = allBlocks(profile).find((entry) => entry.id === id);
     if (!block) return;
 
     await prisma.aeliBlock.update({
@@ -630,7 +649,7 @@ export async function toggleBlockAction(formData: FormData): Promise<void> {
 export async function deleteBlockAction(formData: FormData): Promise<void> {
   return asOwner(async (profile) => {
     const id = String(formData.get("id") ?? "");
-    if (!profile.blocks.some((entry) => entry.id === id)) return;
+    if (!allBlocks(profile).some((entry) => entry.id === id)) return;
 
     await prisma.aeliBlock.delete({ where: { id } });
     revalidateProfile(profile.handle);
@@ -640,19 +659,22 @@ export async function deleteBlockAction(formData: FormData): Promise<void> {
 export async function duplicateBlockAction(formData: FormData): Promise<void> {
   return asOwner(async (profile) => {
     const id = String(formData.get("id") ?? "");
-    const block = profile.blocks.find((entry) => entry.id === id);
+    const block = allBlocks(profile).find((entry) => entry.id === id);
     if (!block) return;
 
     // Die Kopie landet direkt unter dem Original, nicht am Ende: wer dupliziert,
     // will meistens eine Variante nebendran, keine am Fuß der Seite.
     await withAeliTransaction(async (tx) => {
       await tx.aeliBlock.updateMany({
-        where: { profileId: profile.id, sortOrder: { gt: block.sortOrder } },
+        // Nur die Karte des Originals ruecken: die Reihenfolgen der anderen
+        // Karten haben mit dieser Kopie nichts zu tun.
+        where: { cardId: block.cardId, sortOrder: { gt: block.sortOrder } },
         data: { sortOrder: { increment: 1 } },
       });
       await tx.aeliBlock.create({
         data: {
           profileId: profile.id,
+          cardId: block.cardId,
           type: block.type,
           title: block.title ? `${block.title} (Kopie)` : null,
           subtitle: block.subtitle,
@@ -682,11 +704,16 @@ export async function duplicateBlockAction(formData: FormData): Promise<void> {
  * zuletzt gespeicherte Liste vollständig, statt dass sich zwei Verschiebungen
  * zu einer dritten Reihenfolge addieren.
  */
-export async function reorderBlocksAction(orderedIds: string[]): Promise<void> {
+export async function reorderBlocksAction(cardId: string, orderedIds: string[]): Promise<void> {
   return asOwner(async (profile) => {
-    const known = new Set(profile.blocks.map((block) => block.id));
+    // Sortiert wird innerhalb EINER Karte. Die vollständige Liste bezieht sich
+    // deshalb auf sie, nicht auf die Seite — sonst wäre jede Sortierung auf
+    // Karte 2 ein stiller Eingriff in Karte 1.
+    const card = profile.cards.find((entry) => entry.id === cardId);
+    if (!card) return;
+    const known = new Set(card.blocks.map((block) => block.id));
     const ids = orderedIds.filter((id) => known.has(id));
-    if (ids.length !== profile.blocks.length) return;
+    if (ids.length !== card.blocks.length) return;
 
     await withAeliTransaction(async (tx) => {
       for (const [index, id] of ids.entries()) {

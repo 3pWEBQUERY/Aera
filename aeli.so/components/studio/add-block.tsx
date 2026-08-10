@@ -18,7 +18,14 @@ import { AeraMark } from "@/components/aera-mark";
  * keine da ist — sie stehen ausgegraut mit dem Grund dabei. Ein fehlender
  * Eintrag wirft die Frage auf, ob es ihn überhaupt gibt.
  */
-export function AddBlock({ hasCommunity }: { hasCommunity: boolean }) {
+export function AddBlock({
+  cardId,
+  hasCommunity,
+}: {
+  /** Auf welche Karte der neue Baustein kommt — die gerade bearbeitete. */
+  cardId: string;
+  hasCommunity: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [pending, startTransition] = useTransition();
 
@@ -67,6 +74,7 @@ export function AddBlock({ hasCommunity }: { hasCommunity: boolean }) {
                       onClick={() => {
                         const form = new FormData();
                         form.append("type", entry.type);
+                        form.append("cardId", cardId);
                         startTransition(() => addBlockAction(form));
                         setOpen(false);
                       }}

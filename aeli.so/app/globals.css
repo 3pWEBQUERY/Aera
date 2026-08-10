@@ -191,7 +191,12 @@ body {
    Knöpfe darüber mitverschwimmen. `fixed` heißt außerdem: beim Scrollen bleibt
    die Fläche stehen, statt mit der Liste nach oben zu laufen. */
 .aeli-bg-layer {
-  position: fixed;
+  /* `absolute`, nicht `fixed`: seit die Seite ein Stapel ist, gibt es nicht
+     mehr EINEN Hintergrund, sondern einen je Karte. Die Ebene gehört deshalb
+     in die Karte und muss deren Kanten kennen — `fixed` kennt nur das
+     Fenster und würde alle Karten übereinanderlegen. Stehen bleibt sie
+     trotzdem: gescrollt wird das Kind darin, nicht die Karte. */
+  position: absolute;
   inset: 0;
   z-index: -3;
   background: var(--aeli-bg-css, var(--aeli-bg));
@@ -209,7 +214,7 @@ body {
 
 /* Die Abdunklung liegt über dem Bild, aber unter dem Inhalt. */
 .aeli-bg-dim {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: -2;
   background: #000;
@@ -220,6 +225,131 @@ body {
 .aeli-page h2,
 .aeli-page .aeli-display {
   font-family: var(--aeli-font-display);
+}
+
+/* -- Der Stapel ---------------------------------------------------------- */
+/* Eine Bio-Seite ist ein Stapel Karten, zwischen denen man wischt.
+
+   Das Wischen macht CSS, nicht JavaScript: ein waagerechter Scroll-Container
+   mit `scroll-snap`, jede Karte ein Kind über die volle Breite. Schwung,
+   Gummiband am Rand und die Trägheit des Fingers hat der Browser schon — und
+   zwar auf jedem Gerät richtig. Eine nachgebaute Geste fühlt sich immer nach
+   Nachbau an.
+
+   Zwei Achsen, zwei Container: waagerecht scrollt der Stapel, senkrecht jede
+   Karte für sich. Läge beides im selben Kasten, nähme man die Scrollposition
+   von Karte 1 mit zu Karte 2 und landete dort mitten im Text. */
+.aeli-deck {
+  position: relative;
+}
+
+.aeli-deck-scroller {
+  display: flex;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  /* Ohne das zieht ein Wisch am Rand die ganze Seite mit (iOS: „zurück“). */
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.aeli-deck-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.aeli-deck-card {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  scroll-snap-align: start;
+  /* Ein kräftiger Wisch soll eine Karte weiter gehen, nicht drei. */
+  scroll-snap-stop: always;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--aeli-bg);
+  color: var(--aeli-fg);
+  font-family: var(--aeli-font-body);
+}
+
+/* Der scrollende Teil einer Karte. Er liegt ÜBER den Hintergrundebenen, die
+   Geschwister sind — deshalb bleiben die stehen, während der Inhalt läuft. */
+.aeli-card-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+}
+
+/* Die Reiterleiste. Unten, weil dort der Daumen ist, und schwebend, weil sie
+   zum Stapel gehört und nicht zu einer Karte. */
+.aeli-deck-tabs {
+  position: fixed;
+  bottom: max(0.9rem, env(safe-area-inset-bottom));
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  /* Prozent, nicht `vw`: in der Telefonvorschau des Studios ist der Stapel
+     skaliert, und `fixed` bezieht sich dort auf ihn. `94vw` maesse das ganze
+     Browserfenster und liefe rechts und links aus dem Geraet heraus. */
+  max-width: min(94%, 30rem);
+  pointer-events: none;
+}
+
+.aeli-deck-tabs-rail {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border-radius: 999px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  pointer-events: auto;
+  /* Milchglas: die Leiste liegt über wechselnden Hintergründen und muss auf
+     jedem lesbar bleiben, ohne eine eigene Farbe zu behaupten. */
+  background: color-mix(in oklab, var(--aeli-bg) 72%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid color-mix(in oklab, var(--aeli-border) 80%, transparent);
+  box-shadow: 0 12px 32px -16px rgb(0 0 0 / 0.5);
+}
+.aeli-deck-tabs-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.aeli-deck-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 0 0 auto;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--aeli-fg);
+  opacity: 0.6;
+  transition:
+    opacity 0.18s ease,
+    background-color 0.18s ease;
+}
+.aeli-deck-tab:hover {
+  opacity: 0.85;
+}
+.aeli-deck-tab[aria-current="true"] {
+  opacity: 1;
+  /* Die Farbe der Karte, auf die der Reiter zeigt — nicht die der gerade
+     sichtbaren. Man sieht der Leiste damit an, wohin man springt. */
+  background: var(--tab-accent);
+  color: var(--tab-accent-fg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aeli-deck-scroller {
+    scroll-behavior: auto;
+  }
 }
 
 /* -- Hintergründe ------------------------------------------------------- */

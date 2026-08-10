@@ -378,6 +378,7 @@ model AeliProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  cards  AeliCard[]
   blocks AeliBlock[]
   events AeliClick[]
   leads  AeliLead[]
@@ -387,10 +388,36 @@ model AeliProfile {
   @@index([linkedTenantId])
 }
 
+/// Eine Karte im Stapel. `theme` leer heisst „wie die Seite".
+model AeliCard {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  slug  String
+  title String
+  icon  String?
+
+  theme Json?
+
+  sortOrder Int     @default(0)
+  isVisible Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blocks AeliBlock[]
+
+  @@unique([profileId, slug])
+  @@index([profileId, sortOrder])
+}
+
 model AeliBlock {
   id        String      @id @default(cuid())
   profileId String
   profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  cardId    String
+  card      AeliCard    @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
   type     AeliBlockType
   title    String?
@@ -415,6 +442,7 @@ model AeliBlock {
 
   @@index([profileId, sortOrder])
   @@index([profileId, clickCount])
+  @@index([cardId, sortOrder])
 }
 
 model AeliClick {

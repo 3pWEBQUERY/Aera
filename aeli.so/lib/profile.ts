@@ -10,7 +10,13 @@ import { loadAeraContent } from "./aera-content";
 import { resolvePayoutAccount } from "./payouts";
 import { EMPTY_AERA_CONTENT, type AeraContent } from "@/components/page/types";
 import type { PublicLocale } from "./public-strings";
-import type { AeliBlock, AeliBlockType, AeliProfile, Tenant } from "@/app/generated/prisma/client";
+import type {
+  AeliBlock,
+  AeliBlockType,
+  AeliCard,
+  AeliProfile,
+  Tenant,
+} from "@/app/generated/prisma/client";
 
 /**
  * Die Datenzugriffe rund um ein Profil — an einer Stelle, weil hier die
@@ -27,13 +33,33 @@ import type { AeliBlock, AeliBlockType, AeliProfile, Tenant } from "@/app/genera
  * Nebenbei bleibt die Seite damit für alle gleich und cachebar.
  */
 
+export type CardWithBlocks = AeliCard & { blocks: AeliBlock[] };
+
 export type ProfileWithBlocks = AeliProfile & {
-  blocks: AeliBlock[];
+  cards: CardWithBlocks[];
   linkedTenant: Pick<
     Tenant,
     "id" | "name" | "slug" | "subdomain" | "customDomain" | "logoUrl" | "tagline"
   > | null;
 };
+
+/**
+ * Alle Bausteine über alle Karten hinweg.
+ *
+ * Für die Fragen, die die Karte nicht interessiert: „gibt es hier überhaupt
+ * einen Trinkgeld-Baustein", „welche AERA_*-Typen kommen vor". Wer einen
+ * bestimmten Baustein sucht, nimmt das hier ebenfalls — eine Baustein-ID ist
+ * über die ganze Seite eindeutig, und in welcher Karte sie liegt, steht dann
+ * in `cardId`.
+ */
+export function allBlocks(profile: { cards: CardWithBlocks[] }): AeliBlock[] {
+  return profile.cards.flatMap((card) => card.blocks);
+}
+
+const CARD_INCLUDE = {
+  orderBy: { sortOrder: "asc" },
+  include: { blocks: { orderBy: { sortOrder: "asc" } } },
+} as const;
 
 const TENANT_SELECT = {
   id: true,
@@ -59,7 +85,7 @@ export const getOwnProfile = cache(async (): Promise<ProfileWithBlocks | null> =
     prisma.aeliProfile.findUnique({
       where: { userId: user.id },
       include: {
-        blocks: { orderBy: { sortOrder: "asc" } },
+        cards: CARD_INCLUDE,
         linkedTenant: { select: TENANT_SELECT },
       },
     }),
@@ -76,6 +102,16 @@ export async function requireProfile(): Promise<ProfileWithBlocks> {
   const profile = await getOwnProfile();
   if (!profile) redirect("/onboarding");
   return profile;
+}
+
+export interface PublicCard {
+  id: string;
+  slug: string;
+  title: string;
+  icon: string | null;
+  /** Eigenes Theme der Karte, roh. `null` heißt „wie die Seite". */
+  theme: unknown;
+  blocks: AeliBlock[];
 }
 
 export interface PublicProfile {
@@ -101,7 +137,9 @@ export interface PublicProfile {
   gate: AeliProfile["gate"];
   socials: ReturnType<typeof parseSocials>;
   theme: ReturnType<typeof resolveTheme>;
-  blocks: AeliBlock[];
+  /** Roh — die Karten leiten ihr eigenes Theme daraus ab. */
+  rawTheme: unknown;
+  cards: PublicCard[];
   linkedTenant: ProfileWithBlocks["linkedTenant"];
   /** Läuft in der verknüpften Community gerade eine Übertragung? */
   isLive: boolean;
@@ -121,19 +159,31 @@ export const getPublicProfile = cache(async (handle: string): Promise<PublicProf
   const profile = await prisma.aeliProfile.findUnique({
     where: { handle: normalized },
     include: {
-      blocks: { orderBy: { sortOrder: "asc" } },
+      cards: CARD_INCLUDE,
       linkedTenant: { select: TENANT_SELECT },
     },
   });
   if (!profile) return null;
 
   const now = new Date();
-  const visible = profile.blocks.filter((block) => isBlockLive(block, now));
-
-  // „Meistgeklickt oben“ ordnet nur die Links um. Überschriften, Trenner und
-  // Einbettungen bleiben, wo der Creator sie hingestellt hat — sonst zerfällt
-  // die Seite beim ersten erfolgreichen Link in Einzelteile.
-  const blocks = profile.smartSort ? sortLinksByPopularity(visible) : visible;
+  // Versteckte Karten kommen hier gar nicht erst an — dafür sorgt die Policy
+  // `aeli_public_card`. Was hier gefiltert wird, sind die Zeitfenster der
+  // Bausteine, die eine Policy nicht kennt.
+  const cards: PublicCard[] = profile.cards.map((card) => {
+    const visible = card.blocks.filter((block) => isBlockLive(block, now));
+    return {
+      id: card.id,
+      slug: card.slug,
+      title: card.title,
+      icon: card.icon,
+      theme: card.theme,
+      // „Meistgeklickt oben“ ordnet nur die Links um, und nur innerhalb ihrer
+      // Karte. Überschriften, Trenner und Einbettungen bleiben, wo der Creator
+      // sie hingestellt hat — sonst zerfällt die Karte beim ersten
+      // erfolgreichen Link in Einzelteile.
+      blocks: profile.smartSort ? sortLinksByPopularity(visible) : visible,
+    };
+  });
 
   return {
     id: profile.id,
@@ -152,7 +202,8 @@ export const getPublicProfile = cache(async (handle: string): Promise<PublicProf
     gate: profile.gate,
     socials: parseSocials(profile.socials),
     theme: resolveTheme(parseTheme(profile.theme ?? DEFAULT_THEME)),
-    blocks,
+    rawTheme: profile.theme ?? DEFAULT_THEME,
+    cards,
     linkedTenant: profile.linkedTenant,
     isLive: profile.linkedTenantId ? await tenantIsLive(profile.linkedTenantId) : false,
   };
@@ -206,10 +257,11 @@ async function tenantIsLive(tenantId: string): Promise<boolean> {
  */
 export async function profileTipsEnabled(
   profile: Pick<ProfileWithBlocks, "userId" | "linkedTenantId"> & {
-    blocks: { type: AeliBlockType }[];
+    cards: { blocks: { type: AeliBlockType }[] }[];
   },
 ): Promise<boolean> {
-  if (!profile.blocks.some((block) => block.type === "TIP")) return false;
+  const types = profile.cards.flatMap((card) => card.blocks.map((block) => block.type));
+  if (!types.includes("TIP")) return false;
   const payout = await resolvePayoutAccount({
     userId: profile.userId,
     linkedTenantId: profile.linkedTenantId,
@@ -226,13 +278,15 @@ export async function profileTipsEnabled(
  * ohne AERA_*-Baustein kostet der Aufruf keine einzige Abfrage.
  */
 export function profileAeraContent(
-  profile: Pick<ProfileWithBlocks, "linkedTenant"> & { blocks: { type: AeliBlockType }[] },
+  profile: Pick<ProfileWithBlocks, "linkedTenant"> & {
+    cards: { blocks: { type: AeliBlockType }[] }[];
+  },
   locale: PublicLocale,
 ): Promise<AeraContent> {
   if (!profile.linkedTenant) return Promise.resolve(EMPTY_AERA_CONTENT);
   return loadAeraContent(
     profile.linkedTenant,
-    profile.blocks.map((block) => block.type),
+    profile.cards.flatMap((card) => card.blocks.map((block) => block.type)),
     locale,
   );
 }

@@ -3,6 +3,7 @@
 import { useActionState, useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
 import { updateIdentityAction, updateSocialsAction, updateThemeAction } from "@/app/actions/profile";
+import { updateCardThemeAction } from "@/app/actions/cards";
 import { EMPTY_STATE } from "@/lib/action-state";
 import {
   THEME_PRESETS,
@@ -54,8 +55,22 @@ const BACKDROPS: { key: Backdrop; label: string; hint: string }[] = [
   { key: "grain", label: "Korn", hint: "Feines Filmrauschen." },
 ];
 
+/**
+ * Wofür das Design gilt.
+ *
+ * Zwei Fälle, und der Unterschied ist keine Kleinigkeit: „Seite" ändert das,
+ * was alle Karten erben; „Karte" überschreibt es für genau eine. Wer beides
+ * verwechselt, färbt entweder zu viel oder zu wenig um — deshalb steht der
+ * Geltungsbereich in der Adresse, in der Reiterleiste und noch einmal über
+ * dem Speichern-Knopf.
+ */
+export type DesignScope =
+  | { kind: "page" }
+  | { kind: "card"; cardId: string; cardTitle: string; ownTheme: boolean };
+
 export function DesignStudio({
   page,
+  scope,
   initialTheme,
   identity,
   socials,
@@ -64,6 +79,7 @@ export function DesignStudio({
   publicUrlLabel,
 }: {
   page: PageData;
+  scope: DesignScope;
   initialTheme: AeliTheme;
   identity: { displayName: string; bio: string; avatarUrl: string; bannerUrl: string };
   socials: SocialLink[];
@@ -73,6 +89,10 @@ export function DesignStudio({
 }) {
   const [tab, setTab] = useState<TabKey>("look");
   const [theme, setTheme] = useState<AeliTheme>(initialTheme);
+  // Für eine Karte: hat sie ein eigenes Design, oder folgt sie der Seite?
+  // Der Schalter steuert nur, WAS gespeichert wird — die Regler darunter
+  // bleiben bedienbar, damit man sehen kann, worauf man sich einlässt.
+  const [own, setOwn] = useState(scope.kind === "card" ? scope.ownTheme : true);
   const [draft, setDraft] = useState(identity);
   const [links, setLinks] = useState<Record<string, string>>(() =>
     Object.fromEntries(socials.map((social) => [social.platform, social.url])),
@@ -83,16 +103,26 @@ export function DesignStudio({
   const preview = useMemo<PageData>(
     () => ({
       ...page,
+      // In der Vorschau gilt der Entwurf nur für die Karte, an der gearbeitet
+      // wird — bei „Seite" für alle, die kein eigenes Design haben.
+      cards: page.cards.map((card) =>
+        scope.kind === "page"
+          ? card.ownTheme
+            ? card
+            : { ...card, theme: resolved }
+          : card.id === scope.cardId
+            ? { ...card, theme: own ? resolved : page.theme }
+            : card,
+      ),
       displayName: draft.displayName || page.displayName,
       bio: draft.bio || null,
       avatarUrl: draft.avatarUrl || null,
       bannerUrl: draft.bannerUrl || null,
-      theme: resolved,
       socials: SOCIAL_PLATFORMS.flatMap((platform) =>
         links[platform.key] ? [{ platform: platform.key, url: links[platform.key]! }] : [],
       ),
     }),
-    [page, draft, resolved, links],
+    [page, draft, resolved, links, scope, own],
   );
 
   // Nur ein Hinweis in der Bühne, kein Verhalten: ein Vergleich mit dem
@@ -127,8 +157,29 @@ export function DesignStudio({
           ))}
         </div>
 
+        {scope.kind === "card" && (
+          <label className="mb-5 flex items-start gap-3 rounded-xl border border-line bg-ink-2 p-3.5">
+            <input
+              type="checkbox"
+              checked={own}
+              onChange={(event) => setOwn(event.target.checked)}
+              className="mt-0.5 size-4 shrink-0 accent-[var(--color-signal)]"
+            />
+            <span className="text-sm">
+              <span className="font-medium text-chalk">
+                Eigenes Design für „{scope.cardTitle}“
+              </span>
+              <span className="mt-0.5 block text-xs leading-relaxed text-ash">
+                {own
+                  ? "Diese Karte hat ihr eigenes Aussehen. Änderungen am Design der Seite lassen sie unberührt."
+                  : "Diese Karte folgt dem Design der Seite. Häkchen setzen, um sie davon zu lösen."}
+              </span>
+            </span>
+          </label>
+        )}
+
         {tab === "look" && (
-          <ThemeForm theme={theme} onChange={setTheme}>
+          <ThemeForm theme={theme} scope={scope} own={own} onChange={setTheme}>
             <Section
               title="Ausgangspunkt"
               hint="Acht Handschriften. Jede setzt Farbe, Schrift, Form und Stimmung zusammen — danach kannst du alles einzeln nachziehen."
@@ -192,7 +243,7 @@ export function DesignStudio({
         )}
 
         {tab === "hintergrund" && (
-          <ThemeForm theme={theme} onChange={setTheme}>
+          <ThemeForm theme={theme} scope={scope} own={own} onChange={setTheme}>
             <Section
               title="Hintergrund"
               hint="Nimm den Look, eine eigene Farbe, einen selbstgebauten Verlauf — oder dein Foto."
@@ -208,7 +259,7 @@ export function DesignStudio({
         )}
 
         {tab === "form" && (
-          <ThemeForm theme={theme} onChange={setTheme}>
+          <ThemeForm theme={theme} scope={scope} own={own} onChange={setTheme}>
             <Section title="Knopfform" hint="Wie ein Link aussieht — das häufigste Element der Seite.">
               <ButtonStylePicker
                 value={theme.buttonStyle ?? resolved.effectiveButtonStyle}
@@ -290,19 +341,37 @@ function Section({
  */
 function ThemeForm({
   theme,
+  scope,
+  own,
   children,
 }: {
   theme: AeliTheme;
+  scope: DesignScope;
+  /** Nur bei einer Karte: eigenes Design an? Aus heißt „leer speichern". */
+  own: boolean;
   onChange: (theme: AeliTheme) => void;
   children: React.ReactNode;
 }) {
-  const [state, action] = useActionState(updateThemeAction, EMPTY_STATE);
+  const forCard = scope.kind === "card";
+  const [state, action] = useActionState(
+    forCard ? updateCardThemeAction : updateThemeAction,
+    EMPTY_STATE,
+  );
 
   return (
     <form action={action} className="space-y-8">
-      <input type="hidden" name="theme" value={JSON.stringify(theme)} />
+      {forCard && <input type="hidden" name="cardId" value={scope.cardId} />}
+      {/* Ein leeres Feld ist die Ansage „wie die Seite". Deshalb `value=""`
+          und nicht etwa das Feld weglassen: weggelassen hieße für die Action
+          „nichts geschickt", und das ist ein anderer Fall als „ausdrücklich
+          nichts". */}
+      <input type="hidden" name="theme" value={forCard && !own ? "" : JSON.stringify(theme)} />
       {children}
-      <SaveRow notice={state.notice} error={state.error} label="Look übernehmen" />
+      <SaveRow
+        notice={state.notice}
+        error={state.error}
+        label={forCard ? `Für „${scope.cardTitle}“ übernehmen` : "Look übernehmen"}
+      />
     </form>
   );
 }

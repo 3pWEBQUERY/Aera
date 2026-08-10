@@ -11,6 +11,7 @@ import {
   AeraTiersBlock,
 } from "./aera-blocks";
 import type { PageBlock, PageData, PageMode } from "./types";
+import type { ResolvedTheme } from "@/lib/themes";
 import type { PublicStrings } from "@/lib/public-strings";
 
 /**
@@ -29,8 +30,8 @@ const BUTTON_CLASS: Record<string, string> = {
   glass: "aeli-btn-glass",
 };
 
-function buttonClass(page: PageData): string {
-  return BUTTON_CLASS[page.theme.effectiveButtonStyle] ?? "aeli-btn-solid";
+function buttonClass(theme: ResolvedTheme): string {
+  return BUTTON_CLASS[theme.effectiveButtonStyle] ?? "aeli-btn-solid";
 }
 
 /**
@@ -72,12 +73,18 @@ function Thumbnail({ src, alt }: { src: string; alt: string }) {
 export function BlockView({
   block,
   page,
+  theme,
   mode,
   strings,
   index,
 }: {
   block: PageBlock;
   page: PageData;
+  /**
+   * Das Design DIESER Karte, nicht das der Seite. Jede Karte darf ein eigenes
+   * haben — was hier ankommt, ist bereits aufgeloest.
+   */
+  theme: ResolvedTheme;
   mode: PageMode;
   strings: PublicStrings;
   index: number;
@@ -169,7 +176,7 @@ export function BlockView({
         // Lieber ein ehrlicher Link als ein leerer Rahmen: wenn der Anbieter
         // nicht auf der Allowlist steht, bleibt das Ziel trotzdem erreichbar.
         return block.href ? (
-          <LinkBlock block={block} page={page} style={style} href={block.href} />
+          <LinkBlock block={block} theme={theme} style={style} href={block.href} />
         ) : null;
       }
       return (
@@ -244,7 +251,7 @@ export function BlockView({
           rel="noopener noreferrer"
           data-aeli-block={block.id}
           style={style}
-          className={`aeli-rise aeli-link group ${buttonClass(page)}`}
+          className={`aeli-rise aeli-link group ${buttonClass(theme)}`}
         >
           <span
             aria-hidden
@@ -352,24 +359,24 @@ export function BlockView({
         return <TipForm block={block} page={page} mode={mode} style={style} />;
       }
       if (!block.href) return null;
-      return <LinkBlock block={block} page={page} style={style} href={block.href} />;
+      return <LinkBlock block={block} theme={theme} style={style} href={block.href} />;
 
     case "BOOKING":
     case "LINK":
     default:
       if (!block.href) return null;
-      return <LinkBlock block={block} page={page} style={style} href={block.href} />;
+      return <LinkBlock block={block} theme={theme} style={style} href={block.href} />;
   }
 }
 
 function LinkBlock({
   block,
-  page,
+  theme,
   style,
   href,
 }: {
   block: PageBlock;
-  page: PageData;
+  theme: ResolvedTheme;
   style: React.CSSProperties;
   href: string;
 }) {
@@ -381,7 +388,7 @@ function LinkBlock({
       rel="noopener noreferrer"
       data-aeli-block={block.id}
       style={style}
-      className={`aeli-rise aeli-link group ${buttonClass(page)} ${
+      className={`aeli-rise aeli-link group ${buttonClass(theme)} ${
         config.highlight
           ? "ring-2 ring-[color-mix(in_oklab,var(--aeli-accent)_60%,transparent)] ring-offset-2 ring-offset-[var(--aeli-bg)]"
           : ""

@@ -11,7 +11,7 @@
 import { randomUUID } from "node:crypto";
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "../app/generated/prisma/client.js";
+import { Prisma, PrismaClient } from "../app/generated/prisma/client.js";
 
 const EMAIL = "demo@aeli.so";
 const COMMUNITY_SLUG = "lichtwerk";
@@ -65,79 +65,133 @@ async function main(): Promise<void> {
       },
     });
 
-    await prisma.aeliBlock.createMany({
-      data: [
-        {
+    // Vier Karten statt einer langen Spalte — der Stapel ist der Punkt.
+    // „Musik" und „Danke" bekommen ein EIGENES Design, damit man beim Wischen
+    // sieht, dass eine Karte eine eigene Welt sein darf.
+    const decks: {
+      slug: string;
+      title: string;
+      icon?: string;
+      theme?: unknown;
+      isVisible?: boolean;
+      blocks: Omit<Prisma.AeliBlockCreateManyInput, "profileId" | "cardId">[];
+    }[] = [
+      {
+        slug: "start",
+        title: "Start",
+        blocks: [
+          { type: "HEADER", title: "Gerade aktuell", sortOrder: 0 },
+          {
+            type: "LINK",
+            title: "Workshop: Available Light",
+            subtitle: "14. September · noch 3 Plätze",
+            href: "https://example.com/workshop",
+            icon: "📷",
+            config: { highlight: true, badge: "fast voll" },
+            sortOrder: 1,
+          },
+          {
+            type: "LINK",
+            title: "Prints im Shop",
+            href: "https://example.com/shop",
+            icon: "🖼",
+            sortOrder: 2,
+            clickCount: 42,
+          },
+          { type: "DIVIDER", sortOrder: 3 },
+          {
+            type: "NEWSLETTER",
+            title: "Einmal im Monat",
+            subtitle: "Ein Bild, ein Gedanke, kein Werbeblock.",
+            sortOrder: 4,
+          },
+          { type: "SOCIAL_ROW", sortOrder: 5 },
+          { type: "QR_SHARE", title: "Seite teilen", sortOrder: 6 },
+          {
+            // Ein geplanter Block: im Studio sichtbar mit Hinweis, auf der
+            // Seite noch nicht. Damit lässt sich das Zeitfenster ohne Warten
+            // prüfen.
+            type: "LINK",
+            title: "Vorverkauf Frühjahr",
+            href: "https://example.com/vorverkauf",
+            startsAt: new Date(Date.now() + 7 * 86_400_000),
+            sortOrder: 7,
+          },
+        ],
+      },
+      {
+        slug: "musik",
+        title: "Musik",
+        icon: "🎧",
+        theme: { preset: "neon" },
+        blocks: [
+          {
+            type: "EMBED",
+            title: "Making-of",
+            config: { embedUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
+            sortOrder: 0,
+          },
+          {
+            type: "MUSIC",
+            title: "Anhören",
+            config: { embedUrl: "https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT" },
+            sortOrder: 1,
+          },
+        ],
+      },
+      {
+        slug: "community",
+        title: "Community",
+        icon: "◈",
+        blocks: [
+          { type: "AERA_EVENTS", title: "Nächste Termine", sortOrder: 0 },
+          { type: "AERA_TIERS", title: "Mitglied werden", sortOrder: 1 },
+          { type: "AERA_SHOP", title: "Aus dem Shop", sortOrder: 2 },
+          { type: "AERA_COURSES", title: "Kurse", sortOrder: 3 },
+          { type: "AERA_SPACES", title: "In der Community", sortOrder: 4 },
+        ],
+      },
+      {
+        slug: "danke",
+        title: "Danke",
+        icon: "♡",
+        theme: { preset: "sonnenaufgang" },
+        blocks: [
+          {
+            type: "TIP",
+            title: "Unterstütze mich",
+            subtitle: "Kaffee hält den Laden am Laufen.",
+            config: { amounts: [300, 500, 1000] },
+            sortOrder: 0,
+          },
+        ],
+      },
+    ];
+
+    for (const [index, deck] of decks.entries()) {
+      const card = await prisma.aeliCard.create({
+        data: {
           profileId: profile.id,
-          type: "HEADER",
-          title: "Gerade aktuell",
-          sortOrder: 0,
+          slug: deck.slug,
+          title: deck.title,
+          icon: deck.icon ?? null,
+          theme: (deck.theme ?? Prisma.DbNull) as Prisma.InputJsonValue,
+          sortOrder: index,
+          isVisible: deck.isVisible ?? true,
         },
-        {
+      });
+      await prisma.aeliBlock.createMany({
+        data: deck.blocks.map((block) => ({
+          ...block,
           profileId: profile.id,
-          type: "LINK",
-          title: "Workshop: Available Light",
-          subtitle: "14. September · noch 3 Plätze",
-          href: "https://example.com/workshop",
-          icon: "📷",
-          config: { highlight: true, badge: "fast voll" },
-          sortOrder: 1,
-        },
-        {
-          profileId: profile.id,
-          type: "LINK",
-          title: "Prints im Shop",
-          href: "https://example.com/shop",
-          icon: "🖼",
-          sortOrder: 2,
-          clickCount: 42,
-        },
-        { profileId: profile.id, type: "DIVIDER", sortOrder: 3 },
-        {
-          profileId: profile.id,
-          type: "EMBED",
-          title: "Making-of",
-          config: { embedUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ" },
-          sortOrder: 4,
-        },
-        {
-          profileId: profile.id,
-          type: "NEWSLETTER",
-          title: "Einmal im Monat",
-          subtitle: "Ein Bild, ein Gedanke, kein Werbeblock.",
-          sortOrder: 5,
-        },
-        {
-          profileId: profile.id,
-          type: "SOCIAL_ROW",
-          sortOrder: 6,
-        },
-        {
-          profileId: profile.id,
-          type: "QR_SHARE",
-          title: "Seite teilen",
-          sortOrder: 7,
-        },
-        { profileId: profile.id, type: "AERA_EVENTS", title: "Nächste Termine", sortOrder: 8 },
-        { profileId: profile.id, type: "AERA_TIERS", title: "Mitglied werden", sortOrder: 9 },
-        { profileId: profile.id, type: "AERA_SHOP", title: "Aus dem Shop", sortOrder: 10 },
-        { profileId: profile.id, type: "AERA_COURSES", title: "Kurse", sortOrder: 11 },
-        { profileId: profile.id, type: "AERA_SPACES", title: "In der Community", sortOrder: 12 },
-        {
-          // Ein geplanter Block: im Studio sichtbar mit Hinweis, auf der Seite
-          // noch nicht. Damit lässt sich das Zeitfenster ohne Warten prüfen.
-          profileId: profile.id,
-          type: "LINK",
-          title: "Vorverkauf Frühjahr",
-          href: "https://example.com/vorverkauf",
-          startsAt: new Date(Date.now() + 7 * 86_400_000),
-          sortOrder: 13,
-        },
-      ],
-    });
+          cardId: card.id,
+        })),
+      });
+    }
 
     console.log(`✅ Demo angelegt.
    Community : /c/${COMMUNITY_SLUG} (verknüpft, speist die AERA_*-Bausteine)
+   Karten    : ${decks.map((deck) => deck.slug).join(" · ")}
    Anmeldung : ${EMAIL} / ${PASSWORD}
    Seite     : /p/${HANDLE}  (bzw. ${HANDLE}.<AELI_ROOT_DOMAIN>)`);
   } finally {

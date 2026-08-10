@@ -94,6 +94,25 @@ export const EMPTY_AERA_CONTENT: AeraContent = {
   spaces: [],
 };
 
+/**
+ * Eine Karte im Stapel.
+ *
+ * `theme` ist hier bereits aufgelöst — entweder das eigene der Karte oder das
+ * der Seite. Die Komponenten fragen nie „hat diese Karte ein eigenes Design?",
+ * sie bekommen das fertige. Wer das wissen muss, ist allein das Studio, und
+ * dafür steht `ownTheme` daneben.
+ */
+export interface PageCard {
+  id: string;
+  slug: string;
+  title: string;
+  icon: string | null;
+  theme: ResolvedTheme;
+  /** Nur fürs Studio: erbt die Karte das Design der Seite? */
+  ownTheme: boolean;
+  blocks: PageBlock[];
+}
+
 export interface PageBlock {
   id: string;
   type: AeliBlockType;
@@ -113,8 +132,16 @@ export interface PageData {
   avatarUrl: string | null;
   bannerUrl: string | null;
   socials: SocialLink[];
+  /**
+   * Das Design der Seite. Es ist die Voreinstellung, nicht das, was gerendert
+   * wird — gerendert wird immer `card.theme`. Für den Schirm vor der Seite
+   * (Passwort, Alter) gibt es keine Karte, deshalb steht es hier.
+   */
   theme: ResolvedTheme;
-  blocks: PageBlock[];
+  /** Der Stapel. Mindestens eine Karte, sonst gäbe es keine Seite. */
+  cards: PageCard[];
+  /** Welche Karte beim Öffnen im Bild steht — aus der Adresse. */
+  activeCardIndex: number;
   showBranding: boolean;
   gate: AeliGate;
   community: {

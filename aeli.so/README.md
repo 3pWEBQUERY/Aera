@@ -40,7 +40,7 @@ aeli.so/
 
 Das Schema lebt in Aera (`../prisma/schema.prisma`), die Migrationen ebenfalls.
 `aeli.so/prisma/schema.prisma` ist eine bewusst reduzierte Spiegelung, die nur
-den Client erzeugt: sie enthält die sechs Aeli-Tabellen plus so viel von `User`
+den Client erzeugt: sie enthält die sieben Aeli-Tabellen plus so viel von `User`
 und `Tenant`, wie die App wirklich anfasst.
 
 Ausrollen — **aus dem Wurzelverzeichnis**, nicht von hier:
@@ -95,6 +95,64 @@ einer Community.
 `AERA_*`-Bausteine kommen über `aeli_app` und damit durch die Policies. Der
 Unterschied zu `tenantIsLive` ist der Umfang — ein Ja/Nein durfte eine
 Ausnahme sein, fünf Inhaltstabellen nicht.
+
+## Der Stapel
+
+Eine Bio-Seite ist kein Dokument, sondern ein **Stapel Karten**: „Start",
+„Musik", „Shop". Der Besucher wischt zwischen ihnen, jede hat eigene
+Bausteine, eine eigene Adresse und darf ein eigenes Aussehen haben.
+
+```
+{handle}.aeli.so           erste Karte
+{handle}.aeli.so/musik     dieselbe Seite, andere Karte im Bild
+```
+
+Beides ist **dieselbe** Route (`components/page/public-profile.tsx`), nur mit
+anderem Startindex. Ein Tiefenlink führt auf den Stapel, nicht aus ihm heraus:
+wer „Shop" öffnet, kann weiterwischen und findet den Rest.
+
+### Warum jede Karte den Kopf wiederholt
+
+Avatar, Name und Bio stehen auf jeder Karte. Das ist kein Versehen, sondern
+folgt daraus, was eine Karte ist: etwas Vollständiges, das man einzeln teilt.
+Wer einen Link auf „Shop" öffnet, soll nicht auf einem Fragment landen, dem
+der Absender fehlt.
+
+### Warum CSS und nicht JavaScript
+
+Gewischt wird mit `scroll-snap` — ein waagerechter Container, jede Karte ein
+Kind über die volle Breite. Schwung, Gummiband am Rand und die Trägheit des
+Fingers hat der Browser schon, und zwar auf jedem Gerät richtig; eine
+nachgebaute Geste fühlt sich immer nach Nachbau an. Der Stapel liegt damit
+vollständig im HTML und funktioniert ohne JavaScript.
+
+`components/page/deck.tsx` macht nur die vier Dinge, die CSS nicht kann: die
+Reiterleiste hervorheben, auf einen Reiter springen, die Adresse beim Wischen
+mitführen und Pfeiltasten.
+
+Zwei Achsen, zwei Container: **waagerecht** scrollt der Stapel, **senkrecht**
+jede Karte für sich. Läge beides im selben Kasten, nähme man die
+Scrollposition von Karte 1 mit zu Karte 2.
+
+### Das Design einer Karte
+
+`AeliCard.theme` ist nullbar, und leer heißt **„wie die Seite"** — nicht „eine
+Kopie des Seiten-Themes". Der Unterschied entscheidet, ob sich ein Stapel
+später noch an einer Stelle umfärben lässt. Aufgelöst wird beim Laden, an
+genau einer Stelle: `lib/cards.ts`.
+
+Im Studio ist das eine Entscheidung mit einem Schalter: der Reiter „Seite"
+gestaltet die Grundlage, jeder Karten-Reiter überschreibt sie für genau eine.
+
+### Sichtbarkeit
+
+Eine versteckte Karte ist **doppelt** ausgeschlossen — die Karte selbst und
+ihre Bausteine, beides über RLS-Policies (`aeli_public_card`,
+`aeli_public_block`). Ohne die zweite wäre die Karte unsichtbar, ihre Links
+aber abrufbar.
+
+Eine Seite hat immer mindestens eine Karte. Die letzte lässt sich weder
+löschen noch verstecken; das Onboarding legt die erste gleich mit an.
 
 ## Trinkgeld und Stripe
 

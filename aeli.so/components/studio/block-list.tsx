@@ -29,9 +29,12 @@ import type { StudioBlock } from "./types";
  * sich zwei Verschiebungen zu einer dritten Reihenfolge addieren.
  */
 export function BlockList({
+  cardId,
   blocks: incoming,
   tipsEnabled,
 }: {
+  /** Sortiert wird innerhalb dieser Karte. */
+  cardId: string;
   blocks: StudioBlock[];
   /**
    * Nur für den Hinweis am Trinkgeld-Baustein. Ohne verbundenes Konto zeigt er
@@ -53,7 +56,7 @@ export function BlockList({
 
   function persist(next: StudioBlock[]) {
     setBlocks(next);
-    startTransition(() => reorderBlocksAction(next.map((block) => block.id)));
+    startTransition(() => reorderBlocksAction(cardId, next.map((block) => block.id)));
   }
 
   function move(id: string, delta: number) {

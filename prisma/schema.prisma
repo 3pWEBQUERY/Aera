@@ -2615,6 +2615,7 @@ model AeliProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  cards  AeliCard[]
   blocks AeliBlock[]
   events AeliClick[]
   leads  AeliLead[]
@@ -2624,10 +2625,49 @@ model AeliProfile {
   @@index([linkedTenantId])
 }
 
+/// Eine Karte im Stapel.
+///
+/// Eine Bio-Seite ist nicht mehr eine Spalte, sondern ein Stapel: „Start",
+/// „Musik", „Shop" — jede Karte mit eigenen Bausteinen und optional eigenem
+/// Aussehen. Der Besucher wischt zwischen ihnen, jede hat eine eigene Adresse.
+///
+/// `theme` ist bewusst nullbar: leer heisst „wie die Seite". Ein Stapel, bei
+/// dem jede Karte ihr Theme kopiert bekommt, laesst sich nicht mehr an einer
+/// Stelle umfaerben — und genau das will man, wenn man ein Design aendert.
+model AeliCard {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  /// Der letzte Teil der Adresse: `{handle}.aeli.so/{slug}`.
+  slug  String
+  /// Beschriftung des Reiters.
+  title String
+  /// Emoji im Reiter. Optional — ein Wort reicht meistens.
+  icon  String?
+
+  /// Eigenes Aussehen dieser Karte. Null = das der Seite.
+  theme Json?
+
+  sortOrder Int     @default(0)
+  isVisible Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  blocks AeliBlock[]
+
+  @@unique([profileId, slug])
+  @@index([profileId, sortOrder])
+}
+
 model AeliBlock {
   id        String      @id @default(cuid())
   profileId String
   profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  /// Auf welcher Karte der Baustein steht.
+  cardId    String
+  card      AeliCard    @relation(fields: [cardId], references: [id], onDelete: Cascade)
 
   type     AeliBlockType
   title    String?
@@ -2661,6 +2701,7 @@ model AeliBlock {
 
   @@index([profileId, sortOrder])
   @@index([profileId, clickCount])
+  @@index([cardId, sortOrder])
 }
 
 /// Append-only Ereignis-Log. Bewusst ohne IP und ohne Roh-User-Agent: fuer
