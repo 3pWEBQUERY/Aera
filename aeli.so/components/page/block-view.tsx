@@ -3,6 +3,7 @@ import { SocialIcon } from "@/components/social-icon";
 import { LeadForm } from "./lead-form";
 import { ShareBlock } from "./share-block";
 import { TipForm } from "./tip-form";
+import { Icon } from "@/components/icon";
 import {
   AeraCoursesBlock,
   AeraEventsBlock,
@@ -397,8 +398,8 @@ function LinkBlock({
       {config.thumbnailUrl ? (
         <Thumbnail src={config.thumbnailUrl} alt="" />
       ) : block.icon ? (
-        <span aria-hidden className="w-6 shrink-0 text-center text-lg leading-none">
-          {block.icon}
+        <span aria-hidden className="flex w-6 shrink-0 justify-center">
+          <Icon name={block.icon} className="size-5" />
         </span>
       ) : null}
 

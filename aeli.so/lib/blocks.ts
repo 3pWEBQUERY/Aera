@@ -18,6 +18,14 @@ export interface BlockDescriptor {
   label: string;
   /** Ein Satz in der Auswahl. Sagt, was der Block TUT, nicht wie er heisst. */
   hint: string;
+  /**
+   * Schluessel aus `components/icon.tsx` — kein Glyph.
+   *
+   * Frueher standen hier Zeichen wie `▶` und `♫`. Sie landen in demselben
+   * Kaestchen wie das Zeichen, das der Creator waehlt, und seit das ein
+   * gezeichnetes Icon ist, sass daneben ein Schriftzeichen aus einer anderen
+   * Welt. Ein Kaestchen, zwei Handschriften.
+   */
   icon: string;
   group: BlockGroup;
   /** Ohne Ziel ist der Block sinnlos — der Editor markiert ihn dann als unfertig. */
@@ -40,7 +48,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "LINK",
     label: "Link",
     hint: "Ein Ziel, ein Titel. Der Baustein, aus dem die meisten Seiten bestehen.",
-    icon: "→",
+    icon: "link",
     group: "basis",
     needsHref: true,
     needsCommunity: false,
@@ -50,7 +58,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "HEADER",
     label: "Überschrift",
     hint: "Gliedert lange Seiten in Abschnitte.",
-    icon: "H",
+    icon: "heading",
     group: "basis",
     needsHref: false,
     needsCommunity: false,
@@ -60,7 +68,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "TEXT",
     label: "Text",
     hint: "Ein kurzer Absatz — eine Ansage, ein Hinweis, ein Zitat.",
-    icon: "¶",
+    icon: "text",
     group: "basis",
     needsHref: false,
     needsCommunity: false,
@@ -70,7 +78,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "DIVIDER",
     label: "Trenner",
     hint: "Eine Linie Luft zwischen zwei Gruppen.",
-    icon: "—",
+    icon: "divider",
     group: "basis",
     needsHref: false,
     needsCommunity: false,
@@ -80,7 +88,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "SOCIAL_ROW",
     label: "Social-Zeile",
     hint: "Deine Profile als Icon-Reihe statt als sechs einzelne Karten.",
-    icon: "◎",
+    icon: "users",
     group: "basis",
     needsHref: false,
     needsCommunity: false,
@@ -90,7 +98,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "IMAGE",
     label: "Bild",
     hint: "Ein Bild über die volle Breite, optional verlinkt.",
-    icon: "▣",
+    icon: "image",
     group: "medien",
     needsHref: false,
     needsCommunity: false,
@@ -100,7 +108,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "EMBED",
     label: "Einbettung",
     hint: "YouTube, Vimeo, Twitch — spielt direkt auf der Seite.",
-    icon: "▶",
+    icon: "play",
     group: "medien",
     needsHref: false,
     needsCommunity: false,
@@ -110,7 +118,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "MUSIC",
     label: "Musik",
     hint: "Spotify, Apple Music, SoundCloud — mit Player statt nur Link.",
-    icon: "♫",
+    icon: "music",
     group: "medien",
     needsHref: false,
     needsCommunity: false,
@@ -120,7 +128,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "NEWSLETTER",
     label: "Newsletter",
     hint: "Sammelt E-Mail-Adressen direkt auf der Seite.",
-    icon: "✉",
+    icon: "mail",
     group: "kontakt",
     needsHref: false,
     needsCommunity: false,
@@ -130,7 +138,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "CONTACT",
     label: "Kontakt",
     hint: "Ein kleines Formular für Anfragen — ohne deine Adresse zu zeigen.",
-    icon: "✎",
+    icon: "chat",
     group: "kontakt",
     needsHref: false,
     needsCommunity: false,
@@ -140,7 +148,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "QR_SHARE",
     label: "QR-Code",
     hint: "Deine Seite zum Abfotografieren — auf Bühnen und Messen Gold wert.",
-    icon: "⬚",
+    icon: "qr",
     group: "kontakt",
     needsHref: false,
     needsCommunity: false,
@@ -150,7 +158,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "TIP",
     label: "Trinkgeld",
     hint: "Ein Betrag, ein Klick, fertig — direkt über Stripe.",
-    icon: "♡",
+    icon: "heart",
     group: "geld",
     // Kein Pflichtziel mehr: mit verbundenem Auszahlungskonto kassiert der
     // Baustein selbst. Der Link bleibt als Rueckfallebene erlaubt, aber ihn zu
@@ -163,7 +171,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "PRODUCT",
     label: "Produkt",
     hint: "Bild, Preis, Kaufen-Knopf.",
-    icon: "⬢",
+    icon: "box",
     group: "geld",
     needsHref: true,
     needsCommunity: false,
@@ -173,7 +181,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "BOOKING",
     label: "Termin",
     hint: "Führt direkt in deinen Buchungskalender.",
-    icon: "▤",
+    icon: "calendar",
     group: "geld",
     needsHref: true,
     needsCommunity: false,
@@ -183,7 +191,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "COMMUNITY_CTA",
     label: "Community",
     hint: "Die Brücke in deine Aera-Community — beitreten statt nur klicken.",
-    icon: "◈",
+    icon: "join",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -193,7 +201,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "LIVE_NOW",
     label: "Jetzt live",
     hint: "Erscheint nur, solange in deiner Community wirklich gesendet wird.",
-    icon: "●",
+    icon: "bolt",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -206,9 +214,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "AERA_EVENTS",
     label: "Termine",
     hint: "Deine nächsten Veranstaltungen — aktualisiert sich von allein.",
-    // Nicht das ▤ des BOOKING-Bausteins: „Termin" und „Termine" stehen im
-    // selben Baukasten, da darf nicht auch noch das Zeichen dasselbe sein.
-    icon: "◷",
+    icon: "clock",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -218,7 +224,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "AERA_TIERS",
     label: "Mitgliedschaft",
     hint: "Deine öffentlichen Stufen mit Preis, direkt zum Beitreten.",
-    icon: "◇",
+    icon: "star",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -228,8 +234,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "AERA_SHOP",
     label: "Shop",
     hint: "Produkte aus deiner Community, mit Bild und Preis.",
-    // Die offene Fassung von PRODUCTs ⬢ — dieselbe Sache, nur aus Aera.
-    icon: "⬡",
+    icon: "bag",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -239,7 +244,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "AERA_COURSES",
     label: "Kurse",
     hint: "Deine veröffentlichten Kurse als Karten.",
-    icon: "▥",
+    icon: "graduation",
     group: "community",
     needsHref: false,
     needsCommunity: true,
@@ -249,7 +254,7 @@ export const BLOCK_CATALOG: readonly BlockDescriptor[] = [
     type: "AERA_SPACES",
     label: "Räume",
     hint: "Wegweiser in die öffentlichen Bereiche deiner Community.",
-    icon: "⌗",
+    icon: "grid",
     group: "community",
     needsHref: false,
     needsCommunity: true,

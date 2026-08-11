@@ -607,7 +607,10 @@ export async function updateBlockAction(_prev: FormState, form: FormData): Promi
         subtitle: text(form, "subtitle", 200) || null,
         href,
         mediaUrl: text(form, "mediaUrl", 2000) || null,
-        icon: text(form, "icon", 8) || null,
+        // 24 statt 8: ein Schluessel wie „graduation" ist laenger als ein
+        // Emoji. Alte Bausteine tragen weiterhin eins — `Icon` gibt einen
+        // unbekannten Wert als Text aus, statt ihn zu verschlucken.
+        icon: text(form, "icon", 24) || null,
         config: config.success ? config.data : {},
         startsAt,
         endsAt,

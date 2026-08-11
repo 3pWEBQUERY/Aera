@@ -14,7 +14,7 @@ import { EMPTY_STATE } from "@/lib/action-state";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 import { IconPicker } from "./icon-picker";
-import { CardIcon } from "@/components/card-icon";
+import { Icon } from "@/components/icon";
 
 /**
  * Die Kartenleiste über dem Studio.
@@ -119,7 +119,7 @@ export function CardBar({
               }`}
             >
               {card.icon ? (
-                <CardIcon name={card.icon} className="size-4" />
+                <Icon name={card.icon} className="size-4" />
               ) : (
                 <span
                   aria-hidden

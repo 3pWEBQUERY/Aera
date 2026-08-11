@@ -1,19 +1,19 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { CARD_ICONS, CardIcon, cardIconLabel } from "@/components/card-icon";
+import { ICON_GROUPS, ICONS, Icon, iconLabel } from "@/components/icon";
 
 /**
- * Das Zeichen eines Kartenreiters aussuchen.
+ * Ein Zeichen aussuchen — für Bausteine wie für Kartenreiter.
  *
- * Dieselbe Bauform wie die Emoji-Auswahl an den Bausteinen — Popover, Raster
- * mit vier Spalten, Pfeiltasten —, aber ein anderer Inhalt und ein anderer
- * Grund. Warum hier keine Emoji stehen, steht in `components/card-icon.tsx`.
+ * Eine Auswahl für beides, weil es dieselbe Frage ist: welches Zeichen steht
+ * neben diesem Wort? Zwei Auswahlen mit verschiedenen Vorräten wären zwei
+ * Antworten auf eine Frage, und man sähe es der Seite an.
  *
- * Ein Unterschied fällt auf: es gibt kein Feld für „etwas anderes". Bei den
- * Bausteinen war das die Notausfahrt, weil ein Emoji-Katalog nie vollständig
- * ist. Hier wäre sie das Gegenteil — der ganze Sinn eines festen Satzes ist,
- * dass alle Zeichen zusammenpassen.
+ * Kein Feld für „etwas anderes". Beim vorherigen Emoji-Vorrat war das die
+ * Notausfahrt, weil ein Emoji-Katalog nie vollständig ist. Bei einem
+ * gezeichneten Satz wäre sie das Gegenteil: sein ganzer Sinn ist, dass alle
+ * Zeichen zusammenpassen.
  */
 
 const COLUMNS = 4;
@@ -26,6 +26,9 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
   const gridRef = useRef<HTMLDivElement>(null);
   const panelId = useId();
 
+  // Zu, sobald der Zeiger oder der Fokus das Feld verlässt. Beides, weil beide
+  // Wege benutzt werden: mit der Maus klickt man daneben, mit der Tastatur
+  // tabbt man weiter.
   useEffect(() => {
     if (!open) return;
     function leave(event: Event) {
@@ -39,6 +42,7 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
     };
   }, [open]);
 
+  // Beim Öffnen in die Auswahl springen: das gewählte Zeichen, sonst das erste.
   useEffect(() => {
     if (!open) return;
     const cells = gridRef.current?.querySelectorAll<HTMLButtonElement>("[data-icon]");
@@ -52,6 +56,11 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
     triggerRef.current?.focus();
   }
 
+  /**
+   * Pfeiltasten im Raster. Vier Spalten heißt: links/rechts ist ein Schritt,
+   * hoch/runter sind vier — über Gruppengrenzen hinweg, weil die Gruppen eine
+   * Lesehilfe sind und keine Wand.
+   */
   function onGridKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     const step =
       event.key === "ArrowRight" ? 1
@@ -62,15 +71,15 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
     if (step === 0) return;
 
     const current = (event.target as HTMLElement).dataset.icon;
-    const from = CARD_ICONS.findIndex((icon) => icon.key === current);
+    const from = ICONS.findIndex((icon) => icon.key === current);
     const next = from + step;
-    if (next < 0 || next >= CARD_ICONS.length) return;
+    if (next < 0 || next >= ICONS.length) return;
 
     event.preventDefault();
     gridRef.current?.querySelector<HTMLButtonElement>(`[data-index="${next}"]`)?.focus();
   }
 
-  const label = value ? (cardIconLabel(value) ?? "Eigenes") : "Keins";
+  const label = value ? (iconLabel(value) ?? "Eigenes") : "Keins";
 
   return (
     <div
@@ -95,7 +104,7 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
       >
         <span className="flex size-5 shrink-0 items-center justify-center text-chalk">
           {value ? (
-            <CardIcon name={value} className="size-5" />
+            <Icon name={value} className="size-5" />
           ) : (
             <span aria-hidden className="size-1.5 rounded-full bg-ash/60" />
           )}
@@ -122,29 +131,34 @@ export function IconPicker({ name, defaultValue }: { name: string; defaultValue:
           aria-label="Zeichen auswählen"
           className="absolute z-30 mt-1.5 w-60 rounded-xl border border-line bg-ink-2 p-2 shadow-2xl shadow-black/60"
         >
-          <div
-            ref={gridRef}
-            onKeyDown={onGridKeyDown}
-            className="grid max-h-64 grid-cols-4 gap-1 overflow-y-auto"
-          >
-            {CARD_ICONS.map((icon, index) => (
-              <button
-                key={icon.key}
-                type="button"
-                data-icon={icon.key}
-                data-index={index}
-                title={icon.label}
-                aria-label={icon.label}
-                aria-pressed={icon.key === value}
-                onClick={() => choose(icon.key)}
-                className={`flex aspect-square items-center justify-center rounded-lg transition-colors focus:outline-none ${
-                  icon.key === value
-                    ? "bg-signal/20 text-signal ring-1 ring-signal"
-                    : "text-ash hover:bg-ink-3 hover:text-chalk focus-visible:bg-ink-3 focus-visible:text-chalk focus-visible:ring-1 focus-visible:ring-ash"
-                }`}
-              >
-                <CardIcon name={icon.key} className="size-5" />
-              </button>
+          <div ref={gridRef} onKeyDown={onGridKeyDown} className="max-h-72 overflow-y-auto pr-0.5">
+            {ICON_GROUPS.map((group) => (
+              <div key={group.label} className="mb-1 last:mb-0">
+                <p className="px-1 py-1 text-[0.65rem] font-medium tracking-wider text-ash uppercase">
+                  {group.label}
+                </p>
+                <div className="grid grid-cols-4 gap-1">
+                  {group.icons.map((icon) => (
+                    <button
+                      key={icon.key}
+                      type="button"
+                      data-icon={icon.key}
+                      data-index={ICONS.findIndex((entry) => entry.key === icon.key)}
+                      title={icon.label}
+                      aria-label={icon.label}
+                      aria-pressed={icon.key === value}
+                      onClick={() => choose(icon.key)}
+                      className={`flex aspect-square items-center justify-center rounded-lg transition-colors focus:outline-none ${
+                        icon.key === value
+                          ? "bg-signal/20 text-signal ring-1 ring-signal"
+                          : "text-ash hover:bg-ink-3 hover:text-chalk focus-visible:bg-ink-3 focus-visible:text-chalk focus-visible:ring-1 focus-visible:ring-ash"
+                      }`}
+                    >
+                      <Icon name={icon.key} className="size-5" />
+                    </button>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
 

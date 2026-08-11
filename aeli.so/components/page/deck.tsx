@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { CardIcon } from "@/components/card-icon";
+import { Icon } from "@/components/icon";
 import type { PageData } from "./types";
 
 /**
@@ -150,7 +150,7 @@ export function Deck({
             }
             className="aeli-deck-tab"
           >
-            <CardIcon name={card.icon} className="size-[1.05em]" />
+            <Icon name={card.icon} className="size-[1.05em]" />
             {card.title}
           </button>
         ))}

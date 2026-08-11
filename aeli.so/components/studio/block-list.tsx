@@ -9,6 +9,7 @@ import {
 } from "@/app/actions/profile";
 import { blockDescriptor, blockVisibilityReason } from "@/lib/blocks";
 import { BlockEditor } from "./block-editor";
+import { Icon } from "@/components/icon";
 import type { StudioBlock } from "./types";
 
 /**
@@ -165,9 +166,9 @@ export function BlockList({
               >
                 <span
                   aria-hidden
-                  className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-line bg-ink text-sm text-ash"
+                  className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-line bg-ink text-ash"
                 >
-                  {block.icon || descriptor.icon}
+                  <Icon name={block.icon || descriptor.icon} className="size-4" />
                 </span>
 
                 <span className="min-w-0 flex-1">

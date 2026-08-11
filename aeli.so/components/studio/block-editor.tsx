@@ -9,7 +9,7 @@ import { EMBED_PROVIDERS } from "@/lib/embed";
 import { Button } from "@/components/ui/button";
 import { Field, Input, Textarea } from "@/components/ui/field";
 import { ScheduleFields } from "./schedule-fields";
-import { EmojiPicker } from "./emoji-picker";
+import { IconPicker } from "./icon-picker";
 import { ImageUpload } from "./image-upload";
 import type { StudioBlock } from "./types";
 
@@ -140,12 +140,12 @@ export function BlockEditor({
       {has("decor") && (
         <div className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-2">
-            {/* Emoji und Etikett stehen nebeneinander, weil sie dasselbe tun:
-                dem Knopf ein Erkennungszeichen geben. Das Vorschaubild
+            {/* Zeichen und Etikett stehen nebeneinander, weil sie dasselbe
+                tun: dem Knopf ein Erkennungsmerkmal geben. Das Vorschaubild
                 darunter ist die dritte Möglichkeit — und die einzige, die
                 Platz braucht. */}
-            <Field id={`icon-${block.id}`} label="Emoji" optional>
-              <EmojiPicker name="icon" defaultValue={block.icon ?? ""} />
+            <Field id={`icon-${block.id}`} label="Zeichen" optional>
+              <IconPicker name="icon" defaultValue={block.icon ?? ""} />
             </Field>
             <Field id={`badge-${block.id}`} label="Etikett" optional>
               <Input
@@ -161,7 +161,7 @@ export function BlockEditor({
           <ImageUpload
             name="thumbnailUrl"
             label="Vorschaubild"
-            hint="Steht links im Knopf, quadratisch. Ein Emoji tut es meistens auch."
+            hint="Steht links im Knopf, quadratisch. Ein Zeichen tut es meistens auch."
             value={thumbnail}
             onChange={setThumbnail}
             purpose="thumbnail"

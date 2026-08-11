@@ -5,6 +5,7 @@ import { addBlockAction } from "@/app/actions/profile";
 import { BLOCK_CATALOG, BLOCK_GROUPS } from "@/lib/blocks";
 import { Button } from "@/components/ui/button";
 import { AeraMark } from "@/components/aera-mark";
+import { Icon } from "@/components/icon";
 
 /**
  * Der Baukasten.
@@ -82,9 +83,9 @@ export function AddBlock({
                     >
                       <span
                         aria-hidden
-                        className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-line text-sm text-ash transition-colors group-enabled:group-hover:border-signal/50 group-enabled:group-hover:text-signal"
+                        className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-line text-ash transition-colors group-enabled:group-hover:border-signal/50 group-enabled:group-hover:text-signal"
                       >
-                        {entry.icon}
+                        <Icon name={entry.icon} className="size-4" />
                       </span>
                       {/* Aeras Zeichen an den Bausteinen, die ohne Aera nicht
                           funktionieren. `needsCommunity` ist genau diese Menge —

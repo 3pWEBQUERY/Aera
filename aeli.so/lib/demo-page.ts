@@ -40,7 +40,7 @@ export function demoPage(): PageData {
             subtitle: "14. September · noch 3 Plätze",
             href: "https://example.com",
             mediaUrl: null,
-            icon: "📷",
+            icon: "camera",
             config: { highlight: true, badge: "fast voll" },
           },
           {
@@ -60,7 +60,7 @@ export function demoPage(): PageData {
             subtitle: null,
             href: "https://example.com",
             mediaUrl: null,
-            icon: "🖼",
+            icon: "image",
             config: {},
           },
           {
