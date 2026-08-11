@@ -75,7 +75,11 @@ export async function createAeliPageAction(
   }
 
   try {
-    await systemPrisma.aeliProfile.create({
+    // Eine Aeli-Seite ist ein Stapel Karten; ohne mindestens eine gäbe es
+    // nichts anzuzeigen. Der erste Baustein entsteht getrennt, weil er BEIDE
+    // Fremdschlüssel braucht und `profileId` beim verschachtelten Anlegen
+    // unter der Karte noch nicht feststeht.
+    const profile = await systemPrisma.aeliProfile.create({
       data: {
         userId: user.id,
         handle,
@@ -85,16 +89,19 @@ export async function createAeliPageAction(
         avatarUrl: tenant.logoUrl,
         linkedTenantId: tenant.id,
         theme: { preset: "mitternacht" },
-        blocks: {
-          create: [
-            {
-              type: "COMMUNITY_CTA",
-              title: "Community beitreten",
-              subtitle: tenant.tagline,
-              sortOrder: 0,
-            },
-          ],
-        },
+        cards: { create: [{ slug: "start", title: "Start", sortOrder: 0 }] },
+      },
+      include: { cards: true },
+    });
+
+    await systemPrisma.aeliBlock.create({
+      data: {
+        profileId: profile.id,
+        cardId: profile.cards[0]!.id,
+        type: "COMMUNITY_CTA",
+        title: "Community beitreten",
+        subtitle: tenant.tagline,
+        sortOrder: 0,
       },
     });
   } catch (e) {
