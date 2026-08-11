@@ -90,7 +90,10 @@ export async function updateCardAction(_prev: FormState, form: FormData): Promis
 
     await prisma.aeliCard.update({
       where: { id: card.id },
-      data: { title, slug, icon: text(form, "icon", 8) || null },
+      // 24 statt 8: ein Schluessel wie „graduation" ist laenger als ein
+      // Emoji. Alte Karten tragen weiterhin eins — `CardIcon` gibt einen
+      // unbekannten Wert als Text aus, statt ihn zu verschlucken.
+      data: { title, slug, icon: text(form, "icon", 24) || null },
     });
 
     revalidateProfile(profile.handle);

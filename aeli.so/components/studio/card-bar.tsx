@@ -13,7 +13,8 @@ import {
 import { EMPTY_STATE } from "@/lib/action-state";
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
-import { EmojiPicker } from "./emoji-picker";
+import { IconPicker } from "./icon-picker";
+import { CardIcon } from "@/components/card-icon";
 
 /**
  * Die Kartenleiste über dem Studio.
@@ -118,9 +119,7 @@ export function CardBar({
               }`}
             >
               {card.icon ? (
-                <span aria-hidden className="text-base leading-none">
-                  {card.icon}
-                </span>
+                <CardIcon name={card.icon} className="size-4" />
               ) : (
                 <span
                   aria-hidden
@@ -209,8 +208,8 @@ function CardSettings({ card, canRemove }: { card: CardTab; canRemove: boolean }
           </Field>
 
           <Field id={`card-icon-${card.id}`} label="Zeichen" optional>
-            <div className="w-36">
-              <EmojiPicker name="icon" defaultValue={card.icon ?? ""} />
+            <div className="w-40">
+              <IconPicker name="icon" defaultValue={card.icon ?? ""} />
             </div>
           </Field>
         </div>

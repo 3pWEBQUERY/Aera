@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { CardIcon } from "@/components/card-icon";
 import type { PageData } from "./types";
 
 /**
@@ -137,11 +138,7 @@ export function Deck({
             }
             className="aeli-deck-tab"
           >
-            {card.icon && (
-              <span aria-hidden className="text-[0.95em] leading-none">
-                {card.icon}
-              </span>
-            )}
+            <CardIcon name={card.icon} className="size-[1.05em]" />
             {card.title}
           </button>
         ))}

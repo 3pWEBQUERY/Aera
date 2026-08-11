@@ -17,6 +17,12 @@ import { useEffect, useId, useRef, useState } from "react";
  *
  * Das Textfeld unten bleibt trotzdem: wer ein Zeichen braucht, das hier nicht
  * steht, soll nicht an der Auswahl scheitern, die ihm helfen sollte.
+ *
+ * Nicht zu verwechseln mit `icon-picker.tsx`, der Auswahl fuer die
+ * Kartenreiter. Die sieht gleich aus und meint etwas anderes: ein Emoji am
+ * Baustein ist Inhalt und darf bunt sein, das Zeichen eines Reiters gehoert
+ * zur Navigation und muss die Farbe des Themes annehmen. Die Begruendung
+ * steht ausfuehrlich in `components/card-icon.tsx`.
  */
 
 const GROUPS: { label: string; emojis: string[] }[] = [

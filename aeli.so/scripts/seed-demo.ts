@@ -122,7 +122,7 @@ async function main(): Promise<void> {
       {
         slug: "musik",
         title: "Musik",
-        icon: "🎧",
+        icon: "music",
         theme: { preset: "neon" },
         blocks: [
           {
@@ -142,7 +142,7 @@ async function main(): Promise<void> {
       {
         slug: "community",
         title: "Community",
-        icon: "◈",
+        icon: "users",
         blocks: [
           { type: "AERA_EVENTS", title: "Nächste Termine", sortOrder: 0 },
           { type: "AERA_TIERS", title: "Mitglied werden", sortOrder: 1 },
@@ -154,7 +154,7 @@ async function main(): Promise<void> {
       {
         slug: "danke",
         title: "Danke",
-        icon: "♡",
+        icon: "heart",
         theme: { preset: "sonnenaufgang" },
         blocks: [
           {

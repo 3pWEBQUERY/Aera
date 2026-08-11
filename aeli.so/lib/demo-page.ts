@@ -92,7 +92,7 @@ export function demoPage(): PageData {
         id: "demo-card-2",
         slug: "musik",
         title: "Musik",
-        icon: "🎧",
+        icon: "music",
         theme: resolveTheme({ preset: "neon" }),
         ownTheme: true,
         blocks: [
