@@ -3,6 +3,8 @@ import { profileAeraContent, profileTipsEnabled, requireProfile } from "@/lib/pr
 import { studioPageData } from "@/lib/page-data";
 import { parseBlockConfig } from "@/lib/blocks";
 import { CardBar } from "@/components/studio/card-bar";
+import { toggleCardAction } from "@/app/actions/cards";
+import { Button } from "@/components/ui/button";
 import { BlockList } from "@/components/studio/block-list";
 import { AddBlock } from "@/components/studio/add-block";
 import { PhonePreview } from "@/components/studio/phone-preview";
@@ -64,6 +66,24 @@ export default async function StudioPage({
           activeId={card.id}
           basePath="/studio"
         />
+
+        {!card.isVisible && (
+          // Verstecken ist eine gültige Entscheidung — aber eine, die man
+          // vergisst. Bis hier ein Satz stand, war der einzige Hinweis ein
+          // grauer Punkt im Reiter, und wer seine Karte auf der Seite suchte,
+          // fand sie nicht und wusste nicht, warum.
+          <div className="flex flex-wrap items-center gap-3 rounded-xl border border-ember/40 bg-ember/10 px-4 py-3">
+            <p className="min-w-0 flex-1 text-sm text-chalk">
+              Diese Karte ist versteckt — auf deiner Seite fehlt sie.
+            </p>
+            <form action={toggleCardAction}>
+              <input type="hidden" name="id" value={card.id} />
+              <Button type="submit" size="sm">
+                Sichtbar machen
+              </Button>
+            </form>
+          </div>
+        )}
 
         <header className="flex flex-wrap items-baseline justify-between gap-2">
           <h1 className="text-2xl font-semibold tracking-tight">{card.title}</h1>

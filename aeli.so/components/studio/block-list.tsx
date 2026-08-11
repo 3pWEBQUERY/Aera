@@ -178,6 +178,16 @@ export function BlockList({
                       {label(block)}
                     </span>
                     {reason && <StatusPill reason={reason} />}
+                    {/* Ein Link ohne Ziel rendert auf der Seite GAR NICHTS —
+                        er ist dort nicht etwa leer, sondern weg. Ohne diesen
+                        Hinweis sucht der Creator seinen Baustein auf der Seite
+                        und findet ihn nicht. `lib/blocks.ts` verspricht die
+                        Markierung seit jeher im Kommentar; hier ist sie. */}
+                    {descriptor.needsHref && !block.href && (
+                      <span className="shrink-0 rounded-full border border-ember/50 px-2 py-0.5 text-[0.65rem] text-ember">
+                        Ziel fehlt
+                      </span>
+                    )}
                   </span>
                   <span className="mt-0.5 flex items-center gap-2 text-xs text-ash">
                     <span>{descriptor.label}</span>

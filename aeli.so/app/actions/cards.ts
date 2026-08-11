@@ -54,10 +54,15 @@ export async function addCardAction(form: FormData): Promise<void> {
         slug,
         title: wish,
         sortOrder: profile.cards.reduce((max, entry) => Math.max(max, entry.sortOrder), -1) + 1,
-        // Neue Karten sind versteckt. Eine leere Karte, die sofort öffentlich
-        // ist, sieht für Besucher nach einem Fehler aus — und für den Creator
-        // gibt es keinen Grund, sie vor dem Befüllen zu zeigen.
-        isVisible: false,
+        // Sichtbar. Das war einmal andersherum, mit dem Gedanken, eine leere
+        // Karte solle nicht sofort öffentlich sein — und das war falsch: wer
+        // eine Karte anlegt, sucht sie danach auf seiner Seite. Findet er sie
+        // nicht, ist das ein stiller Fehlschlag, und der wiegt schwerer als
+        // eine Karte, auf der ein paar Minuten lang „Hier entsteht gerade
+        // etwas" steht. Bausteine entstehen aus demselben Grund sichtbar.
+        //
+        // Verstecken bleibt möglich, aber als ausdrückliche Handlung.
+        isVisible: true,
       },
     });
 
