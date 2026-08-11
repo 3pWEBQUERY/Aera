@@ -28,26 +28,25 @@ export function studioPageData(
     isLive?: boolean;
     tipsEnabled?: boolean;
     aera?: AeraContent;
-    /** Welche Karte in der Vorschau im Bild steht. */
-    activeCardId?: string;
     /**
-     * Nur diese eine Karte zeigen.
-     *
-     * Im Studio arbeitet man an genau einer, und die Vorschau soll sie zeigen
-     * — auch wenn sie versteckt ist. Den ganzen Stapel gaebe es sonst nur mit
-     * einer Sonderregel fuer „versteckt, aber gerade in Arbeit", und die waere
-     * schwerer zu erklaeren als die Einschraenkung selbst.
+     * Welche Karte in der Vorschau im Bild steht — und die eine, die auch dann
+     * mitkommt, wenn sie versteckt ist.
      */
-    onlyCardId?: string;
+    activeCardId?: string;
   } = {},
 ): PageData {
   const pageTheme = parseTheme(profile.theme);
 
-  const source = options.onlyCardId
-    ? profile.cards.filter((card) => card.id === options.onlyCardId)
-    : options.onlyVisible
-      ? profile.cards.filter((card) => card.isVisible)
-      : profile.cards;
+  // Die Vorschau zeigt den STAPEL, nicht eine Karte. Sie beantwortet „was
+  // sehen andere", und andere sehen mehrere Karten mit einer Leiste dazwischen
+  // — eine einzelne Karte waere eine andere Seite als die echte.
+  //
+  // Eine Ausnahme: die Karte, an der gerade gearbeitet wird, kommt auch dann
+  // mit, wenn sie versteckt ist. Sonst baute man an etwas, das die Vorschau
+  // nicht zeigt. Dass sie fuer Besucher fehlt, sagt der Streifen im Studio.
+  const source = options.onlyVisible
+    ? profile.cards.filter((card) => card.isVisible || card.id === options.activeCardId)
+    : profile.cards;
 
   const rows = source.map((card) => ({
     id: card.id,

@@ -109,7 +109,7 @@ export default async function StudioPage({
           die Liste lang wird. */}
       <aside className="lg:sticky lg:top-28 lg:self-start">
         <PhonePreview
-          page={studioPageData(profile, { onlyVisible: true, aera, tipsEnabled, onlyCardId: card.id })}
+          page={studioPageData(profile, { onlyVisible: true, aera, tipsEnabled, activeCardId: card.id })}
           label="So sieht sie auf dem Handy aus"
         />
       </aside>

@@ -57,9 +57,7 @@ export default async function DesignPage({
           onlyVisible: true,
           aera,
           tipsEnabled,
-          // Mit ausgewaehlter Karte nur diese; ohne den ganzen Stapel, damit
-          // man sieht, welche Karten der Grundgestaltung folgen.
-          onlyCardId: card?.id,
+          activeCardId: card?.id,
         })}
         scope={
           card

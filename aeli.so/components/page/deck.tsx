@@ -40,6 +40,18 @@ export function Deck({
 }) {
   const [active, setActive] = useState(page.activeCardIndex);
   const scrollerRef = useRef<HTMLElement | null>(null);
+
+  // Im Studio wechselt man die Karte ueber die Adresse (`?karte=shop`). Next
+  // rendert die Vorschau dann neu, ohne diese Komponente auszutauschen — der
+  // Zustand bliebe also auf der alten Karte stehen, waehrend der Stapel schon
+  // auf der neuen steht. Sich darauf zu verlassen, dass gleich ein
+  // Scroll-Ereignis das geraderueckt, waere eine Wette: ein sofortiger Sprung
+  // feuert keins, wenn er nichts bewegt.
+  const [seen, setSeen] = useState(page.activeCardIndex);
+  if (seen !== page.activeCardIndex) {
+    setSeen(page.activeCardIndex);
+    setActive(page.activeCardIndex);
+  }
   // Beim Klick auf einen Reiter läuft der Scroll noch, während `scroll`-
   // Ereignisse feuern. Ohne diese Sperre zappelte die Markierung über alle
   // Karten dazwischen.
