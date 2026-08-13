@@ -86,6 +86,18 @@ export const env = {
     .replace(/[/:].*$/, "")
     .toLowerCase(),
   AELI_APP_URL: (process.env.AELI_APP_URL ?? "https://aeli.so").replace(/\/+$/, ""),
+  /**
+   * Ist Aeli oeffentlich?
+   *
+   * Getrennt von den Adressen oben, und das ist der Punkt: Aeli kann
+   * vollstaendig eingerichtet sein — Datenbank, Domain, Verbindungscode — und
+   * trotzdem noch nicht angekuendigt. Ob Creator davon erfahren, ist eine
+   * Produktentscheidung, keine Folge der Konfiguration.
+   *
+   * Standard: aus. Ein Schalter, den man vergisst umzulegen, zeigt nichts;
+   * einer, den man vergisst auszuschalten, zeigt Unfertiges.
+   */
+  AELI_LAUNCHED: (process.env.AELI_LAUNCHED ?? "").trim().toLowerCase() === "true",
   DOMAIN_RESOLVER_ORIGIN: process.env.DOMAIN_RESOLVER_ORIGIN ?? "http://localhost:3000",
   PLATFORM_FEE_PERCENT: Number.isFinite(Number(process.env.AERA_PLATFORM_FEE_PERCENT ?? "5"))
     ? Number(process.env.AERA_PLATFORM_FEE_PERCENT ?? "5")
@@ -173,6 +185,14 @@ export const features = {
       env.S3_SECRET_ACCESS_KEY,
   ),
   push: Boolean(env.VAPID_PUBLIC_KEY && env.VAPID_PRIVATE_KEY),
+  /**
+   * Die Bruecke nach Aeli — im Dashboard sichtbar und benutzbar.
+   *
+   * Der Schalter blendet nicht nur aus: die Server-Actions und die
+   * Handle-Pruefung sehen ihn ebenfalls. Eine versteckte Flaeche, deren
+   * Endpunkte weiter antworten, ist ein Vorhang, keine Tuer.
+   */
+  aeli: env.AELI_LAUNCHED,
   // Ohne alle drei Werte lässt sich kein Stream anlegen, ausliefern oder
   // zuordnen — halb eingerichtet ist hier schlimmer als aus.
   streamLive: Boolean(

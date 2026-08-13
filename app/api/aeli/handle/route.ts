@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth";
 import { aeliHandleTaken } from "@/lib/aeli";
+import { features } from "@/lib/env";
 import { normalizeHandle, checkHandle } from "@/lib/aeli-handle";
 
 /**
@@ -12,6 +13,12 @@ import { normalizeHandle, checkHandle } from "@/lib/aeli-handle";
  * abzugrasen. Zurück kommt ja oder nein, nie ein fremdes Profil.
  */
 export async function GET(request: Request) {
+  // Solange Aeli nicht angekuendigt ist, gibt es diesen Endpunkt nicht. 404
+  // und nicht 403: „gesperrt" verraet, dass es ihn gibt.
+  if (!features.aeli) {
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
   if (!(await getCurrentUser())) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }

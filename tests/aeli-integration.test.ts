@@ -114,3 +114,50 @@ describe("Handle-Regeln in Aera", () => {
     expect(checkHandle("marie")).toBeNull();
   });
 });
+
+/**
+ * Der Startschalter.
+ *
+ * Aeli ist fertig gebaut, aber noch nicht angekündigt. Bis dahin darf im
+ * Dashboard nichts davon zu sehen sein — und, wichtiger, nichts davon
+ * erreichbar. Eine ausgeblendete Fläche, deren Server-Actions weiter
+ * antworten, ist ein Vorhang und keine Tür: eine Action ist ein Endpunkt, und
+ * wer ihre Kennung kennt, ruft sie ohne die Oberfläche auf.
+ *
+ * Der Test liest den Quelltext, weil es die einzige Stelle ist, an der sich
+ * „jede Action fragt zuerst" überhaupt festhalten lässt.
+ */
+describe("Aeli bleibt bis zum Start unsichtbar", () => {
+  const source = (path: string) => readFileSync(join(ROOT, path), "utf8");
+
+  it("ist standardmäßig aus", () => {
+    // Ein Schalter, den man vergisst umzulegen, zeigt nichts; einer, den man
+    // vergisst auszuschalten, zeigt Unfertiges.
+    const env = source("lib/env.ts");
+    expect(env).toMatch(/AELI_LAUNCHED:\s*\(process\.env\.AELI_LAUNCHED \?\? ""\)/);
+    expect(env).toContain("aeli: env.AELI_LAUNCHED");
+  });
+
+  it("blendet die Fläche im Dashboard aus, ohne sie zu laden", () => {
+    const page = source("app/(creator)/dashboard/[slug]/settings/page.tsx");
+    expect(page).toMatch(/features\.aeli && role === "OWNER"/);
+  });
+
+  it("schließt jede Server-Action", () => {
+    const actions = source("app/actions/aeli.ts");
+    const exported = [...actions.matchAll(/export async function (\w+)/g)].map((hit) => hit[1]!);
+    expect(exported.length).toBeGreaterThan(0);
+
+    for (const name of exported) {
+      const start = actions.indexOf(`export async function ${name}`);
+      const body = actions.slice(start, start + 900);
+      expect(body, `${name} fragt nicht zuerst nach dem Schalter`).toContain("if (!launched())");
+    }
+  });
+
+  it("schließt die Handle-Prüfung", () => {
+    // 404 und nicht 403: „gesperrt" verrät, dass es den Endpunkt gibt.
+    const route = source("app/api/aeli/handle/route.ts");
+    expect(route).toMatch(/if \(!features\.aeli\)[\s\S]{0,120}status: 404/);
+  });
+});

@@ -7,6 +7,7 @@ import { writeAudit } from "@/lib/audit";
 import { aeliHandleTaken } from "@/lib/aeli";
 import { checkHandle, normalizeHandle, type HandleProblem } from "@/lib/aeli-handle";
 import { issueLinkCode, linkCodesConfigured } from "@/lib/aeli-link-code";
+import { features } from "@/lib/env";
 
 /**
  * Die Aeli-Verbindung aus Aera heraus.
@@ -46,6 +47,18 @@ function settingsPath(slug: string): string {
 }
 
 /**
+ * Solange Aeli nicht angekuendigt ist, tut hier nichts etwas.
+ *
+ * Die Flaeche im Dashboard ist dann schon ausgeblendet — das allein reicht
+ * aber nicht: eine Server-Action ist ein Endpunkt, und wer ihre Kennung kennt,
+ * kann sie aufrufen, ohne die Oberflaeche gesehen zu haben. Ein Vorhang ist
+ * keine Tuer.
+ */
+function launched(): boolean {
+  return features.aeli;
+}
+
+/**
  * Legt die Aeli-Seite dieses Kontos an und verknüpft sie sofort mit der
  * Community.
  *
@@ -56,6 +69,7 @@ export async function createAeliPageAction(
   _prev: AeliFormState,
   form: FormData,
 ): Promise<AeliFormState> {
+  if (!launched()) return { error: "Aeli ist noch nicht verfügbar." };
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 
@@ -126,6 +140,7 @@ export async function createAeliPageAction(
 
 /** Verknüpft die bestehende Aeli-Seite dieses Kontos mit dieser Community. */
 export async function linkAeliPageAction(form: FormData): Promise<void> {
+  if (!launched()) return;
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 
@@ -152,6 +167,7 @@ export async function linkAeliPageAction(form: FormData): Promise<void> {
  * Community zeigen, solange er das erlaubt, und keine Minute länger.
  */
 export async function unlinkAeliPageAction(form: FormData): Promise<void> {
+  if (!launched()) return;
   const slug = String(form.get("tenant") ?? "");
   const profileId = String(form.get("profileId") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
@@ -185,6 +201,7 @@ export async function issueAeliLinkCodeAction(
   _prev: AeliFormState,
   form: FormData,
 ): Promise<AeliFormState> {
+  if (!launched()) return { error: "Aeli ist noch nicht verfügbar." };
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
 

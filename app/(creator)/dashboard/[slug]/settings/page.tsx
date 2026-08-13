@@ -59,7 +59,11 @@ export default async function SettingsPage({
 
   // Die Aeli-Verbindung gehört dem Besitzer der Community: eine Bio-Seite, die
   // hierher zeigt, ist ihr öffentliches Gesicht an anderer Stelle.
-  const aeliConnection = role === "OWNER" ? await getAeliConnection(user.id, tenant.id) : null;
+  // Solange Aeli nicht angekuendigt ist, gibt es die Flaeche nicht — und auch
+  // die Abfrage dahinter nicht. Ausgeblendet, aber weiter geladen, waere ein
+  // Datenzugriff fuer eine Ansicht, die niemand sieht.
+  const aeliConnection =
+    features.aeli && role === "OWNER" ? await getAeliConnection(user.id, tenant.id) : null;
   const aeliSuffix =
     env.AELI_ROOT_DOMAIN && env.AELI_ROOT_DOMAIN !== "localhost" ? env.AELI_ROOT_DOMAIN : "aeli.so";
 
