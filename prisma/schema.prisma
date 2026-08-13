@@ -374,6 +374,7 @@ model User {
   promoCodesCreated         PromoCode[]                @relation("PromoCodeAuthor")
   promoRedemptions          PromoCodeRedemption[]
   platformSeoEdits          PlatformSeo[]              @relation("PlatformSeoEditor")
+  platformPosts             PlatformPost[]             @relation("PlatformPostAuthor")
   supportTickets            SupportTicket[]            @relation("SupportTicketAuthor")
   supportMessages           SupportMessage[]           @relation("SupportMessageAuthor")
   /// Aeli (aeli.so) teilt sich diese Identitaet mit Aera. Ein Konto, zwei
@@ -2405,6 +2406,73 @@ model PlatformSeo {
   updatedAt     DateTime @updatedAt
   updatedById   String?
   updatedBy     User?    @relation("PlatformSeoEditor", fields: [updatedById], references: [id], onDelete: SetNull)
+}
+
+// ----------------------------------------------------------------------------
+// Der Blog von Aera selbst — Neuigkeiten ueber die Plattform.
+//
+// Nicht zu verwechseln mit dem Blog-Space einer Community (Modell `Post`): der
+// gehoert einem Tenant und wird von einem Creator gefuellt, dieser hier gehoert
+// der Plattform und wird im Admin-Bereich geschrieben. Deshalb der Praefix
+// `Platform` und, wie bei `PlatformSeo`, bewusst keine `tenantId`: die Tabelle
+// bleibt ausserhalb der Tenant-RLS.
+// ----------------------------------------------------------------------------
+enum PlatformPostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model PlatformPost {
+  id     String @id @default(cuid())
+  /// Wie im Hilfecenter: Inhalte liegen pro Sprache vor, die Anzeige faellt
+  /// auf Englisch und dann Deutsch zurueck, wenn eine Sprache leer ist.
+  locale String @default("de")
+  slug   String
+  title  String
+
+  /// Anrisstext fuer die Uebersicht. Leer heisst nicht "kein Text", sondern
+  /// "leite ihn aus dem Beitrag ab" — ein Beitrag ohne Anriss saehe in der
+  /// Uebersicht aus wie ein Fehler.
+  excerpt String?
+  /// Bereits bereinigtes HTML (lib/rich-text.ts). Was hier steht, wird
+  /// unveraendert ausgeliefert — die Pruefung passiert beim Speichern.
+  bodyHtml String
+
+  coverUrl String?
+  coverAlt String?
+
+  /// Schluessel einer Rubrik aus lib/blog.ts. Absichtlich kein Fremdschluessel:
+  /// die Rubriken sind eine redaktionelle Entscheidung, keine Nutzerdaten.
+  category String?
+
+  status PlatformPostStatus @default(DRAFT)
+
+  /// Ab wann der Beitrag oeffentlich ist. Liegt der Zeitpunkt in der Zukunft,
+  /// ist der Beitrag geplant — dafuer braucht es keinen dritten Status und
+  /// keinen Cronjob, nur einen Vergleich in der Abfrage.
+  publishedAt DateTime?
+
+  /// Der Aufmacher der Uebersicht. Mehrere sind technisch moeglich; die
+  /// Oberflaeche nimmt den neuesten und raeumt die anderen beim Setzen ab.
+  isFeatured Boolean @default(false)
+
+  /// Beim Speichern aus dem Text berechnet, damit die Uebersicht nicht fuer
+  /// jede Karte das ganze HTML durchsuchen muss.
+  readingMinutes Int @default(1)
+
+  seoTitle       String?
+  seoDescription String?
+  noindex        Boolean @default(false)
+
+  authorId String?
+  author   User?   @relation("PlatformPostAuthor", fields: [authorId], references: [id], onDelete: SetNull)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([locale, slug])
+  @@index([locale, status, publishedAt])
+  @@index([status, publishedAt])
 }
 
 // ----------------------------------------------------------------------------

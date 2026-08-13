@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import prisma from "@/lib/prisma";
 import { PUBLIC_POST_WHERE } from "@/lib/post-access";
+import { publicPostWhere } from "@/lib/blog";
 import { env } from "@/lib/env";
 
 /**
@@ -13,6 +14,7 @@ import { env } from "@/lib/env";
 
 const MAX_TENANTS = 500;
 const MAX_POSTS_PER_TENANT = 200;
+const MAX_BLOG_POSTS = 500;
 
 // The sitemap depends on live tenant data. Generating it per request keeps the
 // image reproducible and prevents `next build` from reading production data or
@@ -27,6 +29,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/features`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/pricing`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/hilfe`, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/blog`, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/home`, changeFrequency: "daily", priority: 0.7 },
     // Rechtsseiten
     { url: `${base}/impressum`, changeFrequency: "yearly", priority: 0.2 },
@@ -34,6 +37,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${base}/datenschutz`, changeFrequency: "yearly", priority: 0.2 },
     { url: `${base}/widerruf`, changeFrequency: "yearly", priority: 0.2 },
   ];
+
+  // Die Blogbeitraege der Plattform. Dieselbe Sichtbarkeitsbedingung wie
+  // ueberall (publicPostWhere) — ein geplanter Beitrag darf hier nicht
+  // auftauchen, bevor er erscheint.
+  const posts = await prisma.platformPost.findMany({
+    where: { ...publicPostWhere(), noindex: false },
+    orderBy: { publishedAt: "desc" },
+    take: MAX_BLOG_POSTS,
+    select: { slug: true, updatedAt: true },
+  });
+  for (const post of posts) {
+    entries.push({
+      url: `${base}/blog/${post.slug}`,
+      lastModified: post.updatedAt,
+      changeFrequency: "monthly",
+      priority: 0.6,
+    });
+  }
 
   const tenants = await prisma.tenant.findMany({
     // seoNoindex ist die Entscheidung des Creators: wer nicht indexiert werden

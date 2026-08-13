@@ -448,3 +448,88 @@ body {
   font-size: 0.8125rem;
   color: #94a3b8;
 }
+
+/* ---------------------------------------------------------------------------
+   Derselbe Text, aber zum Lesen: der Blog von Aera.
+
+   `.rich-content` ist auf das Dashboard eingestellt — kompakt, schiefergrau,
+   in einer Spalte neben anderen Dingen. Ein Blogbeitrag ist das Gegenteil: er
+   ist das Einzige auf der Seite und wird am Stueck gelesen. Deshalb hier
+   groesser, luftiger, in der Tinte des Marketingauftritts und mit den
+   Serifen-Ueberschriften, die auch die Startseite benutzt.
+
+   Eigener Name und NICHT `.blog-article`: die Klasse gibt es schon, sie
+   gestaltet die Blogbeitraege INNERHALB einer Community (violette Akzente,
+   Serifen-Fliesstext). Sie hier zu ueberschreiben haette jeden Creator-Beitrag
+   mitveraendert — dieselbe Klasse zweimal zu definieren ist keine Variante,
+   sondern ein Fernschaden.
+--------------------------------------------------------------------------- */
+.aera-post {
+  font-size: 1.0625rem;
+  color: #161613;
+}
+@media (min-width: 640px) {
+  .aera-post {
+    font-size: 1.125rem;
+  }
+}
+.aera-post p,
+.aera-post li {
+  line-height: 1.8;
+  color: rgb(22 22 19 / 0.78);
+}
+.aera-post p {
+  margin: 0 0 1.25rem;
+}
+.aera-post h2,
+.aera-post h3 {
+  font-family: var(--font-serif-display), Georgia, "Times New Roman", serif;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: #161613;
+}
+.aera-post h2 {
+  font-size: 1.875rem;
+  margin: 2.5rem 0 0.9rem;
+}
+.aera-post h3 {
+  font-size: 1.375rem;
+  margin: 2rem 0 0.6rem;
+}
+.aera-post ul,
+.aera-post ol {
+  margin: 0 0 1.25rem;
+  padding-left: 1.35rem;
+}
+.aera-post blockquote {
+  margin: 2rem 0;
+  padding: 0 0 0 1.5rem;
+  border-left: 2px solid rgb(22 22 19 / 0.25);
+  font-family: var(--font-serif-display), Georgia, serif;
+  font-style: normal;
+  font-size: 1.375rem;
+  line-height: 1.55;
+  color: rgb(22 22 19 / 0.72);
+}
+.aera-post a {
+  color: #161613;
+  text-decoration-color: rgb(22 22 19 / 0.35);
+  text-underline-offset: 3px;
+}
+.aera-post a:hover {
+  text-decoration-color: #161613;
+}
+.aera-post img,
+.aera-post video {
+  border-radius: 1rem;
+  border-color: rgb(22 22 19 / 0.08);
+  margin: 2rem 0;
+}
+.aera-post hr {
+  border-top-color: rgb(22 22 19 / 0.12);
+  margin: 2.5rem 0;
+}
+.aera-post figcaption {
+  font-size: 0.875rem;
+  color: rgb(22 22 19 / 0.5);
+}

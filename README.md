@@ -207,6 +207,12 @@ für Creator-Custom-Domains `*` sein; `AllowedMethods` bleibt ausschließlich
   Embeddings (mit Key) oder Keyword-Modell.
 - **Datenhoheit** — vollständiger JSON-Export pro Community
   (`/dashboard/[slug]/export`).
+- **Aera-Blog** — Neuigkeiten über die Plattform, geschrieben unter
+  `/admin/blog` (WYSIWYG, Bild- und Video-Upload, Rubriken, Zeitplanung, SEO),
+  öffentlich unter `/blog` samt `/blog/rss.xml`. Eigenes Modell
+  `PlatformPost` — nicht zu verwechseln mit dem Blog-Space einer Community
+  (`Post`): dieser hier gehört der Plattform und trägt deshalb keine
+  `tenantId`.
 
 ## npm-Skripte
 

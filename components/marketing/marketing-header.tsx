@@ -69,6 +69,12 @@ export function MarketingHeader({ loggedIn }: { loggedIn: boolean }) {
             {t("navPricing")}
           </Link>
           <Link
+            href="/blog"
+            className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            {t("navBlog")}
+          </Link>
+          <Link
             href="/hilfe"
             className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white"
           >

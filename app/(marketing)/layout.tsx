@@ -52,6 +52,9 @@ export default async function MarketingLayout({
                   <Link href="/home" className="transition-colors hover:text-white">
                     {t("footerDiscover")}
                   </Link>
+                  <Link href="/blog" className="transition-colors hover:text-white">
+                    {t("navBlog")}
+                  </Link>
                   <Link href="/hilfe" className="transition-colors hover:text-white">
                     {t("footerHelpCenter")}
                   </Link>

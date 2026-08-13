@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl";
 import { Icon } from "@/components/dashboard/icons";
 
 /**
- * Upload for the platform og:image.
+ * Upload for platform-owned images — the og:image and the blog covers.
  *
- * Posts straight to /api/admin/seo-image rather than reusing the creator
+ * Posts straight to an admin endpoint rather than reusing the creator
  * ImageUpload: that one goes through the tenant pipeline (quota, media
  * library, per-tenant access rules), none of which applies to an asset that
  * belongs to no community.
@@ -16,10 +16,16 @@ export function PlatformImageUpload({
   name,
   defaultUrl,
   onChange,
+  endpoint = "/api/admin/seo-image",
+  hint,
 }: {
   name: string;
   defaultUrl: string;
   onChange?: (url: string) => void;
+  /** Welche Admin-Route die Datei annimmt. Beide legen unter `platform/` ab. */
+  endpoint?: string;
+  /** Ersetzt den Hinweis unter dem leeren Feld (Standard: der fuer og:image). */
+  hint?: string;
 }) {
   const t = useTranslations("admin.seo.upload");
   const [url, setUrl] = useState(defaultUrl);
@@ -41,7 +47,7 @@ export function PlatformImageUpload({
     try {
       const body = new FormData();
       body.set("file", file);
-      const res = await fetch("/api/admin/seo-image", { method: "POST", body });
+      const res = await fetch(endpoint, { method: "POST", body });
       const json = (await res.json().catch(() => ({}))) as {
         url?: string;
         error?: string;
@@ -78,7 +84,7 @@ export function PlatformImageUpload({
           <span className="flex flex-col items-center gap-1.5 text-slate-400">
             <Icon name="gallery" size={26} />
             <span className="text-sm font-medium">{t("cta")}</span>
-            <span className="text-xs">{t("hint")}</span>
+            <span className="text-xs">{hint ?? t("hint")}</span>
           </span>
         )}
         {busy && (

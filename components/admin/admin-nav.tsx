@@ -12,6 +12,7 @@ const items: { href: string; key: string; icon: IconName; exact?: boolean }[] = 
   { href: "/admin/users", key: "users", icon: "members" },
   { href: "/admin/media", key: "media", icon: "gallery" },
   { href: "/admin/posts", key: "posts", icon: "feed" },
+  { href: "/admin/blog", key: "blog", icon: "blog" },
   { href: "/admin/orders", key: "orders", icon: "payouts" },
   { href: "/admin/codes", key: "codes", icon: "sparkles" },
   { href: "/admin/seo", key: "seo", icon: "search" },

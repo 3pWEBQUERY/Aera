@@ -43,8 +43,12 @@ const glyphs = {
 
 type Cmd = { icon: React.ReactNode; label: string; run: () => void };
 
+/** Was der Editor hochladen kann — bestimmt nur den Verwendungszweck. */
+export type EditorUploadKind = "image" | "video" | "file";
+
 export function RichTextEditor({
   tenant,
+  uploadFile,
   name = "bodyHtml",
   defaultHtml = "",
   placeholder,
@@ -54,9 +58,22 @@ export function RichTextEditor({
   onPollClick,
   pollActive = false,
   hideUploads = false,
+  hideAttachments = false,
   onChange,
 }: {
-  tenant: string;
+  /**
+   * Die Community, deren Kontingent und Mediathek die Uploads benutzen.
+   *
+   * Optional, weil dieser Editor inzwischen auch dort steht, wo es keine
+   * Community gibt: im Admin-Bereich, fuer den Blog der Plattform. Dort tritt
+   * `uploadFile` an seine Stelle. Genau eins von beidem muss gesetzt sein.
+   */
+  tenant?: string;
+  /**
+   * Eigener Upload-Weg statt des Community-Uploads. Bekommt die Datei und die
+   * Art und liefert die fertige Adresse zurueck.
+   */
+  uploadFile?: (file: File, kind: EditorUploadKind) => Promise<string>;
   name?: string;
   defaultHtml?: string;
   placeholder?: string;
@@ -79,6 +96,14 @@ export function RichTextEditor({
   /** Hide media-upload buttons (image/video/attach/record) — e.g. for members
    *  who may not upload; keeps formatting, emoji, GIF and links. */
   hideUploads?: boolean;
+  /**
+   * Nur den Knopf fuer Dateianhaenge ausblenden, Bild und Video behalten.
+   *
+   * Fuer Oberflaechen, deren Upload-Weg keine Dokumente annimmt — der Blog der
+   * Plattform etwa. Ein Knopf, der zuverlaessig in einer Fehlermeldung endet,
+   * ist schlechter als kein Knopf.
+   */
+  hideAttachments?: boolean;
   /**
    * Meldet jede Aenderung am HTML. Fuer Oberflaechen, die den Text nicht ueber
    * ein <form> abschicken, sondern selbst im Zustand halten — der
@@ -178,13 +203,23 @@ export function RichTextEditor({
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
-  async function uploadAndInsert(file: File, kind: "image" | "video" | "file") {
+  async function uploadAndInsert(file: File, kind: EditorUploadKind) {
     setError(null);
     setUploading(true);
     try {
       const purpose =
         kind === "image" ? "blog-image" : kind === "video" ? "blog-video" : "blog-file";
-      const uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
+      // Entweder ein eigener Weg oder der Community-Upload — ohne beides gibt
+      // es nichts hochzuladen, und das ist ein Programmierfehler, kein
+      // Bedienfehler. Deshalb hier ein Wurf und keine stille Rueckkehr.
+      let uploadedUrl: string;
+      if (uploadFile) {
+        uploadedUrl = await uploadFile(file, kind);
+      } else if (tenant) {
+        uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
+      } else {
+        throw new UploadError("Kein Upload-Ziel gesetzt.");
+      }
       if (kind === "file") {
         const label = escapeHtml(file.name.slice(0, 200)) || t("file");
         insertHtmlAtCaret(
@@ -441,19 +476,21 @@ export function RichTextEditor({
       </button>
       {!hideUploads && (
         <>
-          <button
-            type="button"
-            title={t("attach")}
-            aria-label={t("attach")}
-            onMouseDown={(e) => {
-              e.preventDefault();
-              saveSelection();
-            }}
-            onClick={() => fileInput.current?.click()}
-            className={iconBtn}
-          >
-            {glyphs.attach}
-          </button>
+          {!hideAttachments && (
+            <button
+              type="button"
+              title={t("attach")}
+              aria-label={t("attach")}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+              }}
+              onClick={() => fileInput.current?.click()}
+              className={iconBtn}
+            >
+              {glyphs.attach}
+            </button>
+          )}
           <button
             type="button"
             title={t("record")}

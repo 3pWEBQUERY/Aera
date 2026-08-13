@@ -11,6 +11,7 @@ const links = [
   { href: "/home", key: "navDiscover" },
   { href: "/features", key: "navFeatures" },
   { href: "/pricing", key: "navPricing" },
+  { href: "/blog", key: "navBlog" },
   { href: "/hilfe", key: "navHelp" },
 ] as const;
 

@@ -106,6 +106,41 @@ export async function uploadMediaFile(input: {
   }
 }
 
+/**
+ * Upload fuer den Blog der Plattform (Admin-Bereich).
+ *
+ * Bewusst der einfache, einstufige Weg: die Datei geht als Formular an
+ * /api/admin/blog-media, der Server prueft sie und legt sie ab. Der mehrstufige
+ * Weg darueber existiert wegen der Speicherkontingente einer Community — die
+ * Plattform hat keins, also gibt es hier auch nichts zu reservieren.
+ *
+ * Die Fortschrittsanzeige ist dieselbe, damit ein Upload im Admin-Bereich sich
+ * nicht anders anfuehlt als einer im Dashboard.
+ */
+export async function uploadPlatformBlogFile(file: File): Promise<string> {
+  const job = beginUpload(file);
+  try {
+    const form = new FormData();
+    form.set("file", file);
+    job.setPhase("uploading");
+    const result = await xhrUpload({
+      method: "POST",
+      url: "/api/admin/blog-media",
+      body: form,
+      onProgress: (percent) => job.setPercent(percent),
+    });
+    const json = JSON.parse(result.body || "{}") as { url?: string; error?: string };
+    if (result.status < 200 || result.status >= 300 || !json.url) {
+      throw new UploadError(json.error ?? "Upload fehlgeschlagen", result.status);
+    }
+    job.done();
+    return json.url;
+  } catch (error) {
+    job.fail(error instanceof Error ? error.message : String(error));
+    throw error;
+  }
+}
+
 async function runUpload(
   input: {
     file: File;
