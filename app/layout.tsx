@@ -57,7 +57,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const locale = await getLocale();
-  const t = await getTranslations("uiMigration.frontend.accessibility");
+  const t = await getTranslations("ui.frontend.accessibility");
   return (
     <html
       lang={locale}

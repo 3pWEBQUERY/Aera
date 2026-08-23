@@ -22,7 +22,7 @@ export async function sendVerificationEmail(
 ): Promise<void> {
   const token = await signAccountToken(user, "verify", TOKEN_TTL);
   const url = verifyUrl(token);
-  const t = await getTranslations("uiMigration.emails");
+  const t = await getTranslations("ui.emails");
 
   if (!features.email) {
     // Dev ohne Mail-Provider: Link in der Server-Konsole ausgeben.

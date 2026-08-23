@@ -16,6 +16,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { excerpt } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 export interface HelpArticleRow {
   id: string;
@@ -389,18 +390,13 @@ function ArticleForm({
           <FormError message={state.error} />
           <div>
             <Label htmlFor="ha-cat">{t("category")}</Label>
-            <select
-              id="ha-cat"
-              name="categoryId"
-              defaultValue={categoryId}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
-            >
+            <Select id="ha-cat" name="categoryId" defaultValue={categoryId}>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.title}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
           <div>
             <Label htmlFor="ha-q">{t("question")}</Label>

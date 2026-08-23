@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "title": "横幅",
+      "hub": "横幅",
+      "intro": "显示在社区页面上的提示：底部横条、顶部横条、居中弹窗或角落卡片。内容、受众和时机都由你决定。",
+      "empty": "还没有横幅。",
+      "add": "添加横幅",
+      "full": "已达上限",
+      "remove": "删除横幅",
+      "untitled": "横幅 {n}",
+      "enabled": "启用",
+      "orderHint": "同一时间只显示一个横幅：符合访客条件的最靠前的那一个。关闭之后，同一次访问中不会再出现第二个。",
+      "fieldTitle": "标题",
+      "titlePlaceholder": "加入这个社区",
+      "fieldText": "正文",
+      "textPlaceholder": "用一句话说明值得加入的理由。",
+      "fieldLabel": "按钮",
+      "labelPlaceholder": "成为会员",
+      "fieldSecondary": "第二个按钮",
+      "secondaryPlaceholder": "稍后",
+      "fieldHref": "地址",
+      "fieldHrefHint": "完整地址，或形如 /c/你的社区/join 的站内路径",
+      "fieldPlacement": "位置",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "底部",
+        "TOP": "顶部",
+        "CENTER": "居中",
+        "CORNER": "角落"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "配色",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "品牌色",
+        "DARK": "深色",
+        "LIGHT": "浅色"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "面向谁",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "所有人",
+        "GUESTS": "访客",
+        "MEMBERS": "会员",
+        "STAFF": "团队"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "何时出现",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "立即",
+        "DELAY": "停留一段时间后",
+        "SCROLL": "滚动到一定位置",
+        "EXIT": "离开页面时"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "等待时间",
+      "fieldSecondsHint": "访客在页面停留多久之后出现横幅。",
+      "fieldPercent": "滚动深度",
+      "fieldPercentHint": "访客读到多少之后出现横幅。",
+      "fieldFrequency": "出现频率",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "每次",
+        "SESSION": "每次访问一次",
+        "DISMISSED": "直到被关闭"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "每次打开页面都会再次出现，请谨慎使用。",
+        "SESSION": "每个浏览器会话出现一次。",
+        "DISMISSED": "关闭过的人不会再看到。"
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "开始日期",
+      "fieldEnd": "结束日期",
+      "fieldDismissible": "允许关闭",
+      "fieldDismissibleHint": "没有关闭按钮，横幅会一直显示。请只用于真正重要的内容。",
+      "fieldTarget": "按钮去向",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
+        "NONE": "不带按钮",
+        "JOIN": "成为会员",
+        "TIPS": "支持创作者",
+        "PAGE": "自建页面",
         "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "HOME": "首页",
+        "MEMBERS": "成员",
+        "LEADERBOARD": "排行榜",
+        "LIBRARY": "资料库",
+        "LIVE": "直播",
+        "SEARCH": "搜索",
+        "LINK": "自定义地址"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "横幅只显示文字，不带按钮。",
+      "fieldSpace": "哪个 Space",
+      "fieldPage": "哪个页面",
+      "choose": "请选择"
     },
     "analytics": {
       "metaTitle": "统计",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "首页",
+      "navAria": "本社区的页面",
+      "draftNotice": "草稿 — 仅你可见。",
+      "emptyPage": "此页面还没有内容。"
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "关闭",
+      "aria": "社区提示"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

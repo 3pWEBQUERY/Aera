@@ -188,6 +188,34 @@ describe("message catalogs", () => {
     }
   });
 
+  /**
+   * Faengt den Ausrutscher ab, den kein Mensch beim Korrekturlesen von 4.500
+   * Zeilen findet: ein Wert aus der falschen Sprache, in eine Datei kopiert,
+   * in der er nichts zu suchen hat. Die Schrift verraet ihn zuverlaessig —
+   * ein kyrillisches Wort in fr.json ist immer ein Fehler.
+   */
+  it("keine fremde Schrift in den Katalogen", () => {
+    const CJK = /[\u3040-\u30ff\u4e00-\u9fff\uac00-\ud7af]/;
+    const CYRILLIC = /[\u0400-\u04ff]/;
+    // Sprachen, in denen die jeweilige Schrift nichts verloren hat.
+    const latinOnly = ["da", "es", "es-419", "fr", "it", "nb", "nl", "pl", "pt-BR", "sv", "en", "en-GB", "de"];
+    const noCjk = [...latinOnly, "ru", "uk"];
+
+    for (const file of catalogFiles) {
+      const locale = file.replace(/\.json$/, "");
+      const catalog = loadCatalog(file);
+      for (const key of leafKeys(catalog)) {
+        const value = messageAt(catalog, key) ?? "";
+        if (noCjk.includes(locale)) {
+          expect(CJK.test(value), `CJK-Zeichen in ${file} → ${key}: ${value}`).toBe(false);
+        }
+        if (latinOnly.includes(locale)) {
+          expect(CYRILLIC.test(value), `Kyrillisch in ${file} → ${key}: ${value}`).toBe(false);
+        }
+      }
+    }
+  });
+
   it("no empty messages anywhere", () => {
     for (const file of catalogFiles) {
       const catalog = loadCatalog(file);

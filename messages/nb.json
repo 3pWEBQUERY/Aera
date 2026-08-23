@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
+      "title": "Bannere",
+      "hub": "Bannere",
+      "intro": "Innslag på fellesskapssiden din — en linje nederst, øverst, et vindu i midten eller et kort i hjørnet. Du bestemmer innhold, publikum og tidspunkt.",
+      "empty": "Ingen bannere ennå.",
+      "add": "Legg til banner",
+      "full": "Grensen er nådd",
+      "remove": "Fjern banner",
       "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "enabled": "Aktivt",
+      "orderHint": "Bare ett banner vises om gangen — det øverste som gjelder den besøkende. Den som lukker ett, får ikke et nytt under samme besøk.",
+      "fieldTitle": "Overskrift",
+      "titlePlaceholder": "Bli en del av fellesskapet",
+      "fieldText": "Tekst",
+      "textPlaceholder": "Én setning om hvorfor det er verdt det.",
+      "fieldLabel": "Knapp",
+      "labelPlaceholder": "Bli medlem",
+      "fieldSecondary": "Andre knapp",
+      "secondaryPlaceholder": "Senere",
+      "fieldHref": "Adresse",
+      "fieldHrefHint": "Full adresse eller en egen sti som /c/ditt-fellesskap/join",
+      "fieldPlacement": "Hvor",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "Nederst",
+        "TOP": "Øverst",
+        "CENTER": "Midten",
+        "CORNER": "Hjørnet"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "Farge",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "Merke",
+        "DARK": "Mørk",
+        "LIGHT": "Lys"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "For hvem",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
+        "ALL": "Alle",
+        "GUESTS": "Gjester",
+        "MEMBERS": "Medlemmer",
         "STAFF": "Team"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "Når",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "Med en gang",
+        "DELAY": "Etter tid",
+        "SCROLL": "Ved rulling",
+        "EXIT": "Når man går"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "Ventetid",
+      "fieldSecondsHint": "Hvor lenge en besøkende er på siden før banneret vises.",
+      "fieldPercent": "Rulledybde",
+      "fieldPercentHint": "Hvor langt den besøkende har lest før banneret vises.",
+      "fieldFrequency": "Hvor ofte",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "Hver gang",
+        "SESSION": "Én gang per besøk",
+        "DISMISSED": "Til det lukkes"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "Dukker opp igjen ved hver sidelasting. Bruk det sparsomt.",
+        "SESSION": "Vises én gang per nettleserøkt.",
+        "DISMISSED": "Den som lukker det, ser det ikke igjen."
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "Fra",
+      "fieldEnd": "Til",
+      "fieldDismissible": "Tillat lukking",
+      "fieldDismissibleHint": "Uten lukkeknapp blir banneret stående. Bare for det som virkelig betyr noe.",
+      "fieldTarget": "Knappens mål",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
+        "NONE": "Ingen knapp",
+        "JOIN": "Bli medlem",
+        "TIPS": "Støtt",
+        "PAGE": "Egen side",
         "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
+        "HOME": "Forsiden",
+        "MEMBERS": "Medlemmer",
+        "LEADERBOARD": "Rangering",
+        "LIBRARY": "Bibliotek",
         "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "SEARCH": "Søk",
+        "LINK": "Egen adresse"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "Banneret viser bare tekst — ingen knapp.",
+      "fieldSpace": "Hvilket space",
+      "fieldPage": "Hvilken side",
+      "choose": "Velg"
     },
     "analytics": {
       "metaTitle": "Statistikk",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "Hjem",
+      "navAria": "Sider i dette fellesskapet",
+      "draftNotice": "Utkast — bare synlig for deg.",
+      "emptyPage": "Denne siden har ikke innhold ennå."
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "Lukk",
+      "aria": "Melding fra fellesskapet"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

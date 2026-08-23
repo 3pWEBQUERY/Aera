@@ -24,6 +24,13 @@ interface Opt {
  */
 export type SelectVariant = "field" | "pill";
 
+/**
+ * "light" steht auf Papier oder Weiss, "dark" auf dunklem Grund — etwa im
+ * Live-Studio, wo die Bedienleiste ueber dem Videobild liegt. Ein helles Feld
+ * waere dort ein Loch im Bild.
+ */
+export type SelectTone = "light" | "dark";
+
 export function Select({
   name,
   id,
@@ -36,6 +43,8 @@ export function Select({
   disabled,
   required,
   variant = "field",
+  tone = "light",
+  ariaLabel,
 }: {
   name?: string;
   id?: string;
@@ -48,6 +57,13 @@ export function Select({
   disabled?: boolean;
   required?: boolean;
   variant?: SelectVariant;
+  tone?: SelectTone;
+  /**
+   * Nur noetig, wenn kein <Label> auf das Feld zeigt. Der Knopf traegt sonst
+   * den gewaehlten Wert als Namen — der sagt, *was* eingestellt ist, aber
+   * nicht, *wofuer*.
+   */
+  ariaLabel?: string;
 }) {
   const options: Opt[] = [];
   Children.forEach(children, (child) => {
@@ -111,6 +127,7 @@ export function Select({
   }
 
   const pill = variant === "pill";
+  const dark = tone === "dark";
 
   return (
     <div ref={ref} className={cn(pill ? "relative inline-block" : "relative", className)}>
@@ -133,24 +150,35 @@ export function Select({
         onKeyDown={onKeyDown}
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-label={ariaLabel}
         className={cn(
-          "flex items-center justify-between gap-2 border bg-white text-left outline-none transition",
+          "flex items-center justify-between gap-2 border text-left outline-none transition",
+          dark ? "bg-white/10 text-white" : "bg-white",
           pill
-            ? "rounded-full px-3.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+            ? "rounded-full px-3.5 py-1.5 text-xs font-semibold hover:bg-slate-50"
             : "w-full rounded-lg px-3 py-2 text-sm",
+          pill && !dark && "text-slate-600",
           open
-            ? "border-[var(--brand)] ring-2 ring-[var(--brand-ring)]"
-            : "border-slate-300 hover:border-slate-400",
+            ? dark
+              ? "border-white/40"
+              : "border-[var(--brand)] ring-2 ring-[var(--brand-ring)]"
+            : dark
+              ? "border-white/15 hover:border-white/30"
+              : "border-slate-300 hover:border-slate-400",
           disabled && "cursor-not-allowed opacity-50",
         )}
       >
-        <span className={cn("truncate", !selectedOpt && "text-slate-400")}>
+        <span className={cn("truncate", !selectedOpt && (dark ? "text-white/50" : "text-slate-400"))}>
           {selectedOpt?.label ?? placeholder ?? "Auswählen"}
         </span>
         <Icon
           name="chevron"
           size={pill ? 13 : 16}
-          className={cn("shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
+          className={cn(
+            "shrink-0 transition-transform",
+            dark ? "text-white/60" : "text-slate-400",
+            open && "rotate-180",
+          )}
         />
       </button>
 
@@ -158,7 +186,8 @@ export function Select({
         <ul
           role="listbox"
           className={cn(
-            "absolute z-50 mt-1.5 max-h-64 overflow-y-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-lg",
+            "absolute z-50 mt-1.5 max-h-64 overflow-y-auto rounded-xl border p-1.5 shadow-lg",
+            dark ? "border-white/15 bg-[#1d1d1b]" : "border-slate-200 bg-white",
             // Eine Pille ist so schmal wie ihr Text; ein Menue in derselben
             // Breite wuerde jeden laengeren Eintrag abschneiden.
             pill ? "w-max min-w-full" : "w-full",
@@ -174,8 +203,14 @@ export function Select({
                   onClick={() => choose(o.value)}
                   className={cn(
                     "flex w-full items-center justify-between gap-2 rounded-lg px-2.5 py-2 text-left text-sm transition",
-                    i === active ? "bg-slate-100" : "",
-                    isSel ? "font-medium text-slate-900" : "text-slate-600",
+                    i === active ? (dark ? "bg-white/10" : "bg-slate-100") : "",
+                    isSel
+                      ? dark
+                        ? "font-medium text-white"
+                        : "font-medium text-slate-900"
+                      : dark
+                        ? "text-white/70"
+                        : "text-slate-600",
                   )}
                 >
                   <span className="truncate">{o.label}</span>

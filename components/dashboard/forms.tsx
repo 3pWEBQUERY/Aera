@@ -32,7 +32,7 @@ function useResetOnOk(ok?: boolean) {
 }
 
 export function SpaceForm({ slug }: { slug: string }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createSpaceAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -84,7 +84,7 @@ export function SpaceForm({ slug }: { slug: string }) {
 }
 
 export function TierForm({ slug }: { slug: string }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createTierAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -121,7 +121,7 @@ export function TierForm({ slug }: { slug: string }) {
 }
 
 export function ProductForm({ slug }: { slug: string }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createProductAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -169,7 +169,7 @@ export function CourseForm({
   slug: string;
   spaces: { id: string; name: string }[];
 }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createCourseAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -209,7 +209,7 @@ export function LessonForm({
   slug: string;
   courses: { id: string; title: string }[];
 }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createLessonAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -247,7 +247,7 @@ export function LessonForm({
 }
 
 export function EventForm({ slug }: { slug: string }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createEventAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -297,7 +297,7 @@ export function CampaignForm({
   slug: string;
   segments: { id: string; name: string }[];
 }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createCampaignAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -337,7 +337,7 @@ export function SegmentForm({
   slug: string;
   tiers: { slug: string; name: string }[];
 }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createSegmentAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -373,7 +373,7 @@ export function SegmentForm({
 }
 
 export function BadgeForm({ slug }: { slug: string }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(createBadgeAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
@@ -423,7 +423,7 @@ export function BrandingForm({
     accentColor: string;
   };
 }) {
-  const t = useTranslations("uiMigration.legacyForms");
+  const t = useTranslations("ui.forms");
   const [state, action, pending] = useActionState(updateBrandingAction, initial);
   const [name, setName] = useState(tenant.name);
   const nameCheck = useNameAvailability(name, slug);

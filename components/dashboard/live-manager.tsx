@@ -25,6 +25,7 @@ import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { cn, formatDateTime } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 export type LiveSourceKey = "AERA" | "EXTERNAL";
 export type LiveIngestKey = "BROWSER" | "OBS";
@@ -874,11 +875,10 @@ function LiveForm({
                 <Label htmlFor="lv-key">{t("entitlementLabel")}</Label>
                 {tiers.length > 0 ? (
                   <>
-                    <select
+                    <Select
                       id="lv-key"
                       name="requiredEntitlementKey"
                       defaultValue={session?.requiredEntitlementKey ?? tiers[0].entitlementKey}
-                      className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 focus:border-slate-400 focus:outline-none"
                     >
                       {tiers.map((tier) => (
                         <option key={tier.entitlementKey} value={tier.entitlementKey}>
@@ -892,7 +892,7 @@ function LiveForm({
                             {session.requiredEntitlementKey}
                           </option>
                         )}
-                    </select>
+                    </Select>
                     <p className="mt-1 text-xs text-slate-400">{t("entitlementTierHint")}</p>
                   </>
                 ) : (

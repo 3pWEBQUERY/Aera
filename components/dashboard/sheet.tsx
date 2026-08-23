@@ -40,7 +40,7 @@ export function Sheet({
   variant?: "full" | "bottom";
   children: React.ReactNode;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [mounted, setMounted] = useState(open);
   const [shown, setShown] = useState(false);
   const titleId = useId();

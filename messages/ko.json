@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "title": "배너",
+      "hub": "배너",
+      "intro": "커뮤니티 페이지에 띄우는 알림입니다. 아래쪽 바, 위쪽 바, 가운데 창, 모서리 카드 중에서 고를 수 있습니다. 내용과 대상, 시점은 직접 정합니다.",
+      "empty": "아직 배너가 없습니다.",
+      "add": "배너 추가",
+      "full": "최대 개수에 도달했습니다",
+      "remove": "배너 삭제",
+      "untitled": "배너 {n}",
+      "enabled": "사용 중",
+      "orderHint": "배너는 언제나 하나만 보입니다. 방문자에게 해당하는 것 중 가장 위의 배너입니다. 한 번 닫은 사람에게는 같은 방문 동안 다른 배너가 뜨지 않습니다.",
+      "fieldTitle": "제목",
+      "titlePlaceholder": "커뮤니티에 함께하세요",
+      "fieldText": "본문",
+      "textPlaceholder": "함께할 만한 이유를 한 문장으로.",
+      "fieldLabel": "버튼",
+      "labelPlaceholder": "멤버 되기",
+      "fieldSecondary": "두 번째 버튼",
+      "secondaryPlaceholder": "나중에",
+      "fieldHref": "주소",
+      "fieldHrefHint": "전체 주소 또는 /c/내-커뮤니티/join 같은 자체 경로",
+      "fieldPlacement": "위치",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "아래",
+        "TOP": "위",
+        "CENTER": "가운데",
+        "CORNER": "모서리"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "색",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "브랜드",
+        "DARK": "어둡게",
+        "LIGHT": "밝게"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "대상",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "모두",
+        "GUESTS": "방문자",
+        "MEMBERS": "멤버",
+        "STAFF": "팀"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "시점",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "바로",
+        "DELAY": "일정 시간 뒤",
+        "SCROLL": "스크롤할 때",
+        "EXIT": "떠날 때"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "대기 시간",
+      "fieldSecondsHint": "배너가 뜨기까지 방문자가 페이지에 머무는 시간입니다.",
+      "fieldPercent": "스크롤 깊이",
+      "fieldPercentHint": "배너가 뜨기까지 방문자가 읽어 내려간 정도입니다.",
+      "fieldFrequency": "빈도",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "매번",
+        "SESSION": "방문당 한 번",
+        "DISMISSED": "닫을 때까지"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "페이지를 열 때마다 다시 나타납니다. 아껴서 쓰세요.",
+        "SESSION": "브라우저 세션당 한 번 나타납니다.",
+        "DISMISSED": "닫은 사람에게는 다시 보이지 않습니다."
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "시작일",
+      "fieldEnd": "종료일",
+      "fieldDismissible": "닫기 허용",
+      "fieldDismissibleHint": "닫기 버튼이 없으면 배너가 계속 남습니다. 정말 중요한 경우에만.",
+      "fieldTarget": "버튼 이동 위치",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
-        "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "NONE": "버튼 없음",
+        "JOIN": "멤버 되기",
+        "TIPS": "후원하기",
+        "PAGE": "직접 만든 페이지",
+        "SPACE": "스페이스",
+        "HOME": "홈",
+        "MEMBERS": "멤버",
+        "LEADERBOARD": "랭킹",
+        "LIBRARY": "보관함",
+        "LIVE": "라이브",
+        "SEARCH": "검색",
+        "LINK": "직접 입력한 주소"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "배너에 글만 표시되고 버튼은 없습니다.",
+      "fieldSpace": "어느 스페이스",
+      "fieldPage": "어느 페이지",
+      "choose": "선택하세요"
     },
     "analytics": {
       "metaTitle": "통계",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "홈",
+      "navAria": "이 커뮤니티의 페이지",
+      "draftNotice": "초안 — 나에게만 보입니다.",
+      "emptyPage": "이 페이지에는 아직 내용이 없습니다."
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "닫기",
+      "aria": "커뮤니티 알림"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

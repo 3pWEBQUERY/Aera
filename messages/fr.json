@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
+      "title": "Bannières",
+      "hub": "Bannières",
+      "intro": "Des messages sur la page de votre communauté : une barre en bas, en haut, une fenêtre au centre ou une carte dans le coin. Vous choisissez le contenu, le public et le moment.",
+      "empty": "Aucune bannière pour l'instant.",
+      "add": "Ajouter une bannière",
+      "full": "Limite atteinte",
+      "remove": "Supprimer la bannière",
+      "untitled": "Bannière {n}",
       "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "orderHint": "Une seule bannière s'affiche à la fois : la première qui concerne la personne. Qui en ferme une n'en reçoit pas d'autre pendant la même visite.",
+      "fieldTitle": "Titre",
+      "titlePlaceholder": "Rejoignez la communauté",
+      "fieldText": "Texte",
+      "textPlaceholder": "Une phrase sur ce que cela apporte.",
+      "fieldLabel": "Bouton",
+      "labelPlaceholder": "Devenir membre",
+      "fieldSecondary": "Second bouton",
+      "secondaryPlaceholder": "Plus tard",
+      "fieldHref": "Adresse",
+      "fieldHrefHint": "Adresse complète ou chemin interne comme /c/votre-communaute/join",
+      "fieldPlacement": "Où",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "En bas",
+        "TOP": "En haut",
+        "CENTER": "Au centre",
+        "CORNER": "Dans le coin"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "Couleur",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "Marque",
+        "DARK": "Sombre",
+        "LIGHT": "Clair"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "Pour qui",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "Tout le monde",
+        "GUESTS": "Visiteurs",
+        "MEMBERS": "Membres",
+        "STAFF": "Équipe"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "Quand",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "Tout de suite",
+        "DELAY": "Après un délai",
+        "SCROLL": "Au défilement",
+        "EXIT": "Au départ"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "Délai",
+      "fieldSecondsHint": "Temps passé sur la page avant l'apparition de la bannière.",
+      "fieldPercent": "Profondeur de lecture",
+      "fieldPercentHint": "Part de la page lue avant l'apparition de la bannière.",
+      "fieldFrequency": "À quelle fréquence",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "À chaque fois",
+        "SESSION": "Une fois par visite",
+        "DISMISSED": "Jusqu'à fermeture"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "Réapparaît à chaque chargement de page. À utiliser avec parcimonie.",
+        "SESSION": "Apparaît une fois par session du navigateur.",
+        "DISMISSED": "Qui la ferme ne la reverra plus."
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "À partir du",
+      "fieldEnd": "Jusqu'au",
+      "fieldDismissible": "Autoriser la fermeture",
+      "fieldDismissibleHint": "Sans bouton de fermeture, la bannière reste. Réservez-le à l'essentiel.",
+      "fieldTarget": "Destination du bouton",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
+        "NONE": "Aucun bouton",
+        "JOIN": "Devenir membre",
+        "TIPS": "Soutenir",
+        "PAGE": "Page personnelle",
         "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "HOME": "Accueil",
+        "MEMBERS": "Membres",
+        "LEADERBOARD": "Classement",
+        "LIBRARY": "Bibliothèque",
+        "LIVE": "En direct",
+        "SEARCH": "Recherche",
+        "LINK": "Adresse personnelle"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "La bannière n'affiche que du texte, sans bouton.",
+      "fieldSpace": "Quel space",
+      "fieldPage": "Quelle page",
+      "choose": "Veuillez choisir"
     },
     "analytics": {
       "metaTitle": "Statistiques",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "Accueil",
+      "navAria": "Pages de cette communauté",
+      "draftNotice": "Brouillon — visible uniquement par vous.",
+      "emptyPage": "Cette page n'a pas encore de contenu."
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "Fermer",
+      "aria": "Message de la communauté"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

@@ -5,7 +5,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: t("resetMeta") };
 }
 
@@ -16,7 +16,7 @@ export default async function ResetPasswordPage({
 }) {
   const { token } = await params;
   const user = await verifyAccountToken(decodeURIComponent(token), "reset");
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
 
   if (!user) {
     return (

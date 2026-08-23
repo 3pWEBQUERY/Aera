@@ -7,7 +7,7 @@ import { Icon } from "@/components/dashboard/icons";
 /** Minimal editorial share row: native share, else copy-to-clipboard. */
 export function ArticleShare({ title }: { title: string }) {
   const [copied, setCopied] = useState(false);
-  const t = useTranslations("uiMigration.frontend.articleShare");
+  const t = useTranslations("ui.frontend.articleShare");
 
   async function share() {
     const url = typeof window !== "undefined" ? window.location.href : "";

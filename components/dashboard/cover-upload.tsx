@@ -20,7 +20,7 @@ export function CoverUpload({
   tenant: string;
   defaultUrl: string | null;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [url, setUrl] = useState(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -891,7 +891,7 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
   // Snapshot a bounded audience page at a time. Very large sends are resumed
   // by the newsletter cron from their durable SENDING state instead of loading
   // every member into one server-action request.
-  const footerLabel = (await getTranslations("uiMigration.emails"))("sentVia");
+  const footerLabel = (await getTranslations("ui.emails"))("sentVia");
   let recipientCount = 0;
   for (let batch = 0; batch < 4; batch++) {
     const result = await queueNewsletterAudienceBatch({
@@ -958,7 +958,7 @@ export async function sendCampaignTestAction(
   const body = String(fd.get("body") || "").trim();
   const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   if (!subject || !body) return { error: await tErr("invalidData") };
-  const footerLabel = (await getTranslations("uiMigration.emails"))("sentVia");
+  const footerLabel = (await getTranslations("ui.emails"))("sentVia");
   const html = renderCampaignHtml({
     tenantName: tenant.name,
     primaryColor: tenant.primaryColor,
@@ -1217,7 +1217,7 @@ export async function createMemberAction(
     // After activation the new member lands directly in the community.
     inviteLink = `${inviteUrl(token)}?next=${encodeURIComponent(`/c/${slug}`)}`;
     if (features.email) {
-      const tMail = await getTranslations("uiMigration.emails");
+      const tMail = await getTranslations("ui.emails");
       await sendEmail({
         to: user.email,
         subject: tMail("inviteSubject", { community: tenant.name }),

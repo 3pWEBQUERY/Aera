@@ -13,6 +13,7 @@ import { Input, Label, Textarea } from "@/components/ui/field";
 import { Avatar, Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { cn } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
+import { Select } from "@/components/ui/select";
 
 export interface RequestRow {
   id: string;
@@ -166,18 +167,13 @@ function RequestForm({
           <FormError message={state.error} />
           <div>
             <Label htmlFor="rq-status">{t("statusLabel")}</Label>
-            <select
-              id="rq-status"
-              name="status"
-              defaultValue={request.status}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
-            >
+            <Select id="rq-status" name="status" defaultValue={request.status}>
               <option value="OPEN">{t("status.OPEN")}</option>
               <option value="ACCEPTED">{t("status.ACCEPTED")}</option>
               <option value="PRICED">{t("status.PRICED")}</option>
               <option value="FULFILLED">{t("status.FULFILLED")}</option>
               <option value="DECLINED">{t("status.DECLINED")}</option>
-            </select>
+            </Select>
           </div>
           <div>
             <Label htmlFor="rq-price">{t("priceLabel")}</Label>

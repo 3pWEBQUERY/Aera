@@ -149,7 +149,7 @@ export async function BlogIndex({
   pageCount: number;
 }) {
   const [t, locale] = await Promise.all([
-    getTranslations("uiMigration.frontend.blogIndex"),
+    getTranslations("ui.frontend.blogIndex"),
     getLocale(),
   ]);
   if (posts.length === 0) {

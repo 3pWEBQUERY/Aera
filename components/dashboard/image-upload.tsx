@@ -18,7 +18,7 @@ export function ImageUpload({
   purpose?: string;
   onChange?: (url: string) => void;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [url, setUrlState] = useState<string>(defaultUrl ?? "");
   const setUrl = (v: string) => {
     setUrlState(v);

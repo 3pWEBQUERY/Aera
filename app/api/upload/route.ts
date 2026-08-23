@@ -19,7 +19,7 @@ import {
 const MAX_BUFFERED_BODY = 10 * 1024 * 1024;
 
 export async function POST(req: Request) {
-  const t = await getTranslations("uiMigration.dashboard");
+  const t = await getTranslations("ui.dashboard");
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 

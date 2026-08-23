@@ -8,7 +8,7 @@ import logo from "@/public/logo.svg";
 import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: { template: "%s — Aera", default: t("rootTitle") } };
 }
 

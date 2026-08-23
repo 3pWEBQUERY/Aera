@@ -17,7 +17,7 @@ export function AudioUpload({
   defaultUrl?: string | null;
   purpose?: string;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [url, setUrl] = useState<string>(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);

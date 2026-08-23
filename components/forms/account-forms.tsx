@@ -44,7 +44,7 @@ export function ForgotPasswordForm() {
 }
 
 function PasswordFields({ invalid = false }: { invalid?: boolean }) {
-  const t = useTranslations("uiMigration.auth");
+  const t = useTranslations("ui.auth");
   return (
     <>
       <div>
@@ -76,7 +76,7 @@ function PasswordFields({ invalid = false }: { invalid?: boolean }) {
 }
 
 export function ResetPasswordForm({ token }: { token: string }) {
-  const t = useTranslations("uiMigration.auth");
+  const t = useTranslations("ui.auth");
   const [state, action, pending] = useActionState(resetPasswordAction, initial);
   return (
     <form action={action} aria-describedby={state.error ? "reset-error" : undefined} className="space-y-4">
@@ -99,7 +99,7 @@ export function AcceptInviteForm({
   defaultName: string;
   next?: string;
 }) {
-  const t = useTranslations("uiMigration.auth");
+  const t = useTranslations("ui.auth");
   const [state, action, pending] = useActionState(acceptInviteAction, initial);
   const [name, setName] = useState(defaultName);
   return (

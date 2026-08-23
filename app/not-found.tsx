@@ -53,7 +53,7 @@ const BACKDROPS: Backdrop[] = [
 
 export default async function NotFound() {
   await connection();
-  const t = await getTranslations("uiMigration.frontend.notFound");
+  const t = await getTranslations("ui.frontend.notFound");
   const backdrop = BACKDROPS[Math.floor(Math.random() * BACKDROPS.length)]!;
 
   return (

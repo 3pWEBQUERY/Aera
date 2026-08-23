@@ -2558,7 +2558,7 @@
       "labelPlaceholder": "Mitglied werden",
       "fieldSecondary": "Zweiter Knopf",
       "secondaryPlaceholder": "Später",
-      "fieldHref": "Ziel des Knopfes",
+      "fieldHref": "Adresse",
       "fieldHrefHint": "Ganze Adresse oder eigener Pfad wie /c/deine-community/join",
       "fieldPlacement": "Wo",
       "placement": {
@@ -4938,7 +4938,7 @@
       }
     }
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Einladung annehmen — Aera",
       "inviteInvalidTitle": "Einladung ungültig",
@@ -5139,7 +5139,7 @@
         "share": "Beitrag teilen"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Typ",
       "feed": "Feed",

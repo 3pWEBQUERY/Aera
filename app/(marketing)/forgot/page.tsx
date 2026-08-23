@@ -6,7 +6,7 @@ import logoBkButton from "@/public/logo_bk_button.svg";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
 
 export async function generateMetadata() {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: t("forgotMeta") };
 }
 

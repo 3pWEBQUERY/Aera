@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { uploadMediaFile } from "@/lib/client-upload";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
+import { Select } from "@/components/ui/select";
 import {
   SECTION_CATALOG,
   SECTION_META,
@@ -1479,17 +1480,16 @@ function MenuPanel({
 
             {item.type === "SPACE" && (
               <Field label={t("spaceLabel")}>
-                <select
+                <Select
                   value={item.value ?? ""}
-                  onChange={(e) => patch(slot, item.id, { value: e.target.value })}
-                  className={INPUT}
+                  onChange={(v) => patch(slot, item.id, { value: v })}
                 >
                   {spaces.map((sp) => (
                     <option key={sp.slug} value={sp.slug}>
                       {sp.name}
                     </option>
                   ))}
-                </select>
+                </Select>
               </Field>
             )}
 

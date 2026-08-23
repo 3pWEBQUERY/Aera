@@ -14,7 +14,7 @@ import { formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 export async function generateMetadata() {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: t("pricingMeta") };
 }
 

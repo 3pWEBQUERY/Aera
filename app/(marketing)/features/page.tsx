@@ -3,7 +3,7 @@ import { PillLink } from "@/components/marketing/pill-link";
 import { Reveal } from "@/components/marketing/reveal";
 
 export async function generateMetadata() {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: t("featuresMeta") };
 }
 

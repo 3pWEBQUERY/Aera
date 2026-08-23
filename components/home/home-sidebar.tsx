@@ -36,7 +36,7 @@ export function HomeSidebar({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const t = useTranslations("uiMigration.frontend.homeSidebar");
+  const t = useTranslations("ui.frontend.homeSidebar");
 
   return (
     <aside className="sticky top-0 hidden h-screen w-16 shrink-0 flex-col border-r border-slate-200 bg-white lg:flex lg:w-64">

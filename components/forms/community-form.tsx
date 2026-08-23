@@ -21,7 +21,7 @@ function slugify(input: string): string {
 }
 
 export function CommunityForm({ rootDomain }: { rootDomain: string }) {
-  const t = useTranslations("uiMigration.auth");
+  const t = useTranslations("ui.auth");
   const [state, action, pending] = useActionState(
     createCommunityAction,
     initial,

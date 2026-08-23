@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getTranslations } from "next-intl/server";
 
 export default async function manifest(): Promise<MetadataRoute.Manifest> {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return {
     name: "Aera",
     short_name: "Aera",

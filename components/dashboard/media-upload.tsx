@@ -38,7 +38,7 @@ export function MediaUpload({
   defaultImageUrls?: string[];
   defaultVideoUrl?: string | null;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const tm = useTranslations("dashboard.spaceContent");
   const [images, setImages] = useState<string[]>(defaultImageUrls);
   const [videoUrl, setVideoUrl] = useState(defaultVideoUrl ?? "");

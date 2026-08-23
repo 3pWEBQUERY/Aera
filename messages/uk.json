@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "title": "Банери",
+      "hub": "Банери",
+      "intro": "Повідомлення на сторінці вашої спільноти: смуга внизу, вгорі, вікно посередині або картка в кутку. Ви вирішуєте, що показати, кому й коли.",
+      "empty": "Банерів ще немає.",
+      "add": "Додати банер",
+      "full": "Досягнуто межу",
+      "remove": "Видалити банер",
+      "untitled": "Банер {n}",
+      "enabled": "Активний",
+      "orderHint": "Одночасно показується лише один банер — перший, що стосується відвідувача. Хто закрив один, за те саме відвідування другого не побачить.",
+      "fieldTitle": "Заголовок",
+      "titlePlaceholder": "Приєднуйтеся до спільноти",
+      "fieldText": "Текст",
+      "textPlaceholder": "Одне речення про те, чому це варте уваги.",
+      "fieldLabel": "Кнопка",
+      "labelPlaceholder": "Стати учасником",
+      "fieldSecondary": "Друга кнопка",
+      "secondaryPlaceholder": "Пізніше",
+      "fieldHref": "Адреса",
+      "fieldHrefHint": "Повна адреса або власний шлях на кшталт /c/ваша-спільнота/join",
+      "fieldPlacement": "Де",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "Внизу",
+        "TOP": "Вгорі",
+        "CENTER": "Посередині",
+        "CORNER": "У кутку"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "Колір",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "Бренд",
+        "DARK": "Темний",
+        "LIGHT": "Світлий"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "Кому",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "Усім",
+        "GUESTS": "Гостям",
+        "MEMBERS": "Учасникам",
+        "STAFF": "Команді"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "Коли",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "Одразу",
+        "DELAY": "Через час",
+        "SCROLL": "Під час прокручування",
+        "EXIT": "Коли йде"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "Затримка",
+      "fieldSecondsHint": "Скільки відвідувач перебуває на сторінці до появи банера.",
+      "fieldPercent": "Глибина прокручування",
+      "fieldPercentHint": "Наскільки відвідувач прочитав сторінку до появи банера.",
+      "fieldFrequency": "Як часто",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "Щоразу",
+        "SESSION": "Раз на відвідування",
+        "DISMISSED": "Доки не закриють"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "З’являється при кожному завантаженні сторінки. Використовуйте помірно.",
+        "SESSION": "З’являється раз на сеанс браузера.",
+        "DISMISSED": "Хто закрив, більше його не побачить."
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "Від",
+      "fieldEnd": "До",
+      "fieldDismissible": "Дозволити закривати",
+      "fieldDismissibleHint": "Без кнопки закриття банер залишається. Тільки для справді важливого.",
+      "fieldTarget": "Куди веде кнопка",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
+        "NONE": "Без кнопки",
+        "JOIN": "Стати учасником",
+        "TIPS": "Підтримати",
+        "PAGE": "Власна сторінка",
         "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "HOME": "Головна",
+        "MEMBERS": "Учасники",
+        "LEADERBOARD": "Рейтинг",
+        "LIBRARY": "Бібліотека",
+        "LIVE": "Ефір",
+        "SEARCH": "Пошук",
+        "LINK": "Власна адреса"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "Банер показує лише текст — без кнопки.",
+      "fieldSpace": "Який space",
+      "fieldPage": "Яка сторінка",
+      "choose": "Оберіть"
     },
     "analytics": {
       "metaTitle": "Статистика",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "Головна",
+      "navAria": "Сторінки цієї спільноти",
+      "draftNotice": "Чернетка — бачите тільки ви.",
+      "emptyPage": "На цій сторінці ще немає вмісту."
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "Закрити",
+      "aria": "Повідомлення спільноти"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

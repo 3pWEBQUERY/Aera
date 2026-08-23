@@ -21,7 +21,7 @@ export function AvatarUpload({
   purpose?: string;
   onChange?: (url: string) => void;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [url, setUrlState] = useState<string>(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);

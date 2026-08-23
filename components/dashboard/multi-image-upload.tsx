@@ -24,7 +24,7 @@ export function MultiImageUpload({
   purpose?: string;
   max?: number;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const [urls, setUrls] = useState<string[]>(defaultUrls.filter(Boolean));
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);

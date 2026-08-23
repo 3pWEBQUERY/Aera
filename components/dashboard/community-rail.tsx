@@ -31,7 +31,7 @@ export function CommunityRail({
   communities: RailCommunity[];
   activeSlug: string;
 }) {
-  const t = useTranslations("uiMigration.dashboard");
+  const t = useTranslations("ui.dashboard");
   const pathname = usePathname();
   return (
     <nav className="relative z-30 flex h-full w-[72px] shrink-0 flex-col items-center gap-2 overflow-visible border-r border-slate-200 bg-white py-4">

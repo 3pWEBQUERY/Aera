@@ -8,6 +8,7 @@ import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
 import { startDirectAction, createChatGroupAction } from "@/app/actions/chat";
 import { useLocale, useTranslations } from "next-intl";
+import { Select } from "@/components/ui/select";
 
 export interface HubThreadView {
   kind: "GROUP" | "DIRECT";
@@ -85,7 +86,7 @@ export function ChatHub({
   const [menuOpen, setMenuOpen] = useState(false);
   const [dmOpen, setDmOpen] = useState(false);
   const [groupOpen, setGroupOpen] = useState(false);
-  const t = useTranslations("uiMigration.frontend.chatHub");
+  const t = useTranslations("ui.frontend.chatHub");
   const locale = useLocale();
 
   const shown = useMemo(() => {
@@ -292,7 +293,7 @@ function ModalShell({
   fullscreen?: boolean;
   children: React.ReactNode;
 }) {
-  const t = useTranslations("uiMigration.frontend.chatHub");
+  const t = useTranslations("ui.frontend.chatHub");
   const titleId = useId();
   const dialogRef = useModalAccessibility<HTMLDivElement>({ open: true, onClose });
   return (
@@ -345,7 +346,7 @@ function DirectModal({
   onClose: () => void;
 }) {
   const [q, setQ] = useState("");
-  const t = useTranslations("uiMigration.frontend.chatHub");
+  const t = useTranslations("ui.frontend.chatHub");
   const filtered = members.filter((m) => m.name.toLowerCase().includes(q.trim().toLowerCase()));
   return (
     <ModalShell title={t("newDirect")} onClose={onClose} fullscreen>
@@ -399,7 +400,7 @@ function GroupModal({
   onClose: () => void;
 }) {
   const [access, setAccess] = useState<"all" | "paid" | "level">("all");
-  const t = useTranslations("uiMigration.frontend.chatHub");
+  const t = useTranslations("ui.frontend.chatHub");
   const [levelKey, setLevelKey] = useState(levels[0]?.key ?? "");
   const options: { key: "all" | "paid" | "level"; label: string }[] = [
     { key: "all", label: t("access.all") },
@@ -449,17 +450,13 @@ function GroupModal({
               {levels.length === 0 ? (
                 <p className="text-sm text-[#161613]/50">{t("noLevels")}</p>
               ) : (
-                <select
-                  value={levelKey}
-                  onChange={(e) => setLevelKey(e.target.value)}
-                  className="w-full rounded-lg border border-[#161613]/10 bg-white px-3 py-2 text-sm outline-none focus:border-[var(--brand)]"
-                >
+                <Select value={levelKey} onChange={setLevelKey}>
                   {levels.map((l) => (
                     <option key={l.key} value={l.key}>
                       {l.name}
                     </option>
                   ))}
-                </select>
+                </Select>
               )}
             </div>
           )}

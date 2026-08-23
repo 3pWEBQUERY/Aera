@@ -19,7 +19,7 @@ const APP = env.APP_URL.replace(/\/+$/, "");
 async function ticketTranslator(locale: string | null) {
   return getTranslations({
     locale: normalizeLocale(locale ?? undefined),
-    namespace: "uiMigration.emails",
+    namespace: "ui.emails",
   });
 }
 
@@ -105,7 +105,7 @@ export async function notifyTeamOfInbound(input: {
     // Das Team arbeitet in der Standardsprache der Plattform.
     const t = await getTranslations({
       locale: normalizeLocale(undefined),
-      namespace: "uiMigration.emails",
+      namespace: "ui.emails",
     });
     const from = ticket.name ? `${ticket.name} <${ticket.email}>` : ticket.email;
 

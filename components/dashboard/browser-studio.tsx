@@ -10,6 +10,7 @@ import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { Icon } from "./icons";
 import { Avatar, FormError } from "@/components/ui/misc";
 import { cn, timeAgo } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 type Phase = "idle" | "starting" | "live" | "error";
 
@@ -48,7 +49,7 @@ export function BrowserStudio({
   onClose: () => void;
 }) {
   const t = useTranslations("dashboard.live");
-  const tUi = useTranslations("uiMigration.dashboard");
+  const tUi = useTranslations("ui.dashboard");
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -437,18 +438,19 @@ export function BrowserStudio({
                     </div>
 
                     {!screen && cams.length > 1 && (
-                      <select
-                        aria-label={t("browserCameraLabel")}
+                      <Select
+                        tone="dark"
+                        ariaLabel={t("browserCameraLabel")}
+                        className="max-w-44"
                         value={camId}
-                        onChange={(e) => setCamId(e.target.value)}
-                        className="max-w-44 rounded-lg border border-white/15 bg-white/10 px-2.5 py-2 text-sm text-white focus:border-white/40 focus:outline-none [&>option]:text-[#161613]"
+                        onChange={setCamId}
                       >
                         {cams.map((d, i) => (
                           <option key={d.deviceId} value={d.deviceId}>
                             {d.label || t("browserDeviceFallback", { n: i + 1 })}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     )}
 
                     {!screen && (
@@ -469,18 +471,19 @@ export function BrowserStudio({
                     )}
 
                     {mics.length > 1 && (
-                      <select
-                        aria-label={t("browserMicLabel")}
+                      <Select
+                        tone="dark"
+                        ariaLabel={t("browserMicLabel")}
+                        className="max-w-44"
                         value={micId}
-                        onChange={(e) => setMicId(e.target.value)}
-                        className="max-w-44 rounded-lg border border-white/15 bg-white/10 px-2.5 py-2 text-sm text-white focus:border-white/40 focus:outline-none [&>option]:text-[#161613]"
+                        onChange={setMicId}
                       >
                         {mics.map((d, i) => (
                           <option key={d.deviceId} value={d.deviceId}>
                             {d.label || t("browserDeviceFallback", { n: i + 1 })}
                           </option>
                         ))}
-                      </select>
+                      </Select>
                     )}
                   </>
                 )}

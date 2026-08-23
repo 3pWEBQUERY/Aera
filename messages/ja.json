@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "title": "バナー",
+      "hub": "バナー",
+      "intro": "コミュニティページに表示するお知らせです。下部のバー、上部のバー、中央のダイアログ、隅のカードから選べます。内容・対象・タイミングはあなたが決めます。",
+      "empty": "バナーはまだありません。",
+      "add": "バナーを追加",
+      "full": "上限に達しました",
+      "remove": "バナーを削除",
+      "untitled": "バナー {n}",
+      "enabled": "有効",
+      "orderHint": "表示されるバナーは常に 1 つだけです。訪問者に当てはまるもののうち最も上のものが選ばれます。一度閉じた人には、同じ訪問中に次のバナーは出ません。",
+      "fieldTitle": "見出し",
+      "titlePlaceholder": "コミュニティに参加しませんか",
+      "fieldText": "本文",
+      "textPlaceholder": "参加する価値を一文で。",
+      "fieldLabel": "ボタン",
+      "labelPlaceholder": "メンバーになる",
+      "fieldSecondary": "2 つ目のボタン",
+      "secondaryPlaceholder": "あとで",
+      "fieldHref": "アドレス",
+      "fieldHrefHint": "完全なアドレス、または /c/あなたのコミュニティ/join のような自前のパス",
+      "fieldPlacement": "表示位置",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "下部",
+        "TOP": "上部",
+        "CENTER": "中央",
+        "CORNER": "隅"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "色",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "ブランド",
+        "DARK": "ダーク",
+        "LIGHT": "ライト"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "対象",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "全員",
+        "GUESTS": "ゲスト",
+        "MEMBERS": "メンバー",
+        "STAFF": "チーム"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "タイミング",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "すぐに",
+        "DELAY": "一定時間後",
+        "SCROLL": "スクロール時",
+        "EXIT": "離脱時"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "待ち時間",
+      "fieldSecondsHint": "バナーが出るまでに訪問者がページに滞在する時間です。",
+      "fieldPercent": "スクロール深度",
+      "fieldPercentHint": "バナーが出るまでに訪問者が読み進める割合です。",
+      "fieldFrequency": "表示頻度",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "毎回",
+        "SESSION": "訪問ごとに 1 回",
+        "DISMISSED": "閉じられるまで"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "ページを開くたびに再表示されます。控えめにお使いください。",
+        "SESSION": "ブラウザーのセッションごとに 1 回表示されます。",
+        "DISMISSED": "閉じた人には二度と表示されません。"
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "開始日",
+      "fieldEnd": "終了日",
+      "fieldDismissible": "閉じられるようにする",
+      "fieldDismissibleHint": "閉じるボタンがないとバナーは残り続けます。本当に重要なときだけに。",
+      "fieldTarget": "ボタンの遷移先",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
-        "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "NONE": "ボタンなし",
+        "JOIN": "メンバーになる",
+        "TIPS": "支援する",
+        "PAGE": "自作ページ",
+        "SPACE": "スペース",
+        "HOME": "ホーム",
+        "MEMBERS": "メンバー",
+        "LEADERBOARD": "ランキング",
+        "LIBRARY": "ライブラリ",
+        "LIVE": "ライブ",
+        "SEARCH": "検索",
+        "LINK": "自分のアドレス"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "バナーは文章だけを表示し、ボタンは出ません。",
+      "fieldSpace": "どのスペース",
+      "fieldPage": "どのページ",
+      "choose": "選択してください"
     },
     "analytics": {
       "metaTitle": "統計",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "ホーム",
+      "navAria": "このコミュニティのページ",
+      "draftNotice": "下書き — あなただけに表示されています。",
+      "emptyPage": "このページにはまだ内容がありません。"
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "閉じる",
+      "aria": "コミュニティからのお知らせ"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",

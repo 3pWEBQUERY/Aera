@@ -67,7 +67,7 @@ export async function requestPasswordResetAction(
     const token = await signAccountToken(user, "reset", "1h");
     const url = resetUrl(token);
     if (features.email) {
-      const tMail = await getTranslations("uiMigration.emails");
+      const tMail = await getTranslations("ui.emails");
       await sendEmail({
         to: user.email,
         subject: tMail("resetSubject"),

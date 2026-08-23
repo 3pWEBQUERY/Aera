@@ -5,7 +5,7 @@ import { Card, CardBody } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata() {
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
   return { title: t("inviteMeta") };
 }
 
@@ -19,7 +19,7 @@ export default async function InvitePage({
   const { token } = await params;
   const { next } = await searchParams;
   const user = await verifyAccountToken(decodeURIComponent(token), "invite");
-  const t = await getTranslations("uiMigration.auth");
+  const t = await getTranslations("ui.auth");
 
   if (!user) {
     return (

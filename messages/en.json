@@ -2558,7 +2558,7 @@
       "labelPlaceholder": "Become a member",
       "fieldSecondary": "Second button",
       "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
+      "fieldHref": "Address",
       "fieldHrefHint": "Full address or an own path like /c/your-community/join",
       "fieldPlacement": "Where",
       "placement": {
@@ -4938,7 +4938,7 @@
       }
     }
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5139,7 +5139,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "feed": "Feed",

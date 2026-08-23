@@ -2342,91 +2342,91 @@
       }
     },
     "banners": {
-      "title": "Banners",
-      "hub": "Banners",
-      "intro": "Overlays on your community page — a bar at the bottom, at the top, a dialog in the middle or a card in the corner. You decide content, audience and timing.",
-      "empty": "No banners yet.",
-      "add": "Add banner",
-      "full": "Limit reached",
-      "remove": "Remove banner",
-      "untitled": "Banner {n}",
-      "enabled": "Active",
-      "orderHint": "Only one banner is ever shown — the topmost one that applies to the visitor. Whoever dismisses one gets no second during the same visit.",
-      "fieldTitle": "Heading",
-      "titlePlaceholder": "Become part of the community",
-      "fieldText": "Text",
-      "textPlaceholder": "One sentence on why it is worth it.",
-      "fieldLabel": "Button",
-      "labelPlaceholder": "Become a member",
-      "fieldSecondary": "Second button",
-      "secondaryPlaceholder": "Later",
-      "fieldHref": "Button target",
-      "fieldHrefHint": "Full address or an own path like /c/your-community/join",
-      "fieldPlacement": "Where",
+      "title": "Баннеры",
+      "hub": "Баннеры",
+      "intro": "Сообщения на странице вашего сообщества: полоса внизу, вверху, окно по центру или карточка в углу. Вы решаете, что показать, кому и когда.",
+      "empty": "Баннеров пока нет.",
+      "add": "Добавить баннер",
+      "full": "Достигнут предел",
+      "remove": "Удалить баннер",
+      "untitled": "Баннер {n}",
+      "enabled": "Активен",
+      "orderHint": "Одновременно показывается только один баннер — первый, который подходит посетителю. Кто закрыл один, за то же посещение второго не увидит.",
+      "fieldTitle": "Заголовок",
+      "titlePlaceholder": "Присоединяйтесь к сообществу",
+      "fieldText": "Текст",
+      "textPlaceholder": "Одно предложение о том, зачем это нужно.",
+      "fieldLabel": "Кнопка",
+      "labelPlaceholder": "Стать участником",
+      "fieldSecondary": "Вторая кнопка",
+      "secondaryPlaceholder": "Позже",
+      "fieldHref": "Адрес",
+      "fieldHrefHint": "Полный адрес или свой путь вида /c/ваше-сообщество/join",
+      "fieldPlacement": "Где",
       "placement": {
-        "BOTTOM": "Bottom",
-        "TOP": "Top",
-        "CENTER": "Middle",
-        "CORNER": "Corner"
+        "BOTTOM": "Внизу",
+        "TOP": "Вверху",
+        "CENTER": "По центру",
+        "CORNER": "В углу"
       },
-      "fieldTone": "Colour",
+      "fieldTone": "Цвет",
       "tone": {
-        "BRAND": "Brand",
-        "DARK": "Dark",
-        "LIGHT": "Light"
+        "BRAND": "Бренд",
+        "DARK": "Тёмный",
+        "LIGHT": "Светлый"
       },
-      "fieldAudience": "For whom",
+      "fieldAudience": "Кому",
       "audience": {
-        "ALL": "Everyone",
-        "GUESTS": "Guests",
-        "MEMBERS": "Members",
-        "STAFF": "Team"
+        "ALL": "Всем",
+        "GUESTS": "Гостям",
+        "MEMBERS": "Участникам",
+        "STAFF": "Команде"
       },
-      "fieldTrigger": "When",
+      "fieldTrigger": "Когда",
       "trigger": {
-        "IMMEDIATE": "At once",
-        "DELAY": "After time",
-        "SCROLL": "On scrolling",
-        "EXIT": "On leaving"
+        "IMMEDIATE": "Сразу",
+        "DELAY": "Через время",
+        "SCROLL": "При прокрутке",
+        "EXIT": "При уходе"
       },
-      "fieldSeconds": "Delay",
-      "fieldSecondsHint": "How long a visitor is on the page before the banner appears.",
-      "fieldPercent": "Scroll depth",
-      "fieldPercentHint": "How far the visitor has read before the banner appears.",
-      "fieldFrequency": "How often",
+      "fieldSeconds": "Задержка",
+      "fieldSecondsHint": "Сколько посетитель находится на странице до появления баннера.",
+      "fieldPercent": "Глубина прокрутки",
+      "fieldPercentHint": "Насколько посетитель прочитал страницу до появления баннера.",
+      "fieldFrequency": "Как часто",
       "frequency": {
-        "ALWAYS": "Every time",
-        "SESSION": "Once per visit",
-        "DISMISSED": "Until dismissed"
+        "ALWAYS": "Каждый раз",
+        "SESSION": "Один раз за посещение",
+        "DISMISSED": "Пока не закроют"
       },
       "frequencyHint": {
-        "ALWAYS": "Appears again on every page load. Use sparingly.",
-        "SESSION": "Appears once per browser session.",
-        "DISMISSED": "Whoever dismisses it will not see it again."
+        "ALWAYS": "Появляется при каждой загрузке страницы. Используйте умеренно.",
+        "SESSION": "Появляется один раз за сеанс браузера.",
+        "DISMISSED": "Кто закрыл, больше его не увидит."
       },
-      "fieldStart": "From",
-      "fieldEnd": "Until",
-      "fieldDismissible": "Allow closing",
-      "fieldDismissibleHint": "Without a close button the banner stays. Only for what truly matters.",
-      "fieldTarget": "Button target",
+      "fieldStart": "С",
+      "fieldEnd": "По",
+      "fieldDismissible": "Разрешить закрытие",
+      "fieldDismissibleHint": "Без кнопки закрытия баннер остаётся. Только для действительно важного.",
+      "fieldTarget": "Куда ведёт кнопка",
       "target": {
-        "NONE": "No button",
-        "JOIN": "Become a member",
-        "TIPS": "Support",
-        "PAGE": "Own page",
+        "NONE": "Без кнопки",
+        "JOIN": "Стать участником",
+        "TIPS": "Поддержать",
+        "PAGE": "Своя страница",
         "SPACE": "Space",
-        "HOME": "Home",
-        "MEMBERS": "Members",
-        "LEADERBOARD": "Leaderboard",
-        "LIBRARY": "Library",
-        "LIVE": "Live",
-        "SEARCH": "Search",
-        "LINK": "Own address"
+        "HOME": "Главная",
+        "MEMBERS": "Участники",
+        "LEADERBOARD": "Рейтинг",
+        "LIBRARY": "Библиотека",
+        "LIVE": "Эфир",
+        "SEARCH": "Поиск",
+        "LINK": "Свой адрес"
       },
-      "targetNoneHint": "The banner shows text only — no button.",
-      "fieldSpace": "Which space",
-      "fieldPage": "Which page",
-      "choose": "Please choose"
+      "targetNoneHint": "Баннер показывает только текст — без кнопки.",
+      "fieldSpace": "Какой space",
+      "fieldPage": "Какая страница",
+      "choose": "Выберите"
     },
     "analytics": {
       "metaTitle": "Статистика",
@@ -4296,14 +4296,14 @@
       }
     },
     "pages": {
-      "home": "Home",
-      "navAria": "Pages of this community",
-      "draftNotice": "Draft — only visible to you.",
-      "emptyPage": "This page has no content yet."
+      "home": "Главная",
+      "navAria": "Страницы этого сообщества",
+      "draftNotice": "Черновик — виден только вам.",
+      "emptyPage": "На этой странице пока нет содержимого."
     },
     "banner": {
-      "close": "Close",
-      "aria": "Community notice"
+      "close": "Закрыть",
+      "aria": "Сообщение сообщества"
     }
   },
   "notifications": {
@@ -4935,7 +4935,7 @@
     "creatorPlanCanceling": "Scheduling cancellation…",
     "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
   },
-  "uiMigration": {
+  "ui": {
     "auth": {
       "inviteMeta": "Accept invitation — Aera",
       "inviteInvalidTitle": "Invalid invitation",
@@ -5136,7 +5136,7 @@
         "share": "Share post"
       }
     },
-    "legacyForms": {
+    "forms": {
       "name": "Name",
       "type": "Type",
       "spacePlaceholder": "e.g. Announcements",
