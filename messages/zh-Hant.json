@@ -4604,9 +4604,7 @@
       "upgradeTo": "切換到 {tier}",
       "viewMemberships": "查看會員資格",
       "login": "登入",
-      "postUnlocked": "貼文已解鎖。",
-      "paidPostText": "此貼文可單獨解鎖，價格 {price}。",
-      "membersPostText": "只有 {name} 的會員可以閱讀此貼文。"
+      "postUnlocked": "貼文已解鎖。"
     },
     "accountMenu": {
       "open": "{name} 的帳戶選單",

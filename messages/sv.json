@@ -4604,9 +4604,7 @@
       "upgradeTo": "Byt till {tier}",
       "viewMemberships": "Visa medlemskap",
       "login": "Logga in",
-      "postUnlocked": "Inlägget är upplåst.",
-      "paidPostText": "Du kan låsa upp det här inlägget separat för {price}.",
-      "membersPostText": "Bara medlemmar i {name} kan läsa det här inlägget."
+      "postUnlocked": "Inlägget är upplåst."
     },
     "accountMenu": {
       "open": "Kontomeny för {name}",

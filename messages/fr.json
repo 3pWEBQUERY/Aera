@@ -4604,9 +4604,7 @@
       "upgradeTo": "Passer à {tier}",
       "viewMemberships": "Voir les adhésions",
       "login": "Se connecter",
-      "postUnlocked": "La publication est débloquée.",
-      "paidPostText": "Vous pouvez débloquer cette publication à l’unité pour {price}.",
-      "membersPostText": "Seuls les membres de {name} peuvent lire cette publication."
+      "postUnlocked": "La publication est débloquée."
     },
     "accountMenu": {
       "open": "Menu du compte de {name}",

@@ -4604,9 +4604,7 @@
       "upgradeTo": "Перейти на {tier}",
       "viewMemberships": "Переглянути членства",
       "login": "Увійти",
-      "postUnlocked": "Допис відкрито.",
-      "paidPostText": "Цей допис можна відкрити окремо за {price}.",
-      "membersPostText": "Цей допис можуть читати лише учасники {name}."
+      "postUnlocked": "Допис відкрито."
     },
     "accountMenu": {
       "open": "Меню акаунта: {name}",

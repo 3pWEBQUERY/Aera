@@ -4604,9 +4604,7 @@
       "upgradeTo": "Bytt til {tier}",
       "viewMemberships": "Se medlemskap",
       "login": "Logg inn",
-      "postUnlocked": "Innlegget er låst opp.",
-      "paidPostText": "Du kan låse opp dette innlegget for {price}.",
-      "membersPostText": "Bare medlemmer av {name} kan lese dette innlegget."
+      "postUnlocked": "Innlegget er låst opp."
     },
     "accountMenu": {
       "open": "Kontomeny for {name}",

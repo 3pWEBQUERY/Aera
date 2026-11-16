@@ -4640,9 +4640,7 @@
       "upgradeTo": "Switch to {tier}",
       "viewMemberships": "View memberships",
       "login": "Log in",
-      "postUnlocked": "The post is unlocked.",
-      "paidPostText": "You can unlock this post on its own for {price}.",
-      "membersPostText": "Only members of {name} can read this post."
+      "postUnlocked": "The post is unlocked."
     },
     "accountMenu": {
       "open": "Account menu for {name}",

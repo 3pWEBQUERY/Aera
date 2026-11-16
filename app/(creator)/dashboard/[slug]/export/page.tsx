@@ -1,6 +1,6 @@
 import { requireTenantAdmin } from "@/lib/guards";
 import { featureGate } from "@/components/dashboard/feature-gate";
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 
@@ -28,8 +28,6 @@ export default async function ExportPage({
   if (locked) return locked;
   const t = tenant.id;
   const tr = await getTranslations("dashboard.export");
-  const locale = await getLocale();
-  const nf = new Intl.NumberFormat(locale);
 
   const [
     members,
@@ -72,7 +70,6 @@ export default async function ExportPage({
     { key: "segments", label: tDatasets("segments"), icon: "members", count: segments },
   ];
 
-  const total = datasets.reduce((s, d) => s + d.count, 0);
   const base = `/api/tenant/${slug}/export`;
 
   return (
@@ -96,7 +93,7 @@ export default async function ExportPage({
               <h2 className="text-lg font-semibold">{tr("fullExport")}</h2>
             </div>
             <p className="mt-1.5 text-sm text-white/70">
-              {tr("fullExportDesc", { count: nf.format(total) })}
+              {tr("fullExportDesc")}
             </p>
           </div>
           <a
@@ -132,7 +129,7 @@ export default async function ExportPage({
               </div>
               <div className="mt-4 flex gap-2">
                 {empty ? (
-                  <span className="flex-1 rounded-lg bg-slate-50 px-3 py-1.5 text-center text-xs font-medium text-slate-300">
+                  <span className="flex-1 rounded-lg bg-slate-50 px-3 py-1.5 text-center text-xs font-medium text-slate-500">
                     {tr("noData")}
                   </span>
                 ) : (

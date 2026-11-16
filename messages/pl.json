@@ -4604,9 +4604,7 @@
       "upgradeTo": "Przejdź na {tier}",
       "viewMemberships": "Zobacz członkostwa",
       "login": "Zaloguj się",
-      "postUnlocked": "Wpis został odblokowany.",
-      "paidPostText": "Ten wpis odblokujesz osobno za {price}.",
-      "membersPostText": "Ten wpis mogą czytać tylko członkowie {name}."
+      "postUnlocked": "Wpis został odblokowany."
     },
     "accountMenu": {
       "open": "Menu konta: {name}",

@@ -4604,9 +4604,7 @@
       "upgradeTo": "Skift til {tier}",
       "viewMemberships": "Se medlemskaber",
       "login": "Log ind",
-      "postUnlocked": "Opslaget er låst op.",
-      "paidPostText": "Du kan låse dette opslag op for {price}.",
-      "membersPostText": "Kun medlemmer af {name} kan læse dette opslag."
+      "postUnlocked": "Opslaget er låst op."
     },
     "accountMenu": {
       "open": "Kontomenu for {name}",

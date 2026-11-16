@@ -4604,9 +4604,7 @@
       "upgradeTo": "Overstappen naar {tier}",
       "viewMemberships": "Lidmaatschappen bekijken",
       "login": "Inloggen",
-      "postUnlocked": "Het bericht is ontgrendeld.",
-      "paidPostText": "Je kunt dit bericht los ontgrendelen voor {price}.",
-      "membersPostText": "Alleen leden van {name} kunnen dit bericht lezen."
+      "postUnlocked": "Het bericht is ontgrendeld."
     },
     "accountMenu": {
       "open": "Accountmenu van {name}",

@@ -90,9 +90,12 @@ export function MembersManager({
   badges,
   currentUserId,
   initialTab,
+  initialQuery = "",
 }: {
   slug: string;
   communityName: string;
+  /** Vorbelegte Suche, z. B. aus der Moderation („Autor ansehen“). */
+  initialQuery?: string;
   members: MemberRow[];
   tiers: Tier[];
   badges: BadgeOption[];
@@ -102,7 +105,7 @@ export function MembersManager({
   const [createOpen, setCreateOpen] = useState(false);
   // Rückmeldung nach dem Hinzufügen: was wirklich passiert ist.
   const [notice, setNotice] = useState<string | null>(null);
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(initialQuery);
   const [editing, setEditing] = useState<MemberRow | null>(null);
   const [awarding, setAwarding] = useState<MemberRow | null>(null);
   const editingSelf = !!editing && editing.userId === currentUserId;

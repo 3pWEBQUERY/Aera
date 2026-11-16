@@ -4604,9 +4604,7 @@
       "upgradeTo": "切换到 {tier}",
       "viewMemberships": "查看会员资格",
       "login": "登录",
-      "postUnlocked": "帖子已解锁。",
-      "paidPostText": "此帖子可单独解锁，价格 {price}。",
-      "membersPostText": "只有 {name} 的会员可以阅读此帖子。"
+      "postUnlocked": "帖子已解锁。"
     },
     "accountMenu": {
       "open": "{name} 的账户菜单",

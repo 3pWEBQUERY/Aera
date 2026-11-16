@@ -273,7 +273,7 @@ export default async function LandingPage() {
           <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-start lg:gap-16">
             <div>
               <Reveal>
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/50 sm:text-sm">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/70 sm:text-sm">
                   {t("compare.eyebrow")}
                 </p>
               </Reveal>
@@ -281,7 +281,7 @@ export default async function LandingPage() {
                 <h2 className="display-serif mt-4 text-4xl leading-[1.08] sm:text-6xl">
                   {t("compare.titleA")}
                   <br />
-                  <span className="text-[#241458]/50">{t("compare.titleB")}</span>
+                  <span className="text-[#241458]/70">{t("compare.titleB")}</span>
                 </h2>
               </Reveal>
               <Reveal delay={160}>
@@ -332,7 +332,7 @@ export default async function LandingPage() {
                       </p>
                       {COMPARE_ROWS.map((row) => (
                         <p key={row} className="text-sm leading-6 text-[#241458]/70">
-                          <span className="mr-1.5 font-semibold uppercase tracking-[0.12em] text-[#241458]/40 sm:hidden">
+                          <span className="mr-1.5 font-semibold uppercase tracking-[0.12em] text-[#241458]/70 sm:hidden">
                             {t(`compare.row${row === "base" ? "Base" : row === "fee" ? "Fee" : "Full"}`)}:
                           </span>
                           {t(`compare.${id}.${row}`)}
@@ -345,7 +345,7 @@ export default async function LandingPage() {
               </div>
 
               <Reveal delay={360}>
-                <p className="mt-5 text-xs leading-5 text-[#241458]/50">
+                <p className="mt-5 text-xs leading-5 text-[#241458]/70">
                   {t("compare.footnote")}
                 </p>
               </Reveal>
@@ -355,7 +355,7 @@ export default async function LandingPage() {
           {/* Was den Unterschied ausmacht — bewusst nur Aussagen ueber uns. */}
           <div className="mt-16 border-t border-[#241458]/20 pt-12 md:mt-20 md:pt-14">
             <Reveal>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/50 sm:text-sm">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#241458]/70 sm:text-sm">
                 {t("compare.includedTitle")}
               </p>
             </Reveal>

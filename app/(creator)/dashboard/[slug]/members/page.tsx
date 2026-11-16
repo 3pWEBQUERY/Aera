@@ -13,10 +13,10 @@ export default async function MembersPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string }>;
 }) {
   const { slug } = await params;
-  const { tab } = await searchParams;
+  const { tab, q } = await searchParams;
   const { tenant, user } = await requireTenantAdmin(slug);
 
   const [memberships, tiers, badges, awards, subscriptions] = await Promise.all([
@@ -115,6 +115,7 @@ export default async function MembersPage({
       badges={badgeOptions}
       currentUserId={user.id}
       initialTab={tab}
+      initialQuery={typeof q === "string" ? q.slice(0, 120) : ""}
     />
   );
 }

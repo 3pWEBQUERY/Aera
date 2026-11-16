@@ -4604,9 +4604,7 @@
       "upgradeTo": "Passa a {tier}",
       "viewMemberships": "Vedi gli abbonamenti",
       "login": "Accedi",
-      "postUnlocked": "Il post è sbloccato.",
-      "paidPostText": "Puoi sbloccare questo post singolarmente per {price}.",
-      "membersPostText": "Solo i membri di {name} possono leggere questo post."
+      "postUnlocked": "Il post è sbloccato."
     },
     "accountMenu": {
       "open": "Menu account di {name}",

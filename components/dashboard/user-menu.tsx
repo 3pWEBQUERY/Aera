@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
 import { Sheet } from "./sheet";
@@ -21,26 +21,50 @@ export function UserMenu({
   const [open, setOpen] = useState(false);
   const [subOpen, setSubOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelId = useId();
   const t = useTranslations("dashboard");
+  // Die eigene Mitgliedschaft in dieser Community. Für die Inhaberin gibt es
+  // dort nichts zu verwalten (kein Abo, kein Verlassen) — ihr Paket steht in
+  // der Übersicht.
+  const showMembership = !!subscription && subscription.role !== "OWNER";
 
+  // Aufklappbereich (Disclosure): Klick daneben und Escape schließen ihn,
+  // Escape gibt den Fokus an den Knopf zurück.
   useEffect(() => {
+    if (!open) return;
     function onClick(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    }
     document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
-  }, []);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
 
   return (
     <div ref={ref} className="relative">
       <button
+        ref={buttonRef}
+        type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl py-1 pl-1 pr-2 transition hover:bg-slate-100"
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label={t("userMenu.toggleAria", { name: user.name })}
+        className="flex items-center gap-2 rounded-xl py-1 pl-1 pr-2 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
       >
         <span className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-[var(--brand-soft)] text-xs font-semibold text-[var(--brand)] ring-1 ring-black/5">
           {user.avatarUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={user.avatarUrl} alt={user.name} className="h-full w-full object-cover" />
+            <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
           ) : (
             initials(user.name)
           )}
@@ -49,7 +73,10 @@ export function UserMenu({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
+        <div
+          id={panelId}
+          className="absolute right-0 top-full z-50 mt-2 w-60 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg"
+        >
           <div className="border-b border-slate-100 px-4 py-3">
             <p className="truncate text-sm font-semibold text-slate-900">{user.name}</p>
             <p className="truncate text-xs text-slate-500">{user.email}</p>
@@ -76,7 +103,7 @@ export function UserMenu({
               <Icon name="account" size={16} className="text-slate-500" />
               {t("userMenu.myAccount")}
             </Link>
-            {subscription && (
+            {showMembership && (
               <button
                 type="button"
                 onClick={() => {
@@ -107,7 +134,7 @@ export function UserMenu({
         </div>
       )}
 
-      {subscription && (
+      {showMembership && subscription && (
         <Sheet
           open={subOpen}
           onClose={() => setSubOpen(false)}

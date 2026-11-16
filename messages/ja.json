@@ -4604,9 +4604,7 @@
       "upgradeTo": "{tier} に切り替える",
       "viewMemberships": "メンバーシップを見る",
       "login": "ログイン",
-      "postUnlocked": "投稿のロックが解除されました。",
-      "paidPostText": "この投稿は {price} で個別にロック解除できます。",
-      "membersPostText": "この投稿は {name} のメンバーのみ読めます。"
+      "postUnlocked": "投稿のロックが解除されました。"
     },
     "accountMenu": {
       "open": "{name} のアカウントメニュー",

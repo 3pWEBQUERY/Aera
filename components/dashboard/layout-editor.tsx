@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { saveLayoutAction, type LayoutState } from "@/app/actions/page-layout";
 import { CoverUpload } from "./cover-upload";
 import {
@@ -94,7 +96,11 @@ export function LayoutEditor({
 }) {
   const [view, setView] = useState<View>("hub");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
-  const [audience, setAudience] = useState<Audience>("FREE");
+  // Standard: so, wie Besucher die Seite sehen — das ist die erste Ansicht,
+  // die jemand Neues von der Community bekommt.
+  const [audience, setAudience] = useState<Audience>("PUBLIC");
+  // Mobil ist kein Platz für Editor und Vorschau nebeneinander.
+  const [mobilePreview, setMobilePreview] = useState(false);
   const t = useTranslations("dashboard.layout");
   const tPages = useTranslations("dashboard.pages");
   const tBanners = useTranslations("dashboard.banners");
@@ -133,14 +139,10 @@ export function LayoutEditor({
   const [banners, setBanners] = useState<BannerConfig[]>(initial.banners);
 
   const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
-  const [flash, setFlash] = useState(false);
-  useEffect(() => {
-    if (state.ok) {
-      setFlash(true);
-      const t = setTimeout(() => setFlash(false), 2500);
-      return () => clearTimeout(t);
-    }
-  }, [state.ok, state]);
+  const locale = useLocale();
+  const router = useRouter();
+  const [confirm, confirmDialog] = useConfirm();
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
 
   const payload = useMemo(
     () =>
@@ -157,6 +159,46 @@ export function LayoutEditor({
       }),
     [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, banners],
   );
+
+  // Ungespeichert = anders als beim Öffnen bzw. beim letzten Speichern.
+  const [baseline, setBaseline] = useState(payload);
+  const submitted = useRef(payload);
+  const lastState = useRef(state);
+  useEffect(() => {
+    if (state === lastState.current) return;
+    lastState.current = state;
+    if (state.ok) {
+      setBaseline(submitted.current);
+      setSavedAt(new Date());
+    }
+  }, [state]);
+  const dirty = payload !== baseline;
+
+  useEffect(() => {
+    if (!dirty) return;
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  /** Verlassen (Abbrechen, Zurück): nur nach Rückfrage, wenn etwas offen ist. */
+  async function leave(e: React.MouseEvent, href: string) {
+    if (!dirty) return;
+    e.preventDefault();
+    const ok = await confirm({
+      title: t("discardTitle"),
+      body: t("discardBody"),
+      confirmLabel: t("discardConfirm"),
+      cancelLabel: t("discardCancel"),
+      tone: "danger",
+    });
+    if (!ok) return;
+    setBaseline(payload);
+    router.push(href);
+  }
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
   // that the real community page reads, then reload the iframe on changes.
@@ -222,9 +264,14 @@ export function LayoutEditor({
     banner: tBanners("title"),
   };
 
+  const timeFmt = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" });
+
   return (
     <form
       action={formAction}
+      onSubmit={() => {
+        submitted.current = payload;
+      }}
       className="fixed inset-0 z-50 flex flex-col bg-white"
       style={{ ["--brand" as string]: primaryColor }}
     >
@@ -232,7 +279,7 @@ export function LayoutEditor({
       <input type="hidden" name="payload" value={payload} />
 
       {/* Top bar */}
-      <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-3">
+      <header className="flex items-center gap-2 border-b border-slate-200 px-3 py-3 sm:gap-4 sm:px-5">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {/*
            * Der Pfeil steht immer an derselben Stelle und meint immer "eine
@@ -243,6 +290,7 @@ export function LayoutEditor({
           {view === "hub" ? (
             <Link
               href={`/dashboard/${slug}`}
+              onClick={(e) => void leave(e, `/dashboard/${slug}`)}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
               aria-label={t("backToDashboard")}
               title={t("backToDashboard")}
@@ -284,23 +332,43 @@ export function LayoutEditor({
         </div>
 
         <div className="flex items-center gap-2">
-          {flash && (
-            <span className="hidden items-center gap-1.5 text-sm font-medium text-emerald-600 sm:inline-flex">
-              <Icon name="check" size={16} /> {t("saved")}
-            </span>
-          )}
-          {state.error && <span className="text-sm text-red-600">{state.error}</span>}
+          {/* Status neben dem Knopf, auch mobil; wird vorgelesen. */}
+          <p role="status" aria-live="polite" className="text-right text-xs font-medium sm:text-sm">
+            {state.error ? (
+              <span className="text-red-700">{state.error}</span>
+            ) : dirty ? (
+              <span className="text-amber-700">{t("unsaved")}</span>
+            ) : savedAt ? (
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                <Icon name="check" size={15} />
+                {t("savedAt", { time: timeFmt.format(savedAt) })}
+              </span>
+            ) : null}
+          </p>
+          <button
+            type="button"
+            onClick={() => setMobilePreview((v) => !v)}
+            aria-pressed={mobilePreview}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 md:hidden"
+          >
+            <Icon name="eye" size={16} />
+            {mobilePreview ? t("editMobile") : t("previewMobile")}
+          </button>
           <Link
             href={`/dashboard/${slug}`}
-            className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+            onClick={(e) => void leave(e, `/dashboard/${slug}`)}
+            className="hidden rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 sm:inline-block"
           >
             {t("cancel")}
           </Link>
           <button
             type="submit"
-            disabled={pending || nameBlocks}
+            aria-disabled={pending || nameBlocks}
+            onClick={(e) => {
+              if (pending || nameBlocks) e.preventDefault();
+            }}
             title={nameBlocks ? t("nameTaken") : undefined}
-            className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
+            className="shrink-0 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] aria-disabled:opacity-50"
           >
             {pending ? t("saving") : t("save")}
           </button>
@@ -309,7 +377,12 @@ export function LayoutEditor({
 
       {/* Body */}
       <div className="flex min-h-0 flex-1">
-        <aside className="w-full shrink-0 overflow-y-auto border-r border-slate-200 md:w-[380px]">
+        <aside
+          className={cn(
+            "w-full shrink-0 overflow-y-auto border-r border-slate-200 md:block md:w-[380px]",
+            mobilePreview && "hidden",
+          )}
+        >
           {view === "hub" && <Hub onOpen={setView} />}
           {view === "header" && (
             <HeaderPanel
@@ -366,11 +439,22 @@ export function LayoutEditor({
           )}
         </aside>
 
-        <main className="hidden min-h-0 flex-1 overflow-hidden bg-slate-100 p-6 md:block">
+        <main
+          className={cn(
+            "min-h-0 flex-1 overflow-hidden bg-slate-100 p-3 md:block md:p-6",
+            mobilePreview ? "flex flex-col gap-3" : "hidden",
+          )}
+        >
+          {mobilePreview && (
+            <div className="md:hidden">
+              <AudienceSelect value={audience} onChange={setAudience} />
+            </div>
+          )}
           <div
             className={cn(
               "mx-auto h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all",
               device === "mobile" ? "max-w-[430px]" : "max-w-none",
+              mobilePreview && "w-full flex-1",
             )}
           >
             {previewReady && (
@@ -384,6 +468,7 @@ export function LayoutEditor({
           </div>
         </main>
       </div>
+      {confirmDialog}
     </form>
   );
 }

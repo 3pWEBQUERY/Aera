@@ -4604,9 +4604,7 @@
       "upgradeTo": "Перейти на {tier}",
       "viewMemberships": "Посмотреть членства",
       "login": "Войти",
-      "postUnlocked": "Публикация открыта.",
-      "paidPostText": "Эту публикацию можно открыть отдельно за {price}.",
-      "membersPostText": "Эту публикацию читают только участники {name}."
+      "postUnlocked": "Публикация открыта."
     },
     "accountMenu": {
       "open": "Меню аккаунта: {name}",

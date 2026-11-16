@@ -27,13 +27,19 @@ import { excerpt, formatDate, formatPrice, timeAgo } from "@/lib/utils";
 
 export default async function PostDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; spaceSlug: string; postId: string }>;
+  searchParams: Promise<{ error?: string; purchased?: string }>;
 }) {
   const { slug, spaceSlug, postId } = await params;
-  const [t, tPostTile, locale] = await Promise.all([
+  const { error, purchased } = await searchParams;
+  const [t, tPostTile, tGate, tSafety, tLegal, locale] = await Promise.all([
     getTranslations("spaces"),
     getTranslations("community.render.postTile"),
+    getTranslations("community.gate"),
+    getTranslations("billingSafety"),
+    getTranslations("legalPurchase"),
     getLocale(),
   ]);
   const community = await getCommunityContext(slug);
@@ -43,10 +49,74 @@ export default async function PostDetail({
   const space = await prisma.space.findFirst({
     where: { tenantId: tenant.id, slug: spaceSlug },
   });
-  if (!space || !canAccess(space, ctx)) notFound();
+  if (!space) notFound();
 
   // A post is reachable by its id or its optional custom slug.
   const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
+  const isStaff = ctx.isStaff;
+  const isMember = ctx.membership?.status === "ACTIVE";
+  const selfHref = `/c/${slug}/s/${spaceSlug}/${postId}`;
+
+  // Geteilter Link ohne Zugriff: statt 404 eine Sperrseite mit dem Weg hinein.
+  // Nur für Beiträge, die es wirklich gibt und die veröffentlicht sind —
+  // alles andere bleibt 404. Vom Beitrag selbst steht dort nichts (kein
+  // Titel, kein Text, keine Kommentare); der Space-Name ist ohnehin in der
+  // Navigation sichtbar.
+  const gatePage = (gate: {
+    visibility: "PUBLIC" | "MEMBERS" | "PAID";
+    requiredEntitlementKey?: string | null;
+  }) => (
+    <MembersOnlyGate
+      slug={slug}
+      tenantId={tenant.id}
+      communityName={tenant.name}
+      title={tGate("postTitle")}
+      context={space.name}
+      next={selfHref}
+      loggedIn={Boolean(user)}
+      isMember={isMember}
+      gate={gate}
+    />
+  );
+  if (!canAccess(space, ctx)) {
+    const exists = await prisma.post.findFirst({
+      where: {
+        id: lookupId,
+        tenantId: tenant.id,
+        spaceId: space.id,
+        isPublished: true,
+        publishedAt: { lte: new Date() },
+      },
+      select: { id: true },
+    });
+    if (!exists) notFound();
+    return gatePage(space);
+  }
+
+  // Zahlungs- und Zustimmungsfehler nach dem Freischalten dieses Beitrags.
+  const notice =
+    error === "checkout" || error === "payments-unavailable" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {tSafety("checkoutNotStarted")}
+      </p>
+    ) : error === "legal-consent" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+      >
+        {tLegal("requiredError")}
+      </p>
+    ) : purchased ? (
+      <p
+        role="status"
+        className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+      >
+        {tGate("postUnlocked")}
+      </p>
+    ) : null;
 
   // ----- Reddit-style forum thread -----
   if (space.type === "FORUM") {
@@ -390,6 +460,7 @@ export default async function PostDetail({
                   <input type="hidden" name="tenant" value={slug} />
                   <input type="hidden" name="space" value={spaceSlug} />
                   <input type="hidden" name="postId" value={post.id} />
+                  <input type="hidden" name="returnTo" value="post" />
                   <ImmediateAccessConsent className="mb-3" />
                   <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                     <Icon name="lock" size={16} />

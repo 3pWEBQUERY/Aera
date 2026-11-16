@@ -4640,9 +4640,7 @@
       "upgradeTo": "Zu {tier} wechseln",
       "viewMemberships": "Mitgliedschaften ansehen",
       "login": "Anmelden",
-      "postUnlocked": "Der Beitrag ist freigeschaltet.",
-      "paidPostText": "Diesen Beitrag schaltest du einzeln für {price} frei.",
-      "membersPostText": "Diesen Beitrag lesen nur Mitglieder von {name}."
+      "postUnlocked": "Der Beitrag ist freigeschaltet."
     },
     "accountMenu": {
       "open": "Konto-Menü von {name}",
