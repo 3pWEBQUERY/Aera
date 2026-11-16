@@ -224,10 +224,9 @@
     "descLabel": "Descrição",
     "descPlaceholder": "Descreva em algumas frases o que os membros podem esperar.",
     "primaryColor": "Cor primária",
-    "accentColor": "Cor de destaque",
     "preview": "Prévia",
     "previewNameFallback": "Sua comunidade",
-    "accentBadge": "Destaque",
+    "accentBadge": "Participar",
     "customColor": "Cor personalizada",
     "tierNameLabel": "Nome da assinatura gratuita",
     "defaultMembership": "Membro",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Excluir conta",
     "privacyConfirmationMismatch": "O e-mail não corresponde à sua conta.",
     "privacyPasswordRequired": "Digite sua senha.",
-    "privacyTooManyAttempts": "Tentativas demais. Aguarde 15 minutos e tente novamente."
+    "privacyTooManyAttempts": "Tentativas demais. Aguarde 15 minutos e tente novamente.",
+    "privacyConfirmationRequired": "Digite seu e-mail."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Preparando a câmera…",
       "paragraph": "Parágrafo",
       "attach": "Anexar arquivo",
-      "file": "Arquivo"
+      "file": "Arquivo",
+      "bodyLabel": "Texto"
     },
     "links": {
       "badge": "Links",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Verificando DNS…",
       "subEditLabel": "Subdomínio personalizado",
       "subPlaceholder": "sua-comunidade",
-      "subHint": "Apenas letras minúsculas, números e hifens (3–63 caracteres). Vazio = endereço padrão {fallback}, que sempre funciona.",
+      "subHint": "Apenas letras minúsculas, números e hifens (3–63 caracteres).",
       "subSaved": "Subdomínio salvo.",
       "copy": "Copiar",
       "copied": "Copiado",
@@ -2249,7 +2250,8 @@
       "txtNote": "Com ele você confirma que o domínio é seu. “Verificar domínio” confere exatamente este registro.",
       "verifiedNow": "{domain} está conectado.",
       "verifiedHint": "{domain} está conectado. Verifique de novo se você alterou registros DNS.",
-      "subWarning": "Atenção: o endereço atual {old} vai parar de funcionar – links compartilhados não levarão a lugar nenhum."
+      "subWarning": "Atenção: o endereço atual {old} vai parar de funcionar – links compartilhados não levarão a lugar nenhum.",
+      "subFallback": "Vazio = endereço padrão {address}, que sempre funciona."
     },
     "danger": {
       "heading": "Zona de perigo",

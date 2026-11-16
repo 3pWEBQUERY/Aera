@@ -40,13 +40,13 @@ test("community signup keeps newsletter optional and paid access consent separat
   await expect(legal).not.toBeChecked();
   await expect(newsletter).not.toHaveAttribute("required", "");
   await expect(newsletter).not.toBeChecked();
-  await expect(immediateAccess).toHaveCount(1);
-  await expect(immediateAccess).toHaveAttribute("required", "");
-  await expect(immediateAccess).not.toBeChecked();
-  await expect(page.getByRole("link", { name: "Details" })).toHaveAttribute(
-    "href",
-    "/widerruf",
-  );
+  // Gäste kaufen nicht direkt: die bezahlte Karte führt zuerst ins Konto
+  // (mit Rückweg zur gewählten Mitgliedschaft). Die Zustimmung zum sofortigen
+  // Zugang steht erst dort, wo wirklich bezahlt wird — siehe
+  // account-accessibility.spec.ts für den angemeldeten Fall.
+  await expect(immediateAccess).toHaveCount(0);
+  const guestPaid = page.getByRole("link", { name: "Konto erstellen und beitreten" }).first();
+  await expect(guestPaid).toHaveAttribute("href", /^\/signup\?next=%2Fc%2F/);
 });
 
 test("legal and unsubscribe pages expose the implemented disclosures", async ({ page }) => {

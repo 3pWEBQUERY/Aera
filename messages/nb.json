@@ -224,10 +224,9 @@
     "descLabel": "Beskrivelse",
     "descPlaceholder": "Beskriv med et par setninger hva medlemmer kan forvente.",
     "primaryColor": "Primærfarge",
-    "accentColor": "Aksentfarge",
     "preview": "Forhåndsvisning",
     "previewNameFallback": "Ditt fellesskap",
-    "accentBadge": "Aksent",
+    "accentBadge": "Bli med",
     "customColor": "Egen farge",
     "tierNameLabel": "Navn på det gratis medlemskapet",
     "defaultMembership": "Medlem",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Slett konto",
     "privacyConfirmationMismatch": "E-postadressen stemmer ikke med kontoen din.",
     "privacyPasswordRequired": "Skriv inn passordet ditt.",
-    "privacyTooManyAttempts": "For mange forsøk. Vent 15 minutter og prøv igjen."
+    "privacyTooManyAttempts": "For mange forsøk. Vent 15 minutter og prøv igjen.",
+    "privacyConfirmationRequired": "Skriv inn e-postadressen din."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Forbereder kamera…",
       "paragraph": "Avsnitt",
       "attach": "Legg ved fil",
-      "file": "Fil"
+      "file": "Fil",
+      "bodyLabel": "Tekst"
     },
     "links": {
       "badge": "Lenker",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Sjekker DNS…",
       "subEditLabel": "Ønsket subdomene",
       "subPlaceholder": "ditt-community",
-      "subHint": "Bare små bokstaver, tall og bindestreker (3–63 tegn). Tom = standardadressen {fallback}, som alltid virker.",
+      "subHint": "Bare små bokstaver, tall og bindestreker (3–63 tegn).",
       "subSaved": "Subdomene lagret.",
       "copy": "Kopier",
       "copied": "Kopiert",
@@ -2249,7 +2250,8 @@
       "txtNote": "Med denne bekrefter du at domenet tilhører deg. «Sjekk domene» sjekker nettopp denne posten.",
       "verifiedNow": "{domain} er tilkoblet.",
       "verifiedHint": "{domain} er tilkoblet. Sjekk igjen hvis du har endret DNS-poster.",
-      "subWarning": "Merk: Den nåværende adressen {old} slutter å virke – delte lenker fører ingen steder."
+      "subWarning": "Merk: Den nåværende adressen {old} slutter å virke – delte lenker fører ingen steder.",
+      "subFallback": "Tom = standardadressen {address}, som alltid virker."
     },
     "danger": {
       "heading": "Faresone",

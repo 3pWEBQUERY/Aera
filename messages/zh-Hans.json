@@ -224,10 +224,9 @@
     "descLabel": "描述",
     "descPlaceholder": "用几句话描述成员可以期待什么。",
     "primaryColor": "主色",
-    "accentColor": "强调色",
     "preview": "预览",
     "previewNameFallback": "你的社区",
-    "accentBadge": "强调",
+    "accentBadge": "加入",
     "customColor": "自定义颜色",
     "tierNameLabel": "免费会员的名称",
     "defaultMembership": "成员",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "删除账户",
     "privacyConfirmationMismatch": "邮箱地址与你的账户不一致。",
     "privacyPasswordRequired": "请输入你的密码。",
-    "privacyTooManyAttempts": "尝试次数过多。请等待 15 分钟后再试。"
+    "privacyTooManyAttempts": "尝试次数过多。请等待 15 分钟后再试。",
+    "privacyConfirmationRequired": "请输入你的邮箱地址。"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "正在准备摄像头…",
       "paragraph": "段落",
       "attach": "附加文件",
-      "file": "文件"
+      "file": "文件",
+      "bodyLabel": "正文"
     },
     "links": {
       "badge": "链接",
@@ -2216,7 +2217,7 @@
       "checkingDns": "正在检查 DNS…",
       "subEditLabel": "自定义子域名",
       "subPlaceholder": "my-community",
-      "subHint": "仅限小写字母、数字和连字符（3–63 个字符）。留空 = 默认地址 {fallback}，始终可用。",
+      "subHint": "仅限小写字母、数字和连字符（3–63 个字符）。",
       "subSaved": "子域名已保存。",
       "copy": "复制",
       "copied": "已复制",
@@ -2249,7 +2250,8 @@
       "txtNote": "此记录用于证明域名归你所有。“检查域名”检查的正是这条记录。",
       "verifiedNow": "{domain} 已连接。",
       "verifiedHint": "{domain} 已连接。如果更改了 DNS 记录，请重新检查。",
-      "subWarning": "注意：当前地址 {old} 将无法使用，已分享的链接将失效。"
+      "subWarning": "注意：当前地址 {old} 将无法使用，已分享的链接将失效。",
+      "subFallback": "留空 = 默认地址 {address}，始终可用。"
     },
     "danger": {
       "heading": "危险区",

@@ -224,10 +224,9 @@
     "descLabel": "Opis",
     "descPlaceholder": "Opisz w kilku zdaniach, czego mogą oczekiwać członkowie.",
     "primaryColor": "Kolor podstawowy",
-    "accentColor": "Kolor akcentu",
     "preview": "Podgląd",
     "previewNameFallback": "Twoja społeczność",
-    "accentBadge": "Akcent",
+    "accentBadge": "Dołącz",
     "customColor": "Własny kolor",
     "tierNameLabel": "Nazwa bezpłatnego członkostwa",
     "defaultMembership": "Członek",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Usuń konto",
     "privacyConfirmationMismatch": "Adres e-mail nie zgadza się z Twoim kontem.",
     "privacyPasswordRequired": "Wpisz hasło.",
-    "privacyTooManyAttempts": "Zbyt wiele prób. Odczekaj 15 minut i spróbuj ponownie."
+    "privacyTooManyAttempts": "Zbyt wiele prób. Odczekaj 15 minut i spróbuj ponownie.",
+    "privacyConfirmationRequired": "Wpisz swój adres e-mail."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Przygotowywanie kamery…",
       "paragraph": "Akapit",
       "attach": "Załącz plik",
-      "file": "Plik"
+      "file": "Plik",
+      "bodyLabel": "Treść"
     },
     "links": {
       "badge": "Linki",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Sprawdzanie DNS…",
       "subEditLabel": "Własna subdomena",
       "subPlaceholder": "twoja-spolecznosc",
-      "subHint": "Tylko małe litery, cyfry i myślniki (3–63 znaki). Puste = adres domyślny {fallback}, który zawsze działa.",
+      "subHint": "Tylko małe litery, cyfry i myślniki (3–63 znaki).",
       "subSaved": "Subdomena zapisana.",
       "copy": "Kopiuj",
       "copied": "Skopiowano",
@@ -2249,7 +2250,8 @@
       "txtNote": "Tym potwierdzasz, że domena należy do ciebie. „Sprawdź domenę” sprawdza właśnie ten rekord.",
       "verifiedNow": "{domain} jest połączona.",
       "verifiedHint": "{domain} jest połączona. Sprawdź ponownie, jeśli zmieniono rekordy DNS.",
-      "subWarning": "Uwaga: obecny adres {old} przestanie działać – udostępnione linki nigdzie nie poprowadzą."
+      "subWarning": "Uwaga: obecny adres {old} przestanie działać – udostępnione linki nigdzie nie poprowadzą.",
+      "subFallback": "Puste = adres domyślny {address}, który zawsze działa."
     },
     "danger": {
       "heading": "Strefa zagrożenia",

@@ -1,6 +1,6 @@
 "use client";
 
-import { startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cancelOwnMembershipAction, leaveCommunityAction } from "@/app/actions/subscription";
@@ -46,12 +46,9 @@ export function MembershipActions({
   const locale = useLocale();
   const router = useRouter();
   const [confirm, confirmDialog] = useConfirm();
-  const [leaveState, leave, leaving] = useActionState(leaveCommunityAction, initial);
+  const [leaveState, setLeaveState] = useState<ActionState>(initial);
+  const [leaving, startLeaving] = useTransition();
   const [cancelState, cancel, cancelling] = useActionState(cancelOwnMembershipAction, initial);
-
-  useEffect(() => {
-    if (leaveState.ok) router.push(`/member/account?left=${encodeURIComponent(slug)}`);
-  }, [leaveState.ok, router, slug]);
 
   if (role === "OWNER") {
     return <p className="text-xs text-[#161613]/65">{t("ownerNote")}</p>;
@@ -71,7 +68,22 @@ export function MembershipActions({
       confirmLabel: t("leaveConfirm"),
       tone: "danger",
     });
-    if (ok) submit(leave);
+    if (!ok) return;
+    // Direkt aufrufen statt über useActionState: nach dem Verlassen
+    // verschwindet diese Karte beim Neuladen, ein Effekt käme zu spät. Der
+    // Hinweis „Du hast … verlassen“ steht danach oben auf der Seite.
+    startLeaving(async () => {
+      const fd = new FormData();
+      fd.set("tenant", slug);
+      const result = await leaveCommunityAction(initial, fd);
+      if (!result.ok) {
+        setLeaveState(result);
+        return;
+      }
+      const params = new URLSearchParams(window.location.search);
+      params.set("left", slug);
+      router.push(`/member/account?${params.toString()}`);
+    });
   }
 
   async function onCancel() {

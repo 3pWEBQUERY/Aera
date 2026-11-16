@@ -43,7 +43,12 @@ export function DataPrivacySettings({ email, labels }: DataPrivacySettingsProps)
 
   async function requestDeletion() {
     if (confirmation.trim().toLowerCase() !== email.toLowerCase()) {
-      fail({ field: "confirmation", message: t("privacyConfirmationMismatch") });
+      fail({
+        field: "confirmation",
+        message: confirmation.trim()
+          ? t("privacyConfirmationMismatch")
+          : t("privacyConfirmationRequired"),
+      });
       return;
     }
     if (!password) {

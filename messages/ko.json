@@ -224,10 +224,9 @@
     "descLabel": "설명",
     "descPlaceholder": "멤버가 무엇을 기대할 수 있는지 몇 문장으로 설명하세요.",
     "primaryColor": "기본 색상",
-    "accentColor": "강조 색상",
     "preview": "미리보기",
     "previewNameFallback": "당신의 커뮤니티",
-    "accentBadge": "강조",
+    "accentBadge": "가입하기",
     "customColor": "사용자 지정 색상",
     "tierNameLabel": "무료 멤버십 이름",
     "defaultMembership": "멤버",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "계정 삭제",
     "privacyConfirmationMismatch": "이메일 주소가 계정과 일치하지 않습니다.",
     "privacyPasswordRequired": "비밀번호를 입력하세요.",
-    "privacyTooManyAttempts": "시도 횟수가 너무 많습니다. 15분 후에 다시 시도해 주세요."
+    "privacyTooManyAttempts": "시도 횟수가 너무 많습니다. 15분 후에 다시 시도해 주세요.",
+    "privacyConfirmationRequired": "이메일 주소를 입력하세요."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1257,7 +1257,7 @@
       "membersCount": "{count, plural, other {멤버 #명}}",
       "newCommunity": "새 커뮤니티",
       "myAccount": "My account",
-      "deletedNotice": "'{name}'을(를) 삭제하는 중입니다. 몇 분 정도 걸립니다."
+      "deletedNotice": "‘{name}’을(를) 삭제하는 중입니다. 몇 분 정도 걸립니다."
     },
     "assistant": {
       "title": "AI 어시스턴트",
@@ -2024,7 +2024,8 @@
       "recPrep": "카메라 준비 중…",
       "paragraph": "단락",
       "attach": "파일 첨부",
-      "file": "파일"
+      "file": "파일",
+      "bodyLabel": "본문"
     },
     "links": {
       "badge": "링크",
@@ -2216,7 +2217,7 @@
       "checkingDns": "DNS 확인 중…",
       "subEditLabel": "원하는 서브도메인",
       "subPlaceholder": "my-community",
-      "subHint": "소문자, 숫자, 하이픈만 사용(3–63자). 비워 두면 기본 주소 {fallback}을(를) 사용하며, 이 주소는 항상 작동합니다.",
+      "subHint": "소문자, 숫자, 하이픈만 사용할 수 있습니다(3–63자).",
       "subSaved": "서브도메인이 저장되었습니다.",
       "copy": "복사",
       "copied": "복사됨",
@@ -2249,7 +2250,8 @@
       "txtNote": "이 레코드로 도메인이 내 것임을 확인합니다. '도메인 확인'은 바로 이 레코드를 확인합니다.",
       "verifiedNow": "{domain}이(가) 연결되었습니다.",
       "verifiedHint": "{domain}이(가) 연결되어 있습니다. DNS 레코드를 변경했다면 다시 확인하세요.",
-      "subWarning": "주의: 현재 주소 {old}은(는) 더 이상 작동하지 않으며, 공유한 링크는 연결되지 않습니다."
+      "subWarning": "주의: 현재 주소 {old}은(는) 더 이상 작동하지 않으며, 공유한 링크는 연결되지 않습니다.",
+      "subFallback": "비워 두면 기본 주소 {address}을(를) 사용하며, 이 주소는 항상 작동합니다."
     },
     "danger": {
       "heading": "위험 구역",
@@ -2357,7 +2359,7 @@
       "authorBanned": "작성자 차단됨",
       "removeTitlePost": "게시물을 영구적으로 삭제할까요?",
       "removeTitleComment": "댓글을 영구적으로 삭제할까요?",
-      "removeBody": "'{excerpt}'은(는) 삭제되며 복원할 수 없습니다."
+      "removeBody": "‘{excerpt}’은(는) 삭제되며 복원할 수 없습니다."
     },
     "layout": {
       "titleHub": "페이지 편집",
@@ -2499,8 +2501,8 @@
       "previewAs": "미리보기 대상",
       "colorPresetAria": "메인 색상 {color}",
       "colorCustomAria": "메인 색상 직접 선택",
-      "hideNamedAria": "'{name}' 숨기기",
-      "removeNamedAria": "'{name}' 삭제",
+      "hideNamedAria": "‘{name}’ 숨기기",
+      "removeNamedAria": "‘{name}’ 삭제",
       "removeImageAria": "이미지 {n} 삭제",
       "socialInputAria": "{name} 프로필"
     },
@@ -3060,7 +3062,7 @@
       "defaultHintActive": "새 멤버는 이 멤버십을 받습니다.",
       "defaultHintInactive": "새 멤버의 기본값으로 설정합니다.",
       "entitlementKeyLabel": "기술 키(플랫폼 관리자에게만 표시)",
-      "confirmDelete": "멤버십 '{name}'을(를) 삭제할까요?",
+      "confirmDelete": "멤버십 ‘{name}’을(를) 삭제할까요?",
       "deleting": "삭제 중…",
       "deleteTier": "멤버십 삭제",
       "cancel": "취소",
@@ -3071,7 +3073,7 @@
       "payoutsMissing": "결제 대금을 받으려면 먼저 정산을 설정하세요.",
       "payoutsSetup": "정산 설정",
       "confirmDeleteBody": "{count, plural, =0 {멤버십이 영구적으로 삭제됩니다.} other {멤버 #명이 이 멤버십의 콘텐츠에 접근할 수 없게 됩니다.}} 이 작업은 되돌릴 수 없습니다.",
-      "confirmHide": "멤버십 '{name}'을(를) 숨길까요?",
+      "confirmHide": "멤버십 ‘{name}’을(를) 숨길까요?",
       "confirmHideBody": "유료 멤버십은 삭제되지 않고 가입 페이지에서만 빠집니다. 진행 중인 결제는 계속 처리됩니다. 기존 멤버는 접근 권한을 유지합니다.",
       "hideTier": "멤버십 숨기기"
     },
@@ -3108,7 +3110,7 @@
       "descPlaceholder": "구매자는 무엇을 받나요?",
       "publishedLabel": "게시됨",
       "publishedHint": "커뮤니티에서 표시되고 구매할 수 있습니다.",
-      "confirmDelete": "상품 '{name}'을(를) 삭제할까요?",
+      "confirmDelete": "상품 ‘{name}’을(를) 삭제할까요?",
       "deleting": "삭제 중…",
       "deleteProduct": "상품 삭제",
       "cancel": "취소",
@@ -3116,7 +3118,7 @@
       "saveChanges": "변경 사항 저장",
       "createProduct": "상품 만들기",
       "confirmDeleteBody": "상품이 숍에서 사라집니다. 이 작업은 되돌릴 수 없습니다.",
-      "confirmHide": "상품 '{name}'을(를) 숨길까요?",
+      "confirmHide": "상품 ‘{name}’을(를) 숨길까요?",
       "confirmHideBody": "이 상품에는 주문이 있어 삭제하지 않고 숍에서만 뺍니다. 구매자는 접근 권한을 유지합니다.",
       "hideProduct": "상품 숨기기",
       "priceHint": "앱 스토어에서도 같은 가격이 적용되도록 정해진 가격 단계에서 고릅니다.",
@@ -3283,7 +3285,7 @@
       "searchLabel": "멤버 검색",
       "searchPlaceholder": "이름 또는 이메일",
       "searchCount": "{total}명 중 {shown}명",
-      "searchEmpty": "'{query}'와(과) 일치하는 멤버가 없습니다.",
+      "searchEmpty": "‘{query}’와(과) 일치하는 멤버가 없습니다.",
       "ban": "멤버 차단",
       "unban": "차단 해제",
       "banning": "차단하는 중…",

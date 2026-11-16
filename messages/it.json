@@ -224,10 +224,9 @@
     "descLabel": "Descrizione",
     "descPlaceholder": "Descrivi in poche frasi cosa aspetta i membri.",
     "primaryColor": "Colore primario",
-    "accentColor": "Colore d’accento",
     "preview": "Anteprima",
     "previewNameFallback": "La tua community",
-    "accentBadge": "Accento",
+    "accentBadge": "Unisciti",
     "customColor": "Colore personalizzato",
     "tierNameLabel": "Nome dell’abbonamento gratuito",
     "defaultMembership": "Membro",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Elimina account",
     "privacyConfirmationMismatch": "L’indirizzo email non corrisponde al tuo account.",
     "privacyPasswordRequired": "Inserisci la tua password.",
-    "privacyTooManyAttempts": "Troppi tentativi. Attendi 15 minuti e riprova."
+    "privacyTooManyAttempts": "Troppi tentativi. Attendi 15 minuti e riprova.",
+    "privacyConfirmationRequired": "Inserisci il tuo indirizzo email."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Preparazione della fotocamera…",
       "paragraph": "Paragrafo",
       "attach": "Allega file",
-      "file": "File"
+      "file": "File",
+      "bodyLabel": "Testo"
     },
     "links": {
       "badge": "Link",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Verifica DNS…",
       "subEditLabel": "Sottodominio personalizzato",
       "subPlaceholder": "la-tua-community",
-      "subHint": "Solo lettere minuscole, numeri e trattini (3–63 caratteri). Vuoto = indirizzo predefinito {fallback}, che funziona sempre.",
+      "subHint": "Solo lettere minuscole, numeri e trattini (3–63 caratteri).",
       "subSaved": "Sottodominio salvato.",
       "copy": "Copia",
       "copied": "Copiato",
@@ -2249,7 +2250,8 @@
       "txtNote": "Così confermi che il dominio è tuo. «Verifica dominio» controlla proprio questo record.",
       "verifiedNow": "{domain} è collegato.",
       "verifiedHint": "{domain} è collegato. Verifica di nuovo se hai modificato i record DNS.",
-      "subWarning": "Attenzione: l’indirizzo attuale {old} smetterà di funzionare e i link condivisi non porteranno più da nessuna parte."
+      "subWarning": "Attenzione: l’indirizzo attuale {old} smetterà di funzionare e i link condivisi non porteranno più da nessuna parte.",
+      "subFallback": "Vuoto = indirizzo predefinito {address}, che funziona sempre."
     },
     "danger": {
       "heading": "Zona pericolo",

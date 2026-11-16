@@ -25,6 +25,7 @@ import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
 import { UploadFieldError } from "@/components/ui/upload-error";
 import { cn } from "@/lib/utils";
+import { customDomainRecords } from "@/lib/domain-records";
 
 const initial: ActionState = {};
 
@@ -140,7 +141,7 @@ export function BrandingPanel({
             <p className="text-sm font-semibold text-slate-900">{t("imagesHeading")}</p>
             <div className="min-w-0">
               <Label>{t("coverLabel")}</Label>
-              <CoverUpload tenant={slug} defaultUrl={coverUrl} onChange={setCover} />
+              <CoverUpload tenant={slug} defaultUrl={coverUrl} onChange={setCover} showAppliedHint={false} />
             </div>
             <div className="min-w-0">
               <Label>{t("logoLabel")}</Label>
@@ -463,24 +464,6 @@ function CopyableAddress({
   );
 }
 
-/**
- * Teilt eine Domain in Vorsilbe und Zone, damit die Anleitung den „Namen“ so
- * nennt, wie ihn DNS-Anbieter erwarten (ohne die Zone). Zweistufige Endungen
- * wie .co.uk werden als Zone erkannt; im Zweifel steht der volle Name daneben.
- */
-export function splitDomain(domain: string): { host: string; zone: string } {
-  const parts = domain.split(".");
-  const secondLevel = new Set(["co", "com", "org", "net", "ac", "gov", "edu"]);
-  const zoneLen =
-    parts.length >= 3 && parts[parts.length - 1].length === 2 && secondLevel.has(parts[parts.length - 2])
-      ? 3
-      : 2;
-  return {
-    host: parts.slice(0, Math.max(0, parts.length - zoneLen)).join("."),
-    zone: parts.slice(-zoneLen).join("."),
-  };
-}
-
 function DnsRecord({
   type,
   name,
@@ -504,18 +487,22 @@ function DnsRecord({
         </div>
         <div className="flex min-w-0 items-center gap-3">
           <dt className="w-20 shrink-0 text-xs font-medium text-slate-500">{t("recordName")}</dt>
-          <dd className="min-w-0 flex-1">
-            <span className="block break-all font-mono text-slate-900">{name}</span>
-            {fullName !== name && (
-              <span className="block break-all text-xs text-slate-500">{t("recordFullName", { name: fullName })}</span>
-            )}
+          <dd className="flex min-w-0 flex-1 items-center gap-3">
+            <span className="min-w-0 flex-1">
+              <span className="block break-all font-mono text-slate-900">{name}</span>
+              {fullName !== name && (
+                <span className="block break-all text-xs text-slate-500">{t("recordFullName", { name: fullName })}</span>
+              )}
+            </span>
+            <CopyButton value={name} label={`${type} ${t("recordName")}`} />
           </dd>
-          <CopyButton value={name} label={`${type} ${t("recordName")}`} />
         </div>
         <div className="flex min-w-0 items-center gap-3">
           <dt className="w-20 shrink-0 text-xs font-medium text-slate-500">{t("recordValue")}</dt>
-          <dd className="min-w-0 flex-1 break-all font-mono text-slate-900">{value}</dd>
-          <CopyButton value={value} label={`${type} ${t("recordValue")}`} />
+          <dd className="flex min-w-0 flex-1 items-center gap-3">
+            <span className="min-w-0 flex-1 break-all font-mono text-slate-900">{value}</span>
+            <CopyButton value={value} label={`${type} ${t("recordValue")}`} />
+          </dd>
         </div>
       </dl>
       {note && <p className="mt-2.5 text-xs leading-relaxed text-slate-600">{note}</p>}
@@ -593,14 +580,7 @@ function CustomDomainSection({
     }
   }
 
-  const { host } = splitDomain(customDomain ?? "");
-  const routeRecord = customDomain
-    ? host
-      ? { type: "CNAME", name: host, fullName: customDomain }
-      : { type: "ALIAS / ANAME", name: "@", fullName: customDomain }
-    : null;
-  const txtName = host ? `_aera.${host}` : "_aera";
-  const txtValue = `aera-verify=${tenantId}`;
+  const records = customDomain ? customDomainRecords(customDomain, rootDomain, tenantId) : null;
   const statusCls = {
     none: "bg-slate-100 text-slate-600",
     pending: "bg-amber-100 text-amber-800",
@@ -657,7 +637,7 @@ function CustomDomainSection({
         </p>
       </form>
 
-      {customDomain && routeRecord && status !== "verified" && (
+      {customDomain && records && status !== "verified" && (
         <div className="mt-6 space-y-4">
           <h4 className="text-sm font-semibold text-slate-900">{t("guideHeading", { domain: customDomain })}</h4>
           <ol className="space-y-4 text-sm text-slate-700">
@@ -673,19 +653,10 @@ function CustomDomainSection({
               </p>
               <ul className="space-y-3">
                 <DnsRecord
-                  type={routeRecord.type}
-                  name={routeRecord.name}
-                  fullName={routeRecord.fullName}
-                  value={rootDomain}
-                  note={host ? t("routeNoteCname") : t("routeNoteApex")}
+                  {...records.route}
+                  note={records.apex ? t("routeNoteApex") : t("routeNoteCname")}
                 />
-                <DnsRecord
-                  type="TXT"
-                  name={txtName}
-                  fullName={`_aera.${customDomain}`}
-                  value={txtValue}
-                  note={t("txtNote")}
-                />
+                <DnsRecord {...records.txt} note={t("txtNote")} />
               </ul>
             </li>
             <li>
@@ -806,7 +777,7 @@ export function DomainPanel({
           {state.ok ? t("subSaved") : null}
         </p>
         <p id="sub-hint" className="text-xs text-slate-500">
-          {t("subHint", { fallback: `${slug}.${rootDomain}` })}
+          {t("subHint")} {t("subFallback", { address: `${slug}.${rootDomain}` })}
         </p>
       </form>
 

@@ -52,6 +52,7 @@ export function RichTextEditor({
   name = "bodyHtml",
   defaultHtml = "",
   placeholder,
+  ariaLabel,
   variant = "boxed",
   titleSlot,
   coverSlot,
@@ -77,6 +78,8 @@ export function RichTextEditor({
   name?: string;
   defaultHtml?: string;
   placeholder?: string;
+  /** Zugaenglicher Name des Textfelds (Standard: „Text“). */
+  ariaLabel?: string;
   /**
    * "boxed"    — self-contained bordered card with the toolbar on top
    *              (used inline in the dashboard forms).
@@ -614,6 +617,11 @@ export function RichTextEditor({
 
   const editableHandlers = {
     contentEditable: true,
+    // Ein contentEditable-div ist fuer Screenreader sonst nur "Gruppe" ohne
+    // Namen: so wird es als mehrzeiliges Textfeld mit Beschriftung angesagt.
+    role: "textbox",
+    "aria-multiline": true,
+    "aria-label": ariaLabel ?? t("bodyLabel"),
     suppressContentEditableWarning: true,
     onInput: () => {
       sync();

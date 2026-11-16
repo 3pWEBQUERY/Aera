@@ -50,7 +50,6 @@
     "domain": {
       "subEditLabel": "Custom subdomain",
       "subPlaceholder": "your-community",
-      "subHint": "Lowercase letters, numbers and hyphens only (3–63 characters). Your community will be reachable at this address. Leave empty for the default address (your handle).",
       "subSaved": "Subdomain saved."
     },
     "media": {
@@ -58,7 +57,6 @@
       "openInStudio": "Edit in Studio",
       "uploadMedia": "Upload media",
       "uploadingProgress": "Uploading… {done}/{total}",
-      "uploadFailed": "Upload failed: {name}",
       "storageTitle": "Media storage",
       "storageOf": "{used} of {limit} used"
     },

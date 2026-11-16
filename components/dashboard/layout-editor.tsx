@@ -279,7 +279,7 @@ export function LayoutEditor({
       <input type="hidden" name="payload" value={payload} />
 
       {/* Top bar */}
-      <header className="flex items-center gap-2 border-b border-slate-200 px-3 py-3 sm:gap-4 sm:px-5">
+      <header className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-slate-200 px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-5">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {/*
            * Der Pfeil steht immer an derselben Stelle und meint immer "eine
@@ -332,9 +332,14 @@ export function LayoutEditor({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {/* Status neben dem Knopf, auch mobil; wird vorgelesen. */}
-          <p role="status" aria-live="polite" className="text-right text-xs font-medium sm:text-sm">
+        <div className="contents sm:flex sm:items-center sm:gap-2">
+          {/* Status neben dem Knopf; mobil in einer eigenen Zeile darunter,
+              damit er nicht weggedrückt wird. Wird vorgelesen. */}
+          <p
+            role="status"
+            aria-live="polite"
+            className="order-last w-full text-xs font-medium empty:hidden sm:order-none sm:w-auto sm:text-right sm:text-sm"
+          >
             {state.error ? (
               <span className="text-red-700">{state.error}</span>
             ) : dirty ? (
@@ -766,7 +771,7 @@ function HeaderVariantPicker({
                   <Icon name="check" size={14} className="shrink-0 text-[var(--action-strong)]" />
                 )}
               </span>
-              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-500">
+              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-600">
                 {t(`headerVariants.${v}.desc`)}
               </span>
             </button>

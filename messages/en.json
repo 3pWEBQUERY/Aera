@@ -250,10 +250,9 @@
     "descLabel": "Description",
     "descPlaceholder": "Describe in a few sentences what members can expect.",
     "primaryColor": "Primary color",
-    "accentColor": "Accent color",
     "preview": "Preview",
     "previewNameFallback": "Your community",
-    "accentBadge": "Accent",
+    "accentBadge": "Join",
     "customColor": "Custom color",
     "tierNameLabel": "Name of the free membership",
     "defaultMembership": "Member",
@@ -642,7 +641,8 @@
     "privacyDeleteTitle": "Delete account",
     "privacyConfirmationMismatch": "This email address doesn't match your account.",
     "privacyPasswordRequired": "Enter your password.",
-    "privacyTooManyAttempts": "Too many attempts. Please wait 15 minutes and try again."
+    "privacyTooManyAttempts": "Too many attempts. Please wait 15 minutes and try again.",
+    "privacyConfirmationRequired": "Enter your email address."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2050,7 +2050,8 @@
       "recPrep": "Preparing camera…",
       "paragraph": "Paragraph",
       "attach": "Attach file",
-      "file": "File"
+      "file": "File",
+      "bodyLabel": "Text"
     },
     "live": {
       "subtitle": "Schedule and control live streams and sessions.",
@@ -2418,7 +2419,7 @@
       "checkingDns": "Checking DNS…",
       "subEditLabel": "Custom subdomain",
       "subPlaceholder": "your-community",
-      "subHint": "Lowercase letters, numbers and hyphens only (3–63 characters). Leave empty = default address {fallback}, which always works.",
+      "subHint": "Lowercase letters, numbers and hyphens only (3–63 characters).",
       "subSaved": "Subdomain saved.",
       "copy": "Copy",
       "copied": "Copied",
@@ -2451,7 +2452,8 @@
       "txtNote": "This confirms that the domain belongs to you. “Check domain” checks exactly this record.",
       "verifiedNow": "{domain} is connected.",
       "verifiedHint": "{domain} is connected. Check again if you've changed DNS records.",
-      "subWarning": "Note: the current address {old} will stop working – shared links will lead nowhere."
+      "subWarning": "Note: the current address {old} will stop working – shared links will lead nowhere.",
+      "subFallback": "Leave empty = default address {address}, which always works."
     },
     "danger": {
       "heading": "Danger zone",

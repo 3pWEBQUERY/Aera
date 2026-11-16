@@ -171,7 +171,7 @@ function ComposerForm({
         titleSlot={
           <>
             {state.error && (
-              <div className="mb-4" role="alert">
+              <div className="mb-4">
                 <FormError message={state.error} />
               </div>
             )}

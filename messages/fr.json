@@ -224,10 +224,9 @@
     "descLabel": "Description",
     "descPlaceholder": "Décrivez en quelques phrases ce qui attend les membres.",
     "primaryColor": "Couleur principale",
-    "accentColor": "Couleur d’accent",
     "preview": "Aperçu",
     "previewNameFallback": "Votre communauté",
-    "accentBadge": "Accent",
+    "accentBadge": "Rejoindre",
     "customColor": "Couleur personnalisée",
     "tierNameLabel": "Nom de l’abonnement gratuit",
     "defaultMembership": "Membre",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Supprimer le compte",
     "privacyConfirmationMismatch": "Cette adresse e-mail ne correspond pas à votre compte.",
     "privacyPasswordRequired": "Saisissez votre mot de passe.",
-    "privacyTooManyAttempts": "Trop de tentatives. Veuillez patienter 15 minutes, puis réessayer."
+    "privacyTooManyAttempts": "Trop de tentatives. Veuillez patienter 15 minutes, puis réessayer.",
+    "privacyConfirmationRequired": "Saisissez votre adresse e-mail."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Préparation de la caméra…",
       "paragraph": "Paragraphe",
       "attach": "Joindre un fichier",
-      "file": "Fichier"
+      "file": "Fichier",
+      "bodyLabel": "Texte"
     },
     "links": {
       "badge": "Liens",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Vérification DNS…",
       "subEditLabel": "Sous-domaine personnalisé",
       "subPlaceholder": "votre-communaute",
-      "subHint": "Uniquement des minuscules, chiffres et tirets (3 à 63 caractères). Vide = adresse par défaut {fallback}, qui fonctionne toujours.",
+      "subHint": "Uniquement des minuscules, chiffres et tirets (3 à 63 caractères).",
       "subSaved": "Sous-domaine enregistré.",
       "copy": "Copier",
       "copied": "Copié",
@@ -2249,7 +2250,8 @@
       "txtNote": "Il confirme que le domaine vous appartient. « Vérifier le domaine » contrôle précisément cet enregistrement.",
       "verifiedNow": "{domain} est connecté.",
       "verifiedHint": "{domain} est connecté. Vérifiez à nouveau si vous avez modifié des enregistrements DNS.",
-      "subWarning": "Attention : l’adresse actuelle {old} ne fonctionnera plus – les liens partagés ne mèneront nulle part."
+      "subWarning": "Attention : l’adresse actuelle {old} ne fonctionnera plus – les liens partagés ne mèneront nulle part.",
+      "subFallback": "Vide = adresse par défaut {address}, qui fonctionne toujours."
     },
     "danger": {
       "heading": "Zone de danger",

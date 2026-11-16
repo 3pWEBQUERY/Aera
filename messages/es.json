@@ -224,10 +224,9 @@
     "descLabel": "Descripción",
     "descPlaceholder": "Describe en unas frases qué pueden esperar los miembros.",
     "primaryColor": "Color primario",
-    "accentColor": "Color de acento",
     "preview": "Vista previa",
     "previewNameFallback": "Tu comunidad",
-    "accentBadge": "Acento",
+    "accentBadge": "Unirse",
     "customColor": "Color propio",
     "tierNameLabel": "Nombre de la membresía gratuita",
     "defaultMembership": "Miembro",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Eliminar cuenta",
     "privacyConfirmationMismatch": "El correo electrónico no coincide con tu cuenta.",
     "privacyPasswordRequired": "Escribe tu contraseña.",
-    "privacyTooManyAttempts": "Demasiados intentos. Espera 15 minutos y vuelve a intentarlo."
+    "privacyTooManyAttempts": "Demasiados intentos. Espera 15 minutos y vuelve a intentarlo.",
+    "privacyConfirmationRequired": "Escribe tu correo electrónico."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Preparando la cámara…",
       "paragraph": "Párrafo",
       "attach": "Adjuntar archivo",
-      "file": "Archivo"
+      "file": "Archivo",
+      "bodyLabel": "Texto"
     },
     "links": {
       "badge": "Enlaces",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Comprobando DNS…",
       "subEditLabel": "Subdominio personalizado",
       "subPlaceholder": "tu-comunidad",
-      "subHint": "Solo minúsculas, números y guiones (3–63 caracteres). Vacío = dirección estándar {fallback}, que siempre funciona.",
+      "subHint": "Solo minúsculas, números y guiones (3–63 caracteres).",
       "subSaved": "Subdominio guardado.",
       "copy": "Copiar",
       "copied": "Copiado",
@@ -2249,7 +2250,8 @@
       "txtNote": "Así confirmas que el dominio te pertenece. «Comprobar dominio» revisa justo este registro.",
       "verifiedNow": "{domain} está conectado.",
       "verifiedHint": "{domain} está conectado. Vuelve a comprobarlo si cambiaste registros DNS.",
-      "subWarning": "Atención: la dirección actual {old} dejará de funcionar y los enlaces compartidos no llevarán a ninguna parte."
+      "subWarning": "Atención: la dirección actual {old} dejará de funcionar y los enlaces compartidos no llevarán a ninguna parte.",
+      "subFallback": "Vacío = dirección estándar {address}, que siempre funciona."
     },
     "danger": {
       "heading": "Zona de peligro",

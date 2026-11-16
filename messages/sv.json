@@ -224,10 +224,9 @@
     "descLabel": "Beskrivning",
     "descPlaceholder": "Beskriv i några meningar vad medlemmar kan förvänta sig.",
     "primaryColor": "Primärfärg",
-    "accentColor": "Accentfärg",
     "preview": "Förhandsvisning",
     "previewNameFallback": "Din community",
-    "accentBadge": "Accent",
+    "accentBadge": "Gå med",
     "customColor": "Egen färg",
     "tierNameLabel": "Namn på det kostnadsfria medlemskapet",
     "defaultMembership": "Medlem",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Radera konto",
     "privacyConfirmationMismatch": "E-postadressen stämmer inte med ditt konto.",
     "privacyPasswordRequired": "Ange ditt lösenord.",
-    "privacyTooManyAttempts": "För många försök. Vänta 15 minuter och försök igen."
+    "privacyTooManyAttempts": "För många försök. Vänta 15 minuter och försök igen.",
+    "privacyConfirmationRequired": "Ange din e-postadress."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Förbereder kameran…",
       "paragraph": "Stycke",
       "attach": "Bifoga fil",
-      "file": "Fil"
+      "file": "Fil",
+      "bodyLabel": "Text"
     },
     "links": {
       "badge": "Länkar",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Kontrollerar DNS…",
       "subEditLabel": "Önskad subdomän",
       "subPlaceholder": "ditt-community",
-      "subHint": "Bara små bokstäver, siffror och bindestreck (3–63 tecken). Tomt = standardadressen {fallback}, som alltid fungerar.",
+      "subHint": "Bara små bokstäver, siffror och bindestreck (3–63 tecken).",
       "subSaved": "Subdomän sparad.",
       "copy": "Kopiera",
       "copied": "Kopierat",
@@ -2249,7 +2250,8 @@
       "txtNote": "Med den bekräftar du att domänen tillhör dig. ”Kontrollera domän” kontrollerar just den här posten.",
       "verifiedNow": "{domain} är ansluten.",
       "verifiedHint": "{domain} är ansluten. Kontrollera igen om du har ändrat DNS-poster.",
-      "subWarning": "Obs: Den nuvarande adressen {old} slutar fungera – delade länkar leder ingenstans."
+      "subWarning": "Obs: Den nuvarande adressen {old} slutar fungera – delade länkar leder ingenstans.",
+      "subFallback": "Tomt = standardadressen {address}, som alltid fungerar."
     },
     "danger": {
       "heading": "Farozon",

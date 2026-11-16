@@ -224,10 +224,9 @@
     "descLabel": "描述",
     "descPlaceholder": "用幾句話描述成員可以期待什麼。",
     "primaryColor": "主色",
-    "accentColor": "強調色",
     "preview": "預覽",
     "previewNameFallback": "你的社群",
-    "accentBadge": "強調",
+    "accentBadge": "加入",
     "customColor": "自訂顏色",
     "tierNameLabel": "免費會員的名稱",
     "defaultMembership": "成員",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "刪除帳戶",
     "privacyConfirmationMismatch": "電子郵件地址與你的帳戶不符。",
     "privacyPasswordRequired": "請輸入你的密碼。",
-    "privacyTooManyAttempts": "嘗試次數過多。請等待 15 分鐘後再試。"
+    "privacyTooManyAttempts": "嘗試次數過多。請等待 15 分鐘後再試。",
+    "privacyConfirmationRequired": "請輸入你的電子郵件地址。"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "正在準備相機…",
       "paragraph": "段落",
       "attach": "附加檔案",
-      "file": "檔案"
+      "file": "檔案",
+      "bodyLabel": "內文"
     },
     "links": {
       "badge": "連結",
@@ -2216,7 +2217,7 @@
       "checkingDns": "正在檢查 DNS…",
       "subEditLabel": "自訂子網域",
       "subPlaceholder": "my-community",
-      "subHint": "僅限小寫字母、數字和連字號（3–63 個字元）。留空 = 預設網址 {fallback}，始終可用。",
+      "subHint": "僅限小寫字母、數字和連字號（3–63 個字元）。",
       "subSaved": "子網域已儲存。",
       "copy": "複製",
       "copied": "已複製",
@@ -2249,7 +2250,8 @@
       "txtNote": "此紀錄用於證明網域歸你所有。「檢查網域」檢查的正是這筆紀錄。",
       "verifiedNow": "{domain} 已連接。",
       "verifiedHint": "{domain} 已連接。如果變更了 DNS 紀錄，請重新檢查。",
-      "subWarning": "注意：目前網址 {old} 將無法使用，已分享的連結將失效。"
+      "subWarning": "注意：目前網址 {old} 將無法使用，已分享的連結將失效。",
+      "subFallback": "留空 = 預設網址 {address}，始終可用。"
     },
     "danger": {
       "heading": "危險區",

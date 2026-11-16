@@ -224,10 +224,9 @@
     "descLabel": "Beschrijving",
     "descPlaceholder": "Beschrijf in een paar zinnen wat leden kunnen verwachten.",
     "primaryColor": "Primaire kleur",
-    "accentColor": "Accentkleur",
     "preview": "Voorbeeld",
     "previewNameFallback": "Jouw community",
-    "accentBadge": "Accent",
+    "accentBadge": "Lid worden",
     "customColor": "Eigen kleur",
     "tierNameLabel": "Naam van het gratis lidmaatschap",
     "defaultMembership": "Lid",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Account verwijderen",
     "privacyConfirmationMismatch": "Dit e-mailadres komt niet overeen met je account.",
     "privacyPasswordRequired": "Vul je wachtwoord in.",
-    "privacyTooManyAttempts": "Te veel pogingen. Wacht 15 minuten en probeer het dan opnieuw."
+    "privacyTooManyAttempts": "Te veel pogingen. Wacht 15 minuten en probeer het dan opnieuw.",
+    "privacyConfirmationRequired": "Vul je e-mailadres in."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Camera voorbereiden…",
       "paragraph": "Alinea",
       "attach": "Bestand bijvoegen",
-      "file": "Bestand"
+      "file": "Bestand",
+      "bodyLabel": "Tekst"
     },
     "links": {
       "badge": "Links",
@@ -2216,7 +2217,7 @@
       "checkingDns": "DNS controleren…",
       "subEditLabel": "Gewenst subdomein",
       "subPlaceholder": "jouw-community",
-      "subHint": "Alleen kleine letters, cijfers en streepjes (3–63 tekens). Leeg = standaardadres {fallback}, dat altijd werkt.",
+      "subHint": "Alleen kleine letters, cijfers en streepjes (3–63 tekens).",
       "subSaved": "Subdomein opgeslagen.",
       "copy": "Kopiëren",
       "copied": "Gekopieerd",
@@ -2249,7 +2250,8 @@
       "txtNote": "Hiermee bevestig je dat het domein van jou is. ‘Domein controleren’ controleert precies dit record.",
       "verifiedNow": "{domain} is verbonden.",
       "verifiedHint": "{domain} is verbonden. Controleer opnieuw als je DNS-records hebt gewijzigd.",
-      "subWarning": "Let op: het huidige adres {old} werkt daarna niet meer – gedeelde links leiden nergens heen."
+      "subWarning": "Let op: het huidige adres {old} werkt daarna niet meer – gedeelde links leiden nergens heen.",
+      "subFallback": "Leeg = standaardadres {address}, dat altijd werkt."
     },
     "danger": {
       "heading": "Gevarenzone",

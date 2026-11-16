@@ -250,10 +250,9 @@
     "descLabel": "Beschreibung",
     "descPlaceholder": "Erzähle in ein paar Sätzen, was Mitglieder erwartet.",
     "primaryColor": "Primärfarbe",
-    "accentColor": "Akzentfarbe",
     "preview": "Vorschau",
     "previewNameFallback": "Deine Community",
-    "accentBadge": "Akzent",
+    "accentBadge": "Beitreten",
     "customColor": "Eigene Farbe",
     "tierNameLabel": "Name der kostenlosen Mitgliedschaft",
     "defaultMembership": "Mitglied",
@@ -642,7 +641,8 @@
     "privacyDeleteTitle": "Konto löschen",
     "privacyConfirmationMismatch": "Die E-Mail-Adresse stimmt nicht mit deinem Konto überein.",
     "privacyPasswordRequired": "Gib dein Passwort ein.",
-    "privacyTooManyAttempts": "Zu viele Versuche. Bitte warte 15 Minuten und versuche es dann erneut."
+    "privacyTooManyAttempts": "Zu viele Versuche. Bitte warte 15 Minuten und versuche es dann erneut.",
+    "privacyConfirmationRequired": "Gib deine E-Mail-Adresse ein."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2050,7 +2050,8 @@
       "recPrep": "Kamera wird vorbereitet…",
       "paragraph": "Absatz",
       "attach": "Datei anhängen",
-      "file": "Datei"
+      "file": "Datei",
+      "bodyLabel": "Text"
     },
     "live": {
       "subtitle": "Live-Streams und Sitzungen planen und steuern.",
@@ -2418,7 +2419,7 @@
       "checkingDns": "Prüfe DNS…",
       "subEditLabel": "Wunsch-Subdomain",
       "subPlaceholder": "deine-community",
-      "subHint": "Nur Kleinbuchstaben, Zahlen und Bindestriche (3–63 Zeichen). Leer lassen = Standardadresse {fallback}; sie funktioniert immer.",
+      "subHint": "Nur Kleinbuchstaben, Zahlen und Bindestriche (3–63 Zeichen).",
       "subSaved": "Subdomain gespeichert.",
       "copy": "Kopieren",
       "copied": "Kopiert",
@@ -2451,7 +2452,8 @@
       "txtNote": "Damit bestätigst du, dass die Domain dir gehört. Genau diesen Eintrag prüft „Domain prüfen“.",
       "verifiedNow": "{domain} ist verbunden.",
       "verifiedHint": "{domain} ist verbunden. Prüfe erneut, wenn du DNS-Einträge geändert hast.",
-      "subWarning": "Achtung: Die bisherige Adresse {old} funktioniert danach nicht mehr – geteilte Links führen ins Leere."
+      "subWarning": "Achtung: Die bisherige Adresse {old} funktioniert danach nicht mehr – geteilte Links führen ins Leere.",
+      "subFallback": "Leer lassen = Standardadresse {address}; sie funktioniert immer."
     },
     "danger": {
       "heading": "Gefahrenzone",

@@ -224,10 +224,9 @@
     "descLabel": "Beskrivelse",
     "descPlaceholder": "Beskriv med et par sætninger, hvad medlemmer kan forvente.",
     "primaryColor": "Primærfarve",
-    "accentColor": "Accentfarve",
     "preview": "Forhåndsvisning",
     "previewNameFallback": "Dit fællesskab",
-    "accentBadge": "Accent",
+    "accentBadge": "Bliv medlem",
     "customColor": "Egen farve",
     "tierNameLabel": "Navn på det gratis medlemskab",
     "defaultMembership": "Medlem",
@@ -616,7 +615,8 @@
     "privacyDeleteTitle": "Slet konto",
     "privacyConfirmationMismatch": "E-mailadressen passer ikke til din konto.",
     "privacyPasswordRequired": "Indtast din adgangskode.",
-    "privacyTooManyAttempts": "For mange forsøg. Vent 15 minutter, og prøv igen."
+    "privacyTooManyAttempts": "For mange forsøg. Vent 15 minutter, og prøv igen.",
+    "privacyConfirmationRequired": "Indtast din e-mailadresse."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -2024,7 +2024,8 @@
       "recPrep": "Forbereder kamera…",
       "paragraph": "Afsnit",
       "attach": "Vedhæft fil",
-      "file": "Fil"
+      "file": "Fil",
+      "bodyLabel": "Tekst"
     },
     "links": {
       "badge": "Links",
@@ -2216,7 +2217,7 @@
       "checkingDns": "Tjekker DNS…",
       "subEditLabel": "Ønsket subdomæne",
       "subPlaceholder": "dit-community",
-      "subHint": "Kun små bogstaver, tal og bindestreger (3–63 tegn). Tomt = standardadressen {fallback}, som altid virker.",
+      "subHint": "Kun små bogstaver, tal og bindestreger (3–63 tegn).",
       "subSaved": "Subdomæne gemt.",
       "copy": "Kopiér",
       "copied": "Kopieret",
@@ -2249,7 +2250,8 @@
       "txtNote": "Hermed bekræfter du, at domænet tilhører dig. „Tjek domæne“ tjekker netop denne post.",
       "verifiedNow": "{domain} er forbundet.",
       "verifiedHint": "{domain} er forbundet. Tjek igen, hvis du har ændret DNS-poster.",
-      "subWarning": "Bemærk: Den nuværende adresse {old} holder op med at virke – delte links fører ingen steder hen."
+      "subWarning": "Bemærk: Den nuværende adresse {old} holder op med at virke – delte links fører ingen steder hen.",
+      "subFallback": "Tomt = standardadressen {address}, som altid virker."
     },
     "danger": {
       "heading": "Farezone",

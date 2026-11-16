@@ -67,7 +67,6 @@
     "domain": {
       "subEditLabel": "Subdominio personalizado",
       "subPlaceholder": "tu-comunidad",
-      "subHint": "Solo letras minúsculas, números y guiones (3–63 caracteres). Tu comunidad estará disponible en esta dirección. Déjalo vacío para usar la dirección predeterminada (tu identificador).",
       "subSaved": "Subdominio guardado."
     },
     "media": {
@@ -75,7 +74,6 @@
       "openInStudio": "Edit in Studio",
       "uploadMedia": "Upload media",
       "uploadingProgress": "Uploading… {done}/{total}",
-      "uploadFailed": "Upload failed: {name}",
       "storageTitle": "Media storage",
       "storageOf": "{used} of {limit} used"
     },
