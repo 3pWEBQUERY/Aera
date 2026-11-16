@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "De ingevoerde communityslug komt niet overeen.",
     "tenantDeleteStripeSubscriptionsActive": "De community kan pas worden verwijderd nadat alle Stripe-abonnementen zijn beëindigd. Er zijn geen gegevens verwijderd.",
     "tenantDeleteStripeCleanupFailed": "Het opschonen van Stripe of Connect is mislukt. De community en de gegevens zijn niet verwijderd.",
-    "paidTierArchivedInsteadOfDeleted": "Het betaalde lidmaatschap is verborgen in plaats van verwijderd, zodat lopende betalingen verwerkt blijven worden.",
     "pendingPaymentsBlockDeletion": "Verwijderen is geblokkeerd zolang er openstaande betalingen of reserveringen zijn. Er zijn geen gegevens verwijderd.",
     "productArchivedBecauseOrdersExist": "Het product is verborgen in plaats van verwijderd omdat bestellingen ernaar verwijzen. Openstaande betalingen kunnen nog veilig worden verwerkt.",
     "postNotFound": "Bericht niet gevonden.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Bundel",
-        "desc": "Pakket met content"
+        "desc": "Niet meer aangeboden"
       },
       "COURSE_ACCESS": {
         "label": "Cursustoegang",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Dit type ontgrendelt geen lidmaatschap. Kies een ander type. Betaalde lidmaatschappen maak je aan onder ‘Lidmaatschappen’.",
       "viewInShop": "Bekijken in de shop",
       "payoutsMissing": "Stel eerst uitbetalingen in, zodat betalingen bij jou aankomen.",
-      "payoutsSetup": "Uitbetalingen instellen"
+      "payoutsSetup": "Uitbetalingen instellen",
+      "bundleRetired": "Bundels worden niet meer aangeboden: een aankoop ontgrendelde geen specifieke inhoud. Eerdere aankopen blijven geldig. Kies voor nieuwe aanbiedingen „Digitaal” of „Cursustoegang”."
     },
     "payouts": {
       "title": "Uitbetalingen",

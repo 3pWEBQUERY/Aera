@@ -193,7 +193,7 @@ export default async function AdminOverviewPage() {
                   </p>
                 </div>
                 <Pill className="shrink-0 bg-slate-100 text-slate-600">
-                  {t("membersShort", { count: tenant._count.memberships })}
+                  {t("membersCount", { count: tenant._count.memberships })}
                 </Pill>
               </li>
             ))}

@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Det indtastede community-slug stemmer ikke overens.",
     "tenantDeleteStripeSubscriptionsActive": "Communityet kan først slettes, når alle Stripe-abonnementer er afsluttet. Ingen data blev slettet.",
     "tenantDeleteStripeCleanupFailed": "Oprydning i Stripe eller Connect mislykkedes. Communityet og dets data blev ikke slettet.",
-    "paidTierArchivedInsteadOfDeleted": "Det betalte medlemskab blev skjult i stedet for slettet, så igangværende betalinger stadig kan behandles.",
     "pendingPaymentsBlockDeletion": "Sletning er blokeret, så længe der findes afventende betalinger eller reservationer. Ingen data blev slettet.",
     "productArchivedBecauseOrdersExist": "Produktet blev skjult i stedet for slettet, fordi ordrer henviser til det. Afventende betalinger kan fortsat behandles sikkert.",
     "postNotFound": "Indlæg ikke fundet.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Bundle",
-        "desc": "Pakke med indhold"
+        "desc": "Tilbydes ikke længere"
       },
       "COURSE_ACCESS": {
         "label": "Kursusadgang",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Denne type låser ikke et medlemskab op. Vælg en anden type. Betalte medlemskaber opretter du under “Medlemskaber”.",
       "viewInShop": "Se i butikken",
       "payoutsMissing": "Opsæt udbetalinger først, så betalingerne når frem til dig.",
-      "payoutsSetup": "Opsæt udbetalinger"
+      "payoutsSetup": "Opsæt udbetalinger",
+      "bundleRetired": "Pakker tilbydes ikke længere: Et køb låste ikke bestemt indhold op. Tidligere køb forbliver gyldige. Vælg „Digital“ eller „Kursusadgang“ til nye tilbud."
     },
     "payouts": {
       "title": "Udbetalinger",

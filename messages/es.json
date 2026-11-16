@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "El identificador de la comunidad introducido no coincide.",
     "tenantDeleteStripeSubscriptionsActive": "La comunidad solo se puede eliminar cuando hayan finalizado todas las suscripciones de Stripe. No se eliminó ningún dato.",
     "tenantDeleteStripeCleanupFailed": "Falló la limpieza de Stripe o Connect. No se eliminaron la comunidad ni sus datos.",
-    "paidTierArchivedInsteadOfDeleted": "La membresía de pago se ocultó en vez de eliminarse para que los pagos en curso se sigan procesando.",
     "pendingPaymentsBlockDeletion": "La eliminación está bloqueada mientras existan pagos o reservas pendientes. No se eliminó ningún dato.",
     "productArchivedBecauseOrdersExist": "El producto se ocultó en vez de eliminarse porque hay pedidos que lo referencian. Los pagos pendientes pueden seguir procesándose de forma segura.",
     "postNotFound": "Publicación no encontrada.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Paquete",
-        "desc": "Conjunto de contenidos"
+        "desc": "Ya no se ofrece"
       },
       "COURSE_ACCESS": {
         "label": "Acceso a curso",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Este tipo no desbloquea ninguna membresía. Elige otro tipo. Las membresías de pago se crean en «Membresías».",
       "viewInShop": "Ver en la tienda",
       "payoutsMissing": "Para recibir pagos, configura primero los pagos a tu cuenta.",
-      "payoutsSetup": "Configurar pagos"
+      "payoutsSetup": "Configurar pagos",
+      "bundleRetired": "Los paquetes ya no se ofrecen: una compra no desbloqueaba ningún contenido concreto. Las compras anteriores siguen siendo válidas. Para nuevas ofertas, elige «Digital» o «Acceso a curso»."
     },
     "payouts": {
       "title": "Pagos",

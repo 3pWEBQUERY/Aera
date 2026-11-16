@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Le slug de communauté saisi ne correspond pas.",
     "tenantDeleteStripeSubscriptionsActive": "La communauté ne peut être supprimée qu'après la fin de tous les abonnements Stripe. Aucune donnée n'a été supprimée.",
     "tenantDeleteStripeCleanupFailed": "Le nettoyage Stripe ou Connect a échoué. La communauté et ses données n'ont pas été supprimées.",
-    "paidTierArchivedInsteadOfDeleted": "L'adhésion payante a été masquée au lieu d'être supprimée, afin que les paiements en cours puissent encore être traités.",
     "pendingPaymentsBlockDeletion": "La suppression est bloquée tant que des paiements ou réservations sont en attente. Aucune donnée n'a été supprimée.",
     "productArchivedBecauseOrdersExist": "Le produit a été masqué au lieu d'être supprimé, car des commandes y font référence. Les paiements en attente peuvent ainsi être traités en toute sécurité.",
     "postNotFound": "Publication introuvable.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Pack",
-        "desc": "Ensemble de contenus"
+        "desc": "N’est plus proposé"
       },
       "COURSE_ACCESS": {
         "label": "Accès au cours",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Ce type ne débloque aucune adhésion. Choisissez un autre type. Les adhésions payantes se créent sous « Adhésions ».",
       "viewInShop": "Voir dans la boutique",
       "payoutsMissing": "Pour recevoir les paiements, configurez d'abord les versements.",
-      "payoutsSetup": "Configurer les versements"
+      "payoutsSetup": "Configurer les versements",
+      "bundleRetired": "Les lots ne sont plus proposés : un achat ne débloquait aucun contenu précis. Les achats existants restent valables. Pour de nouvelles offres, choisissez « Numérique » ou « Accès au cours »."
     },
     "payouts": {
       "title": "Versements",

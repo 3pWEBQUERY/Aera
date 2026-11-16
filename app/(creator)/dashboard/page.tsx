@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { requireUser } from "@/lib/guards";
 import { userTenants } from "@/lib/tenant";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { logoutAction } from "@/app/actions/auth";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
@@ -18,12 +18,34 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("metaTitle") };
 }
 
-export default async function DashboardIndex() {
+export default async function DashboardIndex({
+  searchParams,
+}: {
+  searchParams: Promise<{ deleted?: string }>;
+}) {
   const user = await requireUser("/dashboard");
   const tenants = await userTenants(user.id);
   // Antworten des Support-Teams, die dieses Mitglied noch nicht gesehen hat.
   const supportUnread = await userUnreadCount(user.id);
-  if (tenants.length === 0) redirect("/start");
+  // Gerade gelöschte Community (aus der Gefahrenzone). Der Name kommt aus dem
+  // eigenen Löschauftrag, nicht aus der Adresse — sonst liesse sich jede
+  // beliebige Meldung in einen Link schreiben.
+  const { deleted } = await searchParams;
+  const deletedJob = deleted
+    ? await systemPrisma.dataDeletionJob.findFirst({
+        where: { scope: "TENANT", requestedById: user.id, targetLabel: deleted.slice(0, 80) },
+        select: { targetId: true },
+      })
+    : null;
+  const deletedName = deletedJob
+    ? ((
+        await systemPrisma.tenant.findUnique({
+          where: { id: deletedJob.targetId },
+          select: { name: true },
+        })
+      )?.name ?? deleted)
+    : null;
+  if (tenants.length === 0 && !deletedName) redirect("/start");
   const t = await getTranslations("dashboard.index");
   const locale = await getLocale();
   const nf = new Intl.NumberFormat(locale);
@@ -80,6 +102,15 @@ export default async function DashboardIndex() {
         <p className="mt-3 max-w-lg text-sm leading-6 text-[#161613]/60">
           {t("subtitle")}
         </p>
+
+        {deletedName && (
+          <p
+            role="status"
+            className="mt-8 rounded-xl border border-[#161613]/10 bg-white px-4 py-3 text-sm text-[#161613]"
+          >
+            {t("deletedNotice", { name: deletedName })}
+          </p>
+        )}
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {tenants.map((tenant, i) => (

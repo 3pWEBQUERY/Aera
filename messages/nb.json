@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Det angitte community-slugget samsvarer ikke.",
     "tenantDeleteStripeSubscriptionsActive": "Communityet kan først slettes når alle Stripe-abonnementer er avsluttet. Ingen data ble slettet.",
     "tenantDeleteStripeCleanupFailed": "Opprydding i Stripe eller Connect mislyktes. Communityet og dataene ble ikke slettet.",
-    "paidTierArchivedInsteadOfDeleted": "Det betalte medlemskapet ble skjult i stedet for slettet, slik at pågående betalinger fortsatt kan behandles.",
     "pendingPaymentsBlockDeletion": "Sletting er blokkert så lenge det finnes ventende betalinger eller reservasjoner. Ingen data ble slettet.",
     "productArchivedBecauseOrdersExist": "Produktet ble skjult i stedet for slettet fordi ordrer viser til det. Ventende betalinger kan fortsatt behandles trygt.",
     "postNotFound": "Innlegg ikke funnet.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Pakke",
-        "desc": "Samling av innhold"
+        "desc": "Tilbys ikke lenger"
       },
       "COURSE_ACCESS": {
         "label": "Kurstilgang",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Denne typen låser ikke opp et medlemskap. Velg en annen type. Betalte medlemskap oppretter du under «Medlemskap».",
       "viewInShop": "Se i butikken",
       "payoutsMissing": "Sett opp utbetalinger først, så betalingene kommer frem til deg.",
-      "payoutsSetup": "Sett opp utbetalinger"
+      "payoutsSetup": "Sett opp utbetalinger",
+      "bundleRetired": "Pakker tilbys ikke lenger: Et kjøp låste ikke opp bestemt innhold. Tidligere kjøp er fortsatt gyldige. Velg «Digital» eller «Kurstilgang» for nye tilbud."
     },
     "payouts": {
       "title": "Utbetalinger",

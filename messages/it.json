@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Lo slug della community inserito non corrisponde.",
     "tenantDeleteStripeSubscriptionsActive": "La community può essere eliminata solo dopo la fine di tutti gli abbonamenti Stripe. Nessun dato è stato eliminato.",
     "tenantDeleteStripeCleanupFailed": "La pulizia di Stripe o Connect non è riuscita. La community e i suoi dati non sono stati eliminati.",
-    "paidTierArchivedInsteadOfDeleted": "L'iscrizione a pagamento è stata nascosta invece che eliminata, così i pagamenti in corso possono ancora essere elaborati.",
     "pendingPaymentsBlockDeletion": "L'eliminazione è bloccata finché esistono pagamenti o prenotazioni in sospeso. Nessun dato è stato eliminato.",
     "productArchivedBecauseOrdersExist": "Il prodotto è stato nascosto invece di essere eliminato perché alcuni ordini lo referenziano. I pagamenti in sospeso possono ancora essere elaborati in sicurezza.",
     "postNotFound": "Post non trovato.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Bundle",
-        "desc": "Pacchetto di contenuti"
+        "desc": "Non più disponibile"
       },
       "COURSE_ACCESS": {
         "label": "Accesso al corso",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Questo tipo non sblocca alcuna iscrizione. Scegli un altro tipo. Le iscrizioni a pagamento si creano in «Iscrizioni».",
       "viewInShop": "Vedi nello shop",
       "payoutsMissing": "Per ricevere i pagamenti, configura prima i pagamenti in uscita.",
-      "payoutsSetup": "Configura i pagamenti"
+      "payoutsSetup": "Configura i pagamenti",
+      "bundleRetired": "I pacchetti non sono più disponibili: un acquisto non sbloccava contenuti specifici. Gli acquisti precedenti restano validi. Per nuove offerte scegli «Digitale» o «Accesso al corso»."
     },
     "payouts": {
       "title": "Pagamenti",

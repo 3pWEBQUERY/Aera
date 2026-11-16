@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Wprowadzony slug społeczności nie jest zgodny.",
     "tenantDeleteStripeSubscriptionsActive": "Społeczność można usunąć dopiero po zakończeniu wszystkich subskrypcji Stripe. Żadne dane nie zostały usunięte.",
     "tenantDeleteStripeCleanupFailed": "Czyszczenie Stripe lub Connect nie powiodło się. Społeczność i jej dane nie zostały usunięte.",
-    "paidTierArchivedInsteadOfDeleted": "Płatne członkostwo zostało ukryte zamiast usunięte, aby trwające płatności nadal mogły być przetwarzane.",
     "pendingPaymentsBlockDeletion": "Usuwanie jest zablokowane, dopóki istnieją oczekujące płatności lub rezerwacje. Żadne dane nie zostały usunięte.",
     "productArchivedBecauseOrdersExist": "Produkt został ukryty zamiast usunięty, ponieważ odwołują się do niego zamówienia. Oczekujące płatności nadal mogą być bezpiecznie przetwarzane.",
     "postNotFound": "Nie znaleziono wpisu.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Pakiet",
-        "desc": "Zestaw treści"
+        "desc": "Nie jest już oferowany"
       },
       "COURSE_ACCESS": {
         "label": "Dostęp do kursu",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Ten typ nie odblokowuje żadnego członkostwa. Wybierz inny typ. Płatne członkostwa tworzysz w sekcji „Członkostwa”.",
       "viewInShop": "Zobacz w sklepie",
       "payoutsMissing": "Aby otrzymywać płatności, najpierw skonfiguruj wypłaty.",
-      "payoutsSetup": "Skonfiguruj wypłaty"
+      "payoutsSetup": "Skonfiguruj wypłaty",
+      "bundleRetired": "Pakiety nie są już oferowane: zakup nie odblokowywał żadnych konkretnych treści. Dotychczasowe zakupy pozostają ważne. Dla nowych ofert wybierz „Cyfrowy” lub „Dostęp do kursu”."
     },
     "payouts": {
       "title": "Wypłaty",

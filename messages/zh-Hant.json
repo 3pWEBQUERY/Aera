@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "輸入的社群代稱不相符。",
     "tenantDeleteStripeSubscriptionsActive": "只有在所有 Stripe 訂閱結束後，才能刪除社群。未刪除任何資料。",
     "tenantDeleteStripeCleanupFailed": "Stripe 或 Connect 清理失敗。社群及其資料均未被刪除。",
-    "paidTierArchivedInsteadOfDeleted": "付費會員已隱藏而非刪除，以便繼續處理進行中的付款。",
     "pendingPaymentsBlockDeletion": "存在待處理付款或預訂時無法刪除。未刪除任何資料。",
     "productArchivedBecauseOrdersExist": "由於訂單仍參照此商品，商品已隱藏而非刪除。待處理付款仍可安全完成。",
     "postNotFound": "找不到貼文。",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "套裝",
-        "desc": "內容組合包"
+        "desc": "已停止提供"
       },
       "COURSE_ACCESS": {
         "label": "課程權限",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "此類型不會解鎖任何會員。請選擇其他類型。付費會員請在「會員」中建立。",
       "viewInShop": "在商店中查看",
       "payoutsMissing": "要收到付款，請先設定收款。",
-      "payoutsSetup": "設定收款"
+      "payoutsSetup": "設定收款",
+      "bundleRetired": "已停止提供組合包：購買後並不會解鎖特定內容。以往的購買仍然有效。新商品請選擇「數位」或「課程權限」。"
     },
     "payouts": {
       "title": "提領",

@@ -50,14 +50,16 @@ export interface ProductCourseOption {
 
 // TIER_GRANT wird nicht mehr angeboten: ein Kauf kann eine Mitgliedschaft
 // nicht sauber freischalten (dieselbe Berechtigung wie das Abo, das beim
-// Kündigen wieder entzogen wird). Bestehende Produkte zeigen den Typ weiter.
+// Kündigen wieder entzogen wird). BUNDLE ebenso wenig: es vergibt nur
+// `product:<slug>`, das kein Inhalt verlangt — der Käufer bekäme nichts.
+// Bestehende Produkte zeigen ihren Typ weiter.
 const TYPES: { value: string; icon: IconName }[] = [
   { value: "DIGITAL", icon: "export" },
   { value: "PHYSICAL", icon: "archive" },
-  { value: "BUNDLE", icon: "products" },
   { value: "COURSE_ACCESS", icon: "courses" },
 ];
 const LEGACY_TYPES: { value: string; icon: IconName }[] = [
+  { value: "BUNDLE", icon: "products" },
   { value: "TIER_GRANT", icon: "tiers" },
 ];
 const typeIcon: Record<string, IconName> = Object.fromEntries(
@@ -466,6 +468,11 @@ function ProductForm({
             {type === "TIER_GRANT" && (
               <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
                 {t("tierGrantRetired")}
+              </p>
+            )}
+            {type === "BUNDLE" && (
+              <p className="mt-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                {t("bundleRetired")}
               </p>
             )}
           </div>

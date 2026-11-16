@@ -104,14 +104,14 @@ export function UsersManager({
                   <p className="font-semibold text-slate-900">{u.name}</p>
                   {u.ownedTenants > 0 && (
                     <Pill className="bg-violet-100 text-violet-700">
-                      {t("ownerBadge", { count: nf.format(u.ownedTenants) })}
+                      {t("ownerBadge", { count: u.ownedTenants })}
                     </Pill>
                   )}
                   <Pill className="bg-slate-100 text-slate-600">
-                    {t("membershipsShort", { count: nf.format(u.memberships) })}
+                    {t("membershipsShort", { count: u.memberships })}
                   </Pill>
                   <Pill className="bg-slate-100 text-slate-600">
-                    {t("ordersShort", { count: nf.format(u.orders) })}
+                    {t("ordersShort", { count: u.orders })}
                   </Pill>
                 </div>
                 <p className="mt-0.5 truncate text-sm text-slate-500">
@@ -147,7 +147,6 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
   const t = useTranslations("admin.users");
   const tc = useTranslations("admin");
   const locale = useLocale();
-  const nf = new Intl.NumberFormat(locale);
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -165,8 +164,8 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
               <p className="truncate text-sm text-slate-500">
                 {t("editSummary", {
                   date: formatDate(user.createdAt, locale),
-                  memberships: nf.format(user.memberships),
-                  orders: nf.format(user.orders),
+                  memberships: user.memberships,
+                  orders: user.orders,
                 })}
               </p>
             </div>

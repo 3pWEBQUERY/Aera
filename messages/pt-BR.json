@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "O slug da comunidade informado não corresponde.",
     "tenantDeleteStripeSubscriptionsActive": "A comunidade só pode ser excluída após o encerramento de todas as assinaturas da Stripe. Nenhum dado foi excluído.",
     "tenantDeleteStripeCleanupFailed": "A limpeza da Stripe ou do Connect falhou. A comunidade e seus dados não foram excluídos.",
-    "paidTierArchivedInsteadOfDeleted": "A assinatura paga foi ocultada em vez de excluída, para que os pagamentos em andamento continuem sendo processados.",
     "pendingPaymentsBlockDeletion": "A exclusão está bloqueada enquanto houver pagamentos ou reservas pendentes. Nenhum dado foi excluído.",
     "productArchivedBecauseOrdersExist": "O produto foi ocultado em vez de excluído porque há pedidos que o referenciam. Pagamentos pendentes ainda podem ser processados com segurança.",
     "postNotFound": "Publicação não encontrada.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Pacote",
-        "desc": "Conjunto de conteúdos"
+        "desc": "Não é mais oferecido"
       },
       "COURSE_ACCESS": {
         "label": "Acesso ao curso",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Este tipo não libera nenhuma assinatura. Escolha outro tipo. Assinaturas pagas são criadas em “Assinaturas”.",
       "viewInShop": "Ver na loja",
       "payoutsMissing": "Para receber pagamentos, configure os repasses primeiro.",
-      "payoutsSetup": "Configurar repasses"
+      "payoutsSetup": "Configurar repasses",
+      "bundleRetired": "Pacotes não são mais oferecidos: uma compra não liberava nenhum conteúdo específico. Compras anteriores continuam válidas. Para novas ofertas, escolha “Digital” ou “Acesso ao curso”."
     },
     "payouts": {
       "title": "Repasses",

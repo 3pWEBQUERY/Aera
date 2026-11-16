@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "Det angivna community-slugget stämmer inte.",
     "tenantDeleteStripeSubscriptionsActive": "Communityn kan tas bort först när alla Stripe-abonnemang har avslutats. Inga data togs bort.",
     "tenantDeleteStripeCleanupFailed": "Rensningen av Stripe eller Connect misslyckades. Communityn och dess data togs inte bort.",
-    "paidTierArchivedInsteadOfDeleted": "Det betalda medlemskapet doldes i stället för att tas bort, så att pågående betalningar fortfarande kan hanteras.",
     "pendingPaymentsBlockDeletion": "Borttagning är blockerad så länge väntande betalningar eller bokningar finns. Inga data togs bort.",
     "productArchivedBecauseOrdersExist": "Produkten doldes i stället för att tas bort eftersom beställningar hänvisar till den. Väntande betalningar kan fortfarande behandlas säkert.",
     "postNotFound": "Inlägg hittades inte.",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "Paket",
-        "desc": "Samling av innehåll"
+        "desc": "Erbjuds inte längre"
       },
       "COURSE_ACCESS": {
         "label": "Kursåtkomst",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "Den här typen låser inte upp något medlemskap. Välj en annan typ. Betalda medlemskap skapar du under ”Medlemskap”.",
       "viewInShop": "Visa i butiken",
       "payoutsMissing": "Konfigurera utbetalningar först, så att betalningarna når dig.",
-      "payoutsSetup": "Konfigurera utbetalningar"
+      "payoutsSetup": "Konfigurera utbetalningar",
+      "bundleRetired": "Paket erbjuds inte längre: ett köp låste inte upp något specifikt innehåll. Tidigare köp gäller fortfarande. Välj ”Digital” eller ”Kursåtkomst” för nya erbjudanden."
     },
     "payouts": {
       "title": "Utbetalningar",

@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "输入的社区标识不匹配。",
     "tenantDeleteStripeSubscriptionsActive": "只有在所有 Stripe 订阅结束后，才能删除该社区。未删除任何数据。",
     "tenantDeleteStripeCleanupFailed": "Stripe 或 Connect 清理失败。社区及其数据均未被删除。",
-    "paidTierArchivedInsteadOfDeleted": "付费会员已隐藏而非删除，以便继续处理进行中的付款。",
     "pendingPaymentsBlockDeletion": "存在待处理付款或预订时无法删除。未删除任何数据。",
     "productArchivedBecauseOrdersExist": "由于订单仍引用该商品，商品已隐藏而非删除。待处理付款仍可安全完成。",
     "postNotFound": "未找到帖子。",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "套装",
-        "desc": "内容组合包"
+        "desc": "已停止提供"
       },
       "COURSE_ACCESS": {
         "label": "课程权限",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "此类型不会解锁任何会员。请选择其他类型。付费会员请在“会员”中创建。",
       "viewInShop": "在商店中查看",
       "payoutsMissing": "要收到付款，请先设置收款。",
-      "payoutsSetup": "设置收款"
+      "payoutsSetup": "设置收款",
+      "bundleRetired": "已停止提供组合包：购买后并不会解锁特定内容。以往的购买仍然有效。新商品请选择“数字”或“课程权限”。"
     },
     "payouts": {
       "title": "提现",

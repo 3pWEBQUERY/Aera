@@ -44,7 +44,6 @@
     "tenantDeleteConfirmMismatch": "入力したコミュニティスラッグが一致しません。",
     "tenantDeleteStripeSubscriptionsActive": "すべての Stripe サブスクリプションが終了するまで、コミュニティは削除できません。データは削除されていません。",
     "tenantDeleteStripeCleanupFailed": "Stripe または Connect のクリーンアップに失敗しました。コミュニティとそのデータは削除されていません。",
-    "paidTierArchivedInsteadOfDeleted": "進行中の支払いを処理できるよう、有料のメンバーシップは削除せず非表示にしました。",
     "pendingPaymentsBlockDeletion": "保留中の支払いまたは予約がある間は削除できません。データは削除されていません。",
     "productArchivedBecauseOrdersExist": "注文から参照されているため、商品は削除せず非表示にしました。保留中の支払いは引き続き安全に処理できます。",
     "postNotFound": "投稿が見つかりません。",
@@ -2732,7 +2731,7 @@
       },
       "BUNDLE": {
         "label": "バンドル",
-        "desc": "コンテンツのセット"
+        "desc": "提供終了"
       },
       "COURSE_ACCESS": {
         "label": "コースアクセス",
@@ -2858,7 +2857,8 @@
       "tierGrantRetired": "このタイプではメンバーシップは解放されません。別のタイプを選んでください。有料のメンバーシップは「メンバーシップ」で作成します。",
       "viewInShop": "ショップで見る",
       "payoutsMissing": "支払いを受け取るには、先に入金の設定をしてください。",
-      "payoutsSetup": "入金を設定"
+      "payoutsSetup": "入金を設定",
+      "bundleRetired": "バンドルは提供を終了しました。購入しても特定のコンテンツが解放されなかったためです。これまでの購入は引き続き有効です。新しい商品には「デジタル」または「コースアクセス」を選んでください。"
     },
     "payouts": {
       "title": "支払い",

@@ -51,8 +51,13 @@ export async function GET(
       : [];
   // Public = everyone may see it, even logged out. Only then may shared
   // caches keep it; anything else is decided per viewer.
+  // Eine Produktdatei, auf die (noch) kein Produkt verweist, gehoert dem
+  // Team: Zwischen Upload und Speichern des Produkts — oder wenn nie
+  // gespeichert wird — waere sie sonst fuer jeden mit dem Link offen.
+  const orphanProductFile = object.purpose === "product-file" && references.length === 0;
   const isPublic =
     tenantActive &&
+    !orphanProductFile &&
     object.visibility === "PUBLIC" &&
     !object.requiredEntitlementKey &&
     (await mediaReferencesAllow(
@@ -77,6 +82,7 @@ export async function GET(
       }
       const ctx = await buildAccessContext(object.tenantId, user?.id ?? null);
       const allowed =
+        (!orphanProductFile || ctx.isStaff) &&
         canAccess(objectGate, ctx) &&
         (await mediaReferencesAllow(object.tenantId, references, ctx));
       if (!allowed) {

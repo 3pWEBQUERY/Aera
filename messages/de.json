@@ -45,7 +45,6 @@
     "tenantDeleteConfirmMismatch": "Der eingegebene Community-Slug stimmt nicht überein.",
     "tenantDeleteStripeSubscriptionsActive": "Die Community kann erst gelöscht werden, wenn alle Stripe-Abos beendet sind. Es wurden keine Daten gelöscht.",
     "tenantDeleteStripeCleanupFailed": "Die Stripe- oder Connect-Bereinigung ist fehlgeschlagen. Die Community und ihre Daten wurden nicht gelöscht.",
-    "paidTierArchivedInsteadOfDeleted": "Die bezahlte Mitgliedschaft wurde ausgeblendet statt gelöscht, damit laufende Zahlungen weiter verarbeitet werden.",
     "pendingPaymentsBlockDeletion": "Die Löschung ist blockiert, solange offene Zahlungen oder Reservierungen bestehen. Es wurden keine Daten gelöscht.",
     "productArchivedBecauseOrdersExist": "Das Produkt wurde ausgeblendet statt gelöscht, weil Bestellungen darauf verweisen. Offene Zahlungen können so weiterhin sicher verarbeitet werden.",
     "postNotFound": "Beitrag nicht gefunden.",
@@ -2933,7 +2932,7 @@
       },
       "BUNDLE": {
         "label": "Bundle",
-        "desc": "Paket aus Inhalten"
+        "desc": "Wird nicht mehr angeboten"
       },
       "COURSE_ACCESS": {
         "label": "Kurszugang",
@@ -3059,7 +3058,8 @@
       "tierGrantRetired": "Dieser Typ schaltet keine Mitgliedschaft frei. Wähle einen anderen Typ. Bezahlte Mitgliedschaften legst du unter „Mitgliedschaften“ an.",
       "viewInShop": "Im Shop ansehen",
       "payoutsMissing": "Damit Zahlungen bei dir ankommen, richte zuerst Auszahlungen ein.",
-      "payoutsSetup": "Auszahlungen einrichten"
+      "payoutsSetup": "Auszahlungen einrichten",
+      "bundleRetired": "Bundles werden nicht mehr angeboten: Ein Kauf hat keine bestimmten Inhalte freigeschaltet. Bisherige Käufe bleiben gültig. Für neue Angebote wähle „Digital“ oder „Kurszugang“."
     },
     "payouts": {
       "title": "Verkäufe",

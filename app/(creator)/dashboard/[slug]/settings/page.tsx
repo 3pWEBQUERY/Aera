@@ -14,6 +14,9 @@ import { startStripeConnectAction, disconnectStripeAction } from "@/app/actions/
 import { AeliPanel } from "@/components/dashboard/aeli-panel";
 import { getAeliConnection, aeliPageUrl, aeliStudioUrl } from "@/lib/aeli";
 import { normalizeHandle } from "@/lib/aeli-handle";
+import { getTenantPlan } from "@/lib/plan";
+import { planAllowsFeature } from "@/lib/plan-features";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 
 function StatusChip({ ok, label }: { ok: boolean; label: string }) {
   return (
@@ -43,8 +46,14 @@ export default async function SettingsPage({
   const { slug } = await params;
   const { tab, connect } = await searchParams;
   const { tenant, role, user } = await requireTenantAdmin(slug);
-  const coverUrl = await getCommunityCoverUrl(tenant.id);
+  const [coverUrl, plan] = await Promise.all([
+    getCommunityCoverUrl(tenant.id),
+    getTenantPlan(tenant.id),
+  ]);
   const t = await getTranslations("dashboard.settings");
+  // Schlüssel und Dienste der Installation sind Betreiber-Sache. Creator sehen
+  // nur, was sie selbst verbinden (Stripe für Auszahlungen).
+  const platformAdmin = hasPlatformAdminAccess(user);
 
   // Live Stripe Connect status for the connected account (if any).
   const stripeStatus =
@@ -79,11 +88,11 @@ export default async function SettingsPage({
     { name: t("intStorage"), icon: "gallery", ok: features.storage, hint: "S3_BUCKET" },
   ];
 
-  const integrationsSection = (
-    <section>
-      <h2 className="text-lg font-semibold text-slate-900">{t("integrationsHeading")}</h2>
-      <p className="mt-0.5 text-sm text-slate-500">{t("integrationsDesc")}</p>
-      <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+  const platformSection = platformAdmin ? (
+    <div className="mt-8 border-t border-slate-100 pt-6">
+      <h3 className="text-base font-semibold text-slate-900">{t("platformHeading")}</h3>
+      <p className="mt-0.5 text-sm text-slate-500">{t("platformDesc")}</p>
+      <ul className="mt-4 grid gap-2.5 sm:grid-cols-2">
         {integrations.map((it) => (
           <li key={it.name} className="flex items-center gap-3 rounded-xl border border-slate-100 px-3.5 py-3">
             <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${it.ok ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600"}`}>
@@ -105,7 +114,14 @@ export default async function SettingsPage({
       <p className="mt-4 text-xs text-slate-500">
         {t("activeNote")}
       </p>
-      {role === "OWNER" && <StripeConnectionTest slug={slug} />}
+      <StripeConnectionTest slug={slug} />
+    </div>
+  ) : null;
+
+  const integrationsSection = (
+    <section>
+      <h2 className="text-lg font-semibold text-slate-900">{t("integrationsHeading")}</h2>
+      <p className="mt-0.5 text-sm text-slate-500">{t("integrationsDescCreator")}</p>
 
       {aeliConnection && (
         <AeliPanel
@@ -121,7 +137,7 @@ export default async function SettingsPage({
         />
       )}
 
-      {role === "OWNER" && <div className="mt-6 border-t border-slate-100 pt-6">
+      {role === "OWNER" && <div className="mt-6">
         <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
           <div>
             <p className="font-medium text-slate-900">{t("stripeConnect")}</p>
@@ -144,8 +160,8 @@ export default async function SettingsPage({
           </p>
         )}
         {connect === "error" && (
-          <p className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
-            {t("connectError")}
+          <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+            {platformAdmin ? t("connectError") : t("connectErrorCreator")}
           </p>
         )}
         {connect === "disconnect-blocked" && (
@@ -156,9 +172,11 @@ export default async function SettingsPage({
 
         {!features.stripe ? (
           <p className="mt-4 text-sm text-slate-500">
-            {t.rich("needsSecretKey", {
-              code: (c) => <span className="font-mono text-xs">{c}</span>,
-            })}
+            {platformAdmin
+              ? t.rich("needsSecretKey", {
+                  code: (c) => <span className="font-mono text-xs">{c}</span>,
+                })
+              : t("paymentsUnavailable")}
           </p>
         ) : stripeReady ? (
           <div className="mt-4 space-y-3">
@@ -208,6 +226,7 @@ export default async function SettingsPage({
           </div>
         )}
       </div>}
+      {platformSection}
     </section>
   );
 
@@ -226,19 +245,24 @@ export default async function SettingsPage({
             description: tenant.description,
             logoUrl: tenant.logoUrl,
             primaryColor: tenant.primaryColor,
-            accentColor: tenant.accentColor,
             // Cast entfällt nach `npm run db:migrate` (regeneriert den Client).
             category: (tenant as { category?: string | null }).category ?? null,
           }}
         />
       ),
     },
-    {
-      id: "integrations",
-      label: t("tabIntegrations"),
-      icon: "settings",
-      content: integrationsSection,
-    },
+    // Ohne eigene Verbindung (Owner) und ohne Betreiber-Rechte gibt es dort
+    // nichts zu tun — dann keinen leeren Tab zeigen.
+    ...(role === "OWNER" || platformAdmin
+      ? [
+          {
+            id: "integrations",
+            label: t("tabIntegrations"),
+            icon: "settings" as const,
+            content: integrationsSection,
+          },
+        ]
+      : []),
     {
       id: "domain",
       label: t("tabDomain"),
@@ -248,6 +272,10 @@ export default async function SettingsPage({
           slug={slug}
           rootDomain={env.ROOT_DOMAIN}
           subdomain={tenant.subdomain}
+          tenantId={tenant.id}
+          customDomain={tenant.customDomain}
+          customDomainVerified={!!tenant.customDomainVerifiedAt}
+          customDomainAllowed={planAllowsFeature(plan, "customDomain")}
         />
       ),
     },
@@ -258,7 +286,13 @@ export default async function SettingsPage({
             label: t("tabDanger"),
             icon: "alert" as const,
             danger: true,
-            content: <DangerZone slug={slug} name={tenant.name} />,
+            content: (
+              <DangerZone
+                slug={slug}
+                name={tenant.name}
+                exportAvailable={planAllowsFeature(plan, "export")}
+              />
+            ),
           },
         ]
       : []),

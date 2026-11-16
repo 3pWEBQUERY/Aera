@@ -496,7 +496,9 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
     });
     revalidatePath(`/dashboard/${slug}/tiers`);
     revalidatePath(`/c/${slug}/join`);
-    return { error: await tErr("paidTierArchivedInsteadOfDeleted") };
+    // Kein Fehler: Die Rueckfrage hat bereits "ausblenden" angekuendigt
+    // (confirmHide), genau das ist passiert.
+    return { ok: true };
   }
 
   const incompleteLocalSubscriptions = await prisma.subscription.count({
@@ -650,8 +652,9 @@ async function productDownloadUrl(
  *   Mitgliedschaft gebunden ist (`tier:…`), wird nicht einzeln verkauft: der
  *   Kauf teilte sich sonst die Berechtigung mit dem Abo, das beim Kündigen
  *   wieder entzogen wird.
- * - TIER_GRANT: aus demselben Grund nicht mehr anlegbar; bestehende Produkte
- *   behalten beim Bearbeiten ihren Schlüssel.
+ * - TIER_GRANT: aus demselben Grund nicht mehr anlegbar; BUNDLE ebenso, weil
+ *   kein Inhalt `product:<slug>` verlangt. Bestehende Produkte behalten beim
+ *   Bearbeiten ihren Schlüssel.
  * - sonst: `product:<slug>` (bestehende Schlüssel bleiben unverändert).
  */
 async function productGrant(
@@ -676,8 +679,8 @@ async function productGrant(
       ? { key: course.requiredEntitlementKey, lockCourseId: null }
       : { key: `course:${course.slug}`, lockCourseId: course.id };
   }
-  if (type === "TIER_GRANT") {
-    if (current?.type !== "TIER_GRANT") return { error: await tErr("productTypeUnavailable") };
+  if (type === "TIER_GRANT" || type === "BUNDLE") {
+    if (current?.type !== type) return { error: await tErr("productTypeUnavailable") };
     return { key: current.grantsEntitlementKey, lockCourseId: null };
   }
   const keep = current?.grantsEntitlementKey;

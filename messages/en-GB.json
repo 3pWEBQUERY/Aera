@@ -10,7 +10,6 @@
     "tenantDeleteConfirmMismatch": "The entered community slug does not match.",
     "tenantDeleteStripeSubscriptionsActive": "The community can only be deleted after all Stripe subscriptions have ended. No data was deleted.",
     "tenantDeleteStripeCleanupFailed": "Stripe or Connect cleanup failed. The community and its data were not deleted.",
-    "paidTierArchivedInsteadOfDeleted": "The paid tier was safely hidden instead of deleted so open Stripe payments can still be processed correctly.",
     "pendingPaymentsBlockDeletion": "Deletion is blocked while pending payments or reservations exist. No data was deleted.",
     "productArchivedBecauseOrdersExist": "The product was hidden instead of deleted because orders reference it. Pending payments can still be processed safely."
   },

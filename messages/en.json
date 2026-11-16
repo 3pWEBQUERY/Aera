@@ -45,7 +45,6 @@
     "tenantDeleteConfirmMismatch": "The entered community slug does not match.",
     "tenantDeleteStripeSubscriptionsActive": "The community can only be deleted after all Stripe subscriptions have ended. No data was deleted.",
     "tenantDeleteStripeCleanupFailed": "Stripe or Connect cleanup failed. The community and its data were not deleted.",
-    "paidTierArchivedInsteadOfDeleted": "The paid membership was hidden instead of deleted so ongoing payments can still be processed.",
     "pendingPaymentsBlockDeletion": "Deletion is blocked while pending payments or reservations exist. No data was deleted.",
     "productArchivedBecauseOrdersExist": "The product was hidden instead of deleted because orders reference it. Pending payments can still be processed safely.",
     "postNotFound": "Post not found.",
@@ -2933,7 +2932,7 @@
       },
       "BUNDLE": {
         "label": "Bundle",
-        "desc": "Package of content"
+        "desc": "No longer offered"
       },
       "COURSE_ACCESS": {
         "label": "Course access",
@@ -3059,7 +3058,8 @@
       "tierGrantRetired": "This type doesn't unlock a membership. Choose another type. You set up paid memberships under “Memberships”.",
       "viewInShop": "View in shop",
       "payoutsMissing": "To receive payments, set up payouts first.",
-      "payoutsSetup": "Set up payouts"
+      "payoutsSetup": "Set up payouts",
+      "bundleRetired": "Bundles are no longer offered: a purchase didn't unlock any specific content. Existing purchases stay valid. For new offers, choose “Digital” or “Course access”."
     },
     "payouts": {
       "title": "Sales",
