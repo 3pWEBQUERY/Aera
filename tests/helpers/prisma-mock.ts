@@ -45,6 +45,8 @@ export function createPrismaMock() {
     lesson: model(),
     lessonProgress: model(),
     event: model(),
+    eventRsvp: model(),
+    bookingSlot: model(),
     bookingReservation: model(),
     tip: model(),
     mediaItem: model(),

@@ -807,16 +807,18 @@ model BookingSlot {
 }
 
 model BookingReservation {
-  id              String            @id @default(cuid())
-  tenantId        String
-  tenant          Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  slotId          String
-  slot            BookingSlot       @relation(fields: [slotId], references: [id], onDelete: Cascade)
-  userId          String
-  user            User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  status          ReservationStatus @default(PENDING)
-  stripeSessionId String?           @unique
-  createdAt       DateTime          @default(now())
+  id                 String            @id @default(cuid())
+  tenantId           String
+  tenant             Tenant            @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  slotId             String
+  slot               BookingSlot       @relation(fields: [slotId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status             ReservationStatus @default(PENDING)
+  stripeSessionId    String?           @unique
+  /// Apple-IAP: Transaktion, die diese Buchung bestätigt hat (Refund-Rückabwicklung).
+  appleTransactionId String?           @unique
+  createdAt          DateTime          @default(now())
 
   @@index([tenantId, slotId])
   @@index([tenantId, userId])
@@ -855,19 +857,21 @@ enum TipStatus {
 
 // TIPS space: tips / shoutouts, optionally toward a goal.
 model Tip {
-  id          String    @id @default(cuid())
-  tenantId    String
-  tenant      Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
-  spaceId     String
-  space       Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
-  userId      String
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  amountCents Int
-  currency    String    @default("eur")
-  message     String?
-  isPublic    Boolean   @default(true)
-  status      TipStatus @default(PENDING)
-  createdAt   DateTime  @default(now())
+  id                 String    @id @default(cuid())
+  tenantId           String
+  tenant             Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  spaceId            String
+  space              Space     @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  userId             String
+  user               User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  amountCents        Int
+  currency           String    @default("eur")
+  message            String?
+  isPublic           Boolean   @default(true)
+  status             TipStatus @default(PENDING)
+  /// Apple-IAP: Transaktion, die dieses Trinkgeld bezahlt hat (Refund-Rückabwicklung).
+  appleTransactionId String?   @unique
+  createdAt          DateTime  @default(now())
 
   @@index([tenantId, spaceId])
 }

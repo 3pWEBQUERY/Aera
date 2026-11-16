@@ -9,10 +9,14 @@ import { env, features } from "@/lib/env";
 import {
   buildAccessContext,
   canAccess,
+  canCreatePostIn,
+  canParticipate,
   entitlementKeys,
   grantEntitlement,
   revokePreviousTierEntitlement,
 } from "@/lib/entitlements";
+import { canCompleteLesson, canRsvpEvent, eventIsFull } from "@/lib/participation";
+import { isPostLocked } from "@/lib/post-access";
 import { awardPoints } from "@/lib/gamification";
 import { notify } from "@/lib/notifications";
 import { emitWebhookEvent } from "@/lib/webhooks";
@@ -378,6 +382,10 @@ export async function createPostAction(
 
   const acc = await spaceAccess(tenant.id, spaceSlug, user.id);
   if (!acc.space || !acc.allowed) return { error: t("noAccessSpace") };
+  // Members post only where the UI offers a composer (feed/forum) and only
+  // while their membership is active; blog, video, podcast … stay creator
+  // content.
+  if (!canCreatePostIn(acc.space, acc.ctx)) return { error: t("noAccessSpace") };
 
   // The forum popover submits rich `bodyHtml`; the inline feed composer submits
   // a plain `body` validated by postSchema.
@@ -464,7 +472,13 @@ export async function createCommentAction(
   });
   if (!space) return { error: t("noAccess") };
   const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(space, ctx)) return { error: t("noAccess") };
+  if (!canAccess(space, ctx) || !canParticipate(ctx)) return { error: t("noAccess") };
+  // "Kommentare schließen" gilt serverseitig — die Oberfläche blendet das
+  // Formular nur aus. Sie bietet es auch Staff nicht an, daher keine Ausnahme.
+  if (post.closeComments) return { error: t("commentsClosed") };
+  // Wer einen gesperrten Beitrag (PPV, Mitglieder, bezahlt) nicht lesen darf,
+  // kommentiert ihn auch nicht.
+  if (post.authorId !== user.id && isPostLocked(post, ctx)) return { error: t("noAccess") };
 
   const parsed = commentSchema.safeParse({
     body: fd.get("body"),
@@ -568,7 +582,7 @@ export async function toggleCommentLikeAction(fd: FormData): Promise<void> {
   });
   if (!comment) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(comment.post.space, ctx)) return;
+  if (!canAccess(comment.post.space, ctx) || !canParticipate(ctx)) return;
 
   const existing = await prisma.reaction.findFirst({
     where: { tenantId: tenant.id, commentId, userId: user!.id, type: "LIKE" },
@@ -631,7 +645,7 @@ export async function toggleReactionAction(fd: FormData): Promise<void> {
   });
   if (!post) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(post.space, ctx)) return;
+  if (!canAccess(post.space, ctx) || !canParticipate(ctx)) return;
 
   const existing = await prisma.reaction.findFirst({
     where: { tenantId: tenant.id, postId, userId: user!.id, type: "LIKE" },
@@ -695,7 +709,7 @@ export async function votePollAction(fd: FormData): Promise<void> {
   });
   if (!post) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(post.space, ctx)) return;
+  if (!canAccess(post.space, ctx) || !canParticipate(ctx)) return;
   const indices = fd
     .getAll("optionIndex")
     .map((v) => Number(v))
@@ -723,8 +737,14 @@ export async function rsvpEventAction(fd: FormData): Promise<void> {
     where: { eventId_userId: { eventId, userId: user!.id } },
   });
   if (existing) {
+    // Absagen geht immer — auch nach Sperre oder Kündigung.
     await prisma.eventRsvp.delete({ where: { id: existing.id } });
   } else {
+    // Zusagen (und die Punkte dafür) nur mit Zugriff auf Space und Event
+    // sowie aktiver Mitgliedschaft.
+    const ctx = await buildAccessContext(tenant.id, user!.id);
+    if (!canRsvpEvent(event, ctx)) return;
+    if (await eventIsFull(event)) return;
     await prisma.eventRsvp.create({
       data: { tenantId: tenant.id, eventId, userId: user!.id, status: "GOING" },
     });
@@ -750,22 +770,15 @@ export async function completeLessonAction(fd: FormData): Promise<void> {
   if (!tenant) return;
   const lesson = await prisma.lesson.findFirst({
     where: { id: lessonId, tenantId: tenant.id },
+    include: { course: { include: { space: true } } },
   });
   if (!lesson) return;
 
-  // Drip-Content serverseitig durchsetzen (Staff ausgenommen).
-  if (lesson.dripAfterDays && lesson.dripAfterDays > 0) {
-    const membership = await prisma.membership.findUnique({
-      where: { tenantId_userId: { tenantId: tenant.id, userId: user!.id } },
-    });
-    const { isLessonUnlocked } = await import("@/lib/drip");
-    const { roleAtLeast } = await import("@/lib/tenant");
-    const isStaff =
-      membership?.status === "ACTIVE" && roleAtLeast(membership.role, "MODERATOR");
-    if (!isStaff && !isLessonUnlocked(membership?.joinedAt ?? null, lesson.dripAfterDays)) {
-      return;
-    }
-  }
+  // Space-Zugriff, aktive Mitgliedschaft, Kurs-Paywall und Drip-Content
+  // serverseitig durchsetzen (Staff ausgenommen) — sonst ließen sich Punkte
+  // auf bezahlten Lektionen sammeln.
+  const ctx = await buildAccessContext(tenant.id, user!.id);
+  if (!canCompleteLesson(lesson, ctx)) return;
 
   const existing = await prisma.lessonProgress.findUnique({
     where: { lessonId_userId: { lessonId, userId: user!.id } },
@@ -1264,7 +1277,7 @@ export async function voteAction(fd: FormData): Promise<void> {
         )?.space;
   if (!targetSpace) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(targetSpace, ctx)) return;
+  if (!canAccess(targetSpace, ctx) || !canParticipate(ctx)) return;
 
   const scope =
     targetType === "comment"

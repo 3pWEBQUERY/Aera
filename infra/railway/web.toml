@@ -1,3 +1,11 @@
+# Referenz: Einstellungen des Railway-Service "Aera".
+#
+# Railway liest diese Datei NICHT automatisch (Config-as-Code-Pfade pro
+# Service sind abgekuendigt, und eine railway.toml im Repo-Root wuerde von
+# JEDEM Service aus diesem Repo uebernommen). Die Werte sind direkt am Service
+# hinterlegt; Aenderungen hier dort nachziehen. Siehe
+# docs/operations/railway-setup.md.
+
 [build]
 builder = "RAILPACK"
 buildCommand = "npm run build"

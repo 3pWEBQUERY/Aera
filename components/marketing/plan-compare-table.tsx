@@ -85,7 +85,7 @@ export async function PlanCompareTable() {
 
   return (
     <section className="mt-24 border-t border-[#161613]/15 pt-14">
-      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50">
+      <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65">
         {t("eyebrow")}
       </p>
       <h2 className="display-serif mt-4 max-w-2xl text-3xl leading-tight sm:text-4xl">
@@ -101,7 +101,7 @@ export async function PlanCompareTable() {
             <tr>
               <th
                 scope="col"
-                className="sticky left-0 z-10 bg-[#f4f1ea] py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/45"
+                className="sticky left-0 z-10 bg-[#f4f1ea] py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65"
               >
                 {t("featureColumn")}
               </th>
@@ -123,7 +123,7 @@ export async function PlanCompareTable() {
                   <th
                     scope="colgroup"
                     colSpan={PLAN_ORDER.length + 1}
-                    className="sticky left-0 bg-[#f4f1ea] pb-2 pt-8 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/45"
+                    className="sticky left-0 bg-[#f4f1ea] pb-2 pt-8 text-left text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65"
                   >
                     {section.group}
                   </th>
@@ -152,7 +152,7 @@ export async function PlanCompareTable() {
         </table>
       </div>
 
-      <p className="mt-8 max-w-2xl text-sm leading-6 text-[#161613]/50">{t("note")}</p>
+      <p className="mt-8 max-w-2xl text-sm leading-6 text-[#161613]/65">{t("note")}</p>
     </section>
   );
 }

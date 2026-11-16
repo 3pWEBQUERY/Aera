@@ -71,7 +71,7 @@ export default async function DashboardIndex() {
 
       <main className="mx-auto max-w-6xl px-5 pb-24 pt-12 md:pt-16">
         {/* Kopf */}
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65">
           {t("eyebrow")}
         </p>
         <h1 className="display-serif mt-3 text-4xl leading-[1.05] sm:text-5xl">

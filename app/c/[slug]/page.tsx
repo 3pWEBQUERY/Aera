@@ -265,6 +265,10 @@ export default async function CommunityHome({
   const boardBadges = await badgesForUsers(tenant.id, board.map((r) => r.userId), 3);
 
   // ---------------------------------------------------------------- Shop data
+  const ownedProductIds = ownedOrders
+    .map((o) => o.productId)
+    .filter((id): id is string => id !== null);
+  const ownedProducts = new Set(ownedProductIds);
   const shopProducts: ShopProduct[] = shopProductsRaw.map((p) => ({
     id: p.id,
     name: p.name,
@@ -277,11 +281,10 @@ export default async function CommunityHome({
     freeShipping: p.freeShipping,
     shippingCents: p.shippingCents,
     stock: p.stock,
-    downloadUrl: p.downloadUrl,
+    // This list is serialized into the browser. The download link is the
+    // purchased good itself, so only buyers (and staff) receive it.
+    downloadUrl: ownedProducts.has(p.id) || ctx.isStaff ? p.downloadUrl : null,
   }));
-  const ownedProductIds = ownedOrders
-    .map((o) => o.productId)
-    .filter((id): id is string => id !== null);
   const shopSpace = spaces.find((s) => s.type === "SHOP");
   const shopHref = shopSpace ? `/c/${slug}/s/${shopSpace.slug}` : null;
 

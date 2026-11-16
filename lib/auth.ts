@@ -5,6 +5,7 @@ import { systemPrisma as prisma } from "./prisma";
 import { getSession, setSessionCookie } from "./session";
 import type { SessionPayload } from "./session";
 import { sendVerificationEmail } from "./verification";
+import { rateLimit } from "./rate-limit";
 import {
   decryptSecret,
   encryptSecret,
@@ -85,8 +86,15 @@ export async function authenticate(
   password: string,
   totp?: string,
 ): Promise<AuthResult> {
+  const normalizedEmail = email.trim().toLowerCase();
+  // Per-account budget on top of the per-IP limit in the callers: rotating
+  // IPs must not allow unlimited password or TOTP guesses against one
+  // account (10 attempts per 15 minutes keeps a 6-digit code out of reach).
+  if (!(await rateLimit(`login:account:${normalizedEmail}`, 10, 15 * 60 * 1000))) {
+    return { ok: false, error: "tooManyLogins" };
+  }
   const user = await prisma.user.findUnique({
-    where: { email: email.trim().toLowerCase() },
+    where: { email: normalizedEmail },
   });
   if (!user || user.accountStatus !== "ACTIVE") {
     return { ok: false, error: "invalidCredentials" };

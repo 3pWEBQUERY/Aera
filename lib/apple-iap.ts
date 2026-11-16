@@ -3,6 +3,16 @@ import { X509Certificate } from "node:crypto";
 import { compactVerify, decodeProtectedHeader } from "jose";
 import { env } from "./env";
 
+// DER-kodierte OBJECT IDENTIFIER (Tag 06, Länge 0A) wie in Apples
+// app-store-server-library: 1.2.840.113635.100.6.11.1 (Receipt Signing,
+// Leaf) und 1.2.840.113635.100.6.2.1 (WWDR Intermediate).
+const APPLE_RECEIPT_SIGNING_OID = Buffer.from("060a2a864886f76364060b01", "hex");
+const APPLE_WWDR_INTERMEDIATE_OID = Buffer.from("060a2a864886f76364060201", "hex");
+
+function hasOid(cert: X509Certificate, oid: Buffer): boolean {
+  return cert.raw.includes(oid);
+}
+
 /**
  * Apple-IAP: Verifizierung JWS-signierter StoreKit-2-Transaktionen und
  * App Store Server Notifications V2.
@@ -168,6 +178,19 @@ async function verifyAppleJws(jws: string): Promise<unknown> {
     last.raw.equals(root.raw) || (last.checkIssued(root) && last.verify(root.publicKey));
   if (!anchored) {
     throw new AppleIapError("iap_invalid", "x5c chain is not anchored in Apple Root CA - G3.");
+  }
+
+  // Rollen der Kette festnageln, wie Apples eigene Bibliothek: Unter Root G3
+  // stellt Apple auch gewöhnlichen Entwicklern Zertifikate aus. Nur ein Leaf
+  // mit der App-Store-Receipt-Signing-OID unter einer CA mit der
+  // WWDR-Intermediate-OID darf Transaktionen signieren.
+  const leaf = certs[0]!;
+  const intermediate = certs[1]!;
+  if (leaf.ca || !hasOid(leaf, APPLE_RECEIPT_SIGNING_OID)) {
+    throw new AppleIapError("iap_invalid", "x5c leaf is not an App Store signing certificate.");
+  }
+  if (!intermediate.ca || !hasOid(intermediate, APPLE_WWDR_INTERMEDIATE_OID)) {
+    throw new AppleIapError("iap_invalid", "x5c intermediate is not Apple's WWDR CA.");
   }
 
   // Signatur der Payload mit dem Leaf-Zertifikat prüfen.

@@ -1,5 +1,7 @@
 import prisma from "@/lib/prisma";
 import { awardPoints } from "@/lib/gamification";
+import { buildAccessContext, canParticipate } from "@/lib/entitlements";
+import { canRsvpEvent, eventIsFull } from "@/lib/participation";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
 // POST /api/mobile/v1/c/{slug}/events/{eventId}/rsvp → { going, rsvpCount }
@@ -19,24 +21,30 @@ export async function POST(
 
   const event = await prisma.event.findFirst({
     where: { id: eventId, tenantId: tenant.id },
+    include: { space: true },
   });
   if (!event) return jsonError("not_found", "Event not found.", 404);
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
 
   const existing = await prisma.eventRsvp.findUnique({
     where: { eventId_userId: { eventId, userId: user.id } },
   });
   let going: boolean;
   if (existing) {
+    // Absagen geht immer — auch nach Sperre oder Kündigung.
     await prisma.eventRsvp.delete({ where: { id: existing.id } });
     going = false;
   } else {
+    const ctx = await buildAccessContext(tenant.id, user.id);
+    if (!canParticipate(ctx)) {
+      return jsonError("not_member", "Active membership required.", 403);
+    }
+    // Space-Zugriff und Event-Sperre — dieselbe Regel wie im Web.
+    if (!canRsvpEvent(event, ctx)) {
+      return jsonError("payment_required", "You do not have access to this event.", 403);
+    }
+    if (await eventIsFull(event)) {
+      return jsonError("event_full", "This event is fully booked.", 409);
+    }
     await prisma.eventRsvp.create({
       data: { tenantId: tenant.id, eventId, userId: user.id, status: "GOING" },
     });

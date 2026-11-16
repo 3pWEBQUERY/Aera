@@ -99,7 +99,7 @@ export default async function HelpCenterPage({
 
       <div className="mx-auto max-w-5xl px-5 pb-24 pt-12">
         {filled.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-[#161613]/20 px-6 py-14 text-center text-sm text-[#161613]/50">
+          <p className="rounded-2xl border border-dashed border-[#161613]/20 px-6 py-14 text-center text-sm text-[#161613]/65">
             {t("comingSoon")}
           </p>
         ) : query ? (

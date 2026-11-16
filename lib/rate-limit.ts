@@ -135,12 +135,19 @@ export async function rateLimit(
   return memoryRateLimit(keyHash, limit, windowMs);
 }
 
+/**
+ * Client IP for rate-limit keys. Railway's edge sets X-Real-IP to the
+ * connecting client; the LEFTMOST X-Forwarded-For entry is whatever the
+ * client chose to send, so it is only a last resort (rightmost hop).
+ */
+export function ipFromHeaders(h: Pick<Headers, "get">): string {
+  const realIp = h.get("x-real-ip")?.trim();
+  if (realIp) return realIp;
+  const forwarded = h.get("x-forwarded-for")?.split(",").map((part) => part.trim()).filter(Boolean);
+  return forwarded?.at(-1) || "local";
+}
+
 /** Best-effort client IP for rate-limit keys. */
 export async function clientIp(): Promise<string> {
-  const h = await headers();
-  return (
-    h.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    h.get("x-real-ip") ||
-    "local"
-  );
+  return ipFromHeaders(await headers());
 }

@@ -1279,11 +1279,20 @@ export default async function SpacePage({
       <div className="space-y-5">
         {header}
         {courses.length === 0 && <EmptyState icon="courses" title={t("noCourses")} />}
-        {courses.map((c) => (
+        {courses.map((c) => {
+          // A course may require its own entitlement on top of space access
+          // (see /api/media and search). Without it the course is listed but
+          // its video, stream and lesson content stay closed.
+          const courseLocked =
+            !!c.requiredEntitlementKey && !ctx.isStaff && !ctx.keys.has(c.requiredEntitlementKey);
+          return (
           <Card key={c.id}>
             <CardBody>
               <div className="flex items-center gap-2">
                 <h2 className="display-serif text-xl text-[#161613]">{c.title}</h2>
+                {courseLocked && (
+                  <Icon name="lock" size={16} className="text-[#161613]/40" />
+                )}
                 <Pill className={c.format === "OFFLINE" ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}>
                   {c.format === "OFFLINE" ? t("onsite") : t("online")}
                 </Pill>
@@ -1292,7 +1301,16 @@ export default async function SpacePage({
                 <p className="mt-1 text-sm text-[#161613]/60">{c.description}</p>
               )}
 
-              {c.format === "ONLINE" && (c.videoUrl || c.streamUrl) && (
+              {courseLocked && (
+                <div className="mt-3 rounded-xl bg-[#161613]/[0.03] p-3 text-sm text-[#161613]/70">
+                  <p>{t("lockedDescPaid")}</p>
+                  <ButtonLink href={`/c/${slug}/join`} size="sm" variant="brand" className="mt-2">
+                    {isMember ? t("upgradeMembership") : t("join")}
+                  </ButtonLink>
+                </div>
+              )}
+
+              {!courseLocked && c.format === "ONLINE" && (c.videoUrl || c.streamUrl) && (
                 <div className="mt-3 space-y-2">
                   {c.videoUrl &&
                     (c.videoUrl.startsWith("/api/media/") ||
@@ -1337,7 +1355,9 @@ export default async function SpacePage({
                   // Drip-Content: gesperrt bis N Tage nach Beitritt (Staff sieht alles).
                   const joinedAt = ctx.membership?.joinedAt ?? null;
                   const unlocked =
-                    ctx.isStaff || isLessonUnlocked(joinedAt, l.dripAfterDays);
+                    ctx.isStaff ||
+                    (!courseLocked && isLessonUnlocked(joinedAt, l.dripAfterDays)) ||
+                    (courseLocked && l.isPreview);
                   const waitDays =
                     !unlocked && joinedAt && l.dripAfterDays
                       ? daysUntilUnlock(joinedAt, l.dripAfterDays)
@@ -1381,7 +1401,8 @@ export default async function SpacePage({
               </ul>
             </CardBody>
           </Card>
-        ))}
+          );
+        })}
       </div>
     );
   }

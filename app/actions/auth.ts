@@ -1,5 +1,6 @@
 "use server";
 
+import { safeRelativePath } from "@/lib/safe-redirect";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { authenticate, registerUser } from "@/lib/auth";
@@ -21,9 +22,7 @@ export interface AuthState {
  * external URLs in browsers and must never pass as a redirect target.
  */
 function safeNext(next: FormDataEntryValue | null, fallback: string): string {
-  const n = typeof next === "string" ? next : "";
-  if (n.startsWith("/") && !n.startsWith("//") && !n.startsWith("/\\")) return n;
-  return fallback;
+  return safeRelativePath(next, fallback);
 }
 
 /** Creators (tenant owners / staff) land in the dashboard, members on Discover. */

@@ -37,6 +37,12 @@ import { slugify } from "@/lib/utils";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { sendEmail, renderAccountActionHtml, renderCampaignHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
+import { sanitizeAvatarUrl } from "@/lib/avatar-url";
+import {
+  cancelMemberStripeSubscriptions,
+  markMemberSubscriptionsCanceled,
+  revokeTierAccess,
+} from "@/lib/member-billing";
 import { features } from "@/lib/env";
 import { sanitizeRichHtml, htmlToPlainText } from "@/lib/rich-text";
 import { parsePollForm, savePostPoll } from "@/lib/polls";
@@ -1131,7 +1137,9 @@ export async function createMemberAction(
   }
   const role = String(fd.get("role") || "MEMBER");
   const tierId = String(fd.get("tierId") || "");
-  const avatar = String(fd.get("avatarUrl") || "");
+  // Nur für ein hier neu angelegtes Konto; ein bestehendes Konto behält sein
+  // eigenes, globales Profilbild.
+  const avatar = sanitizeAvatarUrl(fd.get("avatarUrl"));
   if (!ROLES.includes(role)) return { error: await tErr("invalidRole") };
   if (
     !canManageTenantMembership(
@@ -1177,7 +1185,7 @@ export async function createMemberAction(
         email,
         name: email.split("@")[0],
         passwordHash: await hashPassword(randomUUID()),
-        avatarUrl: avatar || null,
+        avatarUrl: avatar,
       },
     });
   }
@@ -1241,7 +1249,11 @@ export async function createMemberAction(
     metadata: { email, role },
   });
   revalidatePath(`/dashboard/${slug}/members`);
-  return { ok: true, inviteUrl: inviteLink };
+  // Accepting an invite marks the address as verified. When mail works, the
+  // link must reach only that mailbox — handing it to the inviting admin
+  // would let them claim any address as a "verified" account. Without mail
+  // the link is the only way in, so it is shown as before.
+  return { ok: true, inviteUrl: features.email ? undefined : inviteLink };
 }
 
 /** Edit a member's role, tier and status. Owners are protected. */
@@ -1299,22 +1311,14 @@ export async function updateMemberAction(
     membership.tierId !== (tier?.id ?? null) || status !== "ACTIVE";
   let canceledStripeSubscriptions = 0;
   if (billingAccessChanges) {
-    const stripeSubscriptions = await prisma.subscription.findMany({
-      where: {
-        tenantId: tenant.id,
-        userId: membership.userId,
-        stripeSubscriptionId: { not: null },
-      },
-      select: { stripeSubscriptionId: true },
-    });
     try {
       // Never remove or change paid access locally while an external contract
       // can continue charging. Tier changes become an explicit manual grant
       // only after every prior Stripe subscription is terminal.
-      await cancelStripeSubscriptionsImmediately(
-        stripeSubscriptions.map((subscription) => subscription.stripeSubscriptionId),
+      canceledStripeSubscriptions = await cancelMemberStripeSubscriptions(
+        tenant.id,
+        membership.userId,
       );
-      canceledStripeSubscriptions = stripeSubscriptions.length;
     } catch {
       await writeAudit({
         tenantId: tenant.id,
@@ -1337,14 +1341,7 @@ export async function updateMemberAction(
       },
     });
     if (billingAccessChanges) {
-      await tx.subscription.updateMany({
-        where: {
-          tenantId: tenant.id,
-          userId: membership.userId,
-          status: { not: "CANCELED" },
-        },
-        data: { status: "CANCELED", cancelAtPeriodEnd: false },
-      });
+      await markMemberSubscriptionsCanceled(tx, tenant.id, membership.userId);
     }
   });
 
@@ -1362,23 +1359,13 @@ export async function updateMemberAction(
   // Banned/pending members never retain a tier entitlement, even when the
   // selected tier itself did not change.
   if (status !== "ACTIVE" && tier) {
-    await prisma.entitlement.deleteMany({
-      where: {
-        tenantId: tenant.id,
-        userId: membership.userId,
-        key: tier.entitlementKey,
-      },
-    });
+    await revokeTierAccess(tenant.id, membership.userId, tier.entitlementKey);
   }
 
-  const avatar = fd.get("avatarUrl");
-  if (avatar !== null) {
-    await systemPrisma.user.update({
-      where: { id: membership.userId },
-      data: { avatarUrl: String(avatar) || null },
-      select: { id: true },
-    });
-  }
+  // Bewusst kein Schreiben von `user.avatarUrl`: das Profilbild ist global und
+  // gehört der Person, nicht der Community — ein Admin könnte sonst das Bild
+  // eines Kontos ändern, das auch in anderen Communities (und als Creator)
+  // auftritt.
 
   if (tier && status === "ACTIVE") {
     await grantEntitlement({
@@ -1427,7 +1414,7 @@ export async function updateOwnProfileAction(
     where: { id: user.id },
     data: {
       name,
-      ...(avatar !== null ? { avatarUrl: String(avatar) || null } : {}),
+      ...(avatar !== null ? { avatarUrl: sanitizeAvatarUrl(avatar) } : {}),
     },
     select: { id: true },
   });
@@ -2094,8 +2081,10 @@ export async function updateCustomDomainAction(
     if (!/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(domain)) {
       return { error: await tErr("validDomain") };
     }
-    const taken = await prisma.tenant.findFirst({
+    // Global check: the tenant-scoped client cannot see other tenants.
+    const taken = await systemPrisma.tenant.findFirst({
       where: { customDomain: domain, id: { not: tenant.id } },
+      select: { id: true },
     });
     if (taken) return { error: await tErr("domainTaken") };
   }
@@ -2130,10 +2119,29 @@ export async function verifyCustomDomainAction(
     return { error: await tErr("saveDomainFirst") };
   }
 
-  const { checkDomainDns } = await import("@/lib/domains");
+  const { checkDomainDns, txtVerificationValue } = await import("@/lib/domains");
   const result = await checkDomainDns(tenant.customDomain, tenant.id);
   if (!result.verified) {
-    return { error: result.detail };
+    // Re-Verifizierung fehlgeschlagen: der Nachweis gilt nicht mehr, die
+    // Domain wird bis zum nächsten erfolgreichen Check nicht mehr ausgeliefert.
+    if (tenant.customDomainVerifiedAt) {
+      await systemPrisma.tenant.update({
+        where: { id: tenant.id },
+        data: { customDomainVerifiedAt: null },
+      });
+      await writeAudit({
+        tenantId: tenant.id,
+        action: "tenant.domain.unverified",
+        metadata: { domain: tenant.customDomain, reason: result.reason },
+      });
+      revalidatePath(`/dashboard/${slug}/settings`);
+    }
+    return {
+      error: await tErr(
+        result.reason === "txt_mismatch" ? "domainTxtMismatch" : "domainTxtMissing",
+        { domain: tenant.customDomain, value: txtVerificationValue(tenant.id) },
+      ),
+    };
   }
 
   await systemPrisma.tenant.update({
@@ -3056,7 +3064,10 @@ export async function updateSubdomainAction(
   if (RESERVED_SUBDOMAINS.has(sub)) {
     return { error: await tErr("subReserved") };
   }
-  const taken = await prisma.tenant.findFirst({
+  // Uniqueness spans ALL tenants. The tenant-scoped client only sees this
+  // tenant's own row under RLS, which would let anyone claim another
+  // community's slug as their subdomain and hijack `<slug>.aera.so`.
+  const taken = await systemPrisma.tenant.findFirst({
     where: { id: { not: tenant.id }, OR: [{ subdomain: sub }, { slug: sub }] },
     select: { id: true },
   });

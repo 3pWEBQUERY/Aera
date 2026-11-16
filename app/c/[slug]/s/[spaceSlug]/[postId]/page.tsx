@@ -185,13 +185,15 @@ export default async function PostDetail({
   const likedByMe = new Set(myLikes.map((r) => r.commentId).filter(Boolean) as string[]);
 
   const isMember = ctx.membership?.status === "ACTIVE";
+  // Geschlossene Kommentare: kein Formular (der Server lehnt ohnehin ab).
+  const canComment = isMember && !post.closeComments;
 
   const commentsBlock = (
     <CommentThread
       slug={slug}
       spaceSlug={spaceSlug}
       postId={post.id}
-      isMember={isMember}
+      isMember={canComment}
       comments={comments.map((c) => ({
         id: c.id,
         body: c.body,

@@ -128,7 +128,9 @@ proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
   privilegiert bleiben. Sobald ein Tenant-Kontext gesetzt ist, wechselt Prisma
   in derselben Transaktion mit `SET LOCAL ROLE aera_app` in die eingeschränkte
   Rolle und setzt `aera.tenant_id`. Dadurch greift RLS auch dann tatsächlich,
-  wenn `DATABASE_URL` dem DB-Owner gehört.
+  wenn `DATABASE_URL` dem DB-Owner gehört. Der Tenant-Kontext hängt am
+  Request-Store von Next (`lib/prisma.ts`), nicht an `AsyncLocalStorage.enterWith`
+  — unter Node 24 ging er sonst nach jedem Guard verloren.
 - Globale Audit-Einträge (`tenantId = null`) werden über die eng begrenzte
   Funktion `aera_write_audit` append-only geschrieben; Auditfehler werden
   protokolliert und nicht mehr still verschluckt.
@@ -151,6 +153,16 @@ proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
 
   Vor `admin:grant` muss sich das Konto regulär registriert, die E-Mail
   verifiziert und TOTP in den Kontoeinstellungen vollständig aktiviert haben.
+  Solange noch kein Mailversand (Resend) eingerichtet ist, kann der Betreiber
+  die E-Mail des ersten Admins direkt bestätigen (auditiert):
+
+  ```bash
+  npm run admin:verify-email -- --email admin@aera.so --confirm verify-email:admin@aera.so
+  # Konto direkt anlegen (Passwort nur als bcrypt-Hash in der Umgebung):
+  AERA_NEW_USER_PASSWORD_HASH='$2b$12$…' npm run admin:create-user -- \
+    --email admin@aera.so --verified --confirm create-user:admin@aera.so
+  npm run admin:status -- --email admin@aera.so
+  ```
 - Tenant- und Staff-Rechte gelten nur bei `Tenant.status=ACTIVE` und einer
   `Membership.status=ACTIVE`. `SUSPENDED`/`DELETING` schließen Community,
   Creator-Dashboard und Mobile-Studio, ohne für Billing-Cleanup benötigte Daten
@@ -282,8 +294,8 @@ Alle ausführenden Cron-Endpunkte akzeptieren ausschließlich `POST` mit
 abgelehnt, damit Secrets nicht in URLs, Zugriffslogs oder Browser-Verläufen
 landen. Nur die read-only Betriebsansicht `/api/cron/status` verwendet `GET`
 mit demselben Bearer-Header. Für Railway wird ein eigener Cron-Service aus
-demselben Repository angelegt und `/railway.cron.toml` als Custom Config Path
-gesetzt. Railway erlaubt als kürzestes Intervall fünf Minuten:
+demselben Repository angelegt; seine Einstellungen stehen in
+`infra/railway/cron.toml`. Railway erlaubt als kürzestes Intervall fünf Minuten:
 
 ```text
 Schedule: */5 * * * * (UTC)
@@ -336,7 +348,7 @@ Antwort ist immer `no-store`.
 
 ## Deployment (Railway)
 
-Die versionierte App-Konfiguration liegt in `railway.toml`; Railway verwendet
+Die versionierte App-Konfiguration liegt in `infra/railway/web.toml`; Railway verwendet
 Railpack, führt die Migration/RLS-Verifikation vor dem Release aus und schaltet
 erst nach erfolgreichem Prozesscheck unter `/api/health/live` auf die neue
 Version. Der vollständige Abhängigkeitscheck unter `/api/health/ready` bleibt
@@ -351,13 +363,18 @@ Einrichtung:
    Referenzvariablen setzen. `AERA_ENVIRONMENT=production` plus alle mit
    `✅ Live` markierten Variablen konfigurieren; `npm run env:check` muss grün
    sein. Stripe/Resend sind im Livebetrieb nicht optional.
-4. Einen Cron-Service mit Custom Config Path `/railway.cron.toml` und einen
-   Backup-Service mit `/railway.backup.toml` anlegen. Backup-Ziel und
+4. Einen Cron-Service (`infra/railway/cron.toml`) und einen Backup-Service
+   (`infra/railway/backup.toml`) anlegen. Backup-Ziel und
    `age`-Empfänger liegen außerhalb des primären Projekts.
 5. In Railway die GitHub Check Suites als Deployment-Gate aktivieren. Damit
    wird nur nach grüner `.github/workflows/ci.yml` gebaut.
 6. Nach dem ersten Release `/api/health/ready` prüfen, den Cron- und Backupjob
    einmal manuell auslösen und `/api/cron/status` auf `200` prüfen.
+
+Der konkrete Stand des Railway-Projekts (Services, Variablen, Domains, DNS)
+steht in [`docs/operations/railway-setup.md`](docs/operations/railway-setup.md).
+Railway liest keine eigenen Config-Pfade pro Service mehr; die Werte aus
+`infra/railway/*.toml` sind deshalb direkt an den Services hinterlegt.
 
 Die vollständigen Schritte für Alarme, Railway-Backups/PITR, Offsite-Dumps,
 Restore-Drills, RPO/RTO und Incidents stehen im

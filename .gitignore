@@ -21,3 +21,8 @@ test-results/
 _to_delete/
 # Xcode-Zustand pro Benutzer, kein Quellcode.
 **/xcuserdata/
+
+# Lokale Arbeitskopien von Claude-Code-Agenten.
+.claude/worktrees/
+# Von `next dev` (16.4+) automatisch erzeugt.
+AGENTS.md

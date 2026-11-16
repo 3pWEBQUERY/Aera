@@ -95,13 +95,13 @@ muss exakt 32 Zufallsbytes dekodieren.
 
 ## Railway-Topologie
 
-- **Web-Service** (`railway.toml`, Railpack): Pre-Deploy `db:predeploy`
+- **Web-Service** (`infra/railway/web.toml`, Railpack): Pre-Deploy `db:predeploy`
   (migrate deploy + RLS-Verifikation), Healthcheck `/api/health/live` für den
   Release-Switch; `/api/health/ready` für externes Monitoring.
-- **Cron-Service** (`railway.cron.toml`, `*/5 * * * *`): `node scripts/cron.mjs`
+- **Cron-Service** (`infra/railway/cron.toml`, `*/5 * * * *`): `node scripts/cron.mjs`
   mit `CRON_TARGET_URL` (generierte `*.up.railway.app`-Domain des Web-Service)
   + `CRON_SECRET` — keine Wildcard-/Custom-Domain.
-- **Backup-Service** (`railway.backup.toml`): Backup-Ziel + age-Empfänger
+- **Backup-Service** (`infra/railway/backup.toml`): Backup-Ziel + age-Empfänger
   außerhalb des primären Projekts.
 - **Lokal:** `.env` nutzt die **öffentliche** Proxy-URL (`…proxy.rlwy.net`);
   auf Railway die **interne** (`postgres.railway.internal`) via

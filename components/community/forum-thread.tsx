@@ -181,7 +181,8 @@ export function ForumThread({
               <p className="py-6 text-center text-sm text-[#161613]/50">{t("noComments")}</p>
             ) : (
               tree.map((node) => (
-                <CommentNode key={node.id} node={node} slug={slug} spaceSlug={spaceSlug} postId={post.id} isMember={isMember} depth={0} />
+                // Geschlossene Kommentare: auch keine Antworten mehr anbieten.
+                <CommentNode key={node.id} node={node} slug={slug} spaceSlug={spaceSlug} postId={post.id} isMember={isMember && !settings?.closeComments} depth={0} />
               ))
             )}
           </div>

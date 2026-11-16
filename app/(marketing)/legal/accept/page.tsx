@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { safeRelativePath } from "@/lib/safe-redirect";
 import { getTranslations } from "next-intl/server";
 import { CurrentLegalAcceptanceForm } from "@/components/forms/account-forms";
 import { LegalShell } from "@/components/marketing/legal-shell";
@@ -15,10 +16,7 @@ export default async function LegalAcceptancePage({
   searchParams: Promise<{ next?: string }>;
 }) {
   const { next } = await searchParams;
-  const safeNext =
-    next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
-      ? next
-      : "/home";
+  const safeNext = safeRelativePath(next, "/home");
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(`/legal/accept?next=${safeNext}`)}`);
   if (await hasCurrentLegalEvidence(user.id)) redirect(safeNext);

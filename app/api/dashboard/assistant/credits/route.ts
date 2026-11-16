@@ -46,11 +46,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "missing fields" }, { status: 400 });
   }
 
-  const { tenant, user } = await requireTenantAdmin(slug);
-
   if (action !== "buy" && action !== "plan" && action !== "cancel_plan") {
     return NextResponse.json({ error: "unknown action" }, { status: 400 });
   }
+  // Changing or cancelling the creator's own paid plan is billing, which is
+  // OWNER-only everywhere else (settings UI, plan.ts, Stripe Connect).
+  const { tenant, user } = await requireTenantAdmin(
+    slug,
+    action === "buy" ? "ADMIN" : "OWNER",
+  );
   if (action === "cancel_plan" && !features.stripe) {
     return NextResponse.json(
       { error: "stripe_unavailable", message: "Stripe is required to cancel this plan." },

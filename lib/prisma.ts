@@ -1,4 +1,8 @@
 import { AsyncLocalStorage } from "node:async_hooks";
+// Next keeps this store as a process-wide singleton (see
+// next/dist/server/app-render/async-local-storage); reading it is side-effect
+// free, unlike headers(), which would change how a route renders.
+import { workUnitAsyncStorage } from "next/dist/server/app-render/work-unit-async-storage.external";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@/app/generated/prisma/client";
 import type { Prisma } from "@/app/generated/prisma/client";
@@ -21,11 +25,63 @@ const connectionString = process.env.DATABASE_URL;
 const tenantALS = new AsyncLocalStorage<string>();
 
 /**
- * Activate the tenant context for the remainder of the current request flow.
+ * Tenant context per incoming request.
+ *
+ * `setTenantContext` is called inside awaited helpers (guards such as
+ * `requireTenantAdmin`, `getCommunityContext`). `AsyncLocalStorage.enterWith`
+ * cannot carry a value from such a callee back to its caller on Node 24:
+ * with AsyncContextFrame (the default since Node 24) the caller resumes in
+ * the frame it captured at its own `await`, so the store set inside the guard
+ * is gone and every following query silently ran as the privileged role —
+ * RLS never applied. The context is therefore attached to Next's
+ * request-scoped work unit store, which every server component, server
+ * action and route handler of the same request shares. Outside a request
+ * (scripts, workers) `enterWith` keeps the previous behaviour.
+ */
+const requestTenants = new WeakMap<object, string>();
+
+function requestScope(): object | undefined {
+  try {
+    const store = workUnitAsyncStorage.getStore();
+    // Only real requests. Cache scopes (`unstable_cache`, "use cache") and
+    // prerendering run detached from the user and keep the privileged role.
+    return store && store.type === "request" ? store : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/** Tenant of the current flow: explicit scopes first, then the request. */
+function currentTenantId(): string | undefined {
+  const scoped = tenantALS.getStore();
+  if (scoped) return scoped;
+  const scope = requestScope();
+  return scope ? requestTenants.get(scope) : undefined;
+}
+
+/**
+ * Activate the tenant context for the remainder of the current request.
  * Call this as soon as the tenant is resolved (guards, actions, API routes).
+ * Explicit scopes (`withTenantContext`) always take precedence.
  */
 export function setTenantContext(tenantId: string): void {
+  const scope = requestScope();
+  if (scope) {
+    const previous = requestTenants.get(scope);
+    if (previous && previous !== tenantId) {
+      // One request acts for one community. Switching silently would apply
+      // the second tenant's RLS identity to queries meant for the first.
+      throw new Error("A request may not switch its tenant context.");
+    }
+    requestTenants.set(scope, tenantId);
+    return;
+  }
   tenantALS.enterWith(tenantId);
+}
+
+/** Tenant id the RLS layer currently applies (diagnostics and tests). */
+export function activeTenantContext(): string | undefined {
+  return currentTenantId();
 }
 
 /** Run `fn` with an explicit tenant context (e.g. webhooks, background jobs). */
@@ -45,7 +101,7 @@ function createClient(base: PrismaClient) {
     query: {
       $allModels: {
         async $allOperations({ model, operation, args, query }) {
-          const tenantId = tenantALS.getStore();
+          const tenantId = currentTenantId();
           if (!tenantId) return query(args);
           return base.$transaction(async (tx) => {
             await tx.$executeRawUnsafe("SET LOCAL ROLE aera_app");
@@ -66,7 +122,7 @@ function createClient(base: PrismaClient) {
 export async function withTenantTransaction<T>(
   fn: (tx: Prisma.TransactionClient) => Promise<T>,
 ): Promise<T> {
-  const tenantId = tenantALS.getStore();
+  const tenantId = currentTenantId();
   if (!tenantId) return baseClient.$transaction(fn);
   return baseClient.$transaction(async (tx) => {
     await tx.$executeRawUnsafe("SET LOCAL ROLE aera_app");

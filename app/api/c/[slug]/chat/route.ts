@@ -1,3 +1,4 @@
+import { canParticipate } from "@/lib/entitlements";
 import { NextResponse } from "next/server";
 import {
   fetchSpaceMessagesSince,
@@ -54,7 +55,10 @@ export async function POST(
   if (!body.trim()) return NextResponse.json({ error: "empty" }, { status: 400 });
 
   const r = await resolveChatAccess(slug, payload.space ?? null, payload.dm ?? null);
-  if (!r) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  // Reading a public room is open; writing needs an ACTIVE membership.
+  if (!r || !canParticipate(r.community.ctx)) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
 
   const userId = r.community.user!.id;
 

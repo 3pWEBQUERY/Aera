@@ -10,6 +10,7 @@ import { sendEmail, renderAccountActionHtml } from "@/lib/email";
 import { signAccountToken, verifyAccountToken, resetUrl } from "@/lib/tokens";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { writeAudit } from "@/lib/audit";
+import { safeRelativePath } from "@/lib/safe-redirect";
 import {
   decryptSecret,
   encryptSecret,
@@ -29,10 +30,7 @@ export interface AccountState {
 }
 
 function safeNextPath(value: FormDataEntryValue | null, fallback = "/home") {
-  const next = typeof value === "string" ? value : "";
-  return next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
-    ? next
-    : fallback;
+  return safeRelativePath(value, fallback);
 }
 
 const PASSWORD_MIN = 8;
@@ -145,20 +143,22 @@ async function setPasswordWithToken(
         : {}),
     },
   });
-  await setSessionCookie({
-    userId: updatedUser.id,
-    sessionVersion: updatedUser.sessionVersion,
-  });
   await writeAudit({
     actorUserId: user.id,
     action: purpose === "invite" ? "user.invite.accept" : "user.password_reset.complete",
   });
 
-  const next = String(fd.get("next") || "");
-  const safe =
-    next.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
-      ? next
-      : "/dashboard";
+  const safe = safeRelativePath(fd.get("next"), "/dashboard");
+  // A mailbox link proves the e-mail, not the second factor. With TOTP
+  // enabled the new password must go through the regular login, otherwise a
+  // reset link alone would bypass 2FA (including for platform admins).
+  if (updatedUser.totpEnabledAt && updatedUser.totpSecret) {
+    redirect(`/login?next=${encodeURIComponent(safe)}`);
+  }
+  await setSessionCookie({
+    userId: updatedUser.id,
+    sessionVersion: updatedUser.sessionVersion,
+  });
   redirect(safe);
 }
 

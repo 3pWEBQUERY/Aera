@@ -1,6 +1,7 @@
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { buildAccessContext, canAccess } from "@/lib/entitlements";
+import { buildAccessContext, canAccess, canParticipate } from "@/lib/entitlements";
+import { isPostLocked } from "@/lib/post-access";
 import { awardPoints } from "@/lib/gamification";
 import { moderateContent } from "@/lib/moderation";
 import { notify } from "@/lib/notifications";
@@ -43,8 +44,15 @@ export async function POST(
   });
   if (!space) return jsonError("not_found", "Space not found.", 404);
   const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(space, ctx)) {
+  if (!canAccess(space, ctx) || !canParticipate(ctx)) {
     return jsonError("not_member", "You do not have access to this space.", 403);
+  }
+  // Geschlossene Kommentare gelten auch hier — wie im Web, ohne Staff-Ausnahme.
+  if (post.closeComments) {
+    return jsonError("comments_closed", "Comments are closed for this post.", 403);
+  }
+  if (post.authorId !== user.id && isPostLocked(post, ctx)) {
+    return jsonError("payment_required", "This post is locked.", 403);
   }
 
   const parentId = parsed.data.parentId?.trim() || null;

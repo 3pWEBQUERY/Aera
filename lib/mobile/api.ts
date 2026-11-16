@@ -4,6 +4,7 @@ import type { z } from "zod";
 import prisma, { setTenantContext, systemPrisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/session";
 import { sessionMatchesUser } from "@/lib/auth";
+import { ipFromHeaders } from "@/lib/rate-limit";
 import type { Tenant, User } from "@/app/generated/prisma/client";
 
 /**
@@ -122,9 +123,5 @@ export async function parseJsonBody<S extends z.ZodType>(
 
 /** Best-effort Client-IP für Rate-Limit-Keys (Request-basiert, ohne next/headers). */
 export function requestIp(req: Request): string {
-  return (
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "local"
-  );
+  return ipFromHeaders(req.headers);
 }

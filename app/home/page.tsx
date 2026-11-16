@@ -305,7 +305,7 @@ export default async function DiscoverPage({
   return (
     <div className="w-full space-y-10 px-4 py-8 sm:px-8">
       <div>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65">
           {t("eyebrow")}
         </p>
         <h1 className="display-serif mt-2 text-4xl text-[#161613] sm:text-5xl">

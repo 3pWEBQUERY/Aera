@@ -16,6 +16,13 @@ const noStore = { "Cache-Control": "no-store" };
  * Delivery runs through /api/platform-media.
  */
 export async function POST(req: Request) {
+  // Tenant subdomains are *same-site* with the admin host, so SameSite=Lax
+  // does not stop a form post from there. Only same-origin requests (or
+  // clients that send no Fetch Metadata) may reach the admin uploads.
+  const fetchSite = req.headers.get("sec-fetch-site");
+  if (fetchSite && fetchSite !== "same-origin") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
   // Throws a 404 for everyone else — the admin area stays invisible.
   const admin = await requirePlatformAdmin();
 

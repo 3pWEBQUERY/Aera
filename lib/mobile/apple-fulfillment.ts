@@ -3,7 +3,7 @@ import prisma, { withTenantContext, withTenantTransaction } from "@/lib/prisma";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
 import { awardPoints, reversePointsByReference } from "@/lib/gamification";
 import { platformFeeCents } from "@/lib/stripe";
-import { recordReferralPurchase } from "@/lib/referrals";
+import { recordReferralPurchase, reverseReferralPurchaseByRef } from "@/lib/referrals";
 import { emitWebhookEvent } from "@/lib/webhooks";
 import { writeAudit } from "@/lib/audit";
 import {
@@ -124,6 +124,13 @@ export async function fulfillTierPurchase(input: {
   }
 
   const currentPeriodEnd = txDate(txn.expiresDate);
+  // A subscription JWS is a snapshot. Replaying the original one after the
+  // period ended (or after an EXPIRED/REFUND notification cancelled it) must
+  // not reactivate the membership — only a current, unexpired transaction
+  // may grant access. Renewals arrive as new transactions with a later date.
+  if (!currentPeriodEnd || currentPeriodEnd.getTime() <= Date.now()) {
+    throw new IapFulfillmentError("iap_invalid", "Subscription transaction has expired.", 409);
+  }
   const priorMembership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId } },
     select: { tierId: true, status: true },
@@ -359,6 +366,13 @@ async function resolveOneTimeTarget(input: {
       if (!req || req.priceCents <= 0) {
         throw new IapFulfillmentError("not_found", "Priced request not found.", 404);
       }
+      // Same rules as the web checkout: only the requester pays, and only
+      // while the request is waiting for payment (FULFILLED stays allowed so
+      // an interrupted fulfillment can be retried idempotently). Otherwise
+      // anyone could buy someone else's commissioned deliverable.
+      if (req.requesterId !== userId || (req.status !== "PRICED" && req.status !== "FULFILLED")) {
+        throw new IapFulfillmentError("not_found", "Priced request not found.", 404);
+      }
       requirePoolMatch(req.priceCents, "request price");
       const key = req.entitlementKey ?? `request:${req.id}`;
       return {
@@ -396,16 +410,25 @@ async function resolveOneTimeTarget(input: {
           const mine = await prisma.bookingReservation.findFirst({
             where: { slotId: slot.id, userId, status: { in: ["CONFIRMED", "PENDING"] } },
           });
+          // Die Transaktion wird nur an eine Reservierung gebunden, die sie
+          // selbst bestätigt — ein Refund darf keine anders bezahlte Buchung
+          // stornieren (reverseAppleOrder).
           if (mine) {
             if (mine.status !== "CONFIRMED") {
               await prisma.bookingReservation.update({
                 where: { id: mine.id },
-                data: { status: "CONFIRMED" },
+                data: { status: "CONFIRMED", appleTransactionId: txn.transactionId },
               });
             }
           } else {
             await prisma.bookingReservation.create({
-              data: { tenantId: tenant.id, slotId: slot.id, userId, status: "CONFIRMED" },
+              data: {
+                tenantId: tenant.id,
+                slotId: slot.id,
+                userId,
+                status: "CONFIRMED",
+                appleTransactionId: txn.transactionId,
+              },
             });
           }
         },
@@ -445,6 +468,7 @@ async function resolveOneTimeTarget(input: {
               currency: "eur",
               isPublic: true,
               status: "PAID",
+              appleTransactionId: txn.transactionId,
             },
           });
         },
@@ -471,10 +495,33 @@ export async function fulfillOneTimePurchase(input: {
 
   const existingOrder = await prisma.order.findUnique({
     where: { appleTransactionId: txn.transactionId },
-    select: { id: true, tenantId: true, userId: true },
+    select: {
+      id: true,
+      tenantId: true,
+      userId: true,
+      productId: true,
+      description: true,
+      grantedEntitlementKey: true,
+    },
   });
   if (existingOrder && (existingOrder.tenantId !== tenant.id || existingOrder.userId !== userId)) {
     throw new IapFulfillmentError("iap_invalid", "Transaction already redeemed by another account.", 409);
+  }
+  // A retry may only repair the purchase this transaction originally paid
+  // for. Consumables share one Apple product per price point, so without
+  // this check one transaction could be replayed against every other item
+  // at the same price and unlock all of them.
+  if (
+    existingOrder &&
+    ((existingOrder.grantedEntitlementKey ?? null) !== (target.entitlementKey ?? null) ||
+      (existingOrder.productId ?? null) !== (target.productId ?? null) ||
+      existingOrder.description !== target.description)
+  ) {
+    throw new IapFulfillmentError(
+      "iap_invalid",
+      "Transaction was already redeemed for a different item.",
+      409,
+    );
   }
 
   const firstFulfillment = !existingOrder;
@@ -621,8 +668,11 @@ export async function syncAppleSubscription(
 /**
  * Refund eines One-Time-Kaufs rückabwickeln — Spiegel von
  * handleChargeRefunded: Order→REFUNDED, Entitlement entziehen (sofern kein
- * anderer bezahlter Kauf denselben Key hält), Punkte stornieren, Restbestand
- * physischer Produkte zurückbuchen.
+ * anderer bezahlter Kauf denselben Key hält), Punkte und Empfehlungsprovision
+ * stornieren, Restbestand physischer Produkte zurückbuchen, Trinkgeld als
+ * REFUNDED markieren und eine bezahlte Buchung stornieren. Jeder Schritt ist
+ * über Status/`reversedAt` idempotent, Apple darf die Benachrichtigung also
+ * wiederholen.
  */
 export async function reverseAppleOrder(
   appleTransactionId: string,
@@ -683,6 +733,25 @@ export async function reverseAppleOrder(
       refType: "AppleTransaction",
       refId: appleTransactionId,
       reversalRefId: eventId,
+    });
+    await reverseReferralPurchaseByRef({
+      tenantId: order.tenantId,
+      refType: "AppleTransaction",
+      refId: appleTransactionId,
+    });
+    // Trinkgeld/Buchung hängen über die Transaktion am Kauf. Ältere Käufe
+    // ohne diese Verknüpfung bleiben unberührt (kein Raten über Betrag/Zeit).
+    await prisma.tip.updateMany({
+      where: { tenantId: order.tenantId, appleTransactionId, status: "PAID" },
+      data: { status: "REFUNDED" },
+    });
+    await prisma.bookingReservation.updateMany({
+      where: {
+        tenantId: order.tenantId,
+        appleTransactionId,
+        status: { not: "CANCELLED" },
+      },
+      data: { status: "CANCELLED" },
     });
     await writeAudit({
       tenantId: order.tenantId,

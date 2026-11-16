@@ -252,11 +252,20 @@ export async function isDirectMember(
   conversationId: string,
   userId: string,
 ): Promise<boolean> {
-  const m = await prisma.conversationMember.findFirst({
-    where: { tenantId, conversationId, userId },
-    select: { id: true },
-  });
-  return !!m;
+  // A conversation seat alone is not enough: banning or removing a member
+  // keeps their ConversationMember row, so the community membership must
+  // still be ACTIVE or they could keep messaging the person they harassed.
+  const [m, membership] = await Promise.all([
+    prisma.conversationMember.findFirst({
+      where: { tenantId, conversationId, userId },
+      select: { id: true },
+    }),
+    prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId, userId } },
+      select: { status: true },
+    }),
+  ]);
+  return !!m && membership?.status === "ACTIVE";
 }
 
 export interface DirectThread {

@@ -18,6 +18,28 @@ export interface AccessContext {
   hasPaidEntitlement: boolean;
 }
 
+/**
+ * Write permission is not read permission. `canAccess` is true for anyone on
+ * a PUBLIC space — including banned users and non-members — so every write
+ * path (posts, comments, reactions, votes, chat) must also require an ACTIVE
+ * membership. Staff are always active members (see `isStaff`).
+ */
+export function canParticipate(ctx: AccessContext): boolean {
+  return ctx.membership?.status === "ACTIVE";
+}
+
+/** Space types whose composer is offered to regular members. */
+const MEMBER_POST_SPACE_TYPES = new Set(["FEED", "FORUM"]);
+
+/** May this viewer create a new post in `space`? */
+export function canCreatePostIn(
+  space: { type: string; isArchived: boolean },
+  ctx: AccessContext,
+): boolean {
+  if (!canParticipate(ctx) || space.isArchived) return false;
+  return ctx.isStaff || MEMBER_POST_SPACE_TYPES.has(space.type);
+}
+
 /** All currently valid entitlement keys for a user within a tenant. */
 export async function entitlementKeys(
   tenantId: string,
@@ -67,15 +89,15 @@ export async function buildAccessContext(
 
 /**
  * True if any of the user's entitlement keys represents real paid access.
- * `product:`/`media:` keys only ever come from purchases; `tier:` keys also
- * exist for free default tiers, so those must be checked against the tier's
- * actual price — otherwise every free member would pass PAID gates.
+ * `media:`/`post:`/… keys only ever come from purchases. `tier:` keys also
+ * exist for free default tiers and `product:` keys for free products, so
+ * those are checked against the actual price — otherwise every free member
+ * would pass PAID gates.
  */
 async function hasPaidKey(tenantId: string, keys: Set<string>): Promise<boolean> {
   if (keys.size === 0) return false;
   for (const k of keys) {
     if (
-      k.startsWith("product:") ||
       k.startsWith("media:") ||
       k.startsWith("media-item:") ||
       k.startsWith("post:") ||
@@ -85,6 +107,17 @@ async function hasPaidKey(tenantId: string, keys: Set<string>): Promise<boolean>
     ) {
       return true;
     }
+  }
+  // Products may be free (lead magnets). A key from a free product must not
+  // open every generic PAID gate, so product keys count only while a priced
+  // product grants them.
+  const productKeys = [...keys].filter((k) => k.startsWith("product:"));
+  if (productKeys.length > 0) {
+    const paidProduct = await prisma.product.findFirst({
+      where: { tenantId, grantsEntitlementKey: { in: productKeys }, priceCents: { gt: 0 } },
+      select: { id: true },
+    });
+    if (paidProduct) return true;
   }
   const tierKeys = [...keys].filter((k) => k.startsWith("tier:"));
   if (tierKeys.length === 0) return false;

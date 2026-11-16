@@ -14,7 +14,7 @@ function adminEmailAllowlist(): string[] {
     .filter(Boolean);
 }
 
-type Action = "grant" | "revoke" | "status";
+type Action = "grant" | "revoke" | "status" | "verify-email";
 
 function option(name: string): string {
   const prefixed = process.argv.find((arg) => arg.startsWith(`--${name}=`));
@@ -25,9 +25,14 @@ function option(name: string): string {
 
 async function main() {
   const action = process.argv[2] as Action | undefined;
-  if (action !== "grant" && action !== "revoke" && action !== "status") {
+  if (
+    action !== "grant" &&
+    action !== "revoke" &&
+    action !== "status" &&
+    action !== "verify-email"
+  ) {
     throw new Error(
-      "Usage: platform-admin.ts <grant|revoke|status> --email <address> [--confirm <action:address>]",
+      "Usage: platform-admin.ts <grant|revoke|status|verify-email> --email <address> [--confirm <action:address>]",
     );
   }
 
@@ -66,6 +71,30 @@ async function main() {
     console.log(
       `\n  => /admin ${granted ? "is reachable" : "answers 404 — fix every FAIL above"}\n`,
     );
+    return;
+  }
+
+  if (action === "verify-email") {
+    // Bootstrap for the very first admin before transactional mail (Resend)
+    // is configured: whoever can run this already holds the production
+    // database credentials, so it grants nothing they could not do anyway.
+    // It is audited and requires the explicit confirmation token.
+    if (user.emailVerifiedAt) {
+      console.log(`${email} is already verified.`);
+      return;
+    }
+    await prisma.$transaction(async (tx) => {
+      await tx.user.update({ where: { id: user.id }, data: { emailVerifiedAt: new Date() } });
+      await tx.auditLog.create({
+        data: {
+          action: "platform_admin.verify_email",
+          targetType: "User",
+          targetId: user.id,
+          metadata: { email, source: "scripts/platform-admin.ts" },
+        },
+      });
+    });
+    console.log(`${email} is now marked as verified.`);
     return;
   }
 

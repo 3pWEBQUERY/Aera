@@ -21,7 +21,18 @@ import { checkbox, formError, text, type FormState } from "@/lib/action-state";
  * auf eine fremde Seite führt.
  */
 function safeNext(value: string): string {
-  return value.startsWith("/") && !value.startsWith("//") ? value : "/studio";
+  // Browser strippen Tabs/Zeilenumbrueche und lesen "\\" wie "/": aus
+  // "/\\evil.com" oder "/\t/evil.com" wuerde sonst "//evil.com".
+  // eslint-disable-next-line no-control-regex
+  if (!value.startsWith("/") || value.startsWith("//") || /[\u0000-\u001f\u007f\\]/.test(value)) {
+    return "/studio";
+  }
+  try {
+    const probe = "https://same-origin.invalid";
+    return new URL(value, probe).origin === probe ? value : "/studio";
+  } catch {
+    return "/studio";
+  }
 }
 
 export async function loginAction(_prev: FormState, form: FormData): Promise<FormState> {

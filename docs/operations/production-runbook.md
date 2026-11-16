@@ -52,7 +52,7 @@ Bearer-Tokens werden nie in Tickets oder Chat kopiert.
 
 ## Cron auf Railway
 
-Der Cron-Service verwendet `railway.cron.toml` als Custom Config Path und läuft
+Der Cron-Service verwendet die Einstellungen aus `infra/railway/cron.toml` und läuft
 alle fünf Minuten. `CRON_TARGET_URL` zeigt direkt auf die generierte
 HTTPS-Domain des Web-Service. Im Web-Service muss dafür unter **Public
 Networking** zuerst eine Railway-Domain generiert sein. Im Cron-Service wird
@@ -120,10 +120,10 @@ export BACKUP_S3_SECRET_ACCESS_KEY='…'
 npm run db:backup -- --retention-days 30
 ```
 
-Für Railway ist dafür `railway.backup.toml` plus `Dockerfile.backup`
+Für Railway ist dafür `infra/railway/backup.toml` plus `Dockerfile.backup`
 vorbereitet. Einen dritten Service aus demselben Repository anlegen und als
-Custom Config Path `/railway.backup.toml` setzen. Der Job läuft täglich um
-02:17 UTC, enthält einen PostgreSQL-17-Client sowie `age` und beendet sich nach
+die Werte aus `infra/railway/backup.toml` an den Service übernehmen. Der Job läuft täglich um
+02:17 UTC, enthält einen PostgreSQL-18-Client sowie `age` und beendet sich nach
 dem Upload. `DATABASE_URL` wird als Referenz auf Postgres gesetzt; alle
 `BACKUP_*`-Werte gehören nur in diesen Service. Im unabhängigen Bucket bleiben
 Object Lock/Versionierung und eine Lifecycle-Retention von mindestens 30 Tagen

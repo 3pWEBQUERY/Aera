@@ -166,7 +166,7 @@ Stream wird auch als Adresse akzeptiert. Doku: `docs/live-streaming-setup.md`.
   `…_rls_authorization_boundary`, `…_lifecycle_rls`.
 - **Cron-Monitoring** (`20260719160000_cron_job_monitoring`): persistente
   `CronJobHeartbeat`s, `/api/cron/status` (503 bei überfälligen Jobs), eigener
-  Railway-Cron-Service (`railway.cron.toml`), Backup-Service (`railway.backup.toml`),
+  Railway-Cron-Service (`infra/railway/cron.toml`), Backup-Service (`infra/railway/backup.toml`),
   `db:backup` (verschlüsselte Offsite-Dumps), `db:restore-drill`.
 - **Rich-Text-Editor**: Slash-(/)-Menü, Divider, Emoji-Picker, In-Browser-
   Videoaufnahme, GIF-Picker (Tenor/Giphy), Dateianhänge + `<hr>`; Forum-„Thema
