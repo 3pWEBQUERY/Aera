@@ -174,14 +174,16 @@ export function GamificationManager({
                     <form action={updateRulePointsAction} className="flex items-center gap-1.5">
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="ruleId" value={r.id} />
-                      <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+                      {/* Feste Breite am Rahmen: Input bringt w-full mit, und cn()
+                          fuehrt Klassen nur zusammen — w-16 allein verlor. */}
+                      <div className="flex w-24 items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
                         <Input
                           id={pointsId}
                           name="points"
                           type="number"
                           defaultValue={r.points}
                           aria-label={t("pointsForRuleAria", { name: r.name })}
-                          className="w-16 border-0 py-1.5 text-right focus:ring-0"
+                          className="min-w-0 flex-1 border-0 px-2 py-1.5 text-right focus:ring-0"
                         />
                         <span aria-hidden className="pr-2 text-xs font-medium text-slate-500">{t("pts")}</span>
                       </div>

@@ -6,6 +6,7 @@ import { getCommunityContext } from "@/lib/guards";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
 import { SpacePaywall } from "@/components/community/space-paywall";
+import { joinOfferFor } from "@/lib/join-offer";
 import { canAccess } from "@/lib/entitlements";
 import { isPostLocked, postLockKind, unlockedPostWhere } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
@@ -83,6 +84,7 @@ export default async function SpacePage({
   const tShop = await getTranslations("community.render.shop");
   const tSidebar = await getTranslations("community.render.sidebar");
   const tLegal = await getTranslations("legalPurchase");
+  const tSafety = await getTranslations("billingSafety");
   const tPostTile = await getTranslations("community.render.postTile");
   const locale = await getLocale();
 
@@ -145,30 +147,42 @@ export default async function SpacePage({
   }
 
   if (!allowed) {
-    return (
-      <div className="mx-auto max-w-xl">
-        <Card>
-          <CardBody className="text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)]">
-              <Icon name="lock" size={26} className="text-[var(--brand)]" />
-            </div>
-            <h1 className="display-serif mt-3 text-2xl text-[#161613]">{space.name}</h1>
-            <p className="mt-2 text-[#161613]/60">
-              {space.visibility === "PAID" ? t("lockedDescPaid") : t("lockedDesc")}
-            </p>
-            <div className="mt-5">
-              <ButtonLink href={`/c/${slug}/join`} variant="brand">
-                {isMember ? t("upgradeMembership") : t("join")}
-              </ButtonLink>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
+    // Mitglieder-Space ohne Preis: sagen, dass die Mitgliedschaft nichts
+    // kostet, und mit `next` hierher zurückführen.
+    const offer = await joinOfferFor(tenant.id, null);
+    const joinHref = `/c/${slug}/join?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}`)}`;
+    const tPaywall = await getTranslations("community.render.paywall");
+    return offer.kind === "free" ? (
+      <SpacePaywall
+        variant="free"
+        spaceName={space.name}
+        message={tPaywall("freeMembers", { space: space.name })}
+        cta={{ href: joinHref, label: tPaywall("joinFree") }}
+      />
+    ) : (
+      <SpacePaywall
+        variant="paid"
+        spaceName={space.name}
+        message={t("lockedDesc")}
+        cta={{ href: joinHref, label: isMember ? t("upgradeMembership") : t("join") }}
+      />
     );
   }
 
+  // Zahlung nicht gestartet (Checkout) — gilt für jeden Kauf aus diesem Space.
+  const checkoutAlert =
+    error === "checkout" || error === "payments-unavailable" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {tSafety("checkoutNotStarted")}
+      </p>
+    ) : null;
+
   const header = (
     <div className="mb-6">
+      {checkoutAlert}
       {error === "legal-consent" && (
         <p
           role="alert"
@@ -328,6 +342,7 @@ export default async function SpacePage({
 
     return (
       <>
+        {checkoutAlert}
         {error === "legal-consent" && (
           <p
             role="alert"
@@ -1718,8 +1733,8 @@ export default async function SpacePage({
         {header}
         {events.map((e) => (
           <Card key={e.id}>
-            <CardBody className="flex items-center justify-between gap-4">
-              <div>
+            <CardBody className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
                 <p className="font-semibold text-[#161613]">{e.title}</p>
                 <p className="mt-1 text-sm text-[#161613]/60">
                   {formatDateTime(e.startsAt, locale)}
@@ -1727,13 +1742,22 @@ export default async function SpacePage({
                 </p>
               </div>
               {isMember && (
-                <form action={rsvpEventAction}>
-                  <input type="hidden" name="tenant" value={slug} />
-                  <input type="hidden" name="eventId" value={e.id} />
-                  <Button size="sm" variant={myRsvps.has(e.id) ? "secondary" : "brand"}>
-                    {myRsvps.has(e.id) ? t("attended") : t("attend")}
-                  </Button>
-                </form>
+                <div className="flex shrink-0 flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+                  {/* Status als Text, der Knopf nennt die Aktion. */}
+                  {myRsvps.has(e.id) && (
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700">
+                      <Icon name="check" size={14} />
+                      {t("rsvpGoing")}
+                    </span>
+                  )}
+                  <form action={rsvpEventAction}>
+                    <input type="hidden" name="tenant" value={slug} />
+                    <input type="hidden" name="eventId" value={e.id} />
+                    <Button size="sm" variant={myRsvps.has(e.id) ? "secondary" : "brand"}>
+                      {myRsvps.has(e.id) ? t("withdrawRsvp") : t("attend")}
+                    </Button>
+                  </form>
+                </div>
               )}
             </CardBody>
           </Card>

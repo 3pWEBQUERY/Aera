@@ -297,7 +297,7 @@ export function TotpSettings({
             height={160}
             className="rounded-xl ring-1 ring-[#161613]/10"
           />
-          <div className="min-w-0 flex-1 space-y-2 text-sm text-[#161613]/65">
+          <div className="min-w-56 flex-1 space-y-2 text-sm text-[#161613]/65">
             <p id="totp-key-label">{t("twoFaNoScanner")}</p>
             <code
               aria-labelledby="totp-key-label"
