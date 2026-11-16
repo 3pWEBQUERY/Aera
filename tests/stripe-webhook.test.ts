@@ -1033,6 +1033,26 @@ describe("POST /api/stripe/webhook", () => {
       });
     });
 
+    it("cancels the booking reservation a refunded Checkout confirmed", async () => {
+      constructWebhookEvent.mockReturnValue(refundedCharge());
+      prisma.order.findFirst.mockResolvedValue({
+        id: "order_booking",
+        tenantId: "t1",
+        userId: "u1",
+        description: "Buchung: Coaching",
+        stripeSessionId: "cs_booking",
+        grantedEntitlementKey: null,
+      });
+
+      const res = await POST(request());
+
+      expect(res.status).toBe(200);
+      expect(prisma.bookingReservation.updateMany).toHaveBeenCalledWith({
+        where: { tenantId: "t1", stripeSessionId: "cs_booking", status: { not: "CANCELLED" } },
+        data: { status: "CANCELLED" },
+      });
+    });
+
     it("marks a refunded tip and reverses Tip-reference points", async () => {
       constructWebhookEvent.mockReturnValue(refundedCharge());
       prisma.order.findFirst.mockResolvedValue({
@@ -1366,6 +1386,10 @@ describe("POST /api/stripe/webhook", () => {
       expect(mocks.refundPaidCreditPack).toHaveBeenCalledWith({
         tenantId: "t1",
         stripePaymentIntentId: "pi_disputed",
+      });
+      expect(prisma.bookingReservation.updateMany).toHaveBeenCalledWith({
+        where: { tenantId: "t1", stripeSessionId: "cs_order", status: { not: "CANCELLED" } },
+        data: { status: "CANCELLED" },
       });
     });
 
