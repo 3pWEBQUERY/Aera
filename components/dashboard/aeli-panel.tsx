@@ -126,7 +126,7 @@ function Submit({ label, busy }: { label: string; busy?: string }) {
     <button
       type="submit"
       disabled={pending}
-      className="inline-flex h-10 shrink-0 items-center rounded-lg bg-[var(--action)] px-4 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+      className="inline-flex h-10 shrink-0 items-center rounded-lg bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)] disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
     >
       {pending ? (busy ?? "…") : label}
     </button>
@@ -497,7 +497,7 @@ function LinkCode({ slug, studioUrl }: { slug: string; studioUrl: string }) {
                   href={`${studioUrl}/einstellungen`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex h-10 shrink-0 items-center rounded-lg bg-[var(--action)] px-4 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
+                  className="inline-flex h-10 shrink-0 items-center rounded-lg bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
                 >
                   {t("toStudio")}
                 </a>

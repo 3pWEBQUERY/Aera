@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Nawigacja panelu",
       "planner": "Planer",
       "lockedSuffix": "tylko z {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "W wyższych pakietach ({count})"
     },
     "media": {
       "metaTitle": "Multimedia",

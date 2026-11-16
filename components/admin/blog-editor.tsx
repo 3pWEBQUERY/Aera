@@ -504,7 +504,7 @@ function SaveButton({
           name="status"
           value="PUBLISHED"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--action)] px-3.5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-[var(--primary)] px-3.5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
         >
           {t("publish")}
         </button>

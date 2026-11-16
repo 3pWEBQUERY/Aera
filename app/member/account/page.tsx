@@ -447,7 +447,7 @@ export default async function MemberAccountPage({
                         <div className="mt-4 flex flex-wrap gap-2">
                           <Link
                             href={`/c/${m.tenant.slug}`}
-                            className="inline-flex min-h-9 items-center rounded-xl bg-[var(--action)] px-4 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
+                            className="inline-flex min-h-9 items-center rounded-xl bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
                           >
                             {t("toCommunity")}
                           </Link>

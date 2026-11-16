@@ -116,7 +116,7 @@ export function BlogManager({
             <Icon name="settings" size={16} className="text-slate-500" />
             {t("settings")}
           </button>
-          <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
+          <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]">
             <Icon name="plus" size={18} />
             {t("writePost")}
           </button>
@@ -140,7 +140,7 @@ export function BlogManager({
           </div>
           <p className="mt-3 font-medium text-slate-700">{t("emptyTitle")}</p>
           <p className="mt-1 text-sm text-slate-500">{t("emptyHint")}</p>
-          <button onClick={openCreate} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+          <button onClick={openCreate} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
             <Icon name="plus" size={18} /> {t("writePost")}
           </button>
         </div>
@@ -543,7 +543,7 @@ function Footer({ pending, onDone, cta }: { pending: boolean; onDone: () => void
       <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">
         {t("cancel")}
       </button>
-      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
         {pending ? t("saving") : cta}
       </button>
     </div>

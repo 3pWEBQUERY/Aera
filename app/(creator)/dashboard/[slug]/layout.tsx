@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { AERA_DASHBOARD_VARS } from "@/lib/ui-theme";
 import { userTenants } from "@/lib/tenant";
 import prisma from "@/lib/prisma";
 import { CommunityRail } from "@/components/dashboard/community-rail";
@@ -71,7 +72,7 @@ export default async function DashboardLayout({
     : null;
 
   return (
-    <div className="flex min-h-screen w-full bg-slate-50">
+    <div className="flex min-h-screen w-full bg-slate-50" style={AERA_DASHBOARD_VARS}>
       {/* Far-left community rail (sticky, full height). Hidden on phones,
           where it took a fifth of the width; the menu sheet links to all
           communities instead. */}

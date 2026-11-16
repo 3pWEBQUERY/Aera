@@ -984,7 +984,7 @@ export default async function SpacePage({
               className="mt-3 w-full rounded-lg border border-[#161613]/15 px-3 py-2 text-sm focus:border-[var(--brand)] focus:outline-none"
             />
             <div className="mt-3 flex justify-end">
-              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                 {tReq("submit")}
               </button>
             </div>
@@ -1024,7 +1024,7 @@ export default async function SpacePage({
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="space" value={spaceSlug} />
                       <input type="hidden" name="requestId" value={r.id} />
-                      <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+                      <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                         <Icon name="lock" size={15} />
                         {tReq("payFor", { price: formatPrice(r.priceCents, r.currency, locale) })}
                       </button>
@@ -1085,7 +1085,7 @@ export default async function SpacePage({
                         <input type="hidden" name="tenant" value={slug} />
                         <input type="hidden" name="space" value={spaceSlug} />
                         <input type="hidden" name="slotId" value={s.id} />
-                        <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+                        <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                           {tBook("reserve")}
                         </button>
                       </form>

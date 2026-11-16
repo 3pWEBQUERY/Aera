@@ -564,7 +564,7 @@ export function RichTextEditor({
         placeholder={t("linkPlaceholder")}
         className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
       />
-      <button type="button" onClick={applyLink} className="rounded-lg bg-[var(--action)] px-3 py-1.5 text-xs font-semibold text-[var(--action-fg)] hover:bg-[var(--action-hover)]">
+      <button type="button" onClick={applyLink} className="rounded-lg bg-[var(--primary)] px-3 py-1.5 text-xs font-semibold text-[var(--primary-fg)] hover:bg-[var(--primary-hover)]">
         {t("applyLink")}
       </button>
       <button type="button" onClick={() => setLinkOpen(false)} className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100">
@@ -1068,7 +1068,7 @@ function RecordVideoModal({
               <button
                 type="button"
                 onClick={() => recorderRef.current?.stop()}
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--action)] px-5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
               >
                 <span className="h-2.5 w-2.5 rounded-[3px] bg-white" />
                 {t("recStop")}
@@ -1086,7 +1086,7 @@ function RecordVideoModal({
                 <button
                   type="button"
                   onClick={insert}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--action)] px-5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
                 >
                   {t("recInsert")}
                 </button>

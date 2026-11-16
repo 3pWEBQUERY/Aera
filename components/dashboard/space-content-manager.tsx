@@ -117,7 +117,7 @@ export function SpaceContentManager({
             {t("view")}
           </Link>
           {(isPost || isKnowledge) && (
-            <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
+            <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]">
               <Icon name="plus" size={18} />
               {createLabelFor(space.type)}
             </button>
@@ -458,7 +458,7 @@ function Footer({ pending, onDone, cta }: { pending: boolean; onDone: () => void
   return (
     <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
       <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
         {pending ? t("saving") : cta}
       </button>
     </div>
@@ -477,7 +477,7 @@ function SpaceEmpty({
   const t = useTranslations("dashboard.spaceContent");
   return (
     <EmptyState icon={icon} title={t("emptyTitle")} hint={t("emptyHint")}>
-      <button onClick={onCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+      <button onClick={onCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
         <Icon name="plus" size={18} /> {label}
       </button>
     </EmptyState>

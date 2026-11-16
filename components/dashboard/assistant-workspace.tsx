@@ -581,7 +581,7 @@ export function AssistantWorkspace({
           <button
             type="button"
             onClick={() => (mode === "image" ? newImageSession() : newChat())}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--action)] px-2.5 py-1.5 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-2.5 py-1.5 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={14} />
             {t("newBtn")}

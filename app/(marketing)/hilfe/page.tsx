@@ -87,7 +87,7 @@ export default async function HelpCenterPage({
                 />
                 <button
                   type="submit"
-                  className="shrink-0 rounded-full bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
+                  className="shrink-0 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
                 >
                   {t("searchSubmit")}
                 </button>
@@ -166,7 +166,7 @@ export default async function HelpCenterPage({
               </div>
               <Link
                 href="/hilfe/kontakt"
-                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] sm:self-auto"
+                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] sm:self-auto"
               >
                 {t("contactCta")}
                 <Icon name="chevron" size={15} className="-rotate-90" />

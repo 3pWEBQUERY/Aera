@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Dashbordnavigasjon",
       "planner": "Planlegger",
       "lockedSuffix": "kun med {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "I høyere pakker ({count})"
     },
     "media": {
       "metaTitle": "Medier",

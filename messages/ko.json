@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "대시보드 내비게이션",
       "planner": "플래너",
       "lockedSuffix": "{plan} 전용",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "상위 플랜에서 사용 가능 ({count})"
     },
     "media": {
       "metaTitle": "미디어",

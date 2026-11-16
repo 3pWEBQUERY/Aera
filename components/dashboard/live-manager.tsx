@@ -98,7 +98,7 @@ export function LiveManager({
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
         >
           <Icon name="plus" size={18} />
           {t("create")}
@@ -788,7 +788,7 @@ function LiveForm({
                       {t("studioCardDesc")}
                     </span>
                   </span>
-                  <span className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition group-hover:bg-[var(--action-hover)]">
+                  <span className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition group-hover:bg-[var(--primary-hover)]">
                     {t("studioOpen")}
                     <Icon name="arrowRight" size={16} />
                   </span>
@@ -967,7 +967,7 @@ function LiveForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
         >
           {pending ? t("saving") : isEdit ? t("save") : t("create")}
         </button>

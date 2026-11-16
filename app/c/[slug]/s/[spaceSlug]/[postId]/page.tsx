@@ -378,7 +378,7 @@ export default async function PostDetail({
                   <input type="hidden" name="space" value={spaceSlug} />
                   <input type="hidden" name="postId" value={post.id} />
                   <ImmediateAccessConsent className="mb-3" />
-                  <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
+                  <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                     <Icon name="lock" size={16} />
                     {post.priceCents / 100} {post.currency.toUpperCase()}
                   </button>
@@ -388,7 +388,7 @@ export default async function PostDetail({
                    Mitgliedschaft. Ein Kauf-Button waere hier eine Sackgasse. */
                 <Link
                   href={`/c/${slug}/join`}
-                  className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                  className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
                 >
                   <Icon name="members" size={16} />
                   {tSpace("joinToRead")}

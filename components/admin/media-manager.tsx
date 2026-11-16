@@ -106,7 +106,7 @@ export function MediaManager({
             />
             <button
               type="submit"
-              className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+              className="shrink-0 rounded-full bg-[var(--primary)] px-3.5 py-1 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
             >
               {tc("search")}
             </button>

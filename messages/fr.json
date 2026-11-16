@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Navigation du tableau de bord",
       "planner": "Planificateur",
       "lockedSuffix": "{plan} uniquement",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "Dans les offres supérieures ({count})"
     },
     "media": {
       "metaTitle": "Médias",

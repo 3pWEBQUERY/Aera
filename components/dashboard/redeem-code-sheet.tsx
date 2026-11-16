@@ -80,7 +80,7 @@ export function RedeemCodeForm({ slug }: { slug: string }) {
           <button
             type="submit"
             disabled={pending || code.trim().length < 3}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-4 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-40"
           >
             {pending ? t("submitting") : t("submit")}
           </button>

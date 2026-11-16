@@ -3348,7 +3348,8 @@
       "mobileSubtitle": "Dashboard navigation",
       "planner": "Planner",
       "lockedSuffix": "{plan} only",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "On higher plans ({count})"
     },
     "media": {
       "metaTitle": "Media",

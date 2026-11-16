@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Instrumentpanelsnavigering",
       "planner": "Planerare",
       "lockedSuffix": "endast {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "I högre paket ({count})"
     },
     "media": {
       "metaTitle": "Media",

@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "仪表板导航",
       "planner": "规划器",
       "lockedSuffix": "仅限 {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "更高套餐可用（{count}）"
     },
     "media": {
       "metaTitle": "媒体",

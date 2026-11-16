@@ -979,7 +979,7 @@ function PageEditor({
             type="button"
             onClick={save}
             disabled={pending || !draft.title.trim()}
-            className="flex-1 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+            className="flex-1 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
           >
             {pending ? t("saving") : dirty ? t("savePage") : t("savedPage")}
           </button>

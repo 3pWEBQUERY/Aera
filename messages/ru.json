@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Навигация панели",
       "planner": "Планировщик",
       "lockedSuffix": "только с {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "В старших тарифах ({count})"
     },
     "media": {
       "metaTitle": "Медиа",

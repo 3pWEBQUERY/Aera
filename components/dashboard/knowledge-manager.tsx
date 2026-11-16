@@ -98,7 +98,7 @@ export function KnowledgeManager({
           </button>
           <button
             onClick={openCreate}
-            className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
           >
             <Icon name="plus" size={18} />
             {t("writeArticle")}
@@ -131,7 +131,7 @@ export function KnowledgeManager({
           <p className="mt-1 text-sm text-slate-500">{t("emptyHint")}</p>
           <button
             onClick={openCreate}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={18} /> {t("writeArticle")}
           </button>
@@ -339,7 +339,7 @@ function Footer({ pending, onDone, cta }: { pending: boolean; onDone: () => void
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
       >
         {pending ? t("saving") : cta}
       </button>

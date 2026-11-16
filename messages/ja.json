@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "ダッシュボードのナビゲーション",
       "planner": "プランナー",
       "lockedSuffix": "{plan} 限定",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "上位プランで利用可能（{count}）"
     },
     "media": {
       "metaTitle": "メディア",

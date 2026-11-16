@@ -93,7 +93,7 @@ export function BlogManager({
         </div>
         <Link
           href="/admin/blog/neu"
-          className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+          className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
         >
           <Icon name="plus" size={16} />
           {t("new")}
@@ -115,7 +115,7 @@ export function BlogManager({
             />
             <button
               type="submit"
-              className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+              className="shrink-0 rounded-full bg-[var(--primary)] px-3.5 py-1 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
             >
               {tc("search")}
             </button>

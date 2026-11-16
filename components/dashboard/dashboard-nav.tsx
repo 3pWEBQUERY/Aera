@@ -10,6 +10,7 @@ import {
   NAV_GROUPS_BEFORE,
   spaceTypeIcon,
   type DashboardNavGroup,
+  type DashboardNavItem,
 } from "@/lib/dashboard-nav-items";
 import { Icon } from "./icons";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
@@ -33,6 +34,8 @@ export interface NavSpace {
 const COLLAPSED_STORAGE_KEY = "aera:dashboard-nav-collapsed";
 /** Schluessel der dynamischen Space-Liste — sie steht in keiner NAV_GROUP. */
 const SPACES_SECTION = "spaces";
+/** Schluessel der gebuendelten, im Paket noch gesperrten Eintraege. */
+const LOCKED_SECTION = "locked";
 
 export function DashboardNav({
   tenant,
@@ -74,7 +77,9 @@ export function DashboardNav({
     return keys.join("|");
   }, [pathname, base, spaces]);
 
-  const [collapsed, setCollapsed] = useState<string[]>([]);
+  // The bundle of locked entries starts closed: it advertises what the next
+  // package adds without pushing nine greyed-out items into the daily menu.
+  const [collapsed, setCollapsed] = useState<string[]>([LOCKED_SECTION]);
 
   // Erst nach dem Mount lesen: der Server kennt den Speicher nicht, und ein
   // abweichender erster Client-Render waere ein Hydration-Fehler.
@@ -163,58 +168,69 @@ export function DashboardNav({
     );
   }
 
+  function isLocked(it: DashboardNavItem): boolean {
+    return it.feature ? !planAllowsFeature(plan, it.feature) : false;
+  }
+
+  function isActive(it: DashboardNavItem): boolean {
+    return isPathActive(pathname, base + it.href, it.href === "" || it.exact);
+  }
+
+  function NavItem({ it }: { it: DashboardNavItem }) {
+    const href = base + it.href;
+    // Sub-pages (e.g. /media/studio) keep their section highlighted —
+    // ausser der Eintrag ist als `exact` markiert, weil seine
+    // Unterseiten eigene Eintraege haben.
+    const active = isActive(it);
+    const locked = isLocked(it);
+    return (
+      <Link
+        href={href}
+        aria-label={
+          locked && it.feature
+            ? `${t(`nav.${it.labelKey}`)} — ${t("nav.lockedSuffix", { plan: PLAN_LABEL[minPlanForFeature(it.feature)] })}`
+            : undefined
+        }
+        className={cn(
+          "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+          active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900",
+        )}
+      >
+        <Icon
+          name={it.icon}
+          size={18}
+          className={cn(
+            "shrink-0",
+            active ? "text-[var(--action-fg)]" : "text-slate-500 group-hover:text-slate-600",
+          )}
+        />
+        <span className="min-w-0 flex-1 truncate">{t(`nav.${it.labelKey}`)}</span>
+        {locked && it.feature && (
+          <PlanBadge plan={minPlanForFeature(it.feature)} locked className="shrink-0" />
+        )}
+      </Link>
+    );
+  }
+
   function Group({ group }: { group: DashboardNavGroup }) {
+    // Locked entries move to their own section below — except the one whose
+    // page is open, which stays where the creator expects it.
+    const items = group.items.filter((it) => !isLocked(it) || isActive(it));
+    if (items.length === 0) return null;
     return (
       <Section sectionKey={group.labelKey} label={t(`nav.${group.labelKey}`)}>
         <nav className="space-y-0.5">
-          {group.items.map((it) => {
-            const href = base + it.href;
-            // Sub-pages (e.g. /media/studio) keep their section highlighted —
-            // ausser der Eintrag ist als `exact` markiert, weil seine
-            // Unterseiten eigene Eintraege haben.
-            const active = isPathActive(pathname, href, it.href === "" || it.exact);
-            // Locked entries stay visible on purpose: seeing what the next
-            // package adds is what makes a creator click it.
-            const locked = it.feature ? !planAllowsFeature(plan, it.feature) : false;
-            return (
-              <Link
-                key={it.href}
-                href={href}
-                aria-label={
-                  locked && it.feature
-                    ? `${t(`nav.${it.labelKey}`)} — ${t("nav.lockedSuffix", { plan: PLAN_LABEL[minPlanForFeature(it.feature)] })}`
-                    : undefined
-                }
-                className={cn(
-                  "group flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900",
-                )}
-              >
-                <Icon
-                  name={it.icon}
-                  size={18}
-                  className={cn(
-                    "shrink-0",
-                    active ? "text-[var(--action-fg)]" : "text-slate-500 group-hover:text-slate-600",
-                    locked && !active && "text-slate-300",
-                  )}
-                />
-                <span className={cn("min-w-0 flex-1 truncate", locked && !active && "text-slate-500")}>
-                  {t(`nav.${it.labelKey}`)}
-                </span>
-                {locked && it.feature && !active && (
-                  <PlanBadge plan={minPlanForFeature(it.feature)} locked className="shrink-0" />
-                )}
-                {locked && active && (
-                  <Icon name="lock" size={13} className="shrink-0 text-white/70" />
-                )}
-              </Link>
-            );
-          })}
+          {items.map((it) => (
+            <NavItem key={it.href} it={it} />
+          ))}
         </nav>
       </Section>
     );
   }
+
+  const lockedItems = [...NAV_GROUPS_BEFORE, ...NAV_GROUPS_AFTER]
+    .flatMap((g) => g.items)
+    .filter((it) => isLocked(it) && !isActive(it));
 
   return (
     <div className="flex h-full w-60 shrink-0 flex-col border-r border-slate-200 bg-white">
@@ -265,6 +281,19 @@ export function DashboardNav({
         {NAV_GROUPS_AFTER.map((g) => (
           <Group key={g.labelKey} group={g} />
         ))}
+
+        {lockedItems.length > 0 && (
+          <Section
+            sectionKey={LOCKED_SECTION}
+            label={t("nav.lockedGroup", { count: lockedItems.length })}
+          >
+            <nav className="space-y-0.5">
+              {lockedItems.map((it) => (
+                <NavItem key={it.href} it={it} />
+              ))}
+            </nav>
+          </Section>
+        )}
       </div>
 
       <div className="space-y-3 border-t border-slate-200 p-3">

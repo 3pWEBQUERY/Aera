@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "Navigazione dashboard",
       "planner": "Pianificatore",
       "lockedSuffix": "solo con {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "Nei piani superiori ({count})"
     },
     "media": {
       "metaTitle": "Media",

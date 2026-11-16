@@ -3150,7 +3150,8 @@
       "mobileSubtitle": "儀表板導覽",
       "planner": "規劃器",
       "lockedSuffix": "僅限 {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "更高方案可用（{count}）"
     },
     "media": {
       "metaTitle": "媒體",

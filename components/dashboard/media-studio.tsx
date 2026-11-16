@@ -499,7 +499,7 @@ export function MediaStudio({
                 type="button"
                 onClick={apply}
                 disabled={!canApply}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 <Icon name={busy ? "clock" : "sparkles"} size={16} />
                 {busy ? t("working") : t(`apply_${tool}`)}

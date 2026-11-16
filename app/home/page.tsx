@@ -177,7 +177,7 @@ export default async function DiscoverPage({
               </p>
               <Link
                 href="/start"
-                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
+                className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
               >
                 <Icon name="plus" size={16} /> {t("startCta")}
               </Link>
@@ -452,7 +452,7 @@ async function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
         />
         <button
           type="submit"
-          className="shrink-0 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30"
+          className="shrink-0 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30"
         >
           {t("searchSubmit")}
         </button>

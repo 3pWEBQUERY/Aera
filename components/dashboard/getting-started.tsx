@@ -74,7 +74,7 @@ export async function GettingStarted({
                   href={task.href}
                   className={
                     task === next
-                      ? "ml-10 inline-flex min-h-10 sm:ml-0 items-center rounded-xl bg-[var(--action,#d8cfef)] px-4 text-sm font-semibold text-[#161613] hover:bg-[var(--action-hover,#c1b3e6)]"
+                      ? "ml-10 inline-flex min-h-10 sm:ml-0 items-center rounded-xl bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-fg)] hover:bg-[var(--primary-hover)]"
                       : "ml-10 inline-flex min-h-10 items-center rounded-xl border sm:ml-0 border-slate-200 px-4 text-sm font-medium text-slate-700 hover:bg-slate-50"
                   }
                 >

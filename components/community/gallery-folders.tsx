@@ -241,7 +241,7 @@ function FolderModal({
                 <input type="hidden" name="space" value={space} />
                 <input type="hidden" name="packageId" value={pkg.id} />
                 <ImmediateAccessConsent className="mb-3" />
-                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
+                <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                   <Icon name="lock" size={16} /> {t("unlockFor", { price: formatPrice(pkg.priceCents, PLATFORM_CURRENCY, locale) })}
                 </button>
               </form>
