@@ -282,8 +282,8 @@ Alle ausführenden Cron-Endpunkte akzeptieren ausschließlich `POST` mit
 abgelehnt, damit Secrets nicht in URLs, Zugriffslogs oder Browser-Verläufen
 landen. Nur die read-only Betriebsansicht `/api/cron/status` verwendet `GET`
 mit demselben Bearer-Header. Für Railway wird ein eigener Cron-Service aus
-demselben Repository angelegt und `/railway.cron.toml` als Custom Config Path
-gesetzt. Railway erlaubt als kürzestes Intervall fünf Minuten:
+demselben Repository angelegt; seine Einstellungen stehen in
+`infra/railway/cron.toml`. Railway erlaubt als kürzestes Intervall fünf Minuten:
 
 ```text
 Schedule: */5 * * * * (UTC)
@@ -336,7 +336,7 @@ Antwort ist immer `no-store`.
 
 ## Deployment (Railway)
 
-Die versionierte App-Konfiguration liegt in `railway.toml`; Railway verwendet
+Die versionierte App-Konfiguration liegt in `infra/railway/web.toml`; Railway verwendet
 Railpack, führt die Migration/RLS-Verifikation vor dem Release aus und schaltet
 erst nach erfolgreichem Prozesscheck unter `/api/health/live` auf die neue
 Version. Der vollständige Abhängigkeitscheck unter `/api/health/ready` bleibt
@@ -351,8 +351,8 @@ Einrichtung:
    Referenzvariablen setzen. `AERA_ENVIRONMENT=production` plus alle mit
    `✅ Live` markierten Variablen konfigurieren; `npm run env:check` muss grün
    sein. Stripe/Resend sind im Livebetrieb nicht optional.
-4. Einen Cron-Service mit Custom Config Path `/railway.cron.toml` und einen
-   Backup-Service mit `/railway.backup.toml` anlegen. Backup-Ziel und
+4. Einen Cron-Service (`infra/railway/cron.toml`) und einen Backup-Service
+   (`infra/railway/backup.toml`) anlegen. Backup-Ziel und
    `age`-Empfänger liegen außerhalb des primären Projekts.
 5. In Railway die GitHub Check Suites als Deployment-Gate aktivieren. Damit
    wird nur nach grüner `.github/workflows/ci.yml` gebaut.
@@ -362,7 +362,7 @@ Einrichtung:
 Der konkrete Stand des Railway-Projekts (Services, Variablen, Domains, DNS)
 steht in [`docs/operations/railway-setup.md`](docs/operations/railway-setup.md).
 Railway liest keine eigenen Config-Pfade pro Service mehr; die Werte aus
-`railway*.toml` sind deshalb direkt an den Services hinterlegt.
+`infra/railway/*.toml` sind deshalb direkt an den Services hinterlegt.
 
 Die vollständigen Schritte für Alarme, Railway-Backups/PITR, Offsite-Dumps,
 Restore-Drills, RPO/RTO und Incidents stehen im

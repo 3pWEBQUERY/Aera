@@ -20,7 +20,7 @@ components/           UI-Bausteine, Dashboard-, Community-, Marketing-Komponente
 prisma/               schema.prisma (84 Modelle), migrations/ (79), security/rls.sql
 scripts/              apply-rls, cron.mjs, backup/restore-drill, admin, smokes
 proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
-railway.toml / railway.cron.toml / railway.backup.toml   Deployment-Topologie
+infra/railway/{web,cron,backup}.toml   Deployment-Topologie
 docs/operations/      Produktions-Runbook; docs/live-streaming-setup.md
 ```
 
@@ -108,7 +108,7 @@ docs/operations/      Produktions-Runbook; docs/live-streaming-setup.md
 - Alle Cron-Endpunkte: nur `POST` + `Authorization: Bearer <CRON_SECRET>`;
   `/api/cron/status` (GET, read-only) liefert Heartbeats + tenant-neutrale
   Backlog-Zähler, `503` bei überfälligen/fehlgeschlagenen Jobs.
-- Eigener Railway-Cron-Service (`railway.cron.toml`, alle 5 min,
+- Eigener Railway-Cron-Service (`infra/railway/cron.toml`, alle 5 min,
   `node scripts/cron.mjs`) verarbeitet `posts`, `newsletters`, `webhooks`,
   `automations`, `inventory`, `uploads`, `lifecycle` parallel unter globaler
   50-s-Deadline; persistente `CronJobHeartbeat`s.

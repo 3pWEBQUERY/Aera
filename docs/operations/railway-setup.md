@@ -3,10 +3,12 @@
 Stand der Einrichtung im Railway-Projekt **Aera**, Environment `production`,
 Region `europe-west4` (Amsterdam).
 
-Railway hat „Config as Code“ mit eigenem Pfad pro Service abgekündigt. Die
-Werte aus `railway.toml` und `railway.cron.toml` sind deshalb direkt an den
-Services hinterlegt. Die Dateien bleiben als Referenz im Repository: Wer dort
-etwas ändert, muss es auch in den Service-Einstellungen nachziehen.
+Railway hat „Config as Code“ mit eigenem Pfad pro Service abgekündigt, und
+eine `railway.toml` im Repo-Root würde von **jedem** Service aus diesem Repo
+übernommen (der Cron-Build scheiterte daran). Die Werte sind deshalb direkt an
+den Services hinterlegt; `infra/railway/{web,cron,backup}.toml` bleiben als
+versionierte Referenz. Wer dort etwas ändert, muss es auch in den
+Service-Einstellungen nachziehen.
 
 ## Services
 

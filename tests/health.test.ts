@@ -52,7 +52,7 @@ describe("health routes", () => {
 
   it("uses dependency-independent liveness for the Railway deployment gate", async () => {
     const railwayConfig = await readFile(
-      new URL("../railway.toml", import.meta.url),
+      new URL("../infra/railway/web.toml", import.meta.url),
       "utf8",
     );
 
