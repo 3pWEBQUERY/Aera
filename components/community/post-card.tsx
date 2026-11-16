@@ -176,19 +176,23 @@ export function PostCard({
           <input type="hidden" name="tenant" value={slug} />
           <input type="hidden" name="space" value={space} />
           <input type="hidden" name="postId" value={post.id} />
+          {/* Im Feed ein Modell: „Gefällt mir“ (im Forum wird abgestimmt).
+              Zustand über aria-pressed und gefülltes Herz, nicht nur Farbe. */}
           <button
-            aria-label={post.likedByMe ? t("unlike") : t("like")}
+            aria-label={t("likeAria", { count: post.likes })}
             aria-pressed={post.likedByMe}
             className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 transition hover:bg-[#161613]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
-              post.likedByMe ? "font-semibold text-[color:var(--brand)]" : ""
+              post.likedByMe ? "font-semibold text-[#161613]" : ""
             }`}
           >
             <Icon
               name="heart"
               size={16}
               fill={post.likedByMe ? "currentColor" : "none"}
+              className={post.likedByMe ? "text-[color:var(--brand)]" : undefined}
             />
-            {post.likes}
+            <span>{t("like")}</span>
+            {post.likes > 0 && <span className="tabular-nums">· {post.likes}</span>}
           </button>
         </form>
         <Link

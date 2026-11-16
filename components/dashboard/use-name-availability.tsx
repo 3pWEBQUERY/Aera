@@ -76,7 +76,7 @@ export function NameStatusHint({ status }: { status: NameCheck }) {
   }
   if (status === "available") {
     return (
-      <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-emerald-600">
+      <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-emerald-700">
         <Icon name="check" size={13} />
         {t("available")}
       </p>
@@ -84,7 +84,7 @@ export function NameStatusHint({ status }: { status: NameCheck }) {
   }
   if (status === "taken") {
     return (
-      <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-600">
+      <p className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-700">
         <Icon name="alert" size={13} />
         {t("taken")}
       </p>
@@ -94,7 +94,7 @@ export function NameStatusHint({ status }: { status: NameCheck }) {
     return <p className="mt-1.5 text-xs text-slate-500">{t("short")}</p>;
   }
   if (status === "long") {
-    return <p className="mt-1.5 text-xs font-medium text-red-600">{t("long")}</p>;
+    return <p className="mt-1.5 text-xs font-medium text-red-700">{t("long")}</p>;
   }
   return <p className="mt-1.5 text-xs text-slate-500">{t("error")}</p>;
 }

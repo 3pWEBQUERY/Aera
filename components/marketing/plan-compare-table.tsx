@@ -120,21 +120,24 @@ export async function PlanCompareTable() {
 
       {/* Schmal: eigener Scrollbereich (beide Richtungen), damit die
           Paketnamen beim Herunterscrollen oben stehen bleiben. Breit: kein
-          eigener Scrollbereich, die Kopfzeile klebt unter dem Seiten-Header.
+          eigener Scrollbereich, die Kopfzeile klebt unter dem Seiten-Header
+          (79px = Hoehe von MarketingHeader ab lg).
           Fokussierbar, damit sich der Bereich auch per Tastatur scrollen
-          laesst (WCAG 2.1.1, axe scrollable-region-focusable). */}
+          laesst (WCAG 2.1.1, axe scrollable-region-focusable). `relative`
+          haelt die absolut positionierten sr-only-Texte der Zellen im
+          Scrollbereich — sonst verbreitern sie mobil die ganze Seite. */}
       <div
         role="region"
         aria-label={t("tableLabel")}
         tabIndex={0}
-        className="mt-3 -mx-5 max-h-[75vh] overflow-auto px-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:mx-0 sm:px-0 md:mt-10 lg:max-h-none lg:overflow-visible"
+        className="relative mt-3 -mx-5 max-h-[75vh] overflow-auto px-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:mx-0 sm:px-0 md:mt-10 lg:max-h-none lg:overflow-visible"
       >
         <table className="w-full min-w-[640px] border-collapse text-left">
           <thead>
             <tr>
               <th
                 scope="col"
-                className="sticky left-0 top-0 z-30 bg-[#f4f1ea] py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65 lg:top-[73px]"
+                className="sticky left-0 top-0 z-30 bg-[#f4f1ea] lg:z-20 py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65 shadow-[inset_0_-1px_0_rgba(22,22,19,0.15)] lg:top-[79px]"
               >
                 {t("featureColumn")}
               </th>
@@ -142,7 +145,7 @@ export async function PlanCompareTable() {
                 <th
                   key={plan}
                   scope="col"
-                  className="sticky top-0 z-20 w-[15%] bg-[#f4f1ea] px-3 py-3 text-center text-sm font-bold text-[#161613] shadow-[inset_0_-1px_0_rgba(22,22,19,0.15)] lg:top-[73px]"
+                  className="sticky top-0 z-20 w-[15%] bg-[#f4f1ea] px-3 py-3 text-center text-sm font-bold text-[#161613] shadow-[inset_0_-1px_0_rgba(22,22,19,0.15)] lg:top-[79px]"
                 >
                   {PLANS[plan].name}
                 </th>
