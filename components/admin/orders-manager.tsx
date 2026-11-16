@@ -13,6 +13,8 @@ import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Label, Select } from "@/components/ui/field";
 import { formatDateTime, formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface OrderRowData {
   id: string;
@@ -199,6 +201,8 @@ function InfoRow({ label, value, mono }: { label: string; value: string; mono?: 
 function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }) {
   const [state, action, pending] = useActionState(adminUpdateOrderAction, initial);
   const t = useTranslations("admin.orders");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const locale = useLocale();
   useEffect(() => {
@@ -266,11 +270,14 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm"))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirmTitle", { name: order.description }),
+                  body: t("dangerDesc"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3"
             >
               <input type="hidden" name="orderId" value={order.id} />
@@ -302,6 +309,7 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
           {pending ? tc("saving") : tc("saveChanges")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

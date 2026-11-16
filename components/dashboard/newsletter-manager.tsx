@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useActionState, useEffect, useRef, useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createCampaignAction,
@@ -17,7 +17,9 @@ import { Icon } from "./icons";
 import { SettingsTabs, type SettingsSection } from "./settings-tabs";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
-import { formatDateTime } from "@/lib/utils";
+import { useConfirm, type ConfirmOptions } from "@/components/ui/confirm-dialog";
+import { formatWhen } from "@/lib/local-datetime";
+import { ClientWhen, LocalDateTimeField } from "./local-datetime-field";
 
 export interface CampaignRowData {
   id: string;
@@ -51,13 +53,36 @@ const statusCls: Record<string, string> = {
   SENT: "bg-green-100 text-green-700",
 };
 
-function toDatetimeLocal(value: string | Date | null): string {
-  if (!value) return "";
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000)
-    .toISOString()
-    .slice(0, 16);
+type NewsletterT = ReturnType<typeof useTranslations<"dashboard.newsletter">>;
+
+/**
+ * Rückfrage vor dem endgültigen Versand. Bei einer geplanten Kampagne steht
+ * der geplante Zeitpunkt im Titel, damit niemand versehentlich vorzieht.
+ */
+function sendConfirmOptions(
+  t: NewsletterT,
+  locale: string,
+  subject: string,
+  count: number,
+  scheduledAt: string | Date | null,
+): ConfirmOptions {
+  const scheduled = scheduledAt ? new Date(scheduledAt) : null;
+  const isScheduled = !!scheduled && !Number.isNaN(scheduled.getTime()) && scheduled.getTime() > Date.now();
+  return isScheduled
+    ? {
+        title: t("confirmSendScheduledTitle", { date: formatWhen(scheduled!, locale) }),
+        body: t("confirmSendScheduledBody", { subject, count }),
+        confirmLabel: t("confirmSendLabel", { count }),
+      }
+    : {
+        title: t("confirmSendTitle", { subject, count }),
+        body: t("confirmSendBody"),
+        confirmLabel: t("confirmSendLabel", { count }),
+      };
+}
+
+function audienceCount(segments: SegmentData[], allCount: number, segmentId: string | null): number {
+  return segmentId ? segments.find((sg) => sg.id === segmentId)?.count ?? 0 : allCount;
 }
 
 export function NewsletterManager({
@@ -79,9 +104,32 @@ export function NewsletterManager({
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<CampaignRowData | null>(null);
+  const [confirm, confirmDialog] = useConfirm();
+  const [sendingId, setSendingId] = useState<string | null>(null);
+  const [listError, setListError] = useState<string | null>(null);
+  const [listStatus, setListStatus] = useState<string | null>(null);
   const t = useTranslations("dashboard.newsletter");
   const tStatus = useTranslations("dashboard.newsletter.status");
   const locale = useLocale();
+
+  async function onSend(c: CampaignRowData) {
+    const count = audienceCount(segments, allCount, c.segmentId);
+    if (count === 0) return;
+    const confirmed = await confirm(
+      sendConfirmOptions(t, locale, c.subject, count, c.status === "SCHEDULED" ? c.scheduledAt : null),
+    );
+    if (!confirmed) return;
+    setSendingId(c.id);
+    setListError(null);
+    setListStatus(null);
+    const fd = new FormData();
+    fd.set("tenant", slug);
+    fd.set("campaignId", c.id);
+    const result = await sendCampaignAction(fd);
+    setSendingId(null);
+    if (result.error) setListError(result.error);
+    else setListStatus(t("sendQueued", { subject: c.subject }));
+  }
 
   const campaignsSection = (
     <section>
@@ -101,7 +149,16 @@ export function NewsletterManager({
         </button>
       </div>
 
-      <div className="mt-5">
+      <div className="mt-5 space-y-3">
+      {allCount === 0 && (
+        <p className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
+          {t("noSubscribersHint")}
+        </p>
+      )}
+      <FormError message={listError} />
+      <p role="status" className={listStatus ? "text-sm text-emerald-700" : "sr-only"}>
+        {listStatus}
+      </p>
       {campaigns.length === 0 ? (
         <div className="rounded-xl border border-dashed border-slate-300 px-6 py-14 text-center">
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand-soft)] text-[var(--brand)]">
@@ -122,36 +179,54 @@ export function NewsletterManager({
             const sent = c.status === "SENT";
             const sending = c.status === "SENDING";
             const editable = c.status === "DRAFT" || c.status === "SCHEDULED";
+            const count = audienceCount(segments, allCount, c.segmentId);
             return (
               <div
                 key={c.id}
-                onClick={() => editable && setEditing(c)}
-                className={`group flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition ${editable ? "cursor-pointer hover:border-slate-300 hover:shadow-sm" : ""}`}
+                className={`group relative flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition ${editable ? "hover:border-slate-300 hover:shadow-sm" : ""}`}
               >
                 <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--action)] text-[var(--action-fg)]">
                   <Icon name="newsletter" size={20} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="truncate font-semibold text-slate-900">{c.subject}</p>
+                    {editable ? (
+                      // Der Betreff ist der Button; ::after spannt die Klickfläche über die ganze Zeile.
+                      <button
+                        type="button"
+                        onClick={() => setEditing(c)}
+                        className="block min-w-0 max-w-full truncate rounded text-left font-semibold text-slate-900 after:absolute after:inset-0 after:rounded-2xl after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-[var(--brand-ring)]"
+                      >
+                        {c.subject}
+                      </button>
+                    ) : (
+                      <p className="truncate font-semibold text-slate-900">{c.subject}</p>
+                    )}
                     <Pill className={statusCls[c.status] ?? statusCls.DRAFT}>{tStatus(c.status)}</Pill>
                   </div>
                   <p className="mt-0.5 text-sm text-slate-500">
                     {c.segmentName ?? t("allActiveMembers")}
-                    {c.status === "SCHEDULED" && c.scheduledAt
-                      ? ` · ${formatDateTime(c.scheduledAt, locale)}`
-                      : ""}
-                    {sent || sending ? ` · ${t("recipientsCount", { count: c.recipientCount })}${c.sentAt ? ` · ${formatDateTime(c.sentAt, locale)}` : ""}` : ""}
+                    {c.status === "SCHEDULED" && c.scheduledAt ? (
+                      <> · <ClientWhen value={c.scheduledAt} /></>
+                    ) : null}
+                    {sent || sending ? ` · ${t("recipientsCount", { count: c.recipientCount })}` : ""}
+                    {(sent || sending) && c.sentAt ? (
+                      <> · <ClientWhen value={c.sentAt} /></>
+                    ) : null}
                   </p>
                 </div>
-                {editable && (
-                  <form action={sendCampaignAction} onClick={(e) => e.stopPropagation()}>
-                    <input type="hidden" name="tenant" value={slug} />
-                    <input type="hidden" name="campaignId" value={c.id} />
-                    <button className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3 py-1.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
-                      <Icon name="newsletter" size={14} /> {t("send")}
-                    </button>
-                  </form>
+                {editable && count > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => onSend(c)}
+                    disabled={sendingId === c.id}
+                    className="relative z-10 inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[var(--primary)] px-3 py-1.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
+                  >
+                    <Icon name="newsletter" size={14} /> {sendingId === c.id ? t("sendingNow") : t("send")}
+                  </button>
+                )}
+                {editable && count === 0 && (
+                  <span className="relative z-10 shrink-0 text-xs text-slate-500">{t("noRecipientsShort")}</span>
                 )}
               </div>
             );
@@ -197,6 +272,7 @@ export function NewsletterManager({
       <Sheet open={!!editing} onClose={() => setEditing(null)} title={t("sheetEdit")} subtitle={editing?.subject} icon="newsletter">
         {editing && <CampaignForm key={editing.id} slug={slug} tenantName={tenantName} segments={segments} allCount={allCount} campaign={editing} onDone={() => setEditing(null)} />}
       </Sheet>
+      {confirmDialog}
     </div>
   );
 }
@@ -227,8 +303,7 @@ function CampaignForm({
   const isEdit = !!campaign;
   const [state, action, pending] = useActionState(isEdit ? updateCampaignAction : createCampaignAction, initial);
   const [deleting, setDeleting] = useState(false);
-  const [timezoneOffset, setTimezoneOffset] = useState(0);
-  const [scheduledAt, setScheduledAt] = useState("");
+  const [scheduledAt, setScheduledAt] = useState<string | Date | null>(campaign?.scheduledAt ?? null);
   const [subject, setSubject] = useState(campaign?.subject ?? "");
   const [body, setBody] = useState(campaign?.body ?? "");
   const [bodyFormat, setBodyFormat] = useState<"TEXT" | "HTML">(
@@ -237,36 +312,28 @@ function CampaignForm({
   const [segmentId, setSegmentId] = useState(campaign?.segmentId ?? "");
   const [showPreview, setShowPreview] = useState(false);
   const [testStatus, setTestStatus] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [testError, setTestError] = useState<string | null>(null);
+  const [confirm, confirmDialog] = useConfirm();
+  const formRef = useRef<HTMLFormElement>(null);
   const t = useTranslations("dashboard.newsletter");
   const tStatus = useTranslations("dashboard.newsletter.status");
+  const locale = useLocale();
 
-  const recipientCount = segmentId
-    ? segments.find((sg) => sg.id === segmentId)?.count ?? 0
-    : allCount;
+  const recipientCount = audienceCount(segments, allCount, segmentId || null);
 
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      const initialDate = campaign?.scheduledAt ? new Date(campaign.scheduledAt) : new Date();
-      setTimezoneOffset(initialDate.getTimezoneOffset());
-      setScheduledAt(toDatetimeLocal(campaign?.scheduledAt ?? null));
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [campaign?.scheduledAt]);
-
-  function onScheduleChange(value: string) {
-    setScheduledAt(value);
-    const selected = value ? new Date(value) : new Date();
-    if (!Number.isNaN(selected.getTime())) {
-      setTimezoneOffset(selected.getTimezoneOffset());
-    }
-  }
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
 
   async function onDelete() {
     if (!campaign) return;
-    if (!confirm(t("confirmDeleteCampaign"))) return;
+    const confirmed = await confirm({
+      title: t("confirmDeleteCampaign"),
+      body: t("confirmDeleteCampaignBody", { subject: campaign.subject }),
+      confirmLabel: t("deleteCampaign"),
+      tone: "danger",
+    });
+    if (!confirmed) return;
     setDeleting(true);
     const fd = new FormData();
     fd.set("tenant", slug);
@@ -283,16 +350,36 @@ function CampaignForm({
     fd.set("subject", subject);
     fd.set("body", body);
     fd.set("bodyFormat", bodyFormat);
+    setTestError(null);
     const result = await sendCampaignTestAction(initial, fd);
-    setTestStatus(result.ok ? "sent" : "error");
-    setTimeout(() => setTestStatus("idle"), 4000);
+    if (result.ok) {
+      setTestStatus("sent");
+      // Erfolg darf verschwinden; ein Fehler bleibt stehen, bis neu getestet wird.
+      setTimeout(() => setTestStatus((s) => (s === "sent" ? "idle" : s)), 6000);
+    } else {
+      setTestStatus("error");
+      setTestError(result.error ?? null);
+    }
+  }
+
+  /** „Jetzt senden…“: Rückfrage, dann speichern und sofort versenden. */
+  async function onSendNow() {
+    const form = formRef.current;
+    if (!form || pending || recipientCount === 0) return;
+    if (!form.reportValidity()) return;
+    const confirmed = await confirm(
+      sendConfirmOptions(t, locale, subject, recipientCount, scheduledAt),
+    );
+    if (!confirmed) return;
+    const fd = new FormData(form);
+    fd.set("sendNow", "1");
+    startTransition(() => action(fd));
   }
 
   return (
-    <form action={action} className="flex min-h-0 flex-1 flex-col">
+    <form ref={formRef} action={action} className="flex min-h-0 flex-1 flex-col">
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="bodyFormat" value={bodyFormat} />
-      <input type="hidden" name="timezoneOffset" value={timezoneOffset} />
       {isEdit && <input type="hidden" name="campaignId" value={campaign!.id} />}
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto max-w-xl space-y-8 px-6 py-10">
@@ -329,7 +416,7 @@ function CampaignForm({
                       className={`rounded-[10px] px-3 py-1 text-xs font-semibold transition ${
                         bodyFormat === fmt
                           ? "bg-[var(--action)] text-[var(--action-fg)] shadow-sm"
-                          : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-800"
+                          : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900"
                       }`}
                     >
                       {fmt === "TEXT" ? t("formatText") : t("formatHtml")}
@@ -367,15 +454,18 @@ function CampaignForm({
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-slate-400 hover:text-slate-900 disabled:opacity-40"
               >
                 <Icon name="send" size={13} />
-                {testStatus === "sending"
-                  ? t("testSending")
-                  : testStatus === "sent"
-                    ? t("testSent")
-                    : testStatus === "error"
-                      ? t("testFailed")
-                      : t("testSend")}
+                {testStatus === "sending" ? t("testSending") : t("testSend")}
               </button>
             </div>
+            {testStatus === "error" ? (
+              <p role="alert" className="text-xs font-medium text-red-700">
+                {t("testFailedReason", { reason: testError ?? t("testFailedUnknown") })}
+              </p>
+            ) : (
+              <p role="status" className={testStatus === "sent" ? "text-xs font-medium text-emerald-700" : "sr-only"}>
+                {testStatus === "sent" ? t("testSent") : ""}
+              </p>
+            )}
             {showPreview && bodyFormat === "HTML" && (
               <div className="overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <iframe
@@ -431,22 +521,25 @@ function CampaignForm({
               {t("recipientsEstimate", { count: recipientCount })}
             </p>
             <p className="text-xs text-slate-500">{t("recipientsInfo")}</p>
+            {recipientCount === 0 && (
+              <p className="text-xs font-medium text-amber-700">
+                {allCount === 0 ? t("noSubscribersHint") : t("segmentEmptyHint")}
+              </p>
+            )}
           </section>
 
           {/* ---- Zeitplan ---- */}
           <section className="space-y-3">
             <SectionHeading>{t("sectionSchedule")}</SectionHeading>
-            <div>
-              <Label htmlFor="nf-scheduled">{tStatus("SCHEDULED")}</Label>
-              <Input
-                id="nf-scheduled"
-                name="scheduledAt"
-                type="datetime-local"
-                value={scheduledAt}
-                onChange={(event) => onScheduleChange(event.target.value)}
-              />
-              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
-            </div>
+            <LocalDateTimeField
+              id="nf-scheduled"
+              name="scheduledAt"
+              label={tStatus("SCHEDULED")}
+              defaultValue={campaign?.scheduledAt}
+              hint={t("scheduleHint")}
+              pastWarning={t("schedulePastWarning")}
+              onValueChange={(v) => setScheduledAt(v || null)}
+            />
           </section>
 
           {isEdit && (
@@ -459,12 +552,24 @@ function CampaignForm({
           )}
         </div>
       </div>
-      <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
+      <div className="flex shrink-0 flex-wrap items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
+        {recipientCount > 0 && (
+          <button
+            type="button"
+            onClick={onSendNow}
+            disabled={pending}
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-800 transition hover:border-[var(--action-strong)] hover:bg-[var(--action-soft)] disabled:opacity-50"
+          >
+            <Icon name="send" size={15} />
+            {t("sendNowEllipsis")}
+          </button>
+        )}
         <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("saving") : isEdit ? t("save") : t("saveDraft")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }
@@ -489,8 +594,16 @@ function SegmentsPanel({
     if (state.ok) ref.current?.reset();
   }, [state.ok]);
 
+  const [confirm, confirmDialog] = useConfirm();
+
   async function onDelete(id: string) {
-    if (!confirm(t("confirmDeleteSegment"))) return;
+    const confirmed = await confirm({
+      title: t("confirmDeleteSegment"),
+      body: t("confirmDeleteSegmentBody"),
+      confirmLabel: t("deleteSegmentConfirm"),
+      tone: "danger",
+    });
+    if (!confirmed) return;
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("segmentId", id);
@@ -575,8 +688,14 @@ function SegmentsPanel({
         <p className="text-sm font-medium text-slate-700">{t("createSegmentHeading")}</p>
         <FormError message={state.error} />
         <input type="hidden" name="tenant" value={slug} />
-        <Input name="name" required placeholder={t("segmentNamePlaceholder")} />
-        <Input name="description" placeholder={t("descriptionLabel")} maxLength={300} />
+        <div>
+          <Label htmlFor="sg-name">{t("segmentNameLabel")}</Label>
+          <Input id="sg-name" name="name" required minLength={2} placeholder={t("segmentNamePlaceholder")} />
+        </div>
+        <div>
+          <Label htmlFor="sg-desc">{t("descriptionLabel")}</Label>
+          <Input id="sg-desc" name="description" maxLength={300} />
+        </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <div>
             <Label htmlFor="sg-tier">{t("tierLabel")}</Label>
@@ -602,6 +721,7 @@ function SegmentsPanel({
           </button>
         </div>
       </form>
+      {confirmDialog}
     </div>
   );
 }

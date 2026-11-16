@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Kursy wymagają space’u na kursy, ale Twój pakiet {plan} pozwala tylko na {limit} aktywnych space’ów i wszystkie są zajęte. Zarchiwizuj jeden space lub zmień pakiet, a potem utwórz kurs.",
+    "planAutoSpaceEvents": "Wydarzenia wymagają space’u na wydarzenia, ale Twój pakiet {plan} pozwala tylko na {limit} aktywnych space’ów i wszystkie są zajęte. Zarchiwizuj jeden space lub zmień pakiet, a potem utwórz wydarzenie.",
+    "campaignNoSubscribers": "Nikt jeszcze nie subskrybuje Twojego newslettera. Wysyłka będzie możliwa, gdy pojawią się odbiorcy.",
+    "campaignSegmentEmpty": "W tym segmencie nikogo teraz nie ma. Wybierz inny segment, aby wysłać.",
+    "campaignTestDeliveryFailed": "Usługa e-mail nie przyjęła wiadomości ({detail}). Spróbuj ponownie później.",
+    "recoveryCodeInvalid": "Ten kod odzyskiwania jest nieprawidłowy lub został już użyty. Sprawdź pisownię albo użyj innego kodu.",
+    "secondFactorInvalid": "Kod się nie zgadza. Wpisz aktualny kod z aplikacji albo niewykorzystany kod odzyskiwania."
   },
   "nameStatus": {
     "checking": "Sprawdzanie dostępności…",
@@ -502,14 +509,12 @@
     "changingPassword": "Zmienianie…",
     "twoFaActive": "Uwierzytelnianie dwuskładnikowe jest aktywne",
     "twoFaActiveDesc": "Przy logowaniu oprócz hasła wymagany jest kod z aplikacji uwierzytelniającej.",
-    "twoFaDisableLabel": "Aby wyłączyć: bieżący kod",
+    "twoFaDisableLabel": "Aby wyłączyć: kod z aplikacji lub kod odzyskiwania",
     "twoFaDisabling": "Wyłączanie…",
     "twoFaDisable": "Wyłącz 2FA",
     "twoFaSetupIntro": "Zeskanuj kod QR aplikacją uwierzytelniającą (Google Authenticator, 1Password, Authy …) i potwierdź wyświetlonym kodem.",
     "twoFaQrAlt": "Kod QR do aplikacji uwierzytelniającej",
-    "twoFaNoScanner": "Brak skanera QR? Wpisz sekret ręcznie:",
-    "twoFaHideSecret": "Ukryj sekret",
-    "twoFaShowSecret": "Pokaż sekret",
+    "twoFaNoScanner": "Nie masz skanera QR? Wpisz ten klucz konfiguracji w aplikacji:",
     "twoFaCodeFromApp": "Kod z aplikacji",
     "twoFaChecking": "Sprawdzanie…",
     "twoFaActivate": "Aktywuj",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Kopiuj klucz",
+    "twoFaKeyCopied": "Klucz skopiowany.",
+    "twoFaOpenInApp": "Otwórz w aplikacji uwierzytelniającej",
+    "secondFactorLabel": "Kod z aplikacji lub kod odzyskiwania",
+    "recoveryCodesTitle": "Kody odzyskiwania",
+    "recoveryCodesIntro": "Tymi kodami zalogujesz się, gdy nie masz dostępu do aplikacji uwierzytelniającej. Każdy kod działa tylko raz. Zapisz je teraz, np. w menedżerze haseł – są wyświetlane tylko ten jeden raz.",
+    "recoveryCopy": "Kopiuj kody",
+    "recoveryCopied": "Kody skopiowane.",
+    "recoveryDownload": "Pobierz jako plik tekstowy",
+    "recoverySaved": "Kody są zapisane",
+    "recoveryFileTitle": "Aera – kody odzyskiwania dla {email}",
+    "recoveryFileHint": "Każdy kod działa tylko raz. Nowe kody utworzysz na koncie w Ustawienia > Uwierzytelnianie dwuskładnikowe.",
+    "recoveryCodesLeft": "{count, plural, =0 {Nie zostały żadne kody. Utwórz nowe, aby móc zalogować się bez aplikacji.} one {Został # kod z 10.} few {Zostały # kody z 10.} many {Zostało # kodów z 10.} other {Zostało # kodu z 10.}}",
+    "recoveryRegenerate": "Utwórz nowe kody",
+    "recoveryRegenConfirmTitle": "Utworzyć nowe kody odzyskiwania?",
+    "recoveryRegenConfirmBody": "Dotychczasowe kody przestaną działać. Zapisz nowe zaraz potem.",
+    "recoveryUsedNotice": "{count, plural, =0 {Zalogowano ostatnim kodem odzyskiwania. Jeśli nadal masz aplikację, utwórz teraz nowe kody. W przeciwnym razie napisz do nas przez „Pomoc przy logowaniu”.} one {Zalogowano kodem odzyskiwania. Został # kod. Nie masz już dostępu do aplikacji? Wyłącz poniżej 2FA tym kodem i skonfiguruj ją ponownie.} few {Zalogowano kodem odzyskiwania. Zostały # kody. Nie masz już dostępu do aplikacji? Wyłącz poniżej 2FA kolejnym kodem i skonfiguruj ją ponownie.} many {Zalogowano kodem odzyskiwania. Zostało # kodów. Nie masz już dostępu do aplikacji? Wyłącz poniżej 2FA kolejnym kodem i skonfiguruj ją ponownie.} other {Zalogowano kodem odzyskiwania. Zostało # kodu. Nie masz już dostępu do aplikacji? Wyłącz poniżej 2FA kolejnym kodem i skonfiguruj ją ponownie.}}",
+    "emailUnverified": "Niepotwierdzony"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Wyślij test do mnie",
       "testSending": "Wysyłanie…",
       "testSent": "Wysłano e-mail testowy!",
-      "testFailed": "Test nie powiódł się",
       "recipientsEstimate": "≈ {count} odbiorców",
       "formatText": "Tekst",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Poziom: {name}",
       "ruleMinPoints": "{count}+ punktów",
       "ruleActiveSince": "Członek od ≥ {days} dni",
-      "ruleAll": "Wszyscy członkowie"
+      "ruleAll": "Wszyscy członkowie",
+      "confirmSendTitle": "Wysłać teraz „{subject}” do {count, plural, one {# odbiorcy} other {# odbiorców}}?",
+      "confirmSendBody": "Wysyłka zacznie się od razu i nie da się jej cofnąć.",
+      "confirmSendScheduledTitle": "Zaplanowano na {date}. Wysłać mimo to teraz?",
+      "confirmSendScheduledBody": "„{subject}” trafi od razu do {count, plural, one {# odbiorcy} other {# odbiorców}}. Tego nie można cofnąć.",
+      "confirmSendLabel": "Wyślij teraz do {count}",
+      "sendQueued": "„{subject}” jest wysyłany.",
+      "sendingNow": "Wysyłanie…",
+      "noSubscribersHint": "Nikt jeszcze nie subskrybuje Twojego newslettera. Wysyłka będzie możliwa, gdy pojawią się odbiorcy.",
+      "segmentEmptyHint": "W tym segmencie nikogo teraz nie ma. Wybierz inny segment, aby wysłać.",
+      "noRecipientsShort": "Brak odbiorców",
+      "sendNowEllipsis": "Wyślij teraz…",
+      "testFailedReason": "Test nie został wysłany: {reason}",
+      "testFailedUnknown": "Nieznany błąd. Spróbuj ponownie.",
+      "schedulePastWarning": "Ten termin już minął. Po zapisaniu kampania pozostanie szkicem.",
+      "confirmDeleteCampaignBody": "„{subject}” zostanie usunięta. Tego nie można cofnąć.",
+      "confirmDeleteSegmentBody": "Szkice i zaplanowane kampanie z tym segmentem trafią potem do wszystkich subskrybentów.",
+      "deleteSegmentConfirm": "Usuń segment",
+      "segmentNameLabel": "Nazwa segmentu"
     },
     "ads": {
       "badge": "Reklamy",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Zamknij",
       "deleteLesson": "Usuń",
       "confirmDeleteLesson": "Usunąć lekcję „{title}”?",
-      "lessonTitlePlaceholder": "Tytuł",
-      "videoUrlPlaceholder": "URL wideo (opcjonalnie)",
-      "contentPlaceholder": "Treść",
-      "dripLabel": "Odblokowanie: dni po dołączeniu (puste/0 = od razu)",
       "dripPlaceholder": "np. 7",
       "lessonSaving": "Zapisywanie…",
       "lessonSave": "Zapisz",
       "addLesson": "Dodaj lekcję",
-      "addLessonTitlePlaceholder": "Tytuł lekcji",
-      "addContentPlaceholder": "Treść (opcjonalnie)",
-      "addDripPlaceholder": "Odblokowanie: dni po dołączeniu (puste = od razu)",
       "adding": "Dodawanie…",
-      "add": "Dodaj"
+      "cannotUndo": "Tego nie można cofnąć.",
+      "deleteLessonConfirm": "Usuń lekcję",
+      "createdAddLesson": "Kurs utworzony – dodaj teraz pierwszą lekcję.",
+      "lessonTitleLabel": "Tytuł lekcji",
+      "lessonVideoLabel": "URL wideo (opcjonalnie)",
+      "lessonContentLabel": "Treść (opcjonalnie)",
+      "lessonDripLabel": "Odblokowanie po dołączeniu (dni)",
+      "lessonDripHint": "Puste lub 0: dostępne od razu.",
+      "addLessonBtn": "Dodaj lekcję"
     },
     "gallery": {
       "badge": "Galeria",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Usuń wydarzenie",
       "cancel": "Anuluj",
       "saving": "Zapisywanie…",
-      "saveChanges": "Zapisz zmiany"
+      "saveChanges": "Zapisz zmiany",
+      "confirmDeleteBody": "Wszystkie zgłoszenia zostaną utracone. Tego nie można cofnąć.",
+      "meetingUrlMissing": "Bez linku członkowie nie mogą dołączyć. Możesz dodać go później."
     },
     "settings": {
       "title": "Ustawienia",
@@ -3832,6 +3875,10 @@
         "desc": "Udostępnij link lub zaproś przez e-mail.",
         "cta": "Zaproś członków"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "W Twojej strefie czasowej: {zone} ({abbr})",
+      "pastWarning": "Ta data jest w przeszłości."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Twoje konto jest chronione uwierzytelnianiem dwuskładnikowym.",
     "legalAcceptance": "Akceptuję <terms>Regulamin</terms> i potwierdzam zapoznanie się z <privacy>Informacją o prywatności</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "Kod 6-cyfrowy",
+    "codeFor": "Logowanie jako <strong>{email}</strong>.",
+    "useOtherEmail": "Użyj innego adresu e-mail",
+    "useRecoveryCode": "Nie masz dostępu do aplikacji? Użyj kodu odzyskiwania",
+    "useAppCode": "Użyj kodu z aplikacji",
+    "recoveryHeading": "Wpisz kod odzyskiwania",
+    "recoveryLabel": "Kod odzyskiwania",
+    "recoveryHint": "Jeden z kodów zapisanych podczas konfiguracji 2FA. Każdy kod działa tylko raz.",
+    "passwordTooShortField": "Hasło jest za krótkie – co najmniej {min} znaków."
   },
   "verifyBanner": {
-    "prompt": "Potwierdź swój adres e-mail <strong>{email}</strong>.",
+    "prompt": "Potwierdź <strong>{email}</strong>, aby otrzymywać newslettery i wiadomości ze swoich społeczności.",
     "resend": "Wyślij link ponownie",
     "resending": "Wysyłanie …",
-    "sent": "Nowy link potwierdzający został wysłany na <strong>{email}</strong> — sprawdź skrzynkę."
+    "sent": "Nowy link potwierdzający został wysłany na <strong>{email}</strong> — sprawdź skrzynkę.",
+    "sendLink": "Wyślij link potwierdzający"
   },
   "community": {
     "join": "Zostań członkiem",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Wyślij link",
     "forgotSending": "Wysyłanie…",
     "backTo": "Wróć do",
-    "backToLogin": "logowania"
+    "backToLogin": "logowania",
+    "resetDoneNotice": "Hasło zostało zmienione. Zaloguj się teraz nowym hasłem.",
+    "loginHelp": "Pomoc przy logowaniu"
   },
   "pricing": {
     "eyebrow": "Ceny",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Ustaw nowe hasło",
       "forAccount": "Dla konta {email}",
       "verifyMeta": "Potwierdź adres e-mail — Aera",
-      "verifyInvalidText": "Ten link potwierdzający wygasł albo jest nieprawidłowy. Zaloguj się i poproś o nowy link ze swojego konta.",
+      "verifyInvalidText": "Ten link potwierdzający wygasł lub został już użyty. Poproś o nowy link.",
       "toLogin": "Do logowania",
       "alreadyVerifiedTitle": "Już potwierdzony",
       "verifiedTitle": "Adres e-mail potwierdzony",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Nie pamiętam hasła — Aera",
       "pricingMeta": "Cennik",
       "featuresMeta": "Funkcje",
-      "manifestDescription": "Twoje społeczności: wpisy, kursy, wydarzenia i wiadomości — wszystko w jednym miejscu."
+      "manifestDescription": "Twoje społeczności: wpisy, kursy, wydarzenia i wiadomości — wszystko w jednym miejscu.",
+      "verifyInvalidVerified": "Ten link jest już nieważny, ale Twój adres e-mail jest już potwierdzony.",
+      "loginForNewLink": "Zaloguj się, aby otrzymać nowy link"
     },
     "emails": {
       "sentVia": "Wysłane przez Aera",

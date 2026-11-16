@@ -3,12 +3,16 @@ import { Reveal } from "@/components/marketing/reveal";
 import { PillLink } from "@/components/marketing/pill-link";
 import { HeroFrameBackground } from "@/components/marketing/hero-frame-background";
 import { FINALE_CLIPS } from "@/components/marketing/hero-clips";
-import { PLANS } from "@/lib/credit-plans";
+import { PlanAvailability, minPlanFor, type GatedItem } from "@/components/marketing/plan-availability";
+import { PLANS, PLAN_ORDER } from "@/lib/credit-plans";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { PLAN_LIMITS, SPACE_TYPE_KEYS, spaceTypesForPlan } from "@/lib/plan-features";
+import { formatPlatformFee } from "@/lib/platform-fee";
 import { formatPrice } from "@/lib/utils";
 
-/* Poster-Kacheln für die Marquee: alle 14 echten Space-Typen (Text-Keys in
-   messages/<locale>.json unter home.tiles.*). */
+/* Poster-Kacheln für die Marquee: eine Auswahl von 14 der echten Space-Typen
+   (Text-Keys in messages/<locale>.json unter home.tiles.*). Die Gesamtzahl in
+   den Texten kommt aus SPACE_TYPE_KEYS, nicht aus dieser Liste. */
 const TILE_IDS = [
   "feed", "forum", "course", "shop", "newsletter", "events", "blog",
   "knowledge", "gallery", "videos", "chat", "podcast", "links", "ads",
@@ -25,6 +29,24 @@ const COMPARE_IDS = ["patreon", "circle", "skool"] as const;
 const COMPARE_ROWS = ["base", "fee", "full"] as const;
 const INCLUDED_IDS = ["i1", "i2", "i3", "i4"] as const;
 
+/* Was in einem Kapitel beworben wird, aber ein bezahltes Paket braucht — die
+   Zuordnung zum Paket kommt aus lib/plan-features.ts. */
+const CHAPTER_GATES: Partial<Record<(typeof CHAPTER_IDS)[number], GatedItem[]>> = {
+  c1: [{ space: "CHAT" }, { space: "PODCAST" }, { space: "ADS" }],
+  c2: [{ feature: "products" }],
+  c4: [{ space: "CHAT" }, { space: "LIVE" }],
+  c5: [{ feature: "mediaStudio" }],
+  c6: [{ feature: "gamification" }],
+  c7: [{ feature: "customDomain" }],
+};
+const OWNERSHIP_GATES: Partial<Record<(typeof OWNERSHIP_IDS)[number], GatedItem[]>> = {
+  address: [{ feature: "customDomain" }],
+  data: [{ feature: "export" }],
+};
+const REVENUE_GATES: Partial<Record<(typeof REVENUE_IDS)[number], GatedItem>> = {
+  products: { feature: "products" },
+};
+
 const tileTones = [
   "bg-[#ece7dc] text-[#161613]",
   "bg-[#21372b] text-[#ece7dc]",
@@ -36,9 +58,24 @@ const tileTones = [
 export default async function LandingPage() {
   const t = await getTranslations("home");
   const locale = await getLocale();
-  // Unser eigener Preis kommt aus dem Katalog, nicht aus einem Text: sonst
+  const tSpaces = await getTranslations("dashboard.spaceTypes");
+  const nf = new Intl.NumberFormat(locale);
+  // Unsere eigenen Zahlen kommen aus dem Code, nicht aus einem Text: sonst
   // stuende auf der Startseite irgendwann etwas anderes als auf /pricing.
-  const proPrice = formatPrice(PLANS.PRO.priceCents, PLATFORM_CURRENCY, locale);
+  // "Alle Funktionen" gibt es erst im groessten Paket (lib/plan-features.ts).
+  const topPlan = PLANS[PLAN_ORDER[PLAN_ORDER.length - 1]!];
+  const fullPrice = formatPrice(topPlan.priceCents, PLATFORM_CURRENCY, locale);
+  const fee = formatPlatformFee(locale);
+  const freeSpaces = spaceTypesForPlan("FREE");
+  const includedVars = {
+    count: freeSpaces.length,
+    list: new Intl.ListFormat(locale, { type: "conjunction" }).format(
+      freeSpaces.map((type) => tSpaces(`${type}.label`)),
+    ),
+    tiers: nf.format(PLAN_LIMITS.FREE.maxTiers ?? 0),
+    credits: nf.format(PLANS.FREE.monthlyCredits),
+    gb: nf.format(PLANS.FREE.storageGb),
+  };
 
   const spaceTiles = TILE_IDS.map((id) => ({
     name: t(`tiles.${id}.name`),
@@ -157,10 +194,13 @@ export default async function LandingPage() {
                         key={tag}
                         className="rounded-full border border-[#161613]/20 px-3.5 py-1.5 text-sm font-semibold text-[#161613]/80"
                       >
-                        {t(`chapters.${id}.${tag}`)}
+                        {t(`chapters.${id}.${tag}`, { count: SPACE_TYPE_KEYS.length })}
                       </span>
                     ))}
                   </div>
+                  {CHAPTER_GATES[id] && (
+                    <PlanAvailability items={CHAPTER_GATES[id]} className="mt-4" />
+                  )}
                 </div>
               </article>
             </Reveal>
@@ -207,8 +247,14 @@ export default async function LandingPage() {
                     <p className="display-serif text-2xl sm:text-3xl">
                       {t(`revenue.${id}.name`)}
                     </p>
-                    <p className="text-sm text-white/55 sm:text-right">
+                    <p className="text-sm text-white/65 sm:text-right">
                       {t(`revenue.${id}.detail`)}
+                      {REVENUE_GATES[id] && (
+                        <>
+                          {" · "}
+                          {t("fromPlan", { plan: PLANS[minPlanFor(REVENUE_GATES[id])].name })}
+                        </>
+                      )}
                     </p>
                   </div>
                 </Reveal>
@@ -269,7 +315,7 @@ export default async function LandingPage() {
                           {t(`compare.row${row === "base" ? "Base" : row === "fee" ? "Fee" : "Full"}`)}
                         </dt>
                         <dd className="mt-1 text-base font-semibold leading-6">
-                          {t(`compare.aera.${row}`, { pro: proPrice })}
+                          {t(`compare.aera.${row}`, { price: fullPrice, plan: topPlan.name, fee })}
                         </dd>
                       </dl>
                     ))}
@@ -318,10 +364,10 @@ export default async function LandingPage() {
                 <Reveal key={id} delay={i * 90}>
                   <div>
                     <h3 className="display-serif text-2xl leading-tight sm:text-3xl">
-                      {t(`compare.included.${id}.title`)}
+                      {t(`compare.included.${id}.title`, includedVars)}
                     </h3>
                     <p className="mt-3 text-base leading-7 text-[#241458]/70">
-                      {t(`compare.included.${id}.text`)}
+                      {t(`compare.included.${id}.text`, includedVars)}
                     </p>
                   </div>
                 </Reveal>
@@ -344,6 +390,9 @@ export default async function LandingPage() {
                   <p className="mt-4 text-base leading-7 text-[#161613]/70">
                     {t(`ownership.${id}.text`)}
                   </p>
+                  {OWNERSHIP_GATES[id] && (
+                    <PlanAvailability items={OWNERSHIP_GATES[id]} className="mt-3" />
+                  )}
                 </div>
               </Reveal>
             ))}

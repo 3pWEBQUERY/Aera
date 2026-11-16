@@ -561,14 +561,23 @@ async function displayRecommendationsUncached(
         });
     } else if (r.refType === "POST") {
       const p = await prisma.post.findFirst({
-        where: { id: r.refId, tenantId },
+        where: { id: r.refId, tenantId, isPublished: true, publishedAt: { lte: new Date() } },
         include: { space: true },
       });
-      if (p)
+      // Der Textanfang taugt nur bei frei lesbaren Beitraegen als Titel —
+      // bei gesperrten (Beitrag oder Space) waere er bereits der Inhalt.
+      const openPost =
+        p &&
+        p.visibility === "PUBLIC" &&
+        p.priceCents <= 0 &&
+        p.space.visibility === "PUBLIC" &&
+        !p.space.requiredEntitlementKey;
+      const title = p ? p.title || (openPost ? p.body.slice(0, 60) : "") : "";
+      if (p && title)
         out.push({
           type: "post",
           href: `/c/${slug}/s/${p.space.slug}/${p.id}`,
-          title: p.title ?? p.body.slice(0, 60),
+          title,
           reason: r.reason,
         });
     } else if (r.refType === "EVENT") {

@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Для курсов нужно пространство курсов, но твой пакет {plan} допускает только {limit} активных пространств, и все заняты. Заархивируй пространство или смени пакет — тогда курс можно будет создать.",
+    "planAutoSpaceEvents": "Для событий нужно пространство событий, но твой пакет {plan} допускает только {limit} активных пространств, и все заняты. Заархивируй пространство или смени пакет — тогда событие можно будет создать.",
+    "campaignNoSubscribers": "На твою рассылку пока никто не подписан. Отправить можно будет, когда появятся получатели.",
+    "campaignSegmentEmpty": "В этом сегменте сейчас никого нет. Выбери другой сегмент, чтобы отправить.",
+    "campaignTestDeliveryFailed": "Почтовый сервис не принял письмо ({detail}). Попробуй позже.",
+    "recoveryCodeInvalid": "Этот код восстановления неверный или уже использован. Проверьте написание или попробуйте другой код.",
+    "secondFactorInvalid": "Код не подходит. Введите текущий код из приложения или неиспользованный код восстановления."
   },
   "nameStatus": {
     "checking": "Проверка доступности…",
@@ -502,14 +509,12 @@
     "changingPassword": "Изменение…",
     "twoFaActive": "Двухфакторная аутентификация активна",
     "twoFaActiveDesc": "При входе, помимо пароля, запрашивается код из вашего приложения-аутентификатора.",
-    "twoFaDisableLabel": "Для отключения: текущий код",
+    "twoFaDisableLabel": "Чтобы отключить: код из приложения или код восстановления",
     "twoFaDisabling": "Отключение…",
     "twoFaDisable": "Отключить 2FA",
     "twoFaSetupIntro": "Отсканируйте QR-код приложением-аутентификатором (Google Authenticator, 1Password, Authy …) и подтвердите показанным кодом.",
     "twoFaQrAlt": "QR-код для приложения-аутентификатора",
-    "twoFaNoScanner": "Нет сканера QR? Введите секрет вручную:",
-    "twoFaHideSecret": "Скрыть секрет",
-    "twoFaShowSecret": "Показать секрет",
+    "twoFaNoScanner": "Нет QR-сканера? Введите этот ключ настройки в приложении:",
     "twoFaCodeFromApp": "Код из приложения",
     "twoFaChecking": "Проверка…",
     "twoFaActivate": "Активировать",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Скопировать ключ",
+    "twoFaKeyCopied": "Ключ скопирован.",
+    "twoFaOpenInApp": "Открыть в приложении-аутентификаторе",
+    "secondFactorLabel": "Код из приложения или код восстановления",
+    "recoveryCodesTitle": "Коды восстановления",
+    "recoveryCodesIntro": "С этими кодами вы войдёте, если нет доступа к приложению-аутентификатору. Каждый код работает только один раз. Сохраните их сейчас, например в менеджере паролей, — они показываются только один раз.",
+    "recoveryCopy": "Скопировать коды",
+    "recoveryCopied": "Коды скопированы.",
+    "recoveryDownload": "Скачать как текстовый файл",
+    "recoverySaved": "Коды сохранены",
+    "recoveryFileTitle": "Aera — коды восстановления для {email}",
+    "recoveryFileHint": "Каждый код работает только один раз. Новые коды можно создать в аккаунте: Настройки > Двухфакторная аутентификация.",
+    "recoveryCodesLeft": "{count, plural, =0 {Кодов не осталось. Создайте новые, чтобы входить и без приложения.} one {Остался # код из 10.} few {Осталось # кода из 10.} many {Осталось # кодов из 10.} other {Осталось # кода из 10.}}",
+    "recoveryRegenerate": "Создать новые коды",
+    "recoveryRegenConfirmTitle": "Создать новые коды восстановления?",
+    "recoveryRegenConfirmBody": "Текущие коды перестанут работать. Сразу сохраните новые.",
+    "recoveryUsedNotice": "{count, plural, =0 {Вы вошли с последним кодом восстановления. Если приложение ещё у вас, создайте новые коды сейчас. Иначе напишите нам через «Помощь со входом».} one {Вы вошли с кодом восстановления. Остался # код. Нет доступа к приложению? Отключите 2FA ниже этим кодом и настройте заново.} few {Вы вошли с кодом восстановления. Осталось # кода. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.} many {Вы вошли с кодом восстановления. Осталось # кодов. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.} other {Вы вошли с кодом восстановления. Осталось # кода. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.}}",
+    "emailUnverified": "Не подтверждён"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Отправить тест мне",
       "testSending": "Отправка…",
       "testSent": "Тестовое письмо отправлено!",
-      "testFailed": "Тест не удался",
       "recipientsEstimate": "≈ {count} получателей",
       "formatText": "Текст",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Уровень: {name}",
       "ruleMinPoints": "от {count} баллов",
       "ruleActiveSince": "Участник ≥ {days} дней",
-      "ruleAll": "Все участники"
+      "ruleAll": "Все участники",
+      "confirmSendTitle": "Отправить «{subject}» сейчас {count, plural, one {# получателю} other {# получателям}}?",
+      "confirmSendBody": "Отправка начнётся сразу, отменить её нельзя.",
+      "confirmSendScheduledTitle": "Запланировано на {date}. Всё равно отправить сейчас?",
+      "confirmSendScheduledBody": "«{subject}» сразу уйдёт {count, plural, one {# получателю} other {# получателям}}. Это действие нельзя отменить.",
+      "confirmSendLabel": "Отправить {count} сейчас",
+      "sendQueued": "«{subject}» отправляется.",
+      "sendingNow": "Отправка…",
+      "noSubscribersHint": "На твою рассылку пока никто не подписан. Отправить можно будет, когда появятся получатели.",
+      "segmentEmptyHint": "В этом сегменте сейчас никого нет. Выбери другой сегмент, чтобы отправить.",
+      "noRecipientsShort": "Нет получателей",
+      "sendNowEllipsis": "Отправить сейчас…",
+      "testFailedReason": "Тест не отправлен: {reason}",
+      "testFailedUnknown": "Неизвестная ошибка. Попробуй ещё раз.",
+      "schedulePastWarning": "Это время уже прошло. При сохранении кампания останется черновиком.",
+      "confirmDeleteCampaignBody": "«{subject}» будет удалена. Это действие нельзя отменить.",
+      "confirmDeleteSegmentBody": "Черновики и запланированные кампании с этим сегментом затем уйдут всем подписчикам.",
+      "deleteSegmentConfirm": "Удалить сегмент",
+      "segmentNameLabel": "Название сегмента"
     },
     "ads": {
       "badge": "Реклама",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Закрыть",
       "deleteLesson": "Удалить",
       "confirmDeleteLesson": "Удалить урок «{title}»?",
-      "lessonTitlePlaceholder": "Название",
-      "videoUrlPlaceholder": "URL видео (необязательно)",
-      "contentPlaceholder": "Содержимое",
-      "dripLabel": "Открытие: дней после вступления (пусто/0 = сразу)",
       "dripPlaceholder": "напр. 7",
       "lessonSaving": "Сохранение…",
       "lessonSave": "Сохранить",
       "addLesson": "Добавить урок",
-      "addLessonTitlePlaceholder": "Название урока",
-      "addContentPlaceholder": "Содержимое (необязательно)",
-      "addDripPlaceholder": "Открытие: дней после вступления (пусто = сразу)",
       "adding": "Добавление…",
-      "add": "Добавить"
+      "cannotUndo": "Это действие нельзя отменить.",
+      "deleteLessonConfirm": "Удалить урок",
+      "createdAddLesson": "Курс создан — теперь добавь первый урок.",
+      "lessonTitleLabel": "Название урока",
+      "lessonVideoLabel": "URL видео (необязательно)",
+      "lessonContentLabel": "Содержание (необязательно)",
+      "lessonDripLabel": "Открытие после вступления (дней)",
+      "lessonDripHint": "Пусто или 0: доступно сразу.",
+      "addLessonBtn": "Добавить урок"
     },
     "gallery": {
       "badge": "Галерея",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Удалить событие",
       "cancel": "Отмена",
       "saving": "Сохранение…",
-      "saveChanges": "Сохранить изменения"
+      "saveChanges": "Сохранить изменения",
+      "confirmDeleteBody": "Все ответы участников будут потеряны. Это действие нельзя отменить.",
+      "meetingUrlMissing": "Без ссылки участники не смогут присоединиться. Её можно добавить позже."
     },
     "settings": {
       "title": "Настройки",
@@ -3832,6 +3875,10 @@
         "desc": "Поделитесь ссылкой или пригласите по e-mail.",
         "cta": "Пригласить участников"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "В твоём часовом поясе: {zone} ({abbr})",
+      "pastWarning": "Эта дата уже прошла."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Ваш аккаунт защищён двухфакторной аутентификацией.",
     "legalAcceptance": "Я принимаю <terms>Условия использования</terms> и подтверждаю, что ознакомился с <privacy>Уведомлением о конфиденциальности</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-значный код",
+    "codeFor": "Вход как <strong>{email}</strong>.",
+    "useOtherEmail": "Использовать другой e-mail",
+    "useRecoveryCode": "Нет доступа к приложению? Использовать код восстановления",
+    "useAppCode": "Использовать код из приложения",
+    "recoveryHeading": "Введите код восстановления",
+    "recoveryLabel": "Код восстановления",
+    "recoveryHint": "Один из кодов, которые вы сохранили при настройке 2FA. Каждый код работает только один раз.",
+    "passwordTooShortField": "Пароль слишком короткий — минимум {min} символов."
   },
   "verifyBanner": {
-    "prompt": "Подтвердите свой адрес эл. почты <strong>{email}</strong>.",
+    "prompt": "Подтвердите <strong>{email}</strong>, чтобы получать рассылки и письма от ваших сообществ.",
     "resend": "Отправить ссылку ещё раз",
     "resending": "Отправка …",
-    "sent": "Новая ссылка для подтверждения отправлена на <strong>{email}</strong> — проверьте почту."
+    "sent": "Новая ссылка для подтверждения отправлена на <strong>{email}</strong> — проверьте почту.",
+    "sendLink": "Отправить ссылку для подтверждения"
   },
   "community": {
     "join": "Стать участником",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Запросить ссылку",
     "forgotSending": "Отправка…",
     "backTo": "Назад ко",
-    "backToLogin": "входу"
+    "backToLogin": "входу",
+    "resetDoneNotice": "Пароль изменён. Теперь войдите с новым паролем.",
+    "loginHelp": "Помощь со входом"
   },
   "pricing": {
     "eyebrow": "Цены",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Задайте новый пароль",
       "forAccount": "Для учётной записи {email}",
       "verifyMeta": "Подтверждение почты — Aera",
-      "verifyInvalidText": "Эта ссылка подтверждения устарела или недействительна. Войдите и запросите новую из своей учётной записи.",
+      "verifyInvalidText": "Срок действия ссылки истёк, или она уже использована. Запросите новую ссылку.",
       "toLogin": "К входу",
       "alreadyVerifiedTitle": "Уже подтверждено",
       "verifiedTitle": "Почта подтверждена",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Забыли пароль — Aera",
       "pricingMeta": "Цены",
       "featuresMeta": "Возможности",
-      "manifestDescription": "Ваши сообщества: публикации, курсы, события и сообщения — всё в одном месте."
+      "manifestDescription": "Ваши сообщества: публикации, курсы, события и сообщения — всё в одном месте.",
+      "verifyInvalidVerified": "Ссылка больше не действует, но ваш e-mail уже подтверждён.",
+      "loginForNewLink": "Войти, чтобы получить новую ссылку"
     },
     "emails": {
       "sentVia": "Отправлено через Aera",

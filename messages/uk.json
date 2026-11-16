@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Для курсів потрібен простір курсів, але твій пакет {plan} дозволяє лише {limit} активних просторів, і всі зайняті. Заархівуй простір або зміни пакет — тоді курс можна буде створити.",
+    "planAutoSpaceEvents": "Для подій потрібен простір подій, але твій пакет {plan} дозволяє лише {limit} активних просторів, і всі зайняті. Заархівуй простір або зміни пакет — тоді подію можна буде створити.",
+    "campaignNoSubscribers": "На твою розсилку ще ніхто не підписався. Надіслати можна буде, щойно з’являться отримувачі.",
+    "campaignSegmentEmpty": "У цьому сегменті зараз нікого немає. Обери інший сегмент, щоб надіслати.",
+    "campaignTestDeliveryFailed": "Поштовий сервіс не прийняв лист ({detail}). Спробуй пізніше.",
+    "recoveryCodeInvalid": "Цей код відновлення неправильний або вже використаний. Перевірте написання або спробуйте інший код.",
+    "secondFactorInvalid": "Код не підходить. Введіть поточний код із застосунку або невикористаний код відновлення."
   },
   "nameStatus": {
     "checking": "Перевірка доступності…",
@@ -502,14 +509,12 @@
     "changingPassword": "Зміна…",
     "twoFaActive": "Двофакторна автентифікація активна",
     "twoFaActiveDesc": "Під час входу, окрім пароля, запитується код із вашого застосунку-автентифікатора.",
-    "twoFaDisableLabel": "Для вимкнення: поточний код",
+    "twoFaDisableLabel": "Щоб вимкнути: код із застосунку або код відновлення",
     "twoFaDisabling": "Вимкнення…",
     "twoFaDisable": "Вимкнути 2FA",
     "twoFaSetupIntro": "Відскануйте QR-код застосунком-автентифікатором (Google Authenticator, 1Password, Authy …) і підтвердьте показаним кодом.",
     "twoFaQrAlt": "QR-код для застосунку-автентифікатора",
-    "twoFaNoScanner": "Немає сканера QR? Введіть секрет вручну:",
-    "twoFaHideSecret": "Сховати секрет",
-    "twoFaShowSecret": "Показати секрет",
+    "twoFaNoScanner": "Немає QR-сканера? Введіть цей ключ налаштування в застосунку:",
     "twoFaCodeFromApp": "Код із застосунку",
     "twoFaChecking": "Перевірка…",
     "twoFaActivate": "Активувати",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Скопіювати ключ",
+    "twoFaKeyCopied": "Ключ скопійовано.",
+    "twoFaOpenInApp": "Відкрити в застосунку-автентифікаторі",
+    "secondFactorLabel": "Код із застосунку або код відновлення",
+    "recoveryCodesTitle": "Коди відновлення",
+    "recoveryCodesIntro": "З цими кодами ви ввійдете, якщо не маєте доступу до застосунку-автентифікатора. Кожен код працює лише один раз. Збережіть їх зараз, наприклад у менеджері паролів, — вони показуються лише цей один раз.",
+    "recoveryCopy": "Скопіювати коди",
+    "recoveryCopied": "Коди скопійовано.",
+    "recoveryDownload": "Завантажити як текстовий файл",
+    "recoverySaved": "Коди збережено",
+    "recoveryFileTitle": "Aera — коди відновлення для {email}",
+    "recoveryFileHint": "Кожен код працює лише один раз. Нові коди можна створити в акаунті: Налаштування > Двофакторна автентифікація.",
+    "recoveryCodesLeft": "{count, plural, =0 {Кодів не лишилося. Створіть нові, щоб входити й без застосунку.} one {Лишився # код із 10.} few {Лишилося # коди з 10.} many {Лишилося # кодів із 10.} other {Лишилося # коду з 10.}}",
+    "recoveryRegenerate": "Створити нові коди",
+    "recoveryRegenConfirmTitle": "Створити нові коди відновлення?",
+    "recoveryRegenConfirmBody": "Поточні коди перестануть працювати. Одразу збережіть нові.",
+    "recoveryUsedNotice": "{count, plural, =0 {Ви ввійшли з останнім кодом відновлення. Якщо застосунок ще у вас, створіть нові коди зараз. Інакше напишіть нам через «Допомога зі входом».} one {Ви ввійшли з кодом відновлення. Лишився # код. Немає доступу до застосунку? Вимкніть 2FA нижче цим кодом і налаштуйте знову.} few {Ви ввійшли з кодом відновлення. Лишилося # коди. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.} many {Ви ввійшли з кодом відновлення. Лишилося # кодів. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.} other {Ви ввійшли з кодом відновлення. Лишилося # коду. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.}}",
+    "emailUnverified": "Не підтверджено"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Надіслати тест мені",
       "testSending": "Надсилання…",
       "testSent": "Тестовий лист надіслано!",
-      "testFailed": "Тест не вдався",
       "recipientsEstimate": "≈ {count} отримувачів",
       "formatText": "Текст",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Рівень: {name}",
       "ruleMinPoints": "від {count} балів",
       "ruleActiveSince": "Учасник ≥ {days} днів",
-      "ruleAll": "Усі учасники"
+      "ruleAll": "Усі учасники",
+      "confirmSendTitle": "Надіслати «{subject}» зараз {count, plural, one {# отримувачу} other {# отримувачам}}?",
+      "confirmSendBody": "Надсилання почнеться одразу, скасувати його не можна.",
+      "confirmSendScheduledTitle": "Заплановано на {date}. Усе одно надіслати зараз?",
+      "confirmSendScheduledBody": "«{subject}» одразу піде {count, plural, one {# отримувачу} other {# отримувачам}}. Цю дію не можна скасувати.",
+      "confirmSendLabel": "Надіслати {count} зараз",
+      "sendQueued": "«{subject}» надсилається.",
+      "sendingNow": "Надсилання…",
+      "noSubscribersHint": "На твою розсилку ще ніхто не підписався. Надіслати можна буде, щойно з’являться отримувачі.",
+      "segmentEmptyHint": "У цьому сегменті зараз нікого немає. Обери інший сегмент, щоб надіслати.",
+      "noRecipientsShort": "Немає отримувачів",
+      "sendNowEllipsis": "Надіслати зараз…",
+      "testFailedReason": "Тест не надіслано: {reason}",
+      "testFailedUnknown": "Невідома помилка. Спробуй ще раз.",
+      "schedulePastWarning": "Цей час уже минув. Після збереження кампанія залишиться чернеткою.",
+      "confirmDeleteCampaignBody": "«{subject}» буде видалено. Цю дію не можна скасувати.",
+      "confirmDeleteSegmentBody": "Чернетки й заплановані кампанії з цим сегментом потім підуть усім підписникам.",
+      "deleteSegmentConfirm": "Видалити сегмент",
+      "segmentNameLabel": "Назва сегмента"
     },
     "ads": {
       "badge": "Реклама",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Закрити",
       "deleteLesson": "Видалити",
       "confirmDeleteLesson": "Видалити урок «{title}»?",
-      "lessonTitlePlaceholder": "Назва",
-      "videoUrlPlaceholder": "URL відео (необовʼязково)",
-      "contentPlaceholder": "Вміст",
-      "dripLabel": "Відкриття: днів після приєднання (порожньо/0 = одразу)",
       "dripPlaceholder": "напр. 7",
       "lessonSaving": "Збереження…",
       "lessonSave": "Зберегти",
       "addLesson": "Додати урок",
-      "addLessonTitlePlaceholder": "Назва уроку",
-      "addContentPlaceholder": "Вміст (необовʼязково)",
-      "addDripPlaceholder": "Відкриття: днів після приєднання (порожньо = одразу)",
       "adding": "Додавання…",
-      "add": "Додати"
+      "cannotUndo": "Цю дію не можна скасувати.",
+      "deleteLessonConfirm": "Видалити урок",
+      "createdAddLesson": "Курс створено — тепер додай перший урок.",
+      "lessonTitleLabel": "Назва уроку",
+      "lessonVideoLabel": "URL відео (необов’язково)",
+      "lessonContentLabel": "Зміст (необов’язково)",
+      "lessonDripLabel": "Відкриття після вступу (днів)",
+      "lessonDripHint": "Порожньо або 0: доступно одразу.",
+      "addLessonBtn": "Додати урок"
     },
     "gallery": {
       "badge": "Галерея",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Видалити подію",
       "cancel": "Скасувати",
       "saving": "Збереження…",
-      "saveChanges": "Зберегти зміни"
+      "saveChanges": "Зберегти зміни",
+      "confirmDeleteBody": "Усі відповіді учасників буде втрачено. Цю дію не можна скасувати.",
+      "meetingUrlMissing": "Без посилання учасники не зможуть долучитися. Його можна додати пізніше."
     },
     "settings": {
       "title": "Налаштування",
@@ -3832,6 +3875,10 @@
         "desc": "Поділіться посиланням або запросіть e-mailом.",
         "cta": "Запросити учасників"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "У твоєму часовому поясі: {zone} ({abbr})",
+      "pastWarning": "Ця дата вже минула."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Ваш акаунт захищено двофакторною автентифікацією.",
     "legalAcceptance": "Я приймаю <terms>Умови використання</terms> та підтверджую ознайомлення з <privacy>Повідомленням про конфіденційність</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-значний код",
+    "codeFor": "Вхід як <strong>{email}</strong>.",
+    "useOtherEmail": "Використати інший e-mail",
+    "useRecoveryCode": "Немає доступу до застосунку? Використати код відновлення",
+    "useAppCode": "Використати код із застосунку",
+    "recoveryHeading": "Введіть код відновлення",
+    "recoveryLabel": "Код відновлення",
+    "recoveryHint": "Один із кодів, які ви зберегли під час налаштування 2FA. Кожен код працює лише один раз.",
+    "passwordTooShortField": "Пароль закороткий — щонайменше {min} символів."
   },
   "verifyBanner": {
-    "prompt": "Підтвердьте свою адресу ел. пошти <strong>{email}</strong>.",
+    "prompt": "Підтвердьте <strong>{email}</strong>, щоб отримувати розсилки й листи від ваших спільнот.",
     "resend": "Надіслати посилання ще раз",
     "resending": "Надсилання …",
-    "sent": "Нове посилання для підтвердження надіслано на <strong>{email}</strong> — перевірте пошту."
+    "sent": "Нове посилання для підтвердження надіслано на <strong>{email}</strong> — перевірте пошту.",
+    "sendLink": "Надіслати посилання для підтвердження"
   },
   "community": {
     "join": "Стати учасником",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Запросити посилання",
     "forgotSending": "Надсилання…",
     "backTo": "Назад до",
-    "backToLogin": "входу"
+    "backToLogin": "входу",
+    "resetDoneNotice": "Пароль змінено. Тепер увійдіть із новим паролем.",
+    "loginHelp": "Допомога зі входом"
   },
   "pricing": {
     "eyebrow": "Ціни",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Встановіть новий пароль",
       "forAccount": "Для облікового запису {email}",
       "verifyMeta": "Підтвердити пошту — Aera",
-      "verifyInvalidText": "Це посилання для підтвердження застаріло або недійсне. Увійдіть і замовте нове зі свого облікового запису.",
+      "verifyInvalidText": "Термін дії посилання минув, або його вже використано. Запросіть нове посилання.",
       "toLogin": "До входу",
       "alreadyVerifiedTitle": "Уже підтверджено",
       "verifiedTitle": "Пошту підтверджено",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Забули пароль — Aera",
       "pricingMeta": "Ціни",
       "featuresMeta": "Можливості",
-      "manifestDescription": "Ваші спільноти: дописи, курси, події та повідомлення — усе в одному місці."
+      "manifestDescription": "Ваші спільноти: дописи, курси, події та повідомлення — усе в одному місці.",
+      "verifyInvalidVerified": "Посилання більше не дійсне, але ваш e-mail уже підтверджено.",
+      "loginForNewLink": "Увійти, щоб отримати нове посилання"
     },
     "emails": {
       "sentVia": "Надіслано через Aera",

@@ -30,8 +30,9 @@ export default async function PostDetail({
   params: Promise<{ slug: string; spaceSlug: string; postId: string }>;
 }) {
   const { slug, spaceSlug, postId } = await params;
-  const [t, locale] = await Promise.all([
+  const [t, tPostTile, locale] = await Promise.all([
     getTranslations("spaces"),
+    getTranslations("community.render.postTile"),
     getLocale(),
   ]);
   const community = await getCommunityContext(slug);
@@ -46,8 +47,26 @@ export default async function PostDetail({
   // A post is reachable by its id or its optional custom slug.
   const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
 
+  // Forenbeitraege koennen wie alle anderen gesperrt oder geplant sein. Ein
+  // gesperrter Beitrag bekommt unten dieselbe Sperrkarte wie jeder andere
+  // statt des Threads mit vollem Text und Kommentaren.
+  const forumGate =
+    space.type === "FORUM"
+      ? await prisma.post.findFirst({
+          where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
+          select: { isPublished: true, publishedAt: true, ...GATE_SELECT },
+        })
+      : null;
+  if (
+    forumGate &&
+    !ctx.isStaff &&
+    (!forumGate.isPublished || forumGate.publishedAt.getTime() > Date.now())
+  ) {
+    notFound();
+  }
+
   // ----- Reddit-style forum thread -----
-  if (space.type === "FORUM") {
+  if (space.type === "FORUM" && !(forumGate && isPostLocked(forumGate, ctx))) {
     const fpost = await prisma.post.findFirst({
       where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
       include: {
@@ -188,7 +207,8 @@ export default async function PostDetail({
   // Geschlossene Kommentare: kein Formular (der Server lehnt ohnehin ab).
   const canComment = isMember && !post.closeComments;
 
-  const commentsBlock = (
+  // Gesperrt: keine Kommentare — die Diskussion zitiert den Inhalt.
+  const commentsBlock = locked ? null : (
     <CommentThread
       slug={slug}
       spaceSlug={spaceSlug}
@@ -272,7 +292,11 @@ export default async function PostDetail({
       const cover = relatedCovers.get(p.id);
       return {
         id: p.id,
-        title: p.title || excerpt(p.body, 80) || tSpace("untitled"),
+        title:
+          p.title ||
+          (tileLocked
+            ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+            : excerpt(p.body, 80) || tSpace("untitled")),
         href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
         // Mitglieder-Beitraege behalten ihr Titelbild — es ist die Werbung.
         // Beim Einzelverkauf steht dafuer nur das Vorschaubild bereit.
@@ -331,7 +355,10 @@ export default async function PostDetail({
             {post._count.comments === 1 ? "Kommentar" : "Kommentare"}
           </p>
           <h1 className="blog-title mx-auto mt-4 max-w-2xl text-4xl font-bold leading-[1.12] text-[#161613] sm:text-5xl">
-            {post.title || excerpt(post.body, 80) || "Ohne Titel"}
+            {post.title ||
+              (locked
+                ? tPostTile(post.priceCents > 0 ? "paidUntitled" : "lockedUntitled")
+                : excerpt(post.body, 80) || tSpace("untitled"))}
           </h1>
         </header>
 
@@ -371,7 +398,9 @@ export default async function PostDetail({
               <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#161613]/70 text-white">
                 <Icon name="lock" size={22} />
               </span>
-              <p className="mt-4 text-sm text-[#161613]/70">{excerpt(post.body, 160)}</p>
+              <p className="mt-4 text-sm text-[#161613]/70">
+                {post.priceCents > 0 ? tPostTile("paidHint") : tPostTile("lockedHint")}
+              </p>
               {post.priceCents > 0 ? (
                 <form action={purchasePostAction} className="mx-auto mt-5 max-w-xs">
                   <input type="hidden" name="tenant" value={slug} />
@@ -454,7 +483,9 @@ export default async function PostDetail({
 
   const card: PostCardData = {
     id: post.id,
-    title: post.title,
+    title:
+      post.title ||
+      (locked ? tPostTile(post.priceCents > 0 ? "paidUntitled" : "lockedUntitled") : null),
     body: locked ? "" : post.body,
     bodyHtml: locked ? null : post.bodyHtml,
     imageUrl: locked ? null : post.imageUrl,
@@ -471,7 +502,8 @@ export default async function PostDetail({
         ? post.teaserUrl
         : (post.imageUrls[0] ?? post.imageUrl)
       : null,
-    lockedExcerpt: locked ? excerpt(post.body, 180) : null,
+    // Kein Textauszug: ein kurzer Beitrag waere sonst ganz lesbar.
+    lockedExcerpt: null,
     priceCents: post.priceCents,
     currency: post.currency,
     teaserUrl: post.teaserUrl,
@@ -508,7 +540,11 @@ export default async function PostDetail({
     const tileLocked = kind !== "none";
     return {
       id: p.id,
-      title: p.title || excerpt(p.body, 80) || t("untitled"),
+      title:
+        p.title ||
+        (tileLocked
+          ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+          : excerpt(p.body, 80) || t("untitled")),
       href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
       imageUrl: kind === "paid" ? p.teaserUrl : (p.imageUrls[0] ?? p.imageUrl),
       videoUrl: tileLocked ? null : p.videoUrl,

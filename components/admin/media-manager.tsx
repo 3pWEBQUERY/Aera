@@ -8,6 +8,8 @@ import { Sheet } from "@/components/dashboard/sheet";
 import { Icon } from "@/components/dashboard/icons";
 import { Pill, EmptyState } from "@/components/ui/misc";
 import { formatDateTime } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface MediaRowData {
   id: string;
@@ -216,6 +218,8 @@ function InfoRow({
 
 function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void }) {
   const t = useTranslations("admin.media");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const locale = useLocale();
   const visCls = visibilityCls[media.visibility] ?? visibilityCls.MEMBERS;
@@ -298,11 +302,14 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm"))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirmTitle", { name: media.key.split("/").pop() ?? media.key }),
+                  body: t("dangerDesc"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3"
             >
               <input type="hidden" name="objectId" value={media.id} />
@@ -329,6 +336,7 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
           {tc("close")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

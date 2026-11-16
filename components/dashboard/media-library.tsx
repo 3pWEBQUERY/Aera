@@ -18,7 +18,8 @@ import { Icon } from "./icons";
 import { Input, Label } from "@/components/ui/field";
 import { Pill, EmptyState, FormError } from "@/components/ui/misc";
 import { cn, formatDateTime } from "@/lib/utils";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { UploadError, uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { useConfirm, type ConfirmOptions } from "@/components/ui/confirm-dialog";
 
 export interface MediaFolderData {
   id: string;
@@ -94,13 +95,18 @@ export function MediaLibrary({
   // ---- Direct uploads into the library (purpose "library") ----
   const uploadRef = useRef<HTMLInputElement>(null);
   const [uploadState, setUploadState] = useState<{ done: number; total: number } | null>(null);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  // Eine Zeile pro fehlgeschlagener Datei — frueher stand nur der letzte
+  // Fehler da, und welche Dateien fehlten, musste man erraten.
+  const [uploadFailures, setUploadFailures] = useState<{ file: File; message: string }[]>([]);
+  const uploadErrorText = useUploadErrorText();
+  const [confirm, confirmDialog] = useConfirm();
 
-  async function uploadFiles(list: FileList | null) {
+  async function uploadFiles(list: FileList | File[] | null) {
     const files = Array.from(list ?? []);
     if (files.length === 0) return;
-    setUploadError(null);
+    setUploadFailures([]);
     setUploadState({ done: 0, total: files.length });
+    const failures: { file: File; message: string }[] = [];
     for (let i = 0; i < files.length; i++) {
       try {
         await uploadMediaFile({
@@ -109,20 +115,19 @@ export function MediaLibrary({
           purpose: "library",
         });
       } catch (uploadError) {
-        setUploadError(
-          uploadError instanceof UploadError
-            ? uploadError.message
-            : t("uploadFailed", { name: files[i].name }),
-        );
+        failures.push({ file: files[i], message: uploadErrorText(uploadError) });
         // Quota errors abort the batch — the rest would fail identically.
         if (uploadError instanceof UploadError && uploadError.status === 413) {
+          const message = uploadErrorText(uploadError);
+          for (const rest of files.slice(i + 1)) failures.push({ file: rest, message });
           break;
         }
       }
       setUploadState({ done: i + 1, total: files.length });
     }
+    setUploadFailures(failures);
     setUploadState(null);
-    router.refresh();
+    if (failures.length < files.length) router.refresh();
   }
 
   const usedPct = storage.limitBytes > 0
@@ -272,10 +277,39 @@ export function MediaLibrary({
         </div>
       </div>
 
-      {uploadError && (
-        <p className="mb-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm text-red-700">
-          {uploadError}
-        </p>
+      {uploadFailures.length > 0 && (
+        <div role="alert" className="mb-4 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="flex flex-wrap items-start justify-between gap-x-4 gap-y-2">
+            <p className="font-semibold">
+              {t("uploadFailedCount", { count: uploadFailures.length })}
+            </p>
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                disabled={!!uploadState}
+                onClick={() => void uploadFiles(uploadFailures.map((f) => f.file))}
+                className="font-semibold text-red-800 underline underline-offset-2 hover:text-red-900 disabled:opacity-60"
+              >
+                {t("retryUpload")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setUploadFailures([])}
+                aria-label={t("dismissUploadErrors")}
+                className="flex h-7 w-7 items-center justify-center rounded-full text-red-700 hover:bg-red-100"
+              >
+                <Icon name="close" size={14} />
+              </button>
+            </div>
+          </div>
+          <ul className="mt-1.5 space-y-1">
+            {uploadFailures.map((f, i) => (
+              <li key={`${f.file.name}-${i}`} className="break-words">
+                {t("uploadFailedLine", { name: f.file.name, reason: f.message })}
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
       <input
@@ -348,8 +382,13 @@ export function MediaLibrary({
                   onDrop(folder.id);
                 }}
                 onSettings={() => setRenameFolder(folder)}
-                onDelete={() => {
-                  if (!window.confirm(t("confirmDeleteFolder"))) return;
+                onDelete={async () => {
+                  const ok = await confirm({
+                    title: t("confirmDeleteFolderTitle", { name: folder.name }),
+                    body: t("confirmDeleteFolderBody"),
+                    confirmLabel: t("confirmDeleteFolderCta"),
+                  });
+                  if (!ok) return;
                   const fd = new FormData();
                   fd.set("tenant", slug);
                   fd.set("folderId", folder.id);
@@ -422,6 +461,7 @@ export function MediaLibrary({
                         onEdit={setEditing}
                         onRename={setRenaming}
                         folders={folders}
+                        confirm={confirm}
                       />
                     )}
                   </div>
@@ -505,6 +545,7 @@ export function MediaLibrary({
           />
         )}
       </Sheet>
+      {confirmDialog}
     </div>
   );
 }
@@ -516,6 +557,7 @@ function MediaGrid({
   onDragStart,
   onEdit,
   onRename,
+  confirm,
 }: {
   items: MediaItemData[];
   slug: string;
@@ -523,6 +565,7 @@ function MediaGrid({
   onDragStart: (id: string) => void;
   onEdit: (item: MediaItemData) => void;
   onRename: (item: MediaItemData) => void;
+  confirm: (options: ConfirmOptions) => Promise<boolean>;
 }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
@@ -535,6 +578,7 @@ function MediaGrid({
           onDragStart={onDragStart}
           onEdit={() => onEdit(item)}
           onRename={() => onRename(item)}
+          confirm={confirm}
         />
       ))}
     </div>
@@ -548,6 +592,7 @@ function MediaCard({
   onDragStart,
   onEdit,
   onRename,
+  confirm,
 }: {
   item: MediaItemData;
   slug: string;
@@ -555,6 +600,9 @@ function MediaCard({
   onDragStart: (id: string) => void;
   onEdit: () => void;
   onRename: () => void;
+  /** Die Rueckfrage lebt in der Mediathek: die Karte ist verschiebbar und
+      animiert, ein fester Dialog darin saesse an der falschen Stelle. */
+  confirm: (options: ConfirmOptions) => Promise<boolean>;
 }) {
   const t = useTranslations("dashboard.media");
   const [, startTransition] = useTransition();
@@ -593,8 +641,14 @@ function MediaCard({
           folders={folders}
           onEdit={onEdit}
           onRename={onRename}
-          onDelete={() => {
-            if (!window.confirm(t("confirmDeleteMedia"))) return;
+          onDelete={async () => {
+            const ok = await confirm({
+              title: t("confirmDeleteMediaTitle", { name: itemLabel(item) }),
+              body: t("confirmDeleteMediaBody"),
+              confirmLabel: t("confirmDeleteMediaCta"),
+              tone: "danger",
+            });
+            if (!ok) return;
             const fd = new FormData();
             fd.set("tenant", slug);
             fd.set("objectId", item.id);
@@ -1239,6 +1293,8 @@ function EditMediaView({
   const locale = useLocale();
   const [, startTransition] = useTransition();
   const folder = folders.find((f) => f.id === item.folderId);
+  // Eigene Rueckfrage im Sheet: so bleibt sie im Fokusbereich des Sheets.
+  const [confirm, confirmDialog] = useConfirm();
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -1306,8 +1362,14 @@ function EditMediaView({
             </p>
             <button
               type="button"
-              onClick={() => {
-                if (!window.confirm(t("confirmDeleteMedia"))) return;
+              onClick={async () => {
+                const ok = await confirm({
+                  title: t("confirmDeleteMediaTitle", { name: itemLabel(item) }),
+                  body: t("confirmDeleteMediaBody"),
+                  confirmLabel: t("confirmDeleteMediaCta"),
+                  tone: "danger",
+                });
+                if (!ok) return;
                 const fd = new FormData();
                 fd.set("tenant", slug);
                 fd.set("objectId", item.id);
@@ -1332,6 +1394,7 @@ function EditMediaView({
           {tc("cancel")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

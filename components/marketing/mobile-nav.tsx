@@ -16,7 +16,13 @@ const links = [
 ] as const;
 
 /** Burger menu for the dark marketing header (below lg). */
-export function MarketingMobileNav({ loggedIn }: { loggedIn: boolean }) {
+export function MarketingMobileNav({
+  loggedIn,
+  showBlog,
+}: {
+  loggedIn: boolean;
+  showBlog: boolean;
+}) {
   const t = useTranslations("marketing");
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
@@ -57,7 +63,7 @@ export function MarketingMobileNav({ loggedIn }: { loggedIn: boolean }) {
             className="absolute inset-x-0 top-full z-50 border-b border-white/10 bg-[#161613] px-5 py-3 shadow-xl"
           >
             <nav aria-label={t("menuOpen")} className="grid gap-1">
-              {links.map((l) => (
+              {links.filter((l) => showBlog || l.href !== "/blog").map((l) => (
                 <Link
                   key={l.href}
                   href={l.href}

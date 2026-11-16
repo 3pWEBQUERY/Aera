@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import { isCommunityReturnPath } from "@/lib/join-offer";
 import { checkMemberLimit } from "@/lib/plan";
 import { revalidatePath } from "next/cache";
 import prisma, { setTenantContext, withTenantTransaction } from "@/lib/prisma";
@@ -54,6 +56,35 @@ async function tenantBySlug(slug: string) {
   const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (tenant) setTenantContext(tenant.id);
   return tenant;
+}
+
+/**
+ * Wohin nach dem Beitritt? Wer über eine Sperrseite (z. B. einen geteilten
+ * Beitrag) kommt, soll danach genau dort landen. Das Ziel kommt als `next`
+ * aus dem Formular oder — beim Registrierungsformular, das kein eigenes Feld
+ * dafür hat — aus der Adresse der Beitrittsseite (`/join?next=…`). Nur Pfade
+ * innerhalb dieser Community zählen, die Beitrittsseite selbst nicht.
+ */
+async function joinReturnPath(fd: FormData, slug: string): Promise<string | null> {
+  let candidate: unknown = fd.get("next");
+  if (!candidate) {
+    const referer = (await headers()).get("referer");
+    if (referer) {
+      try {
+        candidate = new URL(referer).searchParams.get("next");
+      } catch {
+        candidate = null;
+      }
+    }
+  }
+  return isCommunityReturnPath(candidate, slug) ? candidate : null;
+}
+
+/** Hängt `welcome=1` an — der Willkommenshinweis liest es auf jeder Community-Seite. */
+function withWelcome(path: string): string {
+  const [beforeHash, hash] = path.split("#", 2);
+  const sep = beforeHash!.includes("?") ? "&" : "?";
+  return `${beforeHash}${sep}welcome=1${hash ? `#${hash}` : ""}`;
 }
 
 export interface EngageState {
@@ -135,7 +166,12 @@ export async function memberSignupAction(
     // No free tier — account exists, membership follows via the join page.
     // Referral-Code dabei nicht verlieren.
     const ref = String(fd.get("ref") || "").trim();
-    redirect(`/c/${slug}/join${ref ? `?ref=${encodeURIComponent(ref)}` : ""}`);
+    const back = await joinReturnPath(fd, slug);
+    const qs = new URLSearchParams({
+      ...(ref ? { ref } : {}),
+      ...(back ? { next: back } : {}),
+    }).toString();
+    redirect(`/c/${slug}/join${qs ? `?${qs}` : ""}`);
   }
 
   const budget = await checkMemberLimit(tenant.id);
@@ -182,14 +218,19 @@ export async function memberSignupAction(
     via: "signup",
   });
 
-  redirect(`/c/${slug}?welcome=1`);
+  redirect(withWelcome((await joinReturnPath(fd, slug)) ?? `/c/${slug}`));
 }
 
 export async function joinCommunityAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const tierId = String(fd.get("tierId") || "");
   const user = await getCurrentUser();
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/c/${slug}/join`)}`);
+  if (!user) {
+    // Die gewählte Mitgliedschaft geht beim Umweg über die Anmeldung nicht
+    // verloren: die Beitrittsseite hebt sie danach wieder hervor.
+    const back = `/c/${slug}/join${tierId ? `?tier=${encodeURIComponent(tierId)}` : ""}`;
+    redirect(`/login?next=${encodeURIComponent(back)}`);
+  }
   const tenant = await tenantBySlug(slug);
   if (!tenant) redirect("/");
 
@@ -207,6 +248,8 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
   });
   // Banned members must not reactivate themselves by re-joining.
   if (existing?.status === "BANNED") redirect(`/c/${slug}`);
+
+  const returnTo = await joinReturnPath(fd, slug);
 
   const tier = tierId
     ? await prisma.membershipTier.findFirst({
@@ -268,7 +311,7 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
       },
       user: { id: user!.id, email: user!.email },
       consent: legalConsent ?? undefined,
-      successUrl: `${env.APP_URL}/c/${slug}?welcome=1`,
+      successUrl: `${env.APP_URL}${withWelcome(returnTo ?? `/c/${slug}`)}`,
       cancelUrl: `${env.APP_URL}/c/${slug}/join`,
     });
     // Checkout creation failed -> never fall through to a free grant.
@@ -355,7 +398,7 @@ export async function joinCommunityAction(fd: FormData): Promise<void> {
     });
   }
 
-  redirect(`/c/${slug}?welcome=1`);
+  redirect(withWelcome(returnTo ?? `/c/${slug}`));
 }
 
 // ---------------------------------------------------------------- Posts
@@ -400,7 +443,9 @@ export async function createPostAction(
     const hasMedia = sanitized ? /<(img|video)/i.test(sanitized) : false;
     bodyHtml = sanitized && (plain || hasMedia) ? sanitized : null;
     bodyText = bodyHtml ? plain : "";
-    if (!bodyHtml && !title) return { error: t("contentRequired") };
+    // Im Forum gibt es für Mitglieder keine Bild- oder Video-Uploads — die
+    // Meldung nennt deshalb nur, was hier wirklich fehlt.
+    if (!bodyHtml && !title) return { error: t("forumContentRequired") };
   } else {
     const parsed = postSchema.safeParse({
       title: fd.get("title") ?? "",
@@ -524,13 +569,15 @@ export async function createCommentAction(
   }
 
   // In-App-Benachrichtigungen: Beitragsautor + ggf. Autor des Elternkommentars.
-  const postHref = `/c/${slug}/s/${space.slug}/${post.id}`;
+  // Der Link springt direkt zum neuen Kommentar (Anker im Thread).
+  const postHref = `/c/${slug}/s/${space.slug}/${post.id}#comment-${comment.id}`;
+  const postLabel = post.title ? ` „${post.title}“` : "";
   await notify({
     tenantId: tenant.id,
     userId: post.authorId,
     actorId: user.id,
     type: "POST_COMMENT",
-    message: `${user.name} hat deinen Beitrag kommentiert.`,
+    message: `${user.name} hat deinen Beitrag${postLabel} kommentiert.`,
     href: postHref,
     refType: "Comment",
     refId: comment.id,
@@ -548,7 +595,7 @@ export async function createCommentAction(
         userId: parent.authorId,
         actorId: user.id,
         type: "COMMENT_REPLY",
-        message: `${user.name} hat auf deinen Kommentar geantwortet.`,
+        message: `${user.name} hat auf deinen Kommentar zu${postLabel || " einem Beitrag"} geantwortet.`,
         href: postHref,
         refType: "Comment",
         refId: comment.id,
@@ -618,8 +665,11 @@ export async function toggleCommentLikeAction(fd: FormData): Promise<void> {
         userId: comment.authorId,
         actorId: user!.id,
         type: "REACTION",
-        message: `${user!.name} gefällt dein Kommentar.`,
-        href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`,
+        // Gespeichert wird der Typ REACTION mit refType "Comment" — die
+        // Benachrichtigungsseite unterscheidet daran Kommentar- von
+        // Beitrags-Likes, ohne dass das Enum wachsen muss.
+        message: `${user!.name} gefällt dein Kommentar${comment.post.title ? ` zu „${comment.post.title}“` : ""}.`,
+        href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}#comment-${commentId}`,
         refType: "Comment",
         refId: commentId,
       });
@@ -1162,7 +1212,13 @@ export async function purchasePostAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const spaceSlug = String(fd.get("space") || "");
   const postId = String(fd.get("postId"));
-  const backTo = spaceSlug ? `/c/${slug}/s/${spaceSlug}` : `/c/${slug}`;
+  // Wer auf der Beitragsseite freischaltet, landet danach (und bei Fehlern)
+  // wieder auf genau diesem Beitrag statt in der Space-Übersicht.
+  const backTo = spaceSlug
+    ? fd.get("returnTo") === "post"
+      ? `/c/${slug}/s/${spaceSlug}/${encodeURIComponent(postId)}`
+      : `/c/${slug}/s/${spaceSlug}`
+    : `/c/${slug}`;
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent(backTo)}`);
   const tenant = await tenantBySlug(slug);

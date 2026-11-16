@@ -13,6 +13,8 @@ import { Icon } from "@/components/dashboard/icons";
 import { Avatar, Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Input, Label } from "@/components/ui/field";
 import { formatDate } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface UserRow {
   id: string;
@@ -280,6 +282,8 @@ function ResetLinkSection({ userId }: { userId: string }) {
 function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
   const [state, action, pending] = useActionState(adminDeleteUserAction, initial);
   const t = useTranslations("admin.users");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   useEffect(() => {
     if (state.ok) onDone();
@@ -299,11 +303,14 @@ function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
       </div>
       <form
         action={action}
-        onSubmit={(e) => {
-          if (!window.confirm(t("deleteConfirm", { name: user.name }))) {
-            e.preventDefault();
-          }
-        }}
+        onSubmit={(e) =>
+          confirmSubmit(e, {
+            title: t("deleteConfirm", { name: user.name }),
+            body: t("dangerDesc"),
+            confirmLabel: t("deleteBtn"),
+            tone: "danger",
+          })
+        }
         className="mt-3"
       >
         <input type="hidden" name="userId" value={user.id} />
@@ -315,6 +322,7 @@ function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
           {pending ? t("deleting") : t("deleteBtn")}
         </button>
       </form>
+      {confirmDialog}
     </div>
   );
 }

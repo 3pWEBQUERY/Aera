@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "コースにはコース用スペースが必要ですが、{plan}パッケージで使えるアクティブなスペースは{limit}個までで、すべて使用中です。スペースをアーカイブするかパッケージを変更すると、コースを作成できます。",
+    "planAutoSpaceEvents": "イベントにはイベント用スペースが必要ですが、{plan}パッケージで使えるアクティブなスペースは{limit}個までで、すべて使用中です。スペースをアーカイブするかパッケージを変更すると、イベントを作成できます。",
+    "campaignNoSubscribers": "まだ誰もニュースレターを購読していません。受信者ができたら送信できます。",
+    "campaignSegmentEmpty": "このセグメントには現在誰もいません。送信するには別のセグメントを選んでください。",
+    "campaignTestDeliveryFailed": "メールサービスがメッセージを受け付けませんでした（{detail}）。しばらくしてからもう一度お試しください。",
+    "recoveryCodeInvalid": "このリカバリーコードは正しくないか、すでに使用されています。入力内容を確認するか、別のコードをお試しください。",
+    "secondFactorInvalid": "コードが一致しません。アプリに表示されている現在のコード、または未使用のリカバリーコードを入力してください。"
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -502,14 +509,12 @@
     "changingPassword": "変更中…",
     "twoFaActive": "2要素認証が有効です",
     "twoFaActiveDesc": "ログイン時にパスワードに加えて認証アプリのコードが求められます。",
-    "twoFaDisableLabel": "無効にするには：現在のコード",
+    "twoFaDisableLabel": "無効にするには：アプリのコードまたはリカバリーコード",
     "twoFaDisabling": "無効化中…",
     "twoFaDisable": "2FA を無効化",
     "twoFaSetupIntro": "認証アプリ（Google Authenticator、1Password、Authy など）で QR コードをスキャンし、表示されたコードで確認してください。",
     "twoFaQrAlt": "認証アプリ用の QR コード",
-    "twoFaNoScanner": "QR スキャナーがない場合は、シークレットを手動で入力してください：",
-    "twoFaHideSecret": "シークレットを隠す",
-    "twoFaShowSecret": "シークレットを表示",
+    "twoFaNoScanner": "QRスキャナーがない場合は、この設定キーをアプリに入力してください：",
     "twoFaCodeFromApp": "アプリのコード",
     "twoFaChecking": "確認中…",
     "twoFaActivate": "有効化",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "キーをコピー",
+    "twoFaKeyCopied": "キーをコピーしました。",
+    "twoFaOpenInApp": "認証アプリで開く",
+    "secondFactorLabel": "アプリのコードまたはリカバリーコード",
+    "recoveryCodesTitle": "リカバリーコード",
+    "recoveryCodesIntro": "認証アプリにアクセスできないときは、これらのコードでログインできます。各コードは1回だけ使えます。今すぐ保存してください（パスワードマネージャーなど）。表示されるのはこの1回だけです。",
+    "recoveryCopy": "コードをコピー",
+    "recoveryCopied": "コードをコピーしました。",
+    "recoveryDownload": "テキストファイルとしてダウンロード",
+    "recoverySaved": "コードを保存しました",
+    "recoveryFileTitle": "Aera – {email} のリカバリーコード",
+    "recoveryFileHint": "各コードは1回だけ使えます。新しいコードはアカウントの［設定］>［2要素認証］で作成できます。",
+    "recoveryCodesLeft": "{count, plural, =0 {残りのコードはありません。アプリなしでもログインできるよう、新しいコードを作成してください。} other {残り # / 10 コード。}}",
+    "recoveryRegenerate": "新しいコードを作成",
+    "recoveryRegenConfirmTitle": "新しいリカバリーコードを作成しますか？",
+    "recoveryRegenConfirmBody": "現在のコードは使えなくなります。作成後すぐに新しいコードを保存してください。",
+    "recoveryUsedNotice": "{count, plural, =0 {最後のリカバリーコードでログインしました。まだアプリがある場合は、今すぐ新しいコードを作成してください。ない場合は「ログインのヘルプ」からお問い合わせください。} other {リカバリーコードでログインしました。残り # コード。アプリにアクセスできなくなった場合は、下で別のコードを使って2FAを無効にし、設定し直してください。}}",
+    "emailUnverified": "未確認"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "自分にテスト送信",
       "testSending": "送信中…",
       "testSent": "テストメールを送信しました！",
-      "testFailed": "テストに失敗しました",
       "recipientsEstimate": "約 {count} 名の宛先",
       "formatText": "テキスト",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "プラン: {name}",
       "ruleMinPoints": "{count}ポイント以上",
       "ruleActiveSince": "入会 {days} 日以上",
-      "ruleAll": "すべてのメンバー"
+      "ruleAll": "すべてのメンバー",
+      "confirmSendTitle": "「{subject}」を今すぐ{count}人の受信者に送信しますか？",
+      "confirmSendBody": "送信はすぐに始まり、取り消せません。",
+      "confirmSendScheduledTitle": "{date}に予約済みです。今すぐ送信しますか？",
+      "confirmSendScheduledBody": "「{subject}」はすぐに{count}人の受信者に送信されます。元に戻せません。",
+      "confirmSendLabel": "今すぐ{count}人に送信",
+      "sendQueued": "「{subject}」を送信しています。",
+      "sendingNow": "送信中…",
+      "noSubscribersHint": "まだ誰もニュースレターを購読していません。受信者ができたら送信できます。",
+      "segmentEmptyHint": "このセグメントには現在誰もいません。送信するには別のセグメントを選んでください。",
+      "noRecipientsShort": "受信者なし",
+      "sendNowEllipsis": "今すぐ送信…",
+      "testFailedReason": "テストを送信できませんでした：{reason}",
+      "testFailedUnknown": "不明なエラーです。もう一度お試しください。",
+      "schedulePastWarning": "この日時は過去です。保存するとキャンペーンは下書きのままになります。",
+      "confirmDeleteCampaignBody": "「{subject}」を削除します。元に戻せません。",
+      "confirmDeleteSegmentBody": "このセグメントを使う下書きと予約済みキャンペーンは、以後すべての購読者に送信されます。",
+      "deleteSegmentConfirm": "セグメントを削除",
+      "segmentNameLabel": "セグメント名"
     },
     "ads": {
       "badge": "広告",
@@ -1503,19 +1543,20 @@
       "closeLesson": "閉じる",
       "deleteLesson": "削除",
       "confirmDeleteLesson": "レッスン「{title}」を削除しますか？",
-      "lessonTitlePlaceholder": "タイトル",
-      "videoUrlPlaceholder": "動画URL（任意）",
-      "contentPlaceholder": "内容",
-      "dripLabel": "公開：参加から日数（空/0 = すぐに）",
       "dripPlaceholder": "例：7",
       "lessonSaving": "保存中…",
       "lessonSave": "保存",
       "addLesson": "レッスンを追加",
-      "addLessonTitlePlaceholder": "レッスンのタイトル",
-      "addContentPlaceholder": "内容（任意）",
-      "addDripPlaceholder": "公開：参加から日数（空 = すぐに）",
       "adding": "追加中…",
-      "add": "追加"
+      "cannotUndo": "元に戻せません。",
+      "deleteLessonConfirm": "レッスンを削除",
+      "createdAddLesson": "コースを作成しました。最初のレッスンを追加しましょう。",
+      "lessonTitleLabel": "レッスンのタイトル",
+      "lessonVideoLabel": "動画URL（任意）",
+      "lessonContentLabel": "内容（任意）",
+      "lessonDripLabel": "参加後の公開（日数）",
+      "lessonDripHint": "空欄または0：すぐに公開。",
+      "addLessonBtn": "レッスンを追加"
     },
     "gallery": {
       "badge": "ギャラリー",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "イベントを削除",
       "cancel": "キャンセル",
       "saving": "保存中…",
-      "saveChanges": "変更を保存"
+      "saveChanges": "変更を保存",
+      "confirmDeleteBody": "すべての参加表明が失われます。元に戻せません。",
+      "meetingUrlMissing": "リンクがないとメンバーは参加できません。後から追加できます。"
     },
     "settings": {
       "title": "設定",
@@ -3832,6 +3875,10 @@
         "desc": "リンクを共有するか、メールで招待しましょう。",
         "cta": "メンバーを招待"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "あなたのタイムゾーン：{zone}（{abbr}）",
+      "pastWarning": "この日付は過去です。"
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "アカウントは二要素認証で保護されています。",
     "legalAcceptance": "<terms>利用規約</terms>に同意し、<privacy>プライバシー通知</privacy>を確認しました。",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6桁のコード",
+    "codeFor": "<strong>{email}</strong> としてログインします。",
+    "useOtherEmail": "別のメールアドレスを使う",
+    "useRecoveryCode": "アプリにアクセスできない場合は、リカバリーコードを使う",
+    "useAppCode": "アプリのコードを使う",
+    "recoveryHeading": "リカバリーコードを入力",
+    "recoveryLabel": "リカバリーコード",
+    "recoveryHint": "2FAの設定時に保存したコードのいずれか。各コードは1回だけ使えます。",
+    "passwordTooShortField": "パスワードが短すぎます。{min}文字以上にしてください。"
   },
   "verifyBanner": {
-    "prompt": "メールアドレス <strong>{email}</strong> を確認してください。",
+    "prompt": "<strong>{email}</strong> を確認すると、コミュニティからのニュースレターやメールが届くようになります。",
     "resend": "リンクを再送する",
     "resending": "送信中 …",
-    "sent": "新しい確認リンクを <strong>{email}</strong> に送信しました。受信トレイをご確認ください。"
+    "sent": "新しい確認リンクを <strong>{email}</strong> に送信しました。受信トレイをご確認ください。",
+    "sendLink": "確認リンクを送信"
   },
   "community": {
     "join": "メンバーになる",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "リンクを送信",
     "forgotSending": "送信中…",
     "backTo": "戻る：",
-    "backToLogin": "ログインへ"
+    "backToLogin": "ログインへ",
+    "resetDoneNotice": "パスワードを変更しました。新しいパスワードでログインしてください。",
+    "loginHelp": "ログインのヘルプ"
   },
   "pricing": {
     "eyebrow": "料金",
@@ -4983,7 +5042,7 @@
       "resetTitle": "新しいパスワードを設定",
       "forAccount": "アカウント {email} 用",
       "verifyMeta": "メールアドレスの確認 — Aera",
-      "verifyInvalidText": "この確認リンクは期限切れか無効です。ログインして、アカウントから新しいリンクを依頼してください。",
+      "verifyInvalidText": "この確認リンクは期限切れか、すでに使用されています。新しいリンクをリクエストしてください。",
       "toLogin": "ログインへ",
       "alreadyVerifiedTitle": "確認済みです",
       "verifiedTitle": "メールアドレスを確認しました",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "パスワードをお忘れですか — Aera",
       "pricingMeta": "料金",
       "featuresMeta": "機能",
-      "manifestDescription": "あなたのコミュニティ：投稿、講座、イベント、メッセージをひとつの場所に。"
+      "manifestDescription": "あなたのコミュニティ：投稿、講座、イベント、メッセージをひとつの場所に。",
+      "verifyInvalidVerified": "このリンクは無効になりましたが、メールアドレスはすでに確認済みです。",
+      "loginForNewLink": "ログインして新しいリンクを受け取る"
     },
     "emails": {
       "sentVia": "Aera から送信",

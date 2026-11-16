@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Kurser behöver ett kurs-space, men ditt {plan}-paket tillåter bara {limit} aktiva spaces och alla används. Arkivera ett space eller byt paket, så kan du skapa kursen.",
+    "planAutoSpaceEvents": "Evenemang behöver ett evenemangs-space, men ditt {plan}-paket tillåter bara {limit} aktiva spaces och alla används. Arkivera ett space eller byt paket, så kan du skapa evenemanget.",
+    "campaignNoSubscribers": "Ingen prenumererar på ditt nyhetsbrev än. Du kan skicka så snart det finns mottagare.",
+    "campaignSegmentEmpty": "Det finns ingen i det här segmentet just nu. Välj ett annat segment för att skicka.",
+    "campaignTestDeliveryFailed": "E-posttjänsten tog inte emot meddelandet ({detail}). Försök igen senare.",
+    "recoveryCodeInvalid": "Den här återställningskoden är fel eller har redan använts. Kontrollera stavningen eller prova en annan kod.",
+    "secondFactorInvalid": "Koden stämmer inte. Ange den aktuella koden från appen eller en oanvänd återställningskod."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",
@@ -502,14 +509,12 @@
     "changingPassword": "Ändrar…",
     "twoFaActive": "Tvåfaktorsautentisering är aktiv",
     "twoFaActiveDesc": "Vid inloggning krävs, utöver lösenordet, en kod från din autentiseringsapp.",
-    "twoFaDisableLabel": "För att inaktivera: nuvarande kod",
+    "twoFaDisableLabel": "För att stänga av: kod från appen eller återställningskod",
     "twoFaDisabling": "Inaktiverar…",
     "twoFaDisable": "Inaktivera 2FA",
     "twoFaSetupIntro": "Skanna QR-koden med din autentiseringsapp (Google Authenticator, 1Password, Authy …) och bekräfta med koden som visas.",
     "twoFaQrAlt": "QR-kod för autentiseringsappen",
-    "twoFaNoScanner": "Ingen QR-skanner? Ange hemligheten manuellt:",
-    "twoFaHideSecret": "Dölj hemlighet",
-    "twoFaShowSecret": "Visa hemlighet",
+    "twoFaNoScanner": "Ingen QR-läsare? Ange den här konfigurationsnyckeln i appen:",
     "twoFaCodeFromApp": "Kod från appen",
     "twoFaChecking": "Kontrollerar…",
     "twoFaActivate": "Aktivera",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Kopiera nyckel",
+    "twoFaKeyCopied": "Nyckeln har kopierats.",
+    "twoFaOpenInApp": "Öppna i autentiseringsappen",
+    "secondFactorLabel": "Kod från appen eller återställningskod",
+    "recoveryCodesTitle": "Återställningskoder",
+    "recoveryCodesIntro": "Med de här koderna loggar du in om du inte kommer åt din autentiseringsapp. Varje kod fungerar bara en gång. Spara dem nu, till exempel i din lösenordshanterare – de visas bara den här enda gången.",
+    "recoveryCopy": "Kopiera koder",
+    "recoveryCopied": "Koderna har kopierats.",
+    "recoveryDownload": "Ladda ner som textfil",
+    "recoverySaved": "Jag har sparat koderna",
+    "recoveryFileTitle": "Aera – återställningskoder för {email}",
+    "recoveryFileHint": "Varje kod fungerar bara en gång. Nya koder skapar du i ditt konto under Inställningar > Tvåfaktorsautentisering.",
+    "recoveryCodesLeft": "{count, plural, =0 {Inga koder kvar. Skapa nya så att du kan logga in även utan appen.} one {# av 10 koder kvar.} other {# av 10 koder kvar.}}",
+    "recoveryRegenerate": "Skapa nya koder",
+    "recoveryRegenConfirmTitle": "Skapa nya återställningskoder?",
+    "recoveryRegenConfirmBody": "Dina nuvarande koder slutar fungera. Spara de nya direkt efteråt.",
+    "recoveryUsedNotice": "{count, plural, =0 {Du loggade in med din sista återställningskod. Har du fortfarande appen, skapa nya koder nu. Annars kan du skriva till oss via ”Hjälp med inloggning”.} one {Du loggade in med en återställningskod. # kod kvar. Kommer du inte längre åt appen? Stäng av 2FA nedan med den här koden och konfigurera den igen.} other {Du loggade in med en återställningskod. # koder kvar. Kommer du inte längre åt appen? Stäng av 2FA nedan med en annan kod och konfigurera den igen.}}",
+    "emailUnverified": "Inte bekräftad"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Skicka test till mig",
       "testSending": "Skickar…",
       "testSent": "Testmejl skickat!",
-      "testFailed": "Testet misslyckades",
       "recipientsEstimate": "≈ {count} mottagare",
       "formatText": "Text",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Nivå: {name}",
       "ruleMinPoints": "{count}+ poäng",
       "ruleActiveSince": "Medlem i ≥ {days} dagar",
-      "ruleAll": "Alla medlemmar"
+      "ruleAll": "Alla medlemmar",
+      "confirmSendTitle": "Skicka ”{subject}” till {count, plural, one {# mottagare} other {# mottagare}} nu?",
+      "confirmSendBody": "Utskicket startar direkt och går inte att ångra.",
+      "confirmSendScheduledTitle": "Schemalagt till {date}. Skicka ändå nu?",
+      "confirmSendScheduledBody": "”{subject}” skickas direkt till {count, plural, one {# mottagare} other {# mottagare}}. Det går inte att ångra.",
+      "confirmSendLabel": "Skicka till {count} nu",
+      "sendQueued": "”{subject}” skickas.",
+      "sendingNow": "Skickar …",
+      "noSubscribersHint": "Ingen prenumererar på ditt nyhetsbrev än. Du kan skicka så snart det finns mottagare.",
+      "segmentEmptyHint": "Det finns ingen i det här segmentet just nu. Välj ett annat segment för att skicka.",
+      "noRecipientsShort": "Inga mottagare",
+      "sendNowEllipsis": "Skicka nu…",
+      "testFailedReason": "Testet skickades inte: {reason}",
+      "testFailedUnknown": "Okänt fel. Försök igen.",
+      "schedulePastWarning": "Den här tidpunkten har passerat. När du sparar förblir kampanjen ett utkast.",
+      "confirmDeleteCampaignBody": "”{subject}” tas bort. Det går inte att ångra.",
+      "confirmDeleteSegmentBody": "Utkast och schemalagda kampanjer med det här segmentet går sedan till alla prenumeranter.",
+      "deleteSegmentConfirm": "Ta bort segment",
+      "segmentNameLabel": "Segmentets namn"
     },
     "ads": {
       "badge": "Annonser",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Stäng",
       "deleteLesson": "Ta bort",
       "confirmDeleteLesson": "Ta bort lektionen ”{title}”?",
-      "lessonTitlePlaceholder": "Titel",
-      "videoUrlPlaceholder": "Video-URL (valfritt)",
-      "contentPlaceholder": "Innehåll",
-      "dripLabel": "Upplåsning: dagar efter anslutning (tomt/0 = direkt)",
       "dripPlaceholder": "t.ex. 7",
       "lessonSaving": "Sparar…",
       "lessonSave": "Spara",
       "addLesson": "Lägg till lektion",
-      "addLessonTitlePlaceholder": "Lektionens titel",
-      "addContentPlaceholder": "Innehåll (valfritt)",
-      "addDripPlaceholder": "Upplåsning: dagar efter anslutning (tomt = direkt)",
       "adding": "Lägger till…",
-      "add": "Lägg till"
+      "cannotUndo": "Det går inte att ångra.",
+      "deleteLessonConfirm": "Ta bort lektion",
+      "createdAddLesson": "Kursen är skapad – lägg nu till den första lektionen.",
+      "lessonTitleLabel": "Lektionens titel",
+      "lessonVideoLabel": "Video-URL (valfritt)",
+      "lessonContentLabel": "Innehåll (valfritt)",
+      "lessonDripLabel": "Låses upp efter anslutning (dagar)",
+      "lessonDripHint": "Tomt eller 0: tillgänglig direkt.",
+      "addLessonBtn": "Lägg till lektion"
     },
     "gallery": {
       "badge": "Galleri",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Ta bort evenemang",
       "cancel": "Avbryt",
       "saving": "Sparar…",
-      "saveChanges": "Spara ändringar"
+      "saveChanges": "Spara ändringar",
+      "confirmDeleteBody": "Alla anmälningar försvinner. Det går inte att ångra.",
+      "meetingUrlMissing": "Utan länk kan medlemmarna inte delta. Du kan lägga till den senare."
     },
     "settings": {
       "title": "Inställningar",
@@ -3832,6 +3875,10 @@
         "desc": "Dela din länk eller bjud in via e-post.",
         "cta": "Bjud in medlemmar"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "Gäller i din tidszon: {zone} ({abbr})",
+      "pastWarning": "Det här datumet har redan passerat."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Ditt konto skyddas med tvåfaktorsautentisering.",
     "legalAcceptance": "Jag godkänner <terms>villkoren</terms> och bekräftar att jag har tagit del av <privacy>integritetsmeddelandet</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-siffrig kod",
+    "codeFor": "Loggar in som <strong>{email}</strong>.",
+    "useOtherEmail": "Använd en annan e-postadress",
+    "useRecoveryCode": "Ingen åtkomst till appen? Använd en återställningskod",
+    "useAppCode": "Använd en kod från appen",
+    "recoveryHeading": "Ange en återställningskod",
+    "recoveryLabel": "Återställningskod",
+    "recoveryHint": "En av koderna du sparade när du konfigurerade 2FA. Varje kod fungerar bara en gång.",
+    "passwordTooShortField": "Ditt lösenord är för kort – minst {min} tecken."
   },
   "verifyBanner": {
-    "prompt": "Bekräfta din e-postadress <strong>{email}</strong>.",
+    "prompt": "Bekräfta <strong>{email}</strong> så att nyhetsbrev och mejl från dina communities når dig.",
     "resend": "Skicka länken igen",
     "resending": "Skickar …",
-    "sent": "En ny bekräftelselänk har skickats till <strong>{email}</strong> — kolla din inkorg."
+    "sent": "En ny bekräftelselänk har skickats till <strong>{email}</strong> — kolla din inkorg.",
+    "sendLink": "Skicka bekräftelselänk"
   },
   "community": {
     "join": "Bli medlem",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Begär länk",
     "forgotSending": "Skickar…",
     "backTo": "Tillbaka till",
-    "backToLogin": "inloggning"
+    "backToLogin": "inloggning",
+    "resetDoneNotice": "Lösenordet är ändrat. Logga in med ditt nya lösenord nu.",
+    "loginHelp": "Hjälp med inloggning"
   },
   "pricing": {
     "eyebrow": "Priser",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Välj ett nytt lösenord",
       "forAccount": "För kontot {email}",
       "verifyMeta": "Bekräfta e-post — Aera",
-      "verifyInvalidText": "Den här bekräftelselänken har gått ut eller är ogiltig. Logga in och begär en ny länk från ditt konto.",
+      "verifyInvalidText": "Den här bekräftelselänken har gått ut eller redan använts. Begär en ny länk.",
       "toLogin": "Till inloggningen",
       "alreadyVerifiedTitle": "Redan bekräftad",
       "verifiedTitle": "E-post bekräftad",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Glömt lösenord — Aera",
       "pricingMeta": "Priser",
       "featuresMeta": "Funktioner",
-      "manifestDescription": "Dina gemenskaper: inlägg, kurser, evenemang och meddelanden — samlat på ett ställe."
+      "manifestDescription": "Dina gemenskaper: inlägg, kurser, evenemang och meddelanden — samlat på ett ställe.",
+      "verifyInvalidVerified": "Länken gäller inte längre, men din e-postadress är redan bekräftad.",
+      "loginForNewLink": "Logga in för att få en ny länk"
     },
     "emails": {
       "sentVia": "Skickat via Aera",

@@ -20,6 +20,7 @@ import {
 } from "@/lib/space-settings";
 import { cn, formatDateTime } from "@/lib/utils";
 import { normalizeHexColor } from "@/lib/color";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 const initial: ActionState = {};
 
@@ -300,6 +301,7 @@ function AnnouncementForm({
   const [state, action, pending] = useActionState(saveAnnouncementAction, initial);
   const [deleting, setDeleting] = useState(false);
   const t = useTranslations("dashboard.announcements");
+  const [confirm, confirmDialog] = useConfirm();
 
   // Controlled fields drive the live preview.
   const [title, setTitle] = useState(announcement?.title ?? "");
@@ -319,7 +321,13 @@ function AnnouncementForm({
 
   async function onDelete() {
     if (!announcement) return;
-    if (!confirm(t("confirmDelete", { title: announcement.title }))) return;
+    const ok = await confirm({
+      title: t("confirmDelete", { title: announcement.title }),
+      body: t("confirmDeleteBody"),
+      confirmLabel: t("confirmDeleteCta"),
+      tone: "danger",
+    });
+    if (!ok) return;
     setDeleting(true);
     const fd = new FormData();
     fd.set("tenant", slug);
@@ -496,6 +504,7 @@ function AnnouncementForm({
           {pending ? t("saving") : isEdit ? t("saveChanges") : t("createBtn")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }

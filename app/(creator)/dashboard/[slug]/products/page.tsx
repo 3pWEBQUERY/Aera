@@ -6,6 +6,7 @@ import { features } from "@/lib/env";
 import {
   ProductsManager,
   type ProductRowData,
+  type ProductCourseOption,
 } from "@/components/dashboard/products-manager";
 
 export default async function ProductsPage({
@@ -18,11 +19,38 @@ export default async function ProductsPage({
   // Paywall: the queries below never run for a package without this feature.
   const locked = await featureGate(tenant.id, slug, "products");
   if (locked) return locked;
-  const rows = await prisma.product.findMany({
-    where: { tenantId: tenant.id },
-    orderBy: { createdAt: "desc" },
-    include: { _count: { select: { orders: true } } },
-  });
+  const [rows, courseRows, shopSpace] = await Promise.all([
+    prisma.product.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: { createdAt: "desc" },
+      include: { _count: { select: { orders: true } } },
+    }),
+    prisma.course.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: { createdAt: "desc" },
+      select: { id: true, title: true, requiredEntitlementKey: true },
+    }),
+    // Products have no page of their own; the SHOP space lists them.
+    prisma.space.findFirst({
+      where: { tenantId: tenant.id, type: "SHOP", isArchived: false },
+      orderBy: { sortOrder: "asc" },
+      select: { slug: true },
+    }),
+  ]);
+
+  // A course-access product grants the key its course requires (see
+  // createProductAction), so the link is found through that key.
+  const courseByKey = new Map(
+    courseRows
+      .filter((c) => c.requiredEntitlementKey)
+      .map((c) => [c.requiredEntitlementKey as string, c.id]),
+  );
+  const courses: ProductCourseOption[] = courseRows.map((c) => ({
+    id: c.id,
+    title: c.title,
+    // Bound to a membership (not to a course key): not sellable on its own.
+    sellable: !c.requiredEntitlementKey || c.requiredEntitlementKey.startsWith("course:"),
+  }));
 
   const products: ProductRowData[] = rows.map((p) => ({
     id: p.id,
@@ -40,12 +68,19 @@ export default async function ProductsPage({
     shippingCents: p.shippingCents,
     stock: p.stock,
     salesCount: p._count.orders,
+    courseId:
+      p.type === "COURSE_ACCESS" && p.grantsEntitlementKey
+        ? (courseByKey.get(p.grantsEntitlementKey) ?? null)
+        : null,
   }));
 
   return (
     <ProductsManager
       slug={slug}
       products={products}
+      courses={courses}
+      shopHref={shopSpace ? `/c/${slug}/s/${shopSpace.slug}` : null}
+      payoutsReady={Boolean(tenant.stripeAccountId)}
       stripeReady={features.marketplacePayments}
       showSetupHint={hasPlatformAdminAccess(user)}
     />

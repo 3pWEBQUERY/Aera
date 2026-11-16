@@ -56,7 +56,7 @@ export default async function AutomationsPage({
         <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           {t.rich("cronWarning", {
             code: (chunks) => (
-              <code className="rounded bg-white px-1.5 py-0.5 text-xs ring-1 ring-amber-200">{chunks}</code>
+              <code className="rounded bg-white px-1.5 py-0.5 text-xs font-medium text-amber-900 ring-1 ring-amber-200">{chunks}</code>
             ),
           })}
           {!features.email && ` ${t("cronWarningNoEmail")}`}

@@ -10,7 +10,14 @@ export async function generateMetadata() {
   return { title: t("forgotMeta") };
 }
 
-export default async function ForgotPasswordPage() {
+export default async function ForgotPasswordPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ email?: string | string[] }>;
+}) {
+  const { email } = await searchParams;
+  // Vom Login übernommen („Passwort vergessen?“); nur als Vorbelegung.
+  const defaultEmail = typeof email === "string" ? email.trim().slice(0, 254) : undefined;
   const t = await getTranslations("authPages");
 
   return (
@@ -31,7 +38,7 @@ export default async function ForgotPasswordPage() {
         <p className="mt-4 text-sm leading-6 text-[#161613]/60">{t("forgotText")}</p>
 
         <div className="mt-8 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7">
-          <ForgotPasswordForm />
+          <ForgotPasswordForm defaultEmail={defaultEmail} />
         </div>
 
         <p className="mt-6 text-center text-sm text-[#161613]/60">

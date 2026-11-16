@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icons";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { RedeemCodeSheet } from "./redeem-code-sheet";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import type { PlanKey } from "@/lib/plan-features";
@@ -140,11 +140,10 @@ export function PlanStatusCard({
         </div>
       </section>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={plansOpen}
         onClose={() => setPlansOpen(false)}
         slug={slug}
-        focusPlans
       />
       <RedeemCodeSheet open={codeOpen} onClose={() => setCodeOpen(false)} slug={slug} />
     </>

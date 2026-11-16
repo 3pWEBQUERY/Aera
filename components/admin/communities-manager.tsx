@@ -16,6 +16,8 @@ import { formatDate } from "@/lib/utils";
 import { PLAN_ORDER } from "@/lib/credit-plans";
 import { PlanBadge, PLAN_LABEL } from "@/components/dashboard/plan-badge";
 import type { PlanKey } from "@/lib/plan-features";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface TenantRow {
   id: string;
@@ -203,6 +205,8 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
   const [confirmSlug, setConfirmSlug] = useState("");
   const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("admin.communities");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const tCat = useTranslations("categories");
   useEffect(() => {
@@ -350,11 +354,14 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm", { name: tenant.name }))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirm", { name: tenant.name }),
+                  body: t("deleteConfirmBody"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3 flex flex-col gap-2 sm:flex-row"
             >
               <input type="hidden" name="tenantId" value={tenant.id} />
@@ -396,6 +403,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
           {pending ? tc("saving") : tc("saveChanges")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

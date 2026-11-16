@@ -48,7 +48,7 @@ export function AutomationsManager({
               nameVar: "{{name}}",
               communityVar: "{{community}}",
               code: (chunks) => (
-                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs">{chunks}</code>
+                <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-medium text-slate-800">{chunks}</code>
               ),
             })}
           </p>

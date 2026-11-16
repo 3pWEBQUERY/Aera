@@ -13,6 +13,8 @@ import {
   MemberPasswordForm,
 } from "@/components/community/member-settings";
 import { TotpSettings } from "@/components/community/totp-settings";
+import { ResendVerificationButton } from "@/components/verify-email-banner";
+import { countRecoveryCodes } from "@/lib/totp-recovery";
 import { PushSettings } from "@/components/push-settings";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { getTranslations, getLocale } from "next-intl/server";
@@ -69,9 +71,9 @@ function safeFrom(from?: string): string {
 export default async function MemberAccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; from?: string }>;
+  searchParams: Promise<{ tab?: string; from?: string; recovery?: string }>;
 }) {
-  const { tab, from } = await searchParams;
+  const { tab, from, recovery } = await searchParams;
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent("/member/account")}`);
   const tLang = await getTranslations("language");
@@ -214,6 +216,14 @@ export default async function MemberAccountPage({
               {user!.name}
             </h1>
             <p className="mt-1 text-sm text-[#161613]/65">{user!.email}</p>
+            {!user!.emailVerifiedAt && (
+              <div className="mt-2 flex flex-wrap items-center gap-3">
+                <span className="inline-flex items-center rounded-full bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 ring-1 ring-amber-200">
+                  {t("emailUnverified")}
+                </span>
+                <ResendVerificationButton email={user!.email} />
+              </div>
+            )}
           </div>
         </div>
 
@@ -294,13 +304,18 @@ export default async function MemberAccountPage({
                 <MemberPasswordForm />
               </div>
             </section>
-            <section className="rounded-2xl border border-[#161613]/10 bg-white p-6">
+            <section id="zwei-faktor" className="rounded-2xl border border-[#161613]/10 bg-white p-6">
               <SectionHead
                 eyebrow={t("securityEyebrow")}
                 title={t("twoFaTitle")}
               />
               <div className="mt-4">
-                <TotpSettings enabled={Boolean(user.totpEnabledAt)} />
+                <TotpSettings
+                  enabled={Boolean(user.totpEnabledAt)}
+                  email={user.email}
+                  recoveryCodesLeft={user.totpEnabledAt ? await countRecoveryCodes(user.id) : 0}
+                  usedRecoveryCode={recovery === "1"}
+                />
               </div>
             </section>
             {features.push && (

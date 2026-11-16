@@ -84,6 +84,14 @@ export function PostCard({
             <h2 className="display-serif mt-3 text-xl text-[#161613]">{post.title}</h2>
           )}
 
+          {!post.lockedExcerpt && (
+            <div aria-hidden="true" className="mt-3 space-y-2.5">
+              <div className="h-3 w-full rounded-full bg-[#161613]/[0.08]" />
+              <div className="h-3 w-11/12 rounded-full bg-[#161613]/[0.08]" />
+              <div className="h-3 w-2/3 rounded-full bg-[#161613]/[0.08]" />
+            </div>
+          )}
+
           {post.lockedExcerpt && (
             // Der Anfang bleibt lesbar, der Rest wird unkenntlich. Der volle
             // Text geht gar nicht erst ueber die Leitung — Verwischen allein

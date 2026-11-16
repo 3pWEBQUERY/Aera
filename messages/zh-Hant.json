@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "課程需要一個課程空間，但你的 {plan} 方案最多允許 {limit} 個啟用中的空間，且已全部占用。封存一個空間或更換方案後即可建立課程。",
+    "planAutoSpaceEvents": "活動需要一個活動空間，但你的 {plan} 方案最多允許 {limit} 個啟用中的空間，且已全部占用。封存一個空間或更換方案後即可建立活動。",
+    "campaignNoSubscribers": "還沒有人訂閱你的電子報。有收件人後即可寄送。",
+    "campaignSegmentEmpty": "此分眾目前沒有任何人。請選擇其他分眾後寄送。",
+    "campaignTestDeliveryFailed": "郵件服務未接受這封郵件（{detail}）。請稍後再試。",
+    "recoveryCodeInvalid": "此復原碼不正確或已被使用。請檢查拼寫，或換一個復原碼。",
+    "secondFactorInvalid": "代碼不相符。請輸入應用程式中的目前代碼或一個未使用的復原碼。"
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",
@@ -502,14 +509,12 @@
     "changingPassword": "變更中…",
     "twoFaActive": "兩步驗證已啟用",
     "twoFaActiveDesc": "登入時，除密碼外還需要輸入驗證器應用程式中的驗證碼。",
-    "twoFaDisableLabel": "如需停用：目前的驗證碼",
+    "twoFaDisableLabel": "如需停用：應用程式中的代碼或復原碼",
     "twoFaDisabling": "停用中…",
     "twoFaDisable": "停用兩步驗證",
     "twoFaSetupIntro": "用驗證器應用程式（Google Authenticator、1Password、Authy 等）掃描 QR 碼，並用顯示的驗證碼確認。",
     "twoFaQrAlt": "驗證器應用程式的 QR 碼",
-    "twoFaNoScanner": "沒有 QR 碼掃描器？請手動輸入密鑰：",
-    "twoFaHideSecret": "隱藏密鑰",
-    "twoFaShowSecret": "顯示密鑰",
+    "twoFaNoScanner": "沒有 QR 碼掃描器？請在應用程式中輸入此設定金鑰：",
     "twoFaCodeFromApp": "應用程式中的驗證碼",
     "twoFaChecking": "檢查中…",
     "twoFaActivate": "啟用",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "複製金鑰",
+    "twoFaKeyCopied": "金鑰已複製。",
+    "twoFaOpenInApp": "在驗證器應用程式中開啟",
+    "secondFactorLabel": "應用程式中的代碼或復原碼",
+    "recoveryCodesTitle": "復原碼",
+    "recoveryCodesIntro": "無法使用驗證器應用程式時，可用這些復原碼登入。每個復原碼只能使用一次。請立即儲存（例如存在密碼管理器中），它們只會顯示這一次。",
+    "recoveryCopy": "複製復原碼",
+    "recoveryCopied": "復原碼已複製。",
+    "recoveryDownload": "下載為文字檔",
+    "recoverySaved": "我已儲存復原碼",
+    "recoveryFileTitle": "Aera – {email} 的復原碼",
+    "recoveryFileHint": "每個復原碼只能使用一次。可在帳戶的「設定 > 雙重驗證」中產生新的復原碼。",
+    "recoveryCodesLeft": "{count, plural, =0 {復原碼已用完。請產生新的復原碼，以便在沒有應用程式時也能登入。} other {還剩 # 個復原碼（共 10 個）。}}",
+    "recoveryRegenerate": "產生新的復原碼",
+    "recoveryRegenConfirmTitle": "要產生新的復原碼嗎？",
+    "recoveryRegenConfirmBody": "現有復原碼將失效。請在產生後立即儲存新的復原碼。",
+    "recoveryUsedNotice": "{count, plural, =0 {你使用最後一個復原碼登入了。如果應用程式還在，請立即產生新的復原碼；否則請透過「登入說明」聯絡我們。} other {你使用復原碼登入了，還剩 # 個。無法再使用應用程式？請在下方用另一個復原碼停用雙重驗證，然後重新設定。}}",
+    "emailUnverified": "未驗證"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "寄送測試給我",
       "testSending": "傳送中…",
       "testSent": "測試郵件已寄出！",
-      "testFailed": "測試失敗",
       "recipientsEstimate": "約 {count} 位收件人",
       "formatText": "文字",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "等級：{name}",
       "ruleMinPoints": "{count} 分以上",
       "ruleActiveSince": "加入 ≥ {days} 天",
-      "ruleAll": "所有成員"
+      "ruleAll": "所有成員",
+      "confirmSendTitle": "現在將「{subject}」寄給 {count} 位收件人嗎？",
+      "confirmSendBody": "寄送會立即開始，且無法復原。",
+      "confirmSendScheduledTitle": "已排定於 {date} 寄送。仍要現在寄送嗎？",
+      "confirmSendScheduledBody": "「{subject}」將立即寄給 {count} 位收件人，且無法復原。",
+      "confirmSendLabel": "立即寄給 {count} 人",
+      "sendQueued": "正在寄送「{subject}」。",
+      "sendingNow": "寄送中…",
+      "noSubscribersHint": "還沒有人訂閱你的電子報。有收件人後即可寄送。",
+      "segmentEmptyHint": "此分眾目前沒有任何人。請選擇其他分眾後寄送。",
+      "noRecipientsShort": "沒有收件人",
+      "sendNowEllipsis": "立即寄送…",
+      "testFailedReason": "測試郵件未寄出：{reason}",
+      "testFailedUnknown": "未知錯誤，請再試一次。",
+      "schedulePastWarning": "此時間已過去。儲存後，活動仍為草稿。",
+      "confirmDeleteCampaignBody": "「{subject}」將被刪除，且無法復原。",
+      "confirmDeleteSegmentBody": "使用此分眾的草稿和已排定的活動之後會寄給所有訂閱者。",
+      "deleteSegmentConfirm": "刪除分眾",
+      "segmentNameLabel": "分眾名稱"
     },
     "ads": {
       "badge": "廣告",
@@ -1503,19 +1543,20 @@
       "closeLesson": "關閉",
       "deleteLesson": "刪除",
       "confirmDeleteLesson": "刪除課時「{title}」？",
-      "lessonTitlePlaceholder": "標題",
-      "videoUrlPlaceholder": "影片 URL（選填）",
-      "contentPlaceholder": "內容",
-      "dripLabel": "解鎖：加入後天數（空/0 = 立即）",
       "dripPlaceholder": "例如：7",
       "lessonSaving": "儲存中……",
       "lessonSave": "儲存",
       "addLesson": "新增課時",
-      "addLessonTitlePlaceholder": "課時標題",
-      "addContentPlaceholder": "內容（選填）",
-      "addDripPlaceholder": "解鎖：加入後天數（空 = 立即）",
       "adding": "新增中……",
-      "add": "新增"
+      "cannotUndo": "此操作無法復原。",
+      "deleteLessonConfirm": "刪除單元",
+      "createdAddLesson": "課程已建立——現在新增第一個單元。",
+      "lessonTitleLabel": "單元標題",
+      "lessonVideoLabel": "影片網址（選填）",
+      "lessonContentLabel": "內容（選填）",
+      "lessonDripLabel": "加入後解鎖（天）",
+      "lessonDripHint": "留空或 0：立即可用。",
+      "addLessonBtn": "新增單元"
     },
     "gallery": {
       "badge": "圖庫",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "刪除活動",
       "cancel": "取消",
       "saving": "儲存中……",
-      "saveChanges": "儲存變更"
+      "saveChanges": "儲存變更",
+      "confirmDeleteBody": "所有報名都會遺失，且無法復原。",
+      "meetingUrlMissing": "沒有連結，成員就無法參加。你可以稍後補上。"
     },
     "settings": {
       "title": "設定",
@@ -3832,6 +3875,10 @@
         "desc": "分享連結，或透過電子郵件邀請。",
         "cta": "邀請成員"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "依你的時區：{zone}（{abbr}）",
+      "pastWarning": "此日期已過去。"
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "您的帳戶已啟用雙重驗證保護。",
     "legalAcceptance": "我接受<terms>條款與條件</terms>，並確認已閱讀<privacy>隱私權聲明</privacy>。",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6 位數代碼",
+    "codeFor": "正在以 <strong>{email}</strong> 登入。",
+    "useOtherEmail": "使用其他電子郵件",
+    "useRecoveryCode": "無法使用應用程式？改用復原碼",
+    "useAppCode": "使用應用程式中的代碼",
+    "recoveryHeading": "輸入復原碼",
+    "recoveryLabel": "復原碼",
+    "recoveryHint": "設定雙重驗證時儲存的復原碼之一。每個復原碼只能使用一次。",
+    "passwordTooShortField": "密碼太短，至少需要 {min} 個字元。"
   },
   "verifyBanner": {
-    "prompt": "請確認您的電子郵件地址 <strong>{email}</strong>。",
+    "prompt": "驗證 <strong>{email}</strong> 後，你才能收到社群的電子報和郵件。",
     "resend": "重新傳送連結",
     "resending": "傳送中 …",
-    "sent": "新的確認連結已傳送至 <strong>{email}</strong> — 請查看您的收件匣。"
+    "sent": "新的確認連結已傳送至 <strong>{email}</strong> — 請查看您的收件匣。",
+    "sendLink": "傳送驗證連結"
   },
   "community": {
     "join": "成為會員",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "索取連結",
     "forgotSending": "傳送中…",
     "backTo": "返回",
-    "backToLogin": "登入"
+    "backToLogin": "登入",
+    "resetDoneNotice": "密碼已變更。請用新密碼登入。",
+    "loginHelp": "登入說明"
   },
   "pricing": {
     "eyebrow": "價格",
@@ -4983,7 +5042,7 @@
       "resetTitle": "設定新密碼",
       "forAccount": "用於帳號 {email}",
       "verifyMeta": "確認電子郵件 — Aera",
-      "verifyInvalidText": "這個確認連結已過期或無效。請登入後在帳號中申請新連結。",
+      "verifyInvalidText": "此驗證連結已過期或已被使用。請申請新的連結。",
       "toLogin": "前往登入",
       "alreadyVerifiedTitle": "已確認",
       "verifiedTitle": "電子郵件已確認",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "忘記密碼 — Aera",
       "pricingMeta": "價格",
       "featuresMeta": "功能",
-      "manifestDescription": "你的社群：貼文、課程、活動和訊息，全在一處。"
+      "manifestDescription": "你的社群：貼文、課程、活動和訊息，全在一處。",
+      "verifyInvalidVerified": "此連結已失效，但你的電子郵件地址已經驗證過了。",
+      "loginForNewLink": "登入以取得新連結"
     },
     "emails": {
       "sentVia": "透過 Aera 寄出",

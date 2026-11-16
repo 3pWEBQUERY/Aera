@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
 import { RichTextEditor } from "./rich-text-editor";
-import { uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 import {
   MAX_BLOCKS,
   MAX_PAGES,
@@ -134,6 +134,7 @@ function MediaField({
   const input = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const uploadErrorText = useUploadErrorText();
 
   async function pick(file: File | undefined) {
     if (!file) return;
@@ -142,7 +143,7 @@ function MediaField({
     try {
       onChange(await uploadMediaFile({ file, tenant: slug, purpose: "page-block" }));
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(uploadErrorText(e));
     } finally {
       setBusy(false);
       if (input.current) input.current.value = "";

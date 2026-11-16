@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Kurser kræver et kursus-space, men din {plan}-pakke tillader kun {limit} aktive spaces, og de er alle i brug. Arkivér et space eller skift pakke, så kan du oprette kurset.",
+    "planAutoSpaceEvents": "Events kræver et event-space, men din {plan}-pakke tillader kun {limit} aktive spaces, og de er alle i brug. Arkivér et space eller skift pakke, så kan du oprette eventet.",
+    "campaignNoSubscribers": "Ingen har abonneret på dit nyhedsbrev endnu. Du kan sende, så snart der er modtagere.",
+    "campaignSegmentEmpty": "Der er ingen i dette segment lige nu. Vælg et andet segment for at sende.",
+    "campaignTestDeliveryFailed": "E-mailtjenesten modtog ikke beskeden ({detail}). Prøv igen senere.",
+    "recoveryCodeInvalid": "Denne gendannelseskode er forkert eller er allerede brugt. Tjek stavningen, eller prøv en anden kode.",
+    "secondFactorInvalid": "Koden passer ikke. Indtast den aktuelle kode fra appen eller en ubrugt gendannelseskode."
   },
   "nameStatus": {
     "checking": "Tjekker tilgængelighed…",
@@ -502,14 +509,12 @@
     "changingPassword": "Ændrer…",
     "twoFaActive": "To-faktor-godkendelse er aktiv",
     "twoFaActiveDesc": "Ved login kræves en kode fra din authenticator-app ud over adgangskoden.",
-    "twoFaDisableLabel": "For at deaktivere: nuværende kode",
+    "twoFaDisableLabel": "For at slå fra: kode fra appen eller gendannelseskode",
     "twoFaDisabling": "Deaktiverer…",
     "twoFaDisable": "Deaktivér 2FA",
     "twoFaSetupIntro": "Scan QR-koden med din authenticator-app (Google Authenticator, 1Password, Authy …) og bekræft med den viste kode.",
     "twoFaQrAlt": "QR-kode til authenticator-appen",
-    "twoFaNoScanner": "Ingen QR-scanner? Indtast hemmeligheden manuelt:",
-    "twoFaHideSecret": "Skjul hemmelighed",
-    "twoFaShowSecret": "Vis hemmelighed",
+    "twoFaNoScanner": "Ingen QR-scanner? Indtast denne opsætningsnøgle i appen:",
     "twoFaCodeFromApp": "Kode fra appen",
     "twoFaChecking": "Kontrollerer…",
     "twoFaActivate": "Aktivér",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Kopiér nøgle",
+    "twoFaKeyCopied": "Nøglen er kopieret.",
+    "twoFaOpenInApp": "Åbn i godkendelsesappen",
+    "secondFactorLabel": "Kode fra appen eller gendannelseskode",
+    "recoveryCodesTitle": "Gendannelseskoder",
+    "recoveryCodesIntro": "Med disse koder logger du ind, hvis du ikke har adgang til din godkendelsesapp. Hver kode virker kun én gang. Gem dem nu, fx i din adgangskodeadministrator – de vises kun denne ene gang.",
+    "recoveryCopy": "Kopiér koder",
+    "recoveryCopied": "Koderne er kopieret.",
+    "recoveryDownload": "Download som tekstfil",
+    "recoverySaved": "Jeg har gemt koderne",
+    "recoveryFileTitle": "Aera – gendannelseskoder til {email}",
+    "recoveryFileHint": "Hver kode virker kun én gang. Nye koder laver du på din konto under Indstillinger > Totrinsgodkendelse.",
+    "recoveryCodesLeft": "{count, plural, =0 {Ingen koder tilbage. Lav nye, så du også kan logge ind uden appen.} one {# ud af 10 koder tilbage.} other {# ud af 10 koder tilbage.}}",
+    "recoveryRegenerate": "Lav nye koder",
+    "recoveryRegenConfirmTitle": "Vil du lave nye gendannelseskoder?",
+    "recoveryRegenConfirmBody": "Dine nuværende koder holder op med at virke. Gem de nye lige bagefter.",
+    "recoveryUsedNotice": "{count, plural, =0 {Du loggede ind med din sidste gendannelseskode. Har du stadig appen, så lav nye koder nu. Ellers skriv til os via „Hjælp til login“.} one {Du loggede ind med en gendannelseskode. # kode tilbage. Ingen adgang til appen længere? Slå 2FA fra nedenfor med denne kode, og sæt det op igen.} other {Du loggede ind med en gendannelseskode. # koder tilbage. Ingen adgang til appen længere? Slå 2FA fra nedenfor med en anden kode, og sæt det op igen.}}",
+    "emailUnverified": "Ikke bekræftet"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Send test til mig",
       "testSending": "Sender…",
       "testSent": "Test-mail sendt!",
-      "testFailed": "Test mislykkedes",
       "recipientsEstimate": "≈ {count} modtagere",
       "formatText": "Tekst",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Niveau: {name}",
       "ruleMinPoints": "{count}+ point",
       "ruleActiveSince": "Medlem i ≥ {days} dage",
-      "ruleAll": "Alle medlemmer"
+      "ruleAll": "Alle medlemmer",
+      "confirmSendTitle": "Send »{subject}« til {count, plural, one {# modtager} other {# modtagere}} nu?",
+      "confirmSendBody": "Udsendelsen starter med det samme og kan ikke fortrydes.",
+      "confirmSendScheduledTitle": "Planlagt til {date}. Send alligevel nu?",
+      "confirmSendScheduledBody": "»{subject}« sendes med det samme til {count, plural, one {# modtager} other {# modtagere}}. Det kan ikke fortrydes.",
+      "confirmSendLabel": "Send til {count} nu",
+      "sendQueued": "»{subject}« bliver sendt.",
+      "sendingNow": "Sender …",
+      "noSubscribersHint": "Ingen har abonneret på dit nyhedsbrev endnu. Du kan sende, så snart der er modtagere.",
+      "segmentEmptyHint": "Der er ingen i dette segment lige nu. Vælg et andet segment for at sende.",
+      "noRecipientsShort": "Ingen modtagere",
+      "sendNowEllipsis": "Send nu…",
+      "testFailedReason": "Test ikke sendt: {reason}",
+      "testFailedUnknown": "Ukendt fejl. Prøv igen.",
+      "schedulePastWarning": "Dette tidspunkt ligger i fortiden. Når du gemmer, forbliver kampagnen en kladde.",
+      "confirmDeleteCampaignBody": "»{subject}« bliver slettet. Det kan ikke fortrydes.",
+      "confirmDeleteSegmentBody": "Kladder og planlagte kampagner med dette segment går derefter til alle abonnenter.",
+      "deleteSegmentConfirm": "Slet segment",
+      "segmentNameLabel": "Segmentets navn"
     },
     "ads": {
       "badge": "Reklame",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Luk",
       "deleteLesson": "Slet",
       "confirmDeleteLesson": "Slet lektionen „{title}“?",
-      "lessonTitlePlaceholder": "Titel",
-      "videoUrlPlaceholder": "Video-URL (valgfrit)",
-      "contentPlaceholder": "Indhold",
-      "dripLabel": "Frigivelse: dage efter tilmelding (tom/0 = straks)",
       "dripPlaceholder": "f.eks. 7",
       "lessonSaving": "Gemmer…",
       "lessonSave": "Gem",
       "addLesson": "Tilføj lektion",
-      "addLessonTitlePlaceholder": "Lektionens titel",
-      "addContentPlaceholder": "Indhold (valgfrit)",
-      "addDripPlaceholder": "Frigivelse: dage efter tilmelding (tom = straks)",
       "adding": "Tilføjer…",
-      "add": "Tilføj"
+      "cannotUndo": "Det kan ikke fortrydes.",
+      "deleteLessonConfirm": "Slet lektion",
+      "createdAddLesson": "Kurset er oprettet – tilføj nu den første lektion.",
+      "lessonTitleLabel": "Lektionens titel",
+      "lessonVideoLabel": "Video-URL (valgfri)",
+      "lessonContentLabel": "Indhold (valgfrit)",
+      "lessonDripLabel": "Låses op efter tilmelding (dage)",
+      "lessonDripHint": "Tom eller 0: tilgængelig med det samme.",
+      "addLessonBtn": "Tilføj lektion"
     },
     "gallery": {
       "badge": "Galleri",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Slet event",
       "cancel": "Annuller",
       "saving": "Gemmer…",
-      "saveChanges": "Gem ændringer"
+      "saveChanges": "Gem ændringer",
+      "confirmDeleteBody": "Alle tilmeldinger går tabt. Det kan ikke fortrydes.",
+      "meetingUrlMissing": "Uden et link kan medlemmerne ikke deltage. Du kan tilføje det senere."
     },
     "settings": {
       "title": "Indstillinger",
@@ -3832,6 +3875,10 @@
         "desc": "Del dit link eller inviter folk via e-mail.",
         "cta": "Inviter medlemmer"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "Gælder i din tidszone: {zone} ({abbr})",
+      "pastWarning": "Denne dato ligger i fortiden."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Din konto er beskyttet med tofaktorgodkendelse.",
     "legalAcceptance": "Jeg accepterer <terms>vilkårene og betingelserne</terms> og bekræfter, at jeg har læst <privacy>privatlivsmeddelelsen</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-cifret kode",
+    "codeFor": "Logger ind som <strong>{email}</strong>.",
+    "useOtherEmail": "Brug en anden e-mail",
+    "useRecoveryCode": "Ingen adgang til appen? Brug en gendannelseskode",
+    "useAppCode": "Brug en kode fra appen",
+    "recoveryHeading": "Indtast en gendannelseskode",
+    "recoveryLabel": "Gendannelseskode",
+    "recoveryHint": "En af de koder, du gemte, da du satte 2FA op. Hver kode virker kun én gang.",
+    "passwordTooShortField": "Din adgangskode er for kort – mindst {min} tegn."
   },
   "verifyBanner": {
-    "prompt": "Bekræft venligst din e-mailadresse <strong>{email}</strong>.",
+    "prompt": "Bekræft <strong>{email}</strong>, så nyhedsbreve og mails fra dine communities når frem til dig.",
     "resend": "Send link igen",
     "resending": "Sender …",
-    "sent": "Et nyt bekræftelseslink er sendt til <strong>{email}</strong> — tjek din indbakke."
+    "sent": "Et nyt bekræftelseslink er sendt til <strong>{email}</strong> — tjek din indbakke.",
+    "sendLink": "Send bekræftelseslink"
   },
   "community": {
     "join": "Bliv medlem",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Anmod om link",
     "forgotSending": "Sender…",
     "backTo": "Tilbage til",
-    "backToLogin": "login"
+    "backToLogin": "login",
+    "resetDoneNotice": "Adgangskoden er ændret. Log ind med din nye adgangskode nu.",
+    "loginHelp": "Hjælp til login"
   },
   "pricing": {
     "eyebrow": "Priser",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Vælg en ny adgangskode",
       "forAccount": "Til kontoen {email}",
       "verifyMeta": "Bekræft e-mail — Aera",
-      "verifyInvalidText": "Dette bekræftelseslink er udløbet eller ugyldigt. Log ind, og bed om et nyt link fra din konto.",
+      "verifyInvalidText": "Dette bekræftelseslink er udløbet eller allerede brugt. Bed om et nyt link.",
       "toLogin": "Til login",
       "alreadyVerifiedTitle": "Allerede bekræftet",
       "verifiedTitle": "E-mail bekræftet",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Glemt adgangskode — Aera",
       "pricingMeta": "Priser",
       "featuresMeta": "Funktioner",
-      "manifestDescription": "Dine fællesskaber: opslag, kurser, begivenheder og beskeder — samlet ét sted."
+      "manifestDescription": "Dine fællesskaber: opslag, kurser, begivenheder og beskeder — samlet ét sted.",
+      "verifyInvalidVerified": "Linket gælder ikke længere, men din e-mailadresse er allerede bekræftet.",
+      "loginForNewLink": "Log ind for at få et nyt link"
     },
     "emails": {
       "sentVia": "Sendt via Aera",

@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "강좌에는 강좌 스페이스가 필요하지만 {plan} 패키지는 활성 스페이스를 {limit}개까지만 허용하며 모두 사용 중입니다. 스페이스를 보관하거나 패키지를 변경하면 강좌를 만들 수 있습니다.",
+    "planAutoSpaceEvents": "이벤트에는 이벤트 스페이스가 필요하지만 {plan} 패키지는 활성 스페이스를 {limit}개까지만 허용하며 모두 사용 중입니다. 스페이스를 보관하거나 패키지를 변경하면 이벤트를 만들 수 있습니다.",
+    "campaignNoSubscribers": "아직 뉴스레터를 구독한 사람이 없습니다. 수신자가 생기면 보낼 수 있습니다.",
+    "campaignSegmentEmpty": "이 세그먼트에는 현재 아무도 없습니다. 보내려면 다른 세그먼트를 선택하세요.",
+    "campaignTestDeliveryFailed": "이메일 서비스가 메시지를 받지 않았습니다({detail}). 나중에 다시 시도하세요.",
+    "recoveryCodeInvalid": "복구 코드가 올바르지 않거나 이미 사용되었습니다. 입력한 내용을 확인하거나 다른 코드를 사용해 보세요.",
+    "secondFactorInvalid": "코드가 일치하지 않습니다. 앱의 현재 코드나 사용하지 않은 복구 코드를 입력하세요."
   },
   "nameStatus": {
     "checking": "사용 가능 여부 확인 중…",
@@ -502,14 +509,12 @@
     "changingPassword": "변경 중…",
     "twoFaActive": "2단계 인증이 활성화되어 있습니다",
     "twoFaActiveDesc": "로그인 시 비밀번호 외에 인증 앱의 코드가 추가로 요구됩니다.",
-    "twoFaDisableLabel": "비활성화하려면: 현재 코드",
+    "twoFaDisableLabel": "비활성화하려면: 앱 코드 또는 복구 코드",
     "twoFaDisabling": "비활성화 중…",
     "twoFaDisable": "2FA 비활성화",
     "twoFaSetupIntro": "인증 앱(Google Authenticator, 1Password, Authy 등)으로 QR 코드를 스캔하고 표시된 코드로 확인하세요.",
     "twoFaQrAlt": "인증 앱용 QR 코드",
-    "twoFaNoScanner": "QR 스캐너가 없나요? 시크릿을 직접 입력하세요:",
-    "twoFaHideSecret": "시크릿 숨기기",
-    "twoFaShowSecret": "시크릿 표시",
+    "twoFaNoScanner": "QR 스캐너가 없나요? 이 설정 키를 앱에 입력하세요:",
     "twoFaCodeFromApp": "앱의 코드",
     "twoFaChecking": "확인 중…",
     "twoFaActivate": "활성화",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "키 복사",
+    "twoFaKeyCopied": "키를 복사했습니다.",
+    "twoFaOpenInApp": "인증 앱에서 열기",
+    "secondFactorLabel": "앱 코드 또는 복구 코드",
+    "recoveryCodesTitle": "복구 코드",
+    "recoveryCodesIntro": "인증 앱에 접근할 수 없을 때 이 코드로 로그인할 수 있습니다. 각 코드는 한 번만 사용할 수 있습니다. 지금 저장하세요(예: 비밀번호 관리자). 이 화면에서 한 번만 표시됩니다.",
+    "recoveryCopy": "코드 복사",
+    "recoveryCopied": "코드를 복사했습니다.",
+    "recoveryDownload": "텍스트 파일로 다운로드",
+    "recoverySaved": "코드를 저장했습니다",
+    "recoveryFileTitle": "Aera – {email}의 복구 코드",
+    "recoveryFileHint": "각 코드는 한 번만 사용할 수 있습니다. 새 코드는 계정의 설정 > 2단계 인증에서 만들 수 있습니다.",
+    "recoveryCodesLeft": "{count, plural, =0 {남은 코드가 없습니다. 앱 없이도 로그인할 수 있도록 새 코드를 만드세요.} other {10개 중 #개 남음.}}",
+    "recoveryRegenerate": "새 코드 만들기",
+    "recoveryRegenConfirmTitle": "새 복구 코드를 만들까요?",
+    "recoveryRegenConfirmBody": "기존 코드는 더 이상 작동하지 않습니다. 새 코드를 바로 저장하세요.",
+    "recoveryUsedNotice": "{count, plural, =0 {마지막 복구 코드로 로그인했습니다. 앱이 아직 있다면 지금 새 코드를 만드세요. 없다면 ‘로그인 도움말’로 문의하세요.} other {복구 코드로 로그인했습니다. #개 남았습니다. 앱에 더 이상 접근할 수 없나요? 아래에서 다른 코드로 2FA를 끄고 다시 설정하세요.}}",
+    "emailUnverified": "미확인"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "나에게 테스트 보내기",
       "testSending": "보내는 중…",
       "testSent": "테스트 메일을 보냈습니다!",
-      "testFailed": "테스트 실패",
       "recipientsEstimate": "약 {count}명",
       "formatText": "텍스트",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "등급: {name}",
       "ruleMinPoints": "{count}점 이상",
       "ruleActiveSince": "가입 {days}일 이상",
-      "ruleAll": "모든 멤버"
+      "ruleAll": "모든 멤버",
+      "confirmSendTitle": "“{subject}”을(를) 지금 {count}명에게 보낼까요?",
+      "confirmSendBody": "발송이 바로 시작되며 되돌릴 수 없습니다.",
+      "confirmSendScheduledTitle": "{date}에 예약되어 있습니다. 그래도 지금 보낼까요?",
+      "confirmSendScheduledBody": "“{subject}”이(가) 바로 {count}명에게 발송됩니다. 되돌릴 수 없습니다.",
+      "confirmSendLabel": "지금 {count}명에게 보내기",
+      "sendQueued": "“{subject}”을(를) 보내는 중입니다.",
+      "sendingNow": "보내는 중…",
+      "noSubscribersHint": "아직 뉴스레터를 구독한 사람이 없습니다. 수신자가 생기면 보낼 수 있습니다.",
+      "segmentEmptyHint": "이 세그먼트에는 현재 아무도 없습니다. 보내려면 다른 세그먼트를 선택하세요.",
+      "noRecipientsShort": "수신자 없음",
+      "sendNowEllipsis": "지금 보내기…",
+      "testFailedReason": "테스트를 보내지 못했습니다: {reason}",
+      "testFailedUnknown": "알 수 없는 오류입니다. 다시 시도하세요.",
+      "schedulePastWarning": "이 시각은 이미 지났습니다. 저장하면 캠페인은 초안으로 남습니다.",
+      "confirmDeleteCampaignBody": "“{subject}”이(가) 삭제됩니다. 되돌릴 수 없습니다.",
+      "confirmDeleteSegmentBody": "이 세그먼트를 사용하는 초안과 예약된 캠페인은 이후 모든 구독자에게 발송됩니다.",
+      "deleteSegmentConfirm": "세그먼트 삭제",
+      "segmentNameLabel": "세그먼트 이름"
     },
     "ads": {
       "badge": "광고",
@@ -1503,19 +1543,20 @@
       "closeLesson": "닫기",
       "deleteLesson": "삭제",
       "confirmDeleteLesson": "레슨 ‘{title}’을(를) 삭제할까요?",
-      "lessonTitlePlaceholder": "제목",
-      "videoUrlPlaceholder": "동영상 URL(선택)",
-      "contentPlaceholder": "내용",
-      "dripLabel": "공개: 가입 후 일수(비움/0 = 즉시)",
       "dripPlaceholder": "예: 7",
       "lessonSaving": "저장 중…",
       "lessonSave": "저장",
       "addLesson": "레슨 추가",
-      "addLessonTitlePlaceholder": "레슨 제목",
-      "addContentPlaceholder": "내용(선택)",
-      "addDripPlaceholder": "공개: 가입 후 일수(비움 = 즉시)",
       "adding": "추가 중…",
-      "add": "추가"
+      "cannotUndo": "되돌릴 수 없습니다.",
+      "deleteLessonConfirm": "레슨 삭제",
+      "createdAddLesson": "강좌가 만들어졌습니다. 이제 첫 레슨을 추가하세요.",
+      "lessonTitleLabel": "레슨 제목",
+      "lessonVideoLabel": "동영상 URL (선택)",
+      "lessonContentLabel": "내용 (선택)",
+      "lessonDripLabel": "가입 후 공개 (일)",
+      "lessonDripHint": "비워 두거나 0: 바로 공개됩니다.",
+      "addLessonBtn": "레슨 추가"
     },
     "gallery": {
       "badge": "갤러리",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "이벤트 삭제",
       "cancel": "취소",
       "saving": "저장 중…",
-      "saveChanges": "변경 사항 저장"
+      "saveChanges": "변경 사항 저장",
+      "confirmDeleteBody": "모든 참가 응답이 사라집니다. 되돌릴 수 없습니다.",
+      "meetingUrlMissing": "링크가 없으면 멤버가 참여할 수 없습니다. 나중에 추가할 수 있습니다."
     },
     "settings": {
       "title": "설정",
@@ -3832,6 +3875,10 @@
         "desc": "링크를 공유하거나 이메일로 초대하세요.",
         "cta": "멤버 초대"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "내 시간대 기준: {zone} ({abbr})",
+      "pastWarning": "이 날짜는 과거입니다."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "계정이 2단계 인증으로 보호되고 있습니다.",
     "legalAcceptance": "<terms>이용약관</terms>에 동의하며 <privacy>개인정보 보호 고지</privacy>를 확인했습니다.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6자리 코드",
+    "codeFor": "<strong>{email}</strong>(으)로 로그인합니다.",
+    "useOtherEmail": "다른 이메일 사용",
+    "useRecoveryCode": "앱에 접근할 수 없나요? 복구 코드 사용",
+    "useAppCode": "앱 코드 사용",
+    "recoveryHeading": "복구 코드 입력",
+    "recoveryLabel": "복구 코드",
+    "recoveryHint": "2FA를 설정할 때 저장한 코드 중 하나입니다. 각 코드는 한 번만 사용할 수 있습니다.",
+    "passwordTooShortField": "비밀번호가 너무 짧습니다. 최소 {min}자 이상이어야 합니다."
   },
   "verifyBanner": {
-    "prompt": "이메일 주소 <strong>{email}</strong>을(를) 확인해 주세요.",
+    "prompt": "<strong>{email}</strong>을(를) 확인하면 커뮤니티의 뉴스레터와 이메일을 받을 수 있습니다.",
     "resend": "링크 다시 보내기",
     "resending": "전송 중 …",
-    "sent": "새 확인 링크를 <strong>{email}</strong>(으)로 보냈습니다 — 받은편지함을 확인해 주세요."
+    "sent": "새 확인 링크를 <strong>{email}</strong>(으)로 보냈습니다 — 받은편지함을 확인해 주세요.",
+    "sendLink": "확인 링크 보내기"
   },
   "community": {
     "join": "멤버 되기",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "링크 요청",
     "forgotSending": "전송 중…",
     "backTo": "돌아가기:",
-    "backToLogin": "로그인으로"
+    "backToLogin": "로그인으로",
+    "resetDoneNotice": "비밀번호가 변경되었습니다. 이제 새 비밀번호로 로그인하세요.",
+    "loginHelp": "로그인 도움말"
   },
   "pricing": {
     "eyebrow": "요금",
@@ -4983,7 +5042,7 @@
       "resetTitle": "새 비밀번호를 설정하세요",
       "forAccount": "{email} 계정용",
       "verifyMeta": "이메일 확인 — Aera",
-      "verifyInvalidText": "이 확인 링크는 만료되었거나 유효하지 않습니다. 로그인한 뒤 계정에서 새 링크를 요청하세요.",
+      "verifyInvalidText": "이 확인 링크는 만료되었거나 이미 사용되었습니다. 새 링크를 요청하세요.",
       "toLogin": "로그인으로",
       "alreadyVerifiedTitle": "이미 확인됨",
       "verifiedTitle": "이메일이 확인되었습니다",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "비밀번호를 잊으셨나요 — Aera",
       "pricingMeta": "요금제",
       "featuresMeta": "기능",
-      "manifestDescription": "내 커뮤니티: 게시물, 강좌, 이벤트, 메시지를 한곳에서."
+      "manifestDescription": "내 커뮤니티: 게시물, 강좌, 이벤트, 메시지를 한곳에서.",
+      "verifyInvalidVerified": "이 링크는 더 이상 유효하지 않지만 이메일 주소는 이미 확인되었습니다.",
+      "loginForNewLink": "로그인하고 새 링크 받기"
     },
     "emails": {
       "sentVia": "Aera에서 보냄",

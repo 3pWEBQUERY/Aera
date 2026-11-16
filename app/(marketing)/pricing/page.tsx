@@ -10,6 +10,8 @@ import {
   CREDIT_PACKS,
   creatorPlanSignupHref,
 } from "@/lib/credit-plans";
+import { PLAN_LIMITS, SPACE_TYPE_KEYS, planAllowsSpaceType } from "@/lib/plan-features";
+import { formatPlatformFee } from "@/lib/platform-fee";
 import { formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
@@ -23,6 +25,13 @@ export default async function PricingPage() {
   const tpc = await getTranslations("community.render.planCard");
   const locale = await getLocale();
   const nf = new Intl.NumberFormat(locale);
+  // Zahlen aus dem Code, nicht aus dem Text: Gebuehr (lib/platform-fee.ts),
+  // Free-Spaces und Mitgliedschafts-Limit (lib/plan-features.ts).
+  const fee = formatPlatformFee(locale);
+  const freeSpaceTypes = SPACE_TYPE_KEYS.filter((type) => planAllowsSpaceType("FREE", type)).length;
+  const featureVars: Partial<Record<string, Record<string, string | number>>> = {
+    FREE: { count: freeSpaceTypes, tiers: nf.format(PLAN_LIMITS.FREE.maxTiers ?? 0) },
+  };
 
   return (
     <main className="bg-[#f4f1ea] text-[#161613]">
@@ -60,10 +69,10 @@ export default async function PricingPage() {
                   tagline={t(`plans.${key}.tagline`)}
                   priceCents={plan.priceCents}
                   features={[
-                    t(`plans.${key}.f1`),
-                    t(`plans.${key}.f2`),
-                    t(`plans.${key}.f3`),
-                    t(`plans.${key}.f4`),
+                    t(`plans.${key}.f1`, featureVars[key]),
+                    t(`plans.${key}.f2`, featureVars[key]),
+                    t(`plans.${key}.f3`, featureVars[key]),
+                    t(`plans.${key}.f4`, featureVars[key]),
                   ]}
                   featured={featured}
                   labels={{
@@ -72,6 +81,7 @@ export default async function PricingPage() {
                     perMonth: tpc("perMonth"),
                     credits: tpc("creditsPerMonth", { count: nf.format(plan.monthlyCredits) }),
                     storage: t("storageChip", { gb: nf.format(plan.storageGb) }),
+                    fee: t("feeLine", { fee }),
                   }}
                 >
                   <PillLink

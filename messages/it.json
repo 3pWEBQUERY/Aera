@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "I corsi richiedono uno space per i corsi, ma il tuo pacchetto {plan} consente solo {limit} space attivi e sono tutti occupati. Archivia uno space o cambia pacchetto, poi potrai creare il corso.",
+    "planAutoSpaceEvents": "Gli eventi richiedono uno space per gli eventi, ma il tuo pacchetto {plan} consente solo {limit} space attivi e sono tutti occupati. Archivia uno space o cambia pacchetto, poi potrai creare l’evento.",
+    "campaignNoSubscribers": "Nessuno si è ancora iscritto alla tua newsletter. Potrai inviarla appena ci saranno destinatari.",
+    "campaignSegmentEmpty": "Al momento questo segmento è vuoto. Scegli un altro segmento per inviare.",
+    "campaignTestDeliveryFailed": "Il servizio email non ha accettato il messaggio ({detail}). Riprova più tardi.",
+    "recoveryCodeInvalid": "Questo codice di recupero non è corretto o è già stato usato. Controlla come l’hai scritto o prova un altro codice.",
+    "secondFactorInvalid": "Il codice non corrisponde. Inserisci il codice attuale dell’app o un codice di recupero non usato."
   },
   "nameStatus": {
     "checking": "Verifica disponibilità…",
@@ -502,14 +509,12 @@
     "changingPassword": "Modifica in corso…",
     "twoFaActive": "L'autenticazione a due fattori è attiva",
     "twoFaActiveDesc": "All'accesso viene richiesto, oltre alla password, un codice della tua app di autenticazione.",
-    "twoFaDisableLabel": "Per disattivare: codice attuale",
+    "twoFaDisableLabel": "Per disattivare: codice dell’app o codice di recupero",
     "twoFaDisabling": "Disattivazione…",
     "twoFaDisable": "Disattiva 2FA",
     "twoFaSetupIntro": "Scansiona il codice QR con la tua app di autenticazione (Google Authenticator, 1Password, Authy …) e conferma con il codice mostrato.",
     "twoFaQrAlt": "Codice QR per l'app di autenticazione",
-    "twoFaNoScanner": "Nessuno scanner QR? Inserisci il secret manualmente:",
-    "twoFaHideSecret": "Nascondi secret",
-    "twoFaShowSecret": "Mostra secret",
+    "twoFaNoScanner": "Nessuno scanner QR? Inserisci questa chiave di configurazione nell’app:",
     "twoFaCodeFromApp": "Codice dall'app",
     "twoFaChecking": "Verifica…",
     "twoFaActivate": "Attiva",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Copia chiave",
+    "twoFaKeyCopied": "Chiave copiata.",
+    "twoFaOpenInApp": "Apri nell’app di autenticazione",
+    "secondFactorLabel": "Codice dell’app o codice di recupero",
+    "recoveryCodesTitle": "Codici di recupero",
+    "recoveryCodesIntro": "Con questi codici accedi se non hai accesso alla tua app di autenticazione. Ogni codice funziona una sola volta. Salvali ora, per esempio nel tuo gestore di password: vengono mostrati solo questa volta.",
+    "recoveryCopy": "Copia codici",
+    "recoveryCopied": "Codici copiati.",
+    "recoveryDownload": "Scarica come file di testo",
+    "recoverySaved": "Ho salvato i codici",
+    "recoveryFileTitle": "Aera – codici di recupero per {email}",
+    "recoveryFileHint": "Ogni codice funziona una sola volta. Puoi creare nuovi codici nel tuo account, in Impostazioni > Autenticazione a due fattori.",
+    "recoveryCodesLeft": "{count, plural, =0 {Nessun codice rimasto. Creane di nuovi per poter accedere anche senza l’app.} one {Rimane # codice su 10.} other {Rimangono # codici su 10.}}",
+    "recoveryRegenerate": "Crea nuovi codici",
+    "recoveryRegenConfirmTitle": "Creare nuovi codici di recupero?",
+    "recoveryRegenConfirmBody": "I codici attuali smetteranno di funzionare. Salva subito quelli nuovi.",
+    "recoveryUsedNotice": "{count, plural, =0 {Hai effettuato l’accesso con l’ultimo codice di recupero. Se hai ancora l’app, crea subito nuovi codici. Altrimenti scrivici tramite «Aiuto per l’accesso».} one {Hai effettuato l’accesso con un codice di recupero. Rimane # codice. Non hai più accesso all’app? Disattiva la 2FA qui sotto con questo codice e configurala di nuovo.} other {Hai effettuato l’accesso con un codice di recupero. Rimangono # codici. Non hai più accesso all’app? Disattiva la 2FA qui sotto con un altro codice e configurala di nuovo.}}",
+    "emailUnverified": "Non confermata"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Inviami un test",
       "testSending": "Invio…",
       "testSent": "E-mail di test inviata!",
-      "testFailed": "Test non riuscito",
       "recipientsEstimate": "≈ {count} destinatari",
       "formatText": "Testo",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Livello: {name}",
       "ruleMinPoints": "{count}+ punti",
       "ruleActiveSince": "Membro da ≥ {days} giorni",
-      "ruleAll": "Tutti i membri"
+      "ruleAll": "Tutti i membri",
+      "confirmSendTitle": "Inviare «{subject}» ora a {count, plural, one {# destinatario} other {# destinatari}}?",
+      "confirmSendBody": "L’invio parte subito e non si può annullare.",
+      "confirmSendScheduledTitle": "Programmata per il {date}. Inviare comunque ora?",
+      "confirmSendScheduledBody": "«{subject}» verrà inviata subito a {count, plural, one {# destinatario} other {# destinatari}}. L’operazione non si può annullare.",
+      "confirmSendLabel": "Invia a {count} ora",
+      "sendQueued": "«{subject}» è in invio.",
+      "sendingNow": "Invio in corso…",
+      "noSubscribersHint": "Nessuno si è ancora iscritto alla tua newsletter. Potrai inviarla appena ci saranno destinatari.",
+      "segmentEmptyHint": "Al momento questo segmento è vuoto. Scegli un altro segmento per inviare.",
+      "noRecipientsShort": "Nessun destinatario",
+      "sendNowEllipsis": "Invia ora…",
+      "testFailedReason": "Test non inviato: {reason}",
+      "testFailedUnknown": "Errore sconosciuto. Riprova.",
+      "schedulePastWarning": "Questo orario è nel passato. Al salvataggio la campagna resta una bozza.",
+      "confirmDeleteCampaignBody": "«{subject}» verrà eliminata. L’operazione non si può annullare.",
+      "confirmDeleteSegmentBody": "Le bozze e le campagne programmate con questo segmento andranno poi a tutti gli iscritti.",
+      "deleteSegmentConfirm": "Elimina segmento",
+      "segmentNameLabel": "Nome del segmento"
     },
     "ads": {
       "badge": "Pubblicità",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Chiudi",
       "deleteLesson": "Elimina",
       "confirmDeleteLesson": "Eliminare la lezione «{title}»?",
-      "lessonTitlePlaceholder": "Titolo",
-      "videoUrlPlaceholder": "URL del video (facoltativo)",
-      "contentPlaceholder": "Contenuto",
-      "dripLabel": "Sblocco: giorni dopo l'iscrizione (vuoto/0 = subito)",
       "dripPlaceholder": "es. 7",
       "lessonSaving": "Salvataggio…",
       "lessonSave": "Salva",
       "addLesson": "Aggiungi lezione",
-      "addLessonTitlePlaceholder": "Titolo della lezione",
-      "addContentPlaceholder": "Contenuto (facoltativo)",
-      "addDripPlaceholder": "Sblocco: giorni dopo l'iscrizione (vuoto = subito)",
       "adding": "Aggiunta…",
-      "add": "Aggiungi"
+      "cannotUndo": "L’operazione non si può annullare.",
+      "deleteLessonConfirm": "Elimina lezione",
+      "createdAddLesson": "Corso creato: ora aggiungi la prima lezione.",
+      "lessonTitleLabel": "Titolo della lezione",
+      "lessonVideoLabel": "URL del video (facoltativo)",
+      "lessonContentLabel": "Contenuto (facoltativo)",
+      "lessonDripLabel": "Sblocco dopo l’iscrizione (giorni)",
+      "lessonDripHint": "Vuoto o 0: disponibile subito.",
+      "addLessonBtn": "Aggiungi lezione"
     },
     "gallery": {
       "badge": "Galleria",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Elimina evento",
       "cancel": "Annulla",
       "saving": "Salvataggio…",
-      "saveChanges": "Salva modifiche"
+      "saveChanges": "Salva modifiche",
+      "confirmDeleteBody": "Tutte le adesioni andranno perse. L’operazione non si può annullare.",
+      "meetingUrlMissing": "Senza link i membri non possono partecipare. Puoi aggiungerlo più tardi."
     },
     "settings": {
       "title": "Impostazioni",
@@ -3832,6 +3875,10 @@
         "desc": "Condividi il link o invita via email.",
         "cta": "Invita membri"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "Nel tuo fuso orario: {zone} ({abbr})",
+      "pastWarning": "Questa data è nel passato."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Il tuo account è protetto dall'autenticazione a due fattori.",
     "legalAcceptance": "Accetto i <terms>Termini e condizioni</terms> e confermo di aver preso visione dell’<privacy>Informativa sulla privacy</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "Codice a 6 cifre",
+    "codeFor": "Accesso come <strong>{email}</strong>.",
+    "useOtherEmail": "Usa un’altra email",
+    "useRecoveryCode": "Nessun accesso all’app? Usa un codice di recupero",
+    "useAppCode": "Usa un codice dell’app",
+    "recoveryHeading": "Inserisci un codice di recupero",
+    "recoveryLabel": "Codice di recupero",
+    "recoveryHint": "Uno dei codici che hai salvato quando hai attivato la 2FA. Ogni codice funziona una sola volta.",
+    "passwordTooShortField": "La password è troppo corta: almeno {min} caratteri."
   },
   "verifyBanner": {
-    "prompt": "Conferma il tuo indirizzo e-mail <strong>{email}</strong>.",
+    "prompt": "Conferma <strong>{email}</strong> per ricevere le newsletter e le email delle tue community.",
     "resend": "Invia di nuovo il link",
     "resending": "Invio …",
-    "sent": "Un nuovo link di conferma è stato inviato a <strong>{email}</strong> — controlla la tua casella."
+    "sent": "Un nuovo link di conferma è stato inviato a <strong>{email}</strong> — controlla la tua casella.",
+    "sendLink": "Invia link di conferma"
   },
   "community": {
     "join": "Diventa membro",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Richiedi link",
     "forgotSending": "Invio…",
     "backTo": "Torna al",
-    "backToLogin": "login"
+    "backToLogin": "login",
+    "resetDoneNotice": "Password modificata. Accedi ora con la nuova password.",
+    "loginHelp": "Aiuto per l’accesso"
   },
   "pricing": {
     "eyebrow": "Prezzi",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Scegli una nuova password",
       "forAccount": "Per l'account {email}",
       "verifyMeta": "Conferma l'e-mail — Aera",
-      "verifyInvalidText": "Questo link di conferma è scaduto o non è valido. Accedi e richiedi un nuovo link dal tuo account.",
+      "verifyInvalidText": "Questo link di conferma è scaduto o è già stato usato. Richiedi un nuovo link.",
       "toLogin": "Vai all'accesso",
       "alreadyVerifiedTitle": "Già confermata",
       "verifiedTitle": "E-mail confermata",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Password dimenticata — Aera",
       "pricingMeta": "Prezzi",
       "featuresMeta": "Funzioni",
-      "manifestDescription": "Le tue community: post, corsi, eventi e messaggi — tutto in un posto solo."
+      "manifestDescription": "Le tue community: post, corsi, eventi e messaggi — tutto in un posto solo.",
+      "verifyInvalidVerified": "Questo link non è più valido, ma il tuo indirizzo email è già confermato.",
+      "loginForNewLink": "Accedi per ricevere un nuovo link"
     },
     "emails": {
       "sentVia": "Inviato con Aera",

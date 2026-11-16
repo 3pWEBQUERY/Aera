@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
@@ -324,9 +325,9 @@ export default async function SpaceContentPage({
       address: c.address,
       startsAt: c.startsAt,
       capacity: c.capacity,
-      lessons: c.lessons.map((l) => ({ id: l.id, title: l.title, content: l.content, videoUrl: l.videoUrl })),
+      lessons: c.lessons.map((l) => ({ id: l.id, title: l.title, content: l.content, videoUrl: l.videoUrl, dripAfterDays: l.dripAfterDays })),
     }));
-    return <CoursesManager slug={slug} courses={courses} spaceId={space.id} />;
+    return <CoursesManager slug={slug} courses={courses} spaceId={space.id} spaceName={space.name} />;
   }
 
   // ----- Events: manage events inside the space -----
@@ -348,7 +349,7 @@ export default async function SpaceContentPage({
       capacity: e.capacity,
       rsvpCount: e._count.rsvps,
     }));
-    return <EventsManager slug={slug} events={events} spaceId={space.id} />;
+    return <EventsManager slug={slug} events={events} spaceId={space.id} spaceName={space.name} />;
   }
 
   // ----- Knowledge base: articles + display settings -----
@@ -685,6 +686,32 @@ export default async function SpaceContentPage({
     commentCount: p._count.comments,
   }));
 
+  // Banner erscheinen oben auf allen Community-Seiten, egal in welchem Space
+  // sie gespeichert sind. Darum gibt es genau einen Ort fuer sie: den Feed-
+  // Space, der schon Banner hat, sonst „Ankuendigungen“, sonst den ersten
+  // Feed-Space. Ein Space mit eigenen Bannern zeigt die Verwaltung immer —
+  // bestehende Banner duerfen nicht unerreichbar werden.
+  let bannerHome: { slug: string; name: string } | null = null;
+  let showBanners = false;
+  if (space.type === "FEED") {
+    if (parseAnnouncements(space.settings).length > 0) {
+      showBanners = true;
+    } else {
+      const feeds = await prisma.space.findMany({
+        where: { tenantId: tenant.id, type: "FEED" },
+        orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+        select: { id: true, slug: true, name: true, settings: true },
+      });
+      const home =
+        feeds.find((f) => parseAnnouncements(f.settings).length > 0) ??
+        feeds.find((f) => f.slug === "ankuendigungen") ??
+        feeds[0];
+      showBanners = !home || home.id === space.id;
+      if (home && !showBanners) bannerHome = { slug: home.slug, name: home.name };
+    }
+  }
+  const tSpace = await getTranslations("dashboard.spaceContent");
+
   return (
     <div>
       {/* Posts first: they are what a creator comes here for. The banners
@@ -696,7 +723,18 @@ export default async function SpaceContentPage({
         posts={posts}
         articles={[]}
       />
-      {space.type === "FEED" && (
+      {bannerHome && (
+        <p className="mt-8 text-sm text-slate-500">
+          {tSpace("bannersElsewhere")}{" "}
+          <Link
+            href={`/dashboard/${slug}/spaces/${bannerHome.slug}`}
+            className="font-medium text-slate-700 underline underline-offset-2 hover:text-slate-900"
+          >
+            {tSpace("bannersElsewhereLink", { name: bannerHome.name })}
+          </Link>
+        </p>
+      )}
+      {showBanners && (
         <div className="mt-8">
           <AnnouncementsManager
             slug={slug}

@@ -18,7 +18,8 @@ import { PagesPanel, type EditablePage } from "./pages-panel";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
-import { uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { Select } from "@/components/ui/select";
 import {
@@ -1008,13 +1009,22 @@ function LogoUploader({
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [failedFile, setFailedFile] = useState<File | null>(null);
+  const uploadErrorText = useUploadErrorText();
   const t = useTranslations("dashboard.layout");
 
   async function pick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    await upload(file);
+  }
+
+  async function upload(file: File) {
     setBusy(true);
+    setError(null);
+    setFailedFile(null);
     try {
       const uploadedUrl = await uploadMediaFile({
         file,
@@ -1022,14 +1032,17 @@ function LogoUploader({
         purpose: "logo",
       });
       onChange(uploadedUrl);
-    } catch {
-      // Keep this compact logo control non-disruptive, as before.
+    } catch (uploadError) {
+      // Der Fehler steht unter dem Logo — die Upload-Anzeige zeigt nur Fortschritt.
+      setError(uploadErrorText(uploadError));
+      setFailedFile(file);
     } finally {
       setBusy(false);
     }
   }
 
   return (
+    <div className="flex max-w-[14rem] shrink-0 flex-col items-end">
     <button
       type="button"
       onClick={() => ref.current?.click()}
@@ -1050,6 +1063,12 @@ function LogoUploader({
       </span>
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={pick} />
     </button>
+    <UploadFieldError
+      message={error}
+      retrying={busy}
+      onRetry={failedFile ? () => void upload(failedFile) : undefined}
+    />
+    </div>
   );
 }
 

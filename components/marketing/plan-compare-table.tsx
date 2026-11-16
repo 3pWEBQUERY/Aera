@@ -8,6 +8,7 @@ import {
   planAllowsFeature,
   planAllowsSpaceType,
 } from "@/lib/plan-features";
+import { formatPlatformFee } from "@/lib/platform-fee";
 
 /**
  * The honest version of the pricing page: one row per space type, feature and
@@ -21,6 +22,7 @@ export async function PlanCompareTable() {
   const tFeatures = await getTranslations("dashboard.plans.features");
   const locale = await getLocale();
   const nf = new Intl.NumberFormat(locale);
+  const fee = formatPlatformFee(locale);
 
   const limitValue = (value: number | null) =>
     value === null ? t("unlimited") : nf.format(value);
@@ -81,6 +83,23 @@ export async function PlanCompareTable() {
         },
       ],
     },
+    {
+      // Gleich in jedem Paket (lib/platform-fee.ts) — steht trotzdem hier,
+      // damit niemand die Kosten erst nach dem Kauf entdeckt.
+      group: t("feesGroup"),
+      items: [
+        {
+          key: "fee-platform",
+          label: t("feePlatform"),
+          cell: () => fee,
+        },
+        {
+          key: "fee-provider",
+          label: t("feeProvider"),
+          cell: () => t("feeProviderValue"),
+        },
+      ],
+    },
   ];
 
   return (
@@ -95,13 +114,27 @@ export async function PlanCompareTable() {
         {t("subtitle")}
       </p>
 
-      <div className="mt-10 -mx-5 overflow-x-auto px-5 sm:mx-0 sm:px-0">
+      <p className="mt-8 text-sm text-[#161613]/65 md:hidden" aria-hidden="true">
+        {t("scrollHint")}
+      </p>
+
+      {/* Schmal: eigener Scrollbereich (beide Richtungen), damit die
+          Paketnamen beim Herunterscrollen oben stehen bleiben. Breit: kein
+          eigener Scrollbereich, die Kopfzeile klebt unter dem Seiten-Header.
+          Fokussierbar, damit sich der Bereich auch per Tastatur scrollen
+          laesst (WCAG 2.1.1, axe scrollable-region-focusable). */}
+      <div
+        role="region"
+        aria-label={t("tableLabel")}
+        tabIndex={0}
+        className="mt-3 -mx-5 max-h-[75vh] overflow-auto px-5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:mx-0 sm:px-0 md:mt-10 lg:max-h-none lg:overflow-visible"
+      >
         <table className="w-full min-w-[640px] border-collapse text-left">
           <thead>
             <tr>
               <th
                 scope="col"
-                className="sticky left-0 z-10 bg-[#f4f1ea] py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65"
+                className="sticky left-0 top-0 z-30 bg-[#f4f1ea] py-3 pr-4 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65 lg:top-[73px]"
               >
                 {t("featureColumn")}
               </th>
@@ -109,7 +142,7 @@ export async function PlanCompareTable() {
                 <th
                   key={plan}
                   scope="col"
-                  className="w-[15%] px-3 py-3 text-center text-sm font-bold text-[#161613]"
+                  className="sticky top-0 z-20 w-[15%] bg-[#f4f1ea] px-3 py-3 text-center text-sm font-bold text-[#161613] shadow-[inset_0_-1px_0_rgba(22,22,19,0.15)] lg:top-[73px]"
                 >
                   {PLANS[plan].name}
                 </th>
@@ -152,7 +185,11 @@ export async function PlanCompareTable() {
         </table>
       </div>
 
-      <p className="mt-8 max-w-2xl text-sm leading-6 text-[#161613]/65">{t("note")}</p>
+      <div className="mt-8 max-w-2xl space-y-2 text-sm leading-6 text-[#161613]/65">
+        <p>{t("membersNote")}</p>
+        <p>{t("feeNote", { fee })}</p>
+        <p>{t("note")}</p>
+      </div>
     </section>
   );
 }

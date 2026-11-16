@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import {
   createEventAction,
   updateEventAction,
@@ -13,7 +13,9 @@ import { Icon } from "./icons";
 import { ImageUpload } from "./image-upload";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
-import { cn, formatDateTime } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { cn } from "@/lib/utils";
+import { ClientWhen, LocalDateTimeField } from "./local-datetime-field";
 
 export interface EventRowData {
   id: string;
@@ -28,33 +30,29 @@ export interface EventRowData {
   rsvpCount: number;
 }
 
-function toLocalInput(d: string | Date): string {
-  const dt = new Date(d);
-  const p = (n: number) => String(n).padStart(2, "0");
-  return `${dt.getFullYear()}-${p(dt.getMonth() + 1)}-${p(dt.getDate())}T${p(dt.getHours())}:${p(dt.getMinutes())}`;
-}
-
 const initial: ActionState = {};
 
 export function EventsManager({
   slug,
   events,
   spaceId,
+  spaceName,
 }: {
   slug: string;
   events: EventRowData[];
   spaceId?: string;
+  /** Im Space-Kontext steht der Space-Name statt „Events“ über der Liste. */
+  spaceName?: string;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<EventRowData | null>(null);
   const t = useTranslations("dashboard.events");
-  const locale = useLocale();
 
   return (
     <div>
       <div className="mb-6 flex flex-col gap-3 sm:mb-7 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
+          <h1 className="text-xl font-bold text-slate-900">{spaceName || t("title")}</h1>
           <p className="mt-1 text-sm text-slate-500">
             {t("subtitle", { count: events.length })}
           </p>
@@ -93,7 +91,7 @@ export function EventsManager({
               </div>
               <div className="flex flex-1 flex-col p-4">
                 <p className="font-semibold text-slate-900">{e.title}</p>
-                <p className="mt-1 text-sm text-slate-500">{formatDateTime(e.startsAt, locale)}</p>
+                <p className="mt-1 min-h-5 text-sm text-slate-500"><ClientWhen value={e.startsAt} /></p>
                 <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-sm text-slate-500">
                   <span>{e.location || (e.isOnline ? t("online") : "—")}</span>
                   <span>{t("rsvps", { count: e.rsvpCount })}</span>
@@ -144,7 +142,9 @@ export function EventForm({
   const isEdit = !!event;
   const [state, action, pending] = useActionState(isEdit ? updateEventAction : createEventAction, initial);
   const [online, setOnline] = useState(event ? event.isOnline : true);
+  const [meetingUrl, setMeetingUrl] = useState(event?.meetingUrl ?? "");
   const [deleting, setDeleting] = useState(false);
+  const [confirm, confirmDialog] = useConfirm();
   const t = useTranslations("dashboard.events");
 
   useEffect(() => {
@@ -153,7 +153,13 @@ export function EventForm({
 
   async function onDelete() {
     if (!event) return;
-    if (!confirm(t("confirmDelete", { title: event.title }))) return;
+    const confirmed = await confirm({
+      title: t("confirmDelete", { title: event.title }),
+      body: t("confirmDeleteBody"),
+      confirmLabel: t("deleteEvent"),
+      tone: "danger",
+    });
+    if (!confirmed) return;
     setDeleting(true);
     const fd = new FormData();
     fd.set("tenant", slug);
@@ -183,10 +189,13 @@ export function EventForm({
             <Input id="ef-title" name="title" required defaultValue={event?.title} className="text-base" />
           </div>
 
-          <div>
-            <Label htmlFor="ef-start">{t("startLabel")}</Label>
-            <Input id="ef-start" name="startsAt" type="datetime-local" required defaultValue={event ? toLocalInput(event.startsAt) : undefined} />
-          </div>
+          <LocalDateTimeField
+            id="ef-start"
+            name="startsAt"
+            label={t("startLabel")}
+            required
+            defaultValue={event?.startsAt}
+          />
 
           <div>
             <p className="mb-3 text-sm font-medium text-slate-700">{t("format")}</p>
@@ -200,6 +209,7 @@ export function EventForm({
                   <button
                     key={String(o.v)}
                     type="button"
+                    aria-pressed={sel}
                     onClick={() => setOnline(o.v)}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
@@ -222,7 +232,20 @@ export function EventForm({
           {online ? (
             <div>
               <Label htmlFor="ef-url">{t("meetingUrlLabel")}</Label>
-              <Input id="ef-url" name="meetingUrl" type="url" defaultValue={event?.meetingUrl ?? ""} placeholder="https://…" />
+              <Input
+                id="ef-url"
+                name="meetingUrl"
+                type="url"
+                value={meetingUrl}
+                onChange={(e) => setMeetingUrl(e.target.value)}
+                placeholder="https://…"
+                aria-describedby={meetingUrl.trim() ? undefined : "ef-url-warn"}
+              />
+              {!meetingUrl.trim() && (
+                <p id="ef-url-warn" className="mt-1 text-xs font-medium text-amber-700">
+                  {t("meetingUrlMissing")}
+                </p>
+              )}
             </div>
           ) : (
             <div>
@@ -258,6 +281,7 @@ export function EventForm({
           {pending ? t("saving") : isEdit ? t("saveChanges") : t("create")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }

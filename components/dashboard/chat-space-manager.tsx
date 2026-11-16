@@ -12,6 +12,8 @@ import { Sheet } from "./sheet";
 import { Icon } from "./icons";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { Avatar, Pill, FormError } from "@/components/ui/misc";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 type ChatT = ReturnType<typeof useTranslations>;
 
@@ -80,6 +82,8 @@ export function ChatSpaceManager({
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const t = useTranslations("dashboard.chat");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const locale = useLocale();
 
   const statCards = [
@@ -186,9 +190,14 @@ export function ChatSpaceManager({
                 </div>
                 <form
                   action={deleteChatMessageAction}
-                  onSubmit={(e) => {
-                    if (!confirm(t("confirmDeleteMessage"))) e.preventDefault();
-                  }}
+                  onSubmit={(e) =>
+                    confirmSubmit(e, {
+                      title: t("confirmDeleteMessageTitle", { name: m.user.name }),
+                      body: t("confirmDeleteMessageBody"),
+                      confirmLabel: t("confirmDeleteMessageCta"),
+                      tone: "danger",
+                    })
+                  }
                 >
                   <input type="hidden" name="tenant" value={slug} />
                   <input type="hidden" name="spaceSlug" value={spaceSlug} />
@@ -220,6 +229,7 @@ export function ChatSpaceManager({
           onDone={() => setSettingsOpen(false)}
         />
       </Sheet>
+      {confirmDialog}
     </div>
   );
 }

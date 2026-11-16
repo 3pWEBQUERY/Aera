@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Cursussen hebben een cursus-space nodig, maar je {plan}-pakket staat maar {limit} actieve spaces toe en die zijn allemaal in gebruik. Archiveer een space of wissel van pakket, dan kun je de cursus aanmaken.",
+    "planAutoSpaceEvents": "Events hebben een event-space nodig, maar je {plan}-pakket staat maar {limit} actieve spaces toe en die zijn allemaal in gebruik. Archiveer een space of wissel van pakket, dan kun je het event aanmaken.",
+    "campaignNoSubscribers": "Nog niemand is geabonneerd op je nieuwsbrief. Je kunt versturen zodra er ontvangers zijn.",
+    "campaignSegmentEmpty": "Er zit nu niemand in dit segment. Kies een ander segment om te versturen.",
+    "campaignTestDeliveryFailed": "De e-maildienst heeft het bericht niet aangenomen ({detail}). Probeer het later opnieuw.",
+    "recoveryCodeInvalid": "Deze herstelcode klopt niet of is al gebruikt. Controleer de spelling of probeer een andere code.",
+    "secondFactorInvalid": "De code klopt niet. Vul de huidige code uit de app of een ongebruikte herstelcode in."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -502,14 +509,12 @@
     "changingPassword": "Wijzigen…",
     "twoFaActive": "Tweestapsverificatie is actief",
     "twoFaActiveDesc": "Bij het inloggen wordt naast je wachtwoord ook een code uit je authenticator-app gevraagd.",
-    "twoFaDisableLabel": "Om uit te schakelen: huidige code",
+    "twoFaDisableLabel": "Om uit te schakelen: code uit de app of herstelcode",
     "twoFaDisabling": "Uitschakelen…",
     "twoFaDisable": "2FA uitschakelen",
     "twoFaSetupIntro": "Scan de QR-code met je authenticator-app (Google Authenticator, 1Password, Authy …) en bevestig met de getoonde code.",
     "twoFaQrAlt": "QR-code voor de authenticator-app",
-    "twoFaNoScanner": "Geen QR-scanner? Voer het secret handmatig in:",
-    "twoFaHideSecret": "Secret verbergen",
-    "twoFaShowSecret": "Secret tonen",
+    "twoFaNoScanner": "Geen QR-scanner? Vul deze installatiesleutel in de app in:",
     "twoFaCodeFromApp": "Code uit de app",
     "twoFaChecking": "Controleren…",
     "twoFaActivate": "Activeren",
@@ -548,7 +553,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Sleutel kopiëren",
+    "twoFaKeyCopied": "Sleutel gekopieerd.",
+    "twoFaOpenInApp": "Openen in authenticator-app",
+    "secondFactorLabel": "Code uit de app of herstelcode",
+    "recoveryCodesTitle": "Herstelcodes",
+    "recoveryCodesIntro": "Met deze codes log je in als je geen toegang hebt tot je authenticator-app. Elke code werkt maar één keer. Bewaar ze nu, bijvoorbeeld in je wachtwoordmanager – ze worden alleen deze ene keer getoond.",
+    "recoveryCopy": "Codes kopiëren",
+    "recoveryCopied": "Codes gekopieerd.",
+    "recoveryDownload": "Downloaden als tekstbestand",
+    "recoverySaved": "Ik heb de codes bewaard",
+    "recoveryFileTitle": "Aera – herstelcodes voor {email}",
+    "recoveryFileHint": "Elke code werkt maar één keer. Nieuwe codes maak je in je account onder Instellingen > Tweestapsverificatie.",
+    "recoveryCodesLeft": "{count, plural, =0 {Geen codes meer over. Maak nieuwe aan, zodat je ook zonder app kunt inloggen.} one {Nog # van de 10 codes over.} other {Nog # van de 10 codes over.}}",
+    "recoveryRegenerate": "Nieuwe codes maken",
+    "recoveryRegenConfirmTitle": "Nieuwe herstelcodes maken?",
+    "recoveryRegenConfirmBody": "Je huidige codes werken daarna niet meer. Bewaar de nieuwe direct daarna.",
+    "recoveryUsedNotice": "{count, plural, =0 {Je bent ingelogd met je laatste herstelcode. Heb je de app nog, maak dan nu nieuwe codes. Zo niet, neem contact op via ‘Hulp bij inloggen’.} one {Je bent ingelogd met een herstelcode. Nog # code over. Geen toegang meer tot de app? Schakel 2FA hieronder uit met deze code en stel het opnieuw in.} other {Je bent ingelogd met een herstelcode. Nog # codes over. Geen toegang meer tot de app? Schakel 2FA hieronder uit met een andere code en stel het opnieuw in.}}",
+    "emailUnverified": "Niet bevestigd"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1331,7 +1354,6 @@
       "testSend": "Test naar mij sturen",
       "testSending": "Versturen…",
       "testSent": "Testmail verstuurd!",
-      "testFailed": "Test mislukt",
       "recipientsEstimate": "≈ {count} ontvangers",
       "formatText": "Tekst",
       "formatHtml": "HTML",
@@ -1345,7 +1367,25 @@
       "ruleTier": "Niveau: {name}",
       "ruleMinPoints": "{count}+ punten",
       "ruleActiveSince": "Lid sinds ≥ {days} dagen",
-      "ruleAll": "Alle leden"
+      "ruleAll": "Alle leden",
+      "confirmSendTitle": "‘{subject}’ nu naar {count, plural, one {# ontvanger} other {# ontvangers}} sturen?",
+      "confirmSendBody": "Het versturen begint direct en kan niet ongedaan worden gemaakt.",
+      "confirmSendScheduledTitle": "Gepland voor {date}. Toch nu versturen?",
+      "confirmSendScheduledBody": "‘{subject}’ gaat direct naar {count, plural, one {# ontvanger} other {# ontvangers}}. Dit kan niet ongedaan worden gemaakt.",
+      "confirmSendLabel": "Nu naar {count} sturen",
+      "sendQueued": "‘{subject}’ wordt verstuurd.",
+      "sendingNow": "Bezig met versturen…",
+      "noSubscribersHint": "Nog niemand is geabonneerd op je nieuwsbrief. Je kunt versturen zodra er ontvangers zijn.",
+      "segmentEmptyHint": "Er zit nu niemand in dit segment. Kies een ander segment om te versturen.",
+      "noRecipientsShort": "Geen ontvangers",
+      "sendNowEllipsis": "Nu versturen…",
+      "testFailedReason": "Test niet verstuurd: {reason}",
+      "testFailedUnknown": "Onbekende fout. Probeer het opnieuw.",
+      "schedulePastWarning": "Dit tijdstip ligt in het verleden. Bij opslaan blijft de campagne een concept.",
+      "confirmDeleteCampaignBody": "‘{subject}’ wordt verwijderd. Dit kan niet ongedaan worden gemaakt.",
+      "confirmDeleteSegmentBody": "Concepten en geplande campagnes met dit segment gaan daarna naar alle abonnees.",
+      "deleteSegmentConfirm": "Segment verwijderen",
+      "segmentNameLabel": "Naam van het segment"
     },
     "ads": {
       "badge": "Advertenties",
@@ -1503,19 +1543,20 @@
       "closeLesson": "Sluiten",
       "deleteLesson": "Verwijderen",
       "confirmDeleteLesson": "De les ‘{title}’ verwijderen?",
-      "lessonTitlePlaceholder": "Titel",
-      "videoUrlPlaceholder": "Video-URL (optioneel)",
-      "contentPlaceholder": "Inhoud",
-      "dripLabel": "Vrijgave: dagen na aanmelding (leeg/0 = direct)",
       "dripPlaceholder": "bijv. 7",
       "lessonSaving": "Opslaan…",
       "lessonSave": "Opslaan",
       "addLesson": "Les toevoegen",
-      "addLessonTitlePlaceholder": "Titel van de les",
-      "addContentPlaceholder": "Inhoud (optioneel)",
-      "addDripPlaceholder": "Vrijgave: dagen na aanmelding (leeg = direct)",
       "adding": "Toevoegen…",
-      "add": "Toevoegen"
+      "cannotUndo": "Dit kan niet ongedaan worden gemaakt.",
+      "deleteLessonConfirm": "Les verwijderen",
+      "createdAddLesson": "Cursus aangemaakt – voeg nu de eerste les toe.",
+      "lessonTitleLabel": "Titel van de les",
+      "lessonVideoLabel": "Video-URL (optioneel)",
+      "lessonContentLabel": "Inhoud (optioneel)",
+      "lessonDripLabel": "Ontgrendeling na aanmelding (dagen)",
+      "lessonDripHint": "Leeg of 0: direct beschikbaar.",
+      "addLessonBtn": "Les toevoegen"
     },
     "gallery": {
       "badge": "Galerij",
@@ -1774,7 +1815,9 @@
       "deleteEvent": "Evenement verwijderen",
       "cancel": "Annuleren",
       "saving": "Opslaan…",
-      "saveChanges": "Wijzigingen opslaan"
+      "saveChanges": "Wijzigingen opslaan",
+      "confirmDeleteBody": "Alle aanmeldingen gaan verloren. Dit kan niet ongedaan worden gemaakt.",
+      "meetingUrlMissing": "Zonder link kunnen leden niet deelnemen. Je kunt hem later toevoegen."
     },
     "settings": {
       "title": "Instellingen",
@@ -3832,6 +3875,10 @@
         "desc": "Deel je link of nodig mensen uit per e-mail.",
         "cta": "Leden uitnodigen"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "In jouw tijdzone: {zone} ({abbr})",
+      "pastWarning": "Deze datum ligt in het verleden."
     }
   },
   "common": {
@@ -3856,13 +3903,23 @@
     "totpHint": "Je account is beveiligd met tweefactorauthenticatie.",
     "legalAcceptance": "Ik accepteer de <terms>Algemene voorwaarden</terms> en bevestig dat ik de <privacy>Privacyverklaring</privacy> heb gelezen.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-cijferige code",
+    "codeFor": "Inloggen als <strong>{email}</strong>.",
+    "useOtherEmail": "Ander e-mailadres gebruiken",
+    "useRecoveryCode": "Geen toegang tot de app? Herstelcode gebruiken",
+    "useAppCode": "Code uit de app gebruiken",
+    "recoveryHeading": "Herstelcode invullen",
+    "recoveryLabel": "Herstelcode",
+    "recoveryHint": "Een van de codes die je bij het instellen van 2FA hebt bewaard. Elke code werkt maar één keer.",
+    "passwordTooShortField": "Je wachtwoord is te kort – minimaal {min} tekens."
   },
   "verifyBanner": {
-    "prompt": "Bevestig je e-mailadres <strong>{email}</strong>.",
+    "prompt": "Bevestig <strong>{email}</strong>, zodat nieuwsbrieven en mails van je community’s je bereiken.",
     "resend": "Link opnieuw versturen",
     "resending": "Versturen …",
-    "sent": "Een nieuwe bevestigingslink is verstuurd naar <strong>{email}</strong> — check je inbox."
+    "sent": "Een nieuwe bevestigingslink is verstuurd naar <strong>{email}</strong> — check je inbox.",
+    "sendLink": "Bevestigingslink sturen"
   },
   "community": {
     "join": "Word lid",
@@ -4635,7 +4692,9 @@
     "forgotSubmit": "Link aanvragen",
     "forgotSending": "Versturen…",
     "backTo": "Terug naar",
-    "backToLogin": "inloggen"
+    "backToLogin": "inloggen",
+    "resetDoneNotice": "Wachtwoord gewijzigd. Log nu in met je nieuwe wachtwoord.",
+    "loginHelp": "Hulp bij inloggen"
   },
   "pricing": {
     "eyebrow": "Prijzen",
@@ -4983,7 +5042,7 @@
       "resetTitle": "Stel een nieuw wachtwoord in",
       "forAccount": "Voor het account {email}",
       "verifyMeta": "E-mail bevestigen — Aera",
-      "verifyInvalidText": "Deze bevestigingslink is verlopen of ongeldig. Log in en vraag vanuit je account een nieuwe link aan.",
+      "verifyInvalidText": "Deze bevestigingslink is verlopen of al gebruikt. Vraag een nieuwe link aan.",
       "toLogin": "Naar het inloggen",
       "alreadyVerifiedTitle": "Al bevestigd",
       "verifiedTitle": "E-mail bevestigd",
@@ -5013,7 +5072,9 @@
       "forgotMeta": "Wachtwoord vergeten — Aera",
       "pricingMeta": "Prijzen",
       "featuresMeta": "Functies",
-      "manifestDescription": "Jouw communities: berichten, cursussen, evenementen en gesprekken — allemaal op één plek."
+      "manifestDescription": "Jouw communities: berichten, cursussen, evenementen en gesprekken — allemaal op één plek.",
+      "verifyInvalidVerified": "Deze link is niet meer geldig, maar je e-mailadres is al bevestigd.",
+      "loginForNewLink": "Inloggen om een nieuwe link te krijgen"
     },
     "emails": {
       "sentVia": "Verzonden via Aera",

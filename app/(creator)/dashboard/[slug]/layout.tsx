@@ -7,6 +7,7 @@ import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { MobileDashboardNav } from "@/components/dashboard/mobile-nav";
 import { TopHeader } from "@/components/dashboard/top-header";
+import { VerifyEmailBanner } from "@/components/verify-email-banner";
 import type { Metadata } from "next";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { getTenantPlan } from "@/lib/plan";
@@ -104,6 +105,7 @@ export default async function DashboardLayout({
 
       {/* Content column */}
       <div className="flex min-w-0 flex-1 flex-col">
+        {!user.emailVerifiedAt && <VerifyEmailBanner email={user.email} />}
         <TopHeader
           slug={tenant.slug}
           user={{ name: user.name, email: user.email, avatarUrl: user.avatarUrl }}

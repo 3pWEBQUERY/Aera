@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 export interface CommunityCardData {
   slug: string;
@@ -16,7 +16,6 @@ export interface CommunityCardData {
 /** Discover card: cover strip, floating logo, name, tagline, live stats. */
 export function CommunityCard({ community: c }: { community: CommunityCardData }) {
   const t = useTranslations("discover");
-  const nf = new Intl.NumberFormat(useLocale());
   return (
     <Link
       href={`/c/${c.slug}`}
@@ -76,7 +75,7 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
           {c.postCount > 0 && (
             <>
               <span className="mx-1.5" aria-hidden>·</span>
-              {nf.format(c.postCount)} {t("postsLabel")}
+              {t("postCount", { count: c.postCount })}
             </>
           )}
         </p>

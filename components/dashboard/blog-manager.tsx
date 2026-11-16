@@ -22,6 +22,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate } from "@/lib/utils";
 import { type BlogSettings } from "@/lib/space-settings";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface BlogAdminPost {
   id: string;
@@ -74,6 +75,7 @@ export function BlogManager({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [nonce, setNonce] = useState(0);
   const t = useTranslations("dashboard.blog");
+  const [confirm, confirmDialog] = useConfirm();
   const tLayout = useTranslations("dashboard.blog.layoutSummary");
   const tSort = useTranslations("dashboard.sortLabels");
   const locale = useLocale();
@@ -191,9 +193,17 @@ export function BlogManager({
                   <input type="hidden" name="spaceSlug" value={space.slug} />
                   <input type="hidden" name="postId" value={p.id} />
                   <button
-                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
-                    onClick={(e) => {
-                      if (!confirm(t("confirmDelete"))) e.preventDefault();
+                    type="button"
+                    className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50"
+                    onClick={async (e) => {
+                      const form = e.currentTarget.form;
+                      const ok = await confirm({
+                        title: t("confirmDeleteTitle", { title: p.title }),
+                        body: t("confirmDeleteBody"),
+                        confirmLabel: t("confirmDeleteCta"),
+                        tone: "danger",
+                      });
+                      if (ok) form?.requestSubmit();
                     }}
                   >
                     {t("delete")}
@@ -216,6 +226,7 @@ export function BlogManager({
       <Sheet open={settingsOpen} onClose={() => setSettingsOpen(false)} title={t("sheetSettings")} subtitle={space.name} icon="settings">
         <BlogSettingsForm slug={slug} space={space} settings={settings} onDone={() => setSettingsOpen(false)} />
       </Sheet>
+      {confirmDialog}
     </div>
   );
 }

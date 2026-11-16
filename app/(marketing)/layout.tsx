@@ -1,7 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth";
+import { resolveBlogLocale } from "@/lib/blog-query";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MarketingChrome } from "@/components/marketing/marketing-chrome";
 import logo from "@/public/logo.svg";
@@ -19,11 +20,15 @@ export default async function MarketingLayout({
 }) {
   const user = await getCurrentUser();
   const t = await getTranslations("marketing");
+  // Der Blog steht erst in der Navigation, wenn es einen veroeffentlichten
+  // Beitrag gibt (in der aktiven Sprache oder ihrer Fallback-Kette) — ein
+  // leerer Menuepunkt verspricht etwas, das es nicht gibt.
+  const showBlog = (await resolveBlogLocale(await getLocale())) !== null;
 
   return (
     <div className="min-h-screen bg-[#0f0f0d]">
       <MarketingChrome
-        header={<MarketingHeader loggedIn={Boolean(user)} />}
+        header={<MarketingHeader loggedIn={Boolean(user)} showBlog={showBlog} />}
         footer={
           <footer className="bg-[#0f0f0d] text-white">
             <div className="mx-auto max-w-7xl px-5 pt-16">
@@ -52,11 +57,16 @@ export default async function MarketingLayout({
                   <Link href="/home" className="transition-colors hover:text-white">
                     {t("footerDiscover")}
                   </Link>
-                  <Link href="/blog" className="transition-colors hover:text-white">
-                    {t("navBlog")}
-                  </Link>
+                  {showBlog && (
+                    <Link href="/blog" className="transition-colors hover:text-white">
+                      {t("navBlog")}
+                    </Link>
+                  )}
                   <Link href="/hilfe" className="transition-colors hover:text-white">
                     {t("footerHelpCenter")}
+                  </Link>
+                  <Link href="/hilfe/kontakt" className="transition-colors hover:text-white">
+                    {t("footerContact")}
                   </Link>
                 </div>
               </div>

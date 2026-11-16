@@ -5,8 +5,9 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
+import { SpacePaywall } from "@/components/community/space-paywall";
 import { canAccess } from "@/lib/entitlements";
-import { isPostLocked, postLockKind } from "@/lib/post-access";
+import { isPostLocked, postLockKind, unlockedPostWhere } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { MusicPlayer, type MusicTrack } from "@/components/community/music-player";
@@ -82,6 +83,7 @@ export default async function SpacePage({
   const tShop = await getTranslations("community.render.shop");
   const tSidebar = await getTranslations("community.render.sidebar");
   const tLegal = await getTranslations("legalPurchase");
+  const tPostTile = await getTranslations("community.render.postTile");
   const locale = await getLocale();
 
   const space = await prisma.space.findFirst({
@@ -93,6 +95,54 @@ export default async function SpacePage({
 
   const allowed = canAccess(space, ctx);
   const isMember = ctx.membership?.status === "ACTIVE";
+
+  if (!allowed && (space.visibility === "PAID" || space.requiredEntitlementKey)) {
+    // Bezahlter Space: Mitgliedschaft und Preis nennen statt "passender
+    // Mitgliedschaft". Mit eigenem Key genau dieser Tarif, sonst (jede
+    // bezahlte Mitgliedschaft) der guenstigste.
+    const tPaywall = await getTranslations("community.render.paywall");
+    const paidTiers = await prisma.membershipTier.findMany({
+      where: {
+        tenantId: tenant.id,
+        isPublic: true,
+        priceCents: { gt: 0 },
+        ...(space.requiredEntitlementKey ? { entitlementKey: space.requiredEntitlementKey } : {}),
+      },
+      orderBy: [{ priceCents: "asc" }, { sortOrder: "asc" }],
+      select: { id: true, name: true, priceCents: true, currency: true, interval: true },
+    });
+    const tier = paidTiers[0];
+    const price = tier ? formatPrice(tier.priceCents, tier.currency, locale) : "";
+    const priceLabel = !tier
+      ? ""
+      : tier.interval === "MONTH"
+        ? tPaywall("pricePerMonth", { price })
+        : tier.interval === "YEAR"
+          ? tPaywall("pricePerYear", { price })
+          : price;
+    return (
+      <SpacePaywall
+        variant="paid"
+        spaceName={space.name}
+        message={
+          !tier
+            ? t("lockedDescPaid")
+            : paidTiers.length > 1
+              ? tPaywall("anyPaidFrom", { space: space.name, tier: tier.name, price: priceLabel })
+              : tPaywall("belongsTo", { space: space.name, tier: tier.name, price: priceLabel })
+        }
+        detail={isMember && tier ? tPaywall("memberHint") : null}
+        cta={
+          tier
+            ? {
+                href: `/c/${slug}/join?tier=${tier.id}#tier-${tier.id}`,
+                label: tPaywall("viewTier", { tier: tier.name }),
+              }
+            : { href: `/c/${slug}/join`, label: isMember ? t("upgradeMembership") : tPaywall("becomeMember") }
+        }
+      />
+    );
+  }
 
   if (!allowed) {
     return (
@@ -207,11 +257,20 @@ export default async function SpacePage({
         tenantId: tenant.id,
         spaceId: space.id,
         isPublished: true,
+        // Scheduled posts stay hidden from the community until go-live.
+        ...(ctx.isStaff ? {} : { publishedAt: { lte: new Date() } }),
+        // Den Text nur durchsuchen, wo der Viewer ihn lesen darf — sonst
+        // bestaetigt die Trefferliste Woerter aus gesperrten Beitraegen.
         ...(forumQuery
           ? {
               OR: [
                 { title: { contains: forumQuery, mode: "insensitive" as const } },
-                { body: { contains: forumQuery, mode: "insensitive" as const } },
+                {
+                  AND: [
+                    { body: { contains: forumQuery, mode: "insensitive" as const } },
+                    unlockedPostWhere(ctx),
+                  ],
+                },
               ],
             }
           : {}),
@@ -347,10 +406,13 @@ export default async function SpacePage({
                   </div>
                   <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`}>
                     <h3 className="mt-1 font-semibold text-[#161613] hover:text-[color:var(--brand)]">
-                      {p.title || excerpt(p.body, 80)}
+                      {p.title ||
+                        (isPostLocked(p, ctx)
+                          ? tPostTile(p.priceCents > 0 ? "paidUntitled" : "lockedUntitled")
+                          : excerpt(p.body, 80))}
                     </h3>
                   </Link>
-                  {p.body && p.title && (
+                  {p.body && p.title && !isPostLocked(p, ctx) && (
                     <p className={cn("mt-0.5 text-sm text-[#161613]/60", !forumSettings.get(p.id)?.disableTruncation && "line-clamp-2")}>
                       {forumSettings.get(p.id)?.disableTruncation ? p.body : excerpt(p.body, 160)}
                     </p>
@@ -386,6 +448,7 @@ export default async function SpacePage({
           spaceId={space.id}
           isMember={isMember}
           query={forumQuery}
+          readableWhere={unlockedPostWhere(ctx)}
           hideSearch
         />
         </div>
@@ -489,7 +552,11 @@ export default async function SpacePage({
       const postLocked = kind !== "none";
       return {
         id: p.id,
-        title: p.title || excerpt(p.body, 60) || t("untitled"),
+        title:
+          p.title ||
+          (postLocked
+            ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+            : excerpt(p.body, 60) || t("untitled")),
         // Der Auszug geht nie mit — der Text ist der Gegenwert. Das Titelbild
         // dagegen bleibt bei "nur fuer Mitglieder" stehen: es ist die Werbung.
         // Beim Einzelverkauf gehoert es zum Gekauften, dort steht nur das
@@ -538,7 +605,13 @@ export default async function SpacePage({
           ? {
               OR: [
                 { title: { contains: feedQuery, mode: "insensitive" as const } },
-                { body: { contains: feedQuery, mode: "insensitive" as const } },
+                // Text nur dort durchsuchen, wo der Viewer ihn lesen darf.
+                {
+                  AND: [
+                    { body: { contains: feedQuery, mode: "insensitive" as const } },
+                    unlockedPostWhere(ctx),
+                  ],
+                },
               ],
             }
           : {}),
@@ -558,7 +631,9 @@ export default async function SpacePage({
       const locked = isPostLocked(p, ctx);
       return {
         id: p.id,
-        title: p.title,
+        title:
+          p.title ||
+          (locked ? tPostTile(p.priceCents > 0 ? "paidUntitled" : "lockedUntitled") : null),
         // Never leak gated body/media to non-buyers.
         body: locked ? "" : p.body,
         bodyHtml: locked ? null : p.bodyHtml,
@@ -579,7 +654,8 @@ export default async function SpacePage({
             ? p.teaserUrl
             : (p.imageUrls[0] ?? p.imageUrl)
           : null,
-        lockedExcerpt: locked ? excerpt(p.body, 180) : null,
+        // Kein Textauszug: ein kurzer Beitrag waere sonst ganz lesbar.
+        lockedExcerpt: null,
         priceCents: p.priceCents,
         currency: p.currency,
         teaserUrl: p.teaserUrl,
@@ -782,6 +858,7 @@ export default async function SpacePage({
           spaceId={space.id}
           isMember={isMember}
           query={feedQuery}
+          readableWhere={unlockedPostWhere(ctx)}
         />
       </div>
     );

@@ -149,7 +149,14 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Courses need a course space, but your {plan} package allows only {limit} active spaces and all are in use. Archive a space or change your package, then you can create the course.",
+    "planAutoSpaceEvents": "Events need an events space, but your {plan} package allows only {limit} active spaces and all are in use. Archive a space or change your package, then you can create the event.",
+    "campaignNoSubscribers": "Nobody has subscribed to your newsletter yet. You can send once there are recipients.",
+    "campaignSegmentEmpty": "This segment is empty right now. Choose another segment to send.",
+    "campaignTestDeliveryFailed": "The email service did not accept the message ({detail}). Try again later.",
+    "recoveryCodeInvalid": "This recovery code is wrong or has already been used. Check the spelling or try another code.",
+    "secondFactorInvalid": "That code doesn't match. Enter the current code from your app or an unused recovery code."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
@@ -527,14 +534,12 @@
     "changingPassword": "Changing…",
     "twoFaActive": "Two-factor authentication is active",
     "twoFaActiveDesc": "When signing in, a code from your authenticator app is required in addition to your password.",
-    "twoFaDisableLabel": "To disable: current code",
+    "twoFaDisableLabel": "To turn off: code from the app or recovery code",
     "twoFaDisabling": "Disabling…",
     "twoFaDisable": "Disable 2FA",
     "twoFaSetupIntro": "Scan the QR code with your authenticator app (Google Authenticator, 1Password, Authy …) and confirm with the code shown.",
     "twoFaQrAlt": "QR code for the authenticator app",
-    "twoFaNoScanner": "No QR scanner? Enter the secret manually:",
-    "twoFaHideSecret": "Hide secret",
-    "twoFaShowSecret": "Show secret",
+    "twoFaNoScanner": "No QR scanner? Enter this setup key in the app:",
     "twoFaCodeFromApp": "Code from the app",
     "twoFaChecking": "Checking…",
     "twoFaActivate": "Activate",
@@ -573,7 +578,25 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Copy key",
+    "twoFaKeyCopied": "Key copied.",
+    "twoFaOpenInApp": "Open in authenticator app",
+    "secondFactorLabel": "Code from the app or recovery code",
+    "recoveryCodesTitle": "Recovery codes",
+    "recoveryCodesIntro": "Use these codes to sign in if you can't access your authenticator app. Each code works only once. Save them now, for example in your password manager – they are shown only this one time.",
+    "recoveryCopy": "Copy codes",
+    "recoveryCopied": "Codes copied.",
+    "recoveryDownload": "Download as text file",
+    "recoverySaved": "I've saved the codes",
+    "recoveryFileTitle": "Aera – recovery codes for {email}",
+    "recoveryFileHint": "Each code works only once. You can create new codes in your account under Settings > Two-factor authentication.",
+    "recoveryCodesLeft": "{count, plural, =0 {No codes left. Create new ones so you can still sign in without the app.} one {# of 10 codes left.} other {# of 10 codes left.}}",
+    "recoveryRegenerate": "Create new codes",
+    "recoveryRegenConfirmTitle": "Create new recovery codes?",
+    "recoveryRegenConfirmBody": "Your current codes will stop working. Save the new ones right after.",
+    "recoveryUsedNotice": "{count, plural, =0 {You signed in with your last recovery code. If you still have the app, create new codes now. Otherwise contact us via “Help signing in”.} one {You signed in with a recovery code. # code left. Lost access to the app? Turn off 2FA below with this code and set it up again.} other {You signed in with a recovery code. # codes left. Lost access to the app? Turn off 2FA below with another code and set it up again.}}",
+    "emailUnverified": "Not confirmed"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -1356,7 +1379,6 @@
       "testSend": "Send test to me",
       "testSending": "Sending…",
       "testSent": "Test email sent!",
-      "testFailed": "Test failed",
       "recipientsEstimate": "≈ {count} recipients",
       "formatText": "Text",
       "formatHtml": "HTML",
@@ -1370,7 +1392,25 @@
       "ruleTier": "Tier: {name}",
       "ruleMinPoints": "{count}+ points",
       "ruleActiveSince": "Member for ≥ {days} days",
-      "ruleAll": "All members"
+      "ruleAll": "All members",
+      "confirmSendTitle": "Send “{subject}” to {count, plural, one {# recipient} other {# recipients}} now?",
+      "confirmSendBody": "Sending starts right away and can’t be undone.",
+      "confirmSendScheduledTitle": "Scheduled for {date}. Send now anyway?",
+      "confirmSendScheduledBody": "“{subject}” goes to {count, plural, one {# recipient} other {# recipients}} right away. This can’t be undone.",
+      "confirmSendLabel": "Send to {count} now",
+      "sendQueued": "“{subject}” is being sent.",
+      "sendingNow": "Sending …",
+      "noSubscribersHint": "Nobody has subscribed to your newsletter yet. You can send once there are recipients.",
+      "segmentEmptyHint": "This segment is empty right now. Choose another segment to send.",
+      "noRecipientsShort": "No recipients",
+      "sendNowEllipsis": "Send now…",
+      "testFailedReason": "Test not sent: {reason}",
+      "testFailedUnknown": "Unknown error. Please try again.",
+      "schedulePastWarning": "This time is in the past. When saved, the campaign stays a draft.",
+      "confirmDeleteCampaignBody": "“{subject}” will be deleted. This can’t be undone.",
+      "confirmDeleteSegmentBody": "Drafts and scheduled campaigns using this segment will then go to all subscribers.",
+      "deleteSegmentConfirm": "Delete segment",
+      "segmentNameLabel": "Segment name"
     },
     "ads": {
       "badge": "Ads",
@@ -1528,19 +1568,20 @@
       "closeLesson": "Close",
       "deleteLesson": "Delete",
       "confirmDeleteLesson": "Delete the lesson “{title}”?",
-      "lessonTitlePlaceholder": "Title",
-      "videoUrlPlaceholder": "Video URL (optional)",
-      "contentPlaceholder": "Content",
-      "dripLabel": "Unlock: days after joining (empty/0 = immediately)",
       "dripPlaceholder": "e.g. 7",
       "lessonSaving": "Saving…",
       "lessonSave": "Save",
       "addLesson": "Add lesson",
-      "addLessonTitlePlaceholder": "Lesson title",
-      "addContentPlaceholder": "Content (optional)",
-      "addDripPlaceholder": "Unlock: days after joining (empty = immediately)",
       "adding": "Adding…",
-      "add": "Add"
+      "cannotUndo": "This can’t be undone.",
+      "deleteLessonConfirm": "Delete lesson",
+      "createdAddLesson": "Course created – now add the first lesson.",
+      "lessonTitleLabel": "Lesson title",
+      "lessonVideoLabel": "Video URL (optional)",
+      "lessonContentLabel": "Content (optional)",
+      "lessonDripLabel": "Unlock after joining (days)",
+      "lessonDripHint": "Empty or 0: available right away.",
+      "addLessonBtn": "Add lesson"
     },
     "gallery": {
       "badge": "Gallery",
@@ -1972,7 +2013,9 @@
       "deleteEvent": "Delete event",
       "cancel": "Cancel",
       "saving": "Saving…",
-      "saveChanges": "Save changes"
+      "saveChanges": "Save changes",
+      "confirmDeleteBody": "All RSVPs will be lost. This can’t be undone.",
+      "meetingUrlMissing": "Without a link, members can’t join. You can add it later."
     },
     "settings": {
       "title": "Settings",
@@ -3857,6 +3900,10 @@
         "desc": "Share your link or invite people by email.",
         "cta": "Invite members"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "In your time zone: {zone} ({abbr})",
+      "pastWarning": "This date is in the past."
     }
   },
   "common": {
@@ -3881,7 +3928,16 @@
     "totpHint": "Your account is protected with two-factor authentication.",
     "legalAcceptance": "I accept the <terms>Terms and Conditions</terms> and acknowledge the <privacy>Privacy Notice</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-digit code",
+    "codeFor": "Signing in as <strong>{email}</strong>.",
+    "useOtherEmail": "Use a different email",
+    "useRecoveryCode": "No access to the app? Use a recovery code",
+    "useAppCode": "Use a code from the app",
+    "recoveryHeading": "Enter a recovery code",
+    "recoveryLabel": "Recovery code",
+    "recoveryHint": "One of the codes you saved when you set up 2FA. Each code works only once.",
+    "passwordTooShortField": "Your password is too short – at least {min} characters."
   },
   "unsubscribe": {
     "eyebrow": "Email preferences",
@@ -3894,10 +3950,11 @@
     "home": "Go to the Aera homepage"
   },
   "verifyBanner": {
-    "prompt": "Please confirm your email address <strong>{email}</strong>.",
+    "prompt": "Confirm <strong>{email}</strong> so newsletters and emails from your communities reach you.",
     "resend": "Resend link",
     "resending": "Sending …",
-    "sent": "A new confirmation link was sent to <strong>{email}</strong> — please check your inbox."
+    "sent": "A new confirmation link was sent to <strong>{email}</strong> — please check your inbox.",
+    "sendLink": "Send confirmation link"
   },
   "community": {
     "join": "Become a member",
@@ -4663,7 +4720,9 @@
     "forgotSubmit": "Request link",
     "forgotSending": "Sending…",
     "backTo": "Back to",
-    "backToLogin": "login"
+    "backToLogin": "login",
+    "resetDoneNotice": "Password changed. Sign in with your new password now.",
+    "loginHelp": "Help signing in"
   },
   "pricing": {
     "eyebrow": "Pricing",
@@ -4986,7 +5045,7 @@
       "resetTitle": "Set a new password",
       "forAccount": "For the account {email}",
       "verifyMeta": "Confirm email — Aera",
-      "verifyInvalidText": "This confirmation link has expired or is invalid. Log in and request a new link from your account.",
+      "verifyInvalidText": "This confirmation link has expired or was already used. Request a new link.",
       "toLogin": "Go to login",
       "alreadyVerifiedTitle": "Already confirmed",
       "verifiedTitle": "Email confirmed",
@@ -5016,7 +5075,9 @@
       "forgotMeta": "Forgot password — Aera",
       "pricingMeta": "Pricing",
       "featuresMeta": "Features",
-      "manifestDescription": "Your communities: posts, courses, events, and messages — all in one place."
+      "manifestDescription": "Your communities: posts, courses, events, and messages — all in one place.",
+      "verifyInvalidVerified": "This link is no longer valid, but your email address is already confirmed.",
+      "loginForNewLink": "Sign in to get a new link"
     },
     "emails": {
       "sentVia": "Sent via Aera",

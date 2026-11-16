@@ -24,6 +24,7 @@ export default async function LegalAcceptancePage({
   const t = await getTranslations("legalReview");
   return (
     <LegalShell
+      germanOnly={false}
       eyebrow={t("eyebrow")}
       title={t("title")}
       updated={

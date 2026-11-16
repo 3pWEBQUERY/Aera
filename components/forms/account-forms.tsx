@@ -13,10 +13,11 @@ import {
   type AccountState,
 } from "@/app/actions/account";
 import { LegalAcceptanceField } from "@/components/forms/auth-forms";
+import { submitWithoutReset } from "@/components/forms/submit-without-reset";
 
 const initial: AccountState = {};
 
-export function ForgotPasswordForm() {
+export function ForgotPasswordForm({ defaultEmail }: { defaultEmail?: string }) {
   const t = useTranslations("authPages");
   const tAuth = useTranslations("auth");
   const [state, action, pending] = useActionState(requestPasswordResetAction, initial);
@@ -30,11 +31,25 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <form action={action} aria-describedby={state.error ? "forgot-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action)}
+      aria-describedby={state.error ? "forgot-error" : undefined}
+      className="space-y-4"
+    >
       <FormError id="forgot-error" message={state.error} />
       <div>
         <Label htmlFor="fp-email">{tAuth("email")}</Label>
-        <Input id="fp-email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required autoFocus />
+        <Input
+          id="fp-email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          defaultValue={state.email ?? defaultEmail}
+          aria-invalid={state.error ? true : undefined}
+          required
+          autoFocus
+        />
       </div>
       <Button type="submit" variant="brand" size="lg" className="w-full" disabled={pending}>
         {pending ? t("forgotSending") : t("forgotSubmit")}
@@ -45,6 +60,7 @@ export function ForgotPasswordForm() {
 
 function PasswordFields({ invalid = false }: { invalid?: boolean }) {
   const t = useTranslations("ui.auth");
+  const tAccount = useTranslations("account");
   return (
     <>
       <div>
@@ -55,9 +71,13 @@ function PasswordFields({ invalid = false }: { invalid?: boolean }) {
           type="password"
           autoComplete="new-password"
           aria-invalid={invalid || undefined}
+          aria-describedby="np-password-hint"
           minLength={8}
           required
         />
+        <p id="np-password-hint" className="mt-1 text-xs text-slate-500">
+          {tAccount("passwordHint")}
+        </p>
       </div>
       <div>
         <Label htmlFor="np-confirm">{t("confirmPassword")}</Label>
@@ -79,7 +99,12 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const t = useTranslations("ui.auth");
   const [state, action, pending] = useActionState(resetPasswordAction, initial);
   return (
-    <form action={action} aria-describedby={state.error ? "reset-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action)}
+      aria-describedby={state.error ? "reset-error" : undefined}
+      className="space-y-4"
+    >
       <input type="hidden" name="token" value={token} />
       <FormError id="reset-error" message={state.error} />
       <PasswordFields invalid={Boolean(state.error)} />
@@ -103,7 +128,12 @@ export function AcceptInviteForm({
   const [state, action, pending] = useActionState(acceptInviteAction, initial);
   const [name, setName] = useState(defaultName);
   return (
-    <form action={action} aria-describedby={state.error ? "invite-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action)}
+      aria-describedby={state.error ? "invite-error" : undefined}
+      className="space-y-4"
+    >
       <input type="hidden" name="token" value={token} />
       {next && <input type="hidden" name="next" value={next} />}
       <FormError id="invite-error" message={state.error} />

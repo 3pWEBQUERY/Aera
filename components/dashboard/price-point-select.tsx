@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Select } from "@/components/ui/field";
 import {
   oneTimePriceOptions,
@@ -23,6 +23,13 @@ type PriceKind = "oneTime" | "subscription" | "tip";
  * nicht auf dem Preisraster liegt, wird als Option erhalten, damit das
  * Speichern eines unveränderten Formulars den Preis nicht still ändert. Die
  * Server-Validierung bleibt die endgültige Absicherung.
+ *
+ * Ohne `defaultCents`, aber mit `placeholder`, ist nichts vorausgewählt —
+ * auch „Kostenlos" nicht. Das Feld sendet dann einen leeren Wert, und das
+ * Formular muss die Auswahl selbst einfordern (Fehler am Feld).
+ *
+ * Alle Beträge sind in der Plattformwährung (`PLATFORM_CURRENCY`) — genau so
+ * speichert der Server sie auch.
  */
 export function PricePointSelect({
   name,
@@ -30,7 +37,9 @@ export function PricePointSelect({
   defaultCents,
   required,
   allowFree,
-  freeLabel = "Kostenlos",
+  freeLabel,
+  placeholder,
+  onChange,
   id,
   className,
 }: {
@@ -40,10 +49,15 @@ export function PricePointSelect({
   required?: boolean;
   allowFree?: boolean;
   freeLabel?: string;
+  /** Text bei fehlender Auswahl; zusammen ohne `defaultCents` = keine Vorauswahl. */
+  placeholder?: string;
+  /** Gewählter Betrag in Cents als String ("" = keine Auswahl). */
+  onChange?: (value: string) => void;
   id?: string;
   className?: string;
 }) {
   const locale = useLocale();
+  const t = useTranslations("ui.pricePoint");
   const base =
     kind === "subscription"
       ? subscriptionPriceOptions(locale, PLATFORM_CURRENCY)
@@ -53,7 +67,7 @@ export function PricePointSelect({
 
   const options: { cents: number; label: string }[] = [];
   if (allowFree || !required) {
-    options.push({ cents: 0, label: freeLabel });
+    options.push({ cents: 0, label: freeLabel ?? t("free") });
   }
   options.push(...base);
 
@@ -67,7 +81,8 @@ export function PricePointSelect({
     options.sort((a, b) => a.cents - b.cents);
   }
 
-  const defaultValue = defaultCents !== undefined ? String(defaultCents) : undefined;
+  const defaultValue =
+    defaultCents !== undefined ? String(defaultCents) : placeholder ? "" : undefined;
 
   return (
     <Select
@@ -75,6 +90,8 @@ export function PricePointSelect({
       name={name}
       defaultValue={defaultValue}
       required={required}
+      placeholder={placeholder}
+      onChange={onChange}
       className={className}
     >
       {options.map((o) => (

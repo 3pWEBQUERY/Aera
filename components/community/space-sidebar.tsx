@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
+import type { Prisma } from "@/app/generated/prisma/client";
 import { Icon } from "@/components/dashboard/icons";
 import { ButtonLink } from "@/components/ui/button";
 import { excerpt, formatPrice, timeAgo } from "@/lib/utils";
@@ -19,6 +20,7 @@ export async function SpaceSidebar({
   isMember,
   query,
   hideSearch,
+  readableWhere,
 }: {
   tenantId: string;
   tenantName: string;
@@ -28,10 +30,21 @@ export async function SpaceSidebar({
   isMember: boolean;
   query: string;
   hideSearch?: boolean;
+  /**
+   * Only posts this viewer may read (lib/post-access#unlockedPostWhere).
+   * Locked posts would otherwise leak title fallback and cover image.
+   */
+  readableWhere?: Prisma.PostWhereInput;
 }) {
   const [popularRaw, products, shopSpace] = await Promise.all([
     prisma.post.findMany({
-      where: { tenantId, spaceId, isPublished: true },
+      where: {
+        tenantId,
+        spaceId,
+        isPublished: true,
+        publishedAt: { lte: new Date() },
+        ...(readableWhere ?? {}),
+      },
       orderBy: { reactions: { _count: "desc" } },
       take: 5,
       include: { _count: { select: { reactions: true, comments: true } } },
@@ -55,6 +68,7 @@ export async function SpaceSidebar({
   ]);
   const popularPosts = popularRaw.filter((p) => p._count.reactions > 0);
   const t = await getTranslations("community.render.sidebar");
+  const tShop = await getTranslations("community.render.shop");
   const locale = await getLocale();
 
   return (
@@ -122,7 +136,7 @@ export async function SpaceSidebar({
                       {prod.name}
                     </span>
                     <span className="block text-sm font-semibold text-[#161613]/60">
-                      {formatPrice(prod.priceCents, prod.currency, locale)}
+                      {formatPrice(prod.priceCents, prod.currency, locale, tShop("free"))}
                     </span>
                   </span>
                 </Link>

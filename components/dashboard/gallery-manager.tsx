@@ -19,6 +19,7 @@ import { Pill, FormError } from "@/components/ui/misc";
 import { formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface GalleryItem {
   id: string;
@@ -170,6 +171,7 @@ function FolderCard({
   const videoCount = pkg.items.filter((i) => i.type === "VIDEO").length;
   const paid = pkg.priceCents > 0;
   const t = useTranslations("dashboard.gallery");
+  const [confirm, confirmDialog] = useConfirm();
   const locale = useLocale();
 
   return (
@@ -232,13 +234,22 @@ function FolderCard({
         <button
           aria-label={t("deletePackageAria")}
           className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/90 text-red-600 shadow hover:bg-white"
-          onClick={(e) => {
-            if (!confirm(t("confirmDeletePackage"))) e.preventDefault();
+          type="button"
+          onClick={async (e) => {
+            const form = e.currentTarget.form;
+            const ok = await confirm({
+              title: t("confirmDeletePackageTitle", { title: pkg.title }),
+              body: t("confirmDeletePackageBody"),
+              confirmLabel: t("confirmDeletePackageCta"),
+              tone: "danger",
+            });
+            if (ok) form?.requestSubmit();
           }}
         >
           <Icon name="close" size={15} />
         </button>
       </form>
+      {confirmDialog}
     </div>
   );
 }

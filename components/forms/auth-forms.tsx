@@ -1,10 +1,11 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Input, Label } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
+import { submitWithoutReset } from "@/components/forms/submit-without-reset";
 import {
   signupAction,
   loginAction,
@@ -64,54 +65,88 @@ export function LegalAcceptanceField({ id }: { id: string }) {
   );
 }
 
+const PASSWORD_MIN = 8;
+
+/**
+ * Neues Passwort mit sichtbarer Regel und eigenem Fehler am Feld statt der
+ * Browser-Blase (die käme in Browsersprache). `minLength` fehlt deshalb
+ * bewusst; geprüft wird beim Absenden (checkNewPassword) und am Server.
+ */
+function NewPasswordField({
+  id,
+  invalid,
+  tooShort,
+}: {
+  id: string;
+  invalid: boolean;
+  tooShort: boolean;
+}) {
+  const t = useTranslations("auth");
+  const tAccount = useTranslations("account");
+  const hintId = `${id}-hint`;
+  const errorId = `${id}-error`;
+  return (
+    <div>
+      <Label htmlFor={id}>{t("password")}</Label>
+      <Input
+        id={id}
+        name="password"
+        type="password"
+        autoComplete="new-password"
+        aria-invalid={invalid || tooShort || undefined}
+        aria-describedby={tooShort ? `${hintId} ${errorId}` : hintId}
+        required
+      />
+      <p id={hintId} className="mt-1 text-xs text-slate-500">
+        {tAccount("passwordHint")}
+      </p>
+      {tooShort && (
+        <p id={errorId} role="alert" className="mt-1 text-sm text-red-700">
+          {t("passwordTooShortField", { min: PASSWORD_MIN })}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Eigene Längenprüfung vor dem Absenden; fokussiert das Feld bei Fehler. */
+function checkNewPassword(form: HTMLFormElement, id: string, setTooShort: (v: boolean) => void) {
+  const field = form.querySelector<HTMLInputElement>(`#${id}`);
+  const short = Boolean(field && field.value.length > 0 && field.value.length < PASSWORD_MIN);
+  setTooShort(short);
+  if (short) field?.focus();
+  return !short;
+}
+
 export function SignupForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(signupAction, initial);
+  const [tooShort, setTooShort] = useState(false);
+  const invalid = Boolean(state.error);
   return (
-    <form action={action} aria-describedby={state.error ? "signup-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action, (form) => checkNewPassword(form, "password", setTooShort))}
+      aria-describedby={state.error ? "signup-error" : undefined}
+      className="space-y-4"
+    >
       {next && <input type="hidden" name="next" value={next} />}
       <FormError id="signup-error" message={state.error} />
       <div>
         <Label htmlFor="name">{t("name")}</Label>
-        <Input id="name" name="name" autoComplete="name" aria-invalid={state.error ? true : undefined} required />
+        <Input id="name" name="name" autoComplete="name" defaultValue={state.name} aria-invalid={invalid || undefined} required />
       </div>
       <div>
         <Label htmlFor="email">{t("email")}</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required />
+        <Input id="email" name="email" type="email" autoComplete="email" defaultValue={state.email} aria-invalid={invalid || undefined} required />
       </div>
-      <div>
-        <Label htmlFor="password">{t("password")}</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          aria-invalid={state.error ? true : undefined}
-          minLength={8}
-          required
-        />
-      </div>
+      <NewPasswordField id="password" invalid={invalid} tooShort={tooShort} />
       <LegalAcceptanceField id="signup-legal-acceptance" />
       <button type="submit" className={CTA_CLASS} disabled={pending}>
         {pending ? t("signingUp") : t("signup")}
       </button>
     </form>
   );
-}
-
-/**
- * Schickt ein Formular ab, ohne dass React es danach zurücksetzt. React 19
- * leert bei `<form action={fn}>` nach jeder Antwort alle Felder; hier bleiben
- * die Eingaben stehen (WCAG 3.3.7). `action={…}` bleibt zusätzlich gesetzt,
- * damit das Formular auch ohne JavaScript abschickbar ist.
- */
-export function submitWithoutReset(dispatch: (fd: FormData) => void) {
-  return (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const submitter = (event.nativeEvent as SubmitEvent).submitter;
-    const fd = new FormData(event.currentTarget, submitter ?? undefined);
-    startTransition(() => dispatch(fd));
-  };
 }
 
 type LoginStage = "credentials" | "code";
@@ -324,8 +359,14 @@ export function MemberSignupForm({
 }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(memberSignupAction, initialEngage);
+  const [tooShort, setTooShort] = useState(false);
   return (
-    <form action={action} aria-describedby={state.error ? "member-signup-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action, (form) => checkNewPassword(form, "ms-password", setTooShort))}
+      aria-describedby={state.error ? "member-signup-error" : undefined}
+      className="space-y-4"
+    >
       <input type="hidden" name="tenant" value={tenant} />
       {refCode && <input type="hidden" name="ref" value={refCode} />}
       <FormError id="member-signup-error" message={state.error} />
@@ -337,18 +378,7 @@ export function MemberSignupForm({
         <Label htmlFor="ms-email">{t("email")}</Label>
         <Input id="ms-email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required />
       </div>
-      <div>
-        <Label htmlFor="ms-password">{t("password")}</Label>
-        <Input
-          id="ms-password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          aria-invalid={state.error ? true : undefined}
-          minLength={8}
-          required
-        />
-      </div>
+      <NewPasswordField id="ms-password" invalid={Boolean(state.error)} tooShort={tooShort} />
       <LegalAcceptanceField id="member-signup-legal-acceptance" />
       <div className="border-t border-slate-200 pt-4">
         <label htmlFor="member-signup-newsletter" className="flex cursor-pointer items-start gap-3 text-sm text-slate-700">

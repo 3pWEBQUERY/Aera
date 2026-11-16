@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { Icon } from "./icons";
 
 export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
@@ -41,11 +41,10 @@ export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
         </div>
       </section>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={open}
         onClose={() => setOpen(false)}
         slug={slug}
-        focusPlans
       />
     </>
   );

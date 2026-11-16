@@ -22,6 +22,7 @@ export default async function SearchPage({
   const t = tenant.id;
   const tr = await getTranslations("dashboard.search");
   const tSpaceTypes = await getTranslations("dashboard.spaceTypes");
+  const tForms = await getTranslations("ui.forms");
   const locale = await getLocale();
 
   const contains = { contains: term, mode: "insensitive" as const };
@@ -135,7 +136,7 @@ export default async function SearchPage({
                     <CardBody className="flex items-center justify-between py-3">
                       <p className="font-medium text-slate-800">{p.name}</p>
                       <span className="text-sm font-semibold text-slate-700">
-                        {formatPrice(p.priceCents, PLATFORM_CURRENCY, locale)}
+                        {formatPrice(p.priceCents, PLATFORM_CURRENCY, locale, tForms("free"))}
                       </span>
                     </CardBody>
                   </Card>

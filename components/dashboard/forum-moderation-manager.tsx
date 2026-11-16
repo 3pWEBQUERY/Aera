@@ -17,7 +17,8 @@ import { Icon } from "./icons";
 import { PollEditor } from "./poll-editor";
 import { RichTextEditor } from "./rich-text-editor";
 import { CoverBanner } from "@/components/community/cover-banner";
-import { uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
 import { Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
@@ -103,6 +104,8 @@ export function ForumModerationManager({
   const [cover, setCover] = useState<CoverState>(DEFAULT_COVER);
   const [cropOpen, setCropOpen] = useState(false);
   const [coverBusy, setCoverBusy] = useState(false);
+  const [coverError, setCoverError] = useState<{ message: string; file: File } | null>(null);
+  const uploadErrorText = useUploadErrorText();
   const coverInput = useRef<HTMLInputElement>(null);
   const t = useTranslations("dashboard.forumMod");
 
@@ -136,12 +139,14 @@ export function ForumModerationManager({
 
   async function onCoverFile(file: File) {
     setCoverBusy(true);
+    setCoverError(null);
     try {
       const url = await uploadMediaFile({ file, tenant: slug, purpose: "blog-image" });
       setCover({ url, x: 50, y: 50, zoom: 100 });
       setCropOpen(true);
-    } catch {
-      // Upload failed — leave the composer as-is; the button re-enables.
+    } catch (uploadError) {
+      // Der Fehler steht oben im Sheet — die Upload-Anzeige zeigt nur Fortschritt.
+      setCoverError({ message: uploadErrorText(uploadError), file });
     } finally {
       setCoverBusy(false);
     }
@@ -237,6 +242,15 @@ export function ForumModerationManager({
           ) : null
         }
       >
+        {coverError && (
+          <div className="mx-auto w-full max-w-xl px-6 pt-4">
+            <UploadFieldError
+              message={coverError.message}
+              retrying={coverBusy}
+              onRetry={() => void onCoverFile(coverError.file)}
+            />
+          </div>
+        )}
         <ThreadForm
           key={nonce}
           slug={slug}

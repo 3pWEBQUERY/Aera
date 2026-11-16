@@ -208,6 +208,16 @@ function FeedCard({
           </p>
         )}
 
+        {/* Gesperrt kommt kein Text an — nur Platzhalterzeilen zeigen, dass
+            hier etwas steht. */}
+        {locked && !post.body && (
+          <div aria-hidden="true" className="mt-3 space-y-2.5">
+            <div className="h-3 w-full rounded-full bg-[#161613]/[0.08]" />
+            <div className="h-3 w-11/12 rounded-full bg-[#161613]/[0.08]" />
+            <div className="h-3 w-2/3 rounded-full bg-[#161613]/[0.08]" />
+          </div>
+        )}
+
         {locked && (
           <Link
             href={`/c/${slug}/join`}

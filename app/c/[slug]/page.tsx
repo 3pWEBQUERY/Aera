@@ -173,7 +173,13 @@ export default async function CommunityHome({
     const teaser = kind === "paid" ? p.teaserUrl : null;
     return {
       id: p.id,
-      title: p.title || excerpt(p.body, 80) || t("untitled"),
+      // Gesperrt ohne eigenen Titel: neutral benennen. Ein Auszug als Titel
+      // machte kurze Bezahlbeitraege komplett lesbar.
+      title:
+        p.title ||
+        (locked
+          ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+          : excerpt(p.body, 80) || t("untitled")),
       href: locked ? `/c/${slug}/join` : `/c/${slug}/s/${p.space.slug}/${p.id}`,
       imageUrl: kind === "paid" ? teaser : p.imageUrl,
       videoUrl: locked ? null : p.videoUrl,
@@ -744,10 +750,15 @@ export default async function CommunityHome({
             return {
               id: p.id,
               href: `/c/${slug}/s/${sp.slug}/${p.id}`,
-              title: p.title,
-              // Gesperrt geht nur ein Auszug ueber die Leitung — der Text ist
-              // der Gegenwert, verwischen allein waere kein Schutz.
-              body: isLocked ? excerpt(p.body, 180) : p.body,
+              title:
+                p.title ||
+                (isLocked
+                  ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+                  : null),
+              // Gesperrt geht kein Text ueber die Leitung — auch kein Auszug:
+              // Ein kurzer Beitrag waere sonst vollstaendig lesbar, und
+              // Verwischen ist kein Schutz (Screenreader, Quelltext).
+              body: isLocked ? "" : p.body,
               createdAt: p.createdAt.toISOString(),
               images: isLocked
                 ? kind === "paid"

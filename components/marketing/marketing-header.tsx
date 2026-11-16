@@ -16,7 +16,14 @@ const pillCta =
  * Marketing header: lies transparent on the dark hero and switches to a
  * solid, blurred bar once the page is scrolled.
  */
-export function MarketingHeader({ loggedIn }: { loggedIn: boolean }) {
+export function MarketingHeader({
+  loggedIn,
+  showBlog,
+}: {
+  loggedIn: boolean;
+  /** Blog link only while at least one post is published (see layout). */
+  showBlog: boolean;
+}) {
   const t = useTranslations("marketing");
   const [scrolled, setScrolled] = useState(false);
 
@@ -68,12 +75,14 @@ export function MarketingHeader({ loggedIn }: { loggedIn: boolean }) {
           >
             {t("navPricing")}
           </Link>
-          <Link
-            href="/blog"
-            className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white"
-          >
-            {t("navBlog")}
-          </Link>
+          {showBlog && (
+            <Link
+              href="/blog"
+              className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white"
+            >
+              {t("navBlog")}
+            </Link>
+          )}
           <Link
             href="/hilfe"
             className="rounded-full px-4 py-2 transition-colors hover:bg-white/10 hover:text-white"
@@ -83,7 +92,7 @@ export function MarketingHeader({ loggedIn }: { loggedIn: boolean }) {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <MarketingMobileNav loggedIn={loggedIn} />
+          <MarketingMobileNav loggedIn={loggedIn} showBlog={showBlog} />
           <LanguagePopover />
           {loggedIn ? (
             <Link href="/dashboard" className={pillCta}>

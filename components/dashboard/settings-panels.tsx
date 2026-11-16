@@ -16,6 +16,7 @@ import { CATEGORIES } from "@/lib/categories";
 import { contrastWithWhite, normalizeHexColor } from "@/lib/color";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 const initial: ActionState = {};
 
@@ -342,19 +343,26 @@ export function DomainPanel({
 
 export function DangerZone({ slug, name }: { slug: string; name: string }) {
   const router = useRouter();
-  const [confirm, setConfirm] = useState("");
+  const [confirmText, setConfirmText] = useState("");
+  const [confirm, confirmDialog] = useConfirm();
   const [busy, setBusy] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("dashboard.danger");
 
   async function onDelete() {
-    if (confirm !== slug) return;
-    if (!window.confirm(t("confirmDelete", { name }))) return;
+    if (confirmText !== slug) return;
+    const ok = await confirm({
+      title: t("confirmDelete", { name }),
+      body: t("deleteDesc"),
+      confirmLabel: t("confirmDeleteCta"),
+      tone: "danger",
+    });
+    if (!ok) return;
     setBusy(true);
     setDeleteError(undefined);
     const fd = new FormData();
     fd.set("tenant", slug);
-    fd.set("confirm", confirm);
+    fd.set("confirm", confirmText);
     const result = await deleteTenantAction(fd);
     if (result.error) {
       setDeleteError(result.error);
@@ -378,15 +386,16 @@ export function DangerZone({ slug, name }: { slug: string; name: string }) {
         </p>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-center">
         <Input
-          value={confirm}
-          onChange={(e) => setConfirm(e.target.value)}
+          value={confirmText}
+          onChange={(e) => setConfirmText(e.target.value)}
           placeholder={t("confirmPlaceholder", { slug })}
+          aria-label={t("confirmPlaceholder", { slug })}
           className="sm:max-w-xs"
         />
         <button
           type="button"
           onClick={onDelete}
-          disabled={confirm !== slug || busy}
+          disabled={confirmText !== slug || busy}
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-red-700 disabled:opacity-40"
         >
           <Icon name="archive" size={16} />
@@ -394,6 +403,7 @@ export function DangerZone({ slug, name }: { slug: string; name: string }) {
         </button>
         </div>
       </div>
+      {confirmDialog}
     </section>
   );
 }

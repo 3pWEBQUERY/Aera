@@ -35,6 +35,7 @@ import {
   campaignSchema,
 } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { z } from "zod";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { sendEmail, renderAccountActionHtml, renderCampaignHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
@@ -576,6 +577,120 @@ function productShippingData(fd: FormData, type: string) {
   };
 }
 
+const productCourseIdSchema = z.string().trim().min(1).max(64);
+
+/**
+ * Preis eines Produkts: digitale Typen wählen eine Preisstufe, und auch
+ * „Kostenlos" (0) muss bewusst gewählt sein — ein leeres Feld ist kein Preis.
+ */
+async function productPriceError(fd: FormData, type: string): Promise<string | null> {
+  if (type === "PHYSICAL") return null;
+  const raw = fd.get("priceCents");
+  return raw === null || String(raw).trim() === "" ? tErr("productPriceRequired") : null;
+}
+
+/**
+ * „Datei für Käufer" (nur DIGITAL, Pflicht): ein eigener Upload dieser
+ * Community (`/api/media/…`, nur für Käufer lesbar, siehe lib/media-access)
+ * oder ein http(s)-Link. Andere Typen haben keine Datei.
+ */
+async function productDownloadUrl(
+  tenantId: string,
+  fd: FormData,
+  type: string,
+): Promise<{ url: string | null } | { error: string }> {
+  if (type !== "DIGITAL") return { url: null };
+  const value = String(fd.get("downloadUrl") ?? "").trim();
+  if (!value) return { error: await tErr("productFileRequired") };
+  if (value.length > 2000) return { error: await tErr("productFileUrlInvalid") };
+  if (value.startsWith("/api/media/")) {
+    const own = await prisma.storageObject.findFirst({
+      where: { tenantId, url: value },
+      select: { id: true },
+    });
+    return own ? { url: value } : { error: await tErr("productFileRequired") };
+  }
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") return { url: value };
+  } catch {
+    // fällt unten durch
+  }
+  return { error: await tErr("productFileUrlInvalid") };
+}
+
+/**
+ * Was ein Kauf freischaltet (`grantsEntitlementKey`). Jeder Kaufpfad (Stripe-
+ * Webhook, kostenloser Kauf, Apple) vergibt genau diesen Schlüssel.
+ *
+ * - COURSE_ACCESS: der Schlüssel, den der gewählte Kurs verlangt. Hat der Kurs
+ *   noch keinen, bekommt er `course:<slug>` (`lockCourseId`) — danach ist er
+ *   nur noch für Käufer und das Team offen. Ein Kurs, der an eine
+ *   Mitgliedschaft gebunden ist (`tier:…`), wird nicht einzeln verkauft: der
+ *   Kauf teilte sich sonst die Berechtigung mit dem Abo, das beim Kündigen
+ *   wieder entzogen wird.
+ * - TIER_GRANT: aus demselben Grund nicht mehr anlegbar; bestehende Produkte
+ *   behalten beim Bearbeiten ihren Schlüssel.
+ * - sonst: `product:<slug>` (bestehende Schlüssel bleiben unverändert).
+ */
+async function productGrant(
+  tenantId: string,
+  fd: FormData,
+  type: string,
+  productSlug: string,
+  current?: { type: string; grantsEntitlementKey: string | null },
+): Promise<{ key: string | null; lockCourseId: string | null } | { error: string }> {
+  if (type === "COURSE_ACCESS") {
+    const parsedCourseId = productCourseIdSchema.safeParse(fd.get("courseId") ?? "");
+    if (!parsedCourseId.success) return { error: await tErr("productCourseRequired") };
+    const course = await prisma.course.findFirst({
+      where: { id: parsedCourseId.data, tenantId },
+      select: { id: true, slug: true, requiredEntitlementKey: true },
+    });
+    if (!course) return { error: await tErr("courseNotFound") };
+    if (course.requiredEntitlementKey && !course.requiredEntitlementKey.startsWith("course:")) {
+      return { error: await tErr("productCourseGated") };
+    }
+    return course.requiredEntitlementKey
+      ? { key: course.requiredEntitlementKey, lockCourseId: null }
+      : { key: `course:${course.slug}`, lockCourseId: course.id };
+  }
+  if (type === "TIER_GRANT") {
+    if (current?.type !== "TIER_GRANT") return { error: await tErr("productTypeUnavailable") };
+    return { key: current.grantsEntitlementKey, lockCourseId: null };
+  }
+  const keep = current?.grantsEntitlementKey;
+  if (current && (keep === null || keep?.startsWith("product:"))) {
+    return { key: keep, lockCourseId: null };
+  }
+  return { key: `product:${productSlug}`, lockCourseId: null };
+}
+
+/** Sperrt einen bisher offenen Kurs auf den Schlüssel seines Kurszugang-Produkts. */
+async function lockCourseForProduct(tenantId: string, courseId: string, key: string) {
+  await prisma.course.updateMany({
+    where: { id: courseId, tenantId, requiredEntitlementKey: null },
+    data: { requiredEntitlementKey: key },
+  });
+}
+
+/**
+ * Gegenstück zu lockCourseForProduct: verkauft kein anderes Produkt den
+ * Kursschlüssel mehr, ist der Kurs wieder für alle Mitglieder offen (sonst
+ * bliebe er gesperrt, ohne dass man ihn kaufen kann).
+ */
+async function releaseCourseLock(tenantId: string, key: string | null, productId: string) {
+  if (!key?.startsWith("course:")) return;
+  const otherSellers = await prisma.product.count({
+    where: { tenantId, grantsEntitlementKey: key, id: { not: productId } },
+  });
+  if (otherSellers > 0) return;
+  await prisma.course.updateMany({
+    where: { tenantId, requiredEntitlementKey: key },
+    data: { requiredEntitlementKey: null },
+  });
+}
+
 export async function createProductAction(
   _p: ActionState,
   fd: FormData,
@@ -585,17 +700,24 @@ export async function createProductAction(
   // Package gate — server actions stay reachable after a downgrade.
   const planBlocked = await featureBlocked(tenant.id, "products");
   if (planBlocked) return { error: planBlocked };
+  // downloadUrl is checked by productDownloadUrl (own uploads are relative).
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
     description: fd.get("description") ?? "",
     priceCents: fd.get("priceCents"),
     type: fd.get("type"),
-    downloadUrl: fd.get("downloadUrl") ?? "",
+    downloadUrl: "",
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const priceError = await productPriceError(fd, parsed.data.type);
+  if (priceError) return { error: priceError };
+  const download = await productDownloadUrl(tenant.id, fd, parsed.data.type);
+  if ("error" in download) return { error: download.error };
 
   const productSlug = await uniqueChildSlug("product", tenant.id, parsed.data.name);
+  const grant = await productGrant(tenant.id, fd, parsed.data.type, productSlug);
+  if ("error" in grant) return { error: grant.error };
   const images = productImages(fd);
   const product = await prisma.product.create({
     data: {
@@ -606,14 +728,17 @@ export async function createProductAction(
       priceCents: parsed.data.priceCents,
       currency: PLATFORM_CURRENCY,
       type: parsed.data.type,
-      downloadUrl: parsed.data.downloadUrl || null,
+      downloadUrl: download.url,
       images,
       coverUrl: images[0] ?? (String(fd.get("coverUrl") || "") || null),
       isPublished: fd.get("isPublished") !== "false",
-      grantsEntitlementKey: `product:${productSlug}`,
+      grantsEntitlementKey: grant.key,
       ...productShippingData(fd, parsed.data.type),
     },
   });
+  if (grant.lockCourseId && grant.key) {
+    await lockCourseForProduct(tenant.id, grant.lockCourseId, grant.key);
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "PRODUCT",
@@ -635,22 +760,37 @@ export async function updateProductAction(
   const planBlocked = await featureBlocked(tenant.id, "products");
   if (planBlocked) return { error: planBlocked };
   const productId = String(fd.get("productId"));
+  // downloadUrl is checked by productDownloadUrl (own uploads are relative).
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
     description: fd.get("description") ?? "",
     priceCents: fd.get("priceCents"),
     type: fd.get("type"),
-    downloadUrl: fd.get("downloadUrl") ?? "",
+    downloadUrl: "",
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const priceError = await productPriceError(fd, parsed.data.type);
+  if (priceError) return { error: priceError };
 
   const product = await prisma.product.findFirst({
     where: { id: productId, tenantId: tenant.id },
   });
   if (!product) return { error: await tErr("productNotFound") };
+  const download = await productDownloadUrl(tenant.id, fd, parsed.data.type);
+  if ("error" in download) return { error: download.error };
 
-  // Slug + grantsEntitlementKey stay stable so existing purchases keep access.
+  // Slug + grantsEntitlementKey stay stable so existing purchases keep access:
+  // once an order exists, what the product unlocks can no longer change.
+  const grant = await productGrant(tenant.id, fd, parsed.data.type, product.slug, product);
+  if ("error" in grant) return { error: grant.error };
+  const grantChanged = grant.key !== product.grantsEntitlementKey;
+  if (grantChanged) {
+    const orders = await prisma.order.count({
+      where: { tenantId: tenant.id, productId: product.id },
+    });
+    if (orders > 0) return { error: await tErr("productGrantLocked") };
+  }
   const imagesSubmitted = fd.get("imagesSubmitted") !== null;
   const cover = fd.get("coverUrl");
   const images = productImages(fd);
@@ -661,7 +801,8 @@ export async function updateProductAction(
       description: parsed.data.description || null,
       priceCents: parsed.data.priceCents,
       type: parsed.data.type,
-      downloadUrl: parsed.data.downloadUrl || null,
+      downloadUrl: download.url,
+      grantsEntitlementKey: grant.key,
       isPublished: fd.get("isPublished") !== "false",
       // The gallery field drives both the image list and the cover.
       ...(imagesSubmitted
@@ -672,6 +813,10 @@ export async function updateProductAction(
       ...productShippingData(fd, parsed.data.type),
     },
   });
+  if (grantChanged) await releaseCourseLock(tenant.id, product.grantsEntitlementKey, product.id);
+  if (grant.lockCourseId && grant.key) {
+    await lockCourseForProduct(tenant.id, grant.lockCourseId, grant.key);
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "PRODUCT",
@@ -722,6 +867,8 @@ export async function deleteProductAction(fd: FormData): Promise<ActionState> {
 
   await removeFromIndex(tenant.id, "PRODUCT", product.id);
   await prisma.product.delete({ where: { id: product.id } });
+  // No orders exist, so nobody bought the course through this product.
+  await releaseCourseLock(tenant.id, product.grantsEntitlementKey, product.id);
   await writeAudit({
     tenantId: tenant.id,
     action: "product.delete",
@@ -965,7 +1112,7 @@ async function noRecipientsError(
  * Kampagne niemanden erreicht.
  */
 async function queueCampaignSend(
-  tenant: { id: string; name: string; primaryColor: string | null },
+  tenant: { id: string; name: string; primaryColor: string },
   campaignId: string,
 ): Promise<ActionState> {
   const campaign = await prisma.newsletterCampaign.findFirst({

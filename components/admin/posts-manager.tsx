@@ -10,6 +10,8 @@ import {
 import { Icon } from "@/components/dashboard/icons";
 import { Pill, EmptyState } from "@/components/ui/misc";
 import { formatDateTime } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface PostRowData {
   id: string;
@@ -45,6 +47,8 @@ export function PostsManager({
 }) {
   const router = useRouter();
   const t = useTranslations("admin.posts");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const locale = useLocale();
   const nf = new Intl.NumberFormat(locale);
@@ -209,11 +213,14 @@ export function PostsManager({
                 </form>
                 <form
                   action={handleDelete}
-                  onSubmit={(e) => {
-                    if (!window.confirm(t("deleteConfirm"))) {
-                      e.preventDefault();
-                    }
-                  }}
+                  onSubmit={(e) =>
+                    confirmSubmit(e, {
+                      title: t("deleteConfirmTitle", { title: p.title }),
+                      body: t("deleteConfirmBody"),
+                      confirmLabel: t("deleteCta"),
+                      tone: "danger",
+                    })
+                  }
                 >
                   <input type="hidden" name="postId" value={p.id} />
                   <button
@@ -228,6 +235,7 @@ export function PostsManager({
           ))
         )}
       </div>
+      {confirmDialog}
     </div>
   );
 }

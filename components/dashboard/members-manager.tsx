@@ -22,6 +22,7 @@ import { AvatarUpload } from "./avatar-upload";
 import { Avatar, Pill, FormError } from "@/components/ui/misc";
 import { Input, Label, Select } from "@/components/ui/field";
 import { cn, formatDate } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface MemberRow {
   id: string;
@@ -666,6 +667,7 @@ function EditForm({
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("dashboard.members");
+  const [confirm, confirmDialog] = useConfirm();
   const tRoles = useTranslations("dashboard.roles");
   const tStatus = useTranslations("dashboard.memberStatus");
   useEffect(() => {
@@ -673,7 +675,13 @@ function EditForm({
   }, [state.ok, onDone]);
 
   async function onDelete() {
-    if (!confirm(t("confirmRemove", { name: member.user.name }))) return;
+    const ok = await confirm({
+      title: t("confirmRemoveTitle", { name: member.user.name }),
+      body: t("confirmRemoveBody"),
+      confirmLabel: t("confirmRemoveCta"),
+      tone: "danger",
+    });
+    if (!ok) return;
     setDeleting(true);
     setDeleteError(undefined);
     const fd = new FormData();
@@ -753,6 +761,7 @@ function EditForm({
           {pending ? t("saving") : t("saveChanges")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }

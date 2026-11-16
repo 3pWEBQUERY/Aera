@@ -34,7 +34,13 @@ export async function GET(req: Request) {
 
 // POST { slug, action: "buy" | "plan", packId?, plan? } → { url }
 export async function POST(req: Request) {
-  let body: { slug?: string; action?: string; packId?: string; plan?: string };
+  let body: {
+    slug?: string;
+    action?: string;
+    packId?: string;
+    plan?: string;
+    returnPath?: string;
+  };
   try {
     body = await req.json();
   } catch {
@@ -71,75 +77,95 @@ export async function POST(req: Request) {
     );
   }
 
-  const returnUrl = `${env.APP_URL}/dashboard/${encodeURIComponent(tenant.slug)}/assistant`;
+  // Back to where the checkout started (e.g. the spaces page) — but only to a
+  // page of this tenant's own dashboard, never to an arbitrary URL.
+  const dashboardBase = `/dashboard/${encodeURIComponent(tenant.slug)}`;
+  const requestedReturn = typeof body.returnPath === "string" ? body.returnPath : "";
+  const returnPath =
+    (requestedReturn === dashboardBase || requestedReturn.startsWith(`${dashboardBase}/`)) &&
+    /^[\w\-/]+$/.test(requestedReturn)
+      ? requestedReturn
+      : `${dashboardBase}/assistant`;
+  const returnUrl = `${env.APP_URL}${returnPath}`;
   let checkoutUrl: string | null = null;
 
-  if (action === "cancel_plan") {
-    const wallet = await getOrCreateWallet(tenant.id);
-    if (!wallet.stripeSubscriptionId) {
-      return NextResponse.json({ error: "no_active_creator_plan" }, { status: 409 });
+  // Stripe errors (missing/placeholder key locally, network, invalid price)
+  // used to escape as an HTTP 500 without a body the sheet could explain.
+  // They now end in a JSON error the UI shows next to the clicked button.
+  try {
+    if (action === "cancel_plan") {
+      const wallet = await getOrCreateWallet(tenant.id);
+      if (!wallet.stripeSubscriptionId) {
+        return NextResponse.json({ error: "no_active_creator_plan" }, { status: 409 });
+      }
+      const cancellation = await cancelMembershipStripeSubscription(wallet.stripeSubscriptionId);
+      if (cancellation.mode === "immediate") {
+        await endCreatorSubscription({
+          tenantId: tenant.id,
+          stripeSubscriptionId: wallet.stripeSubscriptionId,
+        });
+      } else {
+        await updateCreatorSubscription({
+          tenantId: tenant.id,
+          stripeSubscriptionId: wallet.stripeSubscriptionId,
+          status: wallet.creatorSubscriptionStatus ?? "ACTIVE",
+          cancelAtPeriodEnd: true,
+          currentPeriodEnd: cancellation.currentPeriodEnd,
+        });
+      }
+      const summary = await getCreditSummary(tenant.id);
+      return NextResponse.json({
+        summary: {
+          ...summary,
+          billingEnabled: features.creatorBilling,
+          cancellationEnabled: features.stripe,
+        },
+      });
     }
-    const cancellation = await cancelMembershipStripeSubscription(wallet.stripeSubscriptionId);
-    if (cancellation.mode === "immediate") {
-      await endCreatorSubscription({
-        tenantId: tenant.id,
-        stripeSubscriptionId: wallet.stripeSubscriptionId,
+
+    if (action === "buy") {
+      const pack = CREDIT_PACKS.find((entry) => entry.id === body.packId);
+      if (!pack) {
+        return NextResponse.json({ error: "unknown_pack" }, { status: 400 });
+      }
+      checkoutUrl = await createCreditPackCheckout({
+        tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
+        user: { id: user.id, email: user.email },
+        pack,
+        successUrl: `${returnUrl}?billing=success`,
+        cancelUrl: `${returnUrl}?billing=canceled`,
       });
     } else {
-      await updateCreatorSubscription({
-        tenantId: tenant.id,
-        stripeSubscriptionId: wallet.stripeSubscriptionId,
-        status: wallet.creatorSubscriptionStatus ?? "ACTIVE",
-        cancelAtPeriodEnd: true,
-        currentPeriodEnd: cancellation.currentPeriodEnd,
+      const planKey = String(body.plan ?? "") as CreatorPlan;
+      const plan = PLANS[planKey];
+      if (!plan || plan.priceCents <= 0) {
+        return NextResponse.json({ error: "unknown_or_free_plan" }, { status: 400 });
+      }
+      const wallet = await getOrCreateWallet(tenant.id);
+      if (wallet.stripeSubscriptionId) {
+        return NextResponse.json(
+          {
+            error: "existing_subscription",
+            message: "The current paid plan must be changed or canceled through its subscription.",
+          },
+          { status: 409 },
+        );
+      }
+      checkoutUrl = await startTrackedCreatorPlanCheckout({
+        tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
+        user: { id: user.id, email: user.email },
+        plan,
+        stripeCustomerId: wallet.stripeCustomerId,
+        successUrl: `${returnUrl}?billing=success`,
+        cancelUrl: `${returnUrl}?billing=canceled`,
       });
     }
-    const summary = await getCreditSummary(tenant.id);
-    return NextResponse.json({
-      summary: {
-        ...summary,
-        billingEnabled: features.creatorBilling,
-        cancellationEnabled: features.stripe,
-      },
-    });
-  }
-
-  if (action === "buy") {
-    const pack = CREDIT_PACKS.find((entry) => entry.id === body.packId);
-    if (!pack) {
-      return NextResponse.json({ error: "unknown_pack" }, { status: 400 });
-    }
-    checkoutUrl = await createCreditPackCheckout({
-      tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
-      user: { id: user.id, email: user.email },
-      pack,
-      successUrl: `${returnUrl}?billing=success`,
-      cancelUrl: `${returnUrl}?billing=canceled`,
-    });
-  } else {
-    const planKey = String(body.plan ?? "") as CreatorPlan;
-    const plan = PLANS[planKey];
-    if (!plan || plan.priceCents <= 0) {
-      return NextResponse.json({ error: "unknown_or_free_plan" }, { status: 400 });
-    }
-    const wallet = await getOrCreateWallet(tenant.id);
-    if (wallet.stripeSubscriptionId) {
-      return NextResponse.json(
-        {
-          error: "existing_subscription",
-          message: "The current paid plan must be changed or canceled through its subscription.",
-        },
-        { status: 409 },
-      );
-    }
-    checkoutUrl = await startTrackedCreatorPlanCheckout({
-      tenant: { id: tenant.id, name: tenant.name, slug: tenant.slug },
-      user: { id: user.id, email: user.email },
-      plan,
-      stripeCustomerId: wallet.stripeCustomerId,
-      successUrl: `${returnUrl}?billing=success`,
-      cancelUrl: `${returnUrl}?billing=canceled`,
-    });
+  } catch (error) {
+    console.error("[credits] billing action failed", { action, tenantId: tenant.id, error });
+    return NextResponse.json(
+      { error: action === "cancel_plan" ? "cancel_failed" : "checkout_failed" },
+      { status: 502 },
+    );
   }
 
   if (!checkoutUrl) {

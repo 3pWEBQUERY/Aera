@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { RedeemCodeSheet } from "./redeem-code-sheet";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import type { FeatureKey, PlanKey } from "@/lib/plan-features";
@@ -238,11 +238,10 @@ export function PlanGate({
         </div>
       </div>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={plansOpen}
         onClose={() => setPlansOpen(false)}
         slug={slug}
-        focusPlans
       />
       <RedeemCodeSheet open={codeOpen} onClose={() => setCodeOpen(false)} slug={slug} />
     </div>

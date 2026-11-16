@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
@@ -50,6 +51,12 @@ const BACKDROPS: Backdrop[] = [
     lqip: "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAwBACdASoYABAAPt1cpkyopSOiMAgBEBuJZgCdMoMYAEmgyWj77Jy0FAAA/vDV7FtOeAejSzrpU361tFb8MFOLcKYRGE/cU+asG0D7dAkWtEJGqJBNECctFlqWxaQY/6b8C7zYGRAAAA==",
   },
 ];
+
+/** Titel in der aktiven Sprache — sonst stuende der deutsche Plattform-Titel im Tab. */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("ui.frontend.notFound");
+  return { title: t("title"), description: t("text") };
+}
 
 export default async function NotFound() {
   await connection();
@@ -125,6 +132,12 @@ export default async function NotFound() {
               >
                 <path d="M5 12h14M13 6l6 6-6 6" />
               </svg>
+            </Link>
+            <Link
+              href="/hilfe"
+              className="ml-5 mt-9 inline-flex items-center rounded-full px-2 py-3.5 text-sm font-semibold text-white underline underline-offset-4 transition hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+            >
+              {t("help")}
             </Link>
           </div>
         </div>

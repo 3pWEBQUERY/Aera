@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
 
@@ -65,6 +66,7 @@ export function CreatorSlider({
   href?: string;
   items: SliderCreator[];
 }) {
+  const t = useTranslations("discover");
   const scroller = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
@@ -96,7 +98,7 @@ export function CreatorSlider({
       type="button"
       onClick={() => scrollBy(dir)}
       disabled={!enabled}
-      aria-label={dir === 1 ? "Weiter" : "Zurück"}
+      aria-label={dir === 1 ? t("next") : t("prev")}
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-full transition",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",

@@ -19,6 +19,8 @@ export interface AuthState {
   email?: string;
   /** Welches Feld der Fehler betrifft (für Fokus und aria-invalid). */
   errorField?: "credentials" | "code";
+  /** Signup: eingegebener Name, bleibt nach einem Fehler stehen. */
+  name?: string;
 }
 
 /**
@@ -34,9 +36,15 @@ export async function signupAction(
   formData: FormData,
 ): Promise<AuthState> {
   const t = await getErrorTranslator();
+  // Name und E-Mail kommen nach einem Fehler zurück (defaultValue), das
+  // Passwort nie.
+  const kept = {
+    name: String(formData.get("name") ?? "").slice(0, 80),
+    email: String(formData.get("email") ?? "").trim().slice(0, 254),
+  };
   const ip = await clientIp();
   if (!(await rateLimit(`signup:${ip}`, 5, 60 * 60 * 1000))) {
-    return { error: t("tooManySignups") };
+    return { error: t("tooManySignups"), ...kept };
   }
   const parsed = signupSchema.safeParse({
     name: formData.get("name"),
@@ -44,16 +52,16 @@ export async function signupAction(
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { error: zodError(t, parsed) };
+    return { error: zodError(t, parsed), ...kept };
   }
   if (formData.get("legalAcceptance") !== "on") {
-    return { error: t("termsRequired") };
+    return { error: t("termsRequired"), ...kept };
   }
   const result = await registerUser({
     ...parsed.data,
     legalAcceptanceSource: "WEB_SIGNUP",
   });
-  if (!result.ok) return { error: t(result.error) };
+  if (!result.ok) return { error: t(result.error), ...kept };
   await writeAudit({ actorUserId: result.user.id, action: "user.signup" });
   // New accounts are plain members by default — creators opt in via /start.
   redirect(safeNext(formData.get("next"), "/home"));
