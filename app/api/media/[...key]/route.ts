@@ -1,10 +1,25 @@
 import { NextResponse } from "next/server";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { setTenantContext, withTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
+import { mobileAuth } from "@/lib/mobile/api";
 import { buildAccessContext, canAccess } from "@/lib/entitlements";
+import {
+  findMediaReferences,
+  mayBeContentGated,
+  mediaReferencesAllow,
+  type MediaReference,
+} from "@/lib/media-access";
 import { getObject } from "@/lib/storage";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
-import type { Visibility } from "@/app/generated/prisma/client";
+import type { User, Visibility } from "@/app/generated/prisma/client";
+
+/** Web session cookie first; the mobile app authenticates with a bearer token. */
+async function resolveViewer(req: Request): Promise<User | null> {
+  const user = await getCurrentUser();
+  if (user || !req.headers.get("authorization")) return user;
+  const bearer = await mobileAuth(req);
+  return bearer && bearer.accountStatus === "ACTIVE" ? bearer : null;
+}
 
 export async function GET(
   req: Request,
@@ -20,16 +35,40 @@ export async function GET(
   if (!object) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const tenantActive = object.tenant.status === "ACTIVE";
+  const objectGate = {
+    visibility: object.visibility as Visibility,
+    requiredEntitlementKey: object.requiredEntitlementKey,
+  };
+  // The upload purpose fixes `visibility`, but the real gate belongs to the
+  // content that embeds the object (PPV post, paid package, course, …).
+  // Resolve those references so a shared link cannot bypass the paywall.
+  // Scoped tenant context: the viewer lookup below must still run without RLS.
+  const references: MediaReference[] =
+    tenantActive && mayBeContentGated(object.purpose)
+      ? await withTenantContext(object.tenantId, () =>
+          findMediaReferences(object.tenantId, key, object.url),
+        )
+      : [];
+  // Public = everyone may see it, even logged out. Only then may shared
+  // caches keep it; anything else is decided per viewer.
   const isPublic =
-    tenantActive && object.visibility === "PUBLIC" && !object.requiredEntitlementKey;
+    tenantActive &&
+    object.visibility === "PUBLIC" &&
+    !object.requiredEntitlementKey &&
+    (await mediaReferencesAllow(
+      object.tenantId,
+      references,
+      await buildAccessContext(object.tenantId, null),
+    ));
   // Resolve the global identity before activating tenant RLS. Otherwise a
   // platform admin who is not also a tenant member would disappear behind
   // the User membership policy and could not perform moderation.
-  const user = isPublic ? null : await getCurrentUser();
+  const user = isPublic ? null : await resolveViewer(req);
   setTenantContext(object.tenantId);
   if (!isPublic) {
     // Gated object: require an active membership (MEMBERS), a paid
-    // entitlement (PAID) or the specific entitlement key. Platform admins
+    // entitlement (PAID) or the specific entitlement key, and — when content
+    // references the object — the gate of that content. Platform admins
     // may always view media for moderation.
     const isPlatformAdmin = hasPlatformAdminAccess(user);
     if (!isPlatformAdmin) {
@@ -37,15 +76,14 @@ export async function GET(
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
       const ctx = await buildAccessContext(object.tenantId, user?.id ?? null);
-      const allowed = canAccess(
-        {
-          visibility: object.visibility as Visibility,
-          requiredEntitlementKey: object.requiredEntitlementKey,
-        },
-        ctx,
-      );
+      const allowed =
+        canAccess(objectGate, ctx) &&
+        (await mediaReferencesAllow(object.tenantId, references, ctx));
       if (!allowed) {
-        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        return NextResponse.json(
+          { error: "Forbidden" },
+          { status: 403, headers: { "Cache-Control": "private, no-store", Vary: "Cookie, Authorization" } },
+        );
       }
     }
   }
