@@ -83,6 +83,9 @@ export interface NotificationRow {
   readAt: Date | null;
   createdAt: Date;
   actor: { name: string; avatarUrl: string | null } | null;
+  /** Ziel der Benachrichtigung ("Post" | "Comment") — für Text und Kontext. */
+  refType: string | null;
+  refId: string | null;
 }
 
 export async function listNotifications(
@@ -104,6 +107,8 @@ export async function listNotifications(
     readAt: r.readAt,
     createdAt: r.createdAt,
     actor: r.actor,
+    refType: r.refType,
+    refId: r.refId,
   }));
 }
 

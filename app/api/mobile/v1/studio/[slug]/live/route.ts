@@ -33,7 +33,7 @@ export async function GET(
   const { slug } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant } = access;
+  const { tenant, user } = access;
 
   const spaces = await prisma.space.findMany({
     where: { tenantId: tenant.id, type: "LIVE", isArchived: false },
@@ -117,6 +117,7 @@ export async function POST(
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "live.create",
     targetType: "LiveSession",

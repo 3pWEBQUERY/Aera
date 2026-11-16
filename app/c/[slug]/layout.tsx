@@ -18,6 +18,9 @@ import { CommunityBanners } from "@/components/community/community-banners";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
 import { readPreviewOverride } from "@/lib/preview";
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { CommunityAccountMenu } from "@/components/community/account-menu";
+import { WelcomeBanner } from "@/components/community/welcome-banner";
 
 /** Space type → nav icon (matches the mobile SpaceNav mapping). */
 
@@ -132,7 +135,15 @@ export default async function CommunityLayout({
       ? [{ href: `/c/${slug}/library`, label: tn("library"), icon: "gallery" as const }]
       : []),
     { href: `/c/${slug}/members`, label: tn("members"), icon: "members" },
-    { href: `/c/${slug}/join`, label: tn("membership"), icon: "tiers" },
+    // Mitglieder verwalten ihre Mitgliedschaft im Konto; die Beitrittsseite
+    // ist für alle, die (noch) nicht dabei sind.
+    isMember
+      ? {
+          href: `/member/account?from=${encodeURIComponent(`/c/${slug}`)}`,
+          label: tn("accountAndMembership"),
+          icon: "account",
+        }
+      : { href: `/c/${slug}/join`, label: tn("membership"), icon: "tiers" },
   ];
 
   const spaceTypeBySlug = new Map(spaceRows.map((s) => [s.slug, s.type]));
@@ -157,6 +168,27 @@ export default async function CommunityLayout({
   ];
 
   const unreadCount = user ? await unreadNotificationCount(tenant.id, user.id) : 0;
+
+  // Willkommenshinweis nach dem Beitritt (?welcome=1, siehe WelcomeBanner):
+  // Name der bezahlten Mitgliedschaft und ein erster sinnvoller Schritt. Nur
+  // für frische Mitgliedschaften nachschlagen, nicht bei jedem Seitenaufruf.
+  const freshMembership =
+    !!ctx.membership?.tierId &&
+    Date.now() - ctx.membership.joinedAt.getTime() < 7 * 24 * 60 * 60 * 1000;
+  const welcomeTier = freshMembership
+    ? await prisma.membershipTier.findFirst({
+        where: { id: ctx.membership!.tierId!, tenantId: tenant.id },
+        select: { name: true, priceCents: true },
+      })
+    : null;
+  const tWelcome = await getTranslations("community.welcome");
+  const forumSpace = spaces.find((s) => s.type === "FORUM" && !s.locked);
+  const firstContent = spaces.find((s) => !s.locked && s.type !== "CHAT");
+  const welcomeStep = forumSpace
+    ? { href: `/c/${slug}/s/${forumSpace.slug}`, label: tWelcome("stepForum", { space: forumSpace.name }) }
+    : firstContent
+      ? { href: `/c/${slug}/s/${firstContent.slug}`, label: tWelcome("stepSpace", { space: firstContent.name }) }
+      : null;
   const t = await getTranslations("community");
 
   // Active announcement banners from all spaces, newest first.
@@ -255,6 +287,13 @@ export default async function CommunityLayout({
                   )}
                 </Link>
               )}
+              {user && (
+                <CommunityAccountMenu
+                  slug={slug}
+                  user={{ name: user.name, avatarUrl: user.avatarUrl }}
+                  isStaff={ctx.isStaff}
+                />
+              )}
               {!isMember && (
                 <ButtonLink
                   href={`/c/${slug}/join`}
@@ -268,6 +307,15 @@ export default async function CommunityLayout({
             </div>
           </div>
         </header>
+
+        <Suspense fallback={null}>
+          <WelcomeBanner
+            communityName={displayName}
+            isMember={isMember}
+            tierName={welcomeTier && welcomeTier.priceCents > 0 ? welcomeTier.name : null}
+            firstStep={welcomeStep}
+          />
+        </Suspense>
 
         {/* Pages control their own containers so the home hero can bleed
             edge-to-edge like the reference design. */}

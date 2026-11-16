@@ -22,6 +22,7 @@ import { env, features } from "@/lib/env";
 import { DataPrivacySettings } from "@/components/community/data-privacy-settings";
 import { setNewsletterConsentAction } from "@/app/actions/newsletter";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
+import { MembershipActions } from "@/components/community/membership-actions";
 
 export async function generateMetadata() {
   const t = await getTranslations("account");
@@ -71,9 +72,9 @@ function safeFrom(from?: string): string {
 export default async function MemberAccountPage({
   searchParams,
 }: {
-  searchParams: Promise<{ tab?: string; from?: string; recovery?: string }>;
+  searchParams: Promise<{ tab?: string; from?: string; recovery?: string; left?: string }>;
 }) {
-  const { tab, from, recovery } = await searchParams;
+  const { tab, from, recovery, left } = await searchParams;
   const user = await getCurrentUser();
   if (!user) redirect(`/login?next=${encodeURIComponent("/member/account")}`);
   const tLang = await getTranslations("language");
@@ -90,6 +91,22 @@ export default async function MemberAccountPage({
   const supportUnread = user ? await userUnreadCount(user.id) : 0;
   if (activeTab === "support" && user) await markReadForUser(user.id);
   const backHref = safeFrom(from);
+  // „Zurück zu {Community}“ statt eines namenlosen „Schließen“: das Ziel ist
+  // die Seite, von der man kam.
+  const backSlug = /^\/c\/([^/?#]+)/.exec(backHref)?.[1] ?? null;
+  const [backTenant, leftTenant] = await Promise.all([
+    backSlug
+      ? prisma.tenant.findUnique({ where: { slug: backSlug }, select: { name: true } })
+      : Promise.resolve(null),
+    left
+      ? prisma.tenant.findUnique({ where: { slug: left }, select: { name: true } })
+      : Promise.resolve(null),
+  ]);
+  const backLabel = backTenant
+    ? t("backTo", { name: backTenant.name })
+    : backHref === "/home"
+      ? t("backToDiscover")
+      : t("back");
   const withParams = (t?: string) =>
     `/member/account?${new URLSearchParams({
       ...(t ? { tab: t } : {}),
@@ -199,7 +216,8 @@ export default async function MemberAccountPage({
           <span className="display-serif text-2xl leading-none">{t("topbar")}</span>
           <Link
             href={backHref}
-            aria-label={t("closeAria")}
+            aria-label={backLabel}
+            title={backLabel}
             className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#161613]/15 text-[#161613]/70 transition hover:border-[#161613]/40 hover:text-[#161613]"
           >
             <Icon name="close" size={18} />
@@ -365,6 +383,14 @@ export default async function MemberAccountPage({
             {/* Mitgliedschaften */}
             <section className="mt-10">
               <SectionHead eyebrow={t("membershipsEyebrow")} title={t("membershipsTitle")} />
+              {leftTenant && !memberships.some((m) => m.tenant.slug === left) && (
+                <p
+                  role="status"
+                  className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+                >
+                  {t("leftNotice", { name: leftTenant.name })}
+                </p>
+              )}
               {memberships.length === 0 ? (
                 <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/65">
                   {t.rich("noMemberships", {
@@ -472,6 +498,14 @@ export default async function MemberAccountPage({
                           >
                             {t("switchTier")}
                           </Link>
+                          <MembershipActions
+                            slug={m.tenant.slug}
+                            communityName={m.tenant.name}
+                            role={m.role}
+                            isPaid={Boolean(m.tier && m.tier.priceCents > 0)}
+                            cancelAtPeriodEnd={Boolean(sub?.cancelAtPeriodEnd)}
+                            currentPeriodEnd={sub?.currentPeriodEnd ? sub.currentPeriodEnd.toISOString() : null}
+                          />
                         </div>
                       </div>
                     );

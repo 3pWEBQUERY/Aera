@@ -22,6 +22,7 @@ import { ArticleShare } from "@/components/community/article-share";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
+import { MembersOnlyGate } from "@/components/community/members-only-gate";
 import { excerpt, formatDate, formatPrice, timeAgo } from "@/lib/utils";
 
 export default async function PostDetail({
@@ -47,26 +48,8 @@ export default async function PostDetail({
   // A post is reachable by its id or its optional custom slug.
   const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
 
-  // Forenbeitraege koennen wie alle anderen gesperrt oder geplant sein. Ein
-  // gesperrter Beitrag bekommt unten dieselbe Sperrkarte wie jeder andere
-  // statt des Threads mit vollem Text und Kommentaren.
-  const forumGate =
-    space.type === "FORUM"
-      ? await prisma.post.findFirst({
-          where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
-          select: { isPublished: true, publishedAt: true, ...GATE_SELECT },
-        })
-      : null;
-  if (
-    forumGate &&
-    !ctx.isStaff &&
-    (!forumGate.isPublished || forumGate.publishedAt.getTime() > Date.now())
-  ) {
-    notFound();
-  }
-
   // ----- Reddit-style forum thread -----
-  if (space.type === "FORUM" && !(forumGate && isPostLocked(forumGate, ctx))) {
+  if (space.type === "FORUM") {
     const fpost = await prisma.post.findFirst({
       where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
       include: {
@@ -75,28 +58,32 @@ export default async function PostDetail({
       },
     });
     if (!fpost) notFound();
+    // Geplante oder zurückgezogene Beiträge sieht vor dem Termin nur das Team.
+    if (!isStaff && (!fpost.isPublished || fpost.publishedAt.getTime() > Date.now())) {
+      notFound();
+    }
+    if (isPostLocked(fpost, ctx)) {
+      return gatePage({ visibility: fpost.priceCents > 0 ? "PAID" : fpost.visibility });
+    }
     const fcomments = await prisma.comment.findMany({
       where: { tenantId: tenant.id, postId: fpost.id },
       orderBy: { createdAt: "asc" },
       include: { author: { select: { name: true, avatarUrl: true } } },
     });
     const cIds = fcomments.map((c) => c.id);
-    const [postGroups, postMine, cGroups, cMine, cLikeGroups, cLikeMine] = await Promise.all([
+    // Im Forum wird nur abgestimmt (Pfeile). Frühere Herz-Likes an Kommentaren
+    // bleiben in der Datenbank, werden hier aber nicht mehr angezeigt.
+    const [postGroups, postMine, cGroups, cMine] = await Promise.all([
       prisma.reaction.groupBy({ by: ["type"], where: { tenantId: tenant.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, _count: true }),
       user ? prisma.reaction.findFirst({ where: { tenantId: tenant.id, userId: user.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, select: { type: true } }) : Promise.resolve(null),
       cIds.length ? prisma.reaction.groupBy({ by: ["commentId", "type"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, _count: true }) : Promise.resolve([]),
       user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, select: { commentId: true, type: true } }) : Promise.resolve([]),
-      cIds.length ? prisma.reaction.groupBy({ by: ["commentId"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: "LIKE" }, _count: true }) : Promise.resolve([]),
-      user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: "LIKE" }, select: { commentId: true } }) : Promise.resolve([]),
     ]);
     const postScore = postGroups.reduce((s, g) => s + (g.type === "UP" ? 1 : -1) * (g._count as number), 0);
     const cScore: Record<string, number> = {};
     for (const g of cGroups) if (g.commentId) cScore[g.commentId] = (cScore[g.commentId] ?? 0) + (g.type === "UP" ? 1 : -1) * (g._count as number);
     const cMy: Record<string, "UP" | "DOWN"> = {};
     for (const v of cMine) if (v.commentId) cMy[v.commentId] = v.type as "UP" | "DOWN";
-    const cLikes = new Map<string, number>();
-    for (const g of cLikeGroups) if (g.commentId) cLikes.set(g.commentId, g._count as number);
-    const cLiked = new Set(cLikeMine.map((r) => r.commentId).filter((id): id is string => !!id));
 
     const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
     const settings = await readPostSettings(tenant.id, fpost.id);
@@ -105,7 +92,7 @@ export default async function PostDetail({
       <ForumThread
         slug={slug}
         spaceSlug={spaceSlug}
-        isMember={ctx.membership?.status === "ACTIVE"}
+        isMember={isMember}
         poll={poll}
         cover={{
           url: settings.coverUrl,
@@ -143,8 +130,6 @@ export default async function PostDetail({
           parentId: c.parentId,
           score: cScore[c.id] ?? 0,
           myVote: cMy[c.id] ?? null,
-          likes: cLikes.get(c.id) ?? 0,
-          likedByMe: cLiked.has(c.id),
         }))}
       />
     );
@@ -164,7 +149,6 @@ export default async function PostDetail({
   if (!post) notFound();
 
   // Scheduled / unpublished posts are only reachable by staff before go-live.
-  const isStaff = ctx.isStaff;
   if (!isStaff && (!post.isPublished || post.publishedAt.getTime() > Date.now())) {
     notFound();
   }
@@ -203,7 +187,6 @@ export default async function PostDetail({
   for (const g of likeGroups) if (g.commentId) likeCount.set(g.commentId, g._count as number);
   const likedByMe = new Set(myLikes.map((r) => r.commentId).filter(Boolean) as string[]);
 
-  const isMember = ctx.membership?.status === "ACTIVE";
   // Geschlossene Kommentare: kein Formular (der Server lehnt ohnehin ab).
   const canComment = isMember && !post.closeComments;
 
@@ -332,6 +315,7 @@ export default async function PostDetail({
 
     return (
       <article className="mx-auto max-w-3xl">
+        {notice}
         <div className="mb-6">
           <Link
             href={`/c/${slug}/s/${spaceSlug}`}
@@ -409,14 +393,14 @@ export default async function PostDetail({
                   <ImmediateAccessConsent className="mb-3" />
                   <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                     <Icon name="lock" size={16} />
-                    {post.priceCents / 100} {post.currency.toUpperCase()}
+                    {t("unlockFor", { price: formatPrice(post.priceCents, post.currency, locale) })}
                   </button>
                 </form>
               ) : (
                 /* Ohne Preis gibt es nichts zu kaufen — dieser Beitrag will eine
                    Mitgliedschaft. Ein Kauf-Button waere hier eine Sackgasse. */
                 <Link
-                  href={`/c/${slug}/join`}
+                  href={`/c/${slug}/join?next=${encodeURIComponent(selfHref)}`}
                   className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
                 >
                   <Icon name="members" size={16} />
@@ -566,10 +550,11 @@ export default async function PostDetail({
     >
       <Link
         href={`/c/${slug}/s/${spaceSlug}`}
-        className="text-sm text-[#161613]/60 hover:text-[#161613]"
+        className="text-sm text-[#161613]/70 hover:text-[#161613]"
       >
-        ← Zurück zu {space.name}
+        ← {t("backToSpace", { name: space.name })}
       </Link>
+      {notice}
       <PostCard post={card} slug={slug} space={spaceSlug} detail />
       {commentsBlock}
       {moreTiles.length > 0 && (

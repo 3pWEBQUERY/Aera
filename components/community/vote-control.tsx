@@ -3,7 +3,6 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { voteAction } from "@/app/actions/engage";
-import { Icon } from "@/components/dashboard/icons";
 import { cn } from "@/lib/utils";
 
 export function VoteControl({
@@ -54,38 +53,57 @@ export function VoteControl({
   }
 
   const vertical = layout === "vertical";
-  return (
-    <div className={cn("flex items-center", vertical ? "flex-col" : "gap-1.5")}>
+  // Zustand nie nur über Farbe: aktive Stimme = gefüllter Pfeil + aria-pressed,
+  // und der Name nennt den aktuellen Punktestand.
+  const btn = (dir: "UP" | "DOWN") => {
+    const active = vote === dir;
+    return (
       <button
         type="button"
-        onClick={() => cast("UP")}
-        aria-label={t("upvote")}
+        onClick={() => cast(dir)}
+        aria-pressed={active}
+        aria-label={t(dir === "UP" ? "upvoteAria" : "downvoteAria", { score: value })}
         className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-md transition hover:bg-[#161613]/5",
-          vote === "UP" ? "text-orange-600" : "text-[#161613]/65",
+          "flex h-8 w-8 items-center justify-center rounded-md transition hover:bg-[#161613]/5",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+          active
+            ? dir === "UP"
+              ? "text-orange-700"
+              : "text-blue-700"
+            : "text-[#161613]/65 hover:text-[#161613]",
         )}
       >
-        <Icon name="chevron" size={18} className="rotate-180" />
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          aria-hidden="true"
+          className={dir === "DOWN" ? "rotate-180" : undefined}
+        >
+          <path
+            d="M8 2.5 13.5 9H10.5v4.5h-5V9H2.5Z"
+            fill={active ? "currentColor" : "none"}
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinejoin="round"
+          />
+        </svg>
       </button>
+    );
+  };
+  return (
+    <div className={cn("flex items-center", vertical ? "flex-col" : "gap-1")}>
+      {btn("UP")}
       <span
+        aria-hidden="true"
         className={cn(
           "text-sm font-semibold tabular-nums",
-          vote === "UP" ? "text-orange-600" : vote === "DOWN" ? "text-blue-600" : "text-[#161613]/80",
+          vote === "UP" ? "text-orange-700" : vote === "DOWN" ? "text-blue-700" : "text-[#161613]/80",
         )}
       >
         {value}
       </span>
-      <button
-        type="button"
-        onClick={() => cast("DOWN")}
-        aria-label={t("downvote")}
-        className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-md transition hover:bg-[#161613]/5",
-          vote === "DOWN" ? "text-blue-600" : "text-[#161613]/65",
-        )}
-      >
-        <Icon name="chevron" size={18} />
-      </button>
+      {btn("DOWN")}
     </div>
   );
 }

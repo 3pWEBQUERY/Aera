@@ -19,7 +19,7 @@ import { cn, formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { useConfirm } from "@/components/ui/confirm-dialog";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 
 export interface ProductRowData {
   id: string;
@@ -667,6 +667,7 @@ function ProductFileField({
   error?: string;
 }) {
   const t = useTranslations("dashboard.products");
+  const uploadErrorText = useUploadErrorText();
   const fileRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -685,9 +686,7 @@ function ProductFileField({
       setFileName(file.name);
       onChange(url);
     } catch (err) {
-      setUploadError(
-        err instanceof UploadError && err.message ? err.message : t("fileUploadFailed"),
-      );
+      setUploadError(uploadErrorText(err));
     } finally {
       setUploading(false);
     }

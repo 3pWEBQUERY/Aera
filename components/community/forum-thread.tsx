@@ -5,7 +5,6 @@ import { useActionState, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { createCommentAction, type EngageState } from "@/app/actions/engage";
 import { VoteControl } from "./vote-control";
-import { CommentLikeButton } from "./comment-like";
 import { EmojiPicker } from "./emoji-picker";
 import { PollBlock, type PollViewData } from "./poll-block";
 import { CoverBanner } from "./cover-banner";
@@ -37,8 +36,6 @@ export interface ForumComment {
   parentId: string | null;
   score: number;
   myVote: "UP" | "DOWN" | null;
-  likes: number;
-  likedByMe: boolean;
 }
 interface Node extends ForumComment {
   children: Node[];
@@ -92,7 +89,7 @@ export function ForumThread({
   const tree = buildTree(comments);
   return (
     <div className="mx-auto max-w-2xl space-y-4">
-      <Link href={`/c/${slug}/s/${spaceSlug}`} className="text-sm text-[#161613]/60 hover:text-[#161613]">
+      <Link href={`/c/${slug}/s/${spaceSlug}`} className="text-sm text-[#161613]/70 hover:text-[#161613]">
         ← {t("backToForum")}
       </Link>
 
@@ -150,7 +147,7 @@ export function ForumThread({
             />
           )}
           {!settings?.hideComments && (
-            <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#161613]/60">
+            <p className="mt-3 inline-flex items-center gap-1.5 text-sm text-[#161613]/70">
               <Icon name="forum" size={16} /> {t("commentCount", { count: post.commentCount })}
             </p>
           )}
@@ -167,7 +164,7 @@ export function ForumThread({
             ) : isMember ? (
               <ReplyForm slug={slug} space={spaceSlug} postId={post.id} parentId="" cta={t("commentCta")} />
             ) : (
-              <p className="text-sm text-[#161613]/60">
+              <p className="text-sm text-[#161613]/70">
                 <Link href={`/login?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}/${post.id}`)}`} className="font-medium text-[color:var(--brand)] hover:underline">
                   {t("loginLink")}
                 </Link>{" "}
@@ -211,7 +208,8 @@ function CommentNode({
   const locale = useLocale();
   const [replyOpen, setReplyOpen] = useState(false);
   return (
-    <div>
+    // Anker für Links aus Benachrichtigungen (#comment-<id>).
+    <div id={`comment-${node.id}`} className="scroll-mt-24">
       <div className="flex gap-2.5">
         <Avatar name={node.authorName} src={node.authorAvatar} size={30} />
         <div className="min-w-0 flex-1">
@@ -220,17 +218,15 @@ function CommentNode({
           </p>
           <p className="mt-0.5 whitespace-pre-wrap text-sm text-[#161613]/80">{node.body}</p>
           <div className="mt-1 flex items-center gap-3">
+            {/* Im Forum gibt es nur ein Reaktionsmodell: Auf- und Abstimmen. */}
             <VoteControl tenant={slug} space={spaceSlug} targetType="comment" targetId={node.id} postId={postId} score={node.score} myVote={node.myVote} layout="horizontal" />
-            <CommentLikeButton
-              slug={slug}
-              space={spaceSlug}
-              commentId={node.id}
-              likes={node.likes}
-              liked={node.likedByMe}
-              label={node.likedByMe ? t("unlike") : t("like")}
-            />
             {isMember && (
-              <button onClick={() => setReplyOpen((v) => !v)} className="text-xs font-medium text-[#161613]/60 hover:text-[#161613]">
+              <button
+                type="button"
+                onClick={() => setReplyOpen((v) => !v)}
+                aria-expanded={replyOpen}
+                className="rounded text-xs font-medium text-[#161613]/70 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+              >
                 {t("replyCta")}
               </button>
             )}
@@ -284,7 +280,15 @@ function ReplyForm({
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="parentId" value={parentId} />
       <FormError message={state.error} />
-      <Textarea ref={boxRef} name="body" rows={2} required placeholder={t("yourCommentPlaceholder")} />
+      <Textarea
+        ref={boxRef}
+        name="body"
+        rows={2}
+        required
+        aria-label={parentId ? t("replyFieldLabel") : t("commentFieldLabel")}
+        aria-invalid={state.error ? true : undefined}
+        placeholder={t("yourCommentPlaceholder")}
+      />
       <div className="flex items-center justify-end gap-2">
         <EmojiPicker targetRef={boxRef} label={t("emojiLabel")} />
         <span className="flex-1" />

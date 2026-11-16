@@ -38,19 +38,19 @@
     "ownerCantCancel": "Som ägare kan du inte säga upp ditt eget medlemskap.",
     "noPaidMembership": "Du har inget betalt medlemskap.",
     "stripeCancelFailed": "Stripe-uppsägning misslyckades. Försök igen.",
-    "defaultTierCantDelete": "Standardnivån kan inte tas bort.",
-    "tierDeleteStripeBlocked": "Nivån kan tas bort först när Stripe har bekräftat att alla kopplade abonnemang har avslutats. Inga data togs bort.",
+    "defaultTierCantDelete": "Standardmedlemskapet kan inte tas bort. Gör först ett annat medlemskap till standard.",
+    "tierDeleteStripeBlocked": "Det här medlemskapet kan tas bort först när Stripe bekräftar att alla kopplade prenumerationer har avslutats. Inga data togs bort.",
     "memberRemoveStripeFailed": "Stripe-abonnemanget kunde inte avslutas säkert. Medlemmen och den lokala åtkomsten togs inte bort.",
     "tenantDeleteConfirmMismatch": "Det angivna community-slugget stämmer inte.",
     "tenantDeleteStripeSubscriptionsActive": "Communityn kan tas bort först när alla Stripe-abonnemang har avslutats. Inga data togs bort.",
     "tenantDeleteStripeCleanupFailed": "Rensningen av Stripe eller Connect misslyckades. Communityn och dess data togs inte bort.",
-    "paidTierArchivedInsteadOfDeleted": "Den betalda nivån doldes säkert i stället för att tas bort, så att öppna Stripe-betalningar fortfarande kan behandlas korrekt.",
+    "paidTierArchivedInsteadOfDeleted": "Det betalda medlemskapet doldes i stället för att tas bort, så att pågående betalningar fortfarande kan hanteras.",
     "pendingPaymentsBlockDeletion": "Borttagning är blockerad så länge väntande betalningar eller bokningar finns. Inga data togs bort.",
     "productArchivedBecauseOrdersExist": "Produkten doldes i stället för att tas bort eftersom beställningar hänvisar till den. Väntande betalningar kan fortfarande behandlas säkert.",
     "postNotFound": "Inlägg hittades inte.",
     "commentsClosed": "Kommentarerna är stängda.",
     "invalidCommentRef": "Ogiltig kommentarsreferens.",
-    "tierNotFound": "Nivå hittades inte.",
+    "tierNotFound": "Det här medlemskapet finns inte längre. Ladda om sidan.",
     "productNotFound": "Produkt hittades inte.",
     "courseNotFound": "Kurs hittades inte.",
     "lessonNotFound": "Lektion hittades inte.",
@@ -130,7 +130,7 @@
     "subTaken": "Den här subdomänen används redan.",
     "planSpaceTypeLocked": "Den här spacetypen är tillgänglig från paketet {plan}. Uppgradera för att skapa den.",
     "planSpaceLimitReached": "Ditt {plan}-paket tillåter {limit} aktiva spaces. Uppgradera för mer utrymme.",
-    "planTierLimitReached": "Ditt {plan}-paket tillåter {limit} medlemskapsnivåer. Uppgradera för att lägga till fler.",
+    "planTierLimitReached": "Ditt {plan}-paket tillåter {limit} medlemskap. Byt paket för att lägga till fler.",
     "planFeatureLocked": "Den här funktionen är tillgänglig från paketet {plan}. Uppgradera för att använda den.",
     "planMemberLimitReached": "Ditt {plan}-paket är byggt för {limit} aktiva medlemmar. Uppgradera för att fortsätta växa.",
     "planStaffLimitReached": "Ditt {plan}-paket tillåter {limit} teamplatser (admins/moderatorer). Uppgradera för fler.",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "Det finns ingen i det här segmentet just nu. Välj ett annat segment för att skicka.",
     "campaignTestDeliveryFailed": "E-posttjänsten tog inte emot meddelandet ({detail}). Försök igen senare.",
     "recoveryCodeInvalid": "Den här återställningskoden är fel eller har redan använts. Kontrollera stavningen eller prova en annan kod.",
-    "secondFactorInvalid": "Koden stämmer inte. Ange den aktuella koden från appen eller en oanvänd återställningskod."
+    "secondFactorInvalid": "Koden stämmer inte. Ange den aktuella koden från appen eller en oanvänd återställningskod.",
+    "productPriceRequired": "Välj ett pris eller ”Gratis”.",
+    "productFileRequired": "Ladda upp en fil till köpare eller klistra in en länk.",
+    "productFileUrlInvalid": "Länken till filen måste börja med https://.",
+    "productCourseRequired": "Välj kursen som köparna får.",
+    "productCourseGated": "Den här kursen hör till ett medlemskap och kan inte säljas separat.",
+    "productGrantLocked": "Efter den första försäljningen kan typ och kurs inte längre ändras, så att köpare behåller sin åtkomst.",
+    "productTypeUnavailable": "Den här produkttypen erbjuds inte längre. Välj en annan typ.",
+    "spaceAccessTierInvalid": "Det här medlemskapet finns inte eller är gratis. Välj ett betalt medlemskap i listan.",
+    "spaceTypeLockedContent": "Typen kan inte längre ändras: det här spacet har {count, plural, one {# innehåll} other {# innehåll}}. Skapa ett nytt space för en annan typ."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",
@@ -409,19 +418,19 @@
     "searchAria": "Sök i hjälpen",
     "searchSubmit": "Sök",
     "comingSoon": "Hjälpcentret håller på att byggas — kom tillbaka snart.",
-    "noResults": "Inga resultat för ”{query}”",
-    "resultsCount": "{count, plural, one {# resultat} other {# resultat}} för ”{query}”",
+    "noResults": "Inga artiklar om ”{query}”",
+    "resultsCount": "{count, plural, one {# artikel} other {# artiklar}} om ”{query}”",
     "resetSearch": "Återställ sökning",
     "articleCount": "{count, plural, one {# inlägg} other {# inlägg}}",
     "contactTitle": "Hittade du inte det du sökte?",
-    "contactText": "Kom bara igång — du hittar de flesta svaren direkt i din community eller i creator-panelen.",
-    "contactCta": "Kom igång gratis",
+    "contactText": "Skriv till oss – vi svarar via e-post eller i ditt konto.",
+    "contactCta": "Skriv ett meddelande",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "Namn (valfritt)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -435,7 +444,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Kom bara igång — du hittar de flesta svaren direkt i din community eller i creator-panelen.",
+    "startCta": "Kom igång gratis",
+    "startTitle": "Ingen community än?"
   },
   "account": {
     "metaTitle": "Konto",
@@ -636,7 +648,7 @@
       "noResultsHint": "Ingen community hittades för ”{q}”.",
       "emptyHint": "När creators skapar communities visas de här.",
       "membersShort": "{count} medl.",
-      "postsShort": "{count} inlägg",
+      "postsShort": "{count, plural, one {# inlägg} other {# inlägg}}",
       "since": "sedan {date}",
       "editTitle": "Redigera community",
       "owner": "Ägare: {name} ({email})",
@@ -664,7 +676,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "Alla medlemmar, rum, innehåll och beställningar i communityn tas bort."
     },
     "users": {
       "title": "Användare",
@@ -718,12 +731,12 @@
       "date": "Datum",
       "key": "Key",
       "openInNewTab": "Öppna i ny flik",
-      "deleteConfirm": "Vill du verkligen ta bort detta media?",
       "deleteBtn": "Ta bort media",
       "dangerDesc": "Tar bort filen från leverans. Innehåll som refererar till den visar inte längre mediet.",
       "visPublic": "Offentligt",
       "visMembers": "Medlemmar",
-      "visPaid": "Betalt"
+      "visPaid": "Betalt",
+      "deleteConfirmTitle": "Ta bort ”{name}”?"
     },
     "posts": {
       "title": "Inlägg",
@@ -741,7 +754,9 @@
       "unpublishedBadge": "Avpublicerad",
       "unpublish": "Avpublicera",
       "publish": "Publicera",
-      "deleteConfirm": "Vill du verkligen ta bort detta inlägg permanent?"
+      "deleteConfirmTitle": "Ta bort inlägget ”{title}”?",
+      "deleteConfirmBody": "Inlägget försvinner tillsammans med alla kommentarer. Det går inte att ångra.",
+      "deleteCta": "Ta bort inlägg"
     },
     "orders": {
       "title": "Beställningar",
@@ -767,12 +782,12 @@
       "fulfilled": "Uppfylld",
       "fulfilledHint": "Markerar beställningen som levererad eller slutförd.",
       "dangerDesc": "Tar bort beställningen permanent från databasen. Betalningar hos Stripe påverkas inte.",
-      "deleteConfirm": "Vill du verkligen ta bort denna beställning permanent?",
       "deleteBtn": "Ta bort beställning",
       "statusPending": "Väntande",
       "statusPaid": "Betald",
       "statusRefunded": "Återbetald",
-      "statusFailed": "Misslyckades"
+      "statusFailed": "Misslyckades",
+      "deleteConfirmTitle": "Ta bort beställningen ”{name}”?"
     },
     "help": {
       "title": "Hjälpcenter",
@@ -1033,7 +1048,6 @@
       "chatEmptyDesc": "Jag kan analysera din community, skriva texter och utföra åtgärder som att skapa spaces.",
       "imageEmptyTitle": "Generera bilder",
       "imageEmptyDesc": "Beskriv vad du vill se. Du kan även ladda upp bilder som mall — assistenten redigerar dem eller inspireras av dem.",
-      "geminiOff": "Google Gemini är inte aktivt — ange en GEMINI_API_KEY under Inställningar → Integrationer.",
       "chatPlaceholder": "Meddelande till assistenten…",
       "sendAria": "Skicka",
       "chatHint": "Enter för att skicka · Shift+Enter för ny rad. Åtgärder påverkar din community direkt.",
@@ -1107,7 +1121,9 @@
           "title": "Maskot",
           "prompt": "En vänlig, illustrativ maskotavatar för min community, runda former, starka färger."
         }
-      }
+      },
+      "geminiOffCreator": "AI-assistenten är inte konfigurerad på den här plattformen än.",
+      "geminiOffAdmin": "Google Gemini är inte aktivt. Ange GEMINI_API_KEY i servermiljön och starta om appen. Bara plattformsadministratörer ser det här meddelandet."
     },
     "announcements": {
       "statusDraft": "Utkast",
@@ -1155,7 +1171,9 @@
       "cancel": "Avbryt",
       "saving": "Sparar…",
       "saveChanges": "Spara ändringar",
-      "createBtn": "Skapa annons"
+      "createBtn": "Skapa annons",
+      "confirmDeleteBody": "Bannern försvinner direkt från alla sidor i communityn.",
+      "confirmDeleteCta": "Ta bort meddelande"
     },
     "spaceContent": {
       "view": "Visa",
@@ -1225,9 +1243,9 @@
         "EVENTS": "Evenemang",
         "NEWSLETTER": "Nyhetsbrev"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Pris för enskilt köp",
+      "ppvPriceHint": "Den som inte köper ser bara förhandsbild, förhandstitel och pris.",
+      "ppvTeaserLabel": "Förhandsbild (suddig för icke-köpare)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Bild och video",
@@ -1247,7 +1265,16 @@
       "removeTrackAria": "Ta bort låt",
       "trackUploading": "Laddar upp {count} … {percent}%",
       "deleteQuestion": "Radera inlägget permanent?",
-      "deleteConfirm": "Radera inlägg"
+      "deleteConfirm": "Radera inlägg",
+      "mediaFailedOne": "”{name}” laddades inte upp. {reason}",
+      "mediaFailedMany": "{count, plural, one {# fil laddades} other {# filer laddades}} inte upp. {reason}",
+      "pickFromLibrary": "Välj från mediebiblioteket",
+      "pickFromLibraryHint": "Välj en bild som redan finns i ditt mediebibliotek",
+      "previewTitleLabel": "Förhandstitel (synlig för alla)",
+      "previewTitleHint": "Valfritt. Visas ovanför inlägget, även för dem som inte har tillgång till det.",
+      "accessSingle": "Enskilt köp",
+      "accessSingleHint": "Säljs separat. Ett medlemskap låser inte upp inlägget.",
+      "bannersElsewhere": "Annonsbanners för hela communityn hanterar du i rummet <link>”{name}”</link>."
     },
     "chat": {
       "badge": "Chatt",
@@ -1262,7 +1289,6 @@
       "messagesHeading": "Meddelanden",
       "messagesDesc": "De senaste meddelandena. Du kan ta bort olämpliga inlägg.",
       "emptyMessages": "Inga meddelanden i den här chatten än.",
-      "confirmDeleteMessage": "Ta bort det här meddelandet?",
       "deleteMessageAria": "Ta bort meddelande",
       "relNone": "—",
       "relNow": "just nu",
@@ -1297,7 +1323,10 @@
       "historyMessages": "{count} meddelanden",
       "cancel": "Avbryt",
       "saving": "Sparar…",
-      "saveSettings": "Spara inställningar"
+      "saveSettings": "Spara inställningar",
+      "confirmDeleteMessageTitle": "Ta bort meddelandet från {name}?",
+      "confirmDeleteMessageBody": "Meddelandet försvinner ur chatten för alla.",
+      "confirmDeleteMessageCta": "Ta bort meddelande"
     },
     "newsletter": {
       "title": "Nyhetsbrev",
@@ -1573,7 +1602,6 @@
       "video": "Video",
       "mediaCount": "{count, plural, one {# objekt} other {# objekt}}",
       "deletePackageAria": "Ta bort paket",
-      "confirmDeletePackage": "Ta bort det här mediepaketet?",
       "removeAria": "Ta bort",
       "contentCount": "Innehåll ({count})",
       "titleLabel": "Titel",
@@ -1594,7 +1622,10 @@
       "saveChanges": "Spara ändringar",
       "createPackageCta": "Skapa paket",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "Ta bort mediepaketet ”{title}”?",
+      "confirmDeletePackageBody": "Alla bilder och videor i paketet tas också bort. Det går inte att ångra.",
+      "confirmDeletePackageCta": "Ta bort paket"
     },
     "sortLabels": {
       "NEWEST": "Nyaste först",
@@ -1614,7 +1645,6 @@
       "emptyHint": "Skriv din första bloggartikel med redigeraren.",
       "edit": "Redigera",
       "delete": "Ta bort",
-      "confirmDelete": "Ta bort det här inlägget?",
       "sheetWrite": "Skriv inlägg",
       "sheetEdit": "Redigera inlägg",
       "sheetSettings": "Blogginställningar",
@@ -1677,7 +1707,10 @@
       "pollAddOption": "Lägg till svar",
       "pollMultipleLabel": "Tillåt flera val",
       "statusDraft": "Inte publicerat",
-      "statusScheduled": "Planerat till {date}"
+      "statusScheduled": "Planerat till {date}",
+      "confirmDeleteTitle": "Ta bort inlägget ”{title}”?",
+      "confirmDeleteBody": "Inlägget försvinner tillsammans med alla kommentarer. Det går inte att ångra.",
+      "confirmDeleteCta": "Ta bort inlägg"
     },
     "knowledge": {
       "badge": "Kunskap",
@@ -1691,7 +1724,6 @@
       "emptyHint": "Skriv din första kunskapsartikel.",
       "edit": "Redigera",
       "delete": "Ta bort",
-      "confirmDelete": "Ta bort den här artikeln?",
       "sheetWrite": "Skriv artikel",
       "sheetEdit": "Redigera artikel",
       "sheetSettings": "Visningsinställningar",
@@ -1721,7 +1753,10 @@
       "showDatesHint": "Publiceringsdatum per artikel",
       "saveSettings": "Spara inställningar",
       "cancel": "Avbryt",
-      "saving": "Sparar…"
+      "saving": "Sparar…",
+      "confirmDeleteTitle": "Ta bort artikeln ”{title}”?",
+      "confirmDeleteBody": "Artikeln försvinner från kunskapsbasen. Det går inte att ångra.",
+      "confirmDeleteCta": "Ta bort artikel"
     },
     "rte": {
       "poll": "Omröstning",
@@ -1962,7 +1997,8 @@
       "deleteDesc": "Tar oåterkalleligt bort alla medlemmar, spaces, innehåll och beställningar.",
       "confirmDelete": "Ta bort ”{name}” och allt innehåll permanent?",
       "confirmPlaceholder": "Skriv ”{slug}” för att bekräfta",
-      "deleting": "Tar bort…"
+      "deleting": "Tar bort…",
+      "confirmDeleteCta": "Ta bort communityn permanent"
     },
     "developers": {
       "metaTitle": "Utvecklare & API",
@@ -2506,7 +2542,11 @@
       "colSent": "Skickat",
       "colRecipients": "Mottagare",
       "colOpens": "Öppningar",
-      "colClicks": "Klick"
+      "colClicks": "Klick",
+      "growthSummary": "{total, plural, one {# ny medlem} other {# nya medlemmar}} de senaste 6 månaderna, varav {current, number} den här månaden.",
+      "growthEmpty": "Ingen har gått med de senaste 6 månaderna. Nya medlemmar visas här per månad.",
+      "colMonth": "Månad",
+      "colNewMembers": "Nya medlemmar"
     },
     "gamification": {
       "title": "Gamification",
@@ -2523,8 +2563,6 @@
       "rule": "Regel",
       "maxPerDay": "max {count}/dag",
       "pts": "p",
-      "savePointsAria": "Spara poäng",
-      "deleteRuleAria": "Ta bort regel",
       "confirmDeleteRule": "Ta bort regeln ”{name}”?",
       "rulesEmptyTitle": "Inga regler ännu",
       "rulesEmptyHint": "Lägg till en poängregel för en åtgärd.",
@@ -2604,7 +2642,14 @@
       "iconLabel": "Symbol",
       "manualHint": "Märken med villkoret ”för hand” tilldelar du själv —",
       "manualBadge": "För hand",
-      "manualHintLink": "i medlemslistan."
+      "manualHintLink": "i medlemslistan.",
+      "pointsForRuleAria": "Poäng för {name}",
+      "savePointsForRuleAria": "Spara poäng för {name}",
+      "deleteRuleForAria": "Ta bort regeln ”{name}”",
+      "confirmDeleteRuleBody": "Den här handlingen ger inte längre poäng.",
+      "confirmDeleteRuleCta": "Ta bort regel",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {Märket har inte delats ut än.} one {# medlem förlorar märket.} other {# medlemmar förlorar märket.}}",
+      "confirmDeleteBadgeCta": "Ta bort märke"
     },
     "referrals": {
       "metaTitle": "Hänvisningar",
@@ -2694,15 +2739,15 @@
         "desc": "Låser upp en kurs"
       },
       "TIER_GRANT": {
-        "label": "Nivååtkomst",
-        "desc": "Låser upp en nivå"
+        "label": "Åtkomst till medlemskap",
+        "desc": "Erbjuds inte längre"
       }
     },
     "tiers": {
       "title": "Medlemskap",
       "subtitle": "{count, plural, one {# medlemskap} other {# medlemskap}} · så här visas de på din anslutningssida.",
       "create": "Skapa medlemskap",
-      "stripeWarning": "Stripe är inte anslutet ännu — gratisnivåer fungerar direkt; för betalda nivåer lägg till <code>STRIPE_SECRET_KEY</code> i din <code>.env</code>.",
+      "stripeWarning": "Stripe är inte anslutet än: Gratis medlemskap fungerar direkt. För betalda medlemskap lägger du till <code>STRIPE_SECRET_KEY</code> i din <code>.env</code>.",
       "recommended": "Rekommenderad",
       "default": "Standard",
       "hidden": "Dold",
@@ -2710,9 +2755,9 @@
       "edit": "Redigera",
       "suffixMonth": "/ månad",
       "suffixYear": "/ år",
-      "createTitle": "Skapa ny nivå",
+      "createTitle": "Nytt medlemskap",
       "createSubtitle": "Ange medlemskap och pris",
-      "editTitle": "Redigera nivå",
+      "editTitle": "Redigera medlemskap",
       "nameLabel": "Namn",
       "namePlaceholder": "t.ex. Premium",
       "coverLabel": "Omslagsbild (valfritt)",
@@ -2726,17 +2771,24 @@
       "publicHint": "Visas på anslutningssidan.",
       "recommendedLabel": "Rekommenderad av skaparen",
       "recommendedHint": "Framhäver detta medlemskap på anslutningssidan (max. ett).",
-      "defaultLabel": "Standardnivå",
-      "defaultHintActive": "Nya medlemmar får denna nivå.",
+      "defaultLabel": "Standardmedlemskap",
+      "defaultHintActive": "Nya medlemmar får det här medlemskapet.",
       "defaultHintInactive": "Ange som standard för nya medlemmar.",
-      "entitlementKeyLabel": "Behörighetsnyckel (fast)",
-      "confirmDelete": "Vill du verkligen ta bort nivån ”{name}”?",
+      "entitlementKeyLabel": "Teknisk nyckel (syns bara för plattformsadministratörer)",
+      "confirmDelete": "Ta bort medlemskapet ”{name}”?",
       "deleting": "Tar bort…",
-      "deleteTier": "Ta bort nivå",
+      "deleteTier": "Ta bort medlemskap",
       "cancel": "Avbryt",
       "saving": "Sparar…",
       "saveChanges": "Spara ändringar",
-      "createTier": "Skapa nivå"
+      "createTier": "Skapa medlemskap",
+      "priceHint": "Fasta prisnivåer, så att priset också gäller i appbutikerna.",
+      "payoutsMissing": "Konfigurera utbetalningar först, så att betalningarna når dig.",
+      "payoutsSetup": "Konfigurera utbetalningar",
+      "confirmDeleteBody": "{count, plural, =0 {Medlemskapet tas bort permanent.} one {# medlem förlorar åtkomsten till innehållet i det här medlemskapet.} other {# medlemmar förlorar åtkomsten till innehållet i det här medlemskapet.}} Det går inte att ångra.",
+      "confirmHide": "Dölja medlemskapet ”{name}”?",
+      "confirmHideBody": "Betalda medlemskap tas inte bort, utan plockas bort från anslutningssidan så att pågående betalningar fortfarande kan hanteras. Befintliga medlemmar behåller sin åtkomst.",
+      "hideTier": "Dölj medlemskap"
     },
     "products": {
       "title": "Produkter",
@@ -2759,7 +2811,6 @@
       "namePlaceholder": "t.ex. E-bok",
       "typeLabel": "Typ",
       "priceLabel": "Pris",
-      "downloadUrlLabel": "Nedladdnings-URL (valfritt)",
       "shipping": "Frakt",
       "shipFreeLabel": "Fri frakt",
       "shipFreeDesc": "Inga fraktkostnader",
@@ -2772,13 +2823,42 @@
       "descPlaceholder": "Vad får köparna?",
       "publishedLabel": "Publicerad",
       "publishedHint": "Synlig och köpbar i communityn.",
-      "confirmDelete": "Vill du verkligen ta bort produkten ”{name}”?",
+      "confirmDelete": "Ta bort produkten ”{name}”?",
       "deleting": "Tar bort…",
       "deleteProduct": "Ta bort produkt",
       "cancel": "Avbryt",
       "saving": "Sparar…",
       "saveChanges": "Spara ändringar",
-      "createProduct": "Skapa produkt"
+      "createProduct": "Skapa produkt",
+      "confirmDeleteBody": "Produkten försvinner från butiken. Det går inte att ångra.",
+      "confirmHide": "Dölja produkten ”{name}”?",
+      "confirmHideBody": "Det finns beställningar på den här produkten. Den tas därför inte bort, utan plockas bort från butiken. Köpare behåller sin åtkomst.",
+      "hideProduct": "Dölj produkt",
+      "priceHint": "Fasta prisnivåer, så att priset också gäller i appbutikerna.",
+      "pricePlaceholder": "Välj ett pris",
+      "priceRequired": "Välj ett pris eller ”Gratis”.",
+      "fileLabel": "Fil till köpare",
+      "fileHint": "Ladda upp filen eller klistra in en länk. Köpare ser nedladdningen efter köpet.",
+      "fileUpload": "Ladda upp fil",
+      "fileReplace": "Ladda upp en annan fil",
+      "fileRemove": "Ta bort",
+      "fileUploading": "Laddar upp…",
+      "fileUploaded": "Uppladdad fil",
+      "fileOpen": "Öppna",
+      "fileLinkLabel": "Eller länk till filen",
+      "fileRequired": "Ladda upp en fil eller klistra in en länk.",
+      "fileLinkInvalid": "Länken måste börja med https://.",
+      "courseLabel": "Vilken kurs låses upp?",
+      "coursePlaceholder": "Välj en kurs",
+      "courseHint": "När du har sparat är kursen bara öppen för köpare och ditt team. Lektioner som är markerade som förhandsvisning syns fortfarande för alla.",
+      "courseRequired": "Välj kursen som köparna får.",
+      "courseLocked": "Efter den första försäljningen kan kursen inte längre ändras, så att köpare behåller sin åtkomst.",
+      "noCourses": "Du har ännu ingen kurs som kan säljas separat.",
+      "createCourse": "Skapa kurs",
+      "tierGrantRetired": "Den här typen låser inte upp något medlemskap. Välj en annan typ. Betalda medlemskap skapar du under ”Medlemskap”.",
+      "viewInShop": "Visa i butiken",
+      "payoutsMissing": "Konfigurera utbetalningar först, så att betalningarna når dig.",
+      "payoutsSetup": "Konfigurera utbetalningar"
     },
     "payouts": {
       "title": "Utbetalningar",
@@ -2875,7 +2955,6 @@
       "cancel": "Avbryt",
       "adding": "Lägger till…",
       "statusLabel": "Status",
-      "confirmRemove": "Vill du verkligen ta bort ”{name}” från communityn?",
       "removing": "Tar bort…",
       "removeMember": "Ta bort medlem",
       "saving": "Sparar…",
@@ -2898,7 +2977,10 @@
       "awarding": "Tilldelar…",
       "revoke": "Ta bort",
       "revoking": "Tar bort…",
-      "awardedOn": "Tilldelat {date}"
+      "awardedOn": "Tilldelat {date}",
+      "confirmRemoveTitle": "Ta bort ”{name}” från communityn?",
+      "confirmRemoveBody": "Pågående prenumerationer avslutas direkt och åtkomsten via medlemskapet försvinner. Enskilda köp finns kvar.",
+      "confirmRemoveCta": "Ta bort medlem"
     },
     "spaceTypes": {
       "FEED": {
@@ -2989,15 +3071,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Offentlig",
-        "desc": "Synlig för alla"
+        "desc": "Synligt för alla, även utan konto"
       },
       "MEMBERS": {
         "label": "Medlemmar",
-        "desc": "Endast inloggade"
+        "desc": "Bara medlemmar i communityn"
       },
       "PAID": {
         "label": "Betald",
-        "desc": "Kräver medlemskap"
+        "desc": "Bara med betalt medlemskap"
       }
     },
     "spaces": {
@@ -3015,15 +3097,12 @@
       "createSubtitle": "Välj typ och synlighet",
       "editTitle": "Redigera space",
       "edit": "Redigera",
-      "reactivate": "Aktivera",
       "archive": "Arkivera",
       "postCount": "{count, plural, one {# inlägg} other {# inlägg}}",
       "nameLabel": "Namn på space",
       "namePlaceholder": "t.ex. Meddelanden",
       "typeLabel": "Typ",
       "visibilityLabel": "Synlighet",
-      "entitlementLabel": "Nödvändig behörighet",
-      "entitlementHint": "Lämna tomt för att acceptera valfritt betalt medlemskap.",
       "descLabel": "Beskrivning (valfritt)",
       "descPlaceholder": "Vad handlar detta space om?",
       "deleting": "Tar bort…",
@@ -3033,7 +3112,32 @@
       "saveChanges": "Spara ändringar",
       "deleteConfirmTitle": "Ta bort space?",
       "deleteConfirmText": "”{name}” tas bort permanent. Allt innehåll i det går förlorat — detta kan inte ångras.",
-      "delete": "Ta bort"
+      "delete": "Ta bort",
+      "restore": "Återställ",
+      "archiveNamed": "Arkivera ”{name}”",
+      "restoreNamed": "Återställ ”{name}”",
+      "archivedNotice": "”{name}” arkiverat – dolt för medlemmar.",
+      "restoredNotice": "”{name}” återställt – synligt för medlemmar igen.",
+      "undo": "Ångra",
+      "dismissNotice": "Stäng meddelande",
+      "typeLockedHint": "Typen är låst eftersom det här spacet redan har {count, plural, one {# innehåll} other {# innehåll}}. Med en annan typ skulle det inte längre synas. Skapa ett nytt space för en annan typ.",
+      "access": {
+        "legend": "Vilka medlemskap har åtkomst?",
+        "anyPaid": "Alla betalda medlemskap",
+        "anyPaidDesc": "Även den som har köpt något betalt, t.ex. en produkt",
+        "pricePerMonth": "{price}/mån",
+        "pricePerYear": "{price}/år",
+        "tierHidden": "{price} · inte i utbudet",
+        "legacyLabel": "Tidigare åtkomstregel",
+        "legacyFreeTier": "Gratis medlemskap – äldre inställning",
+        "legacyKey": "Nyckel ”{key}” – äldre inställning",
+        "hintTier": "Bara medlemmar med exakt det här medlemskapet ser spacet. Du och ditt team har alltid åtkomst.",
+        "hintAny": "Alla medlemmar med ett betalt medlemskap ser spacet. Du och ditt team har alltid åtkomst.",
+        "noPaidTitle": "Inget betalt medlemskap ännu",
+        "noPaidText": "Skapa ett betalt medlemskap så att medlemmar kan låsa upp det här spacet.",
+        "noPaidCta": "Skapa först ett medlemskap",
+        "specificTier": "Visst medlemskap"
+      }
     },
     "roles": {
       "OWNER": "Ägare",
@@ -3124,14 +3228,14 @@
       "leaveTitle": "Lämna community",
       "cancelText": "Din åtkomst till betalt innehåll slutar med den betalda perioden. Köpta produkter behåller du.",
       "leaveText": "Du förlorar åtkomst till medlemsinnehåll. Köpta produkter behåller du.",
-      "confirmCancel": "Vill du verkligen säga upp ditt medlemskap?",
       "cancelling": "Säger upp…",
       "cancelNow": "Säg upp nu",
       "confirmLeave": "Vill du verkligen lämna communityn ”{name}”?",
       "leaving": "Lämnar…",
       "leaveCommunity": "Lämna community",
       "perMonth": "/månad",
-      "perYear": "/år"
+      "perYear": "/år",
+      "confirmCancelTitle": "Säga upp medlemskapet i ”{name}”?"
     },
     "credits": {
       "title": "Credits och användning",
@@ -3224,8 +3328,6 @@
       "edit": "Redigera",
       "delete": "Radera",
       "moveToFolder": "Flytta till mapp",
-      "confirmDeleteFolder": "Radera den här mappen? Media i den hamnar utan mapp.",
-      "confirmDeleteMedia": "Vill du verkligen radera det här mediet? Sedan går det inte längre att nå.",
       "folderMenuAria": "Mappalternativ för {name}",
       "itemMenuAria": "Mediealternativ för {name}",
       "openAria": "Öppna {name}",
@@ -3252,9 +3354,18 @@
       "openInStudio": "Redigera i studion",
       "uploadMedia": "Ladda upp media",
       "uploadingProgress": "Laddar upp… {done}/{total}",
-      "uploadFailed": "Uppladdningen misslyckades: {name}",
       "storageTitle": "Medialagring",
-      "storageOf": "{used} av {limit} använt"
+      "storageOf": "{used} av {limit} använt",
+      "uploadFailedCount": "{count, plural, one {# fil laddades inte upp} other {# filer laddades inte upp}}",
+      "uploadFailedLine": "{name}: {reason}",
+      "retryUpload": "Ladda upp igen",
+      "dismissUploadErrors": "Stäng meddelandet",
+      "confirmDeleteFolderTitle": "Ta bort mappen ”{name}”?",
+      "confirmDeleteFolderBody": "Medierna i mappen behålls och hamnar under ”Utan mapp”.",
+      "confirmDeleteFolderCta": "Ta bort mapp",
+      "confirmDeleteMediaTitle": "Ta bort ”{name}” permanent?",
+      "confirmDeleteMediaBody": "Filen tas bort. Inlägg och sidor som använder den visar den inte längre.",
+      "confirmDeleteMediaCta": "Ta bort permanent"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3420,7 +3531,6 @@
       "studioChatShow": "Visa chatt",
       "studioChatHide": "Dölj chatt",
       "studioFullscreen": "Helskärm",
-      "studioCloseConfirm": "Du är live just nu. Om du stänger studion avbryts sändningen. Stäng ändå?",
       "studioNoPreview": "Sändningen pågår — videoförhandsvisningen finns bara på enheten som sänder.",
       "studioMirror": "Spegelvänd förhandsvisningen",
       "studioLevel": "Ljudnivå",
@@ -3436,7 +3546,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Stänga studion och avsluta sändningen?",
+      "studioCloseBody": "Du sänder live just nu. Stänger du studion avbryts sändningen.",
+      "studioCloseCta": "Stäng studion",
+      "studioCloseCancel": "Fortsätt sända"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3879,6 +3993,38 @@
     "dateTimeField": {
       "tzHint": "Gäller i din tidszon: {zone} ({abbr})",
       "pastWarning": "Det här datumet har redan passerat."
+    },
+    "planSheet": {
+      "title": "Byt paket",
+      "subtitle": "Vad varje paket innehåller",
+      "loading": "Läser in paket …",
+      "loadFailed": "Paketen kunde inte läsas in.",
+      "retry": "Läs in igen",
+      "pricePerMonth": "{price} per månad",
+      "free": "Gratis",
+      "current": "Ditt paket",
+      "currentPlan": "Ditt nuvarande paket",
+      "limitSpaces": "{count, plural, one {# aktivt space} other {# aktiva spaces}}",
+      "limitSpacesUnlimited": "Obegränsat antal spaces",
+      "limitMembers": "{count, plural, one {# aktiv medlem} other {# aktiva medlemmar}}",
+      "limitMembersUnlimited": "Obegränsat antal medlemmar",
+      "limitTiers": "Upp till {count, plural, one {# medlemskap} other {# medlemskap}}",
+      "limitTiersUnlimited": "Obegränsat antal medlemskap",
+      "limitStaff": "{count, plural, one {# teamplats} other {# teamplatser}}",
+      "limitStaffUnlimited": "Obegränsat antal teamplatser",
+      "limitCredits": "{n} AI-krediter per månad",
+      "everythingFrom": "Allt i {plan}, plus:",
+      "baseSpaces": "Ingår:",
+      "spaceTypesList": "Space-typer: {list}",
+      "freeHint": "Du går tillbaka till Free genom att säga upp ditt paket.",
+      "switching": "Startar …",
+      "switchTo": "Byt till {plan}",
+      "checkoutFailed": "Betalningen kunde inte startas. Försök igen.",
+      "cancelFailed": "Uppsägningen kunde inte registreras. Försök igen.",
+      "footnote": "Priser per månad, kan sägas upp varje månad. Betalningen sker via Stripe.",
+      "spacesUsedNotice": "Du använder {used} av {max} spaces.",
+      "creditsTeaser": "Nuvarande: {plan}. Paketen skiljer sig i spaces, medlemmar och funktioner.",
+      "open": "Byt paket"
     }
   },
   "common": {
@@ -4076,7 +4222,7 @@
       },
       "space": {
         "lockedDesc": "Detta space är exklusivt för medlemmar.",
-        "lockedDescPaid": "Detta space är exklusivt för medlemmar med ett passande medlemskap.",
+        "lockedDescPaid": "Det här innehållet ingår i ett betalt medlemskap.",
         "upgradeMembership": "Uppgradera medlemskap",
         "join": "Gå med",
         "noLinks": "Inga länkar ännu",
@@ -4153,7 +4299,11 @@
       "postTile": {
         "becomeMember": "Bli medlem",
         "exclusive": "Endast medlemmar",
-        "locked": "Låst"
+        "locked": "Låst",
+        "lockedUntitled": "Inlägg för medlemmar",
+        "paidUntitled": "Betalt inlägg",
+        "lockedHint": "Det här inlägget är för medlemmar.",
+        "paidHint": "Du kan låsa upp det här inlägget separat."
       },
       "planCard": {
         "current": "Ditt paket",
@@ -4271,6 +4421,15 @@
         "like": "Gilla",
         "unlike": "Sluta gilla",
         "locked": "Låst"
+      },
+      "paywall": {
+        "belongsTo": "”{space}” ingår i {tier} ({price}).",
+        "anyPaidFrom": "”{space}” ingår i alla betalda medlemskap – från {tier} ({price}).",
+        "pricePerMonth": "{price}/mån",
+        "pricePerYear": "{price}/år",
+        "viewTier": "Visa {tier}",
+        "becomeMember": "Bli medlem",
+        "memberHint": "Ditt nuvarande medlemskap omfattar inte det här spacet."
       }
     },
     "nav": {
@@ -4429,7 +4588,8 @@
     "title": "Visningsspråk",
     "hint": "Gäller din vy av Aera på den här enheten.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Visningsspråk: {language}"
   },
   "spaces": {
     "commentsClosed": "Kommentarerna är stängda.",
@@ -4550,7 +4710,8 @@
         "product": "Produkter",
         "knowledge": "Kunskap"
       }
-    }
+    },
+    "postCount": "{count, plural, one {# inlägg} other {# inlägg}}"
   },
   "categories": {
     "podcast": "Poddar & program",
@@ -4583,10 +4744,10 @@
       },
       "s2": {
         "title": "Spaces för allt du gör",
-        "text": "Skapa så många spaces du behöver: ett flöde för nyheter, ett forum för diskussioner, kurser, en butik, nyhetsbrev, event, en blogg, en kunskapsbas, bildgallerier, ett videobibliotek, chatt, podd, en länksamling och egna annonsytor. För varje space avgör du om det syns för alla, endast medlemmar eller endast betalande medlemmar.",
-        "tag1": "14 space-typer",
+        "text": "Skapa de spaces du behöver: ett flöde för nyheter, ett forum för diskussioner, kurser, en butik, nyhetsbrev, event, en blogg, en kunskapsbas, bildgallerier, ett videobibliotek, chatt, podd, en länksamling och egna annonsytor. För varje space avgör du om det syns för alla, endast medlemmar eller endast betalande medlemmar.",
+        "tag1": "{count} space-typer",
         "tag2": "Valfri synlighet",
-        "tag3": "Obegränsat antal spaces"
+        "tag3": "Antal beror på paketet"
       },
       "s3": {
         "title": "Inlägg, kommentarer & reaktioner",
@@ -4706,17 +4867,17 @@
     "topupTitle": "Fyll på credits",
     "topupText": "Behöver du mer däremellan? Köpta credits förfaller aldrig och används först efter din månadskvot.",
     "creditsLabel": "Credits",
-    "footnote": "1 credit motsvarar cirka 1 000 tokens; en typisk assistentförfrågan kostar 1–3 credits. Plattformsavgifter på din community-omsättning faktureras separat — endast på verklig omsättning.",
+    "footnote": "1 credit motsvarar cirka 1 000 tokens; en typisk assistentförfrågan kostar 1–3 credits.",
     "plans": {
       "FREE": {
         "tagline": "För att komma igång",
-        "f1": "11 grundläggande spaces: flöde, forum, kurser, event, blogg …",
+        "f1": "{count} grundläggande spaces: flöde, forum, kurser, event, blogg …",
         "f2": "Upp till 5 spaces & 100 medlemmar",
-        "f3": "Medlemskap, media & moderering",
+        "f3": "Upp till {tiers} medlemskap (även betalda), media & moderering",
         "f4": "500 AI-krediter per månad"
       },
       "STARTER": {
-        "tagline": "När du vill tjäna pengar",
+        "tagline": "För butik, produkter och statistik",
         "f1": "Allt i Free",
         "f2": "Statistik, produkter & utbetalningar",
         "f3": "Shop, chatt, dricks, kalender & planerare",
@@ -4741,7 +4902,7 @@
     "compare": {
       "eyebrow": "I detalj",
       "title": "Vad varje paket innehåller",
-      "subtitle": "Varje rad är något du kan använda i din dashboard direkt. Inget försvinner när du byter — det bara tillkommer mer.",
+      "subtitle": "Varje rad är något du kan använda i din dashboard direkt. Byter du till ett större paket tillkommer bara mer.",
       "spacesGroup": "Spacetyper",
       "featuresGroup": "Funktioner",
       "limitsGroup": "Gränser",
@@ -4757,8 +4918,17 @@
       "limitStorage": "Medielagring",
       "limitCredits": "AI-krediter per månad",
       "storageValue": "{gb} GB",
-      "note": "En partners kampanjkod låser upp ditt paket direkt — utan betalningsuppgifter."
-    }
+      "note": "En partners kampanjkod låser upp ditt paket direkt — utan betalningsuppgifter.",
+      "feeNote": "På varje försäljning i din community tar vi ut {fee} i plattformsavgift – i alla paket. Till det kommer betaltjänstleverantörens avgift (Stripe).",
+      "feesGroup": "Avgifter",
+      "feePlatform": "Avgift på din försäljning",
+      "feeProvider": "Betaltjänstleverantörens avgift",
+      "feeProviderValue": "Enligt Stripes priser",
+      "membersNote": "Aktiva medlemmar är alla i din community – inklusive dig och ditt team, både gratis och betalande. När gränsen är nådd kan nya medlemmar gå med först efter en uppgradering.",
+      "scrollHint": "Svep åt sidan för att jämföra",
+      "tableLabel": "Paketjämförelse"
+    },
+    "feeLine": "Avgift på din försäljning: {fee}"
   },
   "marketing": {
     "navDiscover": "Upptäck",
@@ -4782,7 +4952,10 @@
     "footerPrivacy": "Integritetspolicy",
     "footerWithdrawal": "Ångerrätt",
     "footerTagline": "Din community. Ditt varumärke. Din verksamhet.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "Från {plan}: {items}",
+    "footerContact": "Kontakt",
+    "legalGermanOnly": "Den här juridiska texten finns bara på tyska. Den tyska versionen är bindande."
   },
   "home": {
     "badge": "Community · Medlemskap · Handel",
@@ -4858,7 +5031,7 @@
       "c1": {
         "title": "Spaces för allt du gör",
         "text": "Flöde, forum, blogg och kunskapsbas, bildgallerier, videobibliotek och podd, plus chatt, länksamling och egna annonsytor. Varje space kan vara öppet för alla, endast för medlemmar eller endast för betalande medlemmar — och i alla kan man kommentera och reagera.",
-        "tag1": "14 space-typer",
+        "tag1": "{count} space-typer",
         "tag2": "Valfri synlighet",
         "tag3": "Inlägg, kommentarer & reaktioner"
       },
@@ -4956,11 +5129,11 @@
       "colYou": "Aera",
       "rowBase": "Grundpris per månad",
       "rowFee": "Andel av dina intäkter",
-      "rowFull": "Full funktionalitet från",
+      "rowFull": "Alla funktioner från",
       "aera": {
         "base": "0 — gratis att börja",
-        "fee": "5 %",
-        "full": "{pro} per månad"
+        "fee": "{fee}",
+        "full": "{price} per månad ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -4981,26 +5154,27 @@
         "full": "99 $ (Pro)"
       },
       "footnote": "Uppgifter från leverantörernas offentliga prissidor, per juli 2026. Betalningsavgifter (cirka 2,9 % + 0,30) tillkommer hos alla — även hos oss.",
-      "includedTitle": "Ingår i Aera utan tillägg",
+      "includedTitle": "Ingår i alla paket",
       "included": {
         "i1": {
-          "title": "20 områden",
-          "text": "Flöde, forum, kurser, nyhetsbrev, event, blogg, kunskap, galleri, video, butik, chatt, podd, live och mer — under samma tak."
+          "title": "{count} grundläggande spaces",
+          "text": "{list} – allt under ett tak."
         },
         "i2": {
-          "title": "Fyra intäktsvägar, en kassa",
-          "text": "Medlemskap, digitala produkter, betalt innehåll och event går genom samma kassa."
+          "title": "Medlemskap från dag ett",
+          "text": "Upp till {tiers} medlemskap, gratis eller betalda, plus betalt innehåll – allt via samma kassa."
         },
         "i3": {
           "title": "Ditt varumärke, din adress",
-          "text": "Egen domän, egna färger, egen logotyp. Dina medlemmar ser dig, inte oss."
+          "text": "Egen logotyp, egna färger och en egen adress på Aera. Dina medlemmar ser dig, inte oss."
         },
         "i4": {
-          "title": "Din data förblir din",
-          "text": "Medlemmar, innehåll och intäkter kan exporteras när som helst. Inget avsked med tomma händer."
+          "title": "AI-assistent ingår",
+          "text": "{credits} AI-credits i månaden för texter och idéer, plus {gb} GB medielagring."
         }
       }
-    }
+    },
+    "fromPlan": "från {plan}"
   },
   "legalPurchase": {
     "immediateAccess": "Jag begär omedelbar åtkomst och förstår att min ångerrätt upphör när den digitala leveransen börjar. <withdrawal>Detaljer</withdrawal>.",
@@ -5029,19 +5203,19 @@
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Ta emot inbjudan — Aera",
+      "inviteMeta": "Ta emot inbjudan",
       "inviteInvalidTitle": "Ogiltig inbjudan",
       "inviteInvalidText": "Den här inbjudningslänken har gått ut eller är redan använd. Be gemenskapens administratör om en ny inbjudan — eller använd ”Glömt lösenord” om ditt konto redan är aktivt.",
       "forgotPassword": "Glömt lösenord",
       "inviteWelcome": "Välkommen till Aera",
       "inviteActivate": "Aktivera ditt konto {email} genom att välja ett lösenord.",
-      "resetMeta": "Återställ lösenord — Aera",
+      "resetMeta": "Återställ lösenord",
       "invalidLinkTitle": "Ogiltig länk",
       "resetInvalidText": "Den här länken har gått ut eller är redan använd.",
       "requestNewLink": "Begär en ny länk",
       "resetTitle": "Välj ett nytt lösenord",
       "forAccount": "För kontot {email}",
-      "verifyMeta": "Bekräfta e-post — Aera",
+      "verifyMeta": "Bekräfta e-post",
       "verifyInvalidText": "Den här bekräftelselänken har gått ut eller redan använts. Begär en ny länk.",
       "toLogin": "Till inloggningen",
       "alreadyVerifiedTitle": "Redan bekräftad",
@@ -5069,7 +5243,7 @@
       "rootDescription": "Aera är allt-i-ett-plattformen för kreatörer: gemenskap, medlemskap, kurser, evenemang, nyhetsbrev, försäljning och AI — under ditt eget varumärke.",
       "loginMeta": "Logga in",
       "signupMeta": "Skapa konto",
-      "forgotMeta": "Glömt lösenord — Aera",
+      "forgotMeta": "Glömt lösenord",
       "pricingMeta": "Priser",
       "featuresMeta": "Funktioner",
       "manifestDescription": "Dina gemenskaper: inlägg, kurser, evenemang och meddelanden — samlat på ett ställe.",
@@ -5222,7 +5396,8 @@
       "notFound": {
         "title": "Sidan hittades inte",
         "text": "Den här gemenskapen eller sidan finns inte.",
-        "home": "Tillbaka till startsidan"
+        "home": "Tillbaka till startsidan",
+        "help": "Till hjälpcentret"
       },
       "articleShare": {
         "label": "Dela",
@@ -5305,6 +5480,9 @@
       "bundle": "Paket",
       "tagline": "Slogan",
       "logoUrl": "Logotyp-URL"
+    },
+    "pricePoint": {
+      "free": "Gratis"
     }
   },
   "unsubscribe": {
@@ -5350,11 +5528,26 @@
     "preparing": "Förbereder …",
     "verifying": "Kontrollerar …",
     "done": "Klart",
-    "failed": "Misslyckades",
     "secondsLeft": "{count, plural, one {# sekund kvar} other {# sekunder kvar}}",
     "minutesLeft": "{count, plural, one {# minut kvar} other {# minuter kvar}}",
     "more": "{count, plural, one {# uppladdning till} other {# uppladdningar till}}",
-    "dismiss": "Dölj"
+    "dismiss": "Dölj",
+    "retry": "Ladda upp igen",
+    "doneAnnounce": "Uppladdat: {names}",
+    "errors": {
+      "connection": "Anslutningen till lagringen misslyckades. Kontrollera din internetanslutning och försök igen.",
+      "canceled": "Uppladdningen avbröts. Försök igen.",
+      "storageRejected": "Lagringen avvisade filen. Försök igen; händer det igen, kontakta supporten.",
+      "notStarted": "Uppladdningen kunde inte starta. Försök igen om en stund.",
+      "verification": "Filen kunde inte kontrolleras efter uppladdningen. Försök igen.",
+      "rejected": "Filen avvisades vid kontrollen. Kontrollera filtyp och innehåll eller välj en annan fil.",
+      "quota": "Lagringsutrymmet är fullt. Ta bort media i mediebiblioteket eller byt till en större plan.",
+      "tooMany": "För många uppladdningar på kort tid. Vänta en stund och försök igen.",
+      "signedOut": "Du är inte längre inloggad. Logga in igen och ladda upp filen på nytt.",
+      "unavailable": "Uppladdning går inte just nu. Försök igen om några minuter.",
+      "invalid": "Filen kan inte laddas upp här. Kontrollera filtyp och storlek.",
+      "failed": "Uppladdningen misslyckades. Försök igen."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

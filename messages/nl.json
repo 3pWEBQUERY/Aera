@@ -38,19 +38,19 @@
     "ownerCantCancel": "Als eigenaar kun je je eigen lidmaatschap niet opzeggen.",
     "noPaidMembership": "Je hebt geen betaald lidmaatschap.",
     "stripeCancelFailed": "Stripe-opzegging mislukt. Probeer het opnieuw.",
-    "defaultTierCantDelete": "Het standaardniveau kan niet worden verwijderd.",
-    "tierDeleteStripeBlocked": "Dit niveau kan pas worden verwijderd nadat Stripe heeft bevestigd dat alle gekoppelde abonnementen zijn beëindigd. Er zijn geen gegevens verwijderd.",
+    "defaultTierCantDelete": "Het standaardlidmaatschap kan niet worden verwijderd. Stel eerst een ander lidmaatschap in als standaard.",
+    "tierDeleteStripeBlocked": "Dit lidmaatschap kan pas worden verwijderd als Stripe bevestigt dat alle gekoppelde abonnementen zijn beëindigd. Er zijn geen gegevens verwijderd.",
     "memberRemoveStripeFailed": "Het Stripe-abonnement kon niet veilig worden beëindigd. Het lid en de lokale toegang zijn niet verwijderd.",
     "tenantDeleteConfirmMismatch": "De ingevoerde communityslug komt niet overeen.",
     "tenantDeleteStripeSubscriptionsActive": "De community kan pas worden verwijderd nadat alle Stripe-abonnementen zijn beëindigd. Er zijn geen gegevens verwijderd.",
     "tenantDeleteStripeCleanupFailed": "Het opschonen van Stripe of Connect is mislukt. De community en de gegevens zijn niet verwijderd.",
-    "paidTierArchivedInsteadOfDeleted": "Het betaalde niveau is veilig verborgen in plaats van verwijderd, zodat open Stripe-betalingen nog correct kunnen worden verwerkt.",
+    "paidTierArchivedInsteadOfDeleted": "Het betaalde lidmaatschap is verborgen in plaats van verwijderd, zodat lopende betalingen verwerkt blijven worden.",
     "pendingPaymentsBlockDeletion": "Verwijderen is geblokkeerd zolang er openstaande betalingen of reserveringen zijn. Er zijn geen gegevens verwijderd.",
     "productArchivedBecauseOrdersExist": "Het product is verborgen in plaats van verwijderd omdat bestellingen ernaar verwijzen. Openstaande betalingen kunnen nog veilig worden verwerkt.",
     "postNotFound": "Bericht niet gevonden.",
     "commentsClosed": "Reacties zijn gesloten.",
     "invalidCommentRef": "Ongeldige reactieverwijzing.",
-    "tierNotFound": "Niveau niet gevonden.",
+    "tierNotFound": "Dit lidmaatschap bestaat niet meer. Laad de pagina opnieuw.",
     "productNotFound": "Product niet gevonden.",
     "courseNotFound": "Cursus niet gevonden.",
     "lessonNotFound": "Les niet gevonden.",
@@ -130,7 +130,7 @@
     "subTaken": "Dit subdomein is al in gebruik.",
     "planSpaceTypeLocked": "Dit spacetype is beschikbaar vanaf het {plan}-pakket. Upgrade om het aan te maken.",
     "planSpaceLimitReached": "Je {plan}-pakket biedt ruimte voor {limit} actieve spaces. Upgrade voor meer ruimte.",
-    "planTierLimitReached": "Je {plan}-pakket biedt {limit} lidmaatschapsniveaus. Upgrade om er meer toe te voegen.",
+    "planTierLimitReached": "Je {plan}-pakket staat {limit} lidmaatschappen toe. Wissel van pakket om er meer toe te voegen.",
     "planFeatureLocked": "Deze functie is beschikbaar vanaf het {plan}-pakket. Upgrade om hem te gebruiken.",
     "planMemberLimitReached": "Je {plan}-pakket is gebouwd voor {limit} actieve leden. Upgrade om te blijven groeien.",
     "planStaffLimitReached": "Je {plan}-pakket biedt {limit} teamplekken (admins/moderators). Upgrade voor meer.",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "Er zit nu niemand in dit segment. Kies een ander segment om te versturen.",
     "campaignTestDeliveryFailed": "De e-maildienst heeft het bericht niet aangenomen ({detail}). Probeer het later opnieuw.",
     "recoveryCodeInvalid": "Deze herstelcode klopt niet of is al gebruikt. Controleer de spelling of probeer een andere code.",
-    "secondFactorInvalid": "De code klopt niet. Vul de huidige code uit de app of een ongebruikte herstelcode in."
+    "secondFactorInvalid": "De code klopt niet. Vul de huidige code uit de app of een ongebruikte herstelcode in.",
+    "productPriceRequired": "Kies een prijs of ‘Gratis’.",
+    "productFileRequired": "Upload een bestand voor kopers of plak een link.",
+    "productFileUrlInvalid": "De link naar het bestand moet met https:// beginnen.",
+    "productCourseRequired": "Kies de cursus die kopers krijgen.",
+    "productCourseGated": "Deze cursus hoort bij een lidmaatschap en kan niet los worden verkocht.",
+    "productGrantLocked": "Na de eerste verkoop kunnen type en cursus niet meer worden gewijzigd, zodat kopers hun toegang houden.",
+    "productTypeUnavailable": "Dit producttype wordt niet meer aangeboden. Kies een ander type.",
+    "spaceAccessTierInvalid": "Dit lidmaatschap bestaat niet of is gratis. Kies een betaald lidmaatschap uit de lijst.",
+    "spaceTypeLockedContent": "Het type kan niet meer worden gewijzigd: deze space heeft {count, plural, one {# item} other {# items}}. Maak voor een ander type een nieuwe space aan."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -409,19 +418,19 @@
     "searchAria": "Zoeken in help",
     "searchSubmit": "Zoeken",
     "comingSoon": "Het helpcentrum wordt opgebouwd — kom binnenkort terug.",
-    "noResults": "Geen resultaten voor ‘{query}’",
-    "resultsCount": "{count, plural, one {# resultaat} other {# resultaten}} voor ‘{query}’",
+    "noResults": "Geen artikelen over ‘{query}’",
+    "resultsCount": "{count, plural, one {# artikel} other {# artikelen}} over ‘{query}’",
     "resetSearch": "Zoekopdracht wissen",
     "articleCount": "{count, plural, one {# artikel} other {# artikelen}}",
     "contactTitle": "Niet gevonden wat je zocht?",
-    "contactText": "Ga gewoon aan de slag — de meeste antwoorden vind je direct in je community of in het creator-dashboard.",
-    "contactCta": "Gratis beginnen",
+    "contactText": "Schrijf ons – we antwoorden per e-mail of in je account.",
+    "contactCta": "Bericht schrijven",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "Naam (optioneel)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -435,7 +444,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Ga gewoon aan de slag — de meeste antwoorden vind je direct in je community of in het creator-dashboard.",
+    "startCta": "Gratis beginnen",
+    "startTitle": "Nog geen community?"
   },
   "account": {
     "metaTitle": "Account",
@@ -636,7 +648,7 @@
       "noResultsHint": "Geen community gevonden voor ‘{q}’.",
       "emptyHint": "Zodra creators communities aanmaken, verschijnen ze hier.",
       "membersShort": "{count} leden",
-      "postsShort": "{count} posts",
+      "postsShort": "{count, plural, one {# bericht} other {# berichten}}",
       "since": "sinds {date}",
       "editTitle": "Community bewerken",
       "owner": "Eigenaar: {name} ({email})",
@@ -664,7 +676,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "Alle leden, spaces, inhoud en bestellingen van deze community worden verwijderd."
     },
     "users": {
       "title": "Gebruikers",
@@ -718,12 +731,12 @@
       "date": "Datum",
       "key": "Key",
       "openInNewTab": "Openen in nieuw tabblad",
-      "deleteConfirm": "Dit medium echt verwijderen?",
       "deleteBtn": "Media verwijderen",
       "dangerDesc": "Verwijdert het bestand uit de levering. Content die ernaar verwijst, toont het medium niet meer.",
       "visPublic": "Openbaar",
       "visMembers": "Leden",
-      "visPaid": "Betaald"
+      "visPaid": "Betaald",
+      "deleteConfirmTitle": "‘{name}’ verwijderen?"
     },
     "posts": {
       "title": "Posts",
@@ -741,7 +754,9 @@
       "unpublishedBadge": "Gedepubliceerd",
       "unpublish": "Depubliceren",
       "publish": "Publiceren",
-      "deleteConfirm": "Deze post echt onherroepelijk verwijderen?"
+      "deleteConfirmTitle": "Bericht ‘{title}’ verwijderen?",
+      "deleteConfirmBody": "Het bericht verdwijnt samen met alle reacties. Dit kan niet ongedaan worden gemaakt.",
+      "deleteCta": "Bericht verwijderen"
     },
     "orders": {
       "title": "Bestellingen",
@@ -767,12 +782,12 @@
       "fulfilled": "Voltooid",
       "fulfilledHint": "Markeert de bestelling als geleverd of afgerond.",
       "dangerDesc": "Verwijdert de bestelling onherroepelijk uit de database. Betalingen bij Stripe blijven onaangetast.",
-      "deleteConfirm": "Deze bestelling echt onherroepelijk verwijderen?",
       "deleteBtn": "Bestelling verwijderen",
       "statusPending": "In behandeling",
       "statusPaid": "Betaald",
       "statusRefunded": "Terugbetaald",
-      "statusFailed": "Mislukt"
+      "statusFailed": "Mislukt",
+      "deleteConfirmTitle": "Bestelling ‘{name}’ verwijderen?"
     },
     "help": {
       "title": "Helpcentrum",
@@ -1033,7 +1048,6 @@
       "chatEmptyDesc": "Ik kan je community analyseren, teksten schrijven en acties uitvoeren zoals het aanmaken van spaces.",
       "imageEmptyTitle": "Afbeeldingen genereren",
       "imageEmptyDesc": "Beschrijf wat je wilt zien. Je kunt ook afbeeldingen als sjabloon uploaden — de assistent bewerkt ze of laat zich erdoor inspireren.",
-      "geminiOff": "Google Gemini is niet actief — stel een GEMINI_API_KEY in onder Instellingen → Integraties.",
       "chatPlaceholder": "Bericht aan de assistent…",
       "sendAria": "Verzenden",
       "chatHint": "Enter om te verzenden · Shift+Enter voor een nieuwe regel. Acties werken direct op je community.",
@@ -1107,7 +1121,9 @@
           "title": "Mascotte",
           "prompt": "Een vriendelijke, illustratieve mascotte-avatar voor mijn community, ronde vormen, felle kleuren."
         }
-      }
+      },
+      "geminiOffCreator": "De AI-assistent is op dit platform nog niet ingesteld.",
+      "geminiOffAdmin": "Google Gemini is niet actief. Stel GEMINI_API_KEY in de serveromgeving in en start de app opnieuw. Alleen platformbeheerders zien deze melding."
     },
     "announcements": {
       "statusDraft": "Concept",
@@ -1155,7 +1171,9 @@
       "cancel": "Annuleren",
       "saving": "Opslaan…",
       "saveChanges": "Wijzigingen opslaan",
-      "createBtn": "Aankondiging maken"
+      "createBtn": "Aankondiging maken",
+      "confirmDeleteBody": "De banner verdwijnt direct van alle communitypagina’s.",
+      "confirmDeleteCta": "Aankondiging verwijderen"
     },
     "spaceContent": {
       "view": "Bekijken",
@@ -1225,9 +1243,9 @@
         "EVENTS": "Evenementen",
         "NEWSLETTER": "Nieuwsbrief"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Prijs voor losse aankoop",
+      "ppvPriceHint": "Wie niet koopt, ziet alleen de voorbeeldafbeelding, de voorbeeldtitel en de prijs.",
+      "ppvTeaserLabel": "Voorbeeldafbeelding (vervaagd voor niet-kopers)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Afbeelding en video",
@@ -1247,7 +1265,16 @@
       "removeTrackAria": "Nummer verwijderen",
       "trackUploading": "{count} worden geüpload … {percent}%",
       "deleteQuestion": "Bericht definitief verwijderen?",
-      "deleteConfirm": "Verwijderen"
+      "deleteConfirm": "Verwijderen",
+      "mediaFailedOne": "‘{name}’ is niet geüpload. {reason}",
+      "mediaFailedMany": "{count, plural, one {# bestand is} other {# bestanden zijn}} niet geüpload. {reason}",
+      "pickFromLibrary": "Kiezen uit mediabibliotheek",
+      "pickFromLibraryHint": "Kies een afbeelding die al in je mediabibliotheek staat",
+      "previewTitleLabel": "Voorbeeldtitel (voor iedereen zichtbaar)",
+      "previewTitleHint": "Optioneel. Staat boven het bericht, ook voor wie het vergrendeld is.",
+      "accessSingle": "Losse aankoop",
+      "accessSingleHint": "Wordt los verkocht. Een lidmaatschap ontgrendelt dit bericht niet.",
+      "bannersElsewhere": "Aankondigingsbanners voor de hele community beheer je in de space <link>‘{name}’</link>."
     },
     "chat": {
       "badge": "Chat",
@@ -1262,7 +1289,6 @@
       "messagesHeading": "Berichten",
       "messagesDesc": "De nieuwste berichten. Je kunt ongepaste berichten verwijderen.",
       "emptyMessages": "Nog geen berichten in deze chat.",
-      "confirmDeleteMessage": "Dit bericht verwijderen?",
       "deleteMessageAria": "Bericht verwijderen",
       "relNone": "—",
       "relNow": "zojuist",
@@ -1297,7 +1323,10 @@
       "historyMessages": "{count} berichten",
       "cancel": "Annuleren",
       "saving": "Opslaan…",
-      "saveSettings": "Instellingen opslaan"
+      "saveSettings": "Instellingen opslaan",
+      "confirmDeleteMessageTitle": "Bericht van {name} verwijderen?",
+      "confirmDeleteMessageBody": "Het bericht verdwijnt voor iedereen uit de chat.",
+      "confirmDeleteMessageCta": "Bericht verwijderen"
     },
     "newsletter": {
       "title": "Nieuwsbrief",
@@ -1573,7 +1602,6 @@
       "video": "Video",
       "mediaCount": "{count, plural, one {# item} other {# items}}",
       "deletePackageAria": "Pakket verwijderen",
-      "confirmDeletePackage": "Dit mediapakket verwijderen?",
       "removeAria": "Verwijderen",
       "contentCount": "Inhoud ({count})",
       "titleLabel": "Titel",
@@ -1594,7 +1622,10 @@
       "saveChanges": "Wijzigingen opslaan",
       "createPackageCta": "Pakket maken",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "Mediapakket ‘{title}’ verwijderen?",
+      "confirmDeletePackageBody": "Alle afbeeldingen en video’s erin worden ook verwijderd. Dit kan niet ongedaan worden gemaakt.",
+      "confirmDeletePackageCta": "Pakket verwijderen"
     },
     "sortLabels": {
       "NEWEST": "Nieuwste eerst",
@@ -1614,7 +1645,6 @@
       "emptyHint": "Schrijf je eerste blogartikel met de editor.",
       "edit": "Bewerken",
       "delete": "Verwijderen",
-      "confirmDelete": "Dit bericht verwijderen?",
       "sheetWrite": "Bericht schrijven",
       "sheetEdit": "Bericht bewerken",
       "sheetSettings": "Bloginstellingen",
@@ -1677,7 +1707,10 @@
       "pollAddOption": "Antwoord toevoegen",
       "pollMultipleLabel": "Meerdere keuzes toestaan",
       "statusDraft": "Niet gepubliceerd",
-      "statusScheduled": "Gepland voor {date}"
+      "statusScheduled": "Gepland voor {date}",
+      "confirmDeleteTitle": "Bericht ‘{title}’ verwijderen?",
+      "confirmDeleteBody": "Het bericht verdwijnt samen met alle reacties. Dit kan niet ongedaan worden gemaakt.",
+      "confirmDeleteCta": "Bericht verwijderen"
     },
     "knowledge": {
       "badge": "Kennis",
@@ -1691,7 +1724,6 @@
       "emptyHint": "Schrijf je eerste kennisartikel.",
       "edit": "Bewerken",
       "delete": "Verwijderen",
-      "confirmDelete": "Dit artikel verwijderen?",
       "sheetWrite": "Artikel schrijven",
       "sheetEdit": "Artikel bewerken",
       "sheetSettings": "Weergave-instellingen",
@@ -1721,7 +1753,10 @@
       "showDatesHint": "Publicatiedatum per artikel",
       "saveSettings": "Instellingen opslaan",
       "cancel": "Annuleren",
-      "saving": "Opslaan…"
+      "saving": "Opslaan…",
+      "confirmDeleteTitle": "Artikel ‘{title}’ verwijderen?",
+      "confirmDeleteBody": "Het artikel verdwijnt uit de kennisbank. Dit kan niet ongedaan worden gemaakt.",
+      "confirmDeleteCta": "Artikel verwijderen"
     },
     "rte": {
       "poll": "Peiling",
@@ -1962,7 +1997,8 @@
       "deleteDesc": "Verwijdert onomkeerbaar alle leden, spaces, content en bestellingen.",
       "confirmDelete": "‘{name}’ en alle content definitief verwijderen?",
       "confirmPlaceholder": "Typ ‘{slug}’ om te bevestigen",
-      "deleting": "Verwijderen…"
+      "deleting": "Verwijderen…",
+      "confirmDeleteCta": "Community definitief verwijderen"
     },
     "developers": {
       "metaTitle": "Ontwikkelaars & API",
@@ -2506,7 +2542,11 @@
       "colSent": "Verzonden",
       "colRecipients": "Ontvangers",
       "colOpens": "Openingen",
-      "colClicks": "Kliks"
+      "colClicks": "Kliks",
+      "growthSummary": "{total, plural, one {# aanmelding} other {# aanmeldingen}} in de afgelopen 6 maanden, waarvan {current, number} deze maand.",
+      "growthEmpty": "In de afgelopen 6 maanden heeft niemand zich aangemeld. Nieuwe leden verschijnen hier per maand.",
+      "colMonth": "Maand",
+      "colNewMembers": "Nieuwe leden"
     },
     "gamification": {
       "title": "Gamification",
@@ -2523,8 +2563,6 @@
       "rule": "Regel",
       "maxPerDay": "max. {count}/dag",
       "pts": "pt",
-      "savePointsAria": "Punten opslaan",
-      "deleteRuleAria": "Regel verwijderen",
       "confirmDeleteRule": "Regel ‘{name}’ verwijderen?",
       "rulesEmptyTitle": "Nog geen regels",
       "rulesEmptyHint": "Voeg een puntenregel toe voor een actie.",
@@ -2604,7 +2642,14 @@
       "iconLabel": "Symbool",
       "manualHint": "Badges met de voorwaarde ‘handmatig’ ken je zelf toe —",
       "manualBadge": "Handmatig",
-      "manualHintLink": "in de ledenlijst."
+      "manualHintLink": "in de ledenlijst.",
+      "pointsForRuleAria": "Punten voor {name}",
+      "savePointsForRuleAria": "Punten voor {name} opslaan",
+      "deleteRuleForAria": "Regel ‘{name}’ verwijderen",
+      "confirmDeleteRuleBody": "Deze actie levert daarna geen punten meer op.",
+      "confirmDeleteRuleCta": "Regel verwijderen",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {Deze badge is nog aan niemand toegekend.} one {# lid verliest de badge.} other {# leden verliezen de badge.}}",
+      "confirmDeleteBadgeCta": "Badge verwijderen"
     },
     "referrals": {
       "metaTitle": "Verwijzingen",
@@ -2694,15 +2739,15 @@
         "desc": "Ontgrendelt een cursus"
       },
       "TIER_GRANT": {
-        "label": "Niveautoegang",
-        "desc": "Ontgrendelt een niveau"
+        "label": "Toegang tot lidmaatschap",
+        "desc": "Niet meer beschikbaar"
       }
     },
     "tiers": {
       "title": "Lidmaatschappen",
       "subtitle": "{count, plural, one {# lidmaatschap} other {# lidmaatschappen}} · zo verschijnen ze op je aanmeldpagina.",
       "create": "Lidmaatschap maken",
-      "stripeWarning": "Stripe is nog niet verbonden — gratis niveaus werken meteen; voeg voor betaalde niveaus <code>STRIPE_SECRET_KEY</code> toe aan je <code>.env</code>.",
+      "stripeWarning": "Stripe is nog niet gekoppeld: gratis lidmaatschappen werken meteen. Voeg voor betaalde lidmaatschappen <code>STRIPE_SECRET_KEY</code> toe aan je <code>.env</code>.",
       "recommended": "Aanbevolen",
       "default": "Standaard",
       "hidden": "Verborgen",
@@ -2710,9 +2755,9 @@
       "edit": "Bewerken",
       "suffixMonth": "/ maand",
       "suffixYear": "/ jaar",
-      "createTitle": "Nieuw niveau maken",
+      "createTitle": "Nieuw lidmaatschap",
       "createSubtitle": "Lidmaatschap en prijs instellen",
-      "editTitle": "Niveau bewerken",
+      "editTitle": "Lidmaatschap bewerken",
       "nameLabel": "Naam",
       "namePlaceholder": "bijv. Premium",
       "coverLabel": "Omslagafbeelding (optioneel)",
@@ -2726,17 +2771,24 @@
       "publicHint": "Wordt getoond op de aanmeldpagina.",
       "recommendedLabel": "Aanbevolen door creator",
       "recommendedHint": "Licht dit lidmaatschap uit op de aanmeldpagina (max. één).",
-      "defaultLabel": "Standaardniveau",
-      "defaultHintActive": "Nieuwe leden krijgen dit niveau.",
+      "defaultLabel": "Standaardlidmaatschap",
+      "defaultHintActive": "Nieuwe leden krijgen dit lidmaatschap.",
       "defaultHintInactive": "Instellen als standaard voor nieuwe leden.",
-      "entitlementKeyLabel": "Recht-sleutel (vast)",
-      "confirmDelete": "Niveau ‘{name}’ echt verwijderen?",
+      "entitlementKeyLabel": "Technische sleutel (alleen zichtbaar voor platformbeheerders)",
+      "confirmDelete": "Lidmaatschap ‘{name}’ verwijderen?",
       "deleting": "Verwijderen…",
-      "deleteTier": "Niveau verwijderen",
+      "deleteTier": "Lidmaatschap verwijderen",
       "cancel": "Annuleren",
       "saving": "Opslaan…",
       "saveChanges": "Wijzigingen opslaan",
-      "createTier": "Niveau maken"
+      "createTier": "Lidmaatschap maken",
+      "priceHint": "Vaste prijsniveaus, zodat de prijs ook in de app stores geldt.",
+      "payoutsMissing": "Stel eerst uitbetalingen in, zodat betalingen bij jou aankomen.",
+      "payoutsSetup": "Uitbetalingen instellen",
+      "confirmDeleteBody": "{count, plural, =0 {Het lidmaatschap wordt definitief verwijderd.} one {# lid verliest de toegang tot de inhoud van dit lidmaatschap.} other {# leden verliezen de toegang tot de inhoud van dit lidmaatschap.}} Dit kan niet ongedaan worden gemaakt.",
+      "confirmHide": "Lidmaatschap ‘{name}’ verbergen?",
+      "confirmHideBody": "Betaalde lidmaatschappen worden niet verwijderd, maar van de aanmeldpagina gehaald, zodat lopende betalingen verwerkt blijven worden. Bestaande leden houden hun toegang.",
+      "hideTier": "Lidmaatschap verbergen"
     },
     "products": {
       "title": "Producten",
@@ -2759,7 +2811,6 @@
       "namePlaceholder": "bijv. E-book",
       "typeLabel": "Type",
       "priceLabel": "Prijs",
-      "downloadUrlLabel": "Download-URL (optioneel)",
       "shipping": "Verzending",
       "shipFreeLabel": "Gratis verzending",
       "shipFreeDesc": "Geen verzendkosten",
@@ -2772,13 +2823,42 @@
       "descPlaceholder": "Wat krijgen kopers?",
       "publishedLabel": "Gepubliceerd",
       "publishedHint": "Zichtbaar en te koop in de community.",
-      "confirmDelete": "Product ‘{name}’ echt verwijderen?",
+      "confirmDelete": "Product ‘{name}’ verwijderen?",
       "deleting": "Verwijderen…",
       "deleteProduct": "Product verwijderen",
       "cancel": "Annuleren",
       "saving": "Opslaan…",
       "saveChanges": "Wijzigingen opslaan",
-      "createProduct": "Product maken"
+      "createProduct": "Product maken",
+      "confirmDeleteBody": "Het product verdwijnt uit de shop. Dit kan niet ongedaan worden gemaakt.",
+      "confirmHide": "Product ‘{name}’ verbergen?",
+      "confirmHideBody": "Er zijn bestellingen voor dit product. Het wordt daarom niet verwijderd, maar uit de shop gehaald. Kopers houden hun toegang.",
+      "hideProduct": "Product verbergen",
+      "priceHint": "Vaste prijsniveaus, zodat de prijs ook in de app stores geldt.",
+      "pricePlaceholder": "Kies een prijs",
+      "priceRequired": "Kies een prijs of ‘Gratis’.",
+      "fileLabel": "Bestand voor kopers",
+      "fileHint": "Upload het bestand of plak een link. Kopers zien de download na de aankoop.",
+      "fileUpload": "Bestand uploaden",
+      "fileReplace": "Ander bestand uploaden",
+      "fileRemove": "Verwijderen",
+      "fileUploading": "Bezig met uploaden…",
+      "fileUploaded": "Geüpload bestand",
+      "fileOpen": "Openen",
+      "fileLinkLabel": "Of link naar het bestand",
+      "fileRequired": "Upload een bestand of plak een link.",
+      "fileLinkInvalid": "De link moet met https:// beginnen.",
+      "courseLabel": "Welke cursus wordt ontgrendeld?",
+      "coursePlaceholder": "Kies een cursus",
+      "courseHint": "Na het opslaan is de cursus alleen nog open voor kopers en je team. Lessen die als preview zijn gemarkeerd, blijven voor iedereen zichtbaar.",
+      "courseRequired": "Kies de cursus die kopers krijgen.",
+      "courseLocked": "Na de eerste verkoop kan de cursus niet meer worden gewijzigd, zodat kopers hun toegang houden.",
+      "noCourses": "Je hebt nog geen cursus die los verkocht kan worden.",
+      "createCourse": "Cursus maken",
+      "tierGrantRetired": "Dit type ontgrendelt geen lidmaatschap. Kies een ander type. Betaalde lidmaatschappen maak je aan onder ‘Lidmaatschappen’.",
+      "viewInShop": "Bekijken in de shop",
+      "payoutsMissing": "Stel eerst uitbetalingen in, zodat betalingen bij jou aankomen.",
+      "payoutsSetup": "Uitbetalingen instellen"
     },
     "payouts": {
       "title": "Uitbetalingen",
@@ -2875,7 +2955,6 @@
       "cancel": "Annuleren",
       "adding": "Toevoegen…",
       "statusLabel": "Status",
-      "confirmRemove": "‘{name}’ echt uit de community verwijderen?",
       "removing": "Verwijderen…",
       "removeMember": "Lid verwijderen",
       "saving": "Opslaan…",
@@ -2898,7 +2977,10 @@
       "awarding": "Bezig met toekennen…",
       "revoke": "Verwijderen",
       "revoking": "Bezig met verwijderen…",
-      "awardedOn": "Toegekend op {date}"
+      "awardedOn": "Toegekend op {date}",
+      "confirmRemoveTitle": "‘{name}’ uit de community verwijderen?",
+      "confirmRemoveBody": "Lopende abonnementen stoppen direct en de toegang via het lidmaatschap vervalt. Losse aankopen blijven behouden.",
+      "confirmRemoveCta": "Lid verwijderen"
     },
     "spaceTypes": {
       "FEED": {
@@ -2989,15 +3071,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Openbaar",
-        "desc": "Zichtbaar voor iedereen"
+        "desc": "Zichtbaar voor iedereen, ook zonder account"
       },
       "MEMBERS": {
         "label": "Leden",
-        "desc": "Alleen ingelogd"
+        "desc": "Alleen leden van de community"
       },
       "PAID": {
         "label": "Betaald",
-        "desc": "Lidmaatschap vereist"
+        "desc": "Alleen met betaald lidmaatschap"
       }
     },
     "spaces": {
@@ -3015,15 +3097,12 @@
       "createSubtitle": "Kies type en zichtbaarheid",
       "editTitle": "Space bewerken",
       "edit": "Bewerken",
-      "reactivate": "Activeren",
       "archive": "Archiveren",
       "postCount": "{count, plural, one {# bericht} other {# berichten}}",
       "nameLabel": "Naam van de space",
       "namePlaceholder": "bijv. Aankondigingen",
       "typeLabel": "Type",
       "visibilityLabel": "Zichtbaarheid",
-      "entitlementLabel": "Vereist recht",
-      "entitlementHint": "Laat leeg om elk betaald lidmaatschap te accepteren.",
       "descLabel": "Beschrijving (optioneel)",
       "descPlaceholder": "Waar gaat deze space over?",
       "deleting": "Verwijderen…",
@@ -3033,7 +3112,32 @@
       "saveChanges": "Wijzigingen opslaan",
       "deleteConfirmTitle": "Space verwijderen?",
       "deleteConfirmText": "‘{name}’ wordt permanent verwijderd. Alle content erin gaat verloren — dit kan niet ongedaan worden gemaakt.",
-      "delete": "Verwijderen"
+      "delete": "Verwijderen",
+      "restore": "Herstellen",
+      "archiveNamed": "‘{name}’ archiveren",
+      "restoreNamed": "‘{name}’ herstellen",
+      "archivedNotice": "‘{name}’ gearchiveerd – onzichtbaar voor leden.",
+      "restoredNotice": "‘{name}’ hersteld – weer zichtbaar voor leden.",
+      "undo": "Ongedaan maken",
+      "dismissNotice": "Melding sluiten",
+      "typeLockedHint": "Het type ligt vast, omdat deze space al {count, plural, one {# item} other {# items}} heeft. Met een ander type zouden ze niet meer zichtbaar zijn. Maak voor een ander type een nieuwe space aan.",
+      "access": {
+        "legend": "Welke lidmaatschappen hebben toegang?",
+        "anyPaid": "Elk betaald lidmaatschap",
+        "anyPaidDesc": "Ook wie iets betaalds heeft gekocht, bijv. een product",
+        "pricePerMonth": "{price}/maand",
+        "pricePerYear": "{price}/jaar",
+        "tierHidden": "{price} · niet in het aanbod",
+        "legacyLabel": "Eerdere toegangsregel",
+        "legacyFreeTier": "Gratis lidmaatschap – oudere instelling",
+        "legacyKey": "Sleutel ‘{key}’ – oudere instelling",
+        "hintTier": "Alleen leden met precies dit lidmaatschap zien de space. Jij en je team hebben altijd toegang.",
+        "hintAny": "Alle leden met een betaald lidmaatschap zien de space. Jij en je team hebben altijd toegang.",
+        "noPaidTitle": "Nog geen betaald lidmaatschap",
+        "noPaidText": "Maak een betaald lidmaatschap aan, zodat leden deze space kunnen ontgrendelen.",
+        "noPaidCta": "Eerst een lidmaatschap aanmaken",
+        "specificTier": "Specifiek lidmaatschap"
+      }
     },
     "roles": {
       "OWNER": "Eigenaar",
@@ -3124,14 +3228,14 @@
       "leaveTitle": "Community verlaten",
       "cancelText": "Je toegang tot betaalde content eindigt met de betaalde periode. Gekochte producten blijven van jou.",
       "leaveText": "Je verliest toegang tot content voor leden. Gekochte producten blijven van jou.",
-      "confirmCancel": "Lidmaatschap echt opzeggen?",
       "cancelling": "Opzeggen…",
       "cancelNow": "Nu opzeggen",
       "confirmLeave": "Community ‘{name}’ echt verlaten?",
       "leaving": "Verlaten…",
       "leaveCommunity": "Community verlaten",
       "perMonth": "/maand",
-      "perYear": "/jaar"
+      "perYear": "/jaar",
+      "confirmCancelTitle": "Je lidmaatschap van ‘{name}’ opzeggen?"
     },
     "credits": {
       "title": "Credits & gebruik",
@@ -3224,8 +3328,6 @@
       "edit": "Bewerken",
       "delete": "Verwijderen",
       "moveToFolder": "Naar een map verplaatsen",
-      "confirmDeleteFolder": "Deze map verwijderen? De media erin komen zonder map te staan.",
-      "confirmDeleteMedia": "Deze media echt verwijderen? Daarna is het niet meer bereikbaar.",
       "folderMenuAria": "Mapopties voor {name}",
       "itemMenuAria": "Mediaopties voor {name}",
       "openAria": "{name} openen",
@@ -3252,9 +3354,18 @@
       "openInStudio": "In de studio bewerken",
       "uploadMedia": "Media uploaden",
       "uploadingProgress": "Bezig met uploaden… {done}/{total}",
-      "uploadFailed": "Uploaden mislukt: {name}",
       "storageTitle": "Mediaopslag",
-      "storageOf": "{used} van {limit} gebruikt"
+      "storageOf": "{used} van {limit} gebruikt",
+      "uploadFailedCount": "{count, plural, one {# bestand is niet geüpload} other {# bestanden zijn niet geüpload}}",
+      "uploadFailedLine": "{name}: {reason}",
+      "retryUpload": "Opnieuw uploaden",
+      "dismissUploadErrors": "Melding sluiten",
+      "confirmDeleteFolderTitle": "Map ‘{name}’ verwijderen?",
+      "confirmDeleteFolderBody": "De media erin blijven bewaard en staan daarna onder ‘Zonder map’.",
+      "confirmDeleteFolderCta": "Map verwijderen",
+      "confirmDeleteMediaTitle": "‘{name}’ definitief verwijderen?",
+      "confirmDeleteMediaBody": "Het bestand wordt verwijderd. Berichten en pagina’s die het gebruiken, tonen het daarna niet meer.",
+      "confirmDeleteMediaCta": "Definitief verwijderen"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3420,7 +3531,6 @@
       "studioChatShow": "Chat tonen",
       "studioChatHide": "Chat verbergen",
       "studioFullscreen": "Volledig scherm",
-      "studioCloseConfirm": "Je bent live. Als je de studio sluit, wordt je uitzending onderbroken. Toch sluiten?",
       "studioNoPreview": "De uitzending loopt — de videopreview bestaat alleen op het apparaat dat uitzendt.",
       "studioMirror": "Voorbeeld spiegelen",
       "studioLevel": "Geluidsniveau",
@@ -3436,7 +3546,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Studio sluiten en de uitzending beëindigen?",
+      "studioCloseBody": "Je bent nu live. Als je de studio sluit, stopt je uitzending.",
+      "studioCloseCta": "Studio sluiten",
+      "studioCloseCancel": "Blijf uitzenden"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3879,6 +3993,38 @@
     "dateTimeField": {
       "tzHint": "In jouw tijdzone: {zone} ({abbr})",
       "pastWarning": "Deze datum ligt in het verleden."
+    },
+    "planSheet": {
+      "title": "Pakket wijzigen",
+      "subtitle": "Wat elk pakket bevat",
+      "loading": "Pakketten laden …",
+      "loadFailed": "De pakketten konden niet worden geladen.",
+      "retry": "Opnieuw laden",
+      "pricePerMonth": "{price} per maand",
+      "free": "Gratis",
+      "current": "Jouw pakket",
+      "currentPlan": "Je huidige pakket",
+      "limitSpaces": "{count, plural, one {# actieve space} other {# actieve spaces}}",
+      "limitSpacesUnlimited": "Onbeperkt spaces",
+      "limitMembers": "{count, plural, one {# actief lid} other {# actieve leden}}",
+      "limitMembersUnlimited": "Onbeperkt leden",
+      "limitTiers": "Tot {count, plural, one {# lidmaatschap} other {# lidmaatschappen}}",
+      "limitTiersUnlimited": "Onbeperkt lidmaatschappen",
+      "limitStaff": "{count, plural, one {# teamplek} other {# teamplekken}}",
+      "limitStaffUnlimited": "Onbeperkt teamplekken",
+      "limitCredits": "{n} AI-credits per maand",
+      "everythingFrom": "Alles uit {plan}, plus:",
+      "baseSpaces": "Inbegrepen:",
+      "spaceTypesList": "Space-typen: {list}",
+      "freeHint": "Terug naar Free kan door je pakket op te zeggen.",
+      "switching": "Wordt gestart …",
+      "switchTo": "Overstappen naar {plan}",
+      "checkoutFailed": "De betaling kon niet worden gestart. Probeer het opnieuw.",
+      "cancelFailed": "De opzegging kon niet worden vastgelegd. Probeer het opnieuw.",
+      "footnote": "Prijzen per maand, maandelijks opzegbaar. Betaling verloopt via Stripe.",
+      "spacesUsedNotice": "Je gebruikt {used} van {max} spaces.",
+      "creditsTeaser": "Huidig: {plan}. De pakketten verschillen in spaces, leden en functies.",
+      "open": "Pakket wijzigen"
     }
   },
   "common": {
@@ -4076,7 +4222,7 @@
       },
       "space": {
         "lockedDesc": "Deze space is exclusief voor leden.",
-        "lockedDescPaid": "Deze space is exclusief voor leden met een passend lidmaatschap.",
+        "lockedDescPaid": "Deze inhoud hoort bij een betaald lidmaatschap.",
         "upgradeMembership": "Lidmaatschap upgraden",
         "join": "Lid worden",
         "noLinks": "Nog geen links",
@@ -4153,7 +4299,11 @@
       "postTile": {
         "becomeMember": "Word lid",
         "exclusive": "Alleen leden",
-        "locked": "Vergrendeld"
+        "locked": "Vergrendeld",
+        "lockedUntitled": "Bericht voor leden",
+        "paidUntitled": "Betaald bericht",
+        "lockedHint": "Dit bericht is voor leden.",
+        "paidHint": "Je kunt dit bericht los ontgrendelen."
       },
       "planCard": {
         "current": "Jouw pakket",
@@ -4271,6 +4421,15 @@
         "like": "Leuk",
         "unlike": "Niet meer leuk",
         "locked": "Vergrendeld"
+      },
+      "paywall": {
+        "belongsTo": "‘{space}’ hoort bij {tier} ({price}).",
+        "anyPaidFrom": "‘{space}’ zit in elk betaald lidmaatschap – vanaf {tier} ({price}).",
+        "pricePerMonth": "{price}/maand",
+        "pricePerYear": "{price}/jaar",
+        "viewTier": "{tier} bekijken",
+        "becomeMember": "Lid worden",
+        "memberHint": "Je huidige lidmaatschap bevat deze space niet."
       }
     },
     "nav": {
@@ -4429,7 +4588,8 @@
     "title": "Weergavetaal",
     "hint": "Geldt voor jouw weergave van Aera op dit apparaat.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Weergavetaal: {language}"
   },
   "spaces": {
     "commentsClosed": "Reacties zijn gesloten.",
@@ -4550,7 +4710,8 @@
         "product": "Producten",
         "knowledge": "Kennis"
       }
-    }
+    },
+    "postCount": "{count, plural, one {# bericht} other {# berichten}}"
   },
   "categories": {
     "podcast": "Podcasts & shows",
@@ -4583,10 +4744,10 @@
       },
       "s2": {
         "title": "Spaces voor alles wat je doet",
-        "text": "Richt zoveel spaces in als je nodig hebt: een feed voor nieuws, een forum voor discussies, cursussen, een shop, nieuwsbrieven, evenementen, een blog, een kennisbank, fotogalerijen, een videobibliotheek, chat, podcast, een linkverzameling en eigen advertentieruimtes. Voor elke space bepaal jij of die zichtbaar is voor iedereen, alleen voor leden of alleen voor betalende leden.",
-        "tag1": "14 space-typen",
+        "text": "Richt de spaces in die je nodig hebt: een feed voor nieuws, een forum voor discussies, cursussen, een shop, nieuwsbrieven, evenementen, een blog, een kennisbank, fotogalerijen, een videobibliotheek, chat, podcast, een linkverzameling en eigen advertentieruimtes. Voor elke space bepaal jij of die zichtbaar is voor iedereen, alleen voor leden of alleen voor betalende leden.",
+        "tag1": "{count} space-typen",
         "tag2": "Zichtbaarheid naar keuze",
-        "tag3": "Onbeperkt aantal spaces"
+        "tag3": "Aantal afhankelijk van pakket"
       },
       "s3": {
         "title": "Berichten, reacties & reactions",
@@ -4706,17 +4867,17 @@
     "topupTitle": "Credits bijkopen",
     "topupText": "Tussendoor meer nodig? Bijgekochte credits verlopen niet en worden pas na je maandtegoed gebruikt.",
     "creditsLabel": "Credits",
-    "footnote": "1 credit komt overeen met ongeveer 1.000 tokens; een typische assistent-aanvraag kost 1–3 credits. Platformkosten op je community-omzet worden apart afgerekend — alleen op echte omzet.",
+    "footnote": "1 credit komt overeen met ongeveer 1.000 tokens; een typische assistent-aanvraag kost 1–3 credits.",
     "plans": {
       "FREE": {
         "tagline": "Om te beginnen",
-        "f1": "11 basis-spaces: feed, forum, cursussen, events, blog …",
+        "f1": "{count} basis-spaces: feed, forum, cursussen, events, blog …",
         "f2": "Tot 5 spaces & 100 leden",
-        "f3": "Lidmaatschappen, media & moderatie",
+        "f3": "Tot {tiers} lidmaatschappen (ook betaalde), media & moderatie",
         "f4": "500 AI-credits per maand"
       },
       "STARTER": {
-        "tagline": "Als je geld wilt verdienen",
+        "tagline": "Voor shop, producten en statistieken",
         "f1": "Alles uit Free",
         "f2": "Statistieken, producten & uitbetalingen",
         "f3": "Shop, chat, fooien, kalender & planner",
@@ -4741,7 +4902,7 @@
     "compare": {
       "eyebrow": "In detail",
       "title": "Wat elk pakket bevat",
-      "subtitle": "Elke rij is een functie die je meteen in je dashboard kunt gebruiken. Niets verdwijnt als je wisselt — er komt alleen meer bij.",
+      "subtitle": "Elke rij is een functie die je meteen in je dashboard kunt gebruiken. Stap je over naar een groter pakket, dan komt er alleen iets bij.",
       "spacesGroup": "Spacetypes",
       "featuresGroup": "Functies",
       "limitsGroup": "Grenzen",
@@ -4757,8 +4918,17 @@
       "limitStorage": "Media-opslag",
       "limitCredits": "AI-credits per maand",
       "storageValue": "{gb} GB",
-      "note": "Een promocode van een partner schakelt je pakket direct vrij — zonder betaalgegevens."
-    }
+      "note": "Een promocode van een partner schakelt je pakket direct vrij — zonder betaalgegevens.",
+      "feeNote": "Op elke verkoop in je community rekenen we {fee} platformkosten – in elk pakket. Daarbovenop komen de kosten van de betaalprovider (Stripe).",
+      "feesGroup": "Kosten",
+      "feePlatform": "Kosten op je omzet",
+      "feeProvider": "Kosten betaalprovider",
+      "feeProviderValue": "Volgens Stripe-tarief",
+      "membersNote": "Actieve leden zijn alle leden van je community – jij en je team inbegrepen, gratis en betalend. Is de grens bereikt, dan kunnen nieuwe leden pas na een upgrade lid worden.",
+      "scrollHint": "Veeg opzij om te vergelijken",
+      "tableLabel": "Pakketvergelijking"
+    },
+    "feeLine": "Kosten op je omzet: {fee}"
   },
   "marketing": {
     "navDiscover": "Ontdekken",
@@ -4782,7 +4952,10 @@
     "footerPrivacy": "Privacybeleid",
     "footerWithdrawal": "Herroepingsrecht",
     "footerTagline": "Jouw community. Jouw merk. Jouw business.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "Vanaf {plan}: {items}",
+    "footerContact": "Contact",
+    "legalGermanOnly": "Deze juridische tekst is alleen in het Duits beschikbaar. De Duitse versie is bindend."
   },
   "home": {
     "badge": "Community · Lidmaatschap · Commerce",
@@ -4858,7 +5031,7 @@
       "c1": {
         "title": "Spaces voor alles wat je doet",
         "text": "Feed, forum, blog en kennisbank, fotogalerijen, videobibliotheek en podcast, plus chat, linkverzameling en eigen advertentieruimtes. Elke space kan open zijn voor iedereen, alleen voor leden of alleen voor betalende leden — en overal kan gereageerd en gecommentarieerd worden.",
-        "tag1": "14 space-typen",
+        "tag1": "{count} space-typen",
         "tag2": "Zichtbaarheid naar keuze",
         "tag3": "Berichten, reacties & reactions"
       },
@@ -4956,11 +5129,11 @@
       "colYou": "Aera",
       "rowBase": "Basisprijs per maand",
       "rowFee": "Aandeel in je omzet",
-      "rowFull": "Volledige functieomvang vanaf",
+      "rowFull": "Alle functies vanaf",
       "aera": {
         "base": "0 — gratis beginnen",
-        "fee": "5 %",
-        "full": "{pro} per maand"
+        "fee": "{fee}",
+        "full": "{price} per maand ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -4981,26 +5154,27 @@
         "full": "$ 99 (Pro)"
       },
       "footnote": "Cijfers van de openbare prijspagina’s, stand juli 2026. Transactiekosten van de betaalprovider (ongeveer 2,9 % + 0,30) komen bij elke aanbieder bovenop — ook bij ons.",
-      "includedTitle": "Bij Aera zonder meerprijs inbegrepen",
+      "includedTitle": "In elk pakket inbegrepen",
       "included": {
         "i1": {
-          "title": "20 onderdelen",
-          "text": "Feed, forum, cursussen, nieuwsbrief, evenementen, blog, kennis, galerij, video, shop, chat, podcast, live en meer — onder één dak."
+          "title": "{count} basis-spaces",
+          "text": "{list} – alles onder één dak."
         },
         "i2": {
-          "title": "Vier verdienwegen, één checkout",
-          "text": "Lidmaatschappen, digitale producten, betaalde content en evenementen lopen via dezelfde kassa."
+          "title": "Lidmaatschappen vanaf dag één",
+          "text": "Tot {tiers} lidmaatschappen, gratis of betaald, plus betaalde content – alles via dezelfde checkout."
         },
         "i3": {
           "title": "Jouw merk, jouw adres",
-          "text": "Eigen domein, eigen kleuren, eigen logo. Je leden zien jou, niet ons."
+          "text": "Je eigen logo, je eigen kleuren en een eigen adres op Aera. Je leden zien jou, niet ons."
         },
         "i4": {
-          "title": "Je data blijft van jou",
-          "text": "Leden, content en omzet altijd exporteerbaar. Geen afscheid met lege handen."
+          "title": "AI-assistent inbegrepen",
+          "text": "{credits} AI-credits per maand voor teksten en ideeën, plus {gb} GB mediaopslag."
         }
       }
-    }
+    },
+    "fromPlan": "vanaf {plan}"
   },
   "legalPurchase": {
     "immediateAccess": "Ik verzoek om directe toegang en begrijp dat mijn herroepingsrecht vervalt zodra de digitale levering begint. <withdrawal>Details</withdrawal>.",
@@ -5029,19 +5203,19 @@
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Uitnodiging aannemen — Aera",
+      "inviteMeta": "Uitnodiging aannemen",
       "inviteInvalidTitle": "Ongeldige uitnodiging",
       "inviteInvalidText": "Deze uitnodigingslink is verlopen of al gebruikt. Vraag de beheerder van de community om een nieuwe uitnodiging — of gebruik ‘Wachtwoord vergeten' als je account al actief is.",
       "forgotPassword": "Wachtwoord vergeten",
       "inviteWelcome": "Welkom bij Aera",
       "inviteActivate": "Activeer je account {email} door een wachtwoord in te stellen.",
-      "resetMeta": "Wachtwoord opnieuw instellen — Aera",
+      "resetMeta": "Wachtwoord opnieuw instellen",
       "invalidLinkTitle": "Ongeldige link",
       "resetInvalidText": "Deze link is verlopen of al gebruikt.",
       "requestNewLink": "Nieuwe link aanvragen",
       "resetTitle": "Stel een nieuw wachtwoord in",
       "forAccount": "Voor het account {email}",
-      "verifyMeta": "E-mail bevestigen — Aera",
+      "verifyMeta": "E-mail bevestigen",
       "verifyInvalidText": "Deze bevestigingslink is verlopen of al gebruikt. Vraag een nieuwe link aan.",
       "toLogin": "Naar het inloggen",
       "alreadyVerifiedTitle": "Al bevestigd",
@@ -5069,7 +5243,7 @@
       "rootDescription": "Aera is het alles-in-één platform voor makers: community, lidmaatschappen, cursussen, evenementen, nieuwsbrieven, verkoop en AI — onder je eigen merk.",
       "loginMeta": "Inloggen",
       "signupMeta": "Aanmelden",
-      "forgotMeta": "Wachtwoord vergeten — Aera",
+      "forgotMeta": "Wachtwoord vergeten",
       "pricingMeta": "Prijzen",
       "featuresMeta": "Functies",
       "manifestDescription": "Jouw communities: berichten, cursussen, evenementen en gesprekken — allemaal op één plek.",
@@ -5222,7 +5396,8 @@
       "notFound": {
         "title": "Pagina niet gevonden",
         "text": "Deze community of pagina bestaat niet.",
-        "home": "Terug naar de startpagina"
+        "home": "Terug naar de startpagina",
+        "help": "Naar het helpcentrum"
       },
       "articleShare": {
         "label": "Delen",
@@ -5305,6 +5480,9 @@
       "bundle": "Bundel",
       "tagline": "Slogan",
       "logoUrl": "Logo-URL"
+    },
+    "pricePoint": {
+      "free": "Gratis"
     }
   },
   "unsubscribe": {
@@ -5350,11 +5528,26 @@
     "preparing": "Voorbereiden …",
     "verifying": "Controleren …",
     "done": "Klaar",
-    "failed": "Mislukt",
     "secondsLeft": "{count, plural, one {nog # seconde} other {nog # seconden}}",
     "minutesLeft": "{count, plural, one {nog # minuut} other {nog # minuten}}",
     "more": "{count, plural, one {# upload meer} other {# uploads meer}}",
-    "dismiss": "Verbergen"
+    "dismiss": "Verbergen",
+    "retry": "Opnieuw uploaden",
+    "doneAnnounce": "Geüpload: {names}",
+    "errors": {
+      "connection": "De verbinding met de opslag is mislukt. Controleer je internetverbinding en probeer het opnieuw.",
+      "canceled": "Het uploaden is afgebroken. Probeer het opnieuw.",
+      "storageRejected": "De opslag heeft het bestand geweigerd. Probeer het opnieuw; gebeurt het weer, neem dan contact op met support.",
+      "notStarted": "Het uploaden kon niet starten. Probeer het zo opnieuw.",
+      "verification": "Het bestand kon na het uploaden niet worden gecontroleerd. Probeer het opnieuw.",
+      "rejected": "Het bestand is bij de controle geweigerd. Controleer bestandstype en inhoud of kies een ander bestand.",
+      "quota": "Je opslag is vol. Verwijder media in de mediabibliotheek of stap over op een groter abonnement.",
+      "tooMany": "Te veel uploads in korte tijd. Wacht even en probeer het opnieuw.",
+      "signedOut": "Je bent niet meer ingelogd. Log opnieuw in en upload het bestand nog een keer.",
+      "unavailable": "Uploaden is nu niet mogelijk. Probeer het over een paar minuten opnieuw.",
+      "invalid": "Dit bestand kan hier niet worden geüpload. Controleer bestandstype en grootte.",
+      "failed": "Het uploaden is mislukt. Probeer het opnieuw."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

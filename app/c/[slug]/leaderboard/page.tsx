@@ -7,10 +7,11 @@ import { BadgeRow } from "@/components/community/badge-row";
 import { Card, CardBody } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
+import { MembersOnlyGate } from "@/components/community/members-only-gate";
 
 // Medal accents for the top three ranks — restrained, palette-consistent.
 const MEDAL = [
-  { avatarRing: "ring-2 ring-amber-300", ped: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", h: "h-20" },
+  { avatarRing: "ring-2 ring-amber-300", ped: "bg-amber-50 text-amber-700 ring-1 ring-amber-200", h: "h-20" },
   { avatarRing: "ring-2 ring-slate-300", ped: "bg-slate-100 text-slate-600 ring-1 ring-slate-200", h: "h-14" },
   { avatarRing: "ring-2 ring-orange-300", ped: "bg-orange-50 text-orange-700 ring-1 ring-orange-200", h: "h-10" },
 ] as const;
@@ -28,13 +29,15 @@ export default async function LeaderboardPage({
   // Full leaderboard is members-only (the home page shows a public top 5).
   if (community.ctx.membership?.status !== "ACTIVE" && !community.ctx.isStaff) {
     return (
-      <div className="mx-auto max-w-md py-16 text-center">
-        <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)] text-[color:var(--brand)] ring-1 ring-[var(--brand-ring)]">
-          <Icon name="lock" size={24} />
-        </span>
-        <h1 className="text-xl font-bold text-slate-900">{t("lockedTitle")}</h1>
-        <p className="mt-2 text-sm text-slate-500">{t("lockedText")}</p>
-      </div>
+      <MembersOnlyGate
+        slug={slug}
+        tenantId={community.tenant.id}
+        communityName={community.tenant.name}
+        title={t("lockedTitle")}
+        context={t("title")}
+        next={`/c/${slug}/leaderboard`}
+        loggedIn={Boolean(community.user)}
+      />
     );
   }
 
@@ -59,8 +62,8 @@ export default async function LeaderboardPage({
           <Icon name="trophy" size={22} />
         </span>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-xl font-bold text-[#161613]">{t("title")}</h1>
+          <p className="text-sm text-[#161613]/70">
             {board.length > 0
               ? t("ranking", { count: board.length })
               : t("emptyHint")}
@@ -117,11 +120,11 @@ export default async function LeaderboardPage({
                           {row.name}
                         </p>
                         {row.levelName && (
-                          <p className="max-w-full truncate text-center text-xs text-slate-500">
+                          <p className="max-w-full truncate text-center text-xs text-slate-600">
                             {row.levelName}
                           </p>
                         )}
-                        <span className="mt-1.5 rounded-full bg-[var(--brand-soft)] px-2.5 py-0.5 text-xs font-semibold text-[color:var(--brand)]">
+                        <span className="mt-1.5 rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-[#161613] ring-1 ring-[#161613]/10">
                           {nf.format(row.points)} {t("pts")}
                         </span>
                         <div
@@ -155,7 +158,7 @@ export default async function LeaderboardPage({
                       >
                         <span
                           className={`w-6 text-center text-sm font-bold ${
-                            medal ? "text-amber-500" : "text-slate-500"
+                            medal ? "text-amber-700" : "text-slate-600"
                           }`}
                         >
                           {rank}
@@ -170,14 +173,14 @@ export default async function LeaderboardPage({
                               </span>
                             )}
                           </p>
-                          <p className="flex items-center gap-2 truncate text-xs text-slate-500">
+                          <p className="flex items-center gap-2 truncate text-xs text-slate-600">
                             {row.levelName && <span className="truncate">{row.levelName}</span>}
                             <BadgeRow badges={badgeBy.get(row.userId) ?? []} size={18} max={3} />
                           </p>
                         </div>
-                        <span className="shrink-0 font-bold text-[color:var(--brand)]">
+                        <span className="shrink-0 font-bold text-[#161613]">
                           {nf.format(row.points)}
-                          <span className="ml-1 text-xs font-medium text-slate-500">
+                          <span className="ml-1 text-xs font-medium text-slate-600">
                             {t("pts")}
                           </span>
                         </span>

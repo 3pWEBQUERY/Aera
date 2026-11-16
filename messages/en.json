@@ -39,19 +39,19 @@
     "ownerCantCancel": "As the owner you can't cancel your own membership.",
     "noPaidMembership": "You don't have a paid membership.",
     "stripeCancelFailed": "Stripe cancellation failed. Please try again.",
-    "defaultTierCantDelete": "The default tier cannot be deleted.",
-    "tierDeleteStripeBlocked": "This tier can only be deleted after Stripe confirms that all linked subscriptions have ended. No data was deleted.",
+    "defaultTierCantDelete": "The default membership can't be deleted. Set another membership as the default first.",
+    "tierDeleteStripeBlocked": "This membership can only be deleted after Stripe confirms that all linked subscriptions have ended. No data was deleted.",
     "memberRemoveStripeFailed": "The Stripe subscription could not be ended safely. The member was not removed and no local access was deleted.",
     "tenantDeleteConfirmMismatch": "The entered community slug does not match.",
     "tenantDeleteStripeSubscriptionsActive": "The community can only be deleted after all Stripe subscriptions have ended. No data was deleted.",
     "tenantDeleteStripeCleanupFailed": "Stripe or Connect cleanup failed. The community and its data were not deleted.",
-    "paidTierArchivedInsteadOfDeleted": "The paid tier was safely hidden instead of deleted so open Stripe payments can still be processed correctly.",
+    "paidTierArchivedInsteadOfDeleted": "The paid membership was hidden instead of deleted so ongoing payments can still be processed.",
     "pendingPaymentsBlockDeletion": "Deletion is blocked while pending payments or reservations exist. No data was deleted.",
     "productArchivedBecauseOrdersExist": "The product was hidden instead of deleted because orders reference it. Pending payments can still be processed safely.",
     "postNotFound": "Post not found.",
     "commentsClosed": "Comments are closed.",
     "invalidCommentRef": "Invalid comment reference.",
-    "tierNotFound": "Tier not found.",
+    "tierNotFound": "This membership no longer exists. Reload the page.",
     "productNotFound": "Product not found.",
     "courseNotFound": "Course not found.",
     "lessonNotFound": "Lesson not found.",
@@ -130,7 +130,7 @@
     "subTaken": "This subdomain is already taken.",
     "planSpaceTypeLocked": "This space type is available from the {plan} package. Upgrade to create it.",
     "planSpaceLimitReached": "Your {plan} package allows {limit} active spaces. Upgrade for more room.",
-    "planTierLimitReached": "Your {plan} package allows {limit} membership tiers. Upgrade to add more.",
+    "planTierLimitReached": "Your {plan} package allows {limit} memberships. Change your package to add more.",
     "planFeatureLocked": "This feature is available from the {plan} package. Upgrade to use it.",
     "planMemberLimitReached": "Your {plan} package is built for {limit} active members. Upgrade to keep growing.",
     "planStaffLimitReached": "Your {plan} package allows {limit} team seats (admins/moderators). Upgrade for more.",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "This segment is empty right now. Choose another segment to send.",
     "campaignTestDeliveryFailed": "The email service did not accept the message ({detail}). Try again later.",
     "recoveryCodeInvalid": "This recovery code is wrong or has already been used. Check the spelling or try another code.",
-    "secondFactorInvalid": "That code doesn't match. Enter the current code from your app or an unused recovery code."
+    "secondFactorInvalid": "That code doesn't match. Enter the current code from your app or an unused recovery code.",
+    "productPriceRequired": "Choose a price or “Free”.",
+    "productFileRequired": "Upload a file for buyers or paste a link.",
+    "productFileUrlInvalid": "The link to the file must start with https://.",
+    "productCourseRequired": "Choose the course buyers get.",
+    "productCourseGated": "This course belongs to a membership and can't be sold on its own.",
+    "productGrantLocked": "After the first sale, the type and course can't be changed, so buyers keep their access.",
+    "productTypeUnavailable": "This product type is no longer offered. Choose another type.",
+    "spaceAccessTierInvalid": "This membership doesn't exist or is free. Choose a paid membership from the list.",
+    "spaceTypeLockedContent": "The type can't be changed anymore: this space has {count, plural, one {# item} other {# items}}. Create a new space for a different type."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",
@@ -434,19 +443,19 @@
     "searchAria": "Search help",
     "searchSubmit": "Search",
     "comingSoon": "The help center is being built — check back soon.",
-    "noResults": "No results for “{query}”",
-    "resultsCount": "{count, plural, one {# result} other {# results}} for “{query}”",
+    "noResults": "No articles for “{query}”",
+    "resultsCount": "{count, plural, one {# article} other {# articles}} for “{query}”",
     "resetSearch": "Reset search",
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "contactTitle": "Didn't find what you need?",
-    "contactText": "Just get started — you'll find most answers right in your community or the creator dashboard.",
-    "contactCta": "Start for free",
+    "contactText": "Write to us – we'll reply by email or in your account.",
+    "contactCta": "Write a message",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "Name (optional)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -460,7 +469,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Just get started — you'll find most answers right in your community or the creator dashboard.",
+    "startCta": "Start for free",
+    "startTitle": "No community yet?"
   },
   "account": {
     "metaTitle": "Account",
@@ -661,7 +673,7 @@
       "noResultsHint": "No community found for “{q}”.",
       "emptyHint": "Once creators create communities, they appear here.",
       "membersShort": "{count} members",
-      "postsShort": "{count} posts",
+      "postsShort": "{count, plural, one {# post} other {# posts}}",
       "since": "since {date}",
       "editTitle": "Edit community",
       "owner": "Owner: {name} ({email})",
@@ -689,7 +701,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "All members, spaces, content and orders of this community will be deleted."
     },
     "users": {
       "title": "Users",
@@ -743,12 +756,12 @@
       "date": "Date",
       "key": "Key",
       "openInNewTab": "Open in new tab",
-      "deleteConfirm": "Really remove this media?",
       "deleteBtn": "Remove media",
       "dangerDesc": "Removes the file from delivery. Content that references it will no longer display the media.",
       "visPublic": "Public",
       "visMembers": "Members",
-      "visPaid": "Paid"
+      "visPaid": "Paid",
+      "deleteConfirmTitle": "Remove “{name}”?"
     },
     "posts": {
       "title": "Posts",
@@ -766,7 +779,9 @@
       "unpublishedBadge": "Unpublished",
       "unpublish": "Unpublish",
       "publish": "Publish",
-      "deleteConfirm": "Really delete this post permanently?"
+      "deleteConfirmTitle": "Delete post “{title}”?",
+      "deleteConfirmBody": "The post and all its comments will be deleted. This can't be undone.",
+      "deleteCta": "Delete post"
     },
     "orders": {
       "title": "Orders",
@@ -792,12 +807,12 @@
       "fulfilled": "Fulfilled",
       "fulfilledHint": "Marks the order as delivered or completed.",
       "dangerDesc": "Permanently deletes the order from the database. Payments at Stripe remain untouched.",
-      "deleteConfirm": "Really delete this order permanently?",
       "deleteBtn": "Delete order",
       "statusPending": "Pending",
       "statusPaid": "Paid",
       "statusRefunded": "Refunded",
-      "statusFailed": "Failed"
+      "statusFailed": "Failed",
+      "deleteConfirmTitle": "Delete order “{name}”?"
     },
     "help": {
       "title": "Help center",
@@ -1058,7 +1073,6 @@
       "chatEmptyDesc": "I can analyze your community, write text and perform actions like creating spaces.",
       "imageEmptyTitle": "Generate images",
       "imageEmptyDesc": "Describe what you want to see. You can also upload images as templates — the assistant edits them or draws inspiration from them.",
-      "geminiOff": "Google Gemini is not active — set a GEMINI_API_KEY under Settings → Integrations.",
       "chatPlaceholder": "Message the assistant…",
       "sendAria": "Send",
       "chatHint": "Enter to send · Shift+Enter for a new line. Actions apply directly to your community.",
@@ -1132,7 +1146,9 @@
           "title": "Mascot",
           "prompt": "A friendly, illustrative mascot avatar for my community, round shapes, bold colors."
         }
-      }
+      },
+      "geminiOffCreator": "The AI assistant hasn't been set up on this platform yet.",
+      "geminiOffAdmin": "Google Gemini isn't active. Set GEMINI_API_KEY in the server environment and restart the app. Only platform admins see this note."
     },
     "announcements": {
       "statusDraft": "Draft",
@@ -1180,7 +1196,9 @@
       "cancel": "Cancel",
       "saving": "Saving…",
       "saveChanges": "Save changes",
-      "createBtn": "Create announcement"
+      "createBtn": "Create announcement",
+      "confirmDeleteBody": "The banner disappears from all community pages right away.",
+      "confirmDeleteCta": "Delete announcement"
     },
     "spaceContent": {
       "view": "View",
@@ -1203,9 +1221,9 @@
       "galleryPlaceholder": "Optional…",
       "podcastPlaceholder": "What is this episode about?",
       "textPlaceholder": "Write something…",
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Price for single purchase",
+      "ppvPriceHint": "People who don't buy see only the preview image, preview title and price.",
+      "ppvTeaserLabel": "Preview image (blurred for non-buyers)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "articleTitleLabel": "Title",
@@ -1272,7 +1290,16 @@
       "removeTrackAria": "Remove track",
       "trackUploading": "Uploading {count} … {percent}%",
       "deleteQuestion": "Delete this post for good?",
-      "deleteConfirm": "Delete post"
+      "deleteConfirm": "Delete post",
+      "mediaFailedOne": "“{name}” wasn't uploaded. {reason}",
+      "mediaFailedMany": "{count, plural, one {# file wasn't} other {# files weren't}} uploaded. {reason}",
+      "pickFromLibrary": "Choose from media library",
+      "pickFromLibraryHint": "Choose an image that's already in your media library",
+      "previewTitleLabel": "Preview title (visible to everyone)",
+      "previewTitleHint": "Optional. Shown above the post, including to people it's locked for.",
+      "accessSingle": "Single purchase",
+      "accessSingleHint": "Sold individually. A membership doesn't unlock this post.",
+      "bannersElsewhere": "You manage announcement banners for the whole community in the <link>“{name}”</link> space."
     },
     "chat": {
       "badge": "Chat",
@@ -1287,7 +1314,6 @@
       "messagesHeading": "Messages",
       "messagesDesc": "The latest messages. You can remove inappropriate posts.",
       "emptyMessages": "No messages in this chat yet.",
-      "confirmDeleteMessage": "Delete this message?",
       "deleteMessageAria": "Delete message",
       "relNone": "—",
       "relNow": "just now",
@@ -1322,7 +1348,10 @@
       "historyMessages": "{count} messages",
       "cancel": "Cancel",
       "saving": "Saving…",
-      "saveSettings": "Save settings"
+      "saveSettings": "Save settings",
+      "confirmDeleteMessageTitle": "Delete message from {name}?",
+      "confirmDeleteMessageBody": "The message will disappear from the chat for everyone.",
+      "confirmDeleteMessageCta": "Delete message"
     },
     "newsletter": {
       "title": "Newsletter",
@@ -1598,7 +1627,6 @@
       "video": "Video",
       "mediaCount": "{count, plural, one {# item} other {# items}}",
       "deletePackageAria": "Delete package",
-      "confirmDeletePackage": "Really delete this media package?",
       "removeAria": "Remove",
       "contentCount": "Content ({count})",
       "titleLabel": "Title",
@@ -1619,7 +1647,10 @@
       "cancel": "Cancel",
       "saving": "Saving…",
       "saveChanges": "Save changes",
-      "createPackageCta": "Create package"
+      "createPackageCta": "Create package",
+      "confirmDeletePackageTitle": "Delete media package “{title}”?",
+      "confirmDeletePackageBody": "All images and videos in it will be deleted too. This can't be undone.",
+      "confirmDeletePackageCta": "Delete package"
     },
     "sortLabels": {
       "NEWEST": "Newest first",
@@ -1639,7 +1670,6 @@
       "emptyHint": "Write your first blog article with the editor.",
       "edit": "Edit",
       "delete": "Delete",
-      "confirmDelete": "Really delete this post?",
       "sheetWrite": "Write post",
       "sheetEdit": "Edit post",
       "sheetSettings": "Blog settings",
@@ -1702,7 +1732,10 @@
       "pollAddOption": "Add answer",
       "pollMultipleLabel": "Allow multiple choices",
       "statusDraft": "Not published",
-      "statusScheduled": "Scheduled for {date}"
+      "statusScheduled": "Scheduled for {date}",
+      "confirmDeleteTitle": "Delete post “{title}”?",
+      "confirmDeleteBody": "The post and all its comments will be deleted. This can't be undone.",
+      "confirmDeleteCta": "Delete post"
     },
     "knowledge": {
       "badge": "Knowledge",
@@ -1716,7 +1749,6 @@
       "emptyHint": "Write your first knowledge article.",
       "edit": "Edit",
       "delete": "Delete",
-      "confirmDelete": "Really delete this article?",
       "sheetWrite": "Write article",
       "sheetEdit": "Edit article",
       "sheetSettings": "Display settings",
@@ -1746,7 +1778,10 @@
       "showDatesHint": "Publication date per article",
       "saveSettings": "Save settings",
       "cancel": "Cancel",
-      "saving": "Saving…"
+      "saving": "Saving…",
+      "confirmDeleteTitle": "Delete article “{title}”?",
+      "confirmDeleteBody": "The article will be removed from the knowledge base. This can't be undone.",
+      "confirmDeleteCta": "Delete article"
     },
     "rte": {
       "poll": "Poll",
@@ -1903,7 +1938,6 @@
       "studioChatShow": "Show chat",
       "studioChatHide": "Hide chat",
       "studioFullscreen": "Fullscreen",
-      "studioCloseConfirm": "You are live right now. Closing the studio will interrupt your broadcast. Close anyway?",
       "studioNoPreview": "The broadcast is running — the video preview only exists on the device that is sending.",
       "studioMirror": "Mirror the preview",
       "studioLevel": "Audio level",
@@ -1919,7 +1953,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Close the studio and end the broadcast?",
+      "studioCloseBody": "You're live right now. Closing the studio stops your broadcast.",
+      "studioCloseCta": "Close studio",
+      "studioCloseCancel": "Keep broadcasting"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -2160,7 +2198,8 @@
       "deleteDesc": "Irreversibly removes all members, spaces, content and orders.",
       "confirmDelete": "Permanently delete “{name}” and all content?",
       "confirmPlaceholder": "Type “{slug}” to confirm",
-      "deleting": "Deleting…"
+      "deleting": "Deleting…",
+      "confirmDeleteCta": "Delete community permanently"
     },
     "developers": {
       "metaTitle": "Developers & API",
@@ -2704,7 +2743,11 @@
       "colSent": "Sent",
       "colRecipients": "Recipients",
       "colOpens": "Opens",
-      "colClicks": "Clicks"
+      "colClicks": "Clicks",
+      "growthSummary": "{total, plural, one {# join} other {# joins}} in the last 6 months, {current, number} of them this month.",
+      "growthEmpty": "Nobody joined in the last 6 months. New members will appear here by month.",
+      "colMonth": "Month",
+      "colNewMembers": "New members"
     },
     "gamification": {
       "title": "Gamification",
@@ -2721,8 +2764,6 @@
       "rule": "Rule",
       "maxPerDay": "max. {count}/day",
       "pts": "pts",
-      "savePointsAria": "Save points",
-      "deleteRuleAria": "Delete rule",
       "confirmDeleteRule": "Delete the rule “{name}”?",
       "rulesEmptyTitle": "No rules yet",
       "rulesEmptyHint": "Add a points rule for an action.",
@@ -2802,7 +2843,14 @@
       "iconLabel": "Symbol",
       "manualHint": "Badges with the “by hand” condition are yours to give —",
       "manualBadge": "By hand",
-      "manualHintLink": "in the member list."
+      "manualHintLink": "in the member list.",
+      "pointsForRuleAria": "Points for {name}",
+      "savePointsForRuleAria": "Save points for {name}",
+      "deleteRuleForAria": "Delete rule “{name}”",
+      "confirmDeleteRuleBody": "This action will no longer earn points.",
+      "confirmDeleteRuleCta": "Delete rule",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {This badge hasn't been awarded yet.} one {# member will lose this badge.} other {# members will lose this badge.}}",
+      "confirmDeleteBadgeCta": "Delete badge"
     },
     "referrals": {
       "metaTitle": "Referrals",
@@ -2892,15 +2940,15 @@
         "desc": "Unlocks a course"
       },
       "TIER_GRANT": {
-        "label": "Tier access",
-        "desc": "Unlocks a tier"
+        "label": "Membership access",
+        "desc": "No longer offered"
       }
     },
     "tiers": {
       "title": "Memberships",
       "subtitle": "{count, plural, one {# membership} other {# memberships}} · how they appear on your join page.",
       "create": "Create membership",
-      "stripeWarning": "Stripe isn't connected yet — free tiers work right away; for paid tiers add <code>STRIPE_SECRET_KEY</code> to your <code>.env</code>.",
+      "stripeWarning": "Stripe isn't connected yet: free memberships work right away. For paid memberships, add <code>STRIPE_SECRET_KEY</code> to your <code>.env</code>.",
       "recommended": "Recommended",
       "default": "Default",
       "hidden": "Hidden",
@@ -2908,9 +2956,9 @@
       "edit": "Edit",
       "suffixMonth": "/ month",
       "suffixYear": "/ year",
-      "createTitle": "Create new tier",
+      "createTitle": "New membership",
       "createSubtitle": "Set membership and price",
-      "editTitle": "Edit tier",
+      "editTitle": "Edit membership",
       "nameLabel": "Name",
       "namePlaceholder": "e.g. Premium",
       "coverLabel": "Cover image (optional)",
@@ -2924,17 +2972,24 @@
       "publicHint": "Shown on the join page.",
       "recommendedLabel": "Recommended by creator",
       "recommendedHint": "Highlights this membership on the join page (max. one).",
-      "defaultLabel": "Default tier",
-      "defaultHintActive": "New members receive this tier.",
+      "defaultLabel": "Default membership",
+      "defaultHintActive": "New members get this membership.",
       "defaultHintInactive": "Set as the default for new members.",
-      "entitlementKeyLabel": "Entitlement key (fixed)",
-      "confirmDelete": "Really delete the tier “{name}”?",
+      "entitlementKeyLabel": "Technical key (visible to platform admins only)",
+      "confirmDelete": "Delete the membership “{name}”?",
       "deleting": "Deleting…",
-      "deleteTier": "Delete tier",
+      "deleteTier": "Delete membership",
       "cancel": "Cancel",
       "saving": "Saving…",
       "saveChanges": "Save changes",
-      "createTier": "Create tier"
+      "createTier": "Create membership",
+      "priceHint": "Fixed price points so the price also applies in the app stores.",
+      "payoutsMissing": "To receive payments, set up payouts first.",
+      "payoutsSetup": "Set up payouts",
+      "confirmDeleteBody": "{count, plural, =0 {The membership will be deleted permanently.} one {# member loses access to this membership's content.} other {# members lose access to this membership's content.}} This can't be undone.",
+      "confirmHide": "Hide the membership “{name}”?",
+      "confirmHideBody": "Paid memberships aren't deleted. They're removed from the join page so ongoing payments can still be processed. Existing members keep their access.",
+      "hideTier": "Hide membership"
     },
     "products": {
       "title": "Products",
@@ -2957,7 +3012,6 @@
       "namePlaceholder": "e.g. E-book",
       "typeLabel": "Type",
       "priceLabel": "Price",
-      "downloadUrlLabel": "Download URL (optional)",
       "shipping": "Shipping",
       "shipFreeLabel": "Free shipping",
       "shipFreeDesc": "No shipping cost",
@@ -2970,13 +3024,42 @@
       "descPlaceholder": "What do buyers get?",
       "publishedLabel": "Published",
       "publishedHint": "Visible and purchasable in the community.",
-      "confirmDelete": "Really delete the product “{name}”?",
+      "confirmDelete": "Delete the product “{name}”?",
       "deleting": "Deleting…",
       "deleteProduct": "Delete product",
       "cancel": "Cancel",
       "saving": "Saving…",
       "saveChanges": "Save changes",
-      "createProduct": "Create product"
+      "createProduct": "Create product",
+      "confirmDeleteBody": "The product disappears from the shop. This can't be undone.",
+      "confirmHide": "Hide the product “{name}”?",
+      "confirmHideBody": "This product has orders, so it isn't deleted but removed from the shop. Buyers keep their access.",
+      "hideProduct": "Hide product",
+      "priceHint": "Fixed price points so the price also applies in the app stores.",
+      "pricePlaceholder": "Choose a price",
+      "priceRequired": "Choose a price or “Free”.",
+      "fileLabel": "File for buyers",
+      "fileHint": "Upload the file or paste a link. Buyers see the download after purchase.",
+      "fileUpload": "Upload file",
+      "fileReplace": "Upload a different file",
+      "fileRemove": "Remove",
+      "fileUploading": "Uploading…",
+      "fileUploaded": "Uploaded file",
+      "fileOpen": "Open",
+      "fileLinkLabel": "Or link to the file",
+      "fileRequired": "Upload a file or paste a link.",
+      "fileLinkInvalid": "The link must start with https://.",
+      "courseLabel": "Which course does it unlock?",
+      "coursePlaceholder": "Choose a course",
+      "courseHint": "Once saved, the course is only open to buyers and your team. Lessons marked as preview stay visible to everyone.",
+      "courseRequired": "Choose the course buyers get.",
+      "courseLocked": "After the first sale the course can't be changed, so buyers keep their access.",
+      "noCourses": "You don't have a course that can be sold on its own yet.",
+      "createCourse": "Create course",
+      "tierGrantRetired": "This type doesn't unlock a membership. Choose another type. You set up paid memberships under “Memberships”.",
+      "viewInShop": "View in shop",
+      "payoutsMissing": "To receive payments, set up payouts first.",
+      "payoutsSetup": "Set up payouts"
     },
     "payouts": {
       "title": "Sales",
@@ -3073,7 +3156,6 @@
       "cancel": "Cancel",
       "adding": "Adding…",
       "statusLabel": "Status",
-      "confirmRemove": "Really remove “{name}” from the community?",
       "removing": "Removing…",
       "removeMember": "Remove member",
       "saving": "Saving…",
@@ -3096,7 +3178,10 @@
       "awarding": "Awarding…",
       "revoke": "Remove",
       "revoking": "Removing…",
-      "awardedOn": "Awarded on {date}"
+      "awardedOn": "Awarded on {date}",
+      "confirmRemoveTitle": "Remove “{name}” from the community?",
+      "confirmRemoveBody": "Active subscriptions end immediately and membership access is removed. Single purchases are kept.",
+      "confirmRemoveCta": "Remove member"
     },
     "spaceTypes": {
       "FEED": {
@@ -3187,15 +3272,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Public",
-        "desc": "Visible to everyone"
+        "desc": "Visible to everyone, even without an account"
       },
       "MEMBERS": {
         "label": "Members",
-        "desc": "Signed in only"
+        "desc": "Community members only"
       },
       "PAID": {
         "label": "Paid",
-        "desc": "Membership required"
+        "desc": "Paid membership only"
       }
     },
     "spaces": {
@@ -3213,15 +3298,12 @@
       "createSubtitle": "Choose type and visibility",
       "editTitle": "Edit space",
       "edit": "Edit",
-      "reactivate": "Activate",
       "archive": "Archive",
       "postCount": "{count, plural, one {# post} other {# posts}}",
       "nameLabel": "Space name",
       "namePlaceholder": "e.g. Announcements",
       "typeLabel": "Type",
       "visibilityLabel": "Visibility",
-      "entitlementLabel": "Required entitlement",
-      "entitlementHint": "Leave empty to accept any paid membership.",
       "descLabel": "Description (optional)",
       "descPlaceholder": "What is this space about?",
       "deleting": "Deleting…",
@@ -3231,7 +3313,32 @@
       "saveChanges": "Save changes",
       "deleteConfirmTitle": "Delete space?",
       "deleteConfirmText": "“{name}” will be permanently deleted. All content inside is lost — this cannot be undone.",
-      "delete": "Delete"
+      "delete": "Delete",
+      "restore": "Restore",
+      "archiveNamed": "Archive “{name}”",
+      "restoreNamed": "Restore “{name}”",
+      "archivedNotice": "“{name}” archived – hidden from members.",
+      "restoredNotice": "“{name}” restored – visible to members again.",
+      "undo": "Undo",
+      "dismissNotice": "Dismiss message",
+      "typeLockedHint": "The type is fixed because this space already has {count, plural, one {# item} other {# items}}. With a different type they would no longer be visible. Create a new space for a different type.",
+      "access": {
+        "legend": "Which memberships have access?",
+        "anyPaid": "Any paid membership",
+        "anyPaidDesc": "Also anyone who bought something paid, e.g. a product",
+        "pricePerMonth": "{price}/month",
+        "pricePerYear": "{price}/year",
+        "tierHidden": "{price} · not on offer",
+        "legacyLabel": "Previous access rule",
+        "legacyFreeTier": "Free membership – older setting",
+        "legacyKey": "Key “{key}” – older setting",
+        "hintTier": "Only members with exactly this membership see the space. You and your team always have access.",
+        "hintAny": "All members with a paid membership see the space. You and your team always have access.",
+        "noPaidTitle": "No paid membership yet",
+        "noPaidText": "Create a paid membership so members can unlock this space.",
+        "noPaidCta": "Create a membership first",
+        "specificTier": "Specific membership"
+      }
     },
     "roles": {
       "OWNER": "Owner",
@@ -3322,14 +3429,14 @@
       "leaveTitle": "Leave community",
       "cancelText": "Your access to paid content ends with the paid period. Purchased products remain yours.",
       "leaveText": "You'll lose access to members' content. Purchased products remain yours.",
-      "confirmCancel": "Really cancel your membership?",
       "cancelling": "Cancelling…",
       "cancelNow": "Cancel now",
       "confirmLeave": "Really leave the community “{name}”?",
       "leaving": "Leaving…",
       "leaveCommunity": "Leave community",
       "perMonth": "/month",
-      "perYear": "/year"
+      "perYear": "/year",
+      "confirmCancelTitle": "Cancel your membership in “{name}”?"
     },
     "credits": {
       "title": "Credits & usage",
@@ -3422,8 +3529,6 @@
       "edit": "Edit",
       "delete": "Delete",
       "moveToFolder": "Move to folder",
-      "confirmDeleteFolder": "Delete this folder? Media inside will become unfiled.",
-      "confirmDeleteMedia": "Really delete this media? It will no longer be reachable.",
       "folderMenuAria": "Folder options for {name}",
       "itemMenuAria": "Media options for {name}",
       "openAria": "Open {name}",
@@ -3450,9 +3555,18 @@
       "openInStudio": "Edit in Studio",
       "uploadMedia": "Upload media",
       "uploadingProgress": "Uploading… {done}/{total}",
-      "uploadFailed": "Upload failed: {name}",
       "storageTitle": "Media storage",
-      "storageOf": "{used} of {limit} used"
+      "storageOf": "{used} of {limit} used",
+      "uploadFailedCount": "{count, plural, one {# file wasn't uploaded} other {# files weren't uploaded}}",
+      "uploadFailedLine": "{name}: {reason}",
+      "retryUpload": "Upload again",
+      "dismissUploadErrors": "Dismiss message",
+      "confirmDeleteFolderTitle": "Delete folder “{name}”?",
+      "confirmDeleteFolderBody": "The media inside are kept and move to “Unfiled”.",
+      "confirmDeleteFolderCta": "Delete folder",
+      "confirmDeleteMediaTitle": "Permanently delete “{name}”?",
+      "confirmDeleteMediaBody": "The file will be deleted. Posts and pages that use it will no longer show it.",
+      "confirmDeleteMediaCta": "Delete permanently"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3904,6 +4018,38 @@
     "dateTimeField": {
       "tzHint": "In your time zone: {zone} ({abbr})",
       "pastWarning": "This date is in the past."
+    },
+    "planSheet": {
+      "title": "Change plan",
+      "subtitle": "What each plan includes",
+      "loading": "Loading plans …",
+      "loadFailed": "The plans couldn't be loaded.",
+      "retry": "Reload",
+      "pricePerMonth": "{price} per month",
+      "free": "Free",
+      "current": "Your plan",
+      "currentPlan": "Your current plan",
+      "limitSpaces": "{count, plural, one {# active space} other {# active spaces}}",
+      "limitSpacesUnlimited": "Unlimited spaces",
+      "limitMembers": "{count, plural, one {# active member} other {# active members}}",
+      "limitMembersUnlimited": "Unlimited members",
+      "limitTiers": "Up to {count, plural, one {# membership} other {# memberships}}",
+      "limitTiersUnlimited": "Unlimited memberships",
+      "limitStaff": "{count, plural, one {# team seat} other {# team seats}}",
+      "limitStaffUnlimited": "Unlimited team seats",
+      "limitCredits": "{n} AI credits per month",
+      "everythingFrom": "Everything in {plan}, plus:",
+      "baseSpaces": "Included:",
+      "spaceTypesList": "Space types: {list}",
+      "freeHint": "To return to Free, cancel your plan.",
+      "switching": "Starting …",
+      "switchTo": "Switch to {plan}",
+      "checkoutFailed": "The payment couldn't be started. Please try again.",
+      "cancelFailed": "The cancellation couldn't be scheduled. Please try again.",
+      "footnote": "Prices per month, cancel monthly. Payment is handled by Stripe.",
+      "spacesUsedNotice": "You're using {used} of {max} spaces.",
+      "creditsTeaser": "Current: {plan}. Plans differ in spaces, members and features.",
+      "open": "Change plan"
     }
   },
   "common": {
@@ -4157,7 +4303,7 @@
       },
       "space": {
         "lockedDesc": "This space is exclusive to members.",
-        "lockedDescPaid": "This space is exclusive to members with a matching membership.",
+        "lockedDescPaid": "This content is part of a paid membership.",
         "upgradeMembership": "Upgrade membership",
         "join": "Join",
         "noLinks": "No links yet",
@@ -4234,7 +4380,11 @@
       "postTile": {
         "becomeMember": "Become a member",
         "exclusive": "Members only",
-        "locked": "Locked"
+        "locked": "Locked",
+        "lockedUntitled": "Post for members",
+        "paidUntitled": "Paid post",
+        "lockedHint": "This post is for members.",
+        "paidHint": "You can unlock this post on its own."
       },
       "planCard": {
         "current": "Your plan",
@@ -4306,6 +4456,15 @@
         "like": "Like",
         "unlike": "Unlike",
         "locked": "Locked"
+      },
+      "paywall": {
+        "belongsTo": "“{space}” is part of {tier} ({price}).",
+        "anyPaidFrom": "“{space}” is included in every paid membership – from {tier} ({price}).",
+        "pricePerMonth": "{price}/month",
+        "pricePerYear": "{price}/year",
+        "viewTier": "View {tier}",
+        "becomeMember": "Become a member",
+        "memberHint": "Your current membership doesn't include this space."
       }
     },
     "nav": {
@@ -4578,7 +4737,8 @@
         "product": "Products",
         "knowledge": "Knowledge"
       }
-    }
+    },
+    "postCount": "{count, plural, one {# post} other {# posts}}"
   },
   "categories": {
     "podcast": "Podcasts & shows",
@@ -4611,10 +4771,10 @@
       },
       "s2": {
         "title": "Spaces for everything you do",
-        "text": "Set up as many spaces as you need: a feed for news, a forum for discussions, courses, a shop, newsletters, events, a blog, a knowledge base, image galleries, a video library, chat, podcast, a link collection and your own ad slots. For every space you decide whether it's visible to everyone, members only, or paying members only.",
-        "tag1": "14 space types",
+        "text": "Set up the spaces you need: a feed for news, a forum for discussions, courses, a shop, newsletters, events, a blog, a knowledge base, image galleries, a video library, chat, podcast, a link collection and your own ad slots. For every space you decide whether it's visible to everyone, members only, or paying members only.",
+        "tag1": "{count} space types",
         "tag2": "Visibility of your choice",
-        "tag3": "Unlimited spaces"
+        "tag3": "Number depends on package"
       },
       "s3": {
         "title": "Posts, comments & reactions",
@@ -4734,17 +4894,17 @@
     "topupTitle": "Top up credits",
     "topupText": "Need more in between? Purchased credits never expire and are only used after your monthly allowance.",
     "creditsLabel": "Credits",
-    "footnote": "1 credit equals roughly 1,000 tokens; a typical assistant request costs 1–3 credits. Platform fees on your community revenue are billed separately — only on real revenue.",
+    "footnote": "1 credit equals roughly 1,000 tokens; a typical assistant request costs 1–3 credits.",
     "plans": {
       "FREE": {
         "tagline": "To get going",
-        "f1": "11 core spaces: feed, forum, courses, events, blog …",
+        "f1": "{count} core spaces: feed, forum, courses, events, blog …",
         "f2": "Up to 5 spaces & 100 members",
-        "f3": "Memberships, media & moderation",
+        "f3": "Up to {tiers} memberships (paid ones too), media & moderation",
         "f4": "500 AI credits per month"
       },
       "STARTER": {
-        "tagline": "When you want to earn",
+        "tagline": "For shop, products and analytics",
         "f1": "Everything in Free",
         "f2": "Analytics, products & payouts",
         "f3": "Shop, chat, tips, calendar & planner",
@@ -4769,7 +4929,7 @@
     "compare": {
       "eyebrow": "In detail",
       "title": "What each package includes",
-      "subtitle": "Every row is something you can use in your dashboard right away. Nothing disappears when you switch — more simply gets added.",
+      "subtitle": "Every row is something you can use in your dashboard right away. Move up to a larger package and things only get added.",
       "spacesGroup": "Space types",
       "featuresGroup": "Features",
       "limitsGroup": "Limits",
@@ -4785,8 +4945,17 @@
       "limitStorage": "Media storage",
       "limitCredits": "AI credits per month",
       "storageValue": "{gb} GB",
-      "note": "A partner promo code unlocks your package instantly — no payment details needed."
-    }
+      "note": "A partner promo code unlocks your package instantly — no payment details needed.",
+      "feeNote": "We charge a {fee} platform fee on every sale in your community – in every package. The payment provider's fee (Stripe) comes on top.",
+      "feesGroup": "Fees",
+      "feePlatform": "Fee on your sales",
+      "feeProvider": "Payment provider fee",
+      "feeProviderValue": "Stripe's rates",
+      "membersNote": "Active members are everyone in your community – including you and your team, free and paying alike. Once the limit is reached, new members can only join after an upgrade.",
+      "scrollHint": "Swipe sideways to compare",
+      "tableLabel": "Package comparison"
+    },
+    "feeLine": "Fee on your sales: {fee}"
   },
   "marketing": {
     "navDiscover": "Discover",
@@ -4810,7 +4979,10 @@
     "footerPrivacy": "Privacy policy",
     "footerWithdrawal": "Right of withdrawal",
     "footerTagline": "Your community. Your brand. Your business.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "From {plan}: {items}",
+    "footerContact": "Contact",
+    "legalGermanOnly": "This legal text is only available in German. The German version is binding."
   },
   "home": {
     "badge": "Community · Membership · Commerce",
@@ -4886,7 +5058,7 @@
       "c1": {
         "title": "Spaces for everything you do",
         "text": "Feed, forum, blog and knowledge base, image galleries, video library and podcast, plus chat, link collection and your own ad slots. Every space can be open to everyone, members-only or for paying members only — and each one supports comments and reactions.",
-        "tag1": "14 space types",
+        "tag1": "{count} space types",
         "tag2": "Visibility of your choice",
         "tag3": "Posts, comments & reactions"
       },
@@ -4984,11 +5156,11 @@
       "colYou": "Aera",
       "rowBase": "Base price per month",
       "rowFee": "Cut of your revenue",
-      "rowFull": "Full feature set from",
+      "rowFull": "All features from",
       "aera": {
         "base": "0 — free to start",
-        "fee": "5%",
-        "full": "{pro} per month"
+        "fee": "{fee}",
+        "full": "{price} per month ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -5009,42 +5181,43 @@
         "full": "$99 (Pro)"
       },
       "footnote": "Figures from the providers’ public pricing pages, as of July 2026. Payment processing fees (around 2.9% + 0.30) apply on top with every provider — ours included.",
-      "includedTitle": "Included with Aera at no extra cost",
+      "includedTitle": "Included in every package",
       "included": {
         "i1": {
-          "title": "20 areas",
-          "text": "Feed, forum, courses, newsletter, events, blog, knowledge, gallery, video, shop, chat, podcast, live and more — under one roof."
+          "title": "{count} core spaces",
+          "text": "{list} – all under one roof."
         },
         "i2": {
-          "title": "Four revenue streams, one checkout",
-          "text": "Memberships, digital products, paid content and events all run through the same till."
+          "title": "Memberships from day one",
+          "text": "Up to {tiers} memberships, free or paid, plus paid content – all through the same checkout."
         },
         "i3": {
           "title": "Your brand, your address",
-          "text": "Your own domain, your own colours, your own logo. Your members see you, not us."
+          "text": "Your own logo, your own colors and your own address on Aera. Your members see you, not us."
         },
         "i4": {
-          "title": "Your data stays yours",
-          "text": "Members, content and revenue exportable at any time. No leaving empty-handed."
+          "title": "AI assistant included",
+          "text": "{credits} AI credits a month for copy and ideas, plus {gb} GB of media storage."
         }
       }
-    }
+    },
+    "fromPlan": "from {plan}"
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Accept invitation — Aera",
+      "inviteMeta": "Accept invitation",
       "inviteInvalidTitle": "Invalid invitation",
       "inviteInvalidText": "This invitation link has expired or has already been used. Ask the community admin for a new invitation — or use “Forgot password” if your account is already active.",
       "forgotPassword": "Forgot password",
       "inviteWelcome": "Welcome to Aera",
       "inviteActivate": "Activate your account {email} by setting a password.",
-      "resetMeta": "Reset password — Aera",
+      "resetMeta": "Reset password",
       "invalidLinkTitle": "Invalid link",
       "resetInvalidText": "This link has expired or has already been used.",
       "requestNewLink": "Request a new link",
       "resetTitle": "Set a new password",
       "forAccount": "For the account {email}",
-      "verifyMeta": "Confirm email — Aera",
+      "verifyMeta": "Confirm email",
       "verifyInvalidText": "This confirmation link has expired or was already used. Request a new link.",
       "toLogin": "Go to login",
       "alreadyVerifiedTitle": "Already confirmed",
@@ -5072,7 +5245,7 @@
       "rootDescription": "Aera is the all-in-one platform for creators: community, memberships, courses, events, newsletters, commerce, and AI — under your own brand.",
       "loginMeta": "Log in",
       "signupMeta": "Sign up",
-      "forgotMeta": "Forgot password — Aera",
+      "forgotMeta": "Forgot password",
       "pricingMeta": "Pricing",
       "featuresMeta": "Features",
       "manifestDescription": "Your communities: posts, courses, events, and messages — all in one place.",
@@ -5225,7 +5398,8 @@
       "notFound": {
         "title": "Page not found",
         "text": "This community or page does not exist.",
-        "home": "Back to the home page"
+        "home": "Back to the home page",
+        "help": "Go to help center"
       },
       "articleShare": {
         "label": "Share",
@@ -5308,6 +5482,9 @@
       "primaryColor": "Primary color",
       "accentColor": "Accent color",
       "saveBranding": "Save branding"
+    },
+    "pricePoint": {
+      "free": "Free"
     }
   },
   "language": {
@@ -5315,7 +5492,8 @@
     "title": "Display language",
     "hint": "Applies to your view of Aera on this device.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Display language: {language}"
   },
   "support": {
     "status": {
@@ -5350,11 +5528,26 @@
     "preparing": "Preparing …",
     "verifying": "Checking …",
     "done": "Done",
-    "failed": "Failed",
     "secondsLeft": "{count, plural, one {# second left} other {# seconds left}}",
     "minutesLeft": "{count, plural, one {# minute left} other {# minutes left}}",
     "more": "{count, plural, one {# more upload} other {# more uploads}}",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "retry": "Upload again",
+    "doneAnnounce": "Uploaded: {names}",
+    "errors": {
+      "connection": "The connection to storage failed. Check your internet connection and try again.",
+      "canceled": "The upload was canceled. Try again.",
+      "storageRejected": "Storage rejected the file. Try again; if it happens again, contact support.",
+      "notStarted": "The upload couldn't start. Try again in a moment.",
+      "verification": "The file couldn't be checked after uploading. Try again.",
+      "rejected": "The file was rejected during the check. Check the file type and content, or choose another file.",
+      "quota": "Your storage is full. Delete media in the media library or switch to a larger plan.",
+      "tooMany": "Too many uploads in a short time. Wait a moment and try again.",
+      "signedOut": "You're no longer signed in. Sign in again and upload the file again.",
+      "unavailable": "Uploads aren't possible right now. Try again in a few minutes.",
+      "invalid": "This file can't be uploaded here. Check the file type and size.",
+      "failed": "The upload failed. Try again."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

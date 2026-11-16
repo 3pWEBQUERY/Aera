@@ -29,7 +29,20 @@ export interface AdminState {
   ok?: boolean;
   /** Generated one-time link (password reset) to copy & share. */
   link?: string;
+  /** Fehler, die an einem bestimmten Feld stehen (Feldname → Text). */
+  fieldErrors?: Record<string, string>;
 }
+
+export interface AdminDomainState {
+  error?: string;
+  /** Ergebnis der letzten DNS-Pruefung. */
+  verified?: boolean;
+  /** ISO-Zeitpunkt der Freischaltung, null = nicht (mehr) verifiziert. */
+  verifiedAt?: string | null;
+}
+
+/** Gleiche Regel wie in den Community-Einstellungen (updateCustomDomainAction). */
+const DOMAIN_RE = /^([a-z0-9-]+\.)+[a-z]{2,}$/;
 
 const ok: AdminState = { ok: true };
 
@@ -46,6 +59,9 @@ export async function adminUpdateTenantAction(
   const tenantId = String(fd.get("tenantId"));
   const tenant = await prisma.tenant.findUnique({ where: { id: tenantId } });
   if (!tenant) return { error: await tErr("communityNotFound") };
+  // Laeuft die Loeschung, ist die Community eingefroren: jede Aenderung ginge
+  // ohnehin mit ihr verloren, und ein Status-Wechsel wuerde sie wiederbeleben.
+  if (tenant.status === "DELETING") return { error: await tErr("adminTenantDeleting") };
 
   const name = String(fd.get("name") || "").trim().slice(0, 60);
   if (name.length < 2) return { error: await tErr("nameTooShort") };
@@ -62,8 +78,24 @@ export async function adminUpdateTenantAction(
       ? statusRaw
       : tenant.status;
 
-  const domainRaw = String(fd.get("customDomain") || "").trim().toLowerCase();
-  const customDomain = /^[a-z0-9.-]{3,255}$/.test(domainRaw) ? domainRaw : null;
+  // Leer = Domain bewusst entfernen. Alles andere muss eine reine Domain sein;
+  // eine ungueltige Eingabe (z. B. mit https://) darf eine bestehende Domain
+  // nicht still loeschen.
+  const domainRaw = String(fd.get("customDomain") ?? "").trim().toLowerCase();
+  if (domainRaw && (domainRaw.length > 253 || !DOMAIN_RE.test(domainRaw))) {
+    return { fieldErrors: { customDomain: await tErr("adminDomainInvalid") } };
+  }
+  const customDomain = domainRaw || null;
+  if (customDomain && customDomain !== tenant.customDomain) {
+    const taken = await systemPrisma.tenant.findFirst({
+      where: { customDomain, id: { not: tenant.id } },
+      select: { id: true },
+    });
+    if (taken) return { fieldErrors: { customDomain: await tErr("domainTaken") } };
+  }
+  // Jede Aenderung verlangt einen frischen DNS-Nachweis — sonst gaelte der
+  // Nachweis der alten Domain fuer die neue.
+  const domainChanged = customDomain !== tenant.customDomain;
 
   // Paket: nur setzen, wenn es sich tatsaechlich aendert. Der Wallet-Schreib-
   // vorgang setzt das Guthaben zurueck, das soll ein blosses Speichern des
@@ -98,12 +130,15 @@ export async function adminUpdateTenantAction(
         tagline: String(fd.get("tagline") || "").trim().slice(0, 160) || null,
         platformFeePercent: fee,
         customDomain,
+        ...(domainChanged ? { customDomainVerifiedAt: null } : {}),
         category,
         status,
       } as unknown as Prisma.TenantUpdateInput,
     });
   } catch (e) {
-    if (prismaCode(e) === "P2002") return { error: await tErr("domainTaken") };
+    if (prismaCode(e) === "P2002") {
+      return { fieldErrors: { customDomain: await tErr("domainTaken") } };
+    }
     throw e;
   }
 
@@ -115,11 +150,79 @@ export async function adminUpdateTenantAction(
       previousStatus: tenant.status,
       status,
       statusChanged: tenant.status !== status,
+      ...(domainChanged ? { domain: customDomain } : {}),
     },
   });
   revalidatePath("/admin/communities");
   revalidatePath(`/c/${tenant.slug}`, "layout");
   return ok;
+}
+
+/**
+ * „DNS jetzt pruefen" im Admin: dieselbe Pruefung wie verifyCustomDomainAction
+ * in den Community-Einstellungen (lib/domains), nur mit Plattform-Admin statt
+ * Tenant-Admin als Berechtigung. Kein Paket-Gate: die Betreiberin darf eine
+ * Domain auch fuer eine Community freischalten, deren Paket das nicht enthaelt.
+ */
+export async function adminVerifyTenantDomainAction(
+  _p: AdminDomainState,
+  fd: FormData,
+): Promise<AdminDomainState> {
+  const admin = await requirePlatformAdmin();
+  const tenantId = String(fd.get("tenantId") ?? "");
+  const tenant = await systemPrisma.tenant.findUnique({
+    where: { id: tenantId },
+    select: { id: true, slug: true, customDomain: true, customDomainVerifiedAt: true },
+  });
+  if (!tenant) return { error: await tErr("communityNotFound") };
+  if (!tenant.customDomain) return { error: await tErr("saveDomainFirst") };
+
+  const { checkDomainDns, txtVerificationValue } = await import("@/lib/domains");
+  const result = await checkDomainDns(tenant.customDomain, tenant.id);
+  if (!result.verified) {
+    if (tenant.customDomainVerifiedAt) {
+      await systemPrisma.tenant.update({
+        where: { id: tenant.id },
+        data: { customDomainVerifiedAt: null },
+      });
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: admin.id,
+        action: "admin.tenant.domain.unverified",
+        targetType: "Tenant",
+        targetId: tenant.id,
+        metadata: { domain: tenant.customDomain, reason: result.reason },
+      });
+      revalidatePath("/admin/communities");
+    }
+    return {
+      verified: false,
+      verifiedAt: null,
+      error: await tErr(
+        result.reason === "txt_mismatch" ? "domainTxtMismatch" : "domainTxtMissing",
+        { domain: tenant.customDomain, value: txtVerificationValue(tenant.id) },
+      ),
+    };
+  }
+
+  const verifiedAt = tenant.customDomainVerifiedAt ?? new Date();
+  if (!tenant.customDomainVerifiedAt) {
+    await systemPrisma.tenant.update({
+      where: { id: tenant.id },
+      data: { customDomainVerifiedAt: verifiedAt },
+    });
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: admin.id,
+      action: "admin.tenant.domain.verify",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: { domain: tenant.customDomain },
+    });
+    revalidatePath("/admin/communities");
+    revalidatePath(`/c/${tenant.slug}`, "layout");
+  }
+  return { verified: true, verifiedAt: verifiedAt.toISOString() };
 }
 
 export async function adminDeleteTenantAction(fd: FormData): Promise<AdminState> {

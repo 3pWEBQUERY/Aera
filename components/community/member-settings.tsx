@@ -20,25 +20,33 @@ const CTA_CLASS =
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] " +
   "disabled:cursor-not-allowed disabled:opacity-50";
 
+/**
+ * Rückmeldung nach dem Speichern. Die Live-Region steht von Anfang an im DOM
+ * (sonst kündigen Screenreader den Text nicht an); nur ihr Inhalt wechselt.
+ */
 function SavedHint({ show, label }: { show: boolean; label: string }) {
-  if (!show) return null;
   return (
-    <span className="text-sm font-medium text-emerald-700">{label}</span>
+    <span role="status" aria-live="polite" className="text-sm font-medium text-emerald-700">
+      {show ? label : ""}
+    </span>
   );
 }
 
-/** Auto-hide the "Gespeichert." hint a moment after a successful save. */
-function useSavedFlash(ok: boolean | undefined) {
+/** Lange genug sichtbar, um sie in Ruhe zu lesen (mindestens 10 Sekunden). */
+const SAVED_VISIBLE_MS = 12_000;
+
+/** Show the "Gespeichert." hint after each successful save, then hide it. */
+function useSavedFlash(ok: boolean | undefined, stamp: unknown) {
   const [show, setShow] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
     if (!ok) return;
     setShow(true);
-    timer.current = setTimeout(() => setShow(false), 2500);
+    timer.current = setTimeout(() => setShow(false), SAVED_VISIBLE_MS);
     return () => {
       if (timer.current) clearTimeout(timer.current);
     };
-  }, [ok]);
+  }, [ok, stamp]);
   return show;
 }
 
@@ -54,7 +62,7 @@ export function MemberProfileForm({
   user: { name: string; avatarUrl: string | null };
 }) {
   const [state, action, pending] = useActionState(updateMemberProfileAction, initial);
-  const saved = useSavedFlash(state.ok);
+  const saved = useSavedFlash(state.ok, state);
   const t = useTranslations("account");
 
   return (
@@ -95,7 +103,7 @@ export function MemberProfileForm({
 
 export function MemberPasswordForm() {
   const [state, action, pending] = useActionState(changePasswordAction, initial);
-  const saved = useSavedFlash(state.ok);
+  const saved = useSavedFlash(state.ok, state);
   const formRef = useRef<HTMLFormElement>(null);
   const t = useTranslations("account");
 

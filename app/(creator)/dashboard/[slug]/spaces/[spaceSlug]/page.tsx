@@ -725,13 +725,17 @@ export default async function SpaceContentPage({
       />
       {bannerHome && (
         <p className="mt-8 text-sm text-slate-500">
-          {tSpace("bannersElsewhere")}{" "}
-          <Link
-            href={`/dashboard/${slug}/spaces/${bannerHome.slug}`}
-            className="font-medium text-slate-700 underline underline-offset-2 hover:text-slate-900"
-          >
-            {tSpace("bannersElsewhereLink", { name: bannerHome.name })}
-          </Link>
+          {tSpace.rich("bannersElsewhere", {
+            name: bannerHome.name,
+            link: (chunks) => (
+              <Link
+                href={`/dashboard/${slug}/spaces/${bannerHome.slug}`}
+                className="font-medium text-slate-700 underline underline-offset-2 hover:text-slate-900"
+              >
+                {chunks}
+              </Link>
+            ),
+          })}
         </p>
       )}
       {showBanners && (

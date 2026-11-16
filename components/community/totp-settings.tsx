@@ -315,7 +315,7 @@ export function TotpSettings({
                 // Gerät, und den QR-Code kann man nicht abscannen.
                 <a
                   href={setupData.otpauth}
-                  className={`${SECONDARY_CLASS} hidden pointer-coarse:inline-flex`}
+                  className={`${SECONDARY_CLASS.replace("inline-flex ", "")} hidden pointer-coarse:inline-flex`}
                 >
                   {t("twoFaOpenInApp")}
                 </a>

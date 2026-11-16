@@ -1,4 +1,5 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
+import { MembersOnlyGate } from "@/components/community/members-only-gate";
 import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
@@ -37,9 +38,21 @@ export default async function LibraryPage({
   const t = await getTranslations("library");
   const locale = await getLocale();
 
-  if (!user) redirect(`/login?next=${encodeURIComponent(`/c/${slug}/library`)}`);
-  if (ctx.membership?.status !== "ACTIVE" && !ctx.isStaff) {
-    redirect(`/c/${slug}/join`);
+  // Gäste und Nicht-Mitglieder: dieselbe Sperrseite wie Mitgliederliste und
+  // Bestenliste statt unterschiedlicher Weiterleitungen.
+  if (!user || (ctx.membership?.status !== "ACTIVE" && !ctx.isStaff)) {
+    const tGate = await getTranslations("community.gate");
+    return (
+      <MembersOnlyGate
+        slug={slug}
+        tenantId={tenant.id}
+        communityName={tenant.name}
+        title={tGate("membersOnly")}
+        context={t("title")}
+        next={`/c/${slug}/library`}
+        loggedIn={Boolean(user)}
+      />
+    );
   }
 
   // Owned media packages (via media:* entitlements) + free packages are
@@ -69,8 +82,8 @@ export default async function LibraryPage({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <h1 className="text-xl font-bold text-[#161613]">{t("title")}</h1>
+        <p className="mt-1 text-sm text-[#161613]/70">
           {t("subtitle", { name: tenant.name })}
         </p>
       </div>

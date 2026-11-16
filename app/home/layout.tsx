@@ -34,12 +34,24 @@ export default async function HomeLayout({
         })
       ).map((m) => m.tenant)
     : [];
+  // Creator-Bereich nur für Inhaber und Team, nicht für reine Mitglieder.
+  const isCreator = user
+    ? (await prisma.membership.count({
+        where: {
+          userId: user.id,
+          status: "ACTIVE",
+          role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+          tenant: { status: "ACTIVE" },
+        },
+      })) > 0
+    : false;
 
   return (
     <div className="flex min-h-screen bg-[#f4f1ea]">
       <HomeRail
         memberships={memberships}
         user={user ? { name: user.name, avatarUrl: user.avatarUrl } : null}
+        isCreator={isCreator}
       />
       {/* pb-28: Freiraum für die schwebende Mobile-Tabbar. */}
       <main className="min-w-0 flex-1 pb-28 md:pb-0">

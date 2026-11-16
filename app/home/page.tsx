@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { Icon } from "@/components/dashboard/icons";
@@ -15,6 +15,8 @@ import {
 } from "@/components/home/creator-slider";
 import { CategoryChips } from "@/components/home/category-chips";
 import { HScrollRow } from "@/components/community/h-scroll-row";
+import { memberFeed, type MemberFeedItem } from "@/lib/member-feed";
+import { formatDateTime, timeAgo } from "@/lib/utils";
 
 /** Poster palette — same muted tones as the landing-page marquee tiles. */
 const CATEGORY_TILE_TONES = [
@@ -263,6 +265,10 @@ export default async function DiscoverPage({
   ]);
 
   const mineTenants = mine.map((m) => m.tenant) as TenantRow[];
+  // Erster Abschnitt für Mitglieder: was es Neues in ihren Communities gibt.
+  // Ohne Neuigkeiten entfällt der Abschnitt ganz (kein leerer Kasten).
+  const feed = user && mineTenants.length > 0 ? await memberFeed(user.id, mineTenants) : [];
+  const locale = await getLocale();
   const mineIds = new Set(mineTenants.map((t) => t.id));
   const popularClean = (popular as TenantRow[]).filter((t) => !mineIds.has(t.id));
   const popularIds = new Set(popularClean.map((t) => t.id));
@@ -317,7 +323,10 @@ export default async function DiscoverPage({
         <CategoryChips active={null} />
       </div>
 
+      {feed.length > 0 && <MemberFeedSection items={feed} locale={locale} />}
+
       {mineTenants.length > 0 && (
+        <div id="deine-communities" className="scroll-mt-6">
         <HScrollRow title={t("mineTitle")}>
           {mineTenants.map((tenant) => (
             <Link
@@ -347,6 +356,7 @@ export default async function DiscoverPage({
             </Link>
           ))}
         </HScrollRow>
+        </div>
       )}
 
       {popularClean.length > 0 && (
@@ -433,6 +443,64 @@ export default async function DiscoverPage({
         </Link>
       </section>
     </div>
+  );
+}
+
+async function MemberFeedSection({
+  items,
+  locale,
+}: {
+  items: MemberFeedItem[];
+  locale: string;
+}) {
+  const t = await getTranslations("discover.memberFeed");
+  return (
+    <section aria-labelledby="member-feed-title">
+      <h2 id="member-feed-title" className="display-serif text-2xl text-[#161613]">
+        {t("title")}
+      </h2>
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {items.map((item) => (
+          <li key={`${item.kind}-${item.id}`} className="min-w-0">
+            <Link
+              href={item.href}
+              className="flex h-full items-start gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4 transition hover:border-[#161613]/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+            >
+              {item.community.logoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={item.community.logoUrl} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+              ) : (
+                <span
+                  aria-hidden="true"
+                  className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-sm font-bold text-white"
+                  style={{ backgroundColor: item.community.primaryColor }}
+                >
+                  {item.community.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-xs text-[#161613]/65">
+                  {item.community.name} · {item.spaceName}
+                </span>
+                <span className="mt-0.5 line-clamp-2 block text-sm font-semibold leading-snug text-[#161613]">
+                  {item.title}
+                </span>
+                <span className="mt-1 flex items-center gap-1.5 text-xs text-[#161613]/65">
+                  {item.kind === "event" ? (
+                    <>
+                      <Icon name="events" size={13} className="shrink-0" />
+                      {t("event", { date: formatDateTime(item.startsAt, locale) })}
+                    </>
+                  ) : (
+                    <time dateTime={item.date.toISOString()}>{timeAgo(item.date, locale)}</time>
+                  )}
+                </span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

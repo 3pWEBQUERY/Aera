@@ -190,13 +190,18 @@ export async function cancelOwnMembershipAction(
   return { ok: true };
 }
 
-/** Leave the community entirely (non-owners; purchases stay untouched). */
-export async function leaveOwnCommunityAction(fd: FormData): Promise<void> {
-  const slug = String(fd.get("tenant"));
+type LeaveResult = { ok: true } | { ok: false; error: "notFound" | "owner" | "paidActive" };
+
+/**
+ * Leave the community entirely (non-owners; purchases stay untouched).
+ * Shared by the dashboard sheet (redirects) and the member account page
+ * (stays on the page and reports the result).
+ */
+async function leaveCommunity(slug: string): Promise<LeaveResult> {
   const own = await ownMembership(slug);
-  if (!own) return;
+  if (!own) return { ok: false, error: "notFound" };
   const { user, tenant, membership } = own;
-  if (membership.role === "OWNER") return;
+  if (membership.role === "OWNER") return { ok: false, error: "owner" };
 
   // Never remove the local membership while Stripe can still charge it. The
   // member must cancel first and wait until Stripe confirms the subscription
@@ -220,7 +225,7 @@ export async function leaveOwnCommunityAction(fd: FormData): Promise<void> {
       action: "membership.leave.blocked",
       metadata: { reason: "stripe_subscription_not_terminal" },
     });
-    return;
+    return { ok: false, error: "paidActive" };
   }
 
   await prisma.subscription.updateMany({
@@ -239,5 +244,33 @@ export async function leaveOwnCommunityAction(fd: FormData): Promise<void> {
     action: "membership.leave",
   });
   revalidateAll(slug);
-  redirect(`/c/${slug}`);
+  return { ok: true };
+}
+
+export async function leaveOwnCommunityAction(fd: FormData): Promise<void> {
+  const slug = String(fd.get("tenant"));
+  const result = await leaveCommunity(slug);
+  if (result.ok) redirect(`/c/${slug}`);
+}
+
+/** Same as leaveOwnCommunityAction, but reports back instead of redirecting. */
+export async function leaveCommunityAction(
+  _p: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  const slug = String(fd.get("tenant") ?? "");
+  const t = await getErrorTranslator();
+  const result = await leaveCommunity(slug);
+  if (result.ok) {
+    revalidatePath("/member/account");
+    return { ok: true };
+  }
+  return {
+    error:
+      result.error === "owner"
+        ? t("ownerCantLeave")
+        : result.error === "paidActive"
+          ? t("leaveWhilePaidActive")
+          : t("membershipNotFound"),
+  };
 }

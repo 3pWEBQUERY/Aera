@@ -20,11 +20,11 @@ function urlOrNull(v: FormDataEntryValue | null): string | null {
 }
 
 async function loadSpace(slug: string, spaceId: string) {
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id, type: "ADS" },
   });
-  return { tenant, space };
+  return { tenant, space, user };
 }
 
 async function persist(
@@ -52,7 +52,7 @@ export async function saveSpaceAdAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return { error: await tErr("spaceNotFound") };
 
   const title = String(fd.get("title") ?? "").trim();
@@ -104,6 +104,7 @@ export async function saveSpaceAdAction(
 
   await persist(slug, space, next);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: existing ? "space.ad.update" : "space.ad.create",
     targetType: "Space",
@@ -118,12 +119,13 @@ export async function deleteSpaceAdAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
   const adId = String(fd.get("adId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return;
 
   const ads = parseSpaceAds(space.settings).filter((a) => a.id !== adId);
   await persist(slug, space, ads);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.ad.delete",
     targetType: "Space",

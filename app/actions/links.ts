@@ -21,11 +21,11 @@ function normalizeUrl(v: FormDataEntryValue | null): string | null {
 }
 
 async function loadSpace(slug: string, spaceId: string) {
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id, type: "LINKS" },
   });
-  return { tenant, space };
+  return { tenant, space, user };
 }
 
 async function persist(
@@ -52,7 +52,7 @@ export async function saveSpaceLinkAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return { error: await tErr("spaceNotFound") };
 
   const title = String(fd.get("title") ?? "").trim();
@@ -82,6 +82,7 @@ export async function saveSpaceLinkAction(
 
   await persist(slug, space, next);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: existing ? "space.link.update" : "space.link.create",
     targetType: "Space",
@@ -96,12 +97,13 @@ export async function deleteSpaceLinkAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
   const linkId = String(fd.get("linkId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return;
 
   const links = parseSpaceLinks(space.settings).filter((l) => l.id !== linkId);
   await persist(slug, space, links);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.link.delete",
     targetType: "Space",

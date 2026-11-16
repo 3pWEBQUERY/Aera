@@ -50,7 +50,7 @@ const REVENUE_GATES: Partial<Record<(typeof REVENUE_IDS)[number], GatedItem>> = 
 const tileTones = [
   "bg-[#ece7dc] text-[#161613]",
   "bg-[#21372b] text-[#ece7dc]",
-  "bg-[#c8553a] text-[#f7f1e8]",
+  "bg-[#9f3f2a] text-[#f7f1e8]",
   "bg-[#1c1c19] text-[#ece7dc]",
   "bg-[#d8d1f0] text-[#241458]",
 ];
@@ -137,14 +137,14 @@ export default async function LandingPage() {
                   key={`${tile.name}-${i}`}
                   className={`flex h-44 w-60 shrink-0 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md sm:h-48 sm:w-64 ${tileTones[i % tileTones.length]}`}
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-90">
                     {t("tileBadge")}
                   </span>
                   <div>
                     <p className="display-serif text-3xl leading-none">
                       {tile.name}
                     </p>
-                    <p className="mt-2 text-sm font-medium opacity-70">
+                    <p className="mt-2 text-sm font-medium opacity-90">
                       {tile.hint}
                     </p>
                   </div>

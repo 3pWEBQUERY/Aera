@@ -2,6 +2,8 @@ import { z } from "zod";
 import prisma from "@/lib/prisma";
 import { indexContent } from "@/lib/ai";
 import { uniqueChildSlug } from "@/lib/slug";
+import { checkSpaceLimit, getTenantPlan } from "@/lib/plan";
+import { planAllowsSpaceType } from "@/lib/plan-features";
 import { jsonError, jsonOk, parseJsonBody } from "@/lib/mobile/api";
 import { requireStudioAccess } from "@/lib/mobile/studio";
 import type { EventDto } from "@/lib/mobile/serializers";
@@ -55,6 +57,17 @@ export async function POST(
     return jsonError("not_found", "Events space not found.", 404);
   }
   if (!space) {
+    // Gleiche Grenzen wie im Web: Paket muss Events erlauben, und der Space
+    // zaehlt gegen das Space-Limit — sonst liesse sich das Limit ueber die
+    // App umgehen.
+    const plan = await getTenantPlan(tenant.id);
+    if (!planAllowsSpaceType(plan, "EVENTS")) {
+      return jsonError("plan_locked", "Events are not included in this plan.", 403);
+    }
+    const budget = await checkSpaceLimit(tenant.id);
+    if (!budget.allowed) {
+      return jsonError("plan_limit", "Space limit of this plan reached.", 403);
+    }
     space = await prisma.space.create({
       data: {
         tenantId: tenant.id,

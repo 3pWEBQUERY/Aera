@@ -10,7 +10,9 @@ import type { Metadata } from "next";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ui.auth");
-  return { title: { template: "%s — Aera", default: t("rootTitle") } };
+  // `absolute`: rootTitle enthaelt "Aera" schon — mit `default` haengte das
+  // Template des Root-Layouts ein zweites "— Aera" an ("… — Aera — Aera").
+  return { title: { template: "%s — Aera", absolute: t("rootTitle") } };
 }
 
 export default async function MarketingLayout({

@@ -25,7 +25,7 @@ function visibleFocusableElements(container: HTMLElement): HTMLElement[] {
 
 function isTopmostModal(dialog: HTMLElement): boolean {
   const openModals = document.querySelectorAll<HTMLElement>(
-    '[role="dialog"][aria-modal="true"]',
+    '[role="dialog"][aria-modal="true"], [role="alertdialog"][aria-modal="true"]',
   );
   return openModals.item(openModals.length - 1) === dialog;
 }

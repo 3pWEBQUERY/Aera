@@ -38,19 +38,19 @@
     "ownerCantCancel": "身為擁有者，你無法取消自己的會員資格。",
     "noPaidMembership": "你沒有付費會員資格。",
     "stripeCancelFailed": "Stripe 取消失敗。請重試。",
-    "defaultTierCantDelete": "無法刪除預設等級。",
-    "tierDeleteStripeBlocked": "只有在 Stripe 確認所有相關訂閱均已結束後，才能刪除此等級。未刪除任何資料。",
+    "defaultTierCantDelete": "預設會員無法刪除。請先將其他會員設為預設。",
+    "tierDeleteStripeBlocked": "只有在 Stripe 確認所有相關訂閱均已結束後，才能刪除此會員。未刪除任何資料。",
     "memberRemoveStripeFailed": "無法安全終止 Stripe 訂閱。成員與本機存取權限均未被刪除。",
     "tenantDeleteConfirmMismatch": "輸入的社群代稱不相符。",
     "tenantDeleteStripeSubscriptionsActive": "只有在所有 Stripe 訂閱結束後，才能刪除社群。未刪除任何資料。",
     "tenantDeleteStripeCleanupFailed": "Stripe 或 Connect 清理失敗。社群及其資料均未被刪除。",
-    "paidTierArchivedInsteadOfDeleted": "付費等級已安全隱藏而非刪除，以便未完成的 Stripe 付款仍可正確處理。",
+    "paidTierArchivedInsteadOfDeleted": "付費會員已隱藏而非刪除，以便繼續處理進行中的付款。",
     "pendingPaymentsBlockDeletion": "存在待處理付款或預訂時無法刪除。未刪除任何資料。",
     "productArchivedBecauseOrdersExist": "由於訂單仍參照此商品，商品已隱藏而非刪除。待處理付款仍可安全完成。",
     "postNotFound": "找不到貼文。",
     "commentsClosed": "留言已關閉。",
     "invalidCommentRef": "留言參照無效。",
-    "tierNotFound": "找不到等級。",
+    "tierNotFound": "此會員已不存在。請重新整理頁面。",
     "productNotFound": "找不到商品。",
     "courseNotFound": "找不到課程。",
     "lessonNotFound": "找不到課程單元。",
@@ -130,7 +130,7 @@
     "subTaken": "此子網域已被使用。",
     "planSpaceTypeLocked": "此 Space 類型自 {plan} 方案起提供。升級即可建立。",
     "planSpaceLimitReached": "你的 {plan} 方案最多允許 {limit} 個活躍 Space。升級以取得更多空間。",
-    "planTierLimitReached": "你的 {plan} 方案最多允許 {limit} 個會員等級。升級以新增更多。",
+    "planTierLimitReached": "你的 {plan} 方案最多允許 {limit} 個會員。更換方案即可新增更多。",
     "planFeatureLocked": "此功能自 {plan} 方案起提供。升級即可使用。",
     "planMemberLimitReached": "你的 {plan} 方案最多支援 {limit} 位活躍成員。升級以持續成長。",
     "planStaffLimitReached": "你的 {plan} 方案最多允許 {limit} 個團隊席位（管理員／版主）。升級以取得更多。",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "此分眾目前沒有任何人。請選擇其他分眾後寄送。",
     "campaignTestDeliveryFailed": "郵件服務未接受這封郵件（{detail}）。請稍後再試。",
     "recoveryCodeInvalid": "此復原碼不正確或已被使用。請檢查拼寫，或換一個復原碼。",
-    "secondFactorInvalid": "代碼不相符。請輸入應用程式中的目前代碼或一個未使用的復原碼。"
+    "secondFactorInvalid": "代碼不相符。請輸入應用程式中的目前代碼或一個未使用的復原碼。",
+    "productPriceRequired": "請選擇價格或「免費」。",
+    "productFileRequired": "請上傳給買家的檔案或貼上連結。",
+    "productFileUrlInvalid": "檔案連結必須以 https:// 開頭。",
+    "productCourseRequired": "請選擇買家獲得的課程。",
+    "productCourseGated": "此課程屬於某個會員，無法單獨販售。",
+    "productGrantLocked": "首次售出後無法再變更類型和課程，以確保買家保留存取權限。",
+    "productTypeUnavailable": "此商品類型已不再提供。請選擇其他類型。",
+    "spaceAccessTierInvalid": "此會員資格不存在或為免費。請從清單中選擇付費會員資格。",
+    "spaceTypeLockedContent": "類型已無法變更：此空間已有 {count, plural, other {# 項內容}}。如需其他類型，請建立新空間。"
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",
@@ -409,19 +418,19 @@
     "searchAria": "搜尋說明",
     "searchSubmit": "搜尋",
     "comingSoon": "說明中心正在建置中——請稍後再來。",
-    "noResults": "沒有關於「{query}」的結果",
-    "resultsCount": "關於「{query}」的{count, plural, other {# 筆結果}}",
+    "noResults": "沒有關於「{query}」的文章",
+    "resultsCount": "關於「{query}」的{count, plural, other {# 篇文章}}",
     "resetSearch": "重設搜尋",
     "articleCount": "{count, plural, other {# 篇文章}}",
     "contactTitle": "沒找到你需要的內容？",
-    "contactText": "直接開始吧——大多數答案都能在你的社群或創作者儀表板中找到。",
-    "contactCta": "免費開始",
+    "contactText": "寫信給我們——我們會透過電子郵件或在你的帳戶中回覆。",
+    "contactCta": "撰寫訊息",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "姓名（選填）",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -435,7 +444,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "直接開始吧——大多數答案都能在你的社群或創作者儀表板中找到。",
+    "startCta": "免費開始",
+    "startTitle": "還沒有社群？"
   },
   "account": {
     "metaTitle": "帳戶",
@@ -636,7 +648,7 @@
       "noResultsHint": "找不到與「{q}」相符的社群。",
       "emptyHint": "當創作者建立社群後，將顯示於此。",
       "membersShort": "{count} 位成員",
-      "postsShort": "{count} 則貼文",
+      "postsShort": "{count, plural, other {# 則貼文}}",
       "since": "自 {date}",
       "editTitle": "編輯社群",
       "owner": "擁有者：{name}（{email}）",
@@ -664,7 +676,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "此社群的所有成員、空間、內容與訂單都將被刪除。"
     },
     "users": {
       "title": "使用者",
@@ -718,12 +731,12 @@
       "date": "日期",
       "key": "Key",
       "openInNewTab": "在新分頁開啟",
-      "deleteConfirm": "確定要移除此媒體嗎？",
       "deleteBtn": "移除媒體",
       "dangerDesc": "將檔案從分發中移除。引用它的內容將不再顯示該媒體。",
       "visPublic": "公開",
       "visMembers": "會員",
-      "visPaid": "付費"
+      "visPaid": "付費",
+      "deleteConfirmTitle": "移除「{name}」？"
     },
     "posts": {
       "title": "貼文",
@@ -741,7 +754,9 @@
       "unpublishedBadge": "已取消發佈",
       "unpublish": "取消發佈",
       "publish": "發佈",
-      "deleteConfirm": "確定要永久刪除此貼文嗎？"
+      "deleteConfirmTitle": "刪除貼文「{title}」？",
+      "deleteConfirmBody": "貼文及其所有留言都將被刪除。此操作無法復原。",
+      "deleteCta": "刪除貼文"
     },
     "orders": {
       "title": "訂單",
@@ -767,12 +782,12 @@
       "fulfilled": "已履行",
       "fulfilledHint": "將訂單標記為已交付或已完成。",
       "dangerDesc": "從資料庫中永久刪除該訂單。Stripe 上的付款不受影響。",
-      "deleteConfirm": "確定要永久刪除此訂單嗎？",
       "deleteBtn": "刪除訂單",
       "statusPending": "待處理",
       "statusPaid": "已付款",
       "statusRefunded": "已退款",
-      "statusFailed": "失敗"
+      "statusFailed": "失敗",
+      "deleteConfirmTitle": "刪除訂單「{name}」？"
     },
     "help": {
       "title": "說明中心",
@@ -1033,7 +1048,6 @@
       "chatEmptyDesc": "我可以分析您的社群、撰寫文字，並執行建立空間等操作。",
       "imageEmptyTitle": "產生圖片",
       "imageEmptyDesc": "描述您想看到的內容。您也可以上傳圖片作為範本——助理會對其進行編輯或從中獲得靈感。",
-      "geminiOff": "Google Gemini 未啟用——請在設定 → 整合中設定 GEMINI_API_KEY。",
       "chatPlaceholder": "傳訊息給助理…",
       "sendAria": "傳送",
       "chatHint": "Enter 傳送 · Shift+Enter 換行。操作會直接作用於您的社群。",
@@ -1107,7 +1121,9 @@
           "title": "吉祥物",
           "prompt": "為我的社群設計一個友善、插畫風格的吉祥物頭像，圓潤造型，鮮豔色彩。"
         }
-      }
+      },
+      "geminiOffCreator": "此平台尚未設定 AI 助理。",
+      "geminiOffAdmin": "Google Gemini 未啟用。請在伺服器環境中設定 GEMINI_API_KEY 並重新啟動應用程式。只有平台管理員看得到此提示。"
     },
     "announcements": {
       "statusDraft": "草稿",
@@ -1155,7 +1171,9 @@
       "cancel": "取消",
       "saving": "儲存中……",
       "saveChanges": "儲存變更",
-      "createBtn": "建立公告"
+      "createBtn": "建立公告",
+      "confirmDeleteBody": "橫幅會立即從所有社群頁面消失。",
+      "confirmDeleteCta": "刪除公告"
     },
     "spaceContent": {
       "view": "檢視",
@@ -1225,9 +1243,9 @@
         "EVENTS": "活動",
         "NEWSLETTER": "電子報"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "單獨購買價格",
+      "ppvPriceHint": "未購買的人只看得到預覽圖、預覽標題與價格。",
+      "ppvTeaserLabel": "預覽圖（未購買者看到模糊版本）",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "圖片與影片",
@@ -1247,7 +1265,16 @@
       "removeTrackAria": "移除曲目",
       "trackUploading": "正在上傳 {count} 個 … {percent}%",
       "deleteQuestion": "永久刪除這篇貼文？",
-      "deleteConfirm": "刪除貼文"
+      "deleteConfirm": "刪除貼文",
+      "mediaFailedOne": "「{name}」未上傳。{reason}",
+      "mediaFailedMany": "{count, plural, other {# 個檔案未上傳}}。{reason}",
+      "pickFromLibrary": "從媒體庫選擇",
+      "pickFromLibraryHint": "選擇媒體庫中已有的圖片",
+      "previewTitleLabel": "預覽標題（所有人可見）",
+      "previewTitleHint": "選填。顯示在貼文上方，未解鎖的人也看得到。",
+      "accessSingle": "單獨購買",
+      "accessSingleHint": "單獨販售。會員資格不會解鎖此貼文。",
+      "bannersElsewhere": "整個社群的公告橫幅在空間<link>「{name}」</link>中管理。"
     },
     "chat": {
       "badge": "聊天",
@@ -1262,7 +1289,6 @@
       "messagesHeading": "訊息",
       "messagesDesc": "最新的訊息。你可以移除不當內容。",
       "emptyMessages": "此聊天尚無訊息。",
-      "confirmDeleteMessage": "刪除這則訊息？",
       "deleteMessageAria": "刪除訊息",
       "relNone": "—",
       "relNow": "剛剛",
@@ -1297,7 +1323,10 @@
       "historyMessages": "{count} 則訊息",
       "cancel": "取消",
       "saving": "儲存中……",
-      "saveSettings": "儲存設定"
+      "saveSettings": "儲存設定",
+      "confirmDeleteMessageTitle": "刪除 {name} 的訊息？",
+      "confirmDeleteMessageBody": "此訊息將從所有人的聊天中消失。",
+      "confirmDeleteMessageCta": "刪除訊息"
     },
     "newsletter": {
       "title": "電子報",
@@ -1573,7 +1602,6 @@
       "video": "影片",
       "mediaCount": "{count, plural, other {# 個媒體}}",
       "deletePackageAria": "刪除套組",
-      "confirmDeletePackage": "刪除這個媒體套組？",
       "removeAria": "移除",
       "contentCount": "內容（{count}）",
       "titleLabel": "標題",
@@ -1594,7 +1622,10 @@
       "saveChanges": "儲存變更",
       "createPackageCta": "建立套組",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "刪除媒體包「{title}」？",
+      "confirmDeletePackageBody": "其中的所有圖片與影片也會一併刪除。此操作無法復原。",
+      "confirmDeletePackageCta": "刪除媒體包"
     },
     "sortLabels": {
       "NEWEST": "最新優先",
@@ -1614,7 +1645,6 @@
       "emptyHint": "用編輯器撰寫你的第一篇部落格文章。",
       "edit": "編輯",
       "delete": "刪除",
-      "confirmDelete": "刪除這篇貼文？",
       "sheetWrite": "撰寫貼文",
       "sheetEdit": "編輯貼文",
       "sheetSettings": "部落格設定",
@@ -1677,7 +1707,10 @@
       "pollAddOption": "新增選項",
       "pollMultipleLabel": "允許多選",
       "statusDraft": "未發布",
-      "statusScheduled": "預計於 {date} 發布"
+      "statusScheduled": "預計於 {date} 發布",
+      "confirmDeleteTitle": "刪除貼文「{title}」？",
+      "confirmDeleteBody": "貼文及其所有留言都將被刪除。此操作無法復原。",
+      "confirmDeleteCta": "刪除貼文"
     },
     "knowledge": {
       "badge": "知識庫",
@@ -1691,7 +1724,6 @@
       "emptyHint": "撰寫你的第一篇知識文章。",
       "edit": "編輯",
       "delete": "刪除",
-      "confirmDelete": "刪除這篇文章？",
       "sheetWrite": "撰寫文章",
       "sheetEdit": "編輯文章",
       "sheetSettings": "顯示設定",
@@ -1721,7 +1753,10 @@
       "showDatesHint": "每篇文章的發佈日期",
       "saveSettings": "儲存設定",
       "cancel": "取消",
-      "saving": "儲存中……"
+      "saving": "儲存中……",
+      "confirmDeleteTitle": "刪除文章「{title}」？",
+      "confirmDeleteBody": "文章將從知識庫中移除。此操作無法復原。",
+      "confirmDeleteCta": "刪除文章"
     },
     "rte": {
       "poll": "投票",
@@ -1962,7 +1997,8 @@
       "deleteDesc": "不可逆地刪除所有成員、空間、內容與訂單。",
       "confirmDelete": "永久刪除「{name}」及所有內容？",
       "confirmPlaceholder": "輸入「{slug}」以確認",
-      "deleting": "刪除中…"
+      "deleting": "刪除中…",
+      "confirmDeleteCta": "永久刪除社群"
     },
     "developers": {
       "metaTitle": "開發者與 API",
@@ -2506,7 +2542,11 @@
       "colSent": "寄送",
       "colRecipients": "收件人",
       "colOpens": "開啟",
-      "colClicks": "點擊"
+      "colClicks": "點擊",
+      "growthSummary": "過去 6 個月共有 {total, plural, other {# 人}}加入，其中本月 {current, number} 人。",
+      "growthEmpty": "過去 6 個月沒有人加入。新成員會按月顯示在這裡。",
+      "colMonth": "月份",
+      "colNewMembers": "新成員"
     },
     "gamification": {
       "title": "遊戲化",
@@ -2523,8 +2563,6 @@
       "rule": "規則",
       "maxPerDay": "每天最多 {count}",
       "pts": "分",
-      "savePointsAria": "儲存積分",
-      "deleteRuleAria": "刪除規則",
       "confirmDeleteRule": "刪除規則「{name}」？",
       "rulesEmptyTitle": "尚無規則",
       "rulesEmptyHint": "為某個行為新增一條積分規則。",
@@ -2604,7 +2642,14 @@
       "iconLabel": "符號",
       "manualHint": "條件為「手動」的徽章由你自己頒發 —",
       "manualBadge": "手動",
-      "manualHintLink": "在成員列表中。"
+      "manualHintLink": "在成員列表中。",
+      "pointsForRuleAria": "{name}的積分",
+      "savePointsForRuleAria": "儲存{name}的積分",
+      "deleteRuleForAria": "刪除規則「{name}」",
+      "confirmDeleteRuleBody": "此操作將不再獲得積分。",
+      "confirmDeleteRuleCta": "刪除規則",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {此徽章尚未授予任何人。} other {# 位成員將失去此徽章。}}",
+      "confirmDeleteBadgeCta": "刪除徽章"
     },
     "referrals": {
       "metaTitle": "推薦",
@@ -2694,15 +2739,15 @@
         "desc": "解鎖一門課程"
       },
       "TIER_GRANT": {
-        "label": "等級權限",
-        "desc": "解鎖一個等級"
+        "label": "會員存取權",
+        "desc": "已不再提供"
       }
     },
     "tiers": {
       "title": "會員",
       "subtitle": "{count, plural, other {# 個會員}} · 它們在加入頁面上的顯示方式。",
       "create": "建立會員",
-      "stripeWarning": "Stripe 尚未連接——免費等級可立即使用；付費等級請將 <code>STRIPE_SECRET_KEY</code> 加入你的 <code>.env</code>。",
+      "stripeWarning": "Stripe 尚未連接：免費會員可立即使用。如需付費會員，請在 <code>.env</code> 中加入 <code>STRIPE_SECRET_KEY</code>。",
       "recommended": "推薦",
       "default": "預設",
       "hidden": "隱藏",
@@ -2710,9 +2755,9 @@
       "edit": "編輯",
       "suffixMonth": "/ 月",
       "suffixYear": "/ 年",
-      "createTitle": "建立新等級",
+      "createTitle": "新增會員",
       "createSubtitle": "設定會員與價格",
-      "editTitle": "編輯等級",
+      "editTitle": "編輯會員",
       "nameLabel": "名稱",
       "namePlaceholder": "例如：進階",
       "coverLabel": "封面圖片（選填）",
@@ -2726,17 +2771,24 @@
       "publicHint": "顯示在加入頁面。",
       "recommendedLabel": "創作者推薦",
       "recommendedHint": "在加入頁面突顯此會員（最多一個）。",
-      "defaultLabel": "預設等級",
-      "defaultHintActive": "新成員將獲得此等級。",
+      "defaultLabel": "預設會員",
+      "defaultHintActive": "新成員會獲得此會員。",
       "defaultHintInactive": "設為新成員的預設等級。",
-      "entitlementKeyLabel": "權限鍵（固定）",
-      "confirmDelete": "確定要刪除等級「{name}」嗎？",
+      "entitlementKeyLabel": "技術金鑰（僅平台管理員可見）",
+      "confirmDelete": "刪除會員「{name}」？",
       "deleting": "刪除中…",
-      "deleteTier": "刪除等級",
+      "deleteTier": "刪除會員",
       "cancel": "取消",
       "saving": "儲存中…",
       "saveChanges": "儲存變更",
-      "createTier": "建立等級"
+      "createTier": "建立會員",
+      "priceHint": "價格從固定級距中選擇，這樣在應用程式商店中也適用同一價格。",
+      "payoutsMissing": "要收到付款，請先設定收款。",
+      "payoutsSetup": "設定收款",
+      "confirmDeleteBody": "{count, plural, =0 {此會員將被永久刪除。} other {# 位成員將無法再存取此會員的內容。}}此操作無法復原。",
+      "confirmHide": "隱藏會員「{name}」？",
+      "confirmHideBody": "付費會員不會被刪除，只會從加入頁面移除，以便繼續處理進行中的付款。現有成員保留存取權限。",
+      "hideTier": "隱藏會員"
     },
     "products": {
       "title": "商品",
@@ -2759,7 +2811,6 @@
       "namePlaceholder": "例如：電子書",
       "typeLabel": "類型",
       "priceLabel": "價格",
-      "downloadUrlLabel": "下載 URL（選填）",
       "shipping": "運費",
       "shipFreeLabel": "免運費",
       "shipFreeDesc": "無運費",
@@ -2772,13 +2823,42 @@
       "descPlaceholder": "買家會得到什麼？",
       "publishedLabel": "已發佈",
       "publishedHint": "在社群中可見並可購買。",
-      "confirmDelete": "確定要刪除商品「{name}」嗎？",
+      "confirmDelete": "刪除商品「{name}」？",
       "deleting": "刪除中…",
       "deleteProduct": "刪除商品",
       "cancel": "取消",
       "saving": "儲存中…",
       "saveChanges": "儲存變更",
-      "createProduct": "建立商品"
+      "createProduct": "建立商品",
+      "confirmDeleteBody": "此商品將從商店中消失。此操作無法復原。",
+      "confirmHide": "隱藏商品「{name}」？",
+      "confirmHideBody": "此商品已有訂單，因此不會被刪除，只會從商店中移除。買家保留存取權限。",
+      "hideProduct": "隱藏商品",
+      "priceHint": "價格從固定級距中選擇，這樣在應用程式商店中也適用同一價格。",
+      "pricePlaceholder": "選擇價格",
+      "priceRequired": "請選擇價格或「免費」。",
+      "fileLabel": "給買家的檔案",
+      "fileHint": "上傳檔案或貼上連結。買家購買後即可看到下載。",
+      "fileUpload": "上傳檔案",
+      "fileReplace": "上傳其他檔案",
+      "fileRemove": "移除",
+      "fileUploading": "正在上傳…",
+      "fileUploaded": "已上傳的檔案",
+      "fileOpen": "開啟",
+      "fileLinkLabel": "或檔案連結",
+      "fileRequired": "請上傳檔案或貼上連結。",
+      "fileLinkInvalid": "連結必須以 https:// 開頭。",
+      "courseLabel": "解鎖哪門課程？",
+      "coursePlaceholder": "選擇課程",
+      "courseHint": "儲存後，此課程僅對買家和你的團隊開放。標記為預覽的單元仍對所有人可見。",
+      "courseRequired": "請選擇買家獲得的課程。",
+      "courseLocked": "首次售出後無法再變更課程，以確保買家保留存取權限。",
+      "noCourses": "你還沒有可以單獨販售的課程。",
+      "createCourse": "建立課程",
+      "tierGrantRetired": "此類型不會解鎖任何會員。請選擇其他類型。付費會員請在「會員」中建立。",
+      "viewInShop": "在商店中查看",
+      "payoutsMissing": "要收到付款，請先設定收款。",
+      "payoutsSetup": "設定收款"
     },
     "payouts": {
       "title": "提領",
@@ -2875,7 +2955,6 @@
       "cancel": "取消",
       "adding": "新增中…",
       "statusLabel": "狀態",
-      "confirmRemove": "確定要將「{name}」從社群中移除嗎？",
       "removing": "移除中…",
       "removeMember": "移除成員",
       "saving": "儲存中…",
@@ -2898,7 +2977,10 @@
       "awarding": "頒發中…",
       "revoke": "移除",
       "revoking": "移除中…",
-      "awardedOn": "{date} 頒發"
+      "awardedOn": "{date} 頒發",
+      "confirmRemoveTitle": "將「{name}」移出社群？",
+      "confirmRemoveBody": "進行中的訂閱會立即結束，會員資格帶來的存取權限也會取消。單獨購買的內容會保留。",
+      "confirmRemoveCta": "移除成員"
     },
     "spaceTypes": {
       "FEED": {
@@ -2989,15 +3071,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "公開",
-        "desc": "所有人可見"
+        "desc": "所有人可見，無需帳號"
       },
       "MEMBERS": {
         "label": "成員",
-        "desc": "僅登入可見"
+        "desc": "僅限社群成員"
       },
       "PAID": {
         "label": "付費",
-        "desc": "需要會員"
+        "desc": "僅限付費會員"
       }
     },
     "spaces": {
@@ -3015,15 +3097,12 @@
       "createSubtitle": "選擇類型與可見性",
       "editTitle": "編輯空間",
       "edit": "編輯",
-      "reactivate": "啟用",
       "archive": "封存",
       "postCount": "{count, plural, other {# 篇貼文}}",
       "nameLabel": "空間名稱",
       "namePlaceholder": "例如：公告",
       "typeLabel": "類型",
       "visibilityLabel": "可見性",
-      "entitlementLabel": "所需權限",
-      "entitlementHint": "留空以接受任何付費會員。",
       "descLabel": "描述（選填）",
       "descPlaceholder": "這個空間是關於什麼的？",
       "deleting": "刪除中…",
@@ -3033,7 +3112,32 @@
       "saveChanges": "儲存變更",
       "deleteConfirmTitle": "刪除空間？",
       "deleteConfirmText": "「{name}」將被永久刪除。其中的所有內容都會遺失——此操作無法復原。",
-      "delete": "刪除"
+      "delete": "刪除",
+      "restore": "還原",
+      "archiveNamed": "封存「{name}」",
+      "restoreNamed": "還原「{name}」",
+      "archivedNotice": "「{name}」已封存，成員看不到。",
+      "restoredNotice": "「{name}」已還原，成員可再次看到。",
+      "undo": "復原",
+      "dismissNotice": "關閉提示",
+      "typeLockedHint": "此空間已有 {count, plural, other {# 項內容}}，因此類型已固定。換成其他類型後，這些內容將不再顯示。如需其他類型，請建立新空間。",
+      "access": {
+        "legend": "哪些會員資格可以存取？",
+        "anyPaid": "任何付費會員資格",
+        "anyPaidDesc": "也包括購買過付費內容（例如商品）的人",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "tierHidden": "{price} · 未販售",
+        "legacyLabel": "先前的存取規則",
+        "legacyFreeTier": "免費會員資格（舊設定）",
+        "legacyKey": "金鑰「{key}」（舊設定）",
+        "hintTier": "只有擁有此會員資格的成員能看到此空間。你和你的團隊隨時都能存取。",
+        "hintAny": "所有擁有付費會員資格的成員都能看到此空間。你和你的團隊隨時都能存取。",
+        "noPaidTitle": "尚無付費會員資格",
+        "noPaidText": "建立付費會員資格，成員才能解鎖此空間。",
+        "noPaidCta": "先建立會員資格",
+        "specificTier": "特定會員資格"
+      }
     },
     "roles": {
       "OWNER": "擁有者",
@@ -3124,14 +3228,14 @@
       "leaveTitle": "退出社群",
       "cancelText": "你對付費內容的存取將隨付費週期結束。已購買的商品仍歸你所有。",
       "leaveText": "你將失去對會員內容的存取。已購買的商品仍歸你所有。",
-      "confirmCancel": "確定要取消會員嗎？",
       "cancelling": "取消中…",
       "cancelNow": "立即取消",
       "confirmLeave": "確定要退出社群「{name}」嗎？",
       "leaving": "退出中…",
       "leaveCommunity": "退出社群",
       "perMonth": "/月",
-      "perYear": "/年"
+      "perYear": "/年",
+      "confirmCancelTitle": "取消在「{name}」的會員資格？"
     },
     "credits": {
       "title": "點數與用量",
@@ -3224,8 +3328,6 @@
       "edit": "編輯",
       "delete": "刪除",
       "moveToFolder": "移到資料夾",
-      "confirmDeleteFolder": "刪除這個資料夾？裡面的媒體會變成未歸檔。",
-      "confirmDeleteMedia": "確定刪除這個媒體？之後將無法再存取。",
       "folderMenuAria": "{name} 的資料夾選項",
       "itemMenuAria": "{name} 的媒體選項",
       "openAria": "開啟 {name}",
@@ -3252,9 +3354,18 @@
       "openInStudio": "在工作室中編輯",
       "uploadMedia": "上傳媒體",
       "uploadingProgress": "正在上傳… {done}/{total}",
-      "uploadFailed": "上傳失敗：{name}",
       "storageTitle": "媒體儲存空間",
-      "storageOf": "已用 {used}／共 {limit}"
+      "storageOf": "已用 {used}／共 {limit}",
+      "uploadFailedCount": "{count, plural, other {# 個檔案未上傳}}",
+      "uploadFailedLine": "{name}：{reason}",
+      "retryUpload": "重新上傳",
+      "dismissUploadErrors": "關閉提示",
+      "confirmDeleteFolderTitle": "刪除資料夾「{name}」？",
+      "confirmDeleteFolderBody": "其中的媒體會保留，並移到「未歸檔」。",
+      "confirmDeleteFolderCta": "刪除資料夾",
+      "confirmDeleteMediaTitle": "永久刪除「{name}」？",
+      "confirmDeleteMediaBody": "檔案將被刪除。使用它的貼文與頁面將不再顯示。",
+      "confirmDeleteMediaCta": "永久刪除"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3420,7 +3531,6 @@
       "studioChatShow": "顯示聊天",
       "studioChatHide": "隱藏聊天",
       "studioFullscreen": "全螢幕",
-      "studioCloseConfirm": "你正在直播中。關閉工作室將中斷直播。仍要關閉嗎？",
       "studioNoPreview": "直播正在進行——影片預覽僅存在於正在直播的裝置上。",
       "studioMirror": "鏡像預覽",
       "studioLevel": "音量電平",
@@ -3436,7 +3546,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "關閉直播室並結束直播？",
+      "studioCloseBody": "你正在直播。關閉直播室會中斷直播。",
+      "studioCloseCta": "關閉直播室",
+      "studioCloseCancel": "繼續直播"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3879,6 +3993,38 @@
     "dateTimeField": {
       "tzHint": "依你的時區：{zone}（{abbr}）",
       "pastWarning": "此日期已過去。"
+    },
+    "planSheet": {
+      "title": "變更方案",
+      "subtitle": "各方案包含的內容",
+      "loading": "正在載入方案 …",
+      "loadFailed": "無法載入方案。",
+      "retry": "重新載入",
+      "pricePerMonth": "每月 {price}",
+      "free": "免費",
+      "current": "你的方案",
+      "currentPlan": "你目前的方案",
+      "limitSpaces": "{count, plural, other {# 個活躍空間}}",
+      "limitSpacesUnlimited": "空間數量不限",
+      "limitMembers": "{count, plural, other {# 位活躍成員}}",
+      "limitMembersUnlimited": "成員數量不限",
+      "limitTiers": "最多 {count, plural, other {# 種會員資格}}",
+      "limitTiersUnlimited": "會員資格數量不限",
+      "limitStaff": "{count, plural, other {# 個團隊席位}}",
+      "limitStaffUnlimited": "團隊席位不限",
+      "limitCredits": "每月 {n} AI 點數",
+      "everythingFrom": "包含 {plan} 的所有內容，另有：",
+      "baseSpaces": "包含：",
+      "spaceTypesList": "空間類型：{list}",
+      "freeHint": "如要回到 Free，請取消你的方案。",
+      "switching": "正在啟動 …",
+      "switchTo": "切換到 {plan}",
+      "checkoutFailed": "無法啟動付款。請再試一次。",
+      "cancelFailed": "無法登記取消。請再試一次。",
+      "footnote": "價格以月計，可按月取消。付款透過 Stripe 進行。",
+      "spacesUsedNotice": "你已使用 {used} 個空間，共 {max} 個。",
+      "creditsTeaser": "目前：{plan}。各方案在空間、成員和功能上有所不同。",
+      "open": "變更方案"
     }
   },
   "common": {
@@ -4076,7 +4222,7 @@
       },
       "space": {
         "lockedDesc": "此空間僅開放給會員。",
-        "lockedDescPaid": "此空間僅開放給擁有相應會員資格的會員。",
+        "lockedDescPaid": "此內容屬於付費會員資格。",
         "upgradeMembership": "升級會員",
         "join": "加入",
         "noLinks": "還沒有連結",
@@ -4153,7 +4299,11 @@
       "postTile": {
         "becomeMember": "成為會員",
         "exclusive": "僅限會員",
-        "locked": "已鎖定"
+        "locked": "已鎖定",
+        "lockedUntitled": "會員專屬貼文",
+        "paidUntitled": "付費貼文",
+        "lockedHint": "此貼文僅限會員。",
+        "paidHint": "你可以單獨解鎖此貼文。"
       },
       "planCard": {
         "current": "你的方案",
@@ -4271,6 +4421,15 @@
         "like": "讚",
         "unlike": "取消讚",
         "locked": "已鎖定"
+      },
+      "paywall": {
+        "belongsTo": "「{space}」屬於 {tier}（{price}）。",
+        "anyPaidFrom": "「{space}」包含在所有付費會員資格中，{tier}（{price}）起。",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "viewTier": "查看 {tier}",
+        "becomeMember": "成為會員",
+        "memberHint": "你目前的會員資格不包含此空間。"
       }
     },
     "nav": {
@@ -4429,7 +4588,8 @@
     "title": "顯示語言",
     "hint": "適用於您在此裝置上檢視 Aera 的語言。",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "顯示語言：{language}"
   },
   "spaces": {
     "commentsClosed": "留言已關閉。",
@@ -4550,7 +4710,8 @@
         "product": "產品",
         "knowledge": "知識"
       }
-    }
+    },
+    "postCount": "{count, plural, other {# 則貼文}}"
   },
   "categories": {
     "podcast": "Podcast 與節目",
@@ -4583,10 +4744,10 @@
       },
       "s2": {
         "title": "涵蓋你所有創作的空間",
-        "text": "依需求建立任意數量的空間：新聞動態、討論論壇、課程、商店、電子報、活動、部落格、知識庫、圖片圖庫、影片庫、聊天、Podcast、連結合輯與自有廣告版位。每個空間都由你決定：對所有人可見、僅限成員，或僅限付費成員。",
-        "tag1": "14 種空間類型",
+        "text": "依需求建立空間：新聞動態、討論論壇、課程、商店、電子報、活動、部落格、知識庫、圖片圖庫、影片庫、聊天、Podcast、連結合輯與自有廣告版位。每個空間都由你決定：對所有人可見、僅限成員，或僅限付費成員。",
+        "tag1": "{count} 種空間類型",
         "tag2": "可見性自由設定",
-        "tag3": "空間數量不限"
+        "tag3": "數量依方案而定"
       },
       "s3": {
         "title": "貼文、留言與互動",
@@ -4706,17 +4867,17 @@
     "topupTitle": "加購點數",
     "topupText": "中途需要更多？加購的點數永不過期，且只會在每月額度用完後才使用。",
     "creditsLabel": "點數",
-    "footnote": "1 點約等於 1,000 個 token；一次典型的助理請求消耗 1–3 點。社群收入的平台費用另行結算 — 只針對真實收入。",
+    "footnote": "1 點約等於 1,000 個 token；一次典型的助理請求消耗 1–3 點。",
     "plans": {
       "FREE": {
         "tagline": "輕鬆起步",
-        "f1": "11 種核心 Space：動態消息、論壇、課程、活動、部落格…",
+        "f1": "{count} 種核心 Space：動態消息、論壇、課程、活動、部落格…",
         "f2": "最多 5 個 Space、100 位成員",
-        "f3": "會員機制、媒體與版務管理",
+        "f3": "最多 {tiers} 種會員方案（含付費），媒體與版務管理",
         "f4": "每月 500 點 AI 額度"
       },
       "STARTER": {
-        "tagline": "當你想開始獲利",
+        "tagline": "適用於商店、商品與數據統計",
         "f1": "包含 Free 所有功能",
         "f2": "數據分析、商品與撥款",
         "f3": "商店、聊天、贊助小費、行事曆與規劃工具",
@@ -4741,7 +4902,7 @@
     "compare": {
       "eyebrow": "詳細內容",
       "title": "各方案包含內容",
-      "subtitle": "每一列都是你能在後台立即使用的功能。切換方案時不會失去任何功能——只會不斷增加。",
+      "subtitle": "每一列都是你能在後台立即使用的功能。升級到更大的方案時，功能只會增加。",
       "spacesGroup": "Space 類型",
       "featuresGroup": "功能",
       "limitsGroup": "限制",
@@ -4757,8 +4918,17 @@
       "limitStorage": "媒體儲存空間",
       "limitCredits": "每月 AI 額度",
       "storageValue": "{gb} GB",
-      "note": "合作夥伴的促銷代碼可立即解鎖你的方案——無需提供付款資訊。"
-    }
+      "note": "合作夥伴的促銷代碼可立即解鎖你的方案——無需提供付款資訊。",
+      "feeNote": "你的社群中每筆銷售我們收取 {fee} 的平台費——所有方案相同。此外還需支付金流服務商（Stripe）的手續費。",
+      "feesGroup": "費用",
+      "feePlatform": "銷售手續費",
+      "feeProvider": "金流服務商手續費",
+      "feeProviderValue": "依 Stripe 費率",
+      "membersNote": "活躍成員指你社群中的所有成員——包括你和你的團隊，免費與付費成員皆計入。達到上限後，新成員需在升級方案後才能加入。",
+      "scrollHint": "左右滑動以比較",
+      "tableLabel": "方案比較"
+    },
+    "feeLine": "銷售手續費：{fee}"
   },
   "marketing": {
     "navDiscover": "探索",
@@ -4782,7 +4952,10 @@
     "footerPrivacy": "隱私權政策",
     "footerWithdrawal": "撤回權說明",
     "footerTagline": "你的社群。你的品牌。你的事業。",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "{plan} 以上：{items}",
+    "footerContact": "聯絡我們",
+    "legalGermanOnly": "本法律文件僅提供德文版本，以德文版本為準。"
   },
   "home": {
     "badge": "社群 · 會員 · 電商",
@@ -4858,7 +5031,7 @@
       "c1": {
         "title": "涵蓋你所有創作的空間",
         "text": "動態、論壇、部落格與知識庫，圖片圖庫、影片庫與 Podcast，還有聊天、連結合輯與自有廣告版位。每個空間都可以對所有人開放、僅限會員或僅限付費會員 — 而且到處都能留言與互動。",
-        "tag1": "14 種空間類型",
+        "tag1": "{count} 種空間類型",
         "tag2": "可見性自由設定",
         "tag3": "貼文、留言與互動"
       },
@@ -4956,11 +5129,11 @@
       "colYou": "Aera",
       "rowBase": "每月基本價格",
       "rowFee": "從你收入中抽成",
-      "rowFull": "完整功能起價",
+      "rowFull": "全部功能起價",
       "aera": {
         "base": "0 — 免費開始",
-        "fee": "5 %",
-        "full": "每月 {pro}"
+        "fee": "{fee}",
+        "full": "每月 {price}（{plan}）"
       },
       "patreon": {
         "name": "Patreon",
@@ -4981,26 +5154,27 @@
         "full": "99 美元（Pro）"
       },
       "footnote": "資料取自各家公開價格頁，截至 2026 年 7 月。金流服務商的手續費（約 2.9 % + 0.30）在所有平台都要另計——我們也一樣。",
-      "includedTitle": "Aera 已包含，無需加價",
+      "includedTitle": "所有方案皆包含",
       "included": {
         "i1": {
-          "title": "20 個版塊",
-          "text": "動態、論壇、課程、電子報、活動、部落格、知識庫、圖庫、影片、商店、聊天、Podcast、直播等——都在同一處。"
+          "title": "{count} 種核心 Space",
+          "text": "{list}——全部集中在一處。"
         },
         "i2": {
-          "title": "四條收入線，一個結帳",
-          "text": "會員、數位商品、付費內容和活動都走同一個收銀台。"
+          "title": "第一天就能設定會員方案",
+          "text": "最多 {tiers} 種免費或付費會員方案，加上付費內容——全部透過同一個結帳流程。"
         },
         "i3": {
           "title": "你的品牌，你的地址",
-          "text": "自有網域、自有配色、自有標誌。成員看到的是你，不是我們。"
+          "text": "自己的標誌、自己的配色，以及 Aera 上屬於你的網址。成員看到的是你，而不是我們。"
         },
         "i4": {
-          "title": "資料始終屬於你",
-          "text": "成員、內容與收入隨時可匯出。"
+          "title": "內建 AI 助理",
+          "text": "每月 {credits} 點 AI 點數用於文案與創意，另有 {gb} GB 媒體儲存空間。"
         }
       }
-    }
+    },
+    "fromPlan": "{plan} 以上"
   },
   "legalPurchase": {
     "immediateAccess": "我要求立即取得存取權限，並知悉數位內容開始交付後我的撤回權即告終止。<withdrawal>詳情</withdrawal>。",
@@ -5029,19 +5203,19 @@
   },
   "ui": {
     "auth": {
-      "inviteMeta": "接受邀請 — Aera",
+      "inviteMeta": "接受邀請",
       "inviteInvalidTitle": "邀請無效",
       "inviteInvalidText": "這個邀請連結已過期或已被使用。請向社群管理員索取新的邀請；如果你的帳號已經啟用，可以使用「忘記密碼」。",
       "forgotPassword": "忘記密碼",
       "inviteWelcome": "歡迎來到 Aera",
       "inviteActivate": "設定密碼以啟用帳號 {email}。",
-      "resetMeta": "重設密碼 — Aera",
+      "resetMeta": "重設密碼",
       "invalidLinkTitle": "連結無效",
       "resetInvalidText": "這個連結已過期或已被使用。",
       "requestNewLink": "申請新連結",
       "resetTitle": "設定新密碼",
       "forAccount": "用於帳號 {email}",
-      "verifyMeta": "確認電子郵件 — Aera",
+      "verifyMeta": "確認電子郵件",
       "verifyInvalidText": "此驗證連結已過期或已被使用。請申請新的連結。",
       "toLogin": "前往登入",
       "alreadyVerifiedTitle": "已確認",
@@ -5069,7 +5243,7 @@
       "rootDescription": "Aera 是創作者的一站式平台：社群、會員、課程、活動、電子報、銷售與 AI，全都以你自己的品牌呈現。",
       "loginMeta": "登入",
       "signupMeta": "註冊",
-      "forgotMeta": "忘記密碼 — Aera",
+      "forgotMeta": "忘記密碼",
       "pricingMeta": "價格",
       "featuresMeta": "功能",
       "manifestDescription": "你的社群：貼文、課程、活動和訊息，全在一處。",
@@ -5222,7 +5396,8 @@
       "notFound": {
         "title": "找不到頁面",
         "text": "這個社群或頁面不存在。",
-        "home": "返回首頁"
+        "home": "返回首頁",
+        "help": "前往說明中心"
       },
       "articleShare": {
         "label": "分享",
@@ -5305,6 +5480,9 @@
       "bundle": "組合包",
       "tagline": "標語",
       "logoUrl": "標誌網址"
+    },
+    "pricePoint": {
+      "free": "免費"
     }
   },
   "unsubscribe": {
@@ -5350,11 +5528,26 @@
     "preparing": "正在準備 …",
     "verifying": "正在檢查 …",
     "done": "完成",
-    "failed": "失敗",
     "secondsLeft": "{count, plural, other {還剩 # 秒}}",
     "minutesLeft": "{count, plural, other {還剩 # 分鐘}}",
     "more": "{count, plural, other {還有 # 個}}",
-    "dismiss": "隱藏"
+    "dismiss": "隱藏",
+    "retry": "重新上傳",
+    "doneAnnounce": "已上傳：{names}",
+    "errors": {
+      "connection": "連線至儲存空間失敗。請檢查網路連線後再試一次。",
+      "canceled": "上傳已中斷，請再試一次。",
+      "storageRejected": "儲存空間拒絕了此檔案。請再試一次；若再次發生，請聯絡支援。",
+      "notStarted": "無法開始上傳，請稍後再試。",
+      "verification": "上傳後無法檢查此檔案，請再試一次。",
+      "rejected": "檔案未通過檢查。請檢查檔案類型與內容，或選擇其他檔案。",
+      "quota": "儲存空間已滿。請在媒體庫刪除部分媒體，或升級至更大的方案。",
+      "tooMany": "短時間內上傳次數過多。請稍候再試。",
+      "signedOut": "你已登出。請重新登入後再上傳檔案。",
+      "unavailable": "目前無法上傳。請幾分鐘後再試。",
+      "invalid": "此檔案無法在這裡上傳。請檢查檔案類型與大小。",
+      "failed": "上傳失敗，請再試一次。"
+    }
   },
   "blog": {
     "metaTitle": "Blog",

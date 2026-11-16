@@ -169,23 +169,27 @@ export default async function AnalyticsPage({
                     </span>
                   ))}
                 </div>
-                <table className="sr-only">
-                  <caption>{t("newMembers6m")}</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">{t("colMonth")}</th>
-                      <th scope="col">{t("colNewMembers")}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {a.memberGrowth.map((b) => (
-                      <tr key={b.start}>
-                        <th scope="row">{monthLong.format(new Date(b.start))}</th>
-                        <td>{nf.format(b.value)}</td>
+                {/* sr-only am <table> selbst greift nicht: Tabellen ignorieren
+                    width: 1px und liefen bei 375 px ueber den Rand. */}
+                <div className="sr-only">
+                  <table>
+                    <caption>{t("newMembers6m")}</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">{t("colMonth")}</th>
+                        <th scope="col">{t("colNewMembers")}</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {a.memberGrowth.map((b) => (
+                        <tr key={b.start}>
+                          <th scope="row">{monthLong.format(new Date(b.start))}</th>
+                          <td>{nf.format(b.value)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </figure>
             )}
           </CardBody>

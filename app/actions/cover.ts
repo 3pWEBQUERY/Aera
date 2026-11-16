@@ -16,7 +16,7 @@ function revalidateCommunity(slug: string) {
  */
 export async function setCommunityCoverAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
 
   const covers = await prisma.storageObject.findMany({
     where: { tenantId: tenant.id, purpose: "community-cover" },
@@ -39,14 +39,14 @@ export async function setCommunityCoverAction(fd: FormData): Promise<void> {
       });
     });
   }
-  await writeAudit({ tenantId: tenant.id, action: "branding.cover.set" });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "branding.cover.set" });
   revalidateCommunity(slug);
 }
 
 /** Removes the community cover — the hero falls back to the brand gradient. */
 export async function removeCommunityCoverAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const covers = await prisma.storageObject.findMany({
     where: { tenantId: tenant.id, purpose: "community-cover" },
     select: { id: true, key: true },
@@ -66,6 +66,6 @@ export async function removeCommunityCoverAction(fd: FormData): Promise<void> {
       });
     });
   }
-  await writeAudit({ tenantId: tenant.id, action: "branding.cover.remove" });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "branding.cover.remove" });
   revalidateCommunity(slug);
 }

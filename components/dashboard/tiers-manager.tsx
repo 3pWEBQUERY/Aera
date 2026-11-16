@@ -382,7 +382,7 @@ function TierForm({
                 className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50"
               >
                 <Icon name="archive" size={16} />
-                {deleting ? t("deleting") : t("deleteTier")}
+                {deleting ? t("deleting") : tier!.priceCents > 0 ? t("hideTier") : t("deleteTier")}
               </button>
             </div>
           )}

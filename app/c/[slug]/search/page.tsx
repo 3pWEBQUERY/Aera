@@ -74,21 +74,21 @@ export default async function CommunitySearchPage({
       </form>
 
       {query && query.length < 2 && (
-        <p className="text-center text-sm text-slate-500">{t("minChars")}</p>
+        <p className="text-center text-sm text-[#161613]/70">{t("minChars")}</p>
       )}
 
       {query.length >= 2 && results.length === 0 && (
         <div className="py-12 text-center">
-          <p className="text-sm font-medium text-slate-700">
+          <p className="text-sm font-medium text-[#161613]">
             {t("noResults", { query })}
           </p>
-          <p className="mt-1 text-sm text-slate-500">{t("tryAgain")}</p>
+          <p className="mt-1 text-sm text-[#161613]/70">{t("tryAgain")}</p>
         </div>
       )}
 
       {results.length > 0 && (
         <>
-          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-slate-500">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-[#161613]/70" role="status">
             {t("resultCount", { count: results.length })}
           </p>
           <ul className="space-y-2">
@@ -109,11 +109,11 @@ export default async function CommunitySearchPage({
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-2">
                         <span className="font-semibold text-slate-900">{r.title}</span>
-                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                        <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-700">
                           {meta.label}
                         </span>
                         {r.spaceName && (
-                          <span className="text-xs text-slate-500">{r.spaceName}</span>
+                          <span className="text-xs text-slate-600">{r.spaceName}</span>
                         )}
                       </span>
                       {r.locked ? (

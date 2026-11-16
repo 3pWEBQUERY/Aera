@@ -527,7 +527,8 @@ function AddLesson({
     const frame = requestAnimationFrame(() =>
       requestAnimationFrame(() => {
         titleRef.current?.focus({ preventScroll: true });
-        ref.current?.scrollIntoView({ block: "center" });
+        // Den ganzen Lektionen-Bereich zeigen, damit der Hinweis darüber sichtbar ist.
+        (ref.current?.parentElement ?? ref.current)?.scrollIntoView({ block: "start" });
       }),
     );
     return () => cancelAnimationFrame(frame);

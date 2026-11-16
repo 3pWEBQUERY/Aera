@@ -5,6 +5,12 @@ import { requirePlatformAdmin } from "@/lib/guards";
 import { CommunitiesManager } from "@/components/admin/communities-manager";
 import { AdminPagination } from "@/components/admin/pagination";
 import type { Prisma } from "@/app/generated/prisma/client";
+import { PLAN_ORDER } from "@/lib/credit-plans";
+import type { PlanKey } from "@/lib/plan-features";
+import { env } from "@/lib/env";
+
+const STATUSES = ["ACTIVE", "SUSPENDED", "DELETING"] as const;
+type TenantStatus = (typeof STATUSES)[number];
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("admin.nav");
@@ -16,22 +22,36 @@ const PAGE_SIZE = 30;
 export default async function AdminCommunitiesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; page?: string }>;
+  searchParams: Promise<{ q?: string; page?: string; status?: string; plan?: string }>;
 }) {
   await requirePlatformAdmin();
-  const { q: qRaw, page: pageRaw } = await searchParams;
+  const { q: qRaw, page: pageRaw, status: statusRaw, plan: planRaw } = await searchParams;
   const q = (qRaw ?? "").trim().slice(0, 80);
   const page = Math.max(1, Number(pageRaw) || 1);
+  // Unbekannte Werte aus der URL zaehlen als „Alle".
+  const status = STATUSES.find((s) => s === statusRaw) as TenantStatus | undefined;
+  const plan = PLAN_ORDER.find((p) => p === planRaw) as PlanKey | undefined;
 
-  const where: Prisma.TenantWhereInput = q
-    ? {
-        OR: [
-          { name: { contains: q, mode: "insensitive" } },
-          { slug: { contains: q, mode: "insensitive" } },
-          { tagline: { contains: q, mode: "insensitive" } },
-        ],
-      }
-    : {};
+  const and: Prisma.TenantWhereInput[] = [];
+  if (q) {
+    and.push({
+      OR: [
+        { name: { contains: q, mode: "insensitive" } },
+        { slug: { contains: q, mode: "insensitive" } },
+        { tagline: { contains: q, mode: "insensitive" } },
+      ],
+    });
+  }
+  if (status) and.push({ status });
+  if (plan) {
+    // Ohne Wallet gilt eine Community als FREE (siehe creatorPlan unten).
+    and.push(
+      plan === "FREE"
+        ? { OR: [{ aiCreditWallet: { is: null } }, { aiCreditWallet: { is: { plan } } }] }
+        : { aiCreditWallet: { is: { plan } } },
+    );
+  }
+  const where: Prisma.TenantWhereInput = and.length ? { AND: and } : {};
 
   const [tenants, total] = await Promise.all([
     prisma.tenant.findMany({
@@ -60,6 +80,7 @@ export default async function AdminCommunitiesPage({
     logoUrl: t.logoUrl,
     primaryColor: t.primaryColor,
     customDomain: t.customDomain,
+    customDomainVerifiedAt: t.customDomainVerifiedAt?.toISOString() ?? null,
     platformFeePercent: t.platformFeePercent,
     status: t.status,
     // `category` is new in the schema; the generated client may be older.
@@ -81,12 +102,20 @@ export default async function AdminCommunitiesPage({
 
   return (
     <div className="space-y-6">
-      <CommunitiesManager rows={rows} total={total} q={q} />
+      <CommunitiesManager
+        rows={rows}
+        total={total}
+        q={q}
+        status={status ?? ""}
+        plan={plan ?? ""}
+        rootDomain={env.ROOT_DOMAIN}
+      />
       <AdminPagination
         basePath="/admin/communities"
         page={page}
         pageCount={Math.ceil(total / PAGE_SIZE)}
         q={q}
+        params={{ status: status ?? "", plan: plan ?? "" }}
       />
     </div>
   );

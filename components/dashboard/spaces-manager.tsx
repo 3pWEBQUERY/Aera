@@ -103,6 +103,7 @@ export function SpacesManager({
   const [notice, setNotice] = useState<ArchiveNotice | null>(null);
   const [archiving, startArchive] = useTransition();
   const undoRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
   const t = useTranslations("dashboard.spaces");
   const tp = useTranslations("dashboard.plans");
   const tSheet = useTranslations("dashboard.planSheet");
@@ -122,6 +123,9 @@ export function SpacesManager({
       : null;
 
   function setArchived(space: SpaceRowData, archive: boolean, isUndo = false) {
+    // No `disabled` on the buttons while this runs: a disabled button drops
+    // keyboard focus. A second click is simply ignored instead.
+    if (archiving) return;
     const fd = new FormData();
     fd.set("tenant", slug);
     fd.set("spaceId", space.id);
@@ -143,12 +147,12 @@ export function SpacesManager({
     });
   }
 
-  // The clicked button moves to the other section (or away), so keyboard
-  // focus would fall back to <body>. Hand it to the notice's undo instead.
+  // The clicked button moves to the other section (and the undo button
+  // vanishes after use), so keyboard focus would fall back to <body>. Hand it
+  // to the notice instead: its undo, or after undoing its close button.
   useEffect(() => {
-    if (!notice?.undo) return;
-    const activeEl = document.activeElement;
-    if (!activeEl || activeEl === document.body) undoRef.current?.focus();
+    if (!notice || notice.tone === "error") return;
+    (notice.undo ? undoRef.current : closeRef.current)?.focus();
   }, [notice]);
 
   return (
@@ -248,14 +252,14 @@ export function SpacesManager({
                 <button
                   ref={undoRef}
                   type="button"
-                  disabled={archiving}
                   onClick={() => setArchived(notice.undo!.space, notice.undo!.archive, true)}
-                  className="rounded-lg px-3 py-1.5 font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4 transition hover:decoration-slate-900 disabled:opacity-50"
+                  className="rounded-lg px-3 py-1.5 font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4 transition hover:decoration-slate-900"
                 >
                   {t("undo")}
                 </button>
               )}
               <button
+                ref={closeRef}
                 type="button"
                 onClick={() => setNotice(null)}
                 aria-label={t("dismissNotice")}
@@ -443,7 +447,7 @@ function ArchiveButton({
   return (
     <button
       type="button"
-      disabled={busy}
+      aria-busy={busy || undefined}
       onClick={(e) => {
         e.stopPropagation();
         onArchive();
@@ -454,7 +458,7 @@ function ArchiveButton({
           : t("archiveNamed", { name: space.name })
       }
       className={cn(
-        "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] disabled:opacity-50",
+        "inline-flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
         className,
       )}
     >

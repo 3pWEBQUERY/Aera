@@ -119,6 +119,7 @@ export async function createLiveSessionAction(
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "live.create",
     targetType: "LiveSession",
@@ -287,7 +288,7 @@ export async function setLiveStatusAction(
   fd: FormData,
 ): Promise<{ ok?: boolean; error?: string }> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const raw = String(fd.get("status") || "");
   if (raw !== "SCHEDULED" && raw !== "LIVE" && raw !== "ENDED") {
     return { error: await tErr("invalidInput") };
@@ -319,6 +320,7 @@ export async function setLiveStatusAction(
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: status === "LIVE" ? "live.start" : "live.status",
     targetType: "LiveSession",

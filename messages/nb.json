@@ -38,19 +38,19 @@
     "ownerCantCancel": "Som eier kan du ikke si opp ditt eget medlemskap.",
     "noPaidMembership": "Du har ikke et betalt medlemskap.",
     "stripeCancelFailed": "Stripe-oppsigelse mislyktes. Prøv igjen.",
-    "defaultTierCantDelete": "Standardnivået kan ikke slettes.",
-    "tierDeleteStripeBlocked": "Nivået kan først slettes når Stripe har bekreftet at alle tilknyttede abonnementer er avsluttet. Ingen data ble slettet.",
+    "defaultTierCantDelete": "Standardmedlemskapet kan ikke slettes. Gjør først et annet medlemskap til standard.",
+    "tierDeleteStripeBlocked": "Dette medlemskapet kan først slettes når Stripe bekrefter at alle tilknyttede abonnementer er avsluttet. Ingen data ble slettet.",
     "memberRemoveStripeFailed": "Stripe-abonnementet kunne ikke avsluttes på en trygg måte. Medlemmet ble ikke fjernet, og ingen lokale tilganger ble slettet.",
     "tenantDeleteConfirmMismatch": "Det angitte community-slugget samsvarer ikke.",
     "tenantDeleteStripeSubscriptionsActive": "Communityet kan først slettes når alle Stripe-abonnementer er avsluttet. Ingen data ble slettet.",
     "tenantDeleteStripeCleanupFailed": "Opprydding i Stripe eller Connect mislyktes. Communityet og dataene ble ikke slettet.",
-    "paidTierArchivedInsteadOfDeleted": "Det betalte nivået ble trygt skjult i stedet for slettet, slik at åpne Stripe-betalinger fortsatt kan behandles riktig.",
+    "paidTierArchivedInsteadOfDeleted": "Det betalte medlemskapet ble skjult i stedet for slettet, slik at pågående betalinger fortsatt kan behandles.",
     "pendingPaymentsBlockDeletion": "Sletting er blokkert så lenge det finnes ventende betalinger eller reservasjoner. Ingen data ble slettet.",
     "productArchivedBecauseOrdersExist": "Produktet ble skjult i stedet for slettet fordi ordrer viser til det. Ventende betalinger kan fortsatt behandles trygt.",
     "postNotFound": "Innlegg ikke funnet.",
     "commentsClosed": "Kommentarene er stengt.",
     "invalidCommentRef": "Ugyldig kommentarreferanse.",
-    "tierNotFound": "Nivå ikke funnet.",
+    "tierNotFound": "Dette medlemskapet finnes ikke lenger. Last inn siden på nytt.",
     "productNotFound": "Produkt ikke funnet.",
     "courseNotFound": "Kurs ikke funnet.",
     "lessonNotFound": "Leksjon ikke funnet.",
@@ -130,7 +130,7 @@
     "subTaken": "Dette subdomenet er allerede i bruk.",
     "planSpaceTypeLocked": "Denne space-typen er tilgjengelig fra {plan}-pakken. Oppgrader for å opprette den.",
     "planSpaceLimitReached": "{plan}-pakken din tillater {limit} aktive spaces. Oppgrader for mer plass.",
-    "planTierLimitReached": "{plan}-pakken din tillater {limit} medlemskapsnivåer. Oppgrader for å legge til flere.",
+    "planTierLimitReached": "{plan}-pakken din tillater {limit} medlemskap. Bytt pakke for å legge til flere.",
     "planFeatureLocked": "Denne funksjonen er tilgjengelig fra {plan}-pakken. Oppgrader for å bruke den.",
     "planMemberLimitReached": "{plan}-pakken din er bygget for {limit} aktive medlemmer. Oppgrader for å fortsette å vokse.",
     "planStaffLimitReached": "{plan}-pakken din tillater {limit} teamplasser (admins/moderatorer). Oppgrader for flere.",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "Det er ingen i dette segmentet akkurat nå. Velg et annet segment for å sende.",
     "campaignTestDeliveryFailed": "E-posttjenesten tok ikke imot meldingen ({detail}). Prøv igjen senere.",
     "recoveryCodeInvalid": "Denne gjenopprettingskoden er feil eller allerede brukt. Sjekk skrivemåten, eller prøv en annen kode.",
-    "secondFactorInvalid": "Koden stemmer ikke. Skriv inn den gjeldende koden fra appen eller en ubrukt gjenopprettingskode."
+    "secondFactorInvalid": "Koden stemmer ikke. Skriv inn den gjeldende koden fra appen eller en ubrukt gjenopprettingskode.",
+    "productPriceRequired": "Velg en pris eller «Gratis».",
+    "productFileRequired": "Last opp en fil til kjøpere eller lim inn en lenke.",
+    "productFileUrlInvalid": "Lenken til filen må begynne med https://.",
+    "productCourseRequired": "Velg kurset kjøperne får.",
+    "productCourseGated": "Dette kurset hører til et medlemskap og kan ikke selges separat.",
+    "productGrantLocked": "Etter det første salget kan type og kurs ikke lenger endres, slik at kjøpere beholder tilgangen.",
+    "productTypeUnavailable": "Denne produkttypen tilbys ikke lenger. Velg en annen type.",
+    "spaceAccessTierInvalid": "Dette medlemskapet finnes ikke eller er gratis. Velg et betalt medlemskap fra listen.",
+    "spaceTypeLockedContent": "Typen kan ikke lenger endres: Dette spacet har {count, plural, one {# innhold} other {# innhold}}. Opprett et nytt space for en annen type."
   },
   "nameStatus": {
     "checking": "Sjekker tilgjengelighet…",
@@ -409,19 +418,19 @@
     "searchAria": "Søk i hjelp",
     "searchSubmit": "Søk",
     "comingSoon": "Hjelpesenteret er under oppbygging — kom tilbake snart.",
-    "noResults": "Ingen resultater for «{query}»",
-    "resultsCount": "{count, plural, one {# resultat} other {# resultater}} for «{query}»",
+    "noResults": "Ingen artikler om «{query}»",
+    "resultsCount": "{count, plural, one {# artikkel} other {# artikler}} om «{query}»",
     "resetSearch": "Nullstill søk",
     "articleCount": "{count, plural, one {# innlegg} other {# innlegg}}",
     "contactTitle": "Fant du ikke det du lette etter?",
-    "contactText": "Bare kom i gang — du finner de fleste svarene direkte i fellesskapet ditt eller i creator-dashbordet.",
-    "contactCta": "Kom i gang gratis",
+    "contactText": "Skriv til oss – vi svarer på e-post eller i kontoen din.",
+    "contactCta": "Skriv en melding",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "Navn (valgfritt)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -435,7 +444,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Bare kom i gang — du finner de fleste svarene direkte i fellesskapet ditt eller i creator-dashbordet.",
+    "startCta": "Kom i gang gratis",
+    "startTitle": "Ikke noe fellesskap ennå?"
   },
   "account": {
     "metaTitle": "Konto",
@@ -636,7 +648,7 @@
       "noResultsHint": "Ingen community funnet for «{q}».",
       "emptyHint": "Når creators oppretter communities, vises de her.",
       "membersShort": "{count} medl.",
-      "postsShort": "{count} innlegg",
+      "postsShort": "{count, plural, one {# innlegg} other {# innlegg}}",
       "since": "siden {date}",
       "editTitle": "Rediger community",
       "owner": "Eier: {name} ({email})",
@@ -664,7 +676,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "Alle medlemmer, rom, innhold og bestillinger i dette fellesskapet slettes."
     },
     "users": {
       "title": "Brukere",
@@ -718,12 +731,12 @@
       "date": "Dato",
       "key": "Key",
       "openInNewTab": "Åpne i ny fane",
-      "deleteConfirm": "Vil du virkelig fjerne dette mediet?",
       "deleteBtn": "Fjern medie",
       "dangerDesc": "Fjerner filen fra levering. Innhold som refererer til den, viser ikke lenger mediet.",
       "visPublic": "Offentlig",
       "visMembers": "Medlemmer",
-      "visPaid": "Betalt"
+      "visPaid": "Betalt",
+      "deleteConfirmTitle": "Fjerne «{name}»?"
     },
     "posts": {
       "title": "Innlegg",
@@ -741,7 +754,9 @@
       "unpublishedBadge": "Avpublisert",
       "unpublish": "Avpubliser",
       "publish": "Publiser",
-      "deleteConfirm": "Vil du virkelig slette dette innlegget permanent?"
+      "deleteConfirmTitle": "Slette innlegget «{title}»?",
+      "deleteConfirmBody": "Innlegget forsvinner sammen med alle kommentarene. Dette kan ikke angres.",
+      "deleteCta": "Slett innlegg"
     },
     "orders": {
       "title": "Bestillinger",
@@ -767,12 +782,12 @@
       "fulfilled": "Oppfylt",
       "fulfilledHint": "Markerer bestillingen som levert eller fullført.",
       "dangerDesc": "Sletter bestillingen permanent fra databasen. Betalinger hos Stripe forblir uberørt.",
-      "deleteConfirm": "Vil du virkelig slette denne bestillingen permanent?",
       "deleteBtn": "Slett bestilling",
       "statusPending": "Venter",
       "statusPaid": "Betalt",
       "statusRefunded": "Refundert",
-      "statusFailed": "Mislyktes"
+      "statusFailed": "Mislyktes",
+      "deleteConfirmTitle": "Slette bestillingen «{name}»?"
     },
     "help": {
       "title": "Hjelpesenter",
@@ -1033,7 +1048,6 @@
       "chatEmptyDesc": "Jeg kan analysere fellesskapet ditt, skrive tekster og utføre handlinger som å opprette spaces.",
       "imageEmptyTitle": "Generer bilder",
       "imageEmptyDesc": "Beskriv hva du vil se. Du kan også laste opp bilder som mal — assistenten redigerer dem eller lar seg inspirere av dem.",
-      "geminiOff": "Google Gemini er ikke aktiv — angi en GEMINI_API_KEY under Innstillinger → Integrasjoner.",
       "chatPlaceholder": "Melding til assistenten…",
       "sendAria": "Send",
       "chatHint": "Enter for å sende · Shift+Enter for ny linje. Handlinger påvirker fellesskapet ditt direkte.",
@@ -1107,7 +1121,9 @@
           "title": "Maskot",
           "prompt": "En vennlig, illustrativ maskot-avatar for fellesskapet mitt, runde former, kraftige farger."
         }
-      }
+      },
+      "geminiOffCreator": "AI-assistenten er ikke satt opp på denne plattformen ennå.",
+      "geminiOffAdmin": "Google Gemini er ikke aktiv. Sett GEMINI_API_KEY i servermiljøet og start appen på nytt. Bare plattformadministratorer ser denne meldingen."
     },
     "announcements": {
       "statusDraft": "Utkast",
@@ -1155,7 +1171,9 @@
       "cancel": "Avbryt",
       "saving": "Lagrer…",
       "saveChanges": "Lagre endringer",
-      "createBtn": "Opprett kunngjøring"
+      "createBtn": "Opprett kunngjøring",
+      "confirmDeleteBody": "Banneret forsvinner straks fra alle sidene i fellesskapet.",
+      "confirmDeleteCta": "Slett kunngjøring"
     },
     "spaceContent": {
       "view": "Vis",
@@ -1225,9 +1243,9 @@
         "EVENTS": "Arrangementer",
         "NEWSLETTER": "Nyhetsbrev"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Pris for enkeltkjøp",
+      "ppvPriceHint": "De som ikke kjøper, ser bare forhåndsbilde, forhåndstittel og pris.",
+      "ppvTeaserLabel": "Forhåndsbilde (uskarpt for ikke-kjøpere)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Bilde og video",
@@ -1247,7 +1265,16 @@
       "removeTrackAria": "Fjern spor",
       "trackUploading": "Laster opp {count} … {percent}%",
       "deleteQuestion": "Slette innlegget for godt?",
-      "deleteConfirm": "Slett innlegg"
+      "deleteConfirm": "Slett innlegg",
+      "mediaFailedOne": "«{name}» ble ikke lastet opp. {reason}",
+      "mediaFailedMany": "{count, plural, one {# fil ble} other {# filer ble}} ikke lastet opp. {reason}",
+      "pickFromLibrary": "Velg fra mediebiblioteket",
+      "pickFromLibraryHint": "Velg et bilde som allerede ligger i mediebiblioteket ditt",
+      "previewTitleLabel": "Forhåndstittel (synlig for alle)",
+      "previewTitleHint": "Valgfritt. Vises over innlegget, også for dem det er låst for.",
+      "accessSingle": "Enkeltkjøp",
+      "accessSingleHint": "Selges enkeltvis. Et medlemskap låser ikke opp innlegget.",
+      "bannersElsewhere": "Kunngjøringsbannere for hele fellesskapet administrerer du i rommet <link>«{name}»</link>."
     },
     "chat": {
       "badge": "Chat",
@@ -1262,7 +1289,6 @@
       "messagesHeading": "Meldinger",
       "messagesDesc": "De nyeste meldingene. Du kan fjerne upassende innlegg.",
       "emptyMessages": "Ingen meldinger i denne chatten ennå.",
-      "confirmDeleteMessage": "Slette denne meldingen?",
       "deleteMessageAria": "Slett melding",
       "relNone": "—",
       "relNow": "akkurat nå",
@@ -1297,7 +1323,10 @@
       "historyMessages": "{count} meldinger",
       "cancel": "Avbryt",
       "saving": "Lagrer…",
-      "saveSettings": "Lagre innstillinger"
+      "saveSettings": "Lagre innstillinger",
+      "confirmDeleteMessageTitle": "Slette meldingen fra {name}?",
+      "confirmDeleteMessageBody": "Meldingen forsvinner fra chatten for alle.",
+      "confirmDeleteMessageCta": "Slett melding"
     },
     "newsletter": {
       "title": "Nyhetsbrev",
@@ -1573,7 +1602,6 @@
       "video": "Video",
       "mediaCount": "{count, plural, one {# medium} other {# medier}}",
       "deletePackageAria": "Slett pakke",
-      "confirmDeletePackage": "Slette denne mediepakken?",
       "removeAria": "Fjern",
       "contentCount": "Innhold ({count})",
       "titleLabel": "Tittel",
@@ -1594,7 +1622,10 @@
       "saveChanges": "Lagre endringer",
       "createPackageCta": "Opprett pakke",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "Slette mediepakken «{title}»?",
+      "confirmDeletePackageBody": "Alle bilder og videoer i den slettes også. Dette kan ikke angres.",
+      "confirmDeletePackageCta": "Slett pakke"
     },
     "sortLabels": {
       "NEWEST": "Nyeste først",
@@ -1614,7 +1645,6 @@
       "emptyHint": "Skriv din første bloggartikkel med editoren.",
       "edit": "Rediger",
       "delete": "Slett",
-      "confirmDelete": "Slette dette innlegget?",
       "sheetWrite": "Skriv innlegg",
       "sheetEdit": "Rediger innlegg",
       "sheetSettings": "Blogginnstillinger",
@@ -1677,7 +1707,10 @@
       "pollAddOption": "Legg til svar",
       "pollMultipleLabel": "Tillat flere valg",
       "statusDraft": "Ikke publisert",
-      "statusScheduled": "Planlagt til {date}"
+      "statusScheduled": "Planlagt til {date}",
+      "confirmDeleteTitle": "Slette innlegget «{title}»?",
+      "confirmDeleteBody": "Innlegget forsvinner sammen med alle kommentarene. Dette kan ikke angres.",
+      "confirmDeleteCta": "Slett innlegg"
     },
     "knowledge": {
       "badge": "Kunnskap",
@@ -1691,7 +1724,6 @@
       "emptyHint": "Skriv din første kunnskapsartikkel.",
       "edit": "Rediger",
       "delete": "Slett",
-      "confirmDelete": "Slette denne artikkelen?",
       "sheetWrite": "Skriv artikkel",
       "sheetEdit": "Rediger artikkel",
       "sheetSettings": "Visningsinnstillinger",
@@ -1721,7 +1753,10 @@
       "showDatesHint": "Publiseringsdato per artikkel",
       "saveSettings": "Lagre innstillinger",
       "cancel": "Avbryt",
-      "saving": "Lagrer…"
+      "saving": "Lagrer…",
+      "confirmDeleteTitle": "Slette artikkelen «{title}»?",
+      "confirmDeleteBody": "Artikkelen forsvinner fra kunnskapsbasen. Dette kan ikke angres.",
+      "confirmDeleteCta": "Slett artikkel"
     },
     "rte": {
       "poll": "Avstemning",
@@ -1962,7 +1997,8 @@
       "deleteDesc": "Fjerner ugjenkallelig alle medlemmer, spaces, innhold og bestillinger.",
       "confirmDelete": "Slette «{name}» og alt innhold permanent?",
       "confirmPlaceholder": "Skriv «{slug}» for å bekrefte",
-      "deleting": "Sletter…"
+      "deleting": "Sletter…",
+      "confirmDeleteCta": "Slett fellesskapet permanent"
     },
     "developers": {
       "metaTitle": "Utviklere & API",
@@ -2506,7 +2542,11 @@
       "colSent": "Sendt",
       "colRecipients": "Mottakere",
       "colOpens": "Åpninger",
-      "colClicks": "Klikk"
+      "colClicks": "Klikk",
+      "growthSummary": "{total, plural, one {# innmelding} other {# innmeldinger}} de siste 6 månedene, {current, number} av dem denne måneden.",
+      "growthEmpty": "Ingen har meldt seg inn de siste 6 månedene. Nye medlemmer vises her per måned.",
+      "colMonth": "Måned",
+      "colNewMembers": "Nye medlemmer"
     },
     "gamification": {
       "title": "Gamification",
@@ -2523,8 +2563,6 @@
       "rule": "Regel",
       "maxPerDay": "maks. {count}/dag",
       "pts": "p",
-      "savePointsAria": "Lagre poeng",
-      "deleteRuleAria": "Slett regel",
       "confirmDeleteRule": "Slette regelen «{name}»?",
       "rulesEmptyTitle": "Ingen regler ennå",
       "rulesEmptyHint": "Legg til en poengregel for en handling.",
@@ -2604,7 +2642,14 @@
       "iconLabel": "Symbol",
       "manualHint": "Merker med betingelsen «manuelt» tildeler du selv —",
       "manualBadge": "Manuelt",
-      "manualHintLink": "i medlemslisten."
+      "manualHintLink": "i medlemslisten.",
+      "pointsForRuleAria": "Poeng for {name}",
+      "savePointsForRuleAria": "Lagre poeng for {name}",
+      "deleteRuleForAria": "Slett regelen «{name}»",
+      "confirmDeleteRuleBody": "Denne handlingen gir ikke lenger poeng.",
+      "confirmDeleteRuleCta": "Slett regel",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {Merket er ikke delt ut ennå.} one {# medlem mister merket.} other {# medlemmer mister merket.}}",
+      "confirmDeleteBadgeCta": "Slett merke"
     },
     "referrals": {
       "metaTitle": "Henvisninger",
@@ -2694,15 +2739,15 @@
         "desc": "Låser opp et kurs"
       },
       "TIER_GRANT": {
-        "label": "Nivåtilgang",
-        "desc": "Låser opp et nivå"
+        "label": "Tilgang til medlemskap",
+        "desc": "Tilbys ikke lenger"
       }
     },
     "tiers": {
       "title": "Medlemskap",
       "subtitle": "{count, plural, one {# medlemskap} other {# medlemskap}} · slik vises de på påmeldingssiden din.",
       "create": "Opprett medlemskap",
-      "stripeWarning": "Stripe er ikke koblet til ennå — gratis nivåer fungerer med en gang; for betalte nivåer legg til <code>STRIPE_SECRET_KEY</code> i <code>.env</code>.",
+      "stripeWarning": "Stripe er ikke koblet til ennå: Gratis medlemskap fungerer med en gang. For betalte medlemskap legger du <code>STRIPE_SECRET_KEY</code> inn i <code>.env</code>.",
       "recommended": "Anbefalt",
       "default": "Standard",
       "hidden": "Skjult",
@@ -2710,9 +2755,9 @@
       "edit": "Rediger",
       "suffixMonth": "/ måned",
       "suffixYear": "/ år",
-      "createTitle": "Opprett nytt nivå",
+      "createTitle": "Nytt medlemskap",
       "createSubtitle": "Angi medlemskap og pris",
-      "editTitle": "Rediger nivå",
+      "editTitle": "Rediger medlemskap",
       "nameLabel": "Navn",
       "namePlaceholder": "f.eks. Premium",
       "coverLabel": "Forsidebilde (valgfritt)",
@@ -2726,17 +2771,24 @@
       "publicHint": "Vises på påmeldingssiden.",
       "recommendedLabel": "Anbefalt av skaper",
       "recommendedHint": "Fremhever dette medlemskapet på påmeldingssiden (maks. ett).",
-      "defaultLabel": "Standardnivå",
-      "defaultHintActive": "Nye medlemmer får dette nivået.",
+      "defaultLabel": "Standardmedlemskap",
+      "defaultHintActive": "Nye medlemmer får dette medlemskapet.",
       "defaultHintInactive": "Angi som standard for nye medlemmer.",
-      "entitlementKeyLabel": "Rettighetsnøkkel (fast)",
-      "confirmDelete": "Vil du virkelig slette nivået «{name}»?",
+      "entitlementKeyLabel": "Teknisk nøkkel (bare synlig for plattformadministratorer)",
+      "confirmDelete": "Slette medlemskapet «{name}»?",
       "deleting": "Sletter…",
-      "deleteTier": "Slett nivå",
+      "deleteTier": "Slett medlemskap",
       "cancel": "Avbryt",
       "saving": "Lagrer…",
       "saveChanges": "Lagre endringer",
-      "createTier": "Opprett nivå"
+      "createTier": "Opprett medlemskap",
+      "priceHint": "Faste prisnivåer, slik at prisen også gjelder i appbutikkene.",
+      "payoutsMissing": "Sett opp utbetalinger først, så betalingene kommer frem til deg.",
+      "payoutsSetup": "Sett opp utbetalinger",
+      "confirmDeleteBody": "{count, plural, =0 {Medlemskapet slettes permanent.} one {# medlem mister tilgangen til innholdet i dette medlemskapet.} other {# medlemmer mister tilgangen til innholdet i dette medlemskapet.}} Dette kan ikke angres.",
+      "confirmHide": "Skjule medlemskapet «{name}»?",
+      "confirmHideBody": "Betalte medlemskap slettes ikke, men fjernes fra innmeldingssiden, slik at pågående betalinger fortsatt kan behandles. Eksisterende medlemmer beholder tilgangen.",
+      "hideTier": "Skjul medlemskap"
     },
     "products": {
       "title": "Produkter",
@@ -2759,7 +2811,6 @@
       "namePlaceholder": "f.eks. E-bok",
       "typeLabel": "Type",
       "priceLabel": "Pris",
-      "downloadUrlLabel": "Nedlastings-URL (valgfritt)",
       "shipping": "Frakt",
       "shipFreeLabel": "Gratis frakt",
       "shipFreeDesc": "Ingen fraktkostnader",
@@ -2772,13 +2823,42 @@
       "descPlaceholder": "Hva får kjøperne?",
       "publishedLabel": "Publisert",
       "publishedHint": "Synlig og kjøpbar i fellesskapet.",
-      "confirmDelete": "Vil du virkelig slette produktet «{name}»?",
+      "confirmDelete": "Slette produktet «{name}»?",
       "deleting": "Sletter…",
       "deleteProduct": "Slett produkt",
       "cancel": "Avbryt",
       "saving": "Lagrer…",
       "saveChanges": "Lagre endringer",
-      "createProduct": "Opprett produkt"
+      "createProduct": "Opprett produkt",
+      "confirmDeleteBody": "Produktet forsvinner fra butikken. Dette kan ikke angres.",
+      "confirmHide": "Skjule produktet «{name}»?",
+      "confirmHideBody": "Det finnes bestillinger på dette produktet. Det slettes derfor ikke, men fjernes fra butikken. Kjøpere beholder tilgangen.",
+      "hideProduct": "Skjul produkt",
+      "priceHint": "Faste prisnivåer, slik at prisen også gjelder i appbutikkene.",
+      "pricePlaceholder": "Velg en pris",
+      "priceRequired": "Velg en pris eller «Gratis».",
+      "fileLabel": "Fil til kjøpere",
+      "fileHint": "Last opp filen eller lim inn en lenke. Kjøpere ser nedlastingen etter kjøpet.",
+      "fileUpload": "Last opp fil",
+      "fileReplace": "Last opp en annen fil",
+      "fileRemove": "Fjern",
+      "fileUploading": "Laster opp…",
+      "fileUploaded": "Opplastet fil",
+      "fileOpen": "Åpne",
+      "fileLinkLabel": "Eller lenke til filen",
+      "fileRequired": "Last opp en fil eller lim inn en lenke.",
+      "fileLinkInvalid": "Lenken må begynne med https://.",
+      "courseLabel": "Hvilket kurs låses opp?",
+      "coursePlaceholder": "Velg et kurs",
+      "courseHint": "Når du har lagret, er kurset bare åpent for kjøpere og teamet ditt. Leksjoner som er merket som forhåndsvisning, er fortsatt synlige for alle.",
+      "courseRequired": "Velg kurset kjøperne får.",
+      "courseLocked": "Etter det første salget kan kurset ikke lenger endres, slik at kjøpere beholder tilgangen.",
+      "noCourses": "Du har ennå ikke et kurs som kan selges separat.",
+      "createCourse": "Opprett kurs",
+      "tierGrantRetired": "Denne typen låser ikke opp et medlemskap. Velg en annen type. Betalte medlemskap oppretter du under «Medlemskap».",
+      "viewInShop": "Se i butikken",
+      "payoutsMissing": "Sett opp utbetalinger først, så betalingene kommer frem til deg.",
+      "payoutsSetup": "Sett opp utbetalinger"
     },
     "payouts": {
       "title": "Utbetalinger",
@@ -2875,7 +2955,6 @@
       "cancel": "Avbryt",
       "adding": "Legger til…",
       "statusLabel": "Status",
-      "confirmRemove": "Vil du virkelig fjerne «{name}» fra fellesskapet?",
       "removing": "Fjerner…",
       "removeMember": "Fjern medlem",
       "saving": "Lagrer…",
@@ -2898,7 +2977,10 @@
       "awarding": "Tildeler…",
       "revoke": "Fjern",
       "revoking": "Fjerner…",
-      "awardedOn": "Tildelt {date}"
+      "awardedOn": "Tildelt {date}",
+      "confirmRemoveTitle": "Fjerne «{name}» fra fellesskapet?",
+      "confirmRemoveBody": "Løpende abonnementer avsluttes umiddelbart, og tilgangen via medlemskapet forsvinner. Enkeltkjøp beholdes.",
+      "confirmRemoveCta": "Fjern medlem"
     },
     "spaceTypes": {
       "FEED": {
@@ -2989,15 +3071,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Offentlig",
-        "desc": "Synlig for alle"
+        "desc": "Synlig for alle, også uten konto"
       },
       "MEMBERS": {
         "label": "Medlemmer",
-        "desc": "Kun innlogget"
+        "desc": "Bare medlemmer av communityet"
       },
       "PAID": {
         "label": "Betalt",
-        "desc": "Krever medlemskap"
+        "desc": "Bare med betalt medlemskap"
       }
     },
     "spaces": {
@@ -3015,15 +3097,12 @@
       "createSubtitle": "Velg type og synlighet",
       "editTitle": "Rediger space",
       "edit": "Rediger",
-      "reactivate": "Aktiver",
       "archive": "Arkiver",
       "postCount": "{count, plural, one {# innlegg} other {# innlegg}}",
       "nameLabel": "Navn på space",
       "namePlaceholder": "f.eks. Kunngjøringer",
       "typeLabel": "Type",
       "visibilityLabel": "Synlighet",
-      "entitlementLabel": "Nødvendig rettighet",
-      "entitlementHint": "La stå tomt for å godta ethvert betalt medlemskap.",
       "descLabel": "Beskrivelse (valgfritt)",
       "descPlaceholder": "Hva handler dette space-et om?",
       "deleting": "Sletter…",
@@ -3033,7 +3112,32 @@
       "saveChanges": "Lagre endringer",
       "deleteConfirmTitle": "Slette space?",
       "deleteConfirmText": "«{name}» slettes permanent. Alt innhold i det går tapt — dette kan ikke angres.",
-      "delete": "Slett"
+      "delete": "Slett",
+      "restore": "Gjenopprett",
+      "archiveNamed": "Arkiver «{name}»",
+      "restoreNamed": "Gjenopprett «{name}»",
+      "archivedNotice": "«{name}» arkivert – skjult for medlemmer.",
+      "restoredNotice": "«{name}» gjenopprettet – synlig for medlemmer igjen.",
+      "undo": "Angre",
+      "dismissNotice": "Lukk melding",
+      "typeLockedHint": "Typen er låst fordi dette spacet allerede har {count, plural, one {# innhold} other {# innhold}}. Med en annen type ville det ikke lenger vært synlig. Opprett et nytt space for en annen type.",
+      "access": {
+        "legend": "Hvilke medlemskap har tilgang?",
+        "anyPaid": "Alle betalte medlemskap",
+        "anyPaidDesc": "Også de som har kjøpt noe betalt, f.eks. et produkt",
+        "pricePerMonth": "{price}/mnd.",
+        "pricePerYear": "{price}/år",
+        "tierHidden": "{price} · ikke i tilbudet",
+        "legacyLabel": "Tidligere tilgangsregel",
+        "legacyFreeTier": "Gratis medlemskap – eldre innstilling",
+        "legacyKey": "Nøkkel «{key}» – eldre innstilling",
+        "hintTier": "Bare medlemmer med akkurat dette medlemskapet ser spacet. Du og teamet ditt har alltid tilgang.",
+        "hintAny": "Alle medlemmer med et betalt medlemskap ser spacet. Du og teamet ditt har alltid tilgang.",
+        "noPaidTitle": "Ingen betalt medlemskap ennå",
+        "noPaidText": "Opprett et betalt medlemskap slik at medlemmer kan låse opp dette spacet.",
+        "noPaidCta": "Opprett først et medlemskap",
+        "specificTier": "Bestemt medlemskap"
+      }
     },
     "roles": {
       "OWNER": "Eier",
@@ -3124,14 +3228,14 @@
       "leaveTitle": "Forlat fellesskap",
       "cancelText": "Tilgangen din til betalt innhold slutter med den betalte perioden. Kjøpte produkter beholder du.",
       "leaveText": "Du mister tilgang til medlemsinnhold. Kjøpte produkter beholder du.",
-      "confirmCancel": "Vil du virkelig si opp medlemskapet?",
       "cancelling": "Sier opp…",
       "cancelNow": "Si opp nå",
       "confirmLeave": "Vil du virkelig forlate fellesskapet «{name}»?",
       "leaving": "Forlater…",
       "leaveCommunity": "Forlat fellesskap",
       "perMonth": "/måned",
-      "perYear": "/år"
+      "perYear": "/år",
+      "confirmCancelTitle": "Si opp medlemskapet i «{name}»?"
     },
     "credits": {
       "title": "Credits og bruk",
@@ -3224,8 +3328,6 @@
       "edit": "Rediger",
       "delete": "Slett",
       "moveToFolder": "Flytt til mappe",
-      "confirmDeleteFolder": "Slette denne mappen? Mediene i den blir stående uten mappe.",
-      "confirmDeleteMedia": "Vil du virkelig slette dette mediet? Etterpå er det ikke lenger tilgjengelig.",
       "folderMenuAria": "Mappevalg for {name}",
       "itemMenuAria": "Medievalg for {name}",
       "openAria": "Åpne {name}",
@@ -3252,9 +3354,18 @@
       "openInStudio": "Rediger i studioet",
       "uploadMedia": "Last opp medier",
       "uploadingProgress": "Laster opp… {done}/{total}",
-      "uploadFailed": "Opplastingen mislyktes: {name}",
       "storageTitle": "Medielagring",
-      "storageOf": "{used} av {limit} brukt"
+      "storageOf": "{used} av {limit} brukt",
+      "uploadFailedCount": "{count, plural, one {# fil ble ikke lastet opp} other {# filer ble ikke lastet opp}}",
+      "uploadFailedLine": "{name}: {reason}",
+      "retryUpload": "Last opp på nytt",
+      "dismissUploadErrors": "Lukk meldingen",
+      "confirmDeleteFolderTitle": "Slette mappen «{name}»?",
+      "confirmDeleteFolderBody": "Mediene i mappen beholdes og havner under «Uten mappe».",
+      "confirmDeleteFolderCta": "Slett mappe",
+      "confirmDeleteMediaTitle": "Slette «{name}» permanent?",
+      "confirmDeleteMediaBody": "Filen slettes. Innlegg og sider som bruker den, viser den ikke lenger.",
+      "confirmDeleteMediaCta": "Slett permanent"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3420,7 +3531,6 @@
       "studioChatShow": "Vis chat",
       "studioChatHide": "Skjul chat",
       "studioFullscreen": "Fullskjerm",
-      "studioCloseConfirm": "Du er live nå. Hvis du lukker studioet, avbrytes sendingen. Lukk likevel?",
       "studioNoPreview": "Sendingen kjører — forhåndsvisningen finnes bare på enheten som sender.",
       "studioMirror": "Speilvend forhåndsvisningen",
       "studioLevel": "Lydnivå",
@@ -3436,7 +3546,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Lukke studioet og avslutte sendingen?",
+      "studioCloseBody": "Du er på lufta nå. Lukker du studioet, stopper sendingen.",
+      "studioCloseCta": "Lukk studioet",
+      "studioCloseCancel": "Fortsett sendingen"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3879,6 +3993,38 @@
     "dateTimeField": {
       "tzHint": "Gjelder i din tidssone: {zone} ({abbr})",
       "pastWarning": "Denne datoen er i fortiden."
+    },
+    "planSheet": {
+      "title": "Bytt pakke",
+      "subtitle": "Hva hver pakke inneholder",
+      "loading": "Laster inn pakker …",
+      "loadFailed": "Pakkene kunne ikke lastes inn.",
+      "retry": "Last inn på nytt",
+      "pricePerMonth": "{price} per måned",
+      "free": "Gratis",
+      "current": "Din pakke",
+      "currentPlan": "Din nåværende pakke",
+      "limitSpaces": "{count, plural, one {# aktivt space} other {# aktive spaces}}",
+      "limitSpacesUnlimited": "Ubegrensede spaces",
+      "limitMembers": "{count, plural, one {# aktivt medlem} other {# aktive medlemmer}}",
+      "limitMembersUnlimited": "Ubegrensede medlemmer",
+      "limitTiers": "Opptil {count, plural, one {# medlemskap} other {# medlemskap}}",
+      "limitTiersUnlimited": "Ubegrensede medlemskap",
+      "limitStaff": "{count, plural, one {# teamplass} other {# teamplasser}}",
+      "limitStaffUnlimited": "Ubegrensede teamplasser",
+      "limitCredits": "{n} AI-kreditter per måned",
+      "everythingFrom": "Alt fra {plan}, i tillegg:",
+      "baseSpaces": "Inkludert:",
+      "spaceTypesList": "Space-typer: {list}",
+      "freeHint": "Du går tilbake til Free ved å si opp pakken din.",
+      "switching": "Starter …",
+      "switchTo": "Bytt til {plan}",
+      "checkoutFailed": "Betalingen kunne ikke startes. Prøv igjen.",
+      "cancelFailed": "Oppsigelsen kunne ikke registreres. Prøv igjen.",
+      "footnote": "Priser per måned, kan sies opp månedlig. Betaling skjer via Stripe.",
+      "spacesUsedNotice": "Du bruker {used} av {max} spaces.",
+      "creditsTeaser": "Nåværende: {plan}. Pakkene skiller seg i spaces, medlemmer og funksjoner.",
+      "open": "Bytt pakke"
     }
   },
   "common": {
@@ -4076,7 +4222,7 @@
       },
       "space": {
         "lockedDesc": "Dette space-et er kun for medlemmer.",
-        "lockedDescPaid": "Dette space-et er kun for medlemmer med et passende medlemskap.",
+        "lockedDescPaid": "Dette innholdet hører til et betalt medlemskap.",
         "upgradeMembership": "Oppgrader medlemskap",
         "join": "Bli medlem",
         "noLinks": "Ingen lenker ennå",
@@ -4153,7 +4299,11 @@
       "postTile": {
         "becomeMember": "Bli medlem",
         "exclusive": "Kun for medlemmer",
-        "locked": "Låst"
+        "locked": "Låst",
+        "lockedUntitled": "Innlegg for medlemmer",
+        "paidUntitled": "Betalt innlegg",
+        "lockedHint": "Dette innlegget er for medlemmer.",
+        "paidHint": "Du kan låse opp dette innlegget enkeltvis."
       },
       "planCard": {
         "current": "Din pakke",
@@ -4271,6 +4421,15 @@
         "like": "Liker",
         "unlike": "Liker ikke lenger",
         "locked": "Låst"
+      },
+      "paywall": {
+        "belongsTo": "«{space}» hører til {tier} ({price}).",
+        "anyPaidFrom": "«{space}» er inkludert i alle betalte medlemskap – fra {tier} ({price}).",
+        "pricePerMonth": "{price}/mnd.",
+        "pricePerYear": "{price}/år",
+        "viewTier": "Se {tier}",
+        "becomeMember": "Bli medlem",
+        "memberHint": "Ditt nåværende medlemskap inkluderer ikke dette spacet."
       }
     },
     "nav": {
@@ -4429,7 +4588,8 @@
     "title": "Visningsspråk",
     "hint": "Gjelder din visning av Aera på denne enheten.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Visningsspråk: {language}"
   },
   "spaces": {
     "commentsClosed": "Kommentarene er stengt.",
@@ -4550,7 +4710,8 @@
         "product": "Produkter",
         "knowledge": "Kunnskap"
       }
-    }
+    },
+    "postCount": "{count, plural, one {# innlegg} other {# innlegg}}"
   },
   "categories": {
     "podcast": "Podkaster & programmer",
@@ -4583,10 +4744,10 @@
       },
       "s2": {
         "title": "Spaces for alt du gjør",
-        "text": "Sett opp så mange spaces du trenger: en feed for nyheter, et forum for diskusjoner, kurs, en butikk, nyhetsbrev, arrangementer, en blogg, en kunnskapsbase, bildegallerier, et videobibliotek, chat, podkast, en lenkesamling og egne annonseplasser. For hvert space avgjør du om det er synlig for alle, kun for medlemmer eller kun for betalende medlemmer.",
-        "tag1": "14 space-typer",
+        "text": "Sett opp de spacene du trenger: en feed for nyheter, et forum for diskusjoner, kurs, en butikk, nyhetsbrev, arrangementer, en blogg, en kunnskapsbase, bildegallerier, et videobibliotek, chat, podkast, en lenkesamling og egne annonseplasser. For hvert space avgjør du om det er synlig for alle, kun for medlemmer eller kun for betalende medlemmer.",
+        "tag1": "{count} space-typer",
         "tag2": "Valgfri synlighet",
-        "tag3": "Ubegrenset antall spaces"
+        "tag3": "Antall avhenger av pakken"
       },
       "s3": {
         "title": "Innlegg, kommentarer & reaksjoner",
@@ -4706,17 +4867,17 @@
     "topupTitle": "Kjøp flere credits",
     "topupText": "Trenger du mer innimellom? Kjøpte credits utløper ikke og brukes først etter månedskvoten din.",
     "creditsLabel": "Credits",
-    "footnote": "1 credit tilsvarer omtrent 1 000 tokens; en typisk assistent-forespørsel koster 1–3 credits. Plattformgebyrer på community-omsetningen din faktureres separat — kun på reell omsetning.",
+    "footnote": "1 credit tilsvarer omtrent 1 000 tokens; en typisk assistent-forespørsel koster 1–3 credits.",
     "plans": {
       "FREE": {
         "tagline": "For å komme i gang",
-        "f1": "11 grunnleggende spaces: feed, forum, kurs, arrangementer, blogg …",
+        "f1": "{count} grunnleggende spaces: feed, forum, kurs, arrangementer, blogg …",
         "f2": "Opptil 5 spaces og 100 medlemmer",
-        "f3": "Medlemskap, media og moderasjon",
+        "f3": "Opptil {tiers} medlemskap (også betalte), media og moderasjon",
         "f4": "500 AI-credits per måned"
       },
       "STARTER": {
-        "tagline": "Når du vil tjene penger",
+        "tagline": "For butikk, produkter og statistikk",
         "f1": "Alt fra Free",
         "f2": "Statistikk, produkter og utbetalinger",
         "f3": "Butikk, chat, tips, kalender og planlegger",
@@ -4741,7 +4902,7 @@
     "compare": {
       "eyebrow": "I detalj",
       "title": "Hva hver pakke inneholder",
-      "subtitle": "Hver rad er noe du kan bruke i dashbordet ditt med en gang. Ingenting forsvinner når du bytter — det kommer bare mer til.",
+      "subtitle": "Hver rad er noe du kan bruke i dashbordet ditt med en gang. Bytter du til en større pakke, kommer det bare mer til.",
       "spacesGroup": "Space-typer",
       "featuresGroup": "Funksjoner",
       "limitsGroup": "Grenser",
@@ -4757,8 +4918,17 @@
       "limitStorage": "Medielagring",
       "limitCredits": "AI-credits per måned",
       "storageValue": "{gb} GB",
-      "note": "En promo-kode fra en partner låser opp pakken din umiddelbart — uten behov for betalingsinformasjon."
-    }
+      "note": "En promo-kode fra en partner låser opp pakken din umiddelbart — uten behov for betalingsinformasjon.",
+      "feeNote": "På hvert salg i fellesskapet ditt tar vi {fee} i plattformgebyr – i alle pakker. I tillegg kommer betalingsleverandørens gebyr (Stripe).",
+      "feesGroup": "Gebyrer",
+      "feePlatform": "Gebyr på salget ditt",
+      "feeProvider": "Betalingsleverandørens gebyr",
+      "feeProviderValue": "Etter Stripes priser",
+      "membersNote": "Aktive medlemmer er alle i fellesskapet ditt – inkludert deg og teamet ditt, både gratis og betalende. Når grensen er nådd, kan nye medlemmer først bli med etter en oppgradering.",
+      "scrollHint": "Sveip til siden for å sammenligne",
+      "tableLabel": "Pakkesammenligning"
+    },
+    "feeLine": "Gebyr på salget ditt: {fee}"
   },
   "marketing": {
     "navDiscover": "Oppdag",
@@ -4782,7 +4952,10 @@
     "footerPrivacy": "Personvernerklæring",
     "footerWithdrawal": "Angrerett",
     "footerTagline": "Din community. Din merkevare. Din virksomhet.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "Fra {plan}: {items}",
+    "footerContact": "Kontakt",
+    "legalGermanOnly": "Denne juridiske teksten finnes bare på tysk. Den tyske versjonen er bindende."
   },
   "home": {
     "badge": "Community · Medlemskap · Handel",
@@ -4858,7 +5031,7 @@
       "c1": {
         "title": "Spaces for alt du gjør",
         "text": "Feed, forum, blogg og kunnskapsbase, bildegallerier, videobibliotek og podkast, pluss chat, lenkesamling og egne annonseplasser. Hvert space kan være åpent for alle, kun for medlemmer eller kun for betalende medlemmer — og overalt kan man kommentere og reagere.",
-        "tag1": "14 space-typer",
+        "tag1": "{count} space-typer",
         "tag2": "Valgfri synlighet",
         "tag3": "Innlegg, kommentarer & reaksjoner"
       },
@@ -4956,11 +5129,11 @@
       "colYou": "Aera",
       "rowBase": "Grunnpris per måned",
       "rowFee": "Andel av inntektene dine",
-      "rowFull": "Full funksjonalitet fra",
+      "rowFull": "Alle funksjoner fra",
       "aera": {
         "base": "0 — gratis å begynne",
-        "fee": "5 %",
-        "full": "{pro} per måned"
+        "fee": "{fee}",
+        "full": "{price} per måned ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -4981,26 +5154,27 @@
         "full": "99 $ (Pro)"
       },
       "footnote": "Tall fra leverandørenes offentlige prissider, per juli 2026. Betalingsgebyrer (rundt 2,9 % + 0,30) kommer i tillegg hos alle — også hos oss.",
-      "includedTitle": "Med i Aera uten tillegg",
+      "includedTitle": "Med i alle pakker",
       "included": {
         "i1": {
-          "title": "20 områder",
-          "text": "Feed, forum, kurs, nyhetsbrev, arrangementer, blogg, kunnskap, galleri, video, butikk, chat, podkast, live og mer — under samme tak."
+          "title": "{count} grunnleggende spaces",
+          "text": "{list} – alt under ett tak."
         },
         "i2": {
-          "title": "Fire inntektsveier, én kasse",
-          "text": "Medlemskap, digitale produkter, betalt innhold og arrangementer går gjennom samme kasse."
+          "title": "Medlemskap fra første dag",
+          "text": "Opptil {tiers} medlemskap, gratis eller betalte, pluss betalt innhold – alt gjennom samme kasse."
         },
         "i3": {
           "title": "Din merkevare, din adresse",
-          "text": "Eget domene, egne farger, egen logo. Medlemmene dine ser deg, ikke oss."
+          "text": "Egen logo, egne farger og en egen adresse på Aera. Medlemmene dine ser deg, ikke oss."
         },
         "i4": {
-          "title": "Dataene dine forblir dine",
-          "text": "Medlemmer, innhold og inntekter kan eksporteres når som helst."
+          "title": "AI-assistent inkludert",
+          "text": "{credits} AI-credits i måneden til tekster og ideer, pluss {gb} GB medielagring."
         }
       }
-    }
+    },
+    "fromPlan": "fra {plan}"
   },
   "legalPurchase": {
     "immediateAccess": "Jeg ber om umiddelbar tilgang og forstår at angreretten min bortfaller når den digitale leveringen begynner. <withdrawal>Detaljer</withdrawal>.",
@@ -5029,19 +5203,19 @@
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Ta imot invitasjonen — Aera",
+      "inviteMeta": "Ta imot invitasjonen",
       "inviteInvalidTitle": "Ugyldig invitasjon",
       "inviteInvalidText": "Denne invitasjonslenken er utløpt eller allerede brukt. Be administratoren i fellesskapet om en ny invitasjon — eller bruk «Glemt passord» hvis kontoen din allerede er aktiv.",
       "forgotPassword": "Glemt passord",
       "inviteWelcome": "Velkommen til Aera",
       "inviteActivate": "Aktiver kontoen din {email} ved å velge et passord.",
-      "resetMeta": "Tilbakestill passord — Aera",
+      "resetMeta": "Tilbakestill passord",
       "invalidLinkTitle": "Ugyldig lenke",
       "resetInvalidText": "Denne lenken er utløpt eller allerede brukt.",
       "requestNewLink": "Be om en ny lenke",
       "resetTitle": "Velg et nytt passord",
       "forAccount": "For kontoen {email}",
-      "verifyMeta": "Bekreft e-post — Aera",
+      "verifyMeta": "Bekreft e-post",
       "verifyInvalidText": "Denne bekreftelseslenken er utløpt eller allerede brukt. Be om en ny lenke.",
       "toLogin": "Til innloggingen",
       "alreadyVerifiedTitle": "Allerede bekreftet",
@@ -5069,7 +5243,7 @@
       "rootDescription": "Aera er alt-i-ett-plattformen for skapere: fellesskap, medlemskap, kurs, arrangementer, nyhetsbrev, salg og KI — under din egen merkevare.",
       "loginMeta": "Logg inn",
       "signupMeta": "Opprett konto",
-      "forgotMeta": "Glemt passord — Aera",
+      "forgotMeta": "Glemt passord",
       "pricingMeta": "Priser",
       "featuresMeta": "Funksjoner",
       "manifestDescription": "Fellesskapene dine: innlegg, kurs, arrangementer og meldinger — samlet på ett sted.",
@@ -5222,7 +5396,8 @@
       "notFound": {
         "title": "Fant ikke siden",
         "text": "Dette fellesskapet eller denne siden finnes ikke.",
-        "home": "Tilbake til forsiden"
+        "home": "Tilbake til forsiden",
+        "help": "Til hjelpesenteret"
       },
       "articleShare": {
         "label": "Del",
@@ -5305,6 +5480,9 @@
       "bundle": "Pakke",
       "tagline": "Slagord",
       "logoUrl": "Logo-URL"
+    },
+    "pricePoint": {
+      "free": "Gratis"
     }
   },
   "unsubscribe": {
@@ -5350,11 +5528,26 @@
     "preparing": "Forbereder …",
     "verifying": "Kontrollerer …",
     "done": "Ferdig",
-    "failed": "Mislyktes",
     "secondsLeft": "{count, plural, one {# sekund igjen} other {# sekunder igjen}}",
     "minutesLeft": "{count, plural, one {# minutt igjen} other {# minutter igjen}}",
     "more": "{count, plural, one {# opplasting til} other {# opplastinger til}}",
-    "dismiss": "Skjul"
+    "dismiss": "Skjul",
+    "retry": "Last opp på nytt",
+    "doneAnnounce": "Lastet opp: {names}",
+    "errors": {
+      "connection": "Tilkoblingen til lagringen mislyktes. Sjekk internettforbindelsen og prøv igjen.",
+      "canceled": "Opplastingen ble avbrutt. Prøv igjen.",
+      "storageRejected": "Lagringen avviste filen. Prøv igjen; skjer det igjen, ta kontakt med kundestøtte.",
+      "notStarted": "Opplastingen kunne ikke starte. Prøv igjen om et øyeblikk.",
+      "verification": "Filen kunne ikke kontrolleres etter opplasting. Prøv igjen.",
+      "rejected": "Filen ble avvist under kontrollen. Sjekk filtype og innhold, eller velg en annen fil.",
+      "quota": "Lagringsplassen er full. Slett medier i mediebiblioteket eller bytt til en større plan.",
+      "tooMany": "For mange opplastinger på kort tid. Vent litt og prøv igjen.",
+      "signedOut": "Du er ikke lenger logget inn. Logg inn på nytt og last opp filen igjen.",
+      "unavailable": "Opplasting er ikke mulig akkurat nå. Prøv igjen om noen minutter.",
+      "invalid": "Denne filen kan ikke lastes opp her. Sjekk filtype og størrelse.",
+      "failed": "Opplastingen mislyktes. Prøv igjen."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

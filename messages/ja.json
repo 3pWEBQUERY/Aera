@@ -38,19 +38,19 @@
     "ownerCantCancel": "オーナーは自分のメンバーシップを解約できません。",
     "noPaidMembership": "有料メンバーシップがありません。",
     "stripeCancelFailed": "Stripe での解約に失敗しました。もう一度お試しください。",
-    "defaultTierCantDelete": "デフォルトのプランは削除できません。",
-    "tierDeleteStripeBlocked": "Stripe が関連するすべてのサブスクリプションの終了を確認するまで、このプランは削除できません。データは削除されていません。",
+    "defaultTierCantDelete": "標準のメンバーシップは削除できません。先に別のメンバーシップを標準に設定してください。",
+    "tierDeleteStripeBlocked": "関連するすべてのサブスクリプションの終了を Stripe が確認するまで、このメンバーシップは削除できません。データは削除されていません。",
     "memberRemoveStripeFailed": "Stripe サブスクリプションを安全に終了できませんでした。メンバーおよびローカルアクセスは削除されていません。",
     "tenantDeleteConfirmMismatch": "入力したコミュニティスラッグが一致しません。",
     "tenantDeleteStripeSubscriptionsActive": "すべての Stripe サブスクリプションが終了するまで、コミュニティは削除できません。データは削除されていません。",
     "tenantDeleteStripeCleanupFailed": "Stripe または Connect のクリーンアップに失敗しました。コミュニティとそのデータは削除されていません。",
-    "paidTierArchivedInsteadOfDeleted": "未完了の Stripe 支払いを正しく処理できるよう、有料プランは削除せず安全に非表示にしました。",
+    "paidTierArchivedInsteadOfDeleted": "進行中の支払いを処理できるよう、有料のメンバーシップは削除せず非表示にしました。",
     "pendingPaymentsBlockDeletion": "保留中の支払いまたは予約がある間は削除できません。データは削除されていません。",
     "productArchivedBecauseOrdersExist": "注文から参照されているため、商品は削除せず非表示にしました。保留中の支払いは引き続き安全に処理できます。",
     "postNotFound": "投稿が見つかりません。",
     "commentsClosed": "コメントは締め切られています。",
     "invalidCommentRef": "コメントの参照が無効です。",
-    "tierNotFound": "ティアが見つかりません。",
+    "tierNotFound": "このメンバーシップはもう存在しません。ページを再読み込みしてください。",
     "productNotFound": "商品が見つかりません。",
     "courseNotFound": "コースが見つかりません。",
     "lessonNotFound": "レッスンが見つかりません。",
@@ -130,7 +130,7 @@
     "subTaken": "このサブドメインはすでに使用されています。",
     "planSpaceTypeLocked": "このスペースタイプは{plan}パッケージから利用できます。作成するにはアップグレードしてください。",
     "planSpaceLimitReached": "{plan}パッケージでは、アクティブなスペースは{limit}個までです。さらに増やすにはアップグレードしてください。",
-    "planTierLimitReached": "{plan}パッケージでは、メンバーシップ階層は{limit}個までです。追加するにはアップグレードしてください。",
+    "planTierLimitReached": "{plan}パッケージで作成できるメンバーシップは{limit}個までです。追加するにはパッケージを変更してください。",
     "planFeatureLocked": "この機能は{plan}パッケージから利用できます。アップグレードしてご利用ください。",
     "planMemberLimitReached": "{plan}パッケージは、アクティブメンバー{limit}人までに対応しています。さらに成長させるにはアップグレードしてください。",
     "planStaffLimitReached": "{plan}パッケージでは、チーム枠（管理者/モデレーター）は{limit}人までです。増やすにはアップグレードしてください。",
@@ -156,7 +156,16 @@
     "campaignSegmentEmpty": "このセグメントには現在誰もいません。送信するには別のセグメントを選んでください。",
     "campaignTestDeliveryFailed": "メールサービスがメッセージを受け付けませんでした（{detail}）。しばらくしてからもう一度お試しください。",
     "recoveryCodeInvalid": "このリカバリーコードは正しくないか、すでに使用されています。入力内容を確認するか、別のコードをお試しください。",
-    "secondFactorInvalid": "コードが一致しません。アプリに表示されている現在のコード、または未使用のリカバリーコードを入力してください。"
+    "secondFactorInvalid": "コードが一致しません。アプリに表示されている現在のコード、または未使用のリカバリーコードを入力してください。",
+    "productPriceRequired": "価格または「無料」を選んでください。",
+    "productFileRequired": "購入者向けのファイルをアップロードするか、リンクを貼り付けてください。",
+    "productFileUrlInvalid": "ファイルへのリンクは https:// で始まる必要があります。",
+    "productCourseRequired": "購入者が受け取るコースを選んでください。",
+    "productCourseGated": "このコースはメンバーシップに含まれているため、単体では販売できません。",
+    "productGrantLocked": "購入者のアクセスを守るため、最初の販売後はタイプとコースを変更できません。",
+    "productTypeUnavailable": "この商品タイプは現在提供していません。別のタイプを選んでください。",
+    "spaceAccessTierInvalid": "このメンバーシップは存在しないか、無料です。一覧から有料メンバーシップを選んでください。",
+    "spaceTypeLockedContent": "タイプは変更できません。このスペースには{count, plural, other {#件のコンテンツ}}があります。別のタイプにするには新しいスペースを作成してください。"
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -409,19 +418,19 @@
     "searchAria": "ヘルプを検索",
     "searchSubmit": "検索",
     "comingSoon": "ヘルプセンターは準備中です。またお越しください。",
-    "noResults": "「{query}」の結果はありません",
-    "resultsCount": "「{query}」の{count, plural, other {# 件の結果}}",
+    "noResults": "「{query}」に関する記事はありません",
+    "resultsCount": "「{query}」に関する記事 {count, plural, other {# 件}}",
     "resetSearch": "検索をリセット",
     "articleCount": "{count, plural, other {# 件の記事}}",
     "contactTitle": "お探しのものが見つかりませんでしたか？",
-    "contactText": "まずは始めてみましょう。ほとんどの答えはコミュニティやクリエイターダッシュボードで見つかります。",
-    "contactCta": "無料で始める",
+    "contactText": "お問い合わせください。メールまたはアカウント内でご返信します。",
+    "contactCta": "メッセージを書く",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "名前（任意）",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -435,7 +444,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "まずは始めてみましょう。ほとんどの答えはコミュニティやクリエイターダッシュボードで見つかります。",
+    "startCta": "無料で始める",
+    "startTitle": "まだコミュニティがありませんか？"
   },
   "account": {
     "metaTitle": "アカウント",
@@ -636,7 +648,7 @@
       "noResultsHint": "「{q}」に一致するコミュニティが見つかりませんでした。",
       "emptyHint": "クリエイターがコミュニティを作成すると、ここに表示されます。",
       "membersShort": "{count} 人",
-      "postsShort": "{count} 件の投稿",
+      "postsShort": "{count, plural, other {# 件の投稿}}",
       "since": "{date} から",
       "editTitle": "コミュニティを編集",
       "owner": "オーナー：{name}（{email}）",
@@ -664,7 +676,8 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "このコミュニティのメンバー、スペース、コンテンツ、注文はすべて削除されます。"
     },
     "users": {
       "title": "ユーザー",
@@ -718,12 +731,12 @@
       "date": "日付",
       "key": "Key",
       "openInNewTab": "新しいタブで開く",
-      "deleteConfirm": "このメディアを本当に削除しますか？",
       "deleteBtn": "メディアを削除",
       "dangerDesc": "ファイルを配信から削除します。それを参照するコンテンツにはメディアが表示されなくなります。",
       "visPublic": "公開",
       "visMembers": "メンバー",
-      "visPaid": "有料"
+      "visPaid": "有料",
+      "deleteConfirmTitle": "「{name}」を削除しますか？"
     },
     "posts": {
       "title": "投稿",
@@ -741,7 +754,9 @@
       "unpublishedBadge": "非公開",
       "unpublish": "非公開にする",
       "publish": "公開する",
-      "deleteConfirm": "この投稿を本当に完全に削除しますか？"
+      "deleteConfirmTitle": "投稿「{title}」を削除しますか？",
+      "deleteConfirmBody": "投稿はすべてのコメントとともに削除されます。この操作は元に戻せません。",
+      "deleteCta": "投稿を削除"
     },
     "orders": {
       "title": "注文",
@@ -767,12 +782,12 @@
       "fulfilled": "完了",
       "fulfilledHint": "注文を配送済みまたは完了としてマークします。",
       "dangerDesc": "注文をデータベースから完全に削除します。Stripe での支払いには影響しません。",
-      "deleteConfirm": "この注文を本当に完全に削除しますか？",
       "deleteBtn": "注文を削除",
       "statusPending": "保留中",
       "statusPaid": "支払い済み",
       "statusRefunded": "返金済み",
-      "statusFailed": "失敗"
+      "statusFailed": "失敗",
+      "deleteConfirmTitle": "注文「{name}」を削除しますか？"
     },
     "help": {
       "title": "ヘルプセンター",
@@ -1033,7 +1048,6 @@
       "chatEmptyDesc": "コミュニティの分析、文章の作成、スペースの作成などのアクションを実行できます。",
       "imageEmptyTitle": "画像を生成",
       "imageEmptyDesc": "見たいものを説明してください。画像をテンプレートとしてアップロードすることもできます — アシスタントがそれを編集したり、インスピレーションを得たりします。",
-      "geminiOff": "Google Gemini が無効です — 設定 → 連携 で GEMINI_API_KEY を設定してください。",
       "chatPlaceholder": "アシスタントへのメッセージ…",
       "sendAria": "送信",
       "chatHint": "Enter で送信 · Shift+Enter で改行。アクションはコミュニティに直接反映されます。",
@@ -1107,7 +1121,9 @@
           "title": "マスコット",
           "prompt": "私のコミュニティ向けのフレンドリーでイラスト調のマスコットアバター、丸い形、鮮やかな色。"
         }
-      }
+      },
+      "geminiOffCreator": "このプラットフォームでは、AIアシスタントはまだ設定されていません。",
+      "geminiOffAdmin": "Google Gemini が有効になっていません。サーバー環境に GEMINI_API_KEY を設定し、アプリを再起動してください。この案内はプラットフォーム管理者にのみ表示されます。"
     },
     "announcements": {
       "statusDraft": "下書き",
@@ -1155,7 +1171,9 @@
       "cancel": "キャンセル",
       "saving": "保存中…",
       "saveChanges": "変更を保存",
-      "createBtn": "お知らせを作成"
+      "createBtn": "お知らせを作成",
+      "confirmDeleteBody": "バナーはすぐにすべてのコミュニティページから消えます。",
+      "confirmDeleteCta": "お知らせを削除"
     },
     "spaceContent": {
       "view": "表示",
@@ -1225,9 +1243,9 @@
         "EVENTS": "イベント",
         "NEWSLETTER": "ニュースレター"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "単品購入の価格",
+      "ppvPriceHint": "購入していない人には、プレビュー画像、プレビュータイトル、価格だけが表示されます。",
+      "ppvTeaserLabel": "プレビュー画像（未購入者にはぼかして表示）",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "画像と動画",
@@ -1247,7 +1265,16 @@
       "removeTrackAria": "曲を削除",
       "trackUploading": "{count} 件をアップロード中 … {percent}%",
       "deleteQuestion": "この投稿を完全に削除しますか？",
-      "deleteConfirm": "削除する"
+      "deleteConfirm": "削除する",
+      "mediaFailedOne": "「{name}」はアップロードされませんでした。{reason}",
+      "mediaFailedMany": "{count, plural, other {#件のファイルがアップロードされませんでした}}。{reason}",
+      "pickFromLibrary": "メディアライブラリから選ぶ",
+      "pickFromLibraryHint": "メディアライブラリにある画像を選んでください",
+      "previewTitleLabel": "プレビュータイトル（全員に表示）",
+      "previewTitleHint": "任意。投稿の上に表示され、ロックされている人にも見えます。",
+      "accessSingle": "単品購入",
+      "accessSingleHint": "単品で販売されます。メンバーシップではロック解除されません。",
+      "bannersElsewhere": "コミュニティ全体のお知らせバナーは、スペース<link>「{name}」</link>で管理します。"
     },
     "chat": {
       "badge": "チャット",
@@ -1262,7 +1289,6 @@
       "messagesHeading": "メッセージ",
       "messagesDesc": "最新のメッセージ。不適切な投稿は削除できます。",
       "emptyMessages": "このチャットにはまだメッセージがありません。",
-      "confirmDeleteMessage": "このメッセージを削除しますか？",
       "deleteMessageAria": "メッセージを削除",
       "relNone": "—",
       "relNow": "たった今",
@@ -1297,7 +1323,10 @@
       "historyMessages": "{count} 件のメッセージ",
       "cancel": "キャンセル",
       "saving": "保存中…",
-      "saveSettings": "設定を保存"
+      "saveSettings": "設定を保存",
+      "confirmDeleteMessageTitle": "{name}さんのメッセージを削除しますか？",
+      "confirmDeleteMessageBody": "メッセージは全員のチャットから消えます。",
+      "confirmDeleteMessageCta": "メッセージを削除"
     },
     "newsletter": {
       "title": "ニュースレター",
@@ -1573,7 +1602,6 @@
       "video": "動画",
       "mediaCount": "{count, plural, other {# 件のメディア}}",
       "deletePackageAria": "パッケージを削除",
-      "confirmDeletePackage": "このメディアパッケージを削除しますか？",
       "removeAria": "削除",
       "contentCount": "内容（{count}）",
       "titleLabel": "タイトル",
@@ -1594,7 +1622,10 @@
       "saveChanges": "変更を保存",
       "createPackageCta": "パッケージを作成",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "メディアパック「{title}」を削除しますか？",
+      "confirmDeletePackageBody": "中の画像と動画もすべて削除されます。この操作は元に戻せません。",
+      "confirmDeletePackageCta": "パックを削除"
     },
     "sortLabels": {
       "NEWEST": "新しい順",
@@ -1614,7 +1645,6 @@
       "emptyHint": "エディターで最初のブログ記事を書きましょう。",
       "edit": "編集",
       "delete": "削除",
-      "confirmDelete": "この投稿を削除しますか？",
       "sheetWrite": "投稿を書く",
       "sheetEdit": "投稿を編集",
       "sheetSettings": "ブログ設定",
@@ -1677,7 +1707,10 @@
       "pollAddOption": "選択肢を追加",
       "pollMultipleLabel": "複数選択を許可する",
       "statusDraft": "未公開",
-      "statusScheduled": "{date} に公開予定"
+      "statusScheduled": "{date} に公開予定",
+      "confirmDeleteTitle": "投稿「{title}」を削除しますか？",
+      "confirmDeleteBody": "投稿はすべてのコメントとともに削除されます。この操作は元に戻せません。",
+      "confirmDeleteCta": "投稿を削除"
     },
     "knowledge": {
       "badge": "ナレッジ",
@@ -1691,7 +1724,6 @@
       "emptyHint": "最初のナレッジ記事を書きましょう。",
       "edit": "編集",
       "delete": "削除",
-      "confirmDelete": "この記事を削除しますか？",
       "sheetWrite": "記事を書く",
       "sheetEdit": "記事を編集",
       "sheetSettings": "表示設定",
@@ -1721,7 +1753,10 @@
       "showDatesHint": "記事ごとの公開日",
       "saveSettings": "設定を保存",
       "cancel": "キャンセル",
-      "saving": "保存中…"
+      "saving": "保存中…",
+      "confirmDeleteTitle": "記事「{title}」を削除しますか？",
+      "confirmDeleteBody": "記事はナレッジベースから削除されます。この操作は元に戻せません。",
+      "confirmDeleteCta": "記事を削除"
     },
     "rte": {
       "poll": "アンケート",
@@ -1962,7 +1997,8 @@
       "deleteDesc": "すべてのメンバー、スペース、コンテンツ、注文を取り消せない形で削除します。",
       "confirmDelete": "「{name}」とすべてのコンテンツを完全に削除しますか？",
       "confirmPlaceholder": "確認のため「{slug}」と入力",
-      "deleting": "削除中…"
+      "deleting": "削除中…",
+      "confirmDeleteCta": "コミュニティを完全に削除"
     },
     "developers": {
       "metaTitle": "開発者と API",
@@ -2506,7 +2542,11 @@
       "colSent": "送信",
       "colRecipients": "受信者",
       "colOpens": "開封",
-      "colClicks": "クリック"
+      "colClicks": "クリック",
+      "growthSummary": "過去6か月の参加は{total, plural, other {#人}}、うち今月は{current, number}人です。",
+      "growthEmpty": "過去6か月に参加した人はいません。新しいメンバーはここに月ごとに表示されます。",
+      "colMonth": "月",
+      "colNewMembers": "新しいメンバー"
     },
     "gamification": {
       "title": "ゲーミフィケーション",
@@ -2523,8 +2563,6 @@
       "rule": "ルール",
       "maxPerDay": "最大 {count}/日",
       "pts": "pt",
-      "savePointsAria": "ポイントを保存",
-      "deleteRuleAria": "ルールを削除",
       "confirmDeleteRule": "ルール「{name}」を削除しますか？",
       "rulesEmptyTitle": "まだルールがありません",
       "rulesEmptyHint": "アクションにポイントルールを追加しましょう。",
@@ -2604,7 +2642,14 @@
       "iconLabel": "記号",
       "manualHint": "条件が「手動」のバッジは自分で付与します —",
       "manualBadge": "手動",
-      "manualHintLink": "メンバー一覧から。"
+      "manualHintLink": "メンバー一覧から。",
+      "pointsForRuleAria": "{name}のポイント",
+      "savePointsForRuleAria": "{name}のポイントを保存",
+      "deleteRuleForAria": "ルール「{name}」を削除",
+      "confirmDeleteRuleBody": "この行動ではポイントが付かなくなります。",
+      "confirmDeleteRuleCta": "ルールを削除",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {このバッジはまだ誰にも付与されていません。} other {#人のメンバーがこのバッジを失います。}}",
+      "confirmDeleteBadgeCta": "バッジを削除"
     },
     "referrals": {
       "metaTitle": "紹介",
@@ -2694,15 +2739,15 @@
         "desc": "コースを解放"
       },
       "TIER_GRANT": {
-        "label": "ティアアクセス",
-        "desc": "ティアを解放"
+        "label": "メンバーシップへのアクセス",
+        "desc": "現在は提供していません"
       }
     },
     "tiers": {
       "title": "メンバーシップ",
       "subtitle": "{count, plural, other {# 件のメンバーシップ}} · 参加ページでの表示例。",
       "create": "メンバーシップを作成",
-      "stripeWarning": "Stripe はまだ接続されていません — 無料ティアはすぐに機能します。有料ティアには <code>STRIPE_SECRET_KEY</code> を <code>.env</code> に追加してください。",
+      "stripeWarning": "Stripe はまだ接続されていません。無料のメンバーシップはすぐに使えます。有料のメンバーシップには <code>STRIPE_SECRET_KEY</code> を <code>.env</code> に追加してください。",
       "recommended": "おすすめ",
       "default": "デフォルト",
       "hidden": "非表示",
@@ -2710,9 +2755,9 @@
       "edit": "編集",
       "suffixMonth": "/ 月",
       "suffixYear": "/ 年",
-      "createTitle": "新しいティアを作成",
+      "createTitle": "新しいメンバーシップ",
       "createSubtitle": "メンバーシップと価格を設定",
-      "editTitle": "ティアを編集",
+      "editTitle": "メンバーシップを編集",
       "nameLabel": "名前",
       "namePlaceholder": "例：プレミアム",
       "coverLabel": "カバー画像（任意）",
@@ -2726,17 +2771,24 @@
       "publicHint": "参加ページに表示されます。",
       "recommendedLabel": "クリエイターのおすすめ",
       "recommendedHint": "参加ページでこのメンバーシップを強調します（最大1つ）。",
-      "defaultLabel": "デフォルトのティア",
-      "defaultHintActive": "新しいメンバーはこのティアになります。",
+      "defaultLabel": "標準のメンバーシップ",
+      "defaultHintActive": "新しいメンバーにはこのメンバーシップが付与されます。",
       "defaultHintInactive": "新しいメンバーのデフォルトに設定します。",
-      "entitlementKeyLabel": "エンタイトルメントキー（固定）",
-      "confirmDelete": "本当にティア「{name}」を削除しますか？",
+      "entitlementKeyLabel": "技術キー（プラットフォーム管理者にのみ表示）",
+      "confirmDelete": "メンバーシップ「{name}」を削除しますか？",
       "deleting": "削除中…",
-      "deleteTier": "ティアを削除",
+      "deleteTier": "メンバーシップを削除",
       "cancel": "キャンセル",
       "saving": "保存中…",
       "saveChanges": "変更を保存",
-      "createTier": "ティアを作成"
+      "createTier": "メンバーシップを作成",
+      "priceHint": "アプリストアでも同じ価格になるよう、価格は決まった段階から選びます。",
+      "payoutsMissing": "支払いを受け取るには、先に入金の設定をしてください。",
+      "payoutsSetup": "入金を設定",
+      "confirmDeleteBody": "{count, plural, =0 {メンバーシップは完全に削除されます。} other {#人のメンバーがこのメンバーシップのコンテンツにアクセスできなくなります。}}この操作は取り消せません。",
+      "confirmHide": "メンバーシップ「{name}」を非表示にしますか？",
+      "confirmHideBody": "有料のメンバーシップは削除されず、参加ページから外れます。進行中の支払いは引き続き処理されます。現在のメンバーはアクセスを保持します。",
+      "hideTier": "メンバーシップを非表示"
     },
     "products": {
       "title": "商品",
@@ -2759,7 +2811,6 @@
       "namePlaceholder": "例：電子書籍",
       "typeLabel": "タイプ",
       "priceLabel": "価格",
-      "downloadUrlLabel": "ダウンロード URL（任意）",
       "shipping": "配送",
       "shipFreeLabel": "送料無料",
       "shipFreeDesc": "送料なし",
@@ -2772,13 +2823,42 @@
       "descPlaceholder": "購入者は何を得られますか？",
       "publishedLabel": "公開済み",
       "publishedHint": "コミュニティで表示・購入できます。",
-      "confirmDelete": "本当に商品「{name}」を削除しますか？",
+      "confirmDelete": "商品「{name}」を削除しますか？",
       "deleting": "削除中…",
       "deleteProduct": "商品を削除",
       "cancel": "キャンセル",
       "saving": "保存中…",
       "saveChanges": "変更を保存",
-      "createProduct": "商品を作成"
+      "createProduct": "商品を作成",
+      "confirmDeleteBody": "商品はショップから消えます。この操作は取り消せません。",
+      "confirmHide": "商品「{name}」を非表示にしますか？",
+      "confirmHideBody": "この商品には注文があるため、削除せずショップから外します。購入者はアクセスを保持します。",
+      "hideProduct": "商品を非表示",
+      "priceHint": "アプリストアでも同じ価格になるよう、価格は決まった段階から選びます。",
+      "pricePlaceholder": "価格を選択",
+      "priceRequired": "価格または「無料」を選んでください。",
+      "fileLabel": "購入者向けファイル",
+      "fileHint": "ファイルをアップロードするか、リンクを貼り付けてください。購入者は購入後にダウンロードできます。",
+      "fileUpload": "ファイルをアップロード",
+      "fileReplace": "別のファイルをアップロード",
+      "fileRemove": "削除",
+      "fileUploading": "アップロード中…",
+      "fileUploaded": "アップロード済みのファイル",
+      "fileOpen": "開く",
+      "fileLinkLabel": "またはファイルへのリンク",
+      "fileRequired": "ファイルをアップロードするか、リンクを貼り付けてください。",
+      "fileLinkInvalid": "リンクは https:// で始まる必要があります。",
+      "courseLabel": "どのコースを解放しますか？",
+      "coursePlaceholder": "コースを選択",
+      "courseHint": "保存すると、このコースは購入者とチームだけが利用できます。プレビューに設定したレッスンは引き続き全員に表示されます。",
+      "courseRequired": "購入者が受け取るコースを選んでください。",
+      "courseLocked": "購入者のアクセスを守るため、最初の販売後はコースを変更できません。",
+      "noCourses": "単体で販売できるコースはまだありません。",
+      "createCourse": "コースを作成",
+      "tierGrantRetired": "このタイプではメンバーシップは解放されません。別のタイプを選んでください。有料のメンバーシップは「メンバーシップ」で作成します。",
+      "viewInShop": "ショップで見る",
+      "payoutsMissing": "支払いを受け取るには、先に入金の設定をしてください。",
+      "payoutsSetup": "入金を設定"
     },
     "payouts": {
       "title": "支払い",
@@ -2875,7 +2955,6 @@
       "cancel": "キャンセル",
       "adding": "追加中…",
       "statusLabel": "ステータス",
-      "confirmRemove": "本当に「{name}」をコミュニティから削除しますか？",
       "removing": "削除中…",
       "removeMember": "メンバーを削除",
       "saving": "保存中…",
@@ -2898,7 +2977,10 @@
       "awarding": "付与中…",
       "revoke": "削除",
       "revoking": "削除中…",
-      "awardedOn": "{date} に付与"
+      "awardedOn": "{date} に付与",
+      "confirmRemoveTitle": "「{name}」をコミュニティから削除しますか？",
+      "confirmRemoveBody": "有効なサブスクリプションはすぐに終了し、メンバーシップによるアクセスはなくなります。単品購入は残ります。",
+      "confirmRemoveCta": "メンバーを削除"
     },
     "spaceTypes": {
       "FEED": {
@@ -2989,15 +3071,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "公開",
-        "desc": "全員に表示"
+        "desc": "アカウントがなくても誰でも閲覧可能"
       },
       "MEMBERS": {
         "label": "メンバー",
-        "desc": "ログイン時のみ"
+        "desc": "コミュニティのメンバーのみ"
       },
       "PAID": {
         "label": "有料",
-        "desc": "メンバーシップが必要"
+        "desc": "有料メンバーシップのみ"
       }
     },
     "spaces": {
@@ -3015,15 +3097,12 @@
       "createSubtitle": "タイプと公開範囲を選択",
       "editTitle": "スペースを編集",
       "edit": "編集",
-      "reactivate": "有効化",
       "archive": "アーカイブ",
       "postCount": "{count, plural, other {投稿 #件}}",
       "nameLabel": "スペース名",
       "namePlaceholder": "例：お知らせ",
       "typeLabel": "タイプ",
       "visibilityLabel": "公開範囲",
-      "entitlementLabel": "必要な権限",
-      "entitlementHint": "空欄にすると、あらゆる有料メンバーシップを受け入れます。",
       "descLabel": "説明（任意）",
       "descPlaceholder": "このスペースは何についてですか？",
       "deleting": "削除中…",
@@ -3033,7 +3112,32 @@
       "saveChanges": "変更を保存",
       "deleteConfirmTitle": "スペースを削除しますか？",
       "deleteConfirmText": "「{name}」は完全に削除されます。中のすべてのコンテンツが失われます — これは元に戻せません。",
-      "delete": "削除"
+      "delete": "削除",
+      "restore": "復元",
+      "archiveNamed": "「{name}」をアーカイブ",
+      "restoreNamed": "「{name}」を復元",
+      "archivedNotice": "「{name}」をアーカイブしました。メンバーには表示されません。",
+      "restoredNotice": "「{name}」を復元しました。メンバーに再び表示されます。",
+      "undo": "元に戻す",
+      "dismissNotice": "メッセージを閉じる",
+      "typeLockedHint": "このスペースにはすでに{count, plural, other {#件のコンテンツ}}があるため、タイプは固定されています。別のタイプにすると表示されなくなります。別のタイプにするには新しいスペースを作成してください。",
+      "access": {
+        "legend": "どのメンバーシップがアクセスできますか？",
+        "anyPaid": "すべての有料メンバーシップ",
+        "anyPaidDesc": "有料のもの（商品など）を購入した人も含みます",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "tierHidden": "{price} · 販売停止中",
+        "legacyLabel": "以前のアクセスルール",
+        "legacyFreeTier": "無料メンバーシップ（以前の設定）",
+        "legacyKey": "キー「{key}」（以前の設定）",
+        "hintTier": "このメンバーシップを持つメンバーだけがスペースを閲覧できます。あなたとチームは常にアクセスできます。",
+        "hintAny": "有料メンバーシップを持つすべてのメンバーがスペースを閲覧できます。あなたとチームは常にアクセスできます。",
+        "noPaidTitle": "有料メンバーシップがまだありません",
+        "noPaidText": "メンバーがこのスペースを利用できるよう、有料メンバーシップを作成してください。",
+        "noPaidCta": "先にメンバーシップを作成",
+        "specificTier": "特定のメンバーシップ"
+      }
     },
     "roles": {
       "OWNER": "オーナー",
@@ -3124,14 +3228,14 @@
       "leaveTitle": "コミュニティを退出",
       "cancelText": "有料コンテンツへのアクセスは支払い済み期間の終了とともに終わります。購入した商品はそのまま残ります。",
       "leaveText": "メンバー向けコンテンツへのアクセスを失います。購入した商品はそのまま残ります。",
-      "confirmCancel": "本当にメンバーシップを解約しますか？",
       "cancelling": "解約中…",
       "cancelNow": "今すぐ解約",
       "confirmLeave": "本当にコミュニティ「{name}」を退出しますか？",
       "leaving": "退出中…",
       "leaveCommunity": "コミュニティを退出",
       "perMonth": "/月",
-      "perYear": "/年"
+      "perYear": "/年",
+      "confirmCancelTitle": "「{name}」のメンバーシップを解約しますか？"
     },
     "credits": {
       "title": "クレジットと使用状況",
@@ -3224,8 +3328,6 @@
       "edit": "編集",
       "delete": "削除",
       "moveToFolder": "フォルダーへ移動",
-      "confirmDeleteFolder": "このフォルダーを削除しますか？中のメディアはフォルダーなしになります。",
-      "confirmDeleteMedia": "このメディアを削除しますか？以後アクセスできなくなります。",
       "folderMenuAria": "{name} のフォルダー操作",
       "itemMenuAria": "{name} のメディア操作",
       "openAria": "{name} を開く",
@@ -3252,9 +3354,18 @@
       "openInStudio": "スタジオで編集",
       "uploadMedia": "メディアをアップロード",
       "uploadingProgress": "アップロード中… {done}/{total}",
-      "uploadFailed": "アップロードに失敗しました：{name}",
       "storageTitle": "メディアの保存容量",
-      "storageOf": "{limit} 中 {used} を使用"
+      "storageOf": "{limit} 中 {used} を使用",
+      "uploadFailedCount": "{count, plural, other {#件のファイルがアップロードされませんでした}}",
+      "uploadFailedLine": "{name}：{reason}",
+      "retryUpload": "もう一度アップロード",
+      "dismissUploadErrors": "メッセージを閉じる",
+      "confirmDeleteFolderTitle": "フォルダー「{name}」を削除しますか？",
+      "confirmDeleteFolderBody": "中のメディアは残り、「フォルダーなし」に移ります。",
+      "confirmDeleteFolderCta": "フォルダーを削除",
+      "confirmDeleteMediaTitle": "「{name}」を完全に削除しますか？",
+      "confirmDeleteMediaBody": "ファイルは削除されます。このファイルを使っている投稿やページには表示されなくなります。",
+      "confirmDeleteMediaCta": "完全に削除"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3420,7 +3531,6 @@
       "studioChatShow": "チャットを表示",
       "studioChatHide": "チャットを非表示",
       "studioFullscreen": "全画面",
-      "studioCloseConfirm": "現在ライブ配信中です。スタジオを閉じると配信が中断されます。閉じますか？",
       "studioNoPreview": "配信は実行中です — 映像プレビューは配信しているデバイスでのみ表示されます。",
       "studioMirror": "プレビューを左右反転",
       "studioLevel": "音量レベル",
@@ -3436,7 +3546,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "スタジオを閉じて配信を終了しますか？",
+      "studioCloseBody": "現在配信中です。スタジオを閉じると配信が止まります。",
+      "studioCloseCta": "スタジオを閉じる",
+      "studioCloseCancel": "配信を続ける"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3879,6 +3993,38 @@
     "dateTimeField": {
       "tzHint": "あなたのタイムゾーン：{zone}（{abbr}）",
       "pastWarning": "この日付は過去です。"
+    },
+    "planSheet": {
+      "title": "プランを変更",
+      "subtitle": "各プランの内容",
+      "loading": "プランを読み込み中 …",
+      "loadFailed": "プランを読み込めませんでした。",
+      "retry": "再読み込み",
+      "pricePerMonth": "月額 {price}",
+      "free": "無料",
+      "current": "現在のプラン",
+      "currentPlan": "ご利用中のプラン",
+      "limitSpaces": "アクティブなスペース {count, plural, other {#件}}",
+      "limitSpacesUnlimited": "スペース無制限",
+      "limitMembers": "アクティブなメンバー {count, plural, other {#人}}",
+      "limitMembersUnlimited": "メンバー無制限",
+      "limitTiers": "メンバーシップ 最大{count, plural, other {#件}}",
+      "limitTiersUnlimited": "メンバーシップ無制限",
+      "limitStaff": "チーム枠 {count, plural, other {#人}}",
+      "limitStaffUnlimited": "チーム枠無制限",
+      "limitCredits": "月 {n} AIクレジット",
+      "everythingFrom": "{plan}のすべてに加えて：",
+      "baseSpaces": "含まれるもの：",
+      "spaceTypesList": "スペースタイプ：{list}",
+      "freeHint": "Freeに戻るには、プランを解約してください。",
+      "switching": "開始しています …",
+      "switchTo": "{plan}に変更",
+      "checkoutFailed": "支払いを開始できませんでした。もう一度お試しください。",
+      "cancelFailed": "解約を登録できませんでした。もう一度お試しください。",
+      "footnote": "価格は月額、毎月解約できます。支払いはStripeで行われます。",
+      "spacesUsedNotice": "{max}件中{used}件のスペースを使用中です。",
+      "creditsTeaser": "現在：{plan}。プランごとにスペース、メンバー、機能が異なります。",
+      "open": "プランを変更"
     }
   },
   "common": {
@@ -4076,7 +4222,7 @@
       },
       "space": {
         "lockedDesc": "このスペースはメンバー限定です。",
-        "lockedDescPaid": "このスペースは対応するメンバーシップを持つメンバー限定です。",
+        "lockedDescPaid": "このコンテンツは有料メンバーシップに含まれます。",
         "upgradeMembership": "メンバーシップをアップグレード",
         "join": "参加する",
         "noLinks": "まだリンクがありません",
@@ -4153,7 +4299,11 @@
       "postTile": {
         "becomeMember": "メンバーになる",
         "exclusive": "メンバー限定",
-        "locked": "ロック中"
+        "locked": "ロック中",
+        "lockedUntitled": "メンバー向けの投稿",
+        "paidUntitled": "有料の投稿",
+        "lockedHint": "この投稿はメンバー向けです。",
+        "paidHint": "この投稿は個別に購入できます。"
       },
       "planCard": {
         "current": "現在のプラン",
@@ -4271,6 +4421,15 @@
         "like": "いいね",
         "unlike": "いいねを取り消す",
         "locked": "ロック中"
+      },
+      "paywall": {
+        "belongsTo": "「{space}」は{tier}（{price}）に含まれます。",
+        "anyPaidFrom": "「{space}」はすべての有料メンバーシップに含まれます。{tier}（{price}）から。",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "viewTier": "{tier}を見る",
+        "becomeMember": "メンバーになる",
+        "memberHint": "現在のメンバーシップにはこのスペースは含まれていません。"
       }
     },
     "nav": {
@@ -4429,7 +4588,8 @@
     "title": "表示言語",
     "hint": "このデバイスでの Aera の表示に適用されます。",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "表示言語: {language}"
   },
   "spaces": {
     "commentsClosed": "コメントは締め切られています。",
@@ -4550,7 +4710,8 @@
         "product": "商品",
         "knowledge": "ナレッジ"
       }
-    }
+    },
+    "postCount": "{count, plural, other {# 件の投稿}}"
   },
   "categories": {
     "podcast": "ポッドキャスト & 番組",
@@ -4583,10 +4744,10 @@
       },
       "s2": {
         "title": "あらゆる活動のためのスペース",
-        "text": "必要なだけスペースを作れます：ニュースのフィード、ディスカッションのフォーラム、コース、ショップ、ニュースレター、イベント、ブログ、ナレッジベース、画像ギャラリー、動画ライブラリ、チャット、ポッドキャスト、リンク集、独自の広告枠。各スペースごとに、全員に公開するか、メンバー限定か、有料メンバー限定かを決められます。",
-        "tag1": "14 種類のスペース",
+        "text": "必要なスペースを作れます：ニュースのフィード、ディスカッションのフォーラム、コース、ショップ、ニュースレター、イベント、ブログ、ナレッジベース、画像ギャラリー、動画ライブラリ、チャット、ポッドキャスト、リンク集、独自の広告枠。各スペースごとに、全員に公開するか、メンバー限定か、有料メンバー限定かを決められます。",
+        "tag1": "{count} 種類のスペース",
         "tag2": "公開範囲は自由",
-        "tag3": "スペース数は無制限"
+        "tag3": "数はパッケージにより異なる"
       },
       "s3": {
         "title": "投稿、コメント、リアクション",
@@ -4706,17 +4867,17 @@
     "topupTitle": "クレジットを追加購入",
     "topupText": "途中でもっと必要になったら？追加購入したクレジットは失効せず、月間枠を使い切った後にのみ消費されます。",
     "creditsLabel": "クレジット",
-    "footnote": "1 クレジットは約 1,000 トークンに相当し、一般的なアシスタントへのリクエストは 1〜3 クレジットです。コミュニティ売上に対するプラットフォーム手数料は別途請求されます — 実際の売上に対してのみ。",
+    "footnote": "1 クレジットは約 1,000 トークンに相当し、一般的なアシスタントへのリクエストは 1〜3 クレジットです。",
     "plans": {
       "FREE": {
         "tagline": "まずは始める",
-        "f1": "基本スペース11種類: フィード、フォーラム、コース、イベント、ブログ…",
+        "f1": "基本スペース{count}種類: フィード、フォーラム、コース、イベント、ブログ…",
         "f2": "スペース最大5個 & メンバー100人まで",
-        "f3": "メンバーシップ、メディア、モデレーション",
+        "f3": "最大 {tiers} 件のメンバーシップ（有料も可）、メディア、モデレーション",
         "f4": "月間500 AIクレジット"
       },
       "STARTER": {
-        "tagline": "収益化したいとき",
+        "tagline": "ショップ、商品、統計のために",
         "f1": "Freeのすべて",
         "f2": "統計、商品販売 & 入金",
         "f3": "ショップ、チャット、投げ銭、カレンダー & プランナー",
@@ -4741,7 +4902,7 @@
     "compare": {
       "eyebrow": "詳細",
       "title": "各パッケージに含まれるもの",
-      "subtitle": "各項目はダッシュボードですぐに使える機能です。切り替えても何も失われることはなく、機能が追加されるだけです。",
+      "subtitle": "各項目はダッシュボードですぐに使える機能です。上位のパッケージに切り替えると、機能が追加されるだけです。",
       "spacesGroup": "スペースタイプ",
       "featuresGroup": "機能",
       "limitsGroup": "上限",
@@ -4757,8 +4918,17 @@
       "limitStorage": "メディアストレージ",
       "limitCredits": "月間AIクレジット",
       "storageValue": "{gb} GB",
-      "note": "パートナーのプロモコードを使えば、支払い情報なしですぐにパッケージが有効になります。"
-    }
+      "note": "パートナーのプロモコードを使えば、支払い情報なしですぐにパッケージが有効になります。",
+      "feeNote": "コミュニティ内のすべての販売に {fee} のプラットフォーム手数料がかかります（全パッケージ共通）。これに加えて決済代行会社（Stripe）の手数料がかかります。",
+      "feesGroup": "手数料",
+      "feePlatform": "売上にかかる手数料",
+      "feeProvider": "決済代行会社の手数料",
+      "feeProviderValue": "Stripe の料金に準拠",
+      "membersNote": "アクティブメンバーとは、あなたとチームを含むコミュニティの全メンバー（無料・有料を問わず）です。上限に達すると、アップグレードするまで新しいメンバーは参加できません。",
+      "scrollHint": "横にスワイプして比較",
+      "tableLabel": "パッケージ比較"
+    },
+    "feeLine": "売上にかかる手数料: {fee}"
   },
   "marketing": {
     "navDiscover": "発見",
@@ -4782,7 +4952,10 @@
     "footerPrivacy": "プライバシーポリシー",
     "footerWithdrawal": "解約・撤回について",
     "footerTagline": "あなたのコミュニティ。あなたのブランド。あなたのビジネス。",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "{plan} 以上: {items}",
+    "footerContact": "お問い合わせ",
+    "legalGermanOnly": "この法的文書はドイツ語版のみです。ドイツ語版が正本となります。"
   },
   "home": {
     "badge": "コミュニティ · メンバーシップ · コマース",
@@ -4858,7 +5031,7 @@
       "c1": {
         "title": "あらゆる活動のためのスペース",
         "text": "フィード、フォーラム、ブログ、ナレッジベース、画像ギャラリー、動画ライブラリ、ポッドキャスト、さらにチャット、リンク集、独自の広告枠まで。各スペースは全員公開、メンバー限定、有料メンバー限定から選べ、どこでもコメントとリアクションができます。",
-        "tag1": "14 種類のスペース",
+        "tag1": "{count} 種類のスペース",
         "tag2": "公開範囲は自由に設定",
         "tag3": "投稿・コメント・リアクション"
       },
@@ -4959,8 +5132,8 @@
       "rowFull": "全機能の利用は",
       "aera": {
         "base": "0 — 無料で始められます",
-        "fee": "5 %",
-        "full": "月額 {pro}"
+        "fee": "{fee}",
+        "full": "月額 {price}（{plan}）"
       },
       "patreon": {
         "name": "Patreon",
@@ -4981,26 +5154,27 @@
         "full": "99 ドル（Pro）"
       },
       "footnote": "各社の公開料金ページより、2026 年 7 月時点。決済事業者の手数料（約 2.9 % + 0.30）はどのサービスでも別途かかります。当社も同じです。",
-      "includedTitle": "Aera なら追加料金なしで",
+      "includedTitle": "全パッケージに含まれるもの",
       "included": {
         "i1": {
-          "title": "20 の領域",
-          "text": "フィード、フォーラム、講座、ニュースレター、イベント、ブログ、ナレッジ、ギャラリー、動画、ショップ、チャット、ポッドキャスト、ライブほか——すべて同じ場所に。"
+          "title": "基本スペース{count}種類",
+          "text": "{list}。すべてひとつの場所で。"
         },
         "i2": {
-          "title": "4 つの収入源、ひとつの決済",
-          "text": "メンバーシップ、デジタル商品、有料コンテンツ、イベントが同じ決済を通ります。"
+          "title": "初日からメンバーシップ",
+          "text": "最大 {tiers} 件のメンバーシップ（無料・有料）と有料コンテンツを、ひとつの決済で。"
         },
         "i3": {
           "title": "あなたのブランド、あなたの住所",
-          "text": "独自ドメイン、独自の色、独自のロゴ。メンバーが見るのは私たちではなく、あなたです。"
+          "text": "独自のロゴ、独自のカラー、Aera 上の独自アドレス。メンバーに見えるのはあなたで、私たちではありません。"
         },
         "i4": {
-          "title": "データはあなたのもの",
-          "text": "メンバー、コンテンツ、売上はいつでも書き出せます。"
+          "title": "AI アシスタント付き",
+          "text": "テキストやアイデアに使える AI クレジットが毎月 {credits}、さらに {gb} GB のメディアストレージ。"
         }
       }
-    }
+    },
+    "fromPlan": "{plan} 以上"
   },
   "legalPurchase": {
     "immediateAccess": "デジタル提供の即時開始を希望し、提供開始時に撤回権が失効することを理解しています。<withdrawal>詳細</withdrawal>。",
@@ -5029,19 +5203,19 @@
   },
   "ui": {
     "auth": {
-      "inviteMeta": "招待を受ける — Aera",
+      "inviteMeta": "招待を受ける",
       "inviteInvalidTitle": "無効な招待です",
       "inviteInvalidText": "この招待リンクは期限切れか、すでに使われています。コミュニティの管理者に新しい招待を依頼してください。アカウントがすでに有効な場合は「パスワードをお忘れですか」をお使いください。",
       "forgotPassword": "パスワードをお忘れですか",
       "inviteWelcome": "Aera へようこそ",
       "inviteActivate": "パスワードを設定して、アカウント {email} を有効にしてください。",
-      "resetMeta": "パスワードの再設定 — Aera",
+      "resetMeta": "パスワードの再設定",
       "invalidLinkTitle": "無効なリンクです",
       "resetInvalidText": "このリンクは期限切れか、すでに使われています。",
       "requestNewLink": "新しいリンクを依頼する",
       "resetTitle": "新しいパスワードを設定",
       "forAccount": "アカウント {email} 用",
-      "verifyMeta": "メールアドレスの確認 — Aera",
+      "verifyMeta": "メールアドレスの確認",
       "verifyInvalidText": "この確認リンクは期限切れか、すでに使用されています。新しいリンクをリクエストしてください。",
       "toLogin": "ログインへ",
       "alreadyVerifiedTitle": "確認済みです",
@@ -5069,7 +5243,7 @@
       "rootDescription": "Aera はクリエイターのためのオールインワン基盤です。コミュニティ、メンバーシップ、講座、イベント、ニュースレター、販売、AI を、あなた自身のブランドで。",
       "loginMeta": "ログイン",
       "signupMeta": "アカウント作成",
-      "forgotMeta": "パスワードをお忘れですか — Aera",
+      "forgotMeta": "パスワードをお忘れですか",
       "pricingMeta": "料金",
       "featuresMeta": "機能",
       "manifestDescription": "あなたのコミュニティ：投稿、講座、イベント、メッセージをひとつの場所に。",
@@ -5222,7 +5396,8 @@
       "notFound": {
         "title": "ページが見つかりません",
         "text": "このコミュニティまたはページは存在しません。",
-        "home": "ホームに戻る"
+        "home": "ホームに戻る",
+        "help": "ヘルプセンターへ"
       },
       "articleShare": {
         "label": "共有",
@@ -5305,6 +5480,9 @@
       "bundle": "バンドル",
       "tagline": "キャッチコピー",
       "logoUrl": "ロゴの URL"
+    },
+    "pricePoint": {
+      "free": "無料"
     }
   },
   "unsubscribe": {
@@ -5350,11 +5528,26 @@
     "preparing": "準備中 …",
     "verifying": "確認中 …",
     "done": "完了",
-    "failed": "失敗しました",
     "secondsLeft": "{count, plural, other {残り#秒}}",
     "minutesLeft": "{count, plural, other {残り#分}}",
     "more": "{count, plural, other {他#件}}",
-    "dismiss": "閉じる"
+    "dismiss": "閉じる",
+    "retry": "もう一度アップロード",
+    "doneAnnounce": "アップロード完了：{names}",
+    "errors": {
+      "connection": "ストレージへの接続に失敗しました。インターネット接続を確認して、もう一度お試しください。",
+      "canceled": "アップロードが中断されました。もう一度お試しください。",
+      "storageRejected": "ストレージがファイルを受け付けませんでした。もう一度お試しください。繰り返し起きる場合はサポートにご連絡ください。",
+      "notStarted": "アップロードを開始できませんでした。少し待ってからもう一度お試しください。",
+      "verification": "アップロード後のファイル確認ができませんでした。もう一度お試しください。",
+      "rejected": "確認の結果、ファイルが受け付けられませんでした。ファイルの種類と内容を確認するか、別のファイルを選んでください。",
+      "quota": "ストレージがいっぱいです。メディアライブラリでメディアを削除するか、より大きなプランに切り替えてください。",
+      "tooMany": "短時間にアップロードが多すぎます。少し待ってからもう一度お試しください。",
+      "signedOut": "ログインが切れています。もう一度ログインして、ファイルをアップロードし直してください。",
+      "unavailable": "現在アップロードできません。数分後にもう一度お試しください。",
+      "invalid": "このファイルはここにはアップロードできません。ファイルの種類とサイズを確認してください。",
+      "failed": "アップロードに失敗しました。もう一度お試しください。"
+    }
   },
   "blog": {
     "metaTitle": "Blog",

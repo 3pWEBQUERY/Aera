@@ -106,6 +106,8 @@ export function PostCard({
               <input type="hidden" name="tenant" value={slug} />
               <input type="hidden" name="space" value={space} />
               <input type="hidden" name="postId" value={post.id} />
+              {/* Nach dem Kauf (oder einem Fehler) zurück auf diesen Beitrag. */}
+              <input type="hidden" name="returnTo" value="post" />
               <ImmediateAccessConsent className="mb-3 max-w-md" />
               <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                 <Icon name="lock" size={15} />
