@@ -1,14 +1,18 @@
+import Link from "next/link";
 import { requireTenantAdmin } from "@/lib/guards";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
-import { features } from "@/lib/env";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Card, CardBody } from "@/components/ui/card";
 import { Pill, EmptyState } from "@/components/ui/misc";
+import { Icon } from "@/components/dashboard/icons";
+import { approveFlagAction } from "@/app/actions/moderation";
+import { roleAtLeast } from "@/lib/tenant";
 import {
-  approveFlagAction,
-  removeFlaggedContentAction,
-} from "@/app/actions/moderation";
+  BanMemberButton,
+  type MemberSubscriptionInfo,
+} from "@/components/dashboard/ban-member-button";
+import { RemoveFlagButton } from "./remove-flag-button";
 
 export async function generateMetadata() {
   const t = await getTranslations("dashboard.moderation");
@@ -16,9 +20,9 @@ export async function generateMetadata() {
 }
 
 const CATEGORY_CLS: Record<string, string> = {
-  spam: "bg-amber-50 text-amber-700",
-  toxisch: "bg-red-50 text-red-600",
-  belaestigung: "bg-red-50 text-red-600",
+  spam: "bg-amber-50 text-amber-800",
+  toxisch: "bg-red-50 text-red-700",
+  belaestigung: "bg-red-50 text-red-700",
 };
 
 export default async function ModerationPage({
@@ -27,7 +31,7 @@ export default async function ModerationPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant } = await requireTenantAdmin(slug, "MODERATOR");
+  const { tenant, role } = await requireTenantAdmin(slug, "MODERATOR");
   const t = await getTranslations("dashboard.moderation");
   const tCat = await getTranslations("dashboard.moderation.categories");
   const locale = await getLocale();
@@ -49,20 +53,73 @@ export default async function ModerationPage({
   ]);
 
   const authorIds = [...new Set(pending.map((f) => f.authorId).filter(Boolean))] as string[];
-  const authors = authorIds.length
-    ? await prisma.user.findMany({
-        where: { id: { in: authorIds } },
-        select: { id: true, name: true },
-      })
-    : [];
-  const authorBy = new Map(authors.map((a) => [a.id, a.name]));
+  const postIds = pending.filter((f) => f.refType === "Post").map((f) => f.refId);
+  const commentIds = pending.filter((f) => f.refType === "Comment").map((f) => f.refId);
+
+  const [authors, memberships, subscriptions, posts, comments] = await Promise.all([
+    authorIds.length
+      ? prisma.user.findMany({
+          where: { id: { in: authorIds } },
+          select: { id: true, name: true, email: true },
+        })
+      : [],
+    authorIds.length
+      ? prisma.membership.findMany({
+          where: { tenantId: tenant.id, userId: { in: authorIds } },
+          select: { id: true, userId: true, role: true, status: true },
+        })
+      : [],
+    authorIds.length
+      ? prisma.subscription.findMany({
+          where: {
+            tenantId: tenant.id,
+            userId: { in: authorIds },
+            status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] },
+          },
+          orderBy: { createdAt: "desc" },
+          select: {
+            userId: true,
+            tier: { select: { name: true, priceCents: true, currency: true, interval: true } },
+          },
+        })
+      : [],
+    postIds.length
+      ? prisma.post.findMany({
+          where: { tenantId: tenant.id, id: { in: postIds } },
+          select: { id: true, space: { select: { slug: true } } },
+        })
+      : [],
+    commentIds.length
+      ? prisma.comment.findMany({
+          where: { tenantId: tenant.id, id: { in: commentIds } },
+          select: { id: true, postId: true, post: { select: { space: { select: { slug: true } } } } },
+        })
+      : [],
+  ]);
+  const authorBy = new Map(authors.map((a) => [a.id, a]));
+  const membershipBy = new Map(memberships.map((m) => [m.userId, m]));
+  const subBy = new Map<string, MemberSubscriptionInfo>();
+  for (const s of subscriptions) {
+    if (subBy.has(s.userId) || s.tier.priceCents <= 0) continue;
+    subBy.set(s.userId, {
+      tierName: s.tier.name,
+      priceCents: s.tier.priceCents,
+      currency: s.tier.currency,
+      interval: s.tier.interval,
+    });
+  }
+  // Wo der Inhalt steht — damit man ihn im Zusammenhang lesen kann.
+  const hrefBy = new Map<string, string>();
+  for (const p of posts) hrefBy.set(`Post:${p.id}`, `/c/${slug}/s/${p.space.slug}/${p.id}`);
+  for (const c of comments) {
+    hrefBy.set(`Comment:${c.id}`, `/c/${slug}/s/${c.post.space.slug}/${c.postId}#comment-${c.id}`);
+  }
+  // Sperren ist Mitgliederverwaltung und damit Admin-Sache.
+  const canBan = roleAtLeast(role, "ADMIN");
 
   return (
     <div>
-      <PageHeader
-        title={t("title")}
-        subtitle={features.gemini ? t("subtitleAi") : t("subtitleHeuristic")}
-      />
+      <PageHeader title={t("title")} subtitle={t("subtitle")} />
 
       {pending.length === 0 ? (
         <EmptyState
@@ -75,6 +132,14 @@ export default async function ModerationPage({
           {pending.map((f) => {
             const catCls = CATEGORY_CLS[f.category] ?? "bg-slate-100 text-slate-600";
             const catLabel = tCat.has(f.category) ? tCat(f.category) : f.category;
+            const author = f.authorId ? authorBy.get(f.authorId) : undefined;
+            const membership = f.authorId ? membershipBy.get(f.authorId) : undefined;
+            const href = hrefBy.get(`${f.refType}:${f.refId}`);
+            const banAllowed =
+              canBan &&
+              membership &&
+              membership.role !== "OWNER" &&
+              (role === "OWNER" || membership.role !== "ADMIN");
             return (
               <Card key={f.id}>
                 <CardBody>
@@ -83,16 +148,46 @@ export default async function ModerationPage({
                     <Pill className="bg-slate-100 text-slate-600">
                       {f.refType === "Post" ? t("refPost") : t("refComment")}
                     </Pill>
-                    <span className="text-xs text-slate-500">
-                      {f.authorId ? authorBy.get(f.authorId) ?? t("unknown") : t("unknown")} ·{" "}
-                      {dateFmt.format(f.createdAt)} ·{" "}
+                    {membership?.status === "BANNED" && (
+                      <Pill className="bg-red-100 text-red-700">{t("authorBanned")}</Pill>
+                    )}
+                  </div>
+                  <p className="mt-2 text-sm text-slate-600">
+                    {author && !canBan ? (
+                      // Moderatoren sehen die Mitgliederliste nicht — der Link
+                      // fuehrte nur zurueck hierher.
+                      <span className="font-semibold text-slate-900">{author.name}</span>
+                    ) : author ? (
+                      <Link
+                        href={`/dashboard/${slug}/members?q=${encodeURIComponent(author.email)}`}
+                        className="font-semibold text-slate-900 underline-offset-2 hover:underline"
+                      >
+                        {author.name}
+                      </Link>
+                    ) : (
+                      <span className="font-semibold text-slate-900">{t("unknown")}</span>
+                    )}
+                    <span className="text-slate-500">
+                      {" · "}
+                      {dateFmt.format(f.createdAt)}
+                      {" · "}
                       {f.source === "gemini" ? t("sourceAi") : t("sourceHeuristic")}: {f.reason}
                     </span>
-                  </div>
-                  <p className="mt-2 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
-                    „{f.excerpt}“
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
+                  <blockquote className="mt-2 rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-700">
+                    „{f.excerpt}“
+                  </blockquote>
+                  {href && (
+                    <Link
+                      href={href}
+                      target="_blank"
+                      className="mt-2 inline-flex items-center gap-1.5 text-sm font-medium text-slate-700 underline-offset-2 hover:underline"
+                    >
+                      <Icon name="external" size={14} />
+                      {t("viewInContext")}
+                    </Link>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-start gap-2">
                     <form action={approveFlagAction}>
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="id" value={f.id} />
@@ -103,16 +198,24 @@ export default async function ModerationPage({
                         {t("approve")}
                       </button>
                     </form>
-                    <form action={removeFlaggedContentAction}>
-                      <input type="hidden" name="tenant" value={slug} />
-                      <input type="hidden" name="id" value={f.id} />
-                      <button
-                        type="submit"
-                        className="rounded-full bg-red-600 px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-red-700"
-                      >
-                        {t("removeContent")}
-                      </button>
-                    </form>
+                    <RemoveFlagButton
+                      slug={slug}
+                      flagId={f.id}
+                      refType={f.refType === "Post" ? "Post" : "Comment"}
+                      excerpt={f.excerpt}
+                    />
+                    {banAllowed && author && membership.status !== "BANNED" && (
+                      <BanMemberButton
+                        slug={slug}
+                        membershipId={membership.id}
+                        name={author.name}
+                        community={tenant.name}
+                        banned={false}
+                        subscription={subBy.get(author.id) ?? null}
+                        size="sm"
+                        label={t("banAuthor", { name: author.name })}
+                      />
+                    )}
                   </div>
                 </CardBody>
               </Card>
@@ -133,7 +236,7 @@ export default async function ModerationPage({
                   <Pill
                     className={
                       f.status === "REMOVED"
-                        ? "bg-red-50 text-red-600"
+                        ? "bg-red-50 text-red-700"
                         : "bg-emerald-50 text-emerald-700"
                     }
                   >
@@ -142,7 +245,7 @@ export default async function ModerationPage({
                   <span className="min-w-0 flex-1 truncate text-slate-500">
                     „{f.excerpt.slice(0, 80)}“
                   </span>
-                  <span className="text-xs text-slate-500">
+                  <span className="shrink-0 text-xs text-slate-500">
                     {f.resolvedAt ? dateFmt.format(f.resolvedAt) : ""}
                   </span>
                 </li>

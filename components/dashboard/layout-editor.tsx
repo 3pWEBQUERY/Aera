@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
+import { cloneElement, isValidElement, useActionState, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import { saveLayoutAction, type LayoutState } from "@/app/actions/page-layout";
 import { CoverUpload } from "./cover-upload";
 import {
@@ -18,7 +20,8 @@ import { PagesPanel, type EditablePage } from "./pages-panel";
 import { useNameAvailability, NameStatusHint, type NameCheck } from "./use-name-availability";
 import { cn } from "@/lib/utils";
 import { spaceTypeIcon } from "@/lib/dashboard-nav-items";
-import { uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
 import { useModalAccessibility } from "@/components/ui/use-modal-accessibility";
 import { Select } from "@/components/ui/select";
 import {
@@ -93,7 +96,11 @@ export function LayoutEditor({
 }) {
   const [view, setView] = useState<View>("hub");
   const [device, setDevice] = useState<"desktop" | "mobile">("desktop");
-  const [audience, setAudience] = useState<Audience>("FREE");
+  // Standard: so, wie Besucher die Seite sehen — das ist die erste Ansicht,
+  // die jemand Neues von der Community bekommt.
+  const [audience, setAudience] = useState<Audience>("PUBLIC");
+  // Mobil ist kein Platz für Editor und Vorschau nebeneinander.
+  const [mobilePreview, setMobilePreview] = useState(false);
   const t = useTranslations("dashboard.layout");
   const tPages = useTranslations("dashboard.pages");
   const tBanners = useTranslations("dashboard.banners");
@@ -132,14 +139,10 @@ export function LayoutEditor({
   const [banners, setBanners] = useState<BannerConfig[]>(initial.banners);
 
   const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
-  const [flash, setFlash] = useState(false);
-  useEffect(() => {
-    if (state.ok) {
-      setFlash(true);
-      const t = setTimeout(() => setFlash(false), 2500);
-      return () => clearTimeout(t);
-    }
-  }, [state.ok, state]);
+  const locale = useLocale();
+  const router = useRouter();
+  const [confirm, confirmDialog] = useConfirm();
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
 
   const payload = useMemo(
     () =>
@@ -156,6 +159,46 @@ export function LayoutEditor({
       }),
     [name, logoUrl, primaryColor, description, mode, variant, mosaic, socials, sectionsByAudience, nav, heroMenu, banners],
   );
+
+  // Ungespeichert = anders als beim Öffnen bzw. beim letzten Speichern.
+  const [baseline, setBaseline] = useState(payload);
+  const submitted = useRef(payload);
+  const lastState = useRef(state);
+  useEffect(() => {
+    if (state === lastState.current) return;
+    lastState.current = state;
+    if (state.ok) {
+      setBaseline(submitted.current);
+      setSavedAt(new Date());
+    }
+  }, [state]);
+  const dirty = payload !== baseline;
+
+  useEffect(() => {
+    if (!dirty) return;
+    function onBeforeUnload(e: BeforeUnloadEvent) {
+      e.preventDefault();
+      e.returnValue = "";
+    }
+    window.addEventListener("beforeunload", onBeforeUnload);
+    return () => window.removeEventListener("beforeunload", onBeforeUnload);
+  }, [dirty]);
+
+  /** Verlassen (Abbrechen, Zurück): nur nach Rückfrage, wenn etwas offen ist. */
+  async function leave(e: React.MouseEvent, href: string) {
+    if (!dirty) return;
+    e.preventDefault();
+    const ok = await confirm({
+      title: t("discardTitle"),
+      body: t("discardBody"),
+      confirmLabel: t("discardConfirm"),
+      cancelLabel: t("discardCancel"),
+      tone: "danger",
+    });
+    if (!ok) return;
+    setBaseline(payload);
+    router.push(href);
+  }
 
   // Live preview: mirror the current (unsaved) config into a short-lived cookie
   // that the real community page reads, then reload the iframe on changes.
@@ -221,9 +264,14 @@ export function LayoutEditor({
     banner: tBanners("title"),
   };
 
+  const timeFmt = new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" });
+
   return (
     <form
       action={formAction}
+      onSubmit={() => {
+        submitted.current = payload;
+      }}
       className="fixed inset-0 z-50 flex flex-col bg-white"
       style={{ ["--brand" as string]: primaryColor }}
     >
@@ -231,7 +279,7 @@ export function LayoutEditor({
       <input type="hidden" name="payload" value={payload} />
 
       {/* Top bar */}
-      <header className="flex items-center gap-4 border-b border-slate-200 px-5 py-3">
+      <header className="flex flex-wrap items-center gap-x-2 gap-y-1 border-b border-slate-200 px-3 py-3 sm:flex-nowrap sm:gap-4 sm:px-5">
         <div className="flex min-w-0 flex-1 items-center gap-2">
           {/*
            * Der Pfeil steht immer an derselben Stelle und meint immer "eine
@@ -242,6 +290,7 @@ export function LayoutEditor({
           {view === "hub" ? (
             <Link
               href={`/dashboard/${slug}`}
+              onClick={(e) => void leave(e, `/dashboard/${slug}`)}
               className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-600 transition hover:bg-slate-100"
               aria-label={t("backToDashboard")}
               title={t("backToDashboard")}
@@ -263,7 +312,7 @@ export function LayoutEditor({
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          <AudienceSelect value={audience} onChange={setAudience} />
+          <AudienceSelect id="layout-audience" value={audience} onChange={setAudience} />
           <div className="flex items-center gap-1 rounded-lg border border-slate-200 p-0.5">
             {(["desktop", "mobile"] as const).map((d) => (
               <button
@@ -275,6 +324,7 @@ export function LayoutEditor({
                   device === d ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-500 hover:bg-[var(--action-soft)]",
                 )}
                 aria-label={d === "desktop" ? t("desktopPreview") : t("mobilePreview")}
+                aria-pressed={device === d}
               >
                 <Icon name={d === "desktop" ? "monitor" : "smartphone"} size={16} />
               </button>
@@ -282,24 +332,49 @@ export function LayoutEditor({
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {flash && (
-            <span className="hidden items-center gap-1.5 text-sm font-medium text-emerald-600 sm:inline-flex">
-              <Icon name="check" size={16} /> {t("saved")}
-            </span>
-          )}
-          {state.error && <span className="text-sm text-red-600">{state.error}</span>}
+        <div className="contents sm:flex sm:items-center sm:gap-2">
+          {/* Status neben dem Knopf; mobil in einer eigenen Zeile darunter,
+              damit er nicht weggedrückt wird. Wird vorgelesen. */}
+          <p
+            role="status"
+            aria-live="polite"
+            className="order-last w-full text-xs font-medium empty:hidden sm:order-none sm:w-auto sm:text-right sm:text-sm"
+          >
+            {state.error ? (
+              <span className="text-red-700">{state.error}</span>
+            ) : dirty ? (
+              <span className="text-amber-700">{t("unsaved")}</span>
+            ) : savedAt ? (
+              <span className="inline-flex items-center gap-1 text-emerald-700">
+                <Icon name="check" size={15} />
+                {t("savedAt", { time: timeFmt.format(savedAt) })}
+              </span>
+            ) : null}
+          </p>
+          <button
+            type="button"
+            onClick={() => setMobilePreview((v) => !v)}
+            aria-pressed={mobilePreview}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 md:hidden"
+          >
+            <Icon name="eye" size={16} />
+            {mobilePreview ? t("editMobile") : t("previewMobile")}
+          </button>
           <Link
             href={`/dashboard/${slug}`}
-            className="rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200"
+            onClick={(e) => void leave(e, `/dashboard/${slug}`)}
+            className="hidden rounded-xl bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 sm:inline-block"
           >
             {t("cancel")}
           </Link>
           <button
             type="submit"
-            disabled={pending || nameBlocks}
+            aria-disabled={pending || nameBlocks}
+            onClick={(e) => {
+              if (pending || nameBlocks) e.preventDefault();
+            }}
             title={nameBlocks ? t("nameTaken") : undefined}
-            className="rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+            className="shrink-0 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] aria-disabled:opacity-50"
           >
             {pending ? t("saving") : t("save")}
           </button>
@@ -308,7 +383,12 @@ export function LayoutEditor({
 
       {/* Body */}
       <div className="flex min-h-0 flex-1">
-        <aside className="w-full shrink-0 overflow-y-auto border-r border-slate-200 md:w-[380px]">
+        <aside
+          className={cn(
+            "w-full shrink-0 overflow-y-auto border-r border-slate-200 md:block md:w-[380px]",
+            mobilePreview && "hidden",
+          )}
+        >
           {view === "hub" && <Hub onOpen={setView} />}
           {view === "header" && (
             <HeaderPanel
@@ -365,11 +445,22 @@ export function LayoutEditor({
           )}
         </aside>
 
-        <main className="hidden min-h-0 flex-1 overflow-hidden bg-slate-100 p-6 md:block">
+        <main
+          className={cn(
+            "min-h-0 flex-1 overflow-hidden bg-slate-100 p-3 md:block md:p-6",
+            mobilePreview ? "flex flex-col gap-3" : "hidden",
+          )}
+        >
+          {mobilePreview && (
+            <div className="md:hidden">
+              <AudienceSelect id="layout-audience-mobile" value={audience} onChange={setAudience} />
+            </div>
+          )}
           <div
             className={cn(
               "mx-auto h-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all",
               device === "mobile" ? "max-w-[430px]" : "max-w-none",
+              mobilePreview && "w-full flex-1",
             )}
           >
             {previewReady && (
@@ -383,50 +474,45 @@ export function LayoutEditor({
           </div>
         </main>
       </div>
+      {confirmDialog}
     </form>
   );
 }
 
 // ---------------------------------------------------------------- Audience
+/**
+ * „Vorschau als: Besucher / Kostenloses Mitglied / Zahlendes Mitglied“.
+ * Die Wahl bestimmt auch, für wen die Abschnitte der Startseite gelten,
+ * wenn „Für alle übernehmen“ aus ist.
+ */
 function AudienceSelect({
+  id,
   value,
   onChange,
 }: {
+  id: string;
   value: Audience;
   onChange: (a: Audience) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const t = useTranslations("dashboard.layout");
   const tAud = useTranslations("dashboard.layout.audiences");
-  const current = AUDIENCES.find((a) => a.key === value) ?? AUDIENCES[0];
   return (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => setOpen((v) => !v)}
-        onBlur={() => setTimeout(() => setOpen(false), 160)}
-        className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+    <div className="flex min-w-0 items-center gap-2">
+      <label htmlFor={id} className="shrink-0 text-sm font-medium text-slate-600">
+        {t("previewAs")}
+      </label>
+      <Select
+        id={id}
+        value={value}
+        onChange={(v) => onChange(v as Audience)}
+        className="min-w-[12rem]"
       >
-        <span className="max-w-[230px] truncate">{tAud(current.key)}</span>
-        <Icon name="chevron" size={14} className={cn("text-slate-500 transition", open && "rotate-180")} />
-      </button>
-      {open && (
-        <div className="absolute left-0 top-11 z-30 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl">
-          {AUDIENCES.map((a) => (
-            <button
-              key={a.key}
-              type="button"
-              onMouseDown={() => {
-                onChange(a.key);
-                setOpen(false);
-              }}
-              className="flex w-full items-center justify-between gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-800 transition hover:bg-slate-50"
-            >
-              <span className="truncate">{tAud(a.key)}</span>
-              {a.key === value && <Icon name="check" size={16} className="shrink-0 text-slate-900" />}
-            </button>
-          ))}
-        </div>
-      )}
+        {AUDIENCES.map((a) => (
+          <option key={a.key} value={a.key}>
+            {tAud(a.key)}
+          </option>
+        ))}
+      </Select>
     </div>
   );
 }
@@ -436,15 +522,18 @@ function Hub({ onOpen }: { onOpen: (v: View) => void }) {
   const t = useTranslations("dashboard.layout");
   const tPages = useTranslations("dashboard.pages");
   const tBanners = useTranslations("dashboard.banners");
-  const rows: { view: View; label: string; icon: IconName }[] = [
-    { view: "header", label: t("hubHeader"), icon: "branding" },
-    { view: "sections", label: t("hubSections"), icon: "layout" },
-    // Direkt unter dem Seitenlayout: beides beantwortet "was steht auf meiner
+  // Jede Zeile sagt in einem Satz, was dahinter steckt — die Namen allein
+  // („Seitenlayout“, „Navigationsmenü“, „Menü der Kopfzeile“) liessen sich
+  // kaum auseinanderhalten.
+  const rows: { view: View; label: string; hint: string; icon: IconName }[] = [
+    { view: "header", label: t("hubHeader"), hint: t("hubHeaderHint"), icon: "branding" },
+    { view: "menu", label: t("hubMenu"), hint: t("hubMenuHint"), icon: "more" },
+    { view: "sections", label: t("hubSections"), hint: t("hubSectionsHint"), icon: "layout" },
+    // Direkt unter der Startseite: beides beantwortet "was steht auf meiner
     // Seite", nur einmal fuer die Startseite und einmal daneben.
-    { view: "pages", label: tPages("hub"), icon: "knowledge" },
-    { view: "banner", label: tBanners("hub"), icon: "megaphone" },
-    { view: "nav", label: t("hubNav"), icon: "menu" },
-    { view: "menu", label: t("hubMenu"), icon: "more" },
+    { view: "pages", label: tPages("hub"), hint: t("hubPagesHint"), icon: "knowledge" },
+    { view: "nav", label: t("hubNav"), hint: t("hubNavHint"), icon: "menu" },
+    { view: "banner", label: tBanners("hub"), hint: t("hubBannerHint"), icon: "megaphone" },
   ];
   return (
     <div className="py-2">
@@ -458,7 +547,10 @@ function Hub({ onOpen }: { onOpen: (v: View) => void }) {
           <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
             <Icon name={r.icon} size={18} />
           </span>
-          <span className="flex-1 text-base font-semibold text-slate-900">{r.label}</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-base font-semibold text-slate-900">{r.label}</span>
+            <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">{r.hint}</span>
+          </span>
           <Icon name="chevron" size={18} className="-rotate-90 text-slate-500" />
         </button>
       ))}
@@ -509,11 +601,13 @@ function HeaderPanel({
   coverUrl: string | null;
 }) {
   const t = useTranslations("dashboard.layout");
+  const tUi = useTranslations("ui.dashboard");
   return (
     <div className="space-y-8 px-6 py-6">
       <div>
-        <label className="block text-sm font-bold text-slate-900">{t("pageName")}</label>
+        <label htmlFor="layout-name" className="block text-sm font-bold text-slate-900">{t("pageName")}</label>
         <input
+          id="layout-name"
           value={name}
           onChange={(e) => setName(e.target.value)}
           maxLength={60}
@@ -528,10 +622,43 @@ function HeaderPanel({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-slate-900">{t("profilePhoto")}</p>
-          <p className="mt-1 text-xs text-slate-500">{t("profilePhotoHint")}</p>
+          <p className="mt-1 text-xs text-slate-500">{tUi("imageHint")}</p>
         </div>
         <LogoUploader slug={slug} url={logoUrl} name={name} color={primaryColor} onChange={setLogoUrl} />
       </div>
+
+      {/* Hauptfarbe: gilt für Knöpfe, Links und die Farbfläche — unabhängig
+          davon, ob oben ein Titelbild steht. Heisst wie im Branding. */}
+      <fieldset>
+        <legend className="text-sm font-bold text-slate-900">{t("colorScheme")}</legend>
+        <p className="mt-1 text-xs text-slate-500">{t("colorSchemeHint")}</p>
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          {COLOR_PRESETS.map((c) => (
+            <button
+              key={c}
+              type="button"
+              onClick={() => setPrimaryColor(c)}
+              aria-pressed={primaryColor.toLowerCase() === c}
+              className={cn(
+                "h-8 w-8 rounded-lg ring-offset-2 transition",
+                primaryColor.toLowerCase() === c ? "ring-2 ring-slate-900" : "hover:scale-105",
+              )}
+              style={{ background: c }}
+              aria-label={t("colorPresetAria", { color: c.toUpperCase() })}
+            />
+          ))}
+          <label className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-300 text-slate-500 focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+            <Icon name="plus" size={16} />
+            <span className="sr-only">{t("colorCustomAria")}</span>
+            <input
+              type="color"
+              value={primaryColor}
+              onChange={(e) => setPrimaryColor(e.target.value)}
+              className="absolute inset-0 cursor-pointer opacity-0"
+            />
+          </label>
+        </div>
+      </fieldset>
 
       <HeaderVariantPicker value={variant} onChange={setVariant} color={primaryColor} />
 
@@ -545,6 +672,7 @@ function HeaderPanel({
           <button
             type="button"
             onClick={() => setMode("PHOTO")}
+            aria-pressed={mode === "PHOTO"}
             className={cn(
               "flex w-full items-center justify-between px-4 py-3.5 text-left text-sm font-medium transition",
               mode === "PHOTO" ? "bg-slate-50" : "hover:bg-slate-50",
@@ -554,40 +682,10 @@ function HeaderPanel({
             <Radio checked={mode === "PHOTO"} />
           </button>
 
-          {mode === "PHOTO" && (
-            <div className="border-t border-slate-100 px-4 py-4">
-              <p className="text-sm font-semibold text-slate-800">{t("colorScheme")}</p>
-              <p className="mt-0.5 text-xs text-slate-500">{t("colorSchemeHint")}</p>
-              <div className="mt-3 flex flex-wrap items-center gap-2">
-                {COLOR_PRESETS.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    onClick={() => setPrimaryColor(c)}
-                    className={cn(
-                      "h-8 w-8 rounded-lg ring-offset-2 transition",
-                      primaryColor.toLowerCase() === c ? "ring-2 ring-slate-900" : "hover:scale-105",
-                    )}
-                    style={{ background: c }}
-                    aria-label={c}
-                  />
-                ))}
-                <label className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-300 text-slate-500">
-                  <Icon name="plus" size={16} />
-                  <input
-                    type="color"
-                    value={primaryColor}
-                    onChange={(e) => setPrimaryColor(e.target.value)}
-                    className="absolute inset-0 cursor-pointer opacity-0"
-                  />
-                </label>
-              </div>
-            </div>
-          )}
-
           <button
             type="button"
             onClick={() => setMode("COVER")}
+            aria-pressed={mode === "COVER"}
             className={cn(
               "flex w-full items-center justify-between border-t border-slate-100 px-4 py-3.5 text-left text-sm font-medium transition",
               mode === "COVER" ? "bg-slate-50" : "hover:bg-slate-50",
@@ -599,18 +697,17 @@ function HeaderPanel({
           {mode === "COVER" && (
             <div className="border-t border-slate-100 px-4 py-4">
               <CoverUpload tenant={slug} defaultUrl={coverUrl} />
-              <p className="mt-2 text-xs text-slate-500">
-                {t("coverApplied")}
-              </p>
             </div>
           )}
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-bold text-slate-900">{t("about")}</label>
-        <p className="mt-1 text-xs text-slate-500">{t("aboutHint")}</p>
+        <label htmlFor="layout-about" className="block text-sm font-bold text-slate-900">{t("about")}</label>
+        <p id="layout-about-hint" className="mt-1 text-xs text-slate-500">{t("aboutHint")}</p>
         <textarea
+          id="layout-about"
+          aria-describedby="layout-about-hint"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           rows={4}
@@ -674,7 +771,7 @@ function HeaderVariantPicker({
                   <Icon name="check" size={14} className="shrink-0 text-[var(--action-strong)]" />
                 )}
               </span>
-              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-500">
+              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-600">
                 {t(`headerVariants.${v}.desc`)}
               </span>
             </button>
@@ -767,7 +864,7 @@ function MosaicUploader({
             <button
               type="button"
               onClick={() => setImages(images.filter((_, j) => j !== i))}
-              aria-label={t("removeAria")}
+              aria-label={t("removeImageAria", { n: i + 1 })}
               className="absolute right-1 top-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/70 text-white opacity-0 transition group-hover:opacity-100 focus-visible:opacity-100"
             >
               <Icon name="close" size={13} />
@@ -907,7 +1004,7 @@ function SocialLinksEditor({
   return (
     <div>
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-bold text-slate-900">{t("socialLinks")}</label>
+        <h3 className="block text-sm font-bold text-slate-900">{t("socialLinks")}</h3>
         <div className="relative">
           <button
             type="button"
@@ -961,6 +1058,7 @@ function SocialLinksEditor({
                     setSocials(copy);
                   }}
                   placeholder={p.placeholder}
+                  aria-label={t("socialInputAria", { name: p.label })}
                   className="min-w-0 flex-1 bg-transparent px-2 py-2 text-sm outline-none"
                 />
               </div>
@@ -968,7 +1066,7 @@ function SocialLinksEditor({
                 type="button"
                 onClick={() => setSocials(socials.filter((_, idx) => idx !== i))}
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
-                aria-label={t("removeAria")}
+                aria-label={t("removeNamedAria", { name: p.label })}
               >
                 <Icon name="trash" size={15} />
               </button>
@@ -1008,13 +1106,22 @@ function LogoUploader({
 }) {
   const ref = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [failedFile, setFailedFile] = useState<File | null>(null);
+  const uploadErrorText = useUploadErrorText();
   const t = useTranslations("dashboard.layout");
 
   async function pick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    await upload(file);
+  }
+
+  async function upload(file: File) {
     setBusy(true);
+    setError(null);
+    setFailedFile(null);
     try {
       const uploadedUrl = await uploadMediaFile({
         file,
@@ -1022,14 +1129,17 @@ function LogoUploader({
         purpose: "logo",
       });
       onChange(uploadedUrl);
-    } catch {
-      // Keep this compact logo control non-disruptive, as before.
+    } catch (uploadError) {
+      // Der Fehler steht unter dem Logo — die Upload-Anzeige zeigt nur Fortschritt.
+      setError(uploadErrorText(uploadError));
+      setFailedFile(file);
     } finally {
       setBusy(false);
     }
   }
 
   return (
+    <div className="flex max-w-[14rem] shrink-0 flex-col items-end">
     <button
       type="button"
       onClick={() => ref.current?.click()}
@@ -1050,6 +1160,12 @@ function LogoUploader({
       </span>
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={pick} />
     </button>
+    <UploadFieldError
+      message={error}
+      retrying={busy}
+      onRetry={failedFile ? () => void upload(failedFile) : undefined}
+    />
+    </div>
   );
 }
 
@@ -1175,7 +1291,7 @@ function SectionsPanel({
               type="button"
               onClick={() => setEnabledByKey(keyOf(s), false)}
               className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-              aria-label={t("hideAria")}
+              aria-label={t("hideNamedAria", { name: labelFor(s) })}
             >
               <Icon name="eye" size={16} />
             </button>
@@ -1183,7 +1299,7 @@ function SectionsPanel({
               type="button"
               onClick={() => removeSection(s)}
               className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
-              aria-label={t("removeAria")}
+              aria-label={t("removeNamedAria", { name: labelFor(s) })}
             >
               <Icon name="trash" size={16} />
             </button>
@@ -1643,9 +1759,25 @@ function Field({
   hint?: string;
   children: React.ReactNode;
 }) {
+  const id = useId();
+  const hintId = `${id}-hint`;
+  // Ein einzelnes Eingabefeld bekommt sein Label per htmlFor; eine Gruppe von
+  // Knöpfen (Chips) wird über die Überschrift als Gruppe benannt.
+  const labelable =
+    isValidElement(children) && (children.type === "input" || children.type === Select);
+  if (labelable) {
+    const child = children as React.ReactElement<{ id?: string; "aria-describedby"?: string }>;
+    return (
+      <div>
+        <label htmlFor={id} className="mb-1.5 block text-xs font-bold text-slate-900">{label}</label>
+        {cloneElement(child, { id, "aria-describedby": hint ? hintId : undefined })}
+        {hint && <p id={hintId} className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>}
+      </div>
+    );
+  }
   return (
-    <div>
-      <label className="mb-1.5 block text-xs font-bold text-slate-900">{label}</label>
+    <div role="group" aria-labelledby={`${id}-label`}>
+      <p id={`${id}-label`} className="mb-1.5 block text-xs font-bold text-slate-900">{label}</p>
       {children}
       {hint && <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>}
     </div>
@@ -1871,7 +2003,7 @@ function NavPanel({
               type="button"
               onClick={() => setNav(nav.filter((n) => n.id !== item.id))}
               className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
-              aria-label={t("removeAria")}
+              aria-label={t("removeNamedAria", { name: item.label })}
             >
               <Icon name="trash" size={16} />
             </button>
@@ -2033,10 +2165,11 @@ function AddNavModal({
       <div className="min-h-0 flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-2xl px-6 py-8">
           <div className="flex items-center justify-between">
-            <label className="text-sm font-bold text-slate-900">{t("titleLabel")}</label>
+            <label htmlFor="add-nav-title" className="text-sm font-bold text-slate-900">{t("titleLabel")}</label>
             <span className="text-xs text-slate-500">{title.length} / 20</span>
           </div>
           <input
+            id="add-nav-title"
             autoFocus
             value={title}
             onChange={(e) => setTitle(e.target.value.slice(0, 20))}
@@ -2044,7 +2177,7 @@ function AddNavModal({
             className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3 text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]"
           />
 
-          <label className="mt-6 block text-sm font-bold text-slate-900">{t("linkType")}</label>
+          <p className="mt-6 block text-sm font-bold text-slate-900">{t("linkType")}</p>
           <div className="mt-2">
             <Dropdown
               value={type}
@@ -2070,8 +2203,9 @@ function AddNavModal({
 
           {needsUrl && (
             <>
-              <label className="mt-6 block text-sm font-bold text-slate-900">{t("linkTo")}</label>
+              <label htmlFor="add-nav-url" className="mt-6 block text-sm font-bold text-slate-900">{t("linkTo")}</label>
               <input
+                id="add-nav-url"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 placeholder={t("urlPlaceholder")}
@@ -2081,7 +2215,7 @@ function AddNavModal({
           )}
           {needsSpace && (
             <>
-              <label className="mt-6 block text-sm font-bold text-slate-900">{t("chooseSpace")}</label>
+              <p className="mt-6 block text-sm font-bold text-slate-900">{t("chooseSpace")}</p>
               <p className="mt-0.5 text-xs text-slate-500">
                 {t("chooseSpaceHint")}
               </p>
@@ -2126,7 +2260,7 @@ function AddNavModal({
           type="button"
           onClick={save}
           disabled={!canSave}
-          className="rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-40"
+          className="rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-40"
         >
           {t("save")}
         </button>

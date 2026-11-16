@@ -161,12 +161,15 @@ function relTime(iso: string, t: AssistantT, locale: string): string {
 export function AssistantWorkspace({
   slug,
   geminiOn,
+  isPlatformAdmin = false,
   user,
   initialCreditsOpen = false,
   initialCheckoutError = false,
 }: {
   slug: string;
   geminiOn: boolean;
+  /** Nur Plattform-Admins koennen Gemini einrichten — nur sie sehen den technischen Hinweis. */
+  isPlatformAdmin?: boolean;
   user: { name: string; avatarUrl: string | null };
   initialCreditsOpen?: boolean;
   initialCheckoutError?: boolean;
@@ -571,7 +574,10 @@ export function AssistantWorkspace({
           sidebarAnimReady && "transition-[width] duration-300 ease-out",
           hasConversations ? "w-64" : "w-0",
         )}
-        aria-hidden={!hasConversations}
+        // Eingeklappt ist die Leiste 0 px breit, ihr „Neu“-Knopf aber weiter
+        // per Tab erreichbar. `inert` nimmt ihn aus Fokus und Screenreader;
+        // aria-hidden allein liess einen versteckten, fokussierbaren Knopf zurueck.
+        inert={!hasConversations}
       >
         <aside className="flex h-full w-64 flex-col border-r border-slate-200 bg-slate-50/60">
         <div className="flex items-center justify-between px-4 py-3.5">
@@ -581,7 +587,7 @@ export function AssistantWorkspace({
           <button
             type="button"
             onClick={() => (mode === "image" ? newImageSession() : newChat())}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--action)] px-2.5 py-1.5 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--primary)] px-2.5 py-1.5 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={14} />
             {t("newBtn")}
@@ -645,14 +651,14 @@ export function AssistantWorkspace({
 
       {/* Chat area */}
       <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 border-b border-slate-100 px-4 py-3 sm:px-5">
           <div className="flex items-center gap-3">
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--brand-soft)] text-[color:var(--brand)] ring-1 ring-[var(--brand-ring)]">
               <Icon name="sparkles" size={16} />
             </span>
             <p className="text-sm font-bold text-slate-900">{t("title")}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="ml-auto flex flex-wrap items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => setCreditsOpen(true)}
@@ -754,8 +760,8 @@ export function AssistantWorkspace({
         {mode === "chat" ? (
           <div className="border-t border-slate-100 px-3 py-3">
             {!geminiOn && (
-              <p className="mx-auto mb-2 max-w-3xl px-1 text-xs font-medium text-amber-600">
-                {t("geminiOff")}
+              <p className="mx-auto mb-2 max-w-3xl px-1 text-xs font-medium text-amber-700">
+                {isPlatformAdmin ? t("geminiOffAdmin") : t("geminiOffCreator")}
               </p>
             )}
             <div className="relative mx-auto max-w-3xl">
@@ -818,8 +824,8 @@ export function AssistantWorkspace({
         ) : (
           <div className="border-t border-slate-100 px-3 py-3">
             {!geminiOn && (
-              <p className="mx-auto mb-2 max-w-3xl px-1 text-xs font-medium text-amber-600">
-                {t("geminiOff")}
+              <p className="mx-auto mb-2 max-w-3xl px-1 text-xs font-medium text-amber-700">
+                {isPlatformAdmin ? t("geminiOffAdmin") : t("geminiOffCreator")}
               </p>
             )}
             <div className="relative mx-auto max-w-3xl">

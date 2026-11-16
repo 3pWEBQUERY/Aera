@@ -9,6 +9,7 @@ import { env } from "@/lib/env";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { InviteFriends } from "@/components/community/invite-friends";
+import { MembersOnlyGate } from "@/components/community/members-only-gate";
 
 const ROLE_META: Record<string, { key: string; cls: string }> = {
   OWNER: {
@@ -39,13 +40,15 @@ export default async function CommunityMembers({
   // Member directory is members-only (names/avatars are personal data).
   if (ctx.membership?.status !== "ACTIVE" && !ctx.isStaff) {
     return (
-      <div className="mx-auto max-w-md py-16 text-center">
-        <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)] text-[color:var(--brand)] ring-1 ring-[var(--brand-ring)]">
-          <Icon name="lock" size={24} />
-        </span>
-        <h1 className="text-xl font-bold text-slate-900">{t("lockedTitle")}</h1>
-        <p className="mt-2 text-sm text-slate-500">{t("lockedText")}</p>
-      </div>
+      <MembersOnlyGate
+        slug={slug}
+        tenantId={tenant.id}
+        communityName={tenant.name}
+        title={t("lockedTitle")}
+        context={t("title")}
+        next={`/c/${slug}/members`}
+        loggedIn={Boolean(user)}
+      />
     );
   }
 
@@ -91,8 +94,8 @@ export default async function CommunityMembers({
           <Icon name="members" size={22} />
         </span>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
-          <p className="text-sm text-slate-500">
+          <h1 className="text-xl font-bold text-[#161613]">{t("title")}</h1>
+          <p className="text-sm text-[#161613]/70">
             {t("countInCommunity", { count: members.length })}
           </p>
         </div>
@@ -126,7 +129,7 @@ export default async function CommunityMembers({
                       </span>
                     )}
                   </div>
-                  <p className="mt-0.5 truncate text-xs text-slate-500">
+                  <p className="mt-0.5 truncate text-xs text-slate-600">
                     {t("memberSince", { date: joinedLabel(m.joinedAt) })}
                   </p>
                   <BadgeRow badges={badgeBy.get(m.userId) ?? []} className="mt-1.5" />
@@ -134,21 +137,21 @@ export default async function CommunityMembers({
               </div>
 
               <div className="mt-3 flex items-center justify-between gap-2 border-t border-slate-100 pt-3">
-                <span className="inline-flex max-w-[55%] items-center gap-1.5 truncate text-xs font-medium text-slate-500">
-                  <Icon name="tiers" size={13} className="shrink-0 text-slate-300" />
+                <span className="inline-flex max-w-[55%] items-center gap-1.5 truncate text-xs font-medium text-slate-600">
+                  <Icon name="tiers" size={13} className="shrink-0 text-slate-400" />
                   <span className="truncate">{m.tier?.name ?? t("freeTier")}</span>
                 </span>
                 {stat && stat.points > 0 ? (
                   <span className="inline-flex shrink-0 items-center gap-1.5 text-xs">
                     {stat.levelName && (
-                      <span className="text-slate-500">{stat.levelName}</span>
+                      <span className="text-slate-600">{stat.levelName}</span>
                     )}
-                    <span className="rounded-full bg-[var(--brand-soft)] px-2 py-0.5 font-semibold text-[color:var(--brand)]">
+                    <span className="rounded-full bg-[#161613]/[0.06] px-2 py-0.5 font-semibold text-[#161613]/85">
                       {nf.format(stat.points)} {t("pts")}
                     </span>
                   </span>
                 ) : (
-                  <span className="shrink-0 text-xs text-slate-300">{t("newHere")}</span>
+                  <span className="shrink-0 text-xs text-slate-600">{t("newHere")}</span>
                 )}
               </div>
             </div>

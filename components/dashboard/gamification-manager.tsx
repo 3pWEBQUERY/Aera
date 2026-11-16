@@ -19,6 +19,7 @@ import { Input, Label, Select } from "@/components/ui/field";
 import { Avatar, FormError, Pill } from "@/components/ui/misc";
 import { BadgeMedal } from "@/components/community/badge-medal";
 import { cn } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 import {
   BADGE_CRITERIA,
   BADGE_DEFAULTS,
@@ -111,6 +112,7 @@ export function GamificationManager({
   const t = useTranslations("dashboard.gamification");
   const tTriggers = useTranslations("dashboard.gamification.triggers");
   const tCrit = useTranslations("dashboard.gamification.criteria");
+  const [confirm, confirmDialog] = useConfirm();
 
   const totalAwarded = badges.reduce((s, b) => s + b.awardCount, 0);
   const topScore = leaderboard[0]?.points ?? 0;
@@ -142,32 +144,50 @@ export function GamificationManager({
         </button>
       </div>
       <div className="mt-5 space-y-2">
-              {rules.map((r) => (
+              {rules.map((r) => {
+                const triggerLabel = tTriggers(r.trigger);
+                // Die Unterzeile nennt den Ausloeser nur, wenn der Regelname
+                // ihn nicht schon sagt — sonst stuende „Beitrag erstellt“ doppelt.
+                const sameAsName = triggerLabel.trim().toLowerCase() === r.name.trim().toLowerCase();
+                const meta = [
+                  sameAsName ? null : triggerLabel,
+                  r.maxPerDay ? t("maxPerDay", { count: r.maxPerDay }) : null,
+                ].filter(Boolean);
+                const pointsId = `rule-points-${r.id}`;
+                return (
                 <div
                   key={r.id}
-                  className="group flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50/50 px-3 py-2.5 transition hover:border-slate-200"
+                  className="group flex flex-wrap items-center justify-between gap-x-3 gap-y-2 rounded-xl border border-slate-100 bg-slate-50/50 px-3 py-2.5 transition hover:border-slate-200"
                 >
-                  <div className="flex min-w-0 items-center gap-3">
+                  <div className="flex min-w-[12rem] flex-1 items-center gap-3">
                     <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-slate-500 ring-1 ring-slate-200">
                       <Icon name={triggerIcon[r.trigger] ?? "gamification"} size={16} />
                     </span>
                     <div className="min-w-0">
-                      <p className="truncate text-sm font-medium text-slate-800">{r.name}</p>
-                      <p className="truncate text-xs text-slate-500">
-                        {tTriggers(r.trigger)}
-                        {r.maxPerDay ? ` · ${t("maxPerDay", { count: r.maxPerDay })}` : ""}
-                      </p>
+                      <p className="break-words text-sm font-medium text-slate-800">{r.name}</p>
+                      {meta.length > 0 && (
+                        <p className="break-words text-xs text-slate-500">{meta.join(" · ")}</p>
+                      )}
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-1.5">
+                  <div className="ml-auto flex shrink-0 items-center gap-1.5">
                     <form action={updateRulePointsAction} className="flex items-center gap-1.5">
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="ruleId" value={r.id} />
-                      <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-                        <Input name="points" type="number" defaultValue={r.points} className="w-16 border-0 py-1.5 text-right focus:ring-0" />
-                        <span className="pr-2 text-xs font-medium text-slate-500">{t("pts")}</span>
+                      {/* Feste Breite am Rahmen: Input bringt w-full mit, und cn()
+                          fuehrt Klassen nur zusammen — w-16 allein verlor. */}
+                      <div className="flex w-24 items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+                        <Input
+                          id={pointsId}
+                          name="points"
+                          type="number"
+                          defaultValue={r.points}
+                          aria-label={t("pointsForRuleAria", { name: r.name })}
+                          className="min-w-0 flex-1 border-0 px-2 py-1.5 text-right focus:ring-0"
+                        />
+                        <span aria-hidden className="pr-2 text-xs font-medium text-slate-500">{t("pts")}</span>
                       </div>
-                      <button aria-label={t("savePointsAria")} className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-95">
+                      <button aria-label={t("savePointsForRuleAria", { name: r.name })} className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-95">
                         <Icon name="check" size={16} />
                       </button>
                     </form>
@@ -175,18 +195,27 @@ export function GamificationManager({
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="ruleId" value={r.id} />
                       <button
-                        aria-label={t("deleteRuleAria")}
-                        onClick={(e) => {
-                          if (!confirm(t("confirmDeleteRule", { name: r.name }))) e.preventDefault();
+                        type="button"
+                        aria-label={t("deleteRuleForAria", { name: r.name })}
+                        onClick={async (e) => {
+                          const form = e.currentTarget.form;
+                          const ok = await confirm({
+                            title: t("confirmDeleteRule", { name: r.name }),
+                            body: t("confirmDeleteRuleBody"),
+                            confirmLabel: t("confirmDeleteRuleCta"),
+                            tone: "danger",
+                          });
+                          if (ok) form?.requestSubmit();
                         }}
-                        className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-300 transition hover:bg-red-50 hover:text-red-600 group-hover:text-slate-400"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-700"
                       >
                         <Icon name="close" size={16} />
                       </button>
                     </form>
                   </div>
                 </div>
-              ))}
+                );
+              })}
               {rules.length === 0 && (
                 <div className="rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center">
                   <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
@@ -349,6 +378,7 @@ export function GamificationManager({
       <Sheet open={!!editing} onClose={() => setEditing(null)} title={t("badgeEditTitle")} subtitle={editing?.name} icon="gamification">
         {editing && <BadgeForm key={editing.id} slug={slug} badge={editing} onDone={() => setEditing(null)} />}
       </Sheet>
+      {confirmDialog}
     </div>
   );
 }
@@ -405,7 +435,7 @@ function RuleForm({
       </div>
       <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("ruleCreating") : t("addRule")}
         </button>
       </div>
@@ -425,6 +455,7 @@ function BadgeForm({
   const isEdit = !!badge;
   const [state, action, pending] = useActionState(isEdit ? updateBadgeAction : createBadgeAction, initial);
   const [deleting, setDeleting] = useState(false);
+  const [confirm, confirmDialog] = useConfirm();
   const t = useTranslations("dashboard.gamification");
   const tCrit = useTranslations("dashboard.gamification.criteria");
   const tShape = useTranslations("dashboard.gamification.shapes");
@@ -442,7 +473,13 @@ function BadgeForm({
 
   async function onDelete() {
     if (!badge) return;
-    if (!confirm(t("confirmDeleteBadge", { name: badge.name }))) return;
+    const ok = await confirm({
+      title: t("confirmDeleteBadge", { name: badge.name }),
+      body: t("confirmDeleteBadgeBody", { count: badge.awardCount }),
+      confirmLabel: t("confirmDeleteBadgeCta"),
+      tone: "danger",
+    });
+    if (!ok) return;
     setDeleting(true);
     const fd = new FormData();
     fd.set("tenant", slug);
@@ -595,10 +632,11 @@ function BadgeForm({
       </div>
       <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("saving") : isEdit ? t("save") : t("createBadge")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }

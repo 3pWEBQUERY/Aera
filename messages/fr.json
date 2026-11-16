@@ -38,19 +38,18 @@
     "ownerCantCancel": "En tant que propriétaire, vous ne pouvez pas résilier votre propre adhésion.",
     "noPaidMembership": "Vous n'avez pas d'adhésion payante.",
     "stripeCancelFailed": "Échec de la résiliation Stripe. Veuillez réessayer.",
-    "defaultTierCantDelete": "Le niveau par défaut ne peut pas être supprimé.",
-    "tierDeleteStripeBlocked": "Ce niveau ne peut être supprimé qu'après confirmation par Stripe de la fin de tous les abonnements associés. Aucune donnée n'a été supprimée.",
+    "defaultTierCantDelete": "L'adhésion par défaut ne peut pas être supprimée. Définissez d'abord une autre adhésion par défaut.",
+    "tierDeleteStripeBlocked": "Cette adhésion ne peut être supprimée qu'après confirmation par Stripe de la fin de tous les abonnements associés. Aucune donnée n'a été supprimée.",
     "memberRemoveStripeFailed": "L'abonnement Stripe n'a pas pu être résilié en toute sécurité. Le membre et ses accès locaux n'ont pas été supprimés.",
     "tenantDeleteConfirmMismatch": "Le slug de communauté saisi ne correspond pas.",
     "tenantDeleteStripeSubscriptionsActive": "La communauté ne peut être supprimée qu'après la fin de tous les abonnements Stripe. Aucune donnée n'a été supprimée.",
     "tenantDeleteStripeCleanupFailed": "Le nettoyage Stripe ou Connect a échoué. La communauté et ses données n'ont pas été supprimées.",
-    "paidTierArchivedInsteadOfDeleted": "Le niveau payant a été masqué en toute sécurité au lieu d'être supprimé afin que les paiements Stripe ouverts puissent encore être traités correctement.",
     "pendingPaymentsBlockDeletion": "La suppression est bloquée tant que des paiements ou réservations sont en attente. Aucune donnée n'a été supprimée.",
     "productArchivedBecauseOrdersExist": "Le produit a été masqué au lieu d'être supprimé, car des commandes y font référence. Les paiements en attente peuvent ainsi être traités en toute sécurité.",
     "postNotFound": "Publication introuvable.",
     "commentsClosed": "Les commentaires sont fermés.",
     "invalidCommentRef": "Référence de commentaire non valide.",
-    "tierNotFound": "Niveau introuvable.",
+    "tierNotFound": "Cette adhésion n'existe plus. Rechargez la page.",
     "productNotFound": "Produit introuvable.",
     "courseNotFound": "Cours introuvable.",
     "lessonNotFound": "Leçon introuvable.",
@@ -128,12 +127,12 @@
     "subInvalid": "Sous-domaine invalide. Utilisez 3 à 63 lettres minuscules, chiffres ou tirets (pas au début ni à la fin).",
     "subReserved": "Ce sous-domaine est réservé. Choisissez-en un autre.",
     "subTaken": "Ce sous-domaine est déjà utilisé.",
-    "planSpaceTypeLocked": "Ce type de space est disponible à partir du forfait {plan}. Fais une mise à niveau pour le créer.",
-    "planSpaceLimitReached": "Ton forfait {plan} autorise {limit} spaces actifs. Fais une mise à niveau pour plus de place.",
-    "planTierLimitReached": "Ton forfait {plan} autorise {limit} paliers d'adhésion. Fais une mise à niveau pour en ajouter.",
-    "planFeatureLocked": "Cette fonctionnalité est disponible à partir du forfait {plan}. Fais une mise à niveau pour l'utiliser.",
-    "planMemberLimitReached": "Ton forfait {plan} est conçu pour {limit} membres actifs. Fais une mise à niveau pour continuer à grandir.",
-    "planStaffLimitReached": "Ton forfait {plan} autorise {limit} places d'équipe (admins/modérateurs). Fais une mise à niveau pour en obtenir plus.",
+    "planSpaceTypeLocked": "Ce type de space est disponible à partir du forfait {plan}. Passez au forfait supérieur pour le créer.",
+    "planSpaceLimitReached": "Votre forfait {plan} autorise {limit} spaces actifs. Passez au forfait supérieur pour avoir plus de place.",
+    "planTierLimitReached": "Votre forfait {plan} autorise {limit} adhésions. Changez de forfait pour en ajouter.",
+    "planFeatureLocked": "Cette fonctionnalité est disponible à partir du forfait {plan}. Passez au forfait supérieur pour l'utiliser.",
+    "planMemberLimitReached": "Votre forfait {plan} est conçu pour {limit} membres actifs. Passez au forfait supérieur pour continuer à grandir.",
+    "planStaffLimitReached": "Votre forfait {plan} autorise {limit} places d'équipe (admins/modérateurs). Passez au forfait supérieur pour en obtenir plus.",
     "planStripeActive": "This community has an active Stripe subscription. Cancel it first, then the package can be set.",
     "seoImageInvalid": "Please enter a valid image URL (https://… or /path.png).",
     "seoTemplateInvalid": "The title template must contain %s — that is where the page title goes.",
@@ -149,7 +148,31 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Les cours nécessitent un space de cours, mais votre forfait {plan} n’autorise que {limit} spaces actifs et ils sont tous utilisés. Archivez un space ou changez de forfait pour pouvoir créer le cours.",
+    "planAutoSpaceEvents": "Les événements nécessitent un space d’événements, mais votre forfait {plan} n’autorise que {limit} spaces actifs et ils sont tous utilisés. Archivez un space ou changez de forfait pour pouvoir créer l’événement.",
+    "campaignNoSubscribers": "Personne n’est encore abonné à votre newsletter. Vous pourrez l’envoyer dès qu’il y aura des destinataires.",
+    "campaignSegmentEmpty": "Ce segment est vide pour le moment. Choisissez un autre segment pour envoyer.",
+    "campaignTestDeliveryFailed": "Le service d’e-mail n’a pas accepté le message ({detail}). Réessayez plus tard.",
+    "recoveryCodeInvalid": "Ce code de récupération est incorrect ou a déjà été utilisé. Vérifiez la saisie ou essayez un autre code.",
+    "secondFactorInvalid": "Ce code ne correspond pas. Saisissez le code actuel de l’application ou un code de récupération inutilisé.",
+    "productPriceRequired": "Choisissez un prix ou « Gratuit ».",
+    "productFileRequired": "Téléversez un fichier pour les acheteurs ou collez un lien.",
+    "productFileUrlInvalid": "Le lien vers le fichier doit commencer par https://.",
+    "productCourseRequired": "Choisissez le cours que reçoivent les acheteurs.",
+    "productCourseGated": "Ce cours fait partie d'une adhésion et ne peut pas être vendu séparément.",
+    "productGrantLocked": "Après la première vente, le type et le cours ne peuvent plus être modifiés, afin que les acheteurs conservent leur accès.",
+    "productTypeUnavailable": "Ce type de produit n'est plus proposé. Choisissez un autre type.",
+    "spaceAccessTierInvalid": "Cette adhésion n'existe pas ou elle est gratuite. Choisissez une adhésion payante dans la liste.",
+    "spaceTypeLockedContent": "Le type ne peut plus être modifié : cet espace contient {count, plural, one {# contenu} other {# contenus}}. Pour un autre type, créez un nouvel espace.",
+    "forumContentRequired": "Écrivez quelques mots avant de publier.",
+    "ownerCantLeave": "Vous ne pouvez pas quitter votre propre communauté.",
+    "leaveWhilePaidActive": "Votre abonnement est toujours actif. Résiliez-le d’abord : à la fin de la période payée, vous pourrez quitter la communauté.",
+    "adminDomainInvalid": "Saisissez uniquement le domaine, p. ex. communaute.exemple.fr (sans https://).",
+    "adminTenantDeleting": "Cette communauté est en cours de suppression et ne peut plus être modifiée.",
+    "invalidColor": "La couleur principale n’est pas valide. Saisissez une valeur hexadécimale comme #6D28D9.",
+    "cantBanSelf": "Vous ne pouvez pas vous bannir vous-même.",
+    "logoInvalid": "Le logo n’a pas pu être appliqué. Veuillez téléverser l’image à nouveau."
   },
   "nameStatus": {
     "checking": "Vérification de la disponibilité…",
@@ -201,10 +224,9 @@
     "descLabel": "Description",
     "descPlaceholder": "Décrivez en quelques phrases ce qui attend les membres.",
     "primaryColor": "Couleur principale",
-    "accentColor": "Couleur d’accent",
     "preview": "Aperçu",
     "previewNameFallback": "Votre communauté",
-    "accentBadge": "Accent",
+    "accentBadge": "Rejoindre",
     "customColor": "Couleur personnalisée",
     "tierNameLabel": "Nom de l’abonnement gratuit",
     "defaultMembership": "Membre",
@@ -278,7 +300,7 @@
         "tagline": "Bannières et campagnes"
       },
       "lockedHint": "Disponible à partir du forfait {plan}",
-      "lockedNote": "Les formats verrouillés se débloquent en quelques secondes avec une mise à niveau après le lancement — ta communauté reste exactement telle quelle.",
+      "lockedNote": "Les formats verrouillés se débloquent en quelques secondes avec une mise à niveau après le lancement — votre communauté reste exactement telle quelle.",
       "STORIES": {
         "name": "Stories",
         "tagline": "Moments de 24 heures"
@@ -301,7 +323,7 @@
       },
       "BOOKING": {
         "name": "Réservations",
-        "tagline": "Réserve des créneaux 1:1"
+        "tagline": "Créneaux 1:1 à réserver"
       },
       "REQUESTS": {
         "name": "Demandes",
@@ -315,10 +337,10 @@
     "cancel": "Cancel",
     "promoLabel": "Code promo (facultatif)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
-    "promoHint": "Tu as un code d'un partenaire ou d'un créateur ? Ta communauté démarre alors directement dans le forfait supérieur — sans coordonnées de paiement.",
+    "promoHint": "Vous avez un code d'un partenaire ou d'un créateur ? Votre communauté démarre alors directement dans le forfait supérieur — sans coordonnées de paiement.",
     "hexLabel": "Code hexadécimal personnalisé",
-    "nameRequired": "Donne un nom à ta communauté (au moins 2 caractères).",
-    "spacesRequired": "Choisis au moins un espace."
+    "nameRequired": "Donnez un nom à votre communauté (au moins 2 caractères).",
+    "spacesRequired": "Choisissez au moins un espace."
   },
   "seed": {
     "tierDescription": "Accès gratuit à la communauté.",
@@ -354,24 +376,24 @@
     "spaceDesc": {
       "FEED": "Actualités et nouveautés de la communauté.",
       "FORUM": "Posez des questions, partagez des idées et échangez.",
-      "BLOG": "Articles et histoires pour ta communauté.",
+      "BLOG": "Articles et histoires pour votre communauté.",
       "GALLERY": "Packs d'images et de vidéos, gratuits ou à vendre.",
-      "VIDEOS": "Publications vidéo pour tes membres.",
+      "VIDEOS": "Publications vidéo pour vos membres.",
       "COURSE": "Cours structurés avec des leçons.",
       "EVENTS": "Dates, inscriptions et confirmations.",
-      "SHOP": "Vends des produits numériques et physiques.",
-      "NEWSLETTER": "Campagnes e-mail pour tes membres.",
+      "SHOP": "Vendez des produits numériques et physiques.",
+      "NEWSLETTER": "Campagnes e-mail pour vos membres.",
       "KNOWLEDGE": "Articles d'aide et documentation.",
       "PODCAST": "Épisodes audio à écouter — gratuits ou exclusifs.",
-      "LINKS": "Liens sélectionnés vers tout ce qui te représente.",
-      "ADS": "Tes propres bannières promo pour la page d'accueil.",
+      "LINKS": "Liens sélectionnés vers tout ce qui vous représente.",
+      "ADS": "Vos propres bannières promo pour la page d'accueil.",
       "STORIES": "Publications éphémères qui disparaissent après 24 heures.",
-      "CHAT": "Échanges en direct entre tes membres.",
-      "TIPS": "Laisse ta communauté te soutenir directement.",
+      "CHAT": "Échanges en direct entre vos membres.",
+      "TIPS": "Votre communauté vous soutient directement.",
       "CALENDAR": "Toutes les dates et sorties en un coup d'œil.",
-      "LIVE": "Streams en direct avec chat pour tes membres.",
-      "BOOKING": "Des créneaux 1:1 que tes membres réservent eux-mêmes.",
-      "REQUESTS": "Souhaits et demandes personnalisées de ta communauté.",
+      "LIVE": "Streams en direct avec chat pour vos membres.",
+      "BOOKING": "Des créneaux 1:1 que vos membres réservent eux-mêmes.",
+      "REQUESTS": "Souhaits et demandes personnalisées de votre communauté.",
       "MUSIC": "Vos propres titres avec pochette — libres ou exclusifs."
     }
   },
@@ -402,19 +424,19 @@
     "searchAria": "Rechercher dans l'aide",
     "searchSubmit": "Rechercher",
     "comingSoon": "Le centre d'aide est en cours de construction — revenez bientôt.",
-    "noResults": "Aucun résultat pour « {query} »",
-    "resultsCount": "{count, plural, one {# résultat} other {# résultats}} pour « {query} »",
+    "noResults": "Aucun article pour « {query} »",
+    "resultsCount": "{count, plural, one {# article} other {# articles}} pour « {query} »",
     "resetSearch": "Réinitialiser la recherche",
     "articleCount": "{count, plural, one {# article} other {# articles}}",
     "contactTitle": "Vous n'avez pas trouvé ce que vous cherchiez ?",
-    "contactText": "Lancez-vous — vous trouverez la plupart des réponses directement dans votre communauté ou dans le tableau de bord créateur.",
-    "contactCta": "Commencer gratuitement",
+    "contactText": "Écrivez-nous – nous vous répondrons par e-mail ou dans votre compte.",
+    "contactCta": "Écrire un message",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
-      "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "intro": "Décrivez votre demande en quelques phrases. Nous répondons aussi vite que possible — en moyenne sous un jour ouvré.",
+      "name": "Nom (facultatif)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -428,7 +450,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Lancez-vous – vous trouverez la plupart des réponses directement dans votre communauté ou dans le tableau de bord créateur.",
+    "startCta": "Commencer gratuitement",
+    "startTitle": "Pas encore de communauté ?"
   },
   "account": {
     "metaTitle": "Compte",
@@ -502,14 +527,12 @@
     "changingPassword": "Modification…",
     "twoFaActive": "L'authentification à deux facteurs est active",
     "twoFaActiveDesc": "Lors de la connexion, un code de votre application d'authentification est demandé en plus du mot de passe.",
-    "twoFaDisableLabel": "Pour désactiver : code actuel",
+    "twoFaDisableLabel": "Pour désactiver : code de l’application ou code de récupération",
     "twoFaDisabling": "Désactivation…",
     "twoFaDisable": "Désactiver la 2FA",
     "twoFaSetupIntro": "Scannez le QR code avec votre application d'authentification (Google Authenticator, 1Password, Authy …) et confirmez avec le code affiché.",
     "twoFaQrAlt": "QR code pour l'application d'authentification",
-    "twoFaNoScanner": "Pas de scanner QR ? Saisissez le secret manuellement :",
-    "twoFaHideSecret": "Masquer le secret",
-    "twoFaShowSecret": "Afficher le secret",
+    "twoFaNoScanner": "Pas de lecteur de QR code ? Saisissez cette clé de configuration dans l’application :",
     "twoFaCodeFromApp": "Code de l'application",
     "twoFaChecking": "Vérification…",
     "twoFaActivate": "Activer",
@@ -534,13 +557,13 @@
     "newsletterWithdraw": "Se désabonner de la newsletter",
     "privacyEyebrow": "Données et confidentialité",
     "privacyTitle": "Vos données et votre compte",
-    "privacyText": "Téléchargez une copie structurée de vos données. La suppression est mise en file de façon sûre et finalisée après le nettoyage de la facturation et du stockage.",
+    "privacyText": "Téléchargez une copie de vos données ou supprimez votre compte.",
     "privacyExportButton": "Télécharger les données",
     "privacyDeleteButton": "Supprimer le compte",
-    "privacyDeleteHint": "Saisissez exactement votre e-mail et votre mot de passe. Supprimez d’abord vos communautés et réglez les paiements en attente.",
-    "privacyConfirmationLabel": "Confirmer l’e-mail",
-    "privacyDeleting": "Mise en file de la suppression…",
-    "privacyDeleteFailed": "La suppression n’a pas pu être mise en file.",
+    "privacyDeleteHint": "Vous serez déconnecté·e immédiatement et ne pourrez plus vous connecter. Les abonnements en cours prennent fin aussitôt, puis nous supprimons vos données. Nous conservons les factures pour des raisons légales. Cette action est irréversible. Supprimez d’abord vos propres communautés.",
+    "privacyConfirmationLabel": "Saisissez votre adresse e-mail pour confirmer",
+    "privacyDeleting": "Suppression du compte…",
+    "privacyDeleteFailed": "Le compte n’a pas pu être supprimé. Veuillez réessayer dans quelques minutes.",
     "privacyDeleteBlockedOwned": "Supprimez d’abord vos communautés.",
     "privacyDeleteBlockedPending": "Réglez d’abord les paiements ou réservations en attente.",
     "privacyDeleteInvalidPassword": "Le mot de passe est incorrect.",
@@ -548,7 +571,52 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Copier la clé",
+    "twoFaKeyCopied": "Clé copiée.",
+    "twoFaOpenInApp": "Ouvrir dans l’application d’authentification",
+    "secondFactorLabel": "Code de l’application ou code de récupération",
+    "recoveryCodesTitle": "Codes de récupération",
+    "recoveryCodesIntro": "Ces codes vous permettent de vous connecter si vous n’avez pas accès à votre application d’authentification. Chaque code ne fonctionne qu’une fois. Enregistrez-les maintenant, par exemple dans votre gestionnaire de mots de passe – ils ne s’affichent qu’une seule fois.",
+    "recoveryCopy": "Copier les codes",
+    "recoveryCopied": "Codes copiés.",
+    "recoveryDownload": "Télécharger en fichier texte",
+    "recoverySaved": "J’ai enregistré les codes",
+    "recoveryFileTitle": "Aera – codes de récupération pour {email}",
+    "recoveryFileHint": "Chaque code ne fonctionne qu’une fois. Vous pouvez créer de nouveaux codes dans votre compte, sous Paramètres > Authentification à deux facteurs.",
+    "recoveryCodesLeft": "{count, plural, =0 {Plus aucun code. Créez-en de nouveaux pour pouvoir vous connecter sans l’application.} one {Il reste # code sur 10.} other {Il reste # codes sur 10.}}",
+    "recoveryRegenerate": "Créer de nouveaux codes",
+    "recoveryRegenConfirmTitle": "Créer de nouveaux codes de récupération ?",
+    "recoveryRegenConfirmBody": "Vos codes actuels ne fonctionneront plus. Enregistrez les nouveaux juste après.",
+    "recoveryUsedNotice": "{count, plural, =0 {Vous vous êtes connecté avec votre dernier code de récupération. Si vous avez encore l’application, créez de nouveaux codes maintenant. Sinon, contactez-nous via « Aide à la connexion ».} one {Vous vous êtes connecté avec un code de récupération. Il reste # code. Plus d’accès à l’application ? Désactivez la 2FA ci-dessous avec ce code, puis configurez-la à nouveau.} other {Vous vous êtes connecté avec un code de récupération. Il reste # codes. Plus d’accès à l’application ? Désactivez la 2FA ci-dessous avec un autre code, puis configurez-la à nouveau.}}",
+    "emailUnverified": "Non confirmée",
+    "backTo": "Retour à {name}",
+    "backToDiscover": "Retour à Découvrir",
+    "back": "Retour",
+    "leftNotice": "Vous avez quitté {name}. Les contenus achetés restent dans votre compte.",
+    "membershipActions": {
+      "ownerNote": "C’est votre communauté : vous ne pouvez pas la quitter.",
+      "leaveCta": "Mettre fin à l’adhésion",
+      "leaving": "En cours…",
+      "leaveTitle": "Quitter {name} ?",
+      "leaveBody": "Vous perdez l’accès aux contenus réservés aux membres. Vos achats restent disponibles.",
+      "leaveConfirm": "Quitter la communauté",
+      "cancelCta": "Résilier l’abonnement",
+      "cancelling": "Résiliation…",
+      "cancelTitle": "Résilier l’abonnement à {name} ?",
+      "cancelBodyUntil": "L’abonnement ne sera pas renouvelé. Vous gardez l’accès jusqu’au {date}, puis vous restez membre gratuit. Vos achats restent disponibles.",
+      "cancelBodyNow": "L’accès aux contenus de cette adhésion prend fin immédiatement ; vous restez membre gratuit. Vos achats restent disponibles.",
+      "cancelConfirm": "Résilier l’abonnement",
+      "cancelledUntil": "Abonnement résilié · accès jusqu’au {date}. Ensuite, vous pourrez aussi quitter complètement la communauté.",
+      "cancelledNow": "Abonnement résilié."
+    },
+    "privacyExportTitle": "Copie de vos données",
+    "privacyExportText": "Un fichier avec tout ce qui est enregistré pour votre compte.",
+    "privacyDeleteTitle": "Supprimer le compte",
+    "privacyConfirmationMismatch": "Cette adresse e-mail ne correspond pas à votre compte.",
+    "privacyPasswordRequired": "Saisissez votre mot de passe.",
+    "privacyTooManyAttempts": "Trop de tentatives. Veuillez patienter 15 minutes, puis réessayer.",
+    "privacyConfirmationRequired": "Saisissez votre adresse e-mail."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -581,7 +649,10 @@
       "seo": "SEO",
       "support": "Support",
       "unreadAria": "{count} unread",
-      "blog": "Blog"
+      "blog": "Blog",
+      "ariaLabel": "Navigation de l’administration",
+      "openMenu": "Ouvrir le menu",
+      "openMenuUnread": "Ouvrir le menu, {count} non lus"
     },
     "pagination": {
       "prev": "Précédent",
@@ -596,13 +667,13 @@
       "activeMemberships": "Abonnements actifs",
       "posts": "Publications",
       "paidOrders": "Commandes payées",
-      "revenueWithFee": "Revenu (frais {fee})",
+      "revenueWithFee": "Revenu (frais de plateforme : {fee})",
       "latestCommunities": "Communautés récentes",
       "latestUsers": "Utilisateurs récents",
       "viewAll": "Tout voir",
-      "membersShort": "{count} membres",
       "noCommunities": "Pas encore de communautés.",
-      "noUsers": "Pas encore d’utilisateurs."
+      "noUsers": "Pas encore d’utilisateurs.",
+      "membersCount": "{count, plural, one {# membre} other {# membres}}"
     },
     "communities": {
       "title": "Communautés",
@@ -612,8 +683,7 @@
       "emptyTitle": "Pas encore de communautés",
       "noResultsHint": "Aucune communauté trouvée pour « {q} ».",
       "emptyHint": "Dès que des créateurs créent des communautés, elles apparaissent ici.",
-      "membersShort": "{count} membres",
-      "postsShort": "{count} publications",
+      "postsShort": "{count, plural, one {# publication} other {# publications}}",
       "since": "depuis {date}",
       "editTitle": "Modifier la communauté",
       "owner": "Propriétaire : {name} ({email})",
@@ -625,7 +695,7 @@
       "fee": "Frais de plateforme (%)",
       "customDomain": "Domaine personnalisé (facultatif)",
       "customDomainPlaceholder": "community.exemple.com",
-      "customDomainHint": "Laissez vide pour supprimer le domaine.",
+      "customDomainHint": "Uniquement le domaine, p. ex. communaute.exemple.fr (sans https://). Laissez vide pour supprimer le domaine.",
       "status": "Statut",
       "statusActive": "Active",
       "statusSuspended": "Suspendue",
@@ -641,7 +711,27 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "Tous les membres, espaces, contenus et commandes de cette communauté seront supprimés.",
+      "membersCount": "{count, plural, one {# membre} other {# membres}}",
+      "statusDeleting": "Suppression en cours",
+      "deletingHint": "La suppression est en cours. La communauté ne peut plus être modifiée.",
+      "filterAll": "Toutes",
+      "applyFilters": "Appliquer les filtres",
+      "resetFilters": "Réinitialiser les filtres",
+      "noFilterResultsHint": "Aucune communauté ne correspond à ces filtres.",
+      "editAria": "Modifier {name}",
+      "openAria": "Ouvrir {name} dans un nouvel onglet",
+      "domainVerified": "Vérifié",
+      "domainUnverified": "Non vérifié",
+      "domainVerifiedHint": "Preuve DNS depuis le {date}. La communauté est accessible sur ce domaine.",
+      "domainUnverifiedHint": "Le domaine n’est servi qu’une fois la preuve DNS correcte. Il faut ces enregistrements :",
+      "domainTxt": "Preuve : enregistrement TXT <code>_aera.{domain}</code> avec la valeur <code>{value}</code>",
+      "domainCname": "Redirection : CNAME <code>{domain}</code> → <code>{root}</code>",
+      "domainCheck": "Vérifier le DNS",
+      "domainChecking": "Vérification du DNS…",
+      "domainSaveFirst": "Enregistrez d’abord le domaine modifié.",
+      "domainCheckOk": "Preuve DNS trouvée. Le domaine est vérifié."
     },
     "users": {
       "title": "Utilisateurs",
@@ -652,11 +742,11 @@
       "noResultsHint": "Aucun utilisateur trouvé pour « {q} ».",
       "emptyHint": "Dès que des utilisateurs s’inscrivent, ils apparaissent ici.",
       "ownerBadge": "Propriétaire · {count}",
-      "membershipsShort": "{count} abonnements",
-      "ordersShort": "{count} commandes",
+      "membershipsShort": "{count, plural, one {# adhésion} other {# adhésions}}",
+      "ordersShort": "{count, plural, one {# commande} other {# commandes}}",
       "registeredLine": "{email} · inscrit {date}",
       "editTitle": "Modifier l’utilisateur",
-      "editSummary": "inscrit {date} · {memberships} abonnements · {orders} commandes",
+      "editSummary": "inscrit le {date} · {memberships, plural, one {# adhésion} other {# adhésions}} · {orders, plural, one {# commande} other {# commandes}}",
       "name": "Nom",
       "email": "E-mail",
       "resetTitle": "Lien de réinitialisation du mot de passe",
@@ -695,12 +785,12 @@
       "date": "Date",
       "key": "Key",
       "openInNewTab": "Ouvrir dans un nouvel onglet",
-      "deleteConfirm": "Supprimer vraiment ce média ?",
       "deleteBtn": "Supprimer le média",
       "dangerDesc": "Retire le fichier de la diffusion. Le contenu qui y fait référence n’affichera plus le média.",
       "visPublic": "Public",
       "visMembers": "Membres",
-      "visPaid": "Payant"
+      "visPaid": "Payant",
+      "deleteConfirmTitle": "Retirer « {name} » ?"
     },
     "posts": {
       "title": "Publications",
@@ -718,7 +808,9 @@
       "unpublishedBadge": "Dépubliée",
       "unpublish": "Dépublier",
       "publish": "Publier",
-      "deleteConfirm": "Supprimer définitivement cette publication ?"
+      "deleteConfirmTitle": "Supprimer la publication « {title} » ?",
+      "deleteConfirmBody": "La publication sera supprimée avec tous ses commentaires. Cette action est irréversible.",
+      "deleteCta": "Supprimer la publication"
     },
     "orders": {
       "title": "Commandes",
@@ -744,16 +836,16 @@
       "fulfilled": "Honorée",
       "fulfilledHint": "Marque la commande comme livrée ou terminée.",
       "dangerDesc": "Supprime définitivement la commande de la base de données. Les paiements chez Stripe ne sont pas affectés.",
-      "deleteConfirm": "Supprimer définitivement cette commande ?",
       "deleteBtn": "Supprimer la commande",
       "statusPending": "En attente",
       "statusPaid": "Payée",
       "statusRefunded": "Remboursée",
-      "statusFailed": "Échouée"
+      "statusFailed": "Échouée",
+      "deleteConfirmTitle": "Supprimer la commande « {name} » ?"
     },
     "help": {
       "title": "Centre d’aide",
-      "metaBefore": "{categories} catégories · {articles} articles · public sur ",
+      "metaBefore": "{categories, plural, one {# catégorie} other {# catégories}} · {articles, plural, one {# article} other {# articles}} · public sur ",
       "createCategory": "Créer une catégorie",
       "emptyTitle": "Pas encore de contenu d’aide",
       "emptyHint": "Créez d’abord une catégorie (par ex. « Premiers pas »), puis les questions et réponses qu’elle contient.",
@@ -785,10 +877,181 @@
     },
     "audit": {
       "title": "Journal d’audit",
-      "subtitle": "{count} actions enregistrées — les plus récentes en premier.",
+      "subtitle": "{count, plural, one {# action enregistrée} other {# actions enregistrées}} — les plus récentes en premier.",
       "emptyTitle": "Pas encore d’entrées",
       "emptyHint": "Les actions administratives et les événements importants sont enregistrés ici.",
-      "system": "Système"
+      "system": "Système",
+      "events": {
+        "admin_blog_create": "{actor} a créé un article de blog",
+        "admin_blog_update": "{actor} a modifié un article de blog",
+        "admin_blog_publish": "{actor} a publié un article de blog",
+        "admin_blog_unpublish": "{actor} a retiré un article de blog",
+        "admin_blog_delete": "{actor} a supprimé un article de blog",
+        "admin_blog_duplicate": "{actor} a dupliqué un article de blog",
+        "admin_blog_feature": "{actor} a mis en avant un article de blog",
+        "admin_blog_unfeature": "{actor} a retiré la mise en avant d’un article de blog",
+        "admin_help_article_create": "{actor} a créé un article d’aide",
+        "admin_help_article_update": "{actor} a modifié un article d’aide",
+        "admin_help_article_delete": "{actor} a supprimé un article d’aide",
+        "admin_help_category_create": "{actor} a créé une catégorie d’aide",
+        "admin_help_category_update": "{actor} a modifié une catégorie d’aide",
+        "admin_help_category_delete": "{actor} a supprimé une catégorie d’aide",
+        "admin_media_delete": "{actor} a supprimé un fichier média",
+        "admin_order_delete": "{actor} a supprimé une commande",
+        "admin_order_update": "{actor} a modifié une commande",
+        "admin_post_delete": "{actor} a supprimé une publication",
+        "admin_post_publish": "{actor} a republié une publication",
+        "admin_post_unpublish": "{actor} a dépublié une publication",
+        "admin_promo_create": "{actor} a créé des codes promo",
+        "admin_promo_delete": "{actor} a supprimé un code promo",
+        "admin_promo_activate": "{actor} a activé un code promo",
+        "admin_promo_pause": "{actor} a mis en pause un code promo",
+        "admin_seo_update": "{actor} a modifié les réglages SEO de la plateforme",
+        "admin_tenant_delete_blocked": "{actor} a tenté de supprimer une communauté – l’action a été bloquée",
+        "admin_tenant_delete_queued": "{actor} a lancé la suppression d’une communauté",
+        "admin_tenant_plan": "{actor} a changé la formule d’une communauté",
+        "admin_tenant_update": "{actor} a modifié les réglages d’une communauté",
+        "admin_tenant_suspend": "{actor} a suspendu une communauté",
+        "admin_tenant_activate": "{actor} a réactivé une communauté",
+        "admin_tenant_domain_verify": "{actor} a vérifié le domaine personnalisé d’une communauté",
+        "admin_tenant_domain_unverified": "{actor} a vérifié les enregistrements DNS – le domaine personnalisé n’est plus vérifié",
+        "admin_user_delete_queued": "{actor} a lancé la suppression d’un compte",
+        "admin_user_reset_link": "{actor} a créé un lien de réinitialisation du mot de passe",
+        "admin_user_update": "{actor} a modifié un compte",
+        "aeli_link_code_issued": "{actor} a créé un code de liaison Aeli",
+        "aeli_linked": "{actor} a lié un profil Aeli",
+        "aeli_page_created": "{actor} a créé une page Aeli",
+        "aeli_unlinked": "{actor} a dissocié un profil Aeli",
+        "announcement_create": "{actor} a créé une annonce",
+        "announcement_update": "{actor} a modifié une annonce",
+        "announcement_delete": "{actor} a supprimé une annonce",
+        "apikey_create": "{actor} a créé une clé API",
+        "apikey_revoke": "{actor} a révoqué une clé API",
+        "apple_iap_refunded": "App Store : un achat a été remboursé",
+        "apple_iap_tier": "{actor} a acheté une adhésion sur l’App Store",
+        "apple_iap_product": "{actor} a acheté un produit sur l’App Store",
+        "apple_iap_post": "{actor} a acheté une publication sur l’App Store",
+        "apple_iap_media": "{actor} a acheté des médias sur l’App Store",
+        "apple_iap_media_item": "{actor} a acheté un fichier média sur l’App Store",
+        "apple_iap_tip": "{actor} a envoyé un pourboire via l’App Store",
+        "apple_iap_request": "{actor} a payé une demande via l’App Store",
+        "apple_iap_booking": "{actor} a payé une réservation via l’App Store",
+        "automation_step_create": "{actor} a ajouté une étape d’automatisation",
+        "automation_step_delete": "{actor} a supprimé une étape d’automatisation",
+        "branding_cover_set": "{actor} a défini une image de couverture",
+        "branding_cover_remove": "{actor} a retiré l’image de couverture",
+        "campaign_delete": "{actor} a supprimé une newsletter",
+        "campaign_queue": "{actor} a lancé l’envoi d’une newsletter",
+        "chatMessage_delete": "{actor} a supprimé un message de chat",
+        "comment_delete": "{actor} a supprimé un commentaire",
+        "course_delete": "{actor} a supprimé un cours",
+        "course_update": "{actor} a modifié un cours",
+        "creator_checkout_failed": "L’achat de formule de {actor} a échoué",
+        "event_delete": "{actor} a supprimé un événement",
+        "event_update": "{actor} a modifié un événement",
+        "live_create": "{actor} a créé une session live",
+        "live_start": "{actor} a démarré une session live",
+        "live_status": "{actor} a changé le statut d’une session live",
+        "media_delete": "{actor} a supprimé un fichier média",
+        "member_add": "{actor} a ajouté un membre",
+        "member_join": "{actor} a rejoint la communauté",
+        "member_remove": "{actor} a retiré un membre",
+        "member_remove_blocked": "{actor} a tenté de retirer un membre – l’action a été bloquée",
+        "member_update": "{actor} a modifié un membre",
+        "member_ban": "{actor} a bloqué un membre",
+        "member_update_blocked": "{actor} a tenté de modifier un membre – l’action a été bloquée",
+        "membership_cancel": "{actor} a résilié une adhésion",
+        "membership_cancel_failed": "{actor} a tenté de résilier une adhésion – l’opération a échoué",
+        "membership_leave": "{actor} a quitté la communauté",
+        "membership_leave_blocked": "{actor} a tenté de quitter la communauté – l’action a été bloquée",
+        "moderation_approve": "{actor} a examiné un signalement et conservé le contenu",
+        "moderation_remove": "{actor} a retiré un contenu signalé",
+        "newsletter_consent_opt_in": "{actor} s’est abonné(e) à la newsletter",
+        "newsletter_consent_withdraw": "{actor} s’est désabonné(e) de la newsletter",
+        "order_fulfill": "{actor} a marqué une commande comme traitée",
+        "page_create": "{actor} a créé une page",
+        "page_delete": "{actor} a supprimé une page",
+        "plan_create": "{actor} a créé un plan de contenu",
+        "plan_promo_redeem": "{actor} a utilisé un code promo",
+        "platform_admin_create_user": "Un compte a été créé par script",
+        "platform_admin_verify_email": "Une adresse e-mail a été confirmée par script",
+        "platform_admin_grant": "Des droits d’administration de la plateforme ont été accordés par script",
+        "platform_admin_revoke": "Des droits d’administration de la plateforme ont été retirés par script",
+        "product_delete": "{actor} a supprimé un produit",
+        "product_delete_blocked": "{actor} a tenté de supprimer un produit – l’action a été bloquée",
+        "product_update": "{actor} a modifié un produit",
+        "profile_update": "{actor} a modifié son profil",
+        "referrals_settings_update": "{actor} a modifié les réglages de parrainage",
+        "space_ad_create": "{actor} a créé une annonce publicitaire dans un espace",
+        "space_ad_update": "{actor} a modifié une annonce publicitaire dans un espace",
+        "space_ad_delete": "{actor} a supprimé une annonce publicitaire dans un espace",
+        "space_announcementsOnly_enable": "{actor} a limité un espace aux annonces",
+        "space_announcementsOnly_disable": "{actor} a levé la limitation aux annonces d’un espace",
+        "space_archive": "{actor} a archivé un espace",
+        "space_restore": "{actor} a restauré un espace",
+        "space_chatSettings_update": "{actor} a modifié les réglages de chat d’un espace",
+        "space_create": "{actor} a créé un espace",
+        "space_create_assistant": "{actor} a créé un espace avec l’assistant",
+        "space_delete": "{actor} a supprimé un espace",
+        "space_link_create": "{actor} a ajouté un lien dans un espace",
+        "space_link_update": "{actor} a modifié un lien dans un espace",
+        "space_link_delete": "{actor} a retiré un lien d’un espace",
+        "space_storySettings_update": "{actor} a modifié les réglages de story d’un espace",
+        "space_update": "{actor} a modifié un espace",
+        "stripe_charge_partially_refunded": "Stripe : un paiement a été partiellement remboursé",
+        "stripe_charge_refunded": "Stripe : un paiement a été remboursé",
+        "stripe_checkout_auto_refunded": "Stripe : un paiement a été remboursé automatiquement",
+        "stripe_checkout_completed": "{actor} a payé via Stripe",
+        "stripe_dispute_created": "Stripe : un paiement a été contesté",
+        "stripe_dispute_lost": "Stripe : une contestation a été perdue",
+        "stripe_dispute_won": "Stripe : une contestation a été gagnée",
+        "stripe_product_reservation_released": "Stripe : une réservation de produit a été libérée",
+        "support_ticket_create": "{actor} a ouvert une demande d’assistance",
+        "support_ticket_reply": "{actor} a répondu à une demande d’assistance",
+        "tenant_create": "{actor} a créé une communauté",
+        "tenant_delete_blocked": "{actor} a tenté de supprimer une communauté – l’action a été bloquée",
+        "tenant_delete_queued": "{actor} a lancé la suppression d’une communauté",
+        "tenant_domain": "{actor} a modifié le domaine personnalisé",
+        "tenant_domain_unverified": "{actor} a vérifié les enregistrements DNS – le domaine personnalisé n’est plus vérifié",
+        "tenant_domain_verify": "{actor} a vérifié le domaine personnalisé",
+        "tenant_seo_update": "{actor} a modifié les réglages SEO",
+        "tenant_stripe_disconnect": "{actor} a déconnecté Stripe",
+        "tenant_stripe_disconnect_blocked": "{actor} a tenté de déconnecter Stripe – l’action a été bloquée",
+        "tenant_subdomain": "{actor} a modifié le sous-domaine",
+        "tier_delete": "{actor} a supprimé une adhésion",
+        "tier_delete_blocked": "{actor} a tenté de supprimer une adhésion – l’action a été bloquée",
+        "tier_update": "{actor} a modifié une adhésion",
+        "user_delete_queued": "{actor} a lancé la suppression de son compte",
+        "user_invite_accept": "{actor} a accepté une invitation",
+        "user_legal_accept": "{actor} a accepté les CGU et la politique de confidentialité",
+        "user_password_change": "{actor} a changé son mot de passe",
+        "user_password_reset_complete": "{actor} a réinitialisé son mot de passe",
+        "user_password_reset_request": "{actor} a demandé un lien de réinitialisation du mot de passe",
+        "user_profile_update": "{actor} a modifié son profil",
+        "user_signup": "{actor} s’est inscrit(e)",
+        "user_totp_disable": "{actor} a désactivé la connexion à deux facteurs",
+        "user_totp_enable": "{actor} a activé la connexion à deux facteurs",
+        "user_totp_recovery_code_used": "{actor} s’est connecté(e) avec un code de récupération",
+        "user_totp_recovery_codes_regenerate": "{actor} a créé de nouveaux codes de récupération",
+        "user_verification_resend": "{actor} a redemandé l’e-mail de confirmation",
+        "webhook_create": "{actor} a créé un webhook",
+        "webhook_delete": "{actor} a supprimé un webhook",
+        "member_ban_blocked": "{actor} a tenté de bloquer un membre – l’action a été bloquée",
+        "member_unban": "{actor} a débloqué un membre",
+        "branding_logo_set": "{actor} a défini un logo",
+        "branding_logo_remove": "{actor} a retiré le logo"
+      },
+      "deletedAccount": "Compte supprimé",
+      "guest": "Invité",
+      "unknownEvent": "{actor} a effectué « {action} »",
+      "targetSeparator": " : ",
+      "inCommunity": "dans {community}",
+      "details": "Détails",
+      "detailAction": "Action",
+      "detailTarget": "Cible",
+      "detailCommunity": "Communauté",
+      "detailActor": "Auteur",
+      "detailMetadata": "Métadonnées"
     },
     "codes": {
       "metaTitle": "Codes promo",
@@ -798,7 +1061,7 @@
       "statActive": "Actif",
       "statRedemptions": "Utilisations",
       "createTitle": "Créer de nouveaux codes",
-      "createSubtitle": "Choisis un forfait, définis la quantité, terminé. Les codes sont générés aléatoirement et valables immédiatement.",
+      "createSubtitle": "Choisissez un forfait, définissez la quantité, c'est terminé. Les codes sont générés aléatoirement et valables immédiatement.",
       "planLabel": "Forfait",
       "planHint": {
         "FREE": "Spaces de base",
@@ -841,12 +1104,12 @@
       },
       "searchPlaceholder": "Rechercher un code ou une note …",
       "emptyTitle": "Aucun code pour l'instant",
-      "emptyText": "Crée ton premier code promo ci-dessus.",
+      "emptyText": "Créez votre premier code promo ci-dessus.",
       "pause": "Mettre en pause",
       "activate": "Activer",
       "delete": "Supprimer",
       "usage": "{used} / {max} utilisés",
-      "runtimeDays": "{days} jours de validité",
+      "runtimeDays": "{days, plural, one {# jour} other {# jours}} de validité",
       "runtimeLifetime": "Validité illimitée",
       "validUntil": "valable jusqu'au {date}",
       "createdMeta": "{date} · {name}",
@@ -993,7 +1256,9 @@
       "subtitle": "Choisissez une communauté à gérer — ou lancez la prochaine.",
       "membersCount": "{count, plural, one {# membre} other {# membres}}",
       "newCommunity": "Nouvelle communauté",
-      "myAccount": "My account"
+      "myAccount": "My account",
+      "deletedNotice": "« {name} » est en cours de suppression. Cela prend quelques minutes.",
+      "moderatorRole": "Vous modérez"
     },
     "assistant": {
       "title": "Assistant IA",
@@ -1010,7 +1275,6 @@
       "chatEmptyDesc": "Je peux analyser votre communauté, rédiger des textes et effectuer des actions comme créer des espaces.",
       "imageEmptyTitle": "Générer des images",
       "imageEmptyDesc": "Décrivez ce que vous voulez voir. Vous pouvez aussi importer des images comme modèle — l’assistant les modifie ou s’en inspire.",
-      "geminiOff": "Google Gemini n’est pas actif — renseignez une GEMINI_API_KEY dans Paramètres → Intégrations.",
       "chatPlaceholder": "Message à l’assistant…",
       "sendAria": "Envoyer",
       "chatHint": "Entrée pour envoyer · Maj+Entrée pour un saut de ligne. Les actions s’appliquent directement à votre communauté.",
@@ -1052,19 +1316,19 @@
       "suggestions": {
         "analysis": {
           "title": "Analyser ma communauté",
-          "prompt": "Donne-moi une brève analyse de ma communauté à partir des indicateurs actuels."
+          "prompt": "Donnez-moi une brève analyse de ma communauté à partir des indicateurs actuels."
         },
         "createSpace": {
           "title": "Créer un espace",
-          "prompt": "Crée un nouvel espace de chat nommé Community Lounge pour tous les membres."
+          "prompt": "Créez un nouvel espace de chat nommé Community Lounge pour tous les membres."
         },
         "postIdeas": {
           "title": "Idées de posts de la semaine",
-          "prompt": "Donne-moi 5 idées concrètes de posts pour cette semaine."
+          "prompt": "Donnez-moi 5 idées concrètes de posts pour cette semaine."
         },
         "tierDesc": {
           "title": "Description du palier",
-          "prompt": "Rédige une description convaincante pour un palier premium."
+          "prompt": "Rédigez une description convaincante pour un palier premium."
         }
       },
       "imageSuggestions": {
@@ -1084,7 +1348,9 @@
           "title": "Mascotte",
           "prompt": "Un avatar de mascotte amical et illustratif pour ma communauté, formes rondes, couleurs vives."
         }
-      }
+      },
+      "geminiOffCreator": "L’assistant IA n’est pas encore configuré sur cette plateforme.",
+      "geminiOffAdmin": "Google Gemini n’est pas actif. Définissez GEMINI_API_KEY dans l’environnement du serveur et redémarrez l’application. Seuls les administrateurs de la plateforme voient ce message."
     },
     "announcements": {
       "statusDraft": "Brouillon",
@@ -1132,7 +1398,9 @@
       "cancel": "Annuler",
       "saving": "Enregistrement…",
       "saveChanges": "Enregistrer les modifications",
-      "createBtn": "Créer l'annonce"
+      "createBtn": "Créer l'annonce",
+      "confirmDeleteBody": "La bannière disparaît immédiatement de toutes les pages de la communauté.",
+      "confirmDeleteCta": "Supprimer l’annonce"
     },
     "spaceContent": {
       "view": "Voir",
@@ -1202,9 +1470,9 @@
         "EVENTS": "Événements",
         "NEWSLETTER": "Newsletter"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Prix de l’achat à l’unité",
+      "ppvPriceHint": "Les personnes qui n’achètent pas voient seulement l’image d’aperçu, le titre d’aperçu et le prix.",
+      "ppvTeaserLabel": "Image d’aperçu (floutée pour les non-acheteurs)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Image et vidéo",
@@ -1224,7 +1492,16 @@
       "removeTrackAria": "Retirer le morceau",
       "trackUploading": "Envoi de {count} … {percent}%",
       "deleteQuestion": "Supprimer définitivement cette publication ?",
-      "deleteConfirm": "Supprimer"
+      "deleteConfirm": "Supprimer",
+      "mediaFailedOne": "« {name} » n’a pas été téléversé. {reason}",
+      "mediaFailedMany": "{count, plural, one {# fichier n’a pas été téléversé} other {# fichiers n’ont pas été téléversés}}. {reason}",
+      "pickFromLibrary": "Choisir dans la médiathèque",
+      "pickFromLibraryHint": "Choisissez une image déjà présente dans votre médiathèque",
+      "previewTitleLabel": "Titre d’aperçu (visible par tous)",
+      "previewTitleHint": "Facultatif. Affiché au-dessus de la publication, y compris pour les personnes qui n’y ont pas accès.",
+      "accessSingle": "Achat à l’unité",
+      "accessSingleHint": "Vendu à l’unité. Un abonnement ne débloque pas cette publication.",
+      "bannersElsewhere": "Vous gérez les bannières d’annonce de toute la communauté dans l’espace <link>« {name} »</link>."
     },
     "chat": {
       "badge": "Chat",
@@ -1239,7 +1516,6 @@
       "messagesHeading": "Messages",
       "messagesDesc": "Les messages les plus récents. Vous pouvez supprimer les publications inappropriées.",
       "emptyMessages": "Pas encore de messages dans ce chat.",
-      "confirmDeleteMessage": "Supprimer ce message ?",
       "deleteMessageAria": "Supprimer le message",
       "relNone": "—",
       "relNow": "à l'instant",
@@ -1274,7 +1550,10 @@
       "historyMessages": "{count} messages",
       "cancel": "Annuler",
       "saving": "Enregistrement…",
-      "saveSettings": "Enregistrer les paramètres"
+      "saveSettings": "Enregistrer les paramètres",
+      "confirmDeleteMessageTitle": "Supprimer le message de {name} ?",
+      "confirmDeleteMessageBody": "Le message disparaîtra du chat pour tout le monde.",
+      "confirmDeleteMessageCta": "Supprimer le message"
     },
     "newsletter": {
       "title": "Newsletter",
@@ -1331,12 +1610,11 @@
       "testSend": "M'envoyer un test",
       "testSending": "Envoi…",
       "testSent": "E-mail de test envoyé !",
-      "testFailed": "Échec du test",
       "recipientsEstimate": "≈ {count} destinataires",
       "formatText": "Texte",
       "formatHtml": "HTML",
-      "htmlHint": "Le code HTML est envoyé et prévisualisé exactement tel que tu le saisis.",
-      "htmlPlaceholder": "Colle ici ton code HTML complet",
+      "htmlHint": "Le code HTML est envoyé et prévisualisé exactement tel que vous le saisissez.",
+      "htmlPlaceholder": "Collez ici votre code HTML complet",
       "recipientsInfo": "Uniquement les membres actifs avec consentement, e-mail vérifié et sans désinscription.",
       "scheduleHint": "Laisser vide : la campagne reste un brouillon à envoyer manuellement.",
       "descriptionLabel": "Description (facultatif)",
@@ -1345,7 +1623,25 @@
       "ruleTier": "Niveau : {name}",
       "ruleMinPoints": "{count}+ points",
       "ruleActiveSince": "Membre depuis ≥ {days} jours",
-      "ruleAll": "Tous les membres"
+      "ruleAll": "Tous les membres",
+      "confirmSendTitle": "Envoyer « {subject} » maintenant à {count, plural, one {# destinataire} other {# destinataires}} ?",
+      "confirmSendBody": "L’envoi commence immédiatement et ne peut pas être annulé.",
+      "confirmSendScheduledTitle": "Programmée pour le {date}. L’envoyer quand même maintenant ?",
+      "confirmSendScheduledBody": "« {subject} » sera envoyée immédiatement à {count, plural, one {# destinataire} other {# destinataires}}. Cette action est irréversible.",
+      "confirmSendLabel": "Envoyer à {count} maintenant",
+      "sendQueued": "« {subject} » est en cours d’envoi.",
+      "sendingNow": "Envoi en cours…",
+      "noSubscribersHint": "Personne n’est encore abonné à votre newsletter. Vous pourrez l’envoyer dès qu’il y aura des destinataires.",
+      "segmentEmptyHint": "Ce segment est vide pour le moment. Choisissez un autre segment pour envoyer.",
+      "noRecipientsShort": "Aucun destinataire",
+      "sendNowEllipsis": "Envoyer maintenant…",
+      "testFailedReason": "Test non envoyé : {reason}",
+      "testFailedUnknown": "Erreur inconnue. Veuillez réessayer.",
+      "schedulePastWarning": "Cette heure est déjà passée. À l’enregistrement, la campagne restera un brouillon.",
+      "confirmDeleteCampaignBody": "« {subject} » sera supprimée. Cette action est irréversible.",
+      "confirmDeleteSegmentBody": "Les brouillons et campagnes programmées utilisant ce segment iront ensuite à tous les abonnés.",
+      "deleteSegmentConfirm": "Supprimer le segment",
+      "segmentNameLabel": "Nom du segment"
     },
     "ads": {
       "badge": "Publicité",
@@ -1503,19 +1799,20 @@
       "closeLesson": "Fermer",
       "deleteLesson": "Supprimer",
       "confirmDeleteLesson": "Supprimer la leçon « {title} » ?",
-      "lessonTitlePlaceholder": "Titre",
-      "videoUrlPlaceholder": "URL de la vidéo (facultatif)",
-      "contentPlaceholder": "Contenu",
-      "dripLabel": "Déblocage : jours après l'adhésion (vide/0 = immédiat)",
       "dripPlaceholder": "par ex. 7",
       "lessonSaving": "Enregistrement…",
       "lessonSave": "Enregistrer",
       "addLesson": "Ajouter une leçon",
-      "addLessonTitlePlaceholder": "Titre de la leçon",
-      "addContentPlaceholder": "Contenu (facultatif)",
-      "addDripPlaceholder": "Déblocage : jours après l'adhésion (vide = immédiat)",
       "adding": "Ajout…",
-      "add": "Ajouter"
+      "cannotUndo": "Cette action est irréversible.",
+      "deleteLessonConfirm": "Supprimer la leçon",
+      "createdAddLesson": "Cours créé – ajoutez maintenant la première leçon.",
+      "lessonTitleLabel": "Titre de la leçon",
+      "lessonVideoLabel": "URL de la vidéo (facultatif)",
+      "lessonContentLabel": "Contenu (facultatif)",
+      "lessonDripLabel": "Déblocage après l’inscription (jours)",
+      "lessonDripHint": "Vide ou 0 : disponible immédiatement.",
+      "addLessonBtn": "Ajouter la leçon"
     },
     "gallery": {
       "badge": "Galerie",
@@ -1532,7 +1829,6 @@
       "video": "Vidéo",
       "mediaCount": "{count, plural, one {# média} other {# médias}}",
       "deletePackageAria": "Supprimer le pack",
-      "confirmDeletePackage": "Supprimer ce pack média ?",
       "removeAria": "Retirer",
       "contentCount": "Contenu ({count})",
       "titleLabel": "Titre",
@@ -1553,7 +1849,10 @@
       "saveChanges": "Enregistrer les modifications",
       "createPackageCta": "Créer le pack",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "Supprimer le pack de médias « {title} » ?",
+      "confirmDeletePackageBody": "Toutes les images et vidéos qu’il contient seront aussi supprimées. Cette action est irréversible.",
+      "confirmDeletePackageCta": "Supprimer le pack"
     },
     "sortLabels": {
       "NEWEST": "Plus récents d'abord",
@@ -1573,7 +1872,6 @@
       "emptyHint": "Rédigez votre premier article de blog avec l'éditeur.",
       "edit": "Modifier",
       "delete": "Supprimer",
-      "confirmDelete": "Supprimer cette publication ?",
       "sheetWrite": "Écrire une publication",
       "sheetEdit": "Modifier la publication",
       "sheetSettings": "Paramètres du blog",
@@ -1613,7 +1911,7 @@
       "tabContent": "Contenu",
       "tabAccess": "Accès",
       "tabPoll": "Sondage",
-      "coverHint": "Sans image de couverture, la carte affiche le titre dans ta couleur principale.",
+      "coverHint": "Sans image de couverture, la carte affiche le titre dans votre couleur principale.",
       "accessLabel": "Qui peut lire cette publication ?",
       "accessPublic": "Public",
       "accessPublicHint": "Visible par tous ceux qui voient l’espace.",
@@ -1626,17 +1924,20 @@
       "teaserLabel": "Image d’aperçu",
       "teaserHint": "Affichée aux non-acheteurs à la place du contenu.",
       "scheduleLabel": "Publier le",
-      "scheduleHint": "Laisse vide pour publier tout de suite.",
+      "scheduleHint": "Laissez vide pour publier tout de suite.",
       "pollAdd": "Ajouter un sondage",
       "pollAddHint": "De deux à dix réponses, juste sous la publication.",
       "pollTitle": "Sondage",
       "pollRemove": "Retirer",
-      "pollQuestionPlaceholder": "Ta question …",
+      "pollQuestionPlaceholder": "Votre question …",
       "pollOptionPlaceholder": "Réponse …",
       "pollAddOption": "Ajouter une réponse",
       "pollMultipleLabel": "Autoriser plusieurs choix",
       "statusDraft": "Non publié",
-      "statusScheduled": "Programmé pour le {date}"
+      "statusScheduled": "Programmé pour le {date}",
+      "confirmDeleteTitle": "Supprimer la publication « {title} » ?",
+      "confirmDeleteBody": "La publication sera supprimée avec tous ses commentaires. Cette action est irréversible.",
+      "confirmDeleteCta": "Supprimer la publication"
     },
     "knowledge": {
       "badge": "Savoir",
@@ -1650,7 +1951,6 @@
       "emptyHint": "Rédigez votre premier article de savoir.",
       "edit": "Modifier",
       "delete": "Supprimer",
-      "confirmDelete": "Supprimer cet article ?",
       "sheetWrite": "Écrire un article",
       "sheetEdit": "Modifier l'article",
       "sheetSettings": "Paramètres d'affichage",
@@ -1680,7 +1980,10 @@
       "showDatesHint": "Date de publication par article",
       "saveSettings": "Enregistrer les paramètres",
       "cancel": "Annuler",
-      "saving": "Enregistrement…"
+      "saving": "Enregistrement…",
+      "confirmDeleteTitle": "Supprimer l’article « {title} » ?",
+      "confirmDeleteBody": "L’article sera retiré de la base de connaissances. Cette action est irréversible.",
+      "confirmDeleteCta": "Supprimer l’article"
     },
     "rte": {
       "poll": "Sondage",
@@ -1722,7 +2025,8 @@
       "recPrep": "Préparation de la caméra…",
       "paragraph": "Paragraphe",
       "attach": "Joindre un fichier",
-      "file": "Fichier"
+      "file": "Fichier",
+      "bodyLabel": "Texte"
     },
     "links": {
       "badge": "Liens",
@@ -1774,7 +2078,9 @@
       "deleteEvent": "Supprimer l'événement",
       "cancel": "Annuler",
       "saving": "Enregistrement…",
-      "saveChanges": "Enregistrer les modifications"
+      "saveChanges": "Enregistrer les modifications",
+      "confirmDeleteBody": "Toutes les inscriptions seront perdues. Cette action est irréversible.",
+      "meetingUrlMissing": "Sans lien, les membres ne peuvent pas participer. Vous pourrez l’ajouter plus tard."
     },
     "settings": {
       "title": "Paramètres",
@@ -1784,7 +2090,6 @@
       "tabDomain": "Domaine",
       "tabDanger": "Zone de danger",
       "integrationsHeading": "Intégrations",
-      "integrationsDesc": "Services connectés de cette installation.",
       "intStripe": "Paiements",
       "intResend": "E-mail",
       "intGemini": "IA",
@@ -1856,15 +2161,23 @@
         "copy": "Copier",
         "copied": "Copié",
         "toStudio": "Ouvrir le studio Aeli"
-      }
+      },
+      "discardTitle": "Abandonner les modifications non enregistrées ?",
+      "discardBody": "Ce que vous avez modifié ici sans l’enregistrer sera perdu.",
+      "discardConfirm": "Abandonner les modifications",
+      "discardCancel": "Continuer la modification",
+      "unsavedMarker": "(modifications non enregistrées)",
+      "integrationsDescCreator": "Les services que vous connectez à votre communauté.",
+      "platformHeading": "Services de cette installation",
+      "platformDesc": "Visible uniquement par les administrateurs de la plateforme. Indique quelles clés sont configurées.",
+      "paymentsUnavailable": "Les paiements ne sont pas encore configurés sur cette plateforme. Contactez le support si vous souhaitez vendre des adhésions.",
+      "connectErrorCreator": "La connexion à Stripe a échoué. Réessayez ; si cela échoue encore, contactez le support."
     },
     "branding": {
       "heading": "Marque",
-      "desc": "Logo, nom et couleurs de votre communauté.",
-      "saved": "Marque enregistrée.",
-      "coverLabel": "Image d'en-tête (page d'accueil de la communauté)",
+      "desc": "Nom, images et couleur principale de votre communauté.",
+      "coverLabel": "Image de couverture",
       "logoLabel": "Logo",
-      "logoHint": "PNG ou JPG, carré, au moins 256 × 256 px.",
       "nameLabel": "Nom",
       "taglineLabel": "Slogan",
       "taglinePlaceholder": "Une phrase qui décrit votre communauté",
@@ -1873,18 +2186,22 @@
       "noCategory": "Aucune catégorie",
       "categoryHint": "Détermine le thème sous lequel votre communauté apparaît sur la page de découverte.",
       "primaryColor": "Couleur principale",
-      "accentColor": "Couleur d'accent",
       "preview": "Aperçu",
       "previewName": "Votre communauté",
-      "joinButtonLabel": "Bouton d'adhésion",
       "join": "Rejoindre",
       "saving": "Enregistrement…",
       "saveBranding": "Enregistrer la marque",
       "pickAria": "Choisir {label}",
       "hexAria": "{label} en valeur hex",
-      "hexError": "Impossible d’y lire une couleur.",
+      "hexError": "Impossible d’en lire une couleur. Saisissez une valeur hexadécimale comme #6D28D9.",
       "hexHint": "Avec ou sans #, trois ou six caractères — #6D28D9, 6d28d9, #a1b ou rgb(109, 40, 217).",
-      "contrastWarning": "Du texte blanc s’affiche sur cette couleur et devient difficile à lire — choisis une teinte plus foncée."
+      "contrastWarning": "Du texte blanc s’affiche sur cette couleur et devient difficile à lire — choisissez une teinte plus foncée.",
+      "savedAt": "Enregistré · {time}",
+      "unsaved": "Modifications non enregistrées",
+      "imagesHeading": "Images",
+      "imagesApplied": "L’image de couverture et le logo s’appliquent dès leur téléversement. Tout ce qui suit s’applique avec « Enregistrer la marque ».",
+      "logoSaving": "Application du logo…",
+      "previewHint": "Voici comment les visiteurs voient l’en-tête de votre communauté."
     },
     "domain": {
       "heading": "Adresse & domaine",
@@ -1893,33 +2210,59 @@
       "subdomainLabel": "Sous-domaine",
       "copiedAria": "Copié",
       "copyAria": "Copier {label}",
-      "customDomainLabel": "Domaine personnalisé (facultatif)",
       "savedDomain": "Domaine enregistré.",
       "saving": "Enregistrement…",
       "save": "Enregistrer",
       "customDomainPlaceholder": "community.votre-domaine.fr",
-      "cnameHint": "Configurez ensuite un enregistrement CNAME pointant vers {rootDomain} ainsi que l'enregistrement TXT de vérification.",
-      "verifiedActive": "Vérifié & actif",
-      "verifyPending": "Vérification en attente",
-      "checkNow": "Vérifier maintenant",
+      "checkNow": "Vérifier le domaine",
       "checkingDns": "Vérification DNS…",
-      "dnsIntro": "Configurez les deux enregistrements DNS :",
-      "optionA": "<b>Routage :</b> CNAME <code>{domain}</code> → <code>{root}</code> (à la racine d'un domaine : ALIAS/ANAME)",
-      "optionB": "<b>Vérification (obligatoire) :</b> TXT <code>_aera.{domain}</code> = <code>aera-verify={tenantId}</code>",
-      "dnsWait": "Puis « Vérifier maintenant » — les changements DNS peuvent parfois prendre jusqu'à une heure.",
       "subEditLabel": "Sous-domaine personnalisé",
       "subPlaceholder": "votre-communaute",
-      "subHint": "Uniquement des lettres minuscules, des chiffres et des tirets (3 à 63 caractères). Votre communauté sera accessible à cette adresse. Laissez vide pour utiliser l'adresse par défaut (votre identifiant).",
-      "subSaved": "Sous-domaine enregistré."
+      "subHint": "Uniquement des minuscules, chiffres et tirets (3 à 63 caractères).",
+      "subSaved": "Sous-domaine enregistré.",
+      "copy": "Copier",
+      "copied": "Copié",
+      "customHeading": "Domaine personnalisé",
+      "customStatus": {
+        "none": "Non connecté",
+        "pending": "En attente du DNS",
+        "verified": "Connecté"
+      },
+      "customDesc": "Votre communauté à votre propre adresse, par ex. communaute.votre-domaine.fr.",
+      "customLabel": "Domaine",
+      "customHint": "Uniquement le domaine, sans https:// ni chemin. Videz le champ et enregistrez pour retirer le domaine.",
+      "customSave": "Enregistrer le domaine",
+      "customErrorUrl": "Saisissez uniquement le domaine, sans https:// ni « / », par ex. communaute.votre-domaine.fr.",
+      "customErrorFormat": "Ce n’est pas un domaine valide. Exemple : communaute.votre-domaine.fr.",
+      "customErrorRoot": "Les adresses sous {root} se choisissent plus haut comme sous-domaine.",
+      "customLocked": "Les domaines personnalisés sont disponibles à partir de l’offre {plan}.",
+      "customUpgrade": "Passer à {plan}",
+      "guideHeading": "Comment connecter {domain}",
+      "guideStep1": "Connectez-vous chez votre fournisseur de domaine (par ex. OVHcloud, Gandi, IONOS).",
+      "guideStep2": "Ouvrez les paramètres DNS du domaine.",
+      "guideStep3": "Créez ces deux enregistrements :",
+      "guideStep4": "Cliquez sur « Vérifier le domaine ». Les modifications peuvent prendre jusqu’à une heure.",
+      "recordType": "Type",
+      "recordName": "Nom",
+      "recordValue": "Cible/valeur",
+      "recordFullName": "Nom complet : {name}",
+      "routeNoteCname": "Redirige les visiteurs de votre domaine vers Aera.",
+      "routeNoteApex": "Pour un domaine sans préfixe (sans « www. » ou autre), la plupart des fournisseurs n’autorisent pas d’enregistrement CNAME : utilisez le type ALIAS ou ANAME, qui fait la même chose.",
+      "txtNote": "Il confirme que le domaine vous appartient. « Vérifier le domaine » contrôle précisément cet enregistrement.",
+      "verifiedNow": "{domain} est connecté.",
+      "verifiedHint": "{domain} est connecté. Vérifiez à nouveau si vous avez modifié des enregistrements DNS.",
+      "subWarning": "Attention : l’adresse actuelle {old} ne fonctionnera plus – les liens partagés ne mèneront nulle part.",
+      "subFallback": "Vide = adresse par défaut {address}, qui fonctionne toujours."
     },
     "danger": {
       "heading": "Zone de danger",
       "desc": "Actions irréversibles pour cette communauté.",
       "deleteCommunity": "Supprimer la communauté",
       "deleteDesc": "Supprime irréversiblement tous les membres, espaces, contenus et commandes.",
-      "confirmDelete": "Supprimer définitivement « {name} » et tout le contenu ?",
-      "confirmPlaceholder": "Tapez « {slug} » pour confirmer",
-      "deleting": "Suppression…"
+      "deleting": "Suppression…",
+      "confirmDeleteCta": "Supprimer définitivement la communauté",
+      "confirmLabel": "Saisissez l’identifiant {slug} pour confirmer",
+      "exportFirst": "Téléchargez d’abord vos données : <link>Accéder à l’export des données</link>."
     },
     "developers": {
       "metaTitle": "Développeurs & API",
@@ -1968,20 +2311,20 @@
     "export": {
       "metaTitle": "Export de données",
       "title": "Export de données",
-      "subtitle": "Vos données vous appartiennent — exportez-les à tout moment, filtrées sur votre tenant.",
+      "subtitle": "Vos données vous appartiennent – téléchargez-les à tout moment.",
       "fullExport": "Export complet",
-      "fullExportDesc": "Un paquet JSON avec les {count} enregistrements : membres, commandes, abonnements, entitlements, publications, commentaires, produits, cours, événements, newsletters et segments.",
+      "fullExportDesc": "Un paquet JSON avec toutes les données de votre communauté : membres, commandes, abonnements, accès débloqués, publications, commentaires, produits, cours, événements, newsletters et segments.",
       "downloadJson": "Télécharger le JSON",
       "singleDatasets": "Jeux de données individuels",
       "csvOrJson": "CSV (Excel) ou JSON",
       "entries": "{count, plural, one {# entrée} other {# entrées}}",
       "noData": "Aucune donnée",
-      "footer": "Tous les exports sont strictement limités à votre communauté et nécessitent des droits admin. Les adresses e-mail ne figurent que dans l'export des membres.",
+      "footer": "Les exports ne contiennent que les données de cette communauté et seul le propriétaire peut les télécharger. Les adresses e-mail ne figurent que dans l’export des membres.",
       "datasets": {
         "members": "Membres",
         "orders": "Commandes",
         "subscriptions": "Abonnements",
-        "entitlements": "Entitlements",
+        "entitlements": "Accès débloqués",
         "posts": "Publications",
         "comments": "Commentaires",
         "products": "Produits",
@@ -1994,15 +2337,13 @@
     "moderation": {
       "metaTitle": "Modération",
       "title": "Modération",
-      "subtitleAi": "Les nouvelles publications et commentaires sont vérifiés automatiquement par IA — votre équipe prend les décisions.",
-      "subtitleHeuristic": "Les nouvelles publications et commentaires sont vérifiés par heuristique (avec une clé Gemini : classification par IA).",
       "refPost": "Publication",
       "refComment": "Commentaire",
       "unknown": "Inconnu",
-      "sourceAi": "IA",
-      "sourceHeuristic": "Heuristique",
+      "sourceAi": "Vérification par IA",
+      "sourceHeuristic": "Filtre de mots",
       "emptyTitle": "Rien à examiner",
-      "emptyHint": "Il n'y a actuellement aucun contenu signalé. Les marquages automatiques des nouvelles publications et commentaires apparaissent ici.",
+      "emptyHint": "Rien à vérifier pour le moment. Si une nouvelle publication ou un nouveau commentaire attire l’attention, il apparaîtra ici.",
       "approve": "Approuver (fausse alerte)",
       "removeContent": "Supprimer le contenu",
       "recentDecisions": "Décidé récemment",
@@ -2012,13 +2353,20 @@
         "spam": "Spam",
         "toxisch": "Toxique",
         "belaestigung": "Harcèlement"
-      }
+      },
+      "subtitle": "Les nouvelles publications et les nouveaux commentaires sont vérifiés automatiquement. Ce qui attire l’attention arrive ici – c’est vous qui décidez.",
+      "viewInContext": "Voir dans la publication",
+      "banAuthor": "Bannir {name}",
+      "authorBanned": "Auteur banni",
+      "removeTitlePost": "Supprimer définitivement la publication ?",
+      "removeTitleComment": "Supprimer définitivement le commentaire ?",
+      "removeBody": "« {excerpt} » sera supprimé et ne pourra pas être restauré."
     },
     "layout": {
       "titleHub": "Modifier votre page",
-      "titleHeader": "Détails",
-      "titleSections": "Mise en page",
-      "titleNav": "Navigation de la page",
+      "titleHeader": "En-tête",
+      "titleSections": "Accueil : sections",
+      "titleNav": "Barre latérale",
       "back": "Retour",
       "backToDashboard": "Back to the dashboard",
       "desktopPreview": "Aperçu bureau",
@@ -2026,25 +2374,23 @@
       "saved": "Enregistré",
       "cancel": "Annuler",
       "saving": "Enregistrement…",
-      "save": "Enregistrer",
-      "nameTaken": "Le nom de la page est déjà pris",
+      "save": "Enregistrer la page",
+      "nameTaken": "Ce nom est déjà pris",
       "livePreview": "Aperçu en direct",
-      "hubHeader": "Détails de l'en-tête",
-      "hubSections": "Mise en page",
-      "hubNav": "Menu de navigation",
-      "pageName": "Nom de la page",
+      "hubHeader": "En-tête",
+      "hubSections": "Accueil : sections",
+      "hubNav": "Barre latérale",
+      "pageName": "Nom",
       "nameUpdateHint": "Cela met à jour votre nom partout dans la communauté.",
-      "profilePhoto": "Photo de profil",
-      "profilePhotoHint": "Carrée, au moins 512×512 px",
-      "changePhotoAria": "Changer la photo de profil",
+      "profilePhoto": "Logo",
+      "changePhotoAria": "Changer le logo",
       "change": "Changer",
-      "headerOptions": "Options d'en-tête",
-      "usePhoto": "Utiliser la photo de profil",
-      "colorScheme": "Palette de couleurs",
-      "colorSchemeHint": "Choisissez la couleur d'accent de votre page.",
-      "uploadCover": "Téléverser une image de couverture",
-      "coverApplied": "L'image de couverture est appliquée immédiatement.",
-      "about": "À propos",
+      "headerOptions": "Arrière-plan de l’en-tête",
+      "usePhoto": "Aplat de couleur avec logo",
+      "colorScheme": "Couleur principale",
+      "colorSchemeHint": "Pour les boutons, les liens et l’aplat de couleur de l’en-tête.",
+      "uploadCover": "Image de couverture",
+      "about": "Description",
       "aboutHint": "Présentez-vous ainsi que votre communauté.",
       "socialLinks": "Liens réseaux sociaux",
       "add": "Ajouter",
@@ -2073,8 +2419,8 @@
       "noOptions": "Aucune option disponible.",
       "audiences": {
         "PAID": "Membre payant",
-        "FREE": "Membre non payant",
-        "PUBLIC": "Public"
+        "FREE": "Membre gratuit",
+        "PUBLIC": "Visiteur"
       },
       "sections": {
         "RECENT_POSTS": "Nouvelles publications",
@@ -2109,7 +2455,7 @@
       },
       "spaceRemoved": "Space supprimé",
       "applyAll": "Appliquer à tous les publics",
-      "applyAllHint": "Les modifications s'appliquent aux visiteurs, membres gratuits et payants. Désactive pour concevoir chaque public séparément.",
+      "applyAllHint": "Les modifications s'appliquent aux visiteurs, membres gratuits et payants. Désactivez pour concevoir chaque public séparément.",
       "headerStyle": "Style d’en-tête",
       "headerStyleHint": "C’est ainsi que votre page accueille les visiteurs. L’aperçu montre chaque choix immédiatement, avec votre contenu.",
       "headerVariants": {
@@ -2137,12 +2483,33 @@
       "mosaicTitle": "Images de l’en-tête",
       "mosaicHint": "Ces images composent la mosaïque, dans cet ordre — faites-les glisser pour les réorganiser. Un nombre pair remplit la grille sans reste ; 6 ou 12 rendent le mieux.",
       "mosaicUploadError": "Une image n’a pas pu être envoyée. Veuillez réessayer.",
-      "hubMenu": "Menu de l’en-tête",
-      "titleMenu": "Menu de l’en-tête"
+      "hubMenu": "Boutons de l’en-tête",
+      "titleMenu": "Boutons de l’en-tête",
+      "hubHeaderHint": "Nom, logo, couleur principale, image de couverture, description et réseaux sociaux",
+      "hubMenuHint": "Boutons sous le nom, par ex. Rejoindre ou Pourboire",
+      "hubSectionsHint": "Les sections affichées sur l’accueil et leur ordre",
+      "hubPagesHint": "Pages supplémentaires comme « À propos » ou « FAQ »",
+      "hubNavHint": "Les éléments du menu de navigation à gauche",
+      "hubBannerHint": "Bandeaux pour les annonces et les promotions",
+      "savedAt": "Enregistré · {time}",
+      "unsaved": "Non enregistré",
+      "discardTitle": "Abandonner les modifications non enregistrées ?",
+      "discardBody": "Si vous partez maintenant, vos modifications de la page seront perdues.",
+      "discardConfirm": "Abandonner les modifications",
+      "discardCancel": "Continuer la modification",
+      "previewMobile": "Aperçu",
+      "editMobile": "Modifier",
+      "previewAs": "Aperçu en tant que",
+      "colorPresetAria": "Couleur principale {color}",
+      "colorCustomAria": "Choisir votre propre couleur principale",
+      "hideNamedAria": "Masquer « {name} »",
+      "removeNamedAria": "Retirer « {name} »",
+      "removeImageAria": "Retirer l’image {n}",
+      "socialInputAria": "Profil {name}"
     },
     "pages": {
       "title": "Pages",
-      "hub": "Pages",
+      "hub": "Pages personnalisées",
       "intro": "Créez vos propres pages : « À propos », « Questions » ou « Presse ». Elles apparaissent en onglets à côté de la page d'accueil.",
       "homeTab": "Accueil",
       "homeTabHint": "Fixe — montre ce que vous avez construit dans la mise en page.",
@@ -2463,7 +2830,11 @@
       "colSent": "Envoyé",
       "colRecipients": "Destinataires",
       "colOpens": "Ouvertures",
-      "colClicks": "Clics"
+      "colClicks": "Clics",
+      "growthSummary": "{total, plural, one {# inscription} other {# inscriptions}} ces 6 derniers mois, dont {current, number} ce mois-ci.",
+      "growthEmpty": "Personne ne s’est inscrit ces 6 derniers mois. Les nouveaux membres apparaîtront ici, mois par mois.",
+      "colMonth": "Mois",
+      "colNewMembers": "Nouveaux membres"
     },
     "gamification": {
       "title": "Gamification",
@@ -2480,8 +2851,6 @@
       "rule": "Règle",
       "maxPerDay": "max. {count}/jour",
       "pts": "pts",
-      "savePointsAria": "Enregistrer les points",
-      "deleteRuleAria": "Supprimer la règle",
       "confirmDeleteRule": "Supprimer la règle « {name} » ?",
       "rulesEmptyTitle": "Aucune règle pour l'instant",
       "rulesEmptyHint": "Ajoutez une règle de points pour une action.",
@@ -2561,7 +2930,14 @@
       "iconLabel": "Symbole",
       "manualHint": "Les badges dont la condition est « à la main » se donnent —",
       "manualBadge": "À la main",
-      "manualHintLink": "dans la liste des membres."
+      "manualHintLink": "dans la liste des membres.",
+      "pointsForRuleAria": "Points pour {name}",
+      "savePointsForRuleAria": "Enregistrer les points pour {name}",
+      "deleteRuleForAria": "Supprimer la règle « {name} »",
+      "confirmDeleteRuleBody": "Cette action ne rapportera plus de points.",
+      "confirmDeleteRuleCta": "Supprimer la règle",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {Ce badge n’a encore été attribué à personne.} one {# membre perdra ce badge.} other {# membres perdront ce badge.}}",
+      "confirmDeleteBadgeCta": "Supprimer le badge"
     },
     "referrals": {
       "metaTitle": "Parrainages",
@@ -2644,22 +3020,22 @@
       },
       "BUNDLE": {
         "label": "Pack",
-        "desc": "Ensemble de contenus"
+        "desc": "N’est plus proposé"
       },
       "COURSE_ACCESS": {
         "label": "Accès au cours",
         "desc": "Débloque un cours"
       },
       "TIER_GRANT": {
-        "label": "Accès au niveau",
-        "desc": "Débloque un niveau"
+        "label": "Accès à une adhésion",
+        "desc": "N'est plus proposé"
       }
     },
     "tiers": {
       "title": "Adhésions",
       "subtitle": "{count, plural, one {# adhésion} other {# adhésions}} · voici comment elles apparaissent sur votre page d'adhésion.",
       "create": "Créer une adhésion",
-      "stripeWarning": "Stripe n'est pas encore connecté — les niveaux gratuits fonctionnent immédiatement ; pour les niveaux payants, ajoutez <code>STRIPE_SECRET_KEY</code> dans votre <code>.env</code>.",
+      "stripeWarning": "Stripe n'est pas encore connecté : les adhésions gratuites fonctionnent immédiatement. Pour les adhésions payantes, ajoutez <code>STRIPE_SECRET_KEY</code> dans votre <code>.env</code>.",
       "recommended": "Recommandé",
       "default": "Par défaut",
       "hidden": "Masqué",
@@ -2667,9 +3043,9 @@
       "edit": "Modifier",
       "suffixMonth": "/ mois",
       "suffixYear": "/ an",
-      "createTitle": "Créer un nouveau niveau",
+      "createTitle": "Nouvelle adhésion",
       "createSubtitle": "Définir l'adhésion et le prix",
-      "editTitle": "Modifier le niveau",
+      "editTitle": "Modifier l'adhésion",
       "nameLabel": "Nom",
       "namePlaceholder": "par ex. Premium",
       "coverLabel": "Image de couverture (facultatif)",
@@ -2683,17 +3059,24 @@
       "publicHint": "Affiché sur la page d'adhésion.",
       "recommendedLabel": "Recommandé par le créateur",
       "recommendedHint": "Met en avant cette adhésion sur la page d'adhésion (max. une).",
-      "defaultLabel": "Niveau par défaut",
-      "defaultHintActive": "Les nouveaux membres reçoivent ce niveau.",
+      "defaultLabel": "Adhésion par défaut",
+      "defaultHintActive": "Les nouveaux membres reçoivent cette adhésion.",
       "defaultHintInactive": "Définir par défaut pour les nouveaux membres.",
-      "entitlementKeyLabel": "Clé de droit (fixe)",
-      "confirmDelete": "Vraiment supprimer le niveau « {name} » ?",
+      "entitlementKeyLabel": "Clé technique (visible uniquement par les admins de la plateforme)",
+      "confirmDelete": "Supprimer l'adhésion « {name} » ?",
       "deleting": "Suppression…",
-      "deleteTier": "Supprimer le niveau",
+      "deleteTier": "Supprimer l'adhésion",
       "cancel": "Annuler",
       "saving": "Enregistrement…",
       "saveChanges": "Enregistrer les modifications",
-      "createTier": "Créer le niveau"
+      "createTier": "Créer l'adhésion",
+      "priceHint": "Paliers de prix fixes, pour que le prix s'applique aussi dans les app stores.",
+      "payoutsMissing": "Pour recevoir les paiements, configurez d'abord les versements.",
+      "payoutsSetup": "Configurer les versements",
+      "confirmDeleteBody": "{count, plural, =0 {L'adhésion sera supprimée définitivement.} one {# membre perd l'accès aux contenus de cette adhésion.} other {# membres perdent l'accès aux contenus de cette adhésion.}} Cette action est irréversible.",
+      "confirmHide": "Masquer l'adhésion « {name} » ?",
+      "confirmHideBody": "Les adhésions payantes ne sont pas supprimées, mais retirées de la page d'adhésion afin que les paiements en cours puissent encore être traités. Les membres actuels conservent leur accès.",
+      "hideTier": "Masquer l'adhésion"
     },
     "products": {
       "title": "Produits",
@@ -2716,7 +3099,6 @@
       "namePlaceholder": "par ex. E-book",
       "typeLabel": "Type",
       "priceLabel": "Prix",
-      "downloadUrlLabel": "URL de téléchargement (facultatif)",
       "shipping": "Livraison",
       "shipFreeLabel": "Livraison gratuite",
       "shipFreeDesc": "Aucuns frais de livraison",
@@ -2729,13 +3111,43 @@
       "descPlaceholder": "Que reçoivent les acheteurs ?",
       "publishedLabel": "Publié",
       "publishedHint": "Visible et achetable dans la communauté.",
-      "confirmDelete": "Vraiment supprimer le produit « {name} » ?",
+      "confirmDelete": "Supprimer le produit « {name} » ?",
       "deleting": "Suppression…",
       "deleteProduct": "Supprimer le produit",
       "cancel": "Annuler",
       "saving": "Enregistrement…",
       "saveChanges": "Enregistrer les modifications",
-      "createProduct": "Créer le produit"
+      "createProduct": "Créer le produit",
+      "confirmDeleteBody": "Le produit disparaît de la boutique. Cette action est irréversible.",
+      "confirmHide": "Masquer le produit « {name} » ?",
+      "confirmHideBody": "Ce produit a des commandes : il n'est donc pas supprimé, mais retiré de la boutique. Les acheteurs conservent leur accès.",
+      "hideProduct": "Masquer le produit",
+      "priceHint": "Paliers de prix fixes, pour que le prix s'applique aussi dans les app stores.",
+      "pricePlaceholder": "Choisir un prix",
+      "priceRequired": "Choisissez un prix ou « Gratuit ».",
+      "fileLabel": "Fichier pour les acheteurs",
+      "fileHint": "Téléversez le fichier ou collez un lien. Les acheteurs voient le téléchargement après l'achat.",
+      "fileUpload": "Téléverser un fichier",
+      "fileReplace": "Téléverser un autre fichier",
+      "fileRemove": "Retirer",
+      "fileUploading": "Téléversement…",
+      "fileUploaded": "Fichier téléversé",
+      "fileOpen": "Ouvrir",
+      "fileLinkLabel": "Ou lien vers le fichier",
+      "fileRequired": "Téléversez un fichier ou collez un lien.",
+      "fileLinkInvalid": "Le lien doit commencer par https://.",
+      "courseLabel": "Quel cours est débloqué ?",
+      "coursePlaceholder": "Choisir un cours",
+      "courseHint": "Après l'enregistrement, le cours n'est plus ouvert qu'aux acheteurs et à votre équipe. Les leçons marquées comme aperçu restent visibles par tous.",
+      "courseRequired": "Choisissez le cours que reçoivent les acheteurs.",
+      "courseLocked": "Après la première vente, le cours ne peut plus être modifié, afin que les acheteurs conservent leur accès.",
+      "noCourses": "Vous n'avez pas encore de cours vendable séparément.",
+      "createCourse": "Créer un cours",
+      "tierGrantRetired": "Ce type ne débloque aucune adhésion. Choisissez un autre type. Les adhésions payantes se créent sous « Adhésions ».",
+      "viewInShop": "Voir dans la boutique",
+      "payoutsMissing": "Pour recevoir les paiements, configurez d'abord les versements.",
+      "payoutsSetup": "Configurer les versements",
+      "bundleRetired": "Les lots ne sont plus proposés : un achat ne débloquait aucun contenu précis. Les achats existants restent valables. Pour de nouvelles offres, choisissez « Numérique » ou « Accès au cours »."
     },
     "payouts": {
       "title": "Versements",
@@ -2788,7 +3200,8 @@
     "memberStatus": {
       "ACTIVE": "Actif",
       "PENDING": "En attente",
-      "BANNED": "Banni"
+      "BANNED": "Banni",
+      "INVITED": "Invité"
     },
     "members": {
       "title": "Membres",
@@ -2797,7 +3210,7 @@
       "tabTeam": "Équipe",
       "tabBanned": "Bannis",
       "allHeading": "Tous les membres",
-      "allDesc": "Gérez les rôles, les niveaux et les accès.",
+      "allDesc": "Gérez les rôles, les adhésions et les accès.",
       "allEmptyTitle": "Aucun membre pour l'instant",
       "allEmptyHint": "Ajoutez votre premier membre ou partagez le lien d'adhésion.",
       "teamHeading": "Équipe",
@@ -2825,14 +3238,13 @@
       "profilePhoto": "Photo de profil",
       "emailLabel": "Adresse e-mail",
       "emailPlaceholder": "nom@exemple.fr",
-      "emailHint": "Si aucun compte n'existe encore, il est créé automatiquement.",
+      "emailHint": "S’il n’y a pas encore de compte, nous en créons un et envoyons une invitation. Les comptes existants sont ajoutés directement, sans e-mail.",
       "roleLabel": "Rôle",
-      "tierLabel": "Niveau",
-      "noTier": "Aucun niveau",
+      "tierLabel": "Adhésion",
+      "noTier": "Aucune adhésion",
       "cancel": "Annuler",
       "adding": "Ajout…",
       "statusLabel": "Statut",
-      "confirmRemove": "Vraiment retirer « {name} » de la communauté ?",
       "removing": "Retrait…",
       "removeMember": "Retirer le membre",
       "saving": "Enregistrement…",
@@ -2855,7 +3267,37 @@
       "awarding": "Attribution…",
       "revoke": "Retirer",
       "revoking": "Retrait…",
-      "awardedOn": "Attribué le {date}"
+      "awardedOn": "Attribué le {date}",
+      "confirmRemoveTitle": "Retirer « {name} » de la communauté ?",
+      "confirmRemoveBody": "Les abonnements en cours prennent fin immédiatement et l’accès lié à l’adhésion est retiré. Les achats à l’unité sont conservés.",
+      "confirmRemoveCta": "Retirer le membre",
+      "tierHint": "Débloque ce que comprend cette adhésion, sans paiement.",
+      "roleHints": {
+        "MEMBER": "Voit ce que son adhésion débloque et peut publier dans le fil et le forum.",
+        "MODERATOR": "Voit tous les spaces et peut publier partout ; ses publications échappent à la vérification automatique. Dans le tableau de bord, il ne voit que la modération : examiner, approuver ou retirer les publications signalées.",
+        "ADMIN": "Gère la communauté depuis le tableau de bord : contenus, membres, modération et paramètres. Seul le propriétaire peut nommer des admins, connecter les paiements, exporter les données et supprimer la communauté."
+      },
+      "statusHint": "« En attente » : inscrit, mais pas encore d’accès aux contenus réservés aux membres.",
+      "invitedOn": "invité le {date}",
+      "noticeInviteSent": "Invitation envoyée à {email}.",
+      "noticeInviteNotSent": "Compte créé pour {email}, mais l’invitation n’a pas pu être envoyée. La personne peut définir un mot de passe via « Mot de passe oublié ».",
+      "noticeAdded": "{email} a été ajouté en tant que {role}.",
+      "dismissNotice": "Fermer le message",
+      "searchLabel": "Rechercher un membre",
+      "searchPlaceholder": "Nom ou e-mail",
+      "searchCount": "{shown} membres sur {total}",
+      "searchEmpty": "Personne ne correspond à « {query} ».",
+      "ban": "Bannir le membre",
+      "unban": "Lever le bannissement",
+      "banning": "Bannissement…",
+      "unbanning": "Levée en cours…",
+      "banTitle": "Bannir {name} ?",
+      "banBody": "{name} perd immédiatement l’accès à {community}.",
+      "banBodySubscription": "L’abonnement payant ({membership}, {price}) sera résilié.",
+      "banConfirm": "Bannir le membre",
+      "pricePerMonth": "{price} par mois",
+      "pricePerYear": "{price} par an",
+      "bannedInfo": "{name} est banni et n’a pas accès à la communauté."
     },
     "spaceTypes": {
       "FEED": {
@@ -2946,15 +3388,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Public",
-        "desc": "Visible par tous"
+        "desc": "Visible par tous, même sans compte"
       },
       "MEMBERS": {
         "label": "Membres",
-        "desc": "Connectés uniquement"
+        "desc": "Membres de la communauté uniquement"
       },
       "PAID": {
         "label": "Payant",
-        "desc": "Adhésion requise"
+        "desc": "Avec adhésion payante uniquement"
       }
     },
     "spaces": {
@@ -2972,15 +3414,12 @@
       "createSubtitle": "Choisissez le type et la visibilité",
       "editTitle": "Modifier le space",
       "edit": "Modifier",
-      "reactivate": "Activer",
       "archive": "Archiver",
       "postCount": "{count, plural, one {# publication} other {# publications}}",
       "nameLabel": "Nom du space",
       "namePlaceholder": "par ex. Annonces",
       "typeLabel": "Type",
       "visibilityLabel": "Visibilité",
-      "entitlementLabel": "Droit requis",
-      "entitlementHint": "Laissez vide pour accepter toute adhésion payante.",
       "descLabel": "Description (facultatif)",
       "descPlaceholder": "De quoi parle ce space ?",
       "deleting": "Suppression…",
@@ -2990,7 +3429,43 @@
       "saveChanges": "Enregistrer les modifications",
       "deleteConfirmTitle": "Supprimer le space ?",
       "deleteConfirmText": "« {name} » sera définitivement supprimé. Tout son contenu sera perdu — cette action est irréversible.",
-      "delete": "Supprimer"
+      "delete": "Supprimer",
+      "restore": "Restaurer",
+      "archiveNamed": "Archiver « {name} »",
+      "restoreNamed": "Restaurer « {name} »",
+      "archivedNotice": "« {name} » archivé – masqué pour les membres.",
+      "restoredNotice": "« {name} » restauré – de nouveau visible pour les membres.",
+      "undo": "Annuler",
+      "dismissNotice": "Fermer le message",
+      "typeLockedHint": "Le type est figé, car cet espace contient déjà {count, plural, one {# contenu} other {# contenus}}. Avec un autre type, ils ne seraient plus visibles. Pour un autre type, créez un nouvel espace.",
+      "access": {
+        "legend": "Quelles adhésions donnent accès ?",
+        "anyPaid": "Toute adhésion payante",
+        "anyPaidDesc": "Ainsi que toute personne ayant acheté un contenu payant, p. ex. un produit",
+        "pricePerMonth": "{price}/mois",
+        "pricePerYear": "{price}/an",
+        "tierHidden": "{price} · hors offre",
+        "legacyLabel": "Règle d'accès précédente",
+        "legacyFreeTier": "Adhésion gratuite – ancien réglage",
+        "legacyKey": "Clé « {key} » – ancien réglage",
+        "hintTier": "Seuls les membres ayant exactement cette adhésion voient l'espace. Vous et votre équipe y avez toujours accès.",
+        "hintAny": "Tous les membres ayant une adhésion payante voient l'espace. Vous et votre équipe y avez toujours accès.",
+        "noPaidTitle": "Pas encore d'adhésion payante",
+        "noPaidText": "Créez une adhésion payante pour que les membres puissent débloquer cet espace.",
+        "noPaidCta": "Créer d'abord une adhésion",
+        "specificTier": "Adhésion spécifique"
+      },
+      "postingLabel": "Qui peut écrire des publications ?",
+      "posting": {
+        "members": {
+          "label": "Tous les membres",
+          "desc": "Les membres écrivent leurs propres publications."
+        },
+        "team": {
+          "label": "L’équipe uniquement",
+          "desc": "Les membres lisent, réagissent et commentent."
+        }
+      }
     },
     "roles": {
       "OWNER": "Propriétaire",
@@ -3022,9 +3497,10 @@
     },
     "userMenu": {
       "myAccount": "My account",
-      "mySubscription": "Mon abonnement",
+      "mySubscription": "Mon adhésion",
       "switchCommunities": "Changer de communauté",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "toggleAria": "Menu utilisateur de {name}"
     },
     "search": {
       "placeholder": "Rechercher des membres, spaces, publications …",
@@ -3081,14 +3557,14 @@
       "leaveTitle": "Quitter la communauté",
       "cancelText": "Votre accès au contenu payant se termine avec la période payée. Les produits achetés vous restent acquis.",
       "leaveText": "Vous perdrez l'accès au contenu réservé aux membres. Les produits achetés vous restent acquis.",
-      "confirmCancel": "Vraiment résilier votre adhésion ?",
       "cancelling": "Résiliation…",
       "cancelNow": "Résilier maintenant",
       "confirmLeave": "Vraiment quitter la communauté « {name} » ?",
       "leaving": "Départ…",
       "leaveCommunity": "Quitter la communauté",
       "perMonth": "/mois",
-      "perYear": "/an"
+      "perYear": "/an",
+      "confirmCancelTitle": "Résilier votre adhésion à « {name} » ?"
     },
     "credits": {
       "title": "Crédits et utilisation",
@@ -3150,7 +3626,11 @@
       "mobileSubtitle": "Navigation du tableau de bord",
       "planner": "Planificateur",
       "lockedSuffix": "{plan} uniquement",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "Dans les offres supérieures ({count})",
+      "moderatorGroup": "Votre espace",
+      "moderatorHint": "Vous examinez les publications et commentaires signalés. L’équipe d’administration gère les membres, le contenu et les réglages.",
+      "moderatorRole": "Modération"
     },
     "media": {
       "metaTitle": "Médias",
@@ -3180,8 +3660,6 @@
       "edit": "Modifier",
       "delete": "Supprimer",
       "moveToFolder": "Déplacer vers un dossier",
-      "confirmDeleteFolder": "Supprimer ce dossier ? Les médias qu'il contient se retrouveront sans dossier.",
-      "confirmDeleteMedia": "Supprimer vraiment ce média ? Il ne sera plus accessible.",
       "folderMenuAria": "Options du dossier {name}",
       "itemMenuAria": "Options du média {name}",
       "openAria": "Ouvrir {name}",
@@ -3208,9 +3686,18 @@
       "openInStudio": "Modifier dans le studio",
       "uploadMedia": "Envoyer des médias",
       "uploadingProgress": "Envoi… {done}/{total}",
-      "uploadFailed": "Échec de l'envoi : {name}",
       "storageTitle": "Stockage des médias",
-      "storageOf": "{used} sur {limit} utilisés"
+      "storageOf": "{used} sur {limit} utilisés",
+      "uploadFailedCount": "{count, plural, one {# fichier n’a pas été téléversé} other {# fichiers n’ont pas été téléversés}}",
+      "uploadFailedLine": "{name} : {reason}",
+      "retryUpload": "Téléverser à nouveau",
+      "dismissUploadErrors": "Fermer le message",
+      "confirmDeleteFolderTitle": "Supprimer le dossier « {name} » ?",
+      "confirmDeleteFolderBody": "Les médias qu’il contient sont conservés et passent dans « Sans dossier ».",
+      "confirmDeleteFolderCta": "Supprimer le dossier",
+      "confirmDeleteMediaTitle": "Supprimer définitivement « {name} » ?",
+      "confirmDeleteMediaBody": "Le fichier sera supprimé. Les publications et pages qui l’utilisent ne l’afficheront plus.",
+      "confirmDeleteMediaCta": "Supprimer définitivement"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3298,7 +3785,7 @@
       "platformOther": "Autre",
       "willEmbed": "Lien {platform} détecté — intégré automatiquement comme lecteur.",
       "mismatch": "L'URL ressemble à {platform}, mais {selected} est sélectionné.",
-      "customEmbedHint": "Cette URL est intégrée telle quelle — utilise si possible un lien de lecteur.",
+      "customEmbedHint": "Cette URL est intégrée telle quelle — utilisez si possible un lien de lecteur.",
       "startsAtHint": "Apparaît dans le calendrier et annonce la session.",
       "accessAll": "Tous les membres",
       "accessAllDesc": "Chaque membre peut regarder.",
@@ -3310,14 +3797,14 @@
       "entitlementTierHint": "Les membres du niveau sélectionné (et toute personne avec cette clé) peuvent regarder.",
       "helpAria": "Afficher les instructions d'intégration",
       "help": {
-        "twitch": "Colle le lien de ta chaîne Twitch (twitch.tv/tachaine). Nous le convertissons automatiquement en lecteur Twitch — dès que tu es en direct, le stream s'affiche ici.",
-        "youtube": "Lance ton direct dans YouTube Studio et colle le lien de la vidéo. Nous l'intégrons automatiquement. Important : « Autoriser l'intégration » doit être activé dans YouTube Studio.",
-        "tiktok": "Colle le lien de ton live TikTok (tiktok.com/@tonnom/live). Remarque : TikTok n'offre pas de lecteur intégrable officiel — l'intégration peut être bloquée.",
-        "kick": "Colle le lien de ta chaîne Kick (kick.com/tachaine). Nous le convertissons automatiquement en lecteur Kick.",
-        "instagram": "Colle le lien de ton live Instagram. Remarque : Instagram n'autorise pas officiellement l'intégration des lives.",
-        "chaturbate": "Colle le lien de ta room Chaturbate (chaturbate.com/tonnom). Nous utilisons automatiquement la vue intégrable de la room.",
-        "vimeo": "Colle le lien de ta vidéo ou de ton direct Vimeo. Nous le convertissons automatiquement en lecteur Vimeo. L'intégration doit être autorisée dans les réglages Vimeo.",
-        "custom": "Colle n'importe quelle URL d'intégration ou de lecteur. L'URL est intégrée telle quelle et doit autoriser l'iframe."
+        "twitch": "Collez le lien de votre chaîne Twitch (twitch.tv/votrechaine). Nous le convertissons automatiquement en lecteur Twitch — dès que vous êtes en direct, le stream s'affiche ici.",
+        "youtube": "Lancez votre direct dans YouTube Studio et collez le lien de la vidéo. Nous l'intégrons automatiquement. Important : « Autoriser l'intégration » doit être activé dans YouTube Studio.",
+        "tiktok": "Collez le lien de votre live TikTok (tiktok.com/@votrenom/live). Remarque : TikTok n'offre pas de lecteur intégrable officiel — l'intégration peut être bloquée.",
+        "kick": "Collez le lien de votre chaîne Kick (kick.com/votrechaine). Nous le convertissons automatiquement en lecteur Kick.",
+        "instagram": "Collez le lien de votre live Instagram. Remarque : Instagram n'autorise pas officiellement l'intégration des lives.",
+        "chaturbate": "Collez le lien de votre room Chaturbate (chaturbate.com/votrenom). Nous utilisons automatiquement la vue intégrable de la room.",
+        "vimeo": "Collez le lien de votre vidéo ou de votre direct Vimeo. Nous le convertissons automatiquement en lecteur Vimeo. L'intégration doit être autorisée dans les réglages Vimeo.",
+        "custom": "Collez n'importe quelle URL d'intégration ou de lecteur. L'URL est intégrée telle quelle et doit autoriser l'iframe."
       },
       "sourceAeraShort": "Aera Live",
       "sourceAeraSetup": "Une fois créée, l’adresse du serveur et la clé de flux pour OBS apparaissent ici. Diffusez avec, puis appuyez sur « Passer en direct » pour vos membres.",
@@ -3376,7 +3863,6 @@
       "studioChatShow": "Afficher le chat",
       "studioChatHide": "Masquer le chat",
       "studioFullscreen": "Plein écran",
-      "studioCloseConfirm": "Vous êtes en direct. Fermer le studio interrompra votre diffusion. Fermer quand même ?",
       "studioNoPreview": "La diffusion est en cours — l'aperçu vidéo n'existe que sur l'appareil qui émet.",
       "studioMirror": "Miroir de l’aperçu",
       "studioLevel": "Niveau audio",
@@ -3392,7 +3878,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Fermer le studio et arrêter la diffusion ?",
+      "studioCloseBody": "Vous êtes en direct. Si vous fermez le studio, votre diffusion s’interrompt.",
+      "studioCloseCta": "Fermer le studio",
+      "studioCloseCancel": "Continuer la diffusion"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3559,13 +4049,13 @@
       "upcomingCta": "Créez votre premier plan"
     },
     "calendar": {
-      "subtitle": "Les dates et sorties de ta communauté au même endroit.",
+      "subtitle": "Les dates et sorties de votre communauté au même endroit.",
       "create": "Créer un rendez-vous",
-      "own": "Tes rendez-vous",
-      "auto": "Automatique depuis tes espaces",
+      "own": "Vos rendez-vous",
+      "auto": "Automatique depuis vos espaces",
       "autoHint": "Les événements, lives et publications programmées des autres espaces apparaissent ici automatiquement.",
       "emptyTitle": "Pas encore de rendez-vous",
-      "emptyHint": "Crée ton premier rendez-vous — événements, lives et publications programmées apparaissent automatiquement.",
+      "emptyHint": "Créez votre premier rendez-vous — événements, lives et publications programmées apparaissent automatiquement.",
       "sheetCreateTitle": "Créer un rendez-vous",
       "sheetEditTitle": "Modifier le rendez-vous",
       "rsvps": "{count} inscriptions",
@@ -3579,52 +4069,52 @@
       "gateEyebrow": "Disponible à partir de",
       "upgradeCta": "Passer à {plan}",
       "redeemCta": "Utiliser un code",
-      "gateFootnote": "Ton forfait actuel : {plan} · résiliable chaque mois · débloqué immédiatement",
+      "gateFootnote": "Votre forfait actuel : {plan} · résiliable chaque mois · débloqué immédiatement",
       "promoActive": "Promotion active – {plan}",
       "promoUntil": "valable jusqu'au {date}",
       "promoLifetime": "sans date d'expiration",
       "limits": {
         "spacesUsed": "{used} sur {limit} spaces",
         "spacesTitle": "Limite de spaces atteinte",
-        "spacesText": "Ton forfait {plan} autorise {limit} spaces actifs. Avec {next}, tu obtiens beaucoup plus de place.",
+        "spacesText": "Votre forfait {plan} autorise {limit} spaces actifs. Avec {next}, vous obtenez beaucoup plus de place.",
         "membersTitle": "Limite de membres atteinte",
-        "membersText": "Ton forfait {plan} est conçu pour {limit} membres actifs. Passe à {next} pour continuer à accueillir de nouveaux membres."
+        "membersText": "Votre forfait {plan} est conçu pour {limit} membres actifs. Passez à {next} pour continuer à accueillir de nouveaux membres."
       },
       "redeem": {
         "title": "Utiliser un code promo",
-        "subtitle": "Tu as un code d'un partenaire ou d'un créateur ? Débloque-le ici.",
-        "label": "Ton code",
+        "subtitle": "Vous avez un code d'un partenaire ou d'un créateur ? Débloquez-le ici.",
+        "label": "Votre code",
         "placeholder": "AERA-PRO-7K2QX4",
-        "hint": "Le code débloque ton forfait instantanément — sans coordonnées de paiement.",
+        "hint": "Le code débloque votre forfait instantanément — sans coordonnées de paiement.",
         "submit": "Utiliser maintenant",
         "submitting": "Utilisation en cours …",
         "successTitle": "Débloqué !",
-        "successText": "Ta communauté fonctionne désormais avec {plan}.",
+        "successText": "Votre communauté fonctionne désormais avec {plan}.",
         "successUntil": "Valable jusqu'au {date}.",
         "successLifetime": "Sans date d'expiration.",
         "errors": {
           "invalid": "Ce code n'a pas un format valide.",
-          "not_found": "Nous ne connaissons pas ce code. Vérifie l'orthographe.",
+          "not_found": "Nous ne connaissons pas ce code. Vérifiez l'orthographe.",
           "paused": "Ce code est actuellement désactivé.",
           "expired": "Ce code a expiré.",
           "used_up": "Ce code a déjà été entièrement utilisé.",
           "already_redeemed": "Cette communauté a déjà utilisé ce code.",
-          "stripe_active": "Cette communauté a un abonnement payant actif. Résilie-le d'abord, ou utilise le code pour une autre communauté.",
-          "not_an_upgrade": "Ton forfait actuel est déjà équivalent ou supérieur."
+          "stripe_active": "Cette communauté a un abonnement payant actif. Résiliez-le d'abord, ou utilisez le code pour une autre communauté.",
+          "not_an_upgrade": "Votre forfait actuel est déjà équivalent ou supérieur."
         }
       },
       "features": {
         "analytics": {
           "title": "Statistiques et croissance",
-          "description": "Vois exactement d'où viennent tes membres, ce qui les retient — et ce qui rapporte vraiment.",
+          "description": "Voyez exactement d'où viennent vos membres, ce qui les retient — et ce qui rapporte vraiment.",
           "b1": "MRR, revenus et churn en un coup d'œil",
           "b2": "Croissance des membres dans le temps",
           "b3": "Meilleurs contenus et taux d'engagement"
         },
         "products": {
           "title": "Vendre des produits",
-          "description": "Téléchargements numériques, produits physiques et compléments — directement dans ta communauté.",
-          "b1": "Crée des produits en illimité",
+          "description": "Téléchargements numériques, produits physiques et compléments — directement dans votre communauté.",
+          "b1": "Produits en illimité",
           "b2": "Téléchargements numériques avec livraison automatique",
           "b3": "Prix conformes à tous les paliers Apple"
         },
@@ -3637,35 +4127,35 @@
         },
         "planner": {
           "title": "Planificateur de contenu",
-          "description": "Planifie des publications des semaines à l'avance et laisse-les se publier toutes seules.",
+          "description": "Planifiez vos publications des semaines à l'avance et laissez-les se publier toutes seules.",
           "b1": "Calendrier éditorial sur tous les spaces",
           "b2": "Programme la publication des contenus",
-          "b3": "Suggestions AI pour ton planning"
+          "b3": "Suggestions AI pour votre planning"
         },
         "gamification": {
           "title": "Gamification",
           "description": "Points, niveaux et badges transforment les membres discrets en fans actifs.",
-          "b1": "Définis librement tes règles de points",
+          "b1": "Règles de points librement définies",
           "b2": "Badges et niveaux personnalisés",
-          "b3": "Classement pour ta communauté"
+          "b3": "Classement pour votre communauté"
         },
         "referrals": {
           "title": "Programme de parrainage",
-          "description": "Laisse tes membres amener de nouveaux membres — avec une vraie commission.",
+          "description": "Vos membres amènent de nouveaux membres — avec une vraie commission.",
           "b1": "Lien d'invitation personnel par membre",
           "b2": "Commission entièrement personnalisable",
           "b3": "Suivi des conversions inclus"
         },
         "automations": {
           "title": "Automatisations",
-          "description": "La série de bienvenue et la réactivation tournent pendant que tu dors.",
+          "description": "La série de bienvenue et la réactivation tournent pendant que vous dormez.",
           "b1": "Séries d'e-mails après l'inscription",
           "b2": "Étapes différées (drip)",
           "b3": "Taux de délivrabilité et statistiques"
         },
         "export": {
           "title": "Export de données",
-          "description": "Tes données t'appartiennent — un export complet quand tu le souhaites.",
+          "description": "Vos données vous appartiennent — un export complet quand vous le souhaitez.",
           "b1": "Membres, commandes, contenus",
           "b2": "CSV et JSON",
           "b3": "Sauvegarde complète conforme RGPD"
@@ -3675,42 +4165,43 @@
           "description": "Couvertures, bannières et visuels en quelques secondes — sans outil de design.",
           "b1": "Génère des images à partir de texte",
           "b2": "Modèles pour cours et publications",
-          "b3": "Arrive directement dans ta médiathèque"
+          "b3": "Arrive directement dans votre médiathèque"
         },
         "customDomain": {
           "title": "Domaine personnalisé",
-          "description": "Ta communauté à ta propre adresse.",
-          "b1": "Connecte ton propre domaine",
+          "description": "Votre communauté à votre propre adresse.",
+          "b1": "Connectez votre propre domaine",
           "b2": "SSL automatique",
           "b3": "Vérification par DNS"
         },
         "developers": {
           "title": "Développeurs et API",
-          "description": "Connecte Aera à ta stack — clés API, webhooks, contrôle total.",
-          "b1": "API REST avec tes propres clés",
+          "description": "Connectez Aera à votre stack — clés API, webhooks, contrôle total.",
+          "b1": "API REST avec vos propres clés",
           "b2": "Webhooks pour chaque événement",
           "b3": "Journaux de livraison et nouvelles tentatives automatiques"
         },
         "webhooks": {
           "title": "Webhooks",
-          "description": "Chaque événement de ta communauté, en temps réel, dans ton système.",
-          "b1": "Choisis les événements dont tu as besoin",
+          "description": "Chaque événement de votre communauté, en temps réel, dans votre système.",
+          "b1": "Choisissez les événements dont vous avez besoin",
           "b2": "Livraison signée",
           "b3": "Nouvelles tentatives automatiques"
         }
       },
-      "statusTitle": "Ton forfait",
+      "statusTitle": "Votre forfait",
       "statusText": {
-        "FREE": "Tu utilises Aera gratuitement. Avec {next}, tu débloques les statistiques, les ventes et plus de spaces.",
-        "STARTER": "Une base solide. Avec {next}, tu obtiens la gamification, le parrainage et les automatisations.",
+        "FREE": "Vous utilisez Aera gratuitement. Avec {next}, vous débloquez les statistiques, les ventes et plus de spaces.",
+        "STARTER": "Une base solide. Avec {next}, vous obtenez la gamification, le parrainage et les automatisations.",
         "PRO": "Presque tout est débloqué. {next} apporte l'API, les webhooks et des spaces illimités.",
         "SCALE": "Tout est débloqué."
       },
-      "statusTextMax": "Tu es sur le plus grand forfait — toutes les fonctionnalités et tous les types de spaces sont débloqués.",
+      "statusTextMax": "Vous êtes sur le plus grand forfait — toutes les fonctionnalités et tous les types de spaces sont débloqués.",
       "quotaSpaces": "Spaces",
       "quotaMembers": "Membres",
       "quotaCredits": "Crédits AI",
-      "unlimited": "illimité"
+      "unlimited": "illimité",
+      "quotaRemaining": "{rest} crédits restants sur {total}"
     },
     "seo": {
       "metaTitle": "SEO",
@@ -3718,7 +4209,7 @@
       "subtitle": "How your community appears on Google and when shared. Empty fields are filled automatically from your community details.",
       "metaTitleHint": "The blue headline in a search result. Empty = your community name.",
       "metaDescription": "Description",
-      "metaDescriptionHint": "The grey text below the title. Empty = your onboarding tagline.",
+      "metaDescriptionHint": "Le texte gris sous le titre. Vide = votre slogan de « Marque ».",
       "keywords": "Keywords",
       "keywordsHint": "Comma separated. Empty = derived from name and category.",
       "image": "Social image",
@@ -3760,9 +4251,9 @@
       "moreLabelHint": "Avec du texte, le bouton rond devient une pilule — utile si « Plus » doit être plus clair.",
       "tipsMissing": "Pas d’espace pourboire",
       "groupSpaces": "Espaces",
-      "groupSpacesHint": "Directement vers un espace de ta communauté.",
+      "groupSpacesHint": "Directement vers un espace de votre communauté.",
       "groupPages": "Fonctions",
-      "groupPagesHint": "Pages intégrées de ta communauté.",
+      "groupPagesHint": "Pages intégrées de votre communauté.",
       "groupOther": "Actions et liens",
       "groupOtherHint": "Le partage, ou n’importe où ailleurs.",
       "noSpaces": "Aucun espace pour l’instant.",
@@ -3790,10 +4281,10 @@
         "SEARCH": "Tout rechercher",
         "JOIN": "Abonnements et tarifs",
         "TIPS": "L’espace pourboire",
-        "DASHBOARD": "Visible uniquement par ton équipe",
+        "DASHBOARD": "Visible uniquement par votre équipe",
         "SHARE": "Copier ou partager l’adresse",
         "LINK": "N’importe quelle adresse, nouvel onglet",
-        "SPACE": "Un espace de ta communauté",
+        "SPACE": "Un espace de votre communauté",
         "MEMBERSHIP": "Votre formule et facturation"
       },
       "audiences": {
@@ -3815,22 +4306,58 @@
       "progress": "{done} sur {total} terminés",
       "done": "terminé",
       "viewCommunity": "Voir la communauté",
-      "viewCommunityHint": "voici ce que voient tes visiteurs.",
+      "viewCommunityHint": "voici ce que voient vos visiteurs.",
       "post": {
-        "title": "Publie ta première publication",
-        "desc": "Souhaite la bienvenue à ta communauté – quelques phrases suffisent.",
+        "title": "Publiez votre première publication",
+        "desc": "Souhaitez la bienvenue à votre communauté – quelques phrases suffisent.",
         "cta": "Écrire une publication"
       },
       "look": {
-        "title": "Ajoute une image de couverture et un logo",
-        "desc": "Pour que la page de ta communauté te ressemble.",
+        "title": "Ajoutez une image de couverture et un logo",
+        "desc": "Pour que la page de votre communauté vous ressemble.",
         "cta": "Ouvrir l’image de marque"
       },
       "invite": {
-        "title": "Invite tes premiers membres",
-        "desc": "Partage ton lien ou invite par e-mail.",
+        "title": "Invitez vos premiers membres",
+        "desc": "Partagez votre lien ou invitez par e-mail.",
         "cta": "Inviter des membres"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "Dans votre fuseau horaire : {zone} ({abbr})",
+      "pastWarning": "Cette date est dans le passé."
+    },
+    "planSheet": {
+      "title": "Changer de forfait",
+      "subtitle": "Ce que contient chaque forfait",
+      "loading": "Chargement des forfaits …",
+      "loadFailed": "Les forfaits n'ont pas pu être chargés.",
+      "retry": "Recharger",
+      "pricePerMonth": "{price} par mois",
+      "free": "Gratuit",
+      "current": "Votre forfait",
+      "currentPlan": "Votre forfait actuel",
+      "limitSpaces": "{count, plural, one {# espace actif} other {# espaces actifs}}",
+      "limitSpacesUnlimited": "Espaces illimités",
+      "limitMembers": "{count, plural, one {# membre actif} other {# membres actifs}}",
+      "limitMembersUnlimited": "Membres illimités",
+      "limitTiers": "Jusqu'à {count, plural, one {# adhésion} other {# adhésions}}",
+      "limitTiersUnlimited": "Adhésions illimitées",
+      "limitStaff": "{count, plural, one {# place d'équipe} other {# places d'équipe}}",
+      "limitStaffUnlimited": "Places d'équipe illimitées",
+      "limitCredits": "{n} crédits IA par mois",
+      "everythingFrom": "Tout {plan}, et en plus :",
+      "baseSpaces": "Inclus :",
+      "spaceTypesList": "Types d'espace : {list}",
+      "freeHint": "Pour revenir à Free, résiliez votre forfait.",
+      "switching": "Démarrage …",
+      "switchTo": "Passer à {plan}",
+      "checkoutFailed": "Le paiement n'a pas pu démarrer. Veuillez réessayer.",
+      "cancelFailed": "La résiliation n'a pas pu être enregistrée. Veuillez réessayer.",
+      "footnote": "Prix mensuels, résiliable chaque mois. Le paiement passe par Stripe.",
+      "spacesUsedNotice": "Vous utilisez {used} espaces sur {max}.",
+      "creditsTeaser": "Actuel : {plan}. Les forfaits diffèrent par les espaces, les membres et les fonctions.",
+      "open": "Changer de forfait"
     }
   },
   "common": {
@@ -3855,13 +4382,23 @@
     "totpHint": "Votre compte est protégé par l'authentification à deux facteurs.",
     "legalAcceptance": "J’accepte les <terms>Conditions générales</terms> et confirme avoir pris connaissance de l’<privacy>Avis de confidentialité</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "Code à 6 chiffres",
+    "codeFor": "Connexion en tant que <strong>{email}</strong>.",
+    "useOtherEmail": "Utiliser une autre adresse e-mail",
+    "useRecoveryCode": "Pas d’accès à l’application ? Utiliser un code de récupération",
+    "useAppCode": "Utiliser un code de l’application",
+    "recoveryHeading": "Saisir un code de récupération",
+    "recoveryLabel": "Code de récupération",
+    "recoveryHint": "L’un des codes que vous avez enregistrés lors de l’activation de la 2FA. Chaque code ne fonctionne qu’une fois.",
+    "passwordTooShortField": "Votre mot de passe est trop court – au moins {min} caractères."
   },
   "verifyBanner": {
-    "prompt": "Veuillez confirmer votre adresse e-mail <strong>{email}</strong>.",
+    "prompt": "Confirmez <strong>{email}</strong> pour recevoir les newsletters et les e-mails de vos communautés.",
     "resend": "Renvoyer le lien",
     "resending": "Envoi …",
-    "sent": "Un nouveau lien de confirmation a été envoyé à <strong>{email}</strong> — vérifiez votre boîte de réception."
+    "sent": "Un nouveau lien de confirmation a été envoyé à <strong>{email}</strong> — vérifiez votre boîte de réception.",
+    "sendLink": "Envoyer le lien de confirmation"
   },
   "community": {
     "join": "Devenir membre",
@@ -3965,8 +4502,8 @@
         "errCheckout": "Le paiement n’a pas pu démarrer. Veuillez réessayer.",
         "errPaymentsUnavailable": "Les paiements sont actuellement indisponibles. Veuillez réessayer plus tard.",
         "liveHeading": "En direct",
-        "noPostsHintStaff": "Ta communauté est prête. Ta première publication montre aux visiteurs de quoi il s’agit.",
-        "writeFirstPost": "Écris ta première publication"
+        "noPostsHintStaff": "Votre communauté est prête. Votre première publication montre aux visiteurs de quoi il s’agit.",
+        "writeFirstPost": "Écrivez votre première publication"
       },
       "shop": {
         "heading": "Boutique",
@@ -4018,7 +4555,7 @@
       },
       "space": {
         "lockedDesc": "Ce space est exclusif aux membres.",
-        "lockedDescPaid": "Ce space est exclusif aux membres disposant d’un abonnement adapté.",
+        "lockedDescPaid": "Ce contenu fait partie d'une adhésion payante.",
         "upgradeMembership": "Améliorer l’abonnement",
         "join": "Rejoindre",
         "noLinks": "Pas encore de liens",
@@ -4056,7 +4593,7 @@
         "noProducts": "Pas encore de produits",
         "noProductsHint": "Les produits de votre catalogue apparaissent ici.",
         "noEvents": "Pas encore d’événements",
-        "rsvps": "{count} inscriptions",
+        "rsvps": "{count, plural, one {# inscription} other {# inscriptions}}",
         "attended": "Inscrit ✓",
         "attend": "Participer",
         "noNewsletters": "Pas encore de numéros",
@@ -4086,16 +4623,25 @@
         },
         "liveOwnStream": "En direct via Aera",
         "liveWatchNow": "Regarder",
-        "liveWatchReplay": "Voir la rediffusion"
+        "liveWatchReplay": "Voir la rediffusion",
+        "withdrawRsvp": "Annuler l’inscription",
+        "rsvpGoing": "Vous êtes inscrit·e",
+        "feedNoPostsTeamHint": "Ici, c’est l’équipe qui publie. Les nouvelles publications apparaîtront ici."
       },
       "spaceCard": {
         "space": "Space",
-        "locked": "Verrouillé"
+        "locked": "Verrouillé",
+        "membersOnly": "Membres uniquement",
+        "paidOnly": "Adhésion payante"
       },
       "postTile": {
         "becomeMember": "Devenir membre",
         "exclusive": "Réservé aux membres",
-        "locked": "Verrouillé"
+        "locked": "Verrouillé",
+        "lockedUntitled": "Publication réservée aux membres",
+        "paidUntitled": "Publication payante",
+        "lockedHint": "Cette publication est réservée aux membres.",
+        "paidHint": "Vous pouvez débloquer cette publication à l'unité."
       },
       "planCard": {
         "current": "Votre offre",
@@ -4167,8 +4713,8 @@
         "emptyHint": "Soyez le premier à soutenir ce créateur.",
         "sending": "Envoi…",
         "anonymous": "Envoyer anonymement",
-        "thanks": "Merci pour ton soutien !",
-        "amountError": "Saisis un montant entre 1 et 1 000.",
+        "thanks": "Merci pour votre soutien !",
+        "amountError": "Saisissez un montant entre 1 et 1 000.",
         "checkoutError": "Le paiement n'a pas pu démarrer. Réessaie plus tard."
       },
       "calendar": {
@@ -4213,6 +4759,17 @@
         "like": "J’aime",
         "unlike": "Je n’aime plus",
         "locked": "Verrouillé"
+      },
+      "paywall": {
+        "belongsTo": "« {space} » fait partie de {tier} ({price}).",
+        "anyPaidFrom": "« {space} » est inclus dans toutes les adhésions payantes – dès {tier} ({price}).",
+        "pricePerMonth": "{price}/mois",
+        "pricePerYear": "{price}/an",
+        "viewTier": "Voir {tier}",
+        "becomeMember": "Devenir membre",
+        "memberHint": "Votre adhésion actuelle n'inclut pas cet espace.",
+        "freeMembers": "« {space} » est réservé aux membres. L’adhésion est gratuite.",
+        "joinFree": "Adhérer gratuitement"
       }
     },
     "nav": {
@@ -4220,7 +4777,8 @@
       "home": "Accueil",
       "library": "Bibliothèque",
       "members": "Membres",
-      "membership": "Abonnement"
+      "membership": "Abonnement",
+      "accountAndMembership": "Compte et adhésion"
     },
     "chrome": {
       "navAria": "Navigation de la communauté",
@@ -4237,7 +4795,8 @@
       "accountAndPurchases": "Compte et achats",
       "dashboard": "Tableau de bord",
       "logout": "Se déconnecter",
-      "login": "Se connecter"
+      "login": "Se connecter",
+      "moderation": "Modération"
     },
     "joinPage": {
       "title": "Choisissez votre adhésion",
@@ -4248,7 +4807,7 @@
       "signupCta": "Rejoindre {name} gratuitement",
       "haveAccount": "Vous avez déjà un compte ?",
       "login": "Se connecter",
-      "orChoose": "Ou choisissez directement un niveau",
+      "orChoose": "Ou choisissez directement une adhésion",
       "recommendedBadge": "Recommandé par le créateur",
       "popularBadge": "Populaire",
       "currentBadge": "Votre formule",
@@ -4266,7 +4825,10 @@
       "showLess": "Afficher moins",
       "noTiers": "Cette communauté n'a pas encore d'adhésions publiques.",
       "footnote": "Résiliable à tout moment. Paiements traités en toute sécurité via Stripe.",
-      "memberLimitReached": "Cette communauté n'accepte pas de nouveaux membres pour le moment. Réessaie plus tard."
+      "memberLimitReached": "Cette communauté n'accepte pas de nouveaux membres pour le moment. Réessaie plus tard.",
+      "guestPaidCta": "Créer un compte et adhérer",
+      "guestFreeHint": "Adhésion gratuite avec le formulaire",
+      "selectedBadge": "Votre choix"
     },
     "members": {
       "title": "Membres",
@@ -4336,6 +4898,35 @@
     "banner": {
       "close": "Fermer",
       "aria": "Message de la communauté"
+    },
+    "gate": {
+      "postTitle": "Cette publication est réservée aux membres",
+      "membersOnly": "Réservé aux membres",
+      "freeText": "Rejoignez {name} : l’adhésion est gratuite.",
+      "tierText": "Pour cela, vous avez besoin de l’adhésion « {tier} » de {name} ({price}).",
+      "noneText": "Seuls les membres de {name} peuvent voir ce contenu.",
+      "joinFree": "Adhérer gratuitement",
+      "joinTier": "Choisir {tier}",
+      "upgradeTo": "Passer à {tier}",
+      "viewMemberships": "Voir les adhésions",
+      "login": "Se connecter",
+      "postUnlocked": "La publication est débloquée."
+    },
+    "accountMenu": {
+      "open": "Menu du compte de {name}",
+      "account": "Compte et adhésion",
+      "creatorArea": "Espace créateur",
+      "logout": "Se déconnecter",
+      "moderation": "Modération"
+    },
+    "welcome": {
+      "title": "Bienvenue chez {name} ! Vous êtes désormais membre.",
+      "titleTier": "Bienvenue chez {name} ! Vous êtes désormais membre avec {tier}.",
+      "pendingTitle": "Merci ! Votre paiement à {name} est en cours de confirmation.",
+      "pendingText": "Cela ne prend généralement qu’un instant. Rechargez la page dans un moment et vous serez membre.",
+      "stepForum": "Présentez-vous dans « {space} »",
+      "stepSpace": "Aller à « {space} »",
+      "dismiss": "Fermer le message"
     }
   },
   "notifications": {
@@ -4348,7 +4939,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} aime votre commentaire."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} a commenté votre publication « {title} ».",
+      "COMMENT_REPLY": "{actor} a répondu à votre commentaire sur « {title} ».",
+      "REACTION": "{actor} aime votre publication « {title} ».",
+      "REACTION_COMMENT": "{actor} aime votre commentaire sur « {title} »."
     }
   },
   "search": {
@@ -4371,7 +4969,8 @@
     "title": "Langue d'affichage",
     "hint": "S'applique à votre affichage d'Aera sur cet appareil.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Langue d'affichage : {language}"
   },
   "spaces": {
     "commentsClosed": "Les commentaires sont fermés.",
@@ -4422,7 +5021,21 @@
     "joinToRead": "Devenir membre pour lire",
     "showReplies": "Afficher {count} réponses de plus",
     "emojiLabel": "Insérer un emoji",
-    "morePosts": "Plus de publications dans {space}"
+    "morePosts": "Plus de publications dans {space}",
+    "backToSpace": "Retour à {name}",
+    "upvoteAria": "Voter pour (score {score})",
+    "downvoteAria": "Voter contre (score {score})",
+    "commentFieldLabel": "Écrire un commentaire",
+    "replyFieldLabel": "Écrire une réponse",
+    "titleLabel": "Titre (facultatif)",
+    "titlePlaceholderExample": "De quoi s’agit-il ?",
+    "draftKept": "Votre brouillon est conservé, même si vous fermez.",
+    "discardDraft": "Supprimer le brouillon",
+    "discardDraftTitle": "Supprimer le brouillon ?",
+    "discardDraftBody": "Le titre et le texte seront supprimés. Cette action est irréversible.",
+    "discardDraftConfirm": "Supprimer",
+    "discardDraftCancel": "Continuer à écrire",
+    "likeAria": "J’aime ({count, plural, =0 {aucun pour l’instant} one {#} other {#}})"
   },
   "discover": {
     "eyebrow": "Communautés & créateurs",
@@ -4459,7 +5072,8 @@
       "myCommunities": "Vos communautés",
       "create": "Créer une communauté",
       "account": "Votre compte",
-      "login": "Se connecter"
+      "login": "Se connecter",
+      "creatorArea": "Espace créateur"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4492,6 +5106,11 @@
         "product": "Produits",
         "knowledge": "Connaissances"
       }
+    },
+    "postCount": "{count, plural, one {# publication} other {# publications}}",
+    "memberFeed": {
+      "title": "Nouveautés dans vos communautés",
+      "event": "Événement le {date}"
     }
   },
   "categories": {
@@ -4525,10 +5144,10 @@
       },
       "s2": {
         "title": "Des spaces pour tout ce que vous faites",
-        "text": "Créez autant de spaces que nécessaire : un fil pour les nouveautés, un forum pour les discussions, des cours, une boutique, des newsletters, des événements, un blog, une base de connaissances, des galeries d'images, une vidéothèque, un chat, un podcast, une collection de liens et vos propres espaces publicitaires. Pour chaque space, vous décidez s'il est visible par tous, par les membres seulement ou par les membres payants.",
-        "tag1": "14 types de spaces",
+        "text": "Créez les spaces dont vous avez besoin : un fil pour les nouveautés, un forum pour les discussions, des cours, une boutique, des newsletters, des événements, un blog, une base de connaissances, des galeries d'images, une vidéothèque, un chat, un podcast, une collection de liens et vos propres espaces publicitaires. Pour chaque space, vous décidez s'il est visible par tous, par les membres seulement ou par les membres payants.",
+        "tag1": "{count} types de spaces",
         "tag2": "Visibilité au choix",
-        "tag3": "Spaces illimités"
+        "tag3": "Nombre selon le forfait"
       },
       "s3": {
         "title": "Publications, commentaires & réactions",
@@ -4634,7 +5253,11 @@
     "forgotSubmit": "Demander le lien",
     "forgotSending": "Envoi…",
     "backTo": "Retour à la",
-    "backToLogin": "connexion"
+    "backToLogin": "connexion",
+    "resetDoneNotice": "Mot de passe modifié. Connectez-vous maintenant avec votre nouveau mot de passe.",
+    "loginHelp": "Aide à la connexion",
+    "signupJoinContext": "Vous rejoignez {name}",
+    "signupJoinContextTier": "Vous rejoignez {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Tarifs",
@@ -4646,17 +5269,17 @@
     "topupTitle": "Recharger des crédits",
     "topupText": "Besoin de plus entre-temps ? Les crédits achetés n'expirent pas et ne sont utilisés qu'après votre quota mensuel.",
     "creditsLabel": "Crédits",
-    "footnote": "1 crédit correspond à environ 1 000 tokens ; une requête d'assistant typique coûte 1 à 3 crédits. Les frais de plateforme sur vos revenus communautaires sont facturés séparément — uniquement sur les revenus réels.",
+    "footnote": "1 crédit correspond à environ 1 000 tokens ; une requête d'assistant typique coûte 1 à 3 crédits.",
     "plans": {
       "FREE": {
         "tagline": "Pour démarrer",
-        "f1": "11 spaces de base : fil d'actualité, forum, cours, événements, blog …",
+        "f1": "{count} spaces de base : fil d'actualité, forum, cours, événements, blog …",
         "f2": "Jusqu'à 5 spaces et 100 membres",
-        "f3": "Adhésions, médias et modération",
+        "f3": "Jusqu'à {tiers} adhésions (payantes aussi), médias et modération",
         "f4": "500 crédits AI par mois"
       },
       "STARTER": {
-        "tagline": "Quand tu veux gagner de l'argent",
+        "tagline": "Pour la boutique, les produits et les statistiques",
         "f1": "Tout ce qui est dans Free",
         "f2": "Statistiques, produits et versements",
         "f3": "Boutique, chat, pourboires, calendrier et planificateur",
@@ -4672,7 +5295,7 @@
       "SCALE": {
         "tagline": "Pour les équipes et les créateurs les plus ambitieux",
         "f1": "Tout ce qui est dans Pro",
-        "f2": "API, webhooks et tes propres espaces publicitaires",
+        "f2": "API, webhooks et vos propres espaces publicitaires",
         "f3": "Spaces et membres illimités",
         "f4": "500 Go de stockage · 50 000 crédits"
       }
@@ -4681,7 +5304,7 @@
     "compare": {
       "eyebrow": "En détail",
       "title": "Ce que contient chaque forfait",
-      "subtitle": "Chaque ligne est une fonctionnalité que tu peux utiliser immédiatement dans ton dashboard. Rien ne disparaît quand tu changes de forfait — il y en a simplement plus.",
+      "subtitle": "Chaque ligne est une fonctionnalité que vous pouvez utiliser immédiatement dans votre tableau de bord. En passant à un forfait supérieur, vous ne faites qu'en gagner.",
       "spacesGroup": "Types de spaces",
       "featuresGroup": "Fonctionnalités",
       "limitsGroup": "Limites",
@@ -4697,8 +5320,17 @@
       "limitStorage": "Stockage média",
       "limitCredits": "Crédits AI par mois",
       "storageValue": "{gb} Go",
-      "note": "Un code promo d'un partenaire débloque ton forfait instantanément — sans coordonnées de paiement."
-    }
+      "note": "Un code promo d'un partenaire débloque votre forfait instantanément — sans coordonnées de paiement.",
+      "feeNote": "Sur chaque vente dans votre communauté, nous prélevons {fee} de frais de plateforme – dans chaque forfait. S'y ajoutent les frais du prestataire de paiement (Stripe).",
+      "feesGroup": "Frais",
+      "feePlatform": "Frais sur vos ventes",
+      "feeProvider": "Frais du prestataire de paiement",
+      "feeProviderValue": "Selon le tarif Stripe",
+      "membersNote": "Les membres actifs sont toutes les personnes de votre communauté – vous et votre équipe compris, gratuits comme payants. Une fois la limite atteinte, les nouveaux membres ne peuvent rejoindre la communauté qu'après une mise à niveau.",
+      "scrollHint": "Faites glisser latéralement pour comparer",
+      "tableLabel": "Comparaison des forfaits"
+    },
+    "feeLine": "Frais sur vos ventes : {fee}"
   },
   "marketing": {
     "navDiscover": "Découvrir",
@@ -4722,7 +5354,10 @@
     "footerPrivacy": "Politique de confidentialité",
     "footerWithdrawal": "Droit de rétractation",
     "footerTagline": "Votre communauté. Votre marque. Votre business.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "À partir de {plan} : {items}",
+    "footerContact": "Contact",
+    "legalGermanOnly": "Ce texte juridique n'est disponible qu'en allemand. Seule la version allemande fait foi."
   },
   "home": {
     "badge": "Communauté · Adhésion · Commerce",
@@ -4798,7 +5433,7 @@
       "c1": {
         "title": "Des spaces pour tout ce que vous faites",
         "text": "Fil, forum, blog et base de connaissances, galeries d'images, vidéothèque et podcast, plus chat, collection de liens et espaces publicitaires. Chaque space peut être ouvert à tous, réservé aux membres ou aux membres payants — et partout on commente et on réagit.",
-        "tag1": "14 types de spaces",
+        "tag1": "{count} types de spaces",
         "tag2": "Visibilité au choix",
         "tag3": "Publications, commentaires & réactions"
       },
@@ -4891,16 +5526,16 @@
       "eyebrow": "En comparaison",
       "titleA": "Un seul endroit.",
       "titleB": "Au lieu de quatre factures.",
-      "text": "Les abonnements ici, les cours là, la newsletter ailleurs et la boutique encore à part. Aera réunit le tout sous ta propre marque, à un seul prix et via une seule caisse.",
+      "text": "Les abonnements ici, les cours là, la newsletter ailleurs et la boutique encore à part. Aera réunit le tout sous votre propre marque, à un seul prix et via une seule caisse.",
       "cta": "Voir les prix",
       "colYou": "Aera",
       "rowBase": "Prix de base par mois",
-      "rowFee": "Part sur tes revenus",
-      "rowFull": "Fonctionnalités complètes à partir de",
+      "rowFee": "Part sur vos revenus",
+      "rowFull": "Toutes les fonctionnalités à partir de",
       "aera": {
         "base": "0 — début gratuit",
-        "fee": "5 %",
-        "full": "{pro} par mois"
+        "fee": "{fee}",
+        "full": "{price} par mois ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -4921,26 +5556,27 @@
         "full": "99 $ (Pro)"
       },
       "footnote": "Données des pages tarifaires publiques, à jour en juillet 2026. Les frais du prestataire de paiement (environ 2,9 % + 0,30) s’ajoutent chez tous les acteurs — chez nous aussi.",
-      "includedTitle": "Inclus dans Aera sans supplément",
+      "includedTitle": "Inclus dans chaque forfait",
       "included": {
         "i1": {
-          "title": "20 espaces",
-          "text": "Fil, forum, cours, newsletter, événements, blog, savoir, galerie, vidéo, boutique, chat, podcast, live et plus — sous un même toit."
+          "title": "{count} spaces de base",
+          "text": "{list} – tout sous un même toit."
         },
         "i2": {
-          "title": "Quatre sources de revenus, une caisse",
-          "text": "Abonnements, produits numériques, contenus payants et événements passent par la même caisse."
+          "title": "Des adhésions dès le premier jour",
+          "text": "Jusqu'à {tiers} adhésions, gratuites ou payantes, plus des contenus payants – le tout via la même caisse."
         },
         "i3": {
-          "title": "Ta marque, ton adresse",
-          "text": "Ton domaine, tes couleurs, ton logo. Tes membres te voient, toi, pas nous."
+          "title": "Votre marque, votre adresse",
+          "text": "Votre logo, vos couleurs et votre propre adresse sur Aera. Vos membres vous voient, vous, pas nous."
         },
         "i4": {
-          "title": "Tes données restent les tiennes",
-          "text": "Membres, contenus et revenus exportables à tout moment."
+          "title": "Assistant AI inclus",
+          "text": "{credits} crédits AI par mois pour vos textes et vos idées, plus {gb} Go de stockage média."
         }
       }
-    }
+    },
+    "fromPlan": "à partir de {plan}"
   },
   "legalPurchase": {
     "immediateAccess": "Je demande un accès immédiat et reconnais que mon droit de rétractation prend fin au début de la livraison numérique. <withdrawal>Détails</withdrawal>.",
@@ -4965,24 +5601,25 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Le paiement n’a pas pu être lancé. Rien n’a été débité. Veuillez réessayer dans quelques minutes."
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Accepter l'invitation — Aera",
+      "inviteMeta": "Accepter l'invitation",
       "inviteInvalidTitle": "Invitation non valable",
       "inviteInvalidText": "Ce lien d'invitation a expiré ou a déjà été utilisé. Demandez une nouvelle invitation à l'administrateur de la communauté — ou utilisez « Mot de passe oublié » si votre compte est déjà actif.",
       "forgotPassword": "Mot de passe oublié",
       "inviteWelcome": "Bienvenue sur Aera",
       "inviteActivate": "Activez votre compte {email} en choisissant un mot de passe.",
-      "resetMeta": "Réinitialiser le mot de passe — Aera",
+      "resetMeta": "Réinitialiser le mot de passe",
       "invalidLinkTitle": "Lien non valable",
       "resetInvalidText": "Ce lien a expiré ou a déjà été utilisé.",
       "requestNewLink": "Demander un nouveau lien",
       "resetTitle": "Choisir un nouveau mot de passe",
       "forAccount": "Pour le compte {email}",
-      "verifyMeta": "Confirmer l'e-mail — Aera",
-      "verifyInvalidText": "Ce lien de confirmation a expiré ou n'est pas valable. Connectez-vous et demandez un nouveau lien depuis votre compte.",
+      "verifyMeta": "Confirmer l'e-mail",
+      "verifyInvalidText": "Ce lien de confirmation a expiré ou a déjà été utilisé. Demandez un nouveau lien.",
       "toLogin": "Aller à la connexion",
       "alreadyVerifiedTitle": "Déjà confirmé",
       "verifiedTitle": "E-mail confirmé",
@@ -5009,10 +5646,12 @@
       "rootDescription": "Aera est la plateforme tout-en-un des créateurs : communauté, abonnements, cours, événements, newsletters, boutique et IA — sous votre propre marque.",
       "loginMeta": "Connexion",
       "signupMeta": "Créer un compte",
-      "forgotMeta": "Mot de passe oublié — Aera",
+      "forgotMeta": "Mot de passe oublié",
       "pricingMeta": "Tarifs",
       "featuresMeta": "Fonctionnalités",
-      "manifestDescription": "Vos communautés : publications, cours, événements et messages — tout au même endroit."
+      "manifestDescription": "Vos communautés : publications, cours, événements et messages — tout au même endroit.",
+      "verifyInvalidVerified": "Ce lien n’est plus valide, mais votre adresse e-mail est déjà confirmée.",
+      "loginForNewLink": "Se connecter pour recevoir un nouveau lien"
     },
     "emails": {
       "sentVia": "Envoyé via Aera",
@@ -5053,7 +5692,7 @@
       "remove": "Retirer",
       "uploadImage": "Téléverser une image",
       "uploadCover": "Téléverser une couverture",
-      "uploadHeader": "Téléverser l'image d'en-tête",
+      "uploadHeader": "Téléverser une image de couverture",
       "headerHint": "Recommandé 1600 × 400 px · 5 Mo max.",
       "appliedImmediately": "Appliqué immédiatement.",
       "otherVideo": "Choisir une autre vidéo",
@@ -5065,7 +5704,7 @@
       "uploadingAudio": "Téléversement de l'audio…",
       "uploadAudio": "Téléverser un fichier audio",
       "audioHint": "MP3, M4A, WAV ou OGG · jusqu'à 256 Mo",
-      "imageHint": "JPG, PNG, WebP ou GIF · 5 Mo max.",
+      "imageHint": "JPG, PNG, WebP ou GIF · 5 Mo max. · idéalement carrée, au moins 512 × 512 px",
       "coverHint": "JPG, PNG, WebP · 5 Mo max.",
       "close": "Fermer",
       "coverBadge": "Couverture",
@@ -5087,7 +5726,8 @@
       "imageTooLarge": "L'image dépasse 5 Mo.",
       "allCommunities": "Toutes les communautés",
       "newCommunity": "Nouvelle communauté",
-      "createNewCommunity": "Créer une nouvelle communauté"
+      "createNewCommunity": "Créer une nouvelle communauté",
+      "coverAlt": "Image de couverture"
     },
     "frontend": {
       "homeSidebar": {
@@ -5097,7 +5737,8 @@
         "yourCommunities": "Vos communautés",
         "create": "Créer",
         "memberships": "Vos abonnements",
-        "login": "Connexion"
+        "login": "Connexion",
+        "creatorArea": "Espace créateur"
       },
       "chatHub": {
         "title": "Discussions",
@@ -5160,7 +5801,8 @@
       "notFound": {
         "title": "Page introuvable",
         "text": "Cette communauté ou cette page n'existe pas.",
-        "home": "Retour à l'accueil"
+        "home": "Retour à l'accueil",
+        "help": "Aller au centre d'aide"
       },
       "articleShare": {
         "label": "Partager",
@@ -5243,6 +5885,9 @@
       "bundle": "Lot",
       "tagline": "Accroche",
       "logoUrl": "URL du logo"
+    },
+    "pricePoint": {
+      "free": "Gratuit"
     }
   },
   "unsubscribe": {
@@ -5288,11 +5933,26 @@
     "preparing": "Préparation …",
     "verifying": "Vérification …",
     "done": "Terminé",
-    "failed": "Échec",
     "secondsLeft": "{count, plural, one {# seconde restante} other {# secondes restantes}}",
     "minutesLeft": "{count, plural, one {# minute restante} other {# minutes restantes}}",
     "more": "{count, plural, one {# envoi de plus} other {# envois de plus}}",
-    "dismiss": "Masquer"
+    "dismiss": "Masquer",
+    "retry": "Téléverser à nouveau",
+    "doneAnnounce": "Téléversé : {names}",
+    "errors": {
+      "connection": "La connexion au stockage a échoué. Vérifiez votre connexion Internet et réessayez.",
+      "canceled": "Le téléversement a été annulé. Réessayez.",
+      "storageRejected": "Le stockage a refusé le fichier. Réessayez ; si cela se reproduit, contactez le support.",
+      "notStarted": "Le téléversement n’a pas pu démarrer. Réessayez dans un instant.",
+      "verification": "Le fichier n’a pas pu être vérifié après le téléversement. Réessayez.",
+      "rejected": "Le fichier a été refusé lors de la vérification. Vérifiez son type et son contenu, ou choisissez un autre fichier.",
+      "quota": "Votre espace de stockage est plein. Supprimez des médias dans la médiathèque ou passez à une offre supérieure.",
+      "tooMany": "Trop de téléversements en peu de temps. Patientez un instant, puis réessayez.",
+      "signedOut": "Vous n’êtes plus connecté. Reconnectez-vous et téléversez le fichier à nouveau.",
+      "unavailable": "Les téléversements sont momentanément impossibles. Réessayez dans quelques minutes.",
+      "invalid": "Ce fichier ne peut pas être téléversé ici. Vérifiez son type et sa taille.",
+      "failed": "Le téléversement a échoué. Réessayez."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

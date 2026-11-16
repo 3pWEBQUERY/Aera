@@ -131,7 +131,7 @@ export function LiveSessionCard({
           {watchNowLabel && (
             <span
               className={cn(
-                "inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--action)] font-semibold text-[var(--action-fg)] transition group-hover:bg-[var(--action-hover)]",
+                "inline-flex shrink-0 items-center gap-2 rounded-full bg-[var(--primary)] font-semibold text-[var(--primary-fg)] transition group-hover:bg-[var(--primary-hover)]",
                 featured ? "px-5 py-2.5 text-sm" : "px-4 py-2 text-xs",
               )}
             >

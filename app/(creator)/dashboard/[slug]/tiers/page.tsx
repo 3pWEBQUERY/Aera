@@ -37,10 +37,13 @@ export default async function TiersPage({
     memberCount: t._count.memberships,
   }));
 
-  return <TiersManager
+  return (
+    <TiersManager
       slug={slug}
       tiers={tiers}
+      payoutsReady={Boolean(tenant.stripeAccountId)}
       stripeReady={features.marketplacePayments}
       showSetupHint={hasPlatformAdminAccess(user)}
-    />;
+    />
+  );
 }

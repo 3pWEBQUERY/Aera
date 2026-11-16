@@ -117,6 +117,7 @@ export async function POST(
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "live.create",
     targetType: "LiveSession",

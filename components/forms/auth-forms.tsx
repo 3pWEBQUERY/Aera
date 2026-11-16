@@ -1,10 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Input, Label } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
+import { submitWithoutReset } from "@/components/forms/submit-without-reset";
 import {
   signupAction,
   loginAction,
@@ -64,33 +65,82 @@ export function LegalAcceptanceField({ id }: { id: string }) {
   );
 }
 
+const PASSWORD_MIN = 8;
+
+/**
+ * Neues Passwort mit sichtbarer Regel und eigenem Fehler am Feld statt der
+ * Browser-Blase (die käme in Browsersprache). `minLength` fehlt deshalb
+ * bewusst; geprüft wird beim Absenden (checkNewPassword) und am Server.
+ */
+function NewPasswordField({
+  id,
+  invalid,
+  tooShort,
+}: {
+  id: string;
+  invalid: boolean;
+  tooShort: boolean;
+}) {
+  const t = useTranslations("auth");
+  const tAccount = useTranslations("account");
+  const hintId = `${id}-hint`;
+  const errorId = `${id}-error`;
+  return (
+    <div>
+      <Label htmlFor={id}>{t("password")}</Label>
+      <Input
+        id={id}
+        name="password"
+        type="password"
+        autoComplete="new-password"
+        aria-invalid={invalid || tooShort || undefined}
+        aria-describedby={tooShort ? `${hintId} ${errorId}` : hintId}
+        required
+      />
+      <p id={hintId} className="mt-1 text-xs text-slate-500">
+        {tAccount("passwordHint")}
+      </p>
+      {tooShort && (
+        <p id={errorId} role="alert" className="mt-1 text-sm text-red-700">
+          {t("passwordTooShortField", { min: PASSWORD_MIN })}
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Eigene Längenprüfung vor dem Absenden; fokussiert das Feld bei Fehler. */
+function checkNewPassword(form: HTMLFormElement, id: string, setTooShort: (v: boolean) => void) {
+  const field = form.querySelector<HTMLInputElement>(`#${id}`);
+  const short = Boolean(field && field.value.length > 0 && field.value.length < PASSWORD_MIN);
+  setTooShort(short);
+  if (short) field?.focus();
+  return !short;
+}
+
 export function SignupForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(signupAction, initial);
+  const [tooShort, setTooShort] = useState(false);
+  const invalid = Boolean(state.error);
   return (
-    <form action={action} aria-describedby={state.error ? "signup-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action, (form) => checkNewPassword(form, "password", setTooShort))}
+      aria-describedby={state.error ? "signup-error" : undefined}
+      className="space-y-4"
+    >
       {next && <input type="hidden" name="next" value={next} />}
       <FormError id="signup-error" message={state.error} />
       <div>
         <Label htmlFor="name">{t("name")}</Label>
-        <Input id="name" name="name" autoComplete="name" aria-invalid={state.error ? true : undefined} required />
+        <Input id="name" name="name" autoComplete="name" defaultValue={state.name} aria-invalid={invalid || undefined} required />
       </div>
       <div>
         <Label htmlFor="email">{t("email")}</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required />
+        <Input id="email" name="email" type="email" autoComplete="email" defaultValue={state.email} aria-invalid={invalid || undefined} required />
       </div>
-      <div>
-        <Label htmlFor="password">{t("password")}</Label>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          aria-invalid={state.error ? true : undefined}
-          minLength={8}
-          required
-        />
-      </div>
+      <NewPasswordField id="password" invalid={invalid} tooShort={tooShort} />
       <LegalAcceptanceField id="signup-legal-acceptance" />
       <button type="submit" className={CTA_CLASS} disabled={pending}>
         {pending ? t("signingUp") : t("signup")}
@@ -99,54 +149,193 @@ export function SignupForm({ next }: { next?: string }) {
   );
 }
 
+type LoginStage = "credentials" | "code";
+
 export function LoginForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(loginAction, initial);
+  const [stage, setStage] = useState<LoginStage>("credentials");
+  const [codeMode, setCodeMode] = useState<"totp" | "recovery">("totp");
+  const [email, setEmail] = useState("");
+  const [seenState, setSeenState] = useState(state);
+  // Modus, in dem der letzte Code-Fehler entstand — nach dem Umschalten
+  // zwischen App-Code und Wiederherstellungscode passt er nicht mehr.
+  const [errorMode, setErrorMode] = useState(codeMode);
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+  const codeRef = useRef<HTMLInputElement>(null);
+
+  // Neue Antwort der Action: Schritt ableiten. Ein Rate-Limit im Code-Schritt
+  // (ohne needsTotp) lässt den Schritt stehen, statt zurückzuspringen.
+  if (state !== seenState) {
+    setSeenState(state);
+    setErrorMode(codeMode);
+    if (state.needsTotp) setStage("code");
+    else if (state.errorField === "credentials") setStage("credentials");
+  }
+
+  // Falsches Passwort: Feld leeren und fokussieren, die E-Mail bleibt.
+  // Falscher Code: Code markieren, damit man ihn direkt überschreibt.
+  useEffect(() => {
+    if (state.errorField === "credentials" && passwordRef.current) {
+      passwordRef.current.value = "";
+      passwordRef.current.focus();
+    } else if (state.errorField === "code") {
+      codeRef.current?.select();
+    }
+  }, [state]);
+
+  const credentialsInvalid = state.errorField === "credentials";
+  const codeInvalid = state.errorField === "code" && errorMode === codeMode;
+  const generalError = state.error && state.errorField !== "code" ? state.error : undefined;
+  const currentEmail = email || state.email || "";
+  const forgotHref = currentEmail
+    ? `/forgot?email=${encodeURIComponent(currentEmail)}`
+    : "/forgot";
+
+  function backToCredentials() {
+    setStage("credentials");
+    setCodeMode("totp");
+    if (passwordRef.current) passwordRef.current.value = "";
+    // Nach dem Umschalten ist das E-Mail-Feld wieder sichtbar.
+    requestAnimationFrame(() => emailRef.current?.focus());
+  }
+
   return (
-    <form action={action} aria-describedby={state.error ? "login-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action)}
+      aria-describedby={generalError ? "login-error" : undefined}
+      className="space-y-4"
+    >
       {next && <input type="hidden" name="next" value={next} />}
-      <FormError id="login-error" message={state.error} />
-      <div>
-        <Label htmlFor="email">{t("email")}</Label>
-        <Input id="email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required />
-      </div>
-      <div>
-        <div className="flex items-center justify-between">
-          <Label htmlFor="password">{t("password")}</Label>
-          <a
-            href="/forgot"
-            className="mb-1.5 text-xs font-medium text-[color:var(--brand)] hover:underline"
-          >
-            {t("forgotPassword")}
-          </a>
-        </div>
-        <Input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete="current-password"
-          aria-invalid={state.error ? true : undefined}
-          required
-        />
-      </div>
-      {state.needsTotp && (
+      <FormError id="login-error" message={generalError} />
+
+      {/* Schritt 1. Im Code-Schritt nur ausgeblendet, nicht entfernt: So
+          bleiben E-Mail und Passwort im Formular, ohne erneut getippt oder
+          an den Server zurückgegeben zu werden. */}
+      <div hidden={stage === "code"} className="space-y-4">
         <div>
-          <Label htmlFor="totp">{t("totpLabel")}</Label>
+          <Label htmlFor="email">{t("email")}</Label>
           <Input
-            id="totp"
-            name="totp"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            aria-invalid={state.error ? true : undefined}
-            pattern="[0-9]{6}"
-            maxLength={6}
-            placeholder="123456"
-            autoFocus
+            ref={emailRef}
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            defaultValue={state.email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={credentialsInvalid || undefined}
+            aria-describedby={credentialsInvalid ? "login-error" : undefined}
             required
           />
-          <p className="mt-1 text-xs text-slate-500">{t("totpHint")}</p>
+        </div>
+        <div>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">{t("password")}</Label>
+            <a
+              href={forgotHref}
+              className="mb-1.5 text-xs font-medium text-[color:var(--brand)] hover:underline"
+            >
+              {t("forgotPassword")}
+            </a>
+          </div>
+          <Input
+            ref={passwordRef}
+            id="password"
+            name="password"
+            type="password"
+            autoComplete="current-password"
+            aria-invalid={credentialsInvalid || undefined}
+            aria-describedby={credentialsInvalid ? "login-error" : undefined}
+            required
+          />
+        </div>
+      </div>
+
+      {stage === "code" && (
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-base font-semibold text-slate-900">
+              {codeMode === "totp" ? t("totpLabel") : t("recoveryHeading")}
+            </h2>
+            <p className="mt-1 text-sm text-slate-600">
+              {t.rich("codeFor", {
+                email: state.email || currentEmail,
+                strong: (chunks) => <strong className="font-semibold text-slate-900">{chunks}</strong>,
+              })}{" "}
+              <button
+                type="button"
+                onClick={backToCredentials}
+                className="font-medium text-[color:var(--brand)] underline underline-offset-2 hover:no-underline"
+              >
+                {t("useOtherEmail")}
+              </button>
+            </p>
+          </div>
+          <div>
+            {codeMode === "totp" ? (
+              <>
+                <Label htmlFor="totp">{t("totpFieldLabel")}</Label>
+                <Input
+                  key="totp"
+                  ref={codeRef}
+                  id="totp"
+                  name="totp"
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
+                  aria-invalid={codeInvalid || undefined}
+                  aria-describedby={codeInvalid ? "login-code-hint login-code-error" : "login-code-hint"}
+                  pattern="[0-9]{6}"
+                  maxLength={6}
+                  placeholder="123456"
+                  autoFocus
+                  required
+                />
+                <p id="login-code-hint" className="mt-1 text-xs text-slate-500">
+                  {t("totpHint")}
+                </p>
+              </>
+            ) : (
+              <>
+                <Label htmlFor="recovery-code">{t("recoveryLabel")}</Label>
+                <Input
+                  key="recovery"
+                  ref={codeRef}
+                  id="recovery-code"
+                  name="recoveryCode"
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  aria-invalid={codeInvalid || undefined}
+                  aria-describedby={codeInvalid ? "login-code-hint login-code-error" : "login-code-hint"}
+                  maxLength={32}
+                  placeholder="abcd-efgh-jkmn"
+                  autoFocus
+                  required
+                />
+                <p id="login-code-hint" className="mt-1 text-xs text-slate-500">
+                  {t("recoveryHint")}
+                </p>
+              </>
+            )}
+            {codeInvalid && state.error && (
+              <p id="login-code-error" role="alert" className="mt-2 text-sm text-red-700">
+                {state.error}
+              </p>
+            )}
+          </div>
+          <button
+            type="button"
+            onClick={() => setCodeMode((m) => (m === "totp" ? "recovery" : "totp"))}
+            className="text-left text-sm font-medium text-[color:var(--brand)] underline underline-offset-2 hover:no-underline"
+          >
+            {codeMode === "totp" ? t("useRecoveryCode") : t("useAppCode")}
+          </button>
         </div>
       )}
+
       <button type="submit" className={CTA_CLASS} disabled={pending}>
         {pending ? t("loggingIn") : t("login")}
       </button>
@@ -170,8 +359,14 @@ export function MemberSignupForm({
 }) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState(memberSignupAction, initialEngage);
+  const [tooShort, setTooShort] = useState(false);
   return (
-    <form action={action} aria-describedby={state.error ? "member-signup-error" : undefined} className="space-y-4">
+    <form
+      action={action}
+      onSubmit={submitWithoutReset(action, (form) => checkNewPassword(form, "ms-password", setTooShort))}
+      aria-describedby={state.error ? "member-signup-error" : undefined}
+      className="space-y-4"
+    >
       <input type="hidden" name="tenant" value={tenant} />
       {refCode && <input type="hidden" name="ref" value={refCode} />}
       <FormError id="member-signup-error" message={state.error} />
@@ -183,18 +378,7 @@ export function MemberSignupForm({
         <Label htmlFor="ms-email">{t("email")}</Label>
         <Input id="ms-email" name="email" type="email" autoComplete="email" aria-invalid={state.error ? true : undefined} required />
       </div>
-      <div>
-        <Label htmlFor="ms-password">{t("password")}</Label>
-        <Input
-          id="ms-password"
-          name="password"
-          type="password"
-          autoComplete="new-password"
-          aria-invalid={state.error ? true : undefined}
-          minLength={8}
-          required
-        />
-      </div>
+      <NewPasswordField id="ms-password" invalid={Boolean(state.error)} tooShort={tooShort} />
       <LegalAcceptanceField id="member-signup-legal-acceptance" />
       <div className="border-t border-slate-200 pt-4">
         <label htmlFor="member-signup-newsletter" className="flex cursor-pointer items-start gap-3 text-sm text-slate-700">

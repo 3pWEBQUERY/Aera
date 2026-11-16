@@ -10,6 +10,8 @@ export interface MarketingPlanLabels {
   credits: string;
   /** Already-interpolated "{n} GB media storage" string. */
   storage: string;
+  /** Already-interpolated platform-fee line ("Gebühr auf deine Umsätze: 5 %"). */
+  fee?: string;
 }
 
 /**
@@ -90,6 +92,17 @@ export function MarketingPlanCard({
           </span>
         ))}
       </div>
+
+      {labels.fee && (
+        <p
+          className={cn(
+            "mt-4 text-sm leading-5",
+            featured ? "text-white/70" : "text-[#161613]/65",
+          )}
+        >
+          {labels.fee}
+        </p>
+      )}
 
       <div
         className={cn(

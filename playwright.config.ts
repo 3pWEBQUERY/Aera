@@ -15,6 +15,10 @@ export default defineConfig({
     : [["list"]],
   use: {
     baseURL,
+    // Die Specs pruefen deutsche Texte. Ohne Sprach-Cookie folgt die App der
+    // Browsersprache (Accept-Language), und Desktop Chrome meldet en-US.
+    locale: "de-CH",
+    timezoneId: "Europe/Zurich",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
     video: "retain-on-failure",

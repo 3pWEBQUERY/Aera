@@ -11,6 +11,8 @@ import type { ActionState } from "@/app/actions/dashboard";
 import { Icon } from "./icons";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, formatPrice } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface MySubscriptionData {
   tenantName: string;
@@ -38,6 +40,8 @@ export function MySubscription({
   const [state, cancelAction, pending] = useActionState(cancelOwnMembershipAction, initial);
   const [leaving, setLeaving] = useState(false);
   const t = useTranslations("dashboard.subscription");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tSafety = useTranslations("billingSafety");
   const tRoles = useTranslations("dashboard.roles");
   const locale = useLocale();
@@ -150,9 +154,13 @@ export function MySubscription({
               {isPaid && !cancelled && (
                 <form
                   action={cancelAction}
-                  onSubmit={(e) => {
-                    if (!confirm(t("confirmCancel"))) e.preventDefault();
-                  }}
+                  onSubmit={(e) =>
+                    confirmSubmit(e, {
+                      title: t("confirmCancelTitle", { name: data.tenantName }),
+                      body: t("cancelText"),
+                      confirmLabel: t("cancelTitle"),
+                    })
+                  }
                 >
                   <input type="hidden" name="tenant" value={slug} />
                   <button
@@ -168,11 +176,12 @@ export function MySubscription({
                 <form
                   action={leaveOwnCommunityAction}
                   onSubmit={(e) => {
-                    if (!confirm(t("confirmLeave", { name: data.tenantName }))) {
-                      e.preventDefault();
-                    } else {
-                      setLeaving(true);
-                    }
+                    const proceed = confirmSubmit(e, {
+                      title: t("confirmLeave", { name: data.tenantName }),
+                      body: t("leaveText"),
+                      confirmLabel: t("leaveCommunity"),
+                    });
+                    if (proceed) setLeaving(true);
                   }}
                 >
                   <input type="hidden" name="tenant" value={slug} />
@@ -194,6 +203,7 @@ export function MySubscription({
             )}
           </section>
         )}
+        {confirmDialog}
       </div>
     </div>
   );

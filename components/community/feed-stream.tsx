@@ -208,10 +208,20 @@ function FeedCard({
           </p>
         )}
 
+        {/* Gesperrt kommt kein Text an — nur Platzhalterzeilen zeigen, dass
+            hier etwas steht. */}
+        {locked && !post.body && (
+          <div aria-hidden="true" className="mt-3 space-y-2.5">
+            <div className="h-3 w-full rounded-full bg-[#161613]/[0.08]" />
+            <div className="h-3 w-11/12 rounded-full bg-[#161613]/[0.08]" />
+            <div className="h-3 w-2/3 rounded-full bg-[#161613]/[0.08]" />
+          </div>
+        )}
+
         {locked && (
           <Link
             href={`/c/${slug}/join`}
-            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="lock" size={15} />
             {post.lockKind === "paid" && post.priceLabel

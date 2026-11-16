@@ -1,21 +1,25 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useActionState, useEffect, useId, useState, useTransition } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   adminUpdateTenantAction,
   adminDeleteTenantAction,
+  adminVerifyTenantDomainAction,
   type AdminState,
+  type AdminDomainState,
 } from "@/app/actions/admin";
 import { Sheet } from "@/components/dashboard/sheet";
 import { Icon } from "@/components/dashboard/icons";
 import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Input, Label, Select } from "@/components/ui/field";
 import { CATEGORIES, categoryByKey } from "@/lib/categories";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { PLAN_ORDER } from "@/lib/credit-plans";
 import { PlanBadge, PLAN_LABEL } from "@/components/dashboard/plan-badge";
 import type { PlanKey } from "@/lib/plan-features";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface TenantRow {
   id: string;
@@ -25,6 +29,8 @@ export interface TenantRow {
   logoUrl: string | null;
   primaryColor: string;
   customDomain: string | null;
+  /** ISO-Zeitpunkt des DNS-Nachweises; null = nicht verifiziert, wird nicht ausgeliefert. */
+  customDomainVerifiedAt: string | null;
   platformFeePercent: number;
   status: "ACTIVE" | "SUSPENDED" | "DELETING";
   category: string | null;
@@ -41,15 +47,30 @@ export interface TenantRow {
 }
 
 const initial: AdminState = {};
+const initialDomain: AdminDomainState = {};
+
+const STATUS_PILL: Record<TenantRow["status"], { cls: string; key: string }> = {
+  ACTIVE: { cls: "bg-emerald-50 text-emerald-700", key: "statusActive" },
+  SUSPENDED: { cls: "bg-amber-50 text-amber-700", key: "statusSuspended" },
+  DELETING: { cls: "bg-red-50 text-red-700", key: "statusDeleting" },
+};
 
 export function CommunitiesManager({
   rows,
   total,
   q,
+  status,
+  plan,
+  rootDomain,
 }: {
   rows: TenantRow[];
   total: number;
   q: string;
+  /** Aktiver Status-Filter ("" = alle). */
+  status: string;
+  /** Aktiver Paket-Filter ("" = alle). */
+  plan: string;
+  rootDomain: string;
 }) {
   const [editing, setEditing] = useState<TenantRow | null>(null);
   const t = useTranslations("admin.communities");
@@ -72,23 +93,65 @@ export function CommunitiesManager({
         </div>
       </div>
 
-      <form method="GET" action="/admin/communities" className="max-w-md">
-        <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={17} className="shrink-0 text-slate-500" />
-          <input
-            type="search"
-            name="q"
-            defaultValue={q}
-            placeholder={t("searchPlaceholder")}
-            aria-label={t("searchAria")}
-            className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
-          />
-          <button
-            type="submit"
-            className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
-          >
-            {tc("search")}
-          </button>
+      <form
+        method="GET"
+        action="/admin/communities"
+        role="search"
+        className="flex flex-col gap-3 lg:flex-row lg:items-end"
+      >
+        <div className="min-w-0 flex-1 lg:max-w-md">
+          <label htmlFor="ac-q" className="mb-1.5 block text-sm font-medium text-slate-700">
+            {t("searchAria")}
+          </label>
+          <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
+            <Icon name="search" size={17} className="shrink-0 text-slate-500" />
+            <input
+              id="ac-q"
+              type="search"
+              name="q"
+              defaultValue={q}
+              placeholder={t("searchPlaceholder")}
+              className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-500"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:flex sm:items-end">
+          <div className="min-w-0 sm:w-44">
+            <Label htmlFor="ac-status">{t("status")}</Label>
+            <Select id="ac-status" name="status" defaultValue={status}>
+              <option value="">{t("filterAll")}</option>
+              <option value="ACTIVE">{t("statusActive")}</option>
+              <option value="SUSPENDED">{t("statusSuspended")}</option>
+              <option value="DELETING">{t("statusDeleting")}</option>
+            </Select>
+          </div>
+          <div className="min-w-0 sm:w-40">
+            <Label htmlFor="ac-plan">{t("plan")}</Label>
+            <Select id="ac-plan" name="plan" defaultValue={plan}>
+              <option value="">{t("filterAll")}</option>
+              {PLAN_ORDER.map((p) => (
+                <option key={p} value={p}>
+                  {PLAN_LABEL[p]}
+                </option>
+              ))}
+            </Select>
+          </div>
+          <div className="col-span-2 flex items-center gap-3 sm:col-span-1">
+            <button
+              type="submit"
+              className="inline-flex h-10 shrink-0 items-center rounded-xl bg-[var(--primary)] px-4 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+            >
+              {t("applyFilters")}
+            </button>
+            {(q || status || plan) && (
+              <a
+                href="/admin/communities"
+                className="inline-flex min-h-6 items-center text-sm font-medium text-slate-600 underline-offset-2 hover:text-slate-900 hover:underline"
+              >
+                {t("resetFilters")}
+              </a>
+            )}
+          </div>
         </div>
       </form>
 
@@ -96,25 +159,27 @@ export function CommunitiesManager({
         {rows.length === 0 ? (
           <EmptyState
             icon="spaces"
-            title={q ? tc("noResults") : t("emptyTitle")}
-            hint={q ? t("noResultsHint", { q }) : t("emptyHint")}
+            title={q || status || plan ? tc("noResults") : t("emptyTitle")}
+            hint={q ? t("noResultsHint", { q }) : status || plan ? t("noFilterResultsHint") : t("emptyHint")}
           />
         ) : (
           rows.map((tn) => {
             const cat = categoryByKey(tn.category);
+            const pill = STATUS_PILL[tn.status] ?? STATUS_PILL.ACTIVE;
+            // Waehrend der Loeschung ist die Community eingefroren.
+            const editable = tn.status !== "DELETING";
             return (
               <div
                 key={tn.id}
-                onClick={() => setEditing(tn)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    setEditing(tn);
-                  }
-                }}
-                className="group flex cursor-pointer flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] sm:flex-nowrap sm:gap-4"
+                // Die Karte ist fuer die Maus klickbar; Tastatur und Screenreader
+                // nutzen den Button am Namen (eine role="button"-Karte darf
+                // keine Links enthalten).
+                onClick={editable ? () => setEditing(tn) : undefined}
+                className={cn(
+                  "group flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition sm:flex-nowrap sm:gap-4",
+                  "focus-within:ring-2 focus-within:ring-[var(--brand-ring)]",
+                  editable ? "cursor-pointer hover:border-slate-300 hover:shadow-sm" : "bg-slate-50",
+                )}
               >
                 {tn.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -125,6 +190,7 @@ export function CommunitiesManager({
                   />
                 ) : (
                   <span
+                    aria-hidden
                     className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-base font-bold text-white"
                     style={{ backgroundColor: tn.primaryColor }}
                   >
@@ -133,50 +199,67 @@ export function CommunitiesManager({
                 )}
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <p className="font-semibold text-slate-900">{tn.name}</p>
+                    {editable ? (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditing(tn);
+                        }}
+                        aria-label={t("editAria", { name: tn.name })}
+                        className="min-h-6 text-left font-semibold text-slate-900 focus-visible:outline-none"
+                      >
+                        {tn.name}
+                      </button>
+                    ) : (
+                      <p className="font-semibold text-slate-900">{tn.name}</p>
+                    )}
                     {/* Paket auf einen Blick — die haeufigste Frage in dieser Liste. */}
                     <PlanBadge plan={tn.creatorPlan} />
                     <Pill className="bg-slate-100 text-slate-600">
-                      {t("membersShort", { count: nf.format(tn.members) })}
+                      {t("membersCount", { count: tn.members })}
                     </Pill>
                     <Pill className="bg-slate-100 text-slate-600">
-                      {t("postsShort", { count: nf.format(tn.posts) })}
+                      {t("postsShort", { count: tn.posts })}
                     </Pill>
                     {cat && (
                       <Pill className="bg-[var(--brand-soft)] text-[var(--brand)]">
                         {tCat(cat.key)}
                       </Pill>
                     )}
-                    <Pill
-                      className={
-                        tn.status === "ACTIVE"
-                          ? "bg-emerald-50 text-emerald-700"
-                          : "bg-amber-50 text-amber-700"
-                      }
-                    >
-                      {tn.status === "ACTIVE" ? t("statusActive") : t("statusSuspended")}
-                    </Pill>
+                    <Pill className={pill.cls}>{t(pill.key)}</Pill>
                   </div>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-x-2 truncate text-sm text-slate-500">
-                    <span className="truncate">
+                  <p className="mt-0.5 flex min-w-0 flex-wrap items-center gap-x-2 text-sm text-slate-500">
+                    <span className="min-w-0 truncate">
                       /c/{tn.slug} · {tn.ownerEmail} · {t("since", { date: formatDate(tn.createdAt, locale) })}
                     </span>
-                    <a
-                      href={`/c/${tn.slug}`}
-                      target="_blank"
-                      rel="noreferrer"
-                      onClick={(e) => e.stopPropagation()}
-                      className="inline-flex shrink-0 items-center gap-1 font-medium text-[color:var(--brand)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
-                    >
-                      <Icon name="external" size={13} />
-                      {tc("open")}
-                    </a>
+                    {editable && (
+                      <a
+                        href={`/c/${tn.slug}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                        aria-label={t("openAria", { name: tn.name })}
+                        className="inline-flex min-h-6 shrink-0 items-center gap-1 font-medium text-[color:var(--brand)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+                      >
+                        <Icon name="external" size={13} />
+                        {tc("open")}
+                      </a>
+                    )}
                   </p>
+                  {!editable && (
+                    <p className="mt-1 text-xs text-slate-600">{t("deletingHint")}</p>
+                  )}
                 </div>
-                <span className="flex w-full items-center justify-end gap-1.5 border-t border-slate-100 pt-2.5 text-sm font-medium text-slate-500 sm:w-auto sm:rounded-lg sm:border-0 sm:px-3 sm:py-1.5 sm:pt-0 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
-                  <Icon name="settings" size={16} />
-                  {tc("edit")}
-                </span>
+                {editable && (
+                  <span
+                    aria-hidden
+                    className="flex w-full items-center justify-end gap-1.5 border-t border-slate-100 pt-2.5 text-sm font-medium text-slate-500 sm:w-auto sm:rounded-lg sm:border-0 sm:px-3 sm:py-1.5 sm:pt-0 sm:opacity-0 sm:transition sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+                  >
+                    <Icon name="settings" size={16} />
+                    {tc("edit")}
+                  </span>
+                )}
               </div>
             );
           })
@@ -191,23 +274,59 @@ export function CommunitiesManager({
         icon="spaces"
       >
         {editing && (
-          <EditForm key={editing.id} tenant={editing} onDone={() => setEditing(null)} />
+          <EditForm
+            key={editing.id}
+            tenant={editing}
+            rootDomain={rootDomain}
+            onDone={() => setEditing(null)}
+          />
         )}
       </Sheet>
     </div>
   );
 }
 
-function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void }) {
+function EditForm({
+  tenant,
+  rootDomain,
+  onDone,
+}: {
+  tenant: TenantRow;
+  rootDomain: string;
+  onDone: () => void;
+}) {
   const [state, action, pending] = useActionState(adminUpdateTenantAction, initial);
+  // Ohne <form action>: React setzte das Formular sonst nach jedem Absenden auf
+  // die Ausgangswerte zurueck — bei einem Fehler am Feld waere die Eingabe weg.
+  const [, startSave] = useTransition();
+  const [domain, setDomain] = useState(tenant.customDomain ?? "");
+  const [verifyState, verifyAction, verifying] = useActionState(
+    adminVerifyTenantDomainAction,
+    initialDomain,
+  );
+  const [, startVerify] = useTransition();
+  const domainErrorId = useId();
+  const domainStatusId = useId();
+  const domainError = state.fieldErrors?.customDomain;
+  const verifiedAt =
+    verifyState.verifiedAt !== undefined ? verifyState.verifiedAt : tenant.customDomainVerifiedAt;
+  const savedDomain = tenant.customDomain ?? "";
+  const domainEdited = domain.trim().toLowerCase() !== savedDomain;
   const [confirmSlug, setConfirmSlug] = useState("");
   const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("admin.communities");
+  const locale = useLocale();
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const tCat = useTranslations("categories");
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
+  // Fehler am Feld: dorthin springen, damit man ihn nicht unten im Sheet sucht.
+  useEffect(() => {
+    if (domainError) document.getElementById("at-domain")?.focus();
+  }, [domainError, state]);
 
   const formId = "admin-tenant-edit";
 
@@ -251,7 +370,16 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
 
           <FormError message={deleteError ?? state.error} />
 
-          <form id={formId} action={action} className="space-y-5">
+          <form
+            id={formId}
+            onSubmit={(e) => {
+              e.preventDefault();
+              const fd = new FormData(e.currentTarget);
+              startSave(() => action(fd));
+            }}
+            noValidate
+            className="space-y-5"
+          >
             <input type="hidden" name="tenantId" value={tenant.id} />
             <div>
               <Label htmlFor="at-name">{t("name")}</Label>
@@ -328,12 +456,93 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
               <Input
                 id="at-domain"
                 name="customDomain"
-                defaultValue={tenant.customDomain ?? ""}
+                value={domain}
+                onChange={(e) => setDomain(e.target.value)}
                 placeholder={t("customDomainPlaceholder")}
+                inputMode="url"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                aria-invalid={domainError ? true : undefined}
+                aria-describedby={cn(domainError && domainErrorId, savedDomain && domainStatusId) || undefined}
               />
-              <p className="mt-1 text-xs text-slate-500">
-                {t("customDomainHint")}
-              </p>
+              {domainError ? (
+                <p id={domainErrorId} role="alert" className="mt-1.5 text-sm font-medium text-red-700">
+                  {domainError}
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-slate-500">{t("customDomainHint")}</p>
+              )}
+
+              {savedDomain && (
+                <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="min-w-0 truncate font-mono text-sm text-slate-800">{savedDomain}</span>
+                    <Pill
+                      className={
+                        verifiedAt ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"
+                      }
+                    >
+                      {verifiedAt ? t("domainVerified") : t("domainUnverified")}
+                    </Pill>
+                  </div>
+                  <p id={domainStatusId} className="mt-1.5 text-xs leading-5 text-slate-600">
+                    {verifiedAt
+                      ? t("domainVerifiedHint", { date: formatDate(verifiedAt, locale) })
+                      : t("domainUnverifiedHint")}
+                  </p>
+                  {!verifiedAt && (
+                    <ul className="mt-2 space-y-1 text-xs leading-5 text-slate-600">
+                      <li>
+                        {t.rich("domainTxt", {
+                          domain: savedDomain,
+                          value: `aera-verify=${tenant.id}`,
+                          code: (chunks) => (
+                            <code className="break-all rounded bg-white px-1 font-mono text-slate-800">{chunks}</code>
+                          ),
+                        })}
+                      </li>
+                      <li>
+                        {t.rich("domainCname", {
+                          domain: savedDomain,
+                          root: rootDomain,
+                          code: (chunks) => (
+                            <code className="break-all rounded bg-white px-1 font-mono text-slate-800">{chunks}</code>
+                          ),
+                        })}
+                      </li>
+                    </ul>
+                  )}
+                  <div className="mt-3 flex flex-wrap items-center gap-3">
+                    <button
+                      type="button"
+                      disabled={verifying || domainEdited}
+                      onClick={() => {
+                        const fd = new FormData();
+                        fd.set("tenantId", tenant.id);
+                        startVerify(() => verifyAction(fd));
+                      }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      <Icon name="refresh" size={14} />
+                      {verifying ? t("domainChecking") : t("domainCheck")}
+                    </button>
+                    {domainEdited && (
+                      <span className="text-xs text-slate-600">{t("domainSaveFirst")}</span>
+                    )}
+                  </div>
+                  <div aria-live="polite">
+                    {!verifying && verifyState.verified && (
+                      <p className="mt-2 text-sm font-medium text-emerald-700">{t("domainCheckOk")}</p>
+                    )}
+                  </div>
+                  {!verifying && verifyState.error && (
+                    <p role="alert" className="mt-2 break-words text-sm text-red-700">
+                      {verifyState.error}
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </form>
 
@@ -342,7 +551,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
               <Icon name="alert" size={15} />
               {tc("dangerZone")}
             </p>
-            <p className="mt-1 text-xs text-red-600/90">
+            <p className="mt-1 text-xs text-red-700">
               {t.rich("dangerDesc", {
                 slug: tenant.slug,
                 code: (chunks) => <span className="font-mono font-semibold">{chunks}</span>,
@@ -350,11 +559,14 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm", { name: tenant.name }))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirm", { name: tenant.name }),
+                  body: t("deleteConfirmBody"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3 flex flex-col gap-2 sm:flex-row"
             >
               <input type="hidden" name="tenantId" value={tenant.id} />
@@ -391,11 +603,12 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
           type="submit"
           form={formId}
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
         >
           {pending ? tc("saving") : tc("saveChanges")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

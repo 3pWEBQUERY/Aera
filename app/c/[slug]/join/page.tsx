@@ -1,13 +1,16 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { joinCommunityAction } from "@/app/actions/engage";
 import { MemberSignupForm } from "@/components/forms/auth-forms";
 import { PurchaseSubmitButton } from "@/components/community/purchase-submit-button";
+import { ButtonLink } from "@/components/ui/button";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { Icon } from "@/components/dashboard/icons";
 import { cn, formatPrice } from "@/lib/utils";
+import { isCommunityReturnPath } from "@/lib/join-offer";
 
 const INTERVAL_KEY: Record<string, string | null> = {
   FREE: null,
@@ -29,10 +32,12 @@ export default async function JoinPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ ref?: string; error?: string }>;
+  searchParams: Promise<{ ref?: string; error?: string; tier?: string; next?: string }>;
 }) {
   const { slug } = await params;
-  const { ref, error } = await searchParams;
+  const { ref, error, tier: tierParam, next: nextParam } = await searchParams;
+  // Rücksprung nach dem Beitritt (z. B. auf einen geteilten Beitrag).
+  const returnTo = isCommunityReturnPath(nextParam, slug) ? nextParam : null;
   const refCode = (ref ?? "").trim().slice(0, 32) || undefined;
   const community = await getCommunityContext(slug);
   if (!community) notFound();
@@ -83,6 +88,18 @@ export default async function JoinPage({
     recommended?.id ??
     (popularTier && (countMap.get(popularTier.id) ?? 0) > 0 ? popularTier.id : null);
   const highlightLabel = recommended ? t("recommendedBadge") : t("popularBadge");
+  // Vor der Registrierung oder Anmeldung gewählte Mitgliedschaft: bleibt über
+  // den Umweg erhalten (?tier=…) und steht danach hervorgehoben bereit.
+  const selectedId =
+    tierParam && tiers.some((x) => x.id === tierParam) ? tierParam : null;
+  const joinPath = (tierId?: string) => {
+    const qs = new URLSearchParams({
+      ...(tierId ? { tier: tierId } : {}),
+      ...(returnTo ? { next: returnTo } : {}),
+      ...(refCode ? { ref: refCode } : {}),
+    }).toString();
+    return `/c/${slug}/join${qs ? `?${qs}` : ""}${tierId ? `#tier-${tierId}` : ""}`;
+  };
 
   // Im Zwei-Spalten-Layout (Gast: Signup links, Tiers rechts) maximal zwei Karten nebeneinander.
   const cols =
@@ -100,7 +117,7 @@ export default async function JoinPage({
         <h1 className="display-serif text-3xl text-[#161613] sm:text-4xl">
           {t("title")}
         </h1>
-        <p className="mt-3 text-[#161613]/60">
+        <p className="mt-3 text-[#161613]/70">
           {t("subtitle", { name: tenant.name })}
         </p>
       </div>
@@ -127,6 +144,14 @@ export default async function JoinPage({
           className="mx-auto mt-6 max-w-xl rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-800"
         >
           {tLegal("requiredError")}
+        </p>
+      )}
+      {(error === "checkout" || error === "payments-unavailable") && (
+        <p
+          role="alert"
+          className="mx-auto mt-6 max-w-xl rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-center text-sm text-red-700"
+        >
+          {tSafety("checkoutNotStarted")}
         </p>
       )}
 
@@ -160,18 +185,23 @@ export default async function JoinPage({
             </div>
             <p className="mt-4 text-center text-sm text-[#161613]/60">
               {t("haveAccount")}{" "}
-              <a
-                href={`/login?next=${encodeURIComponent(`/c/${slug}/join`)}`}
+              <Link
+                href={`/login?next=${encodeURIComponent(joinPath(selectedId ?? undefined))}`}
                 className="font-semibold text-[#161613] underline underline-offset-4 hover:opacity-70"
               >
                 {t("login")}
-              </a>
+              </Link>
             </p>
           </div>
-          <p className="mt-8 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65">
-            {t("orChoose")}
-          </p>
         </div>
+      )}
+
+      <div>
+      {/* Überleitung gehört über die Karten, nicht unter das Formular. */}
+      {!user && tiers.length > 0 && (
+        <h2 className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65 lg:text-left">
+          {t("orChoose")}
+        </h2>
       )}
 
       <div
@@ -184,27 +214,36 @@ export default async function JoinPage({
             : user
               ? "mx-auto mt-10 max-w-4xl"
               : "",
-          !user && "mt-10 lg:mt-0",
           cols,
         )}
       >
         {tiers.map((tier) => {
           const isCurrent = currentTierId === tier.id;
           const switchBlocked = Boolean(activeStripeSubscription) && Boolean(currentTierId) && !isCurrent;
-          const isPopular = popularId === tier.id && !isCurrent;
+          const isSelected = selectedId === tier.id && !isCurrent;
+          const isPopular = popularId === tier.id && !isCurrent && !isSelected;
+          const isPaidTier = tier.priceCents > 0;
           const benefits = benefitsOf(tier.description);
           const memberCount = countMap.get(tier.id) ?? 0;
           const cover = coverOf(tier);
           return (
             <div
               key={tier.id}
+              id={`tier-${tier.id}`}
               className={cn(
-                "relative flex flex-col overflow-hidden rounded-2xl border bg-white",
-                isPopular
-                  ? "border-[var(--brand)] shadow-lg ring-1 ring-[var(--brand)]"
-                  : "border-slate-200 shadow-sm",
+                "relative flex scroll-mt-24 flex-col overflow-hidden rounded-2xl border bg-white",
+                isSelected
+                  ? "border-[var(--action-strong)] shadow-lg ring-2 ring-[var(--action-strong)]"
+                  : isPopular
+                    ? "border-[var(--brand)] shadow-lg ring-1 ring-[var(--brand)]"
+                    : "border-slate-200 shadow-sm",
               )}
             >
+              {isSelected && (
+                <div className="bg-[var(--action)] px-4 py-1.5 text-center text-xs font-semibold uppercase tracking-wide text-[var(--action-fg)]">
+                  {t("selectedBadge")}
+                </div>
+              )}
               {/* Highlight banner like the reference design. */}
               {isPopular && (
                 <div className="bg-[var(--brand)] px-4 py-1.5 text-center text-xs font-semibold uppercase tracking-wide text-white">
@@ -242,40 +281,63 @@ export default async function JoinPage({
                 </p>
               )}
 
+              {!user ? (
+                // Gäste: Die kostenlose Mitgliedschaft gibt es über das
+                // Formular nebenan — ein zweiter Gratis-Knopf wäre doppelt.
+                // Bezahlte Mitgliedschaften brauchen erst ein Konto; die Wahl
+                // reist über `next` mit und steht danach wieder bereit.
+                isPaidTier ? (
+                  <ButtonLink
+                    href={`/signup?next=${encodeURIComponent(joinPath(tier.id))}`}
+                    variant="primary"
+                    size="md"
+                    className="mt-5 w-full rounded-xl"
+                  >
+                    {t("guestPaidCta")}
+                  </ButtonLink>
+                ) : (
+                  <p className="mt-5 flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-600">
+                    <Icon name="check" size={16} className="shrink-0 text-emerald-700" />
+                    {t("guestFreeHint")}
+                  </p>
+                )
+              ) : (
               <form action={joinCommunityAction} className="mt-5">
-                <input type="hidden" name="tenant" value={slug} />
-                <input type="hidden" name="tierId" value={tier.id} />
-                {refCode && <input type="hidden" name="ref" value={refCode} />}
-                {user && !isCurrent && (
-                  <label className="mb-4 flex cursor-pointer items-start gap-2.5 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600">
-                    <input
-                      name="newsletterOptIn"
-                      type="checkbox"
-                      className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-slate-900 focus:ring-[var(--brand-ring)]"
-                    />
-                    <span>{t("newsletterOptInLabel", { name: tenant.name })}</span>
-                  </label>
-                )}
-                {tier.priceCents > 0 && (
-                  <ImmediateAccessConsent className="mb-3" />
-                )}
-                <PurchaseSubmitButton
-                  variant={tier.priceCents > 0 ? "primary" : "secondary"}
-                  size="md"
-                  className="w-full rounded-xl"
-                  disabled={isCurrent || switchBlocked}
-                >
-                  {switchBlocked
-                    ? tSafety("switchBlocked")
-                    : isCurrent
-                    ? t("ctaCurrent")
-                    : currentTierId
-                      ? t("ctaSwitch")
-                      : tier.priceCents > 0
-                        ? t("ctaJoin")
-                        : t("ctaJoinFree")}
-                </PurchaseSubmitButton>
-              </form>
+                  <input type="hidden" name="tenant" value={slug} />
+                  <input type="hidden" name="tierId" value={tier.id} />
+                  {refCode && <input type="hidden" name="ref" value={refCode} />}
+                  {returnTo && <input type="hidden" name="next" value={returnTo} />}
+                  {user && !isCurrent && (
+                    <label className="mb-4 flex cursor-pointer items-start gap-2.5 rounded-xl bg-slate-50 p-3 text-xs leading-5 text-slate-600">
+                      <input
+                        name="newsletterOptIn"
+                        type="checkbox"
+                        className="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-slate-900 focus:ring-[var(--brand-ring)]"
+                      />
+                      <span>{t("newsletterOptInLabel", { name: tenant.name })}</span>
+                    </label>
+                  )}
+                  {tier.priceCents > 0 && (
+                    <ImmediateAccessConsent className="mb-3" />
+                  )}
+                  <PurchaseSubmitButton
+                    variant={tier.priceCents > 0 ? "primary" : "secondary"}
+                    size="md"
+                    className="w-full rounded-xl"
+                    disabled={isCurrent || switchBlocked}
+                  >
+                    {switchBlocked
+                      ? tSafety("switchBlocked")
+                      : isCurrent
+                      ? t("ctaCurrent")
+                      : currentTierId
+                        ? t("ctaSwitch")
+                        : tier.priceCents > 0
+                          ? t("ctaJoin")
+                          : t("ctaJoinFree")}
+                  </PurchaseSubmitButton>
+                </form>
+              )}
 
               {benefits.length > 0 && (
                 <div className="mt-5 border-t border-slate-100 pt-5">
@@ -321,14 +383,15 @@ export default async function JoinPage({
         })}
       </div>
       </div>
+      </div>
 
       {tiers.length === 0 && (
-        <p className="mt-10 text-center text-sm text-slate-500">
+        <p className="mt-10 text-center text-sm text-[#161613]/65">
           {t("noTiers")}
         </p>
       )}
 
-      <p className="mt-8 text-center text-xs text-slate-500">
+      <p className="mt-8 text-center text-xs text-[#161613]/65">
         {t("footnote")}
       </p>
     </div>

@@ -84,6 +84,14 @@ export function PostCard({
             <h2 className="display-serif mt-3 text-xl text-[#161613]">{post.title}</h2>
           )}
 
+          {!post.lockedExcerpt && (
+            <div aria-hidden="true" className="mt-3 space-y-2.5">
+              <div className="h-3 w-full rounded-full bg-[#161613]/[0.08]" />
+              <div className="h-3 w-11/12 rounded-full bg-[#161613]/[0.08]" />
+              <div className="h-3 w-2/3 rounded-full bg-[#161613]/[0.08]" />
+            </div>
+          )}
+
           {post.lockedExcerpt && (
             // Der Anfang bleibt lesbar, der Rest wird unkenntlich. Der volle
             // Text geht gar nicht erst ueber die Leitung — Verwischen allein
@@ -98,8 +106,10 @@ export function PostCard({
               <input type="hidden" name="tenant" value={slug} />
               <input type="hidden" name="space" value={space} />
               <input type="hidden" name="postId" value={post.id} />
+              {/* Nach dem Kauf (oder einem Fehler) zurück auf diesen Beitrag. */}
+              <input type="hidden" name="returnTo" value="post" />
               <ImmediateAccessConsent className="mb-3 max-w-md" />
-              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
+              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                 <Icon name="lock" size={15} />
                 {t("unlockFor", {
                   price: formatPrice(post.priceCents ?? 0, post.currency ?? PLATFORM_CURRENCY, locale),
@@ -109,7 +119,7 @@ export function PostCard({
           ) : (
             <Link
               href={`/c/${slug}/join`}
-              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+              className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
             >
               <Icon name="members" size={15} />
               {t("joinToRead")}
@@ -166,19 +176,23 @@ export function PostCard({
           <input type="hidden" name="tenant" value={slug} />
           <input type="hidden" name="space" value={space} />
           <input type="hidden" name="postId" value={post.id} />
+          {/* Im Feed ein Modell: „Gefällt mir“ (im Forum wird abgestimmt).
+              Zustand über aria-pressed und gefülltes Herz, nicht nur Farbe. */}
           <button
-            aria-label={post.likedByMe ? t("unlike") : t("like")}
+            aria-label={t("likeAria", { count: post.likes })}
             aria-pressed={post.likedByMe}
             className={`inline-flex items-center gap-1.5 rounded-full px-2 py-1 transition hover:bg-[#161613]/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
-              post.likedByMe ? "font-semibold text-[color:var(--brand)]" : ""
+              post.likedByMe ? "font-semibold text-[#161613]" : ""
             }`}
           >
             <Icon
               name="heart"
               size={16}
               fill={post.likedByMe ? "currentColor" : "none"}
+              className={post.likedByMe ? "text-[color:var(--brand)]" : undefined}
             />
-            {post.likes}
+            <span>{t("like")}</span>
+            {post.likes > 0 && <span className="tabular-nums">· {post.likes}</span>}
           </button>
         </form>
         <Link

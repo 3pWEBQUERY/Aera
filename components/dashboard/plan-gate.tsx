@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "./icons";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { RedeemCodeSheet } from "./redeem-code-sheet";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import type { FeatureKey, PlanKey } from "@/lib/plan-features";
@@ -216,7 +216,7 @@ export function PlanGate({
               <button
                 type="button"
                 onClick={() => setPlansOpen(true)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
               >
                 {t("upgradeCta", { plan: PLAN_LABEL[requiredPlan] })}
                 <Icon name="arrowRight" size={16} />
@@ -238,11 +238,10 @@ export function PlanGate({
         </div>
       </div>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={plansOpen}
         onClose={() => setPlansOpen(false)}
         slug={slug}
-        focusPlans
       />
       <RedeemCodeSheet open={codeOpen} onClose={() => setCodeOpen(false)} slug={slug} />
     </div>

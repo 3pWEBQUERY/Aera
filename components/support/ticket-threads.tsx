@@ -57,7 +57,7 @@ export function TicketThreads({
         {emptyCta && (
           <Link
             href={emptyCta.href}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             {emptyCta.label}
           </Link>
@@ -205,7 +205,7 @@ function ReplyForm({ ticketId, side }: { ticketId: string; side: "user" | "staff
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
         >
           {pending ? t("sending") : t("reply")}
         </button>

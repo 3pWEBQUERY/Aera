@@ -17,6 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
 import { type KnowledgeSettings } from "@/lib/space-settings";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface KArticle {
   id: string;
@@ -48,6 +49,7 @@ export function KnowledgeManager({
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [nonce, setNonce] = useState(0);
   const t = useTranslations("dashboard.knowledge");
+  const [confirm, confirmDialog] = useConfirm();
   const tSort = useTranslations("dashboard.sortLabels");
   const locale = useLocale();
 
@@ -98,7 +100,7 @@ export function KnowledgeManager({
           </button>
           <button
             onClick={openCreate}
-            className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
           >
             <Icon name="plus" size={18} />
             {t("writeArticle")}
@@ -131,7 +133,7 @@ export function KnowledgeManager({
           <p className="mt-1 text-sm text-slate-500">{t("emptyHint")}</p>
           <button
             onClick={openCreate}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={18} /> {t("writeArticle")}
           </button>
@@ -158,9 +160,17 @@ export function KnowledgeManager({
                     <input type="hidden" name="spaceSlug" value={space.slug} />
                     <input type="hidden" name="articleId" value={a.id} />
                     <button
-                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
-                      onClick={(e) => {
-                        if (!confirm(t("confirmDelete"))) e.preventDefault();
+                      type="button"
+                      className="rounded-lg px-2.5 py-1.5 text-xs font-medium text-red-700 transition hover:bg-red-50"
+                      onClick={async (e) => {
+                        const form = e.currentTarget.form;
+                        const ok = await confirm({
+                          title: t("confirmDeleteTitle", { title: a.title }),
+                          body: t("confirmDeleteBody"),
+                          confirmLabel: t("confirmDeleteCta"),
+                          tone: "danger",
+                        });
+                        if (ok) form?.requestSubmit();
                       }}
                     >
                       {t("delete")}
@@ -185,6 +195,7 @@ export function KnowledgeManager({
 
       <Sheet open={settingsOpen} onClose={() => setSettingsOpen(false)} title={t("sheetSettings")} subtitle={space.name} icon="settings">
         <SettingsForm slug={slug} space={space} settings={settings} onDone={() => setSettingsOpen(false)} />
+      {confirmDialog}
       </Sheet>
     </div>
   );
@@ -339,7 +350,7 @@ function Footer({ pending, onDone, cta }: { pending: boolean; onDone: () => void
       <button
         type="submit"
         disabled={pending}
-        className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+        className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
       >
         {pending ? t("saving") : cta}
       </button>

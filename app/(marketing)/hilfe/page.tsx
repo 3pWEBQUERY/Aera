@@ -10,6 +10,45 @@ export async function generateMetadata() {
   return { title: t("metaTitle"), description: t("metaDescription") };
 }
 
+/**
+ * Weg zu uns — in jedem Zustand des Hilfe-Centers (leer, Suche, Artikel):
+ * wer hier nichts findet, soll den Kontakt nicht suchen muessen.
+ */
+function ContactBlock({
+  title,
+  text,
+  cta,
+  className = "",
+}: {
+  title: string;
+  text: string;
+  cta: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`flex flex-col gap-5 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7 ${className}`}
+    >
+      <div className="flex min-w-0 items-start gap-4">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/60">
+          <Icon name="messages" size={20} />
+        </span>
+        <div className="min-w-0">
+          <h2 className="display-serif text-xl leading-tight">{title}</h2>
+          <p className="mt-1 max-w-xl text-sm leading-6 text-[#161613]/65">{text}</p>
+        </div>
+      </div>
+      <Link
+        href="/hilfe/kontakt"
+        className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] sm:self-auto"
+      >
+        {cta}
+        <Icon name="chevron" size={15} className="-rotate-90" />
+      </Link>
+    </div>
+  );
+}
+
 export default async function HelpCenterPage({
   searchParams,
 }: {
@@ -18,6 +57,9 @@ export default async function HelpCenterPage({
   const { q } = await searchParams;
   const query = (q ?? "").trim().slice(0, 80);
   const t = await getTranslations("help");
+  const contact = (
+    <ContactBlock title={t("contactTitle")} text={t("contactText")} cta={t("contactCta")} />
+  );
 
   const locale = await getLocale();
   const loadForLocale = (loc: string) =>
@@ -87,7 +129,7 @@ export default async function HelpCenterPage({
                 />
                 <button
                   type="submit"
-                  className="shrink-0 rounded-full bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition-colors hover:bg-[var(--action-hover)]"
+                  className="shrink-0 rounded-full bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
                 >
                   {t("searchSubmit")}
                 </button>
@@ -99,9 +141,17 @@ export default async function HelpCenterPage({
 
       <div className="mx-auto max-w-5xl px-5 pb-24 pt-12">
         {filled.length === 0 ? (
-          <p className="rounded-2xl border border-dashed border-[#161613]/20 px-6 py-14 text-center text-sm text-[#161613]/65">
-            {t("comingSoon")}
-          </p>
+          <>
+            {query && (
+              <h2 className="display-serif mb-6 text-2xl sm:text-3xl">
+                {t("noResults", { query })}
+              </h2>
+            )}
+            <p className="rounded-2xl border border-dashed border-[#161613]/20 px-6 py-14 text-center text-sm text-[#161613]/65">
+              {t("comingSoon")}
+            </p>
+            <div className="mt-8">{contact}</div>
+          </>
         ) : query ? (
           /* ------------------------------------------------ Suchergebnisse */
           <>
@@ -146,32 +196,14 @@ export default async function HelpCenterPage({
                 </details>
               ))}
             </div>
+            <div className="mt-10">{contact}</div>
           </>
         ) : (
           /* ----------------------------------------- Kategorien + Q&A */
           <>
             {/* Kontakt-Einstieg — bewusst ueber den Kacheln: wer hier landet
                 und nichts findet, soll den Weg zu uns nicht suchen muessen. */}
-            <div className="mb-8 flex flex-col gap-5 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:flex-row sm:items-center sm:justify-between sm:p-7">
-              <div className="flex min-w-0 items-start gap-4">
-                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/60">
-                  <Icon name="messages" size={20} />
-                </span>
-                <div className="min-w-0">
-                  <p className="display-serif text-xl leading-tight">{t("contactTitle")}</p>
-                  <p className="mt-1 max-w-xl text-sm leading-6 text-[#161613]/60">
-                    {t("contactText")}
-                  </p>
-                </div>
-              </div>
-              <Link
-                href="/hilfe/kontakt"
-                className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] sm:self-auto"
-              >
-                {t("contactCta")}
-                <Icon name="chevron" size={15} className="-rotate-90" />
-              </Link>
-            </div>
+            <div className="mb-8">{contact}</div>
 
             {/* Kategorie-Kacheln (Sprungmarken) */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -240,16 +272,17 @@ export default async function HelpCenterPage({
           </>
         )}
 
-        {/* Kontakt-Abschluss */}
+        {/* Abschluss: eigene Community starten (eigene Texte — der Kontakt
+            steht oben bzw. unter den Treffern). */}
         <div className="mt-20 flex flex-col items-start justify-between gap-6 rounded-2xl bg-[#161613] p-7 text-white sm:flex-row sm:items-center sm:p-9">
           <div>
-            <h2 className="display-serif text-2xl">{t("contactTitle")}</h2>
+            <h2 className="display-serif text-2xl">{t("startTitle")}</h2>
             <p className="mt-2 max-w-md text-sm leading-6 text-white/65">
-              {t("contactText")}
+              {t("startText")}
             </p>
           </div>
           <PillLink href="/signup?next=/start" tone="light" className="shrink-0">
-            {t("contactCta")}
+            {t("startCta")}
           </PillLink>
         </div>
       </div>

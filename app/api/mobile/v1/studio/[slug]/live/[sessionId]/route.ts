@@ -62,7 +62,7 @@ export async function PATCH(
   const { slug, sessionId } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant } = access;
+  const { tenant, user } = access;
 
   const parsed = await parseJsonBody(req, patchSchema);
   if ("response" in parsed) return parsed.response;
@@ -95,6 +95,7 @@ export async function PATCH(
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: status === "LIVE" ? "live.start" : "live.status",
     targetType: "LiveSession",

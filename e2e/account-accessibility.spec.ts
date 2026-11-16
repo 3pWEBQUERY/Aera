@@ -19,12 +19,29 @@ test("account exposes protected export and deletion controls", async ({ page }) 
     "href",
     "/api/account/export",
   );
-  await expect(page.getByLabel("E-Mail-Adresse bestätigen")).toBeVisible();
+  await expect(page.getByLabel("Gib zur Bestätigung deine E-Mail-Adresse ein")).toBeVisible();
   await expect(page.locator("#account-delete-password")).toHaveAttribute(
     "autocomplete",
     "current-password",
   );
-  await expect(page.getByRole("button", { name: "Konto löschen" })).toBeDisabled();
+  // Der Button bleibt aktiv; ohne Bestätigung erscheint der Fehler am Feld
+  // statt eines stummen, deaktivierten Buttons.
+  const deleteButton = page.getByRole("button", { name: "Konto löschen" });
+  await expect(deleteButton).toBeEnabled();
+  await deleteButton.click();
+  await expect(page.locator("#account-delete-confirmation-error")).toBeVisible();
+  await expect(page.locator("#account-delete-confirmation")).toBeFocused();
+
+  // Wer angemeldet eine bezahlte Mitgliedschaft wählt, muss dem sofortigen
+  // Zugang (Verzicht auf das Widerrufsrecht) gesondert zustimmen.
+  await page.goto(`/c/${tenantSlug}/join`);
+  const immediateAccess = page.locator('input[name="immediatePerformanceConsent"]').first();
+  await expect(immediateAccess).toHaveAttribute("required", "");
+  await expect(immediateAccess).not.toBeChecked();
+  await expect(page.getByRole("link", { name: "Details" }).first()).toHaveAttribute(
+    "href",
+    "/widerruf",
+  );
 
   await page.goto("/legal/accept?next=%2Fhome");
   await expect(page.getByRole("heading", { name: "Aktuelle Bedingungen prüfen" })).toBeVisible();

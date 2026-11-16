@@ -26,3 +26,6 @@ _to_delete/
 .claude/worktrees/
 # Von `next dev` (16.4+) automatisch erzeugt.
 AGENTS.md
+
+# Lokaler Redis-Snapshot
+dump.rdb

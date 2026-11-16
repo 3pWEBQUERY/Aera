@@ -29,11 +29,11 @@ function urlOrNull(v: FormDataEntryValue | null): string | null {
 }
 
 async function loadSpace(slug: string, spaceId: string) {
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id },
   });
-  return { tenant, space };
+  return { tenant, space, user };
 }
 
 async function persist(
@@ -62,7 +62,7 @@ export async function saveAnnouncementAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return { error: await tErr("spaceNotFound") };
 
   const title = String(fd.get("title") ?? "").trim();
@@ -111,6 +111,7 @@ export async function saveAnnouncementAction(
 
   await persist(slug, space, next);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: existing ? "announcement.update" : "announcement.create",
     targetType: "Space",
@@ -125,7 +126,7 @@ export async function toggleAnnouncementsOnlyAction(fd: FormData): Promise<void>
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
   const enabled = fd.get("enabled") === "on";
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return;
 
   const settings =
@@ -139,6 +140,7 @@ export async function toggleAnnouncementsOnlyAction(fd: FormData): Promise<void>
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: enabled ? "space.announcementsOnly.enable" : "space.announcementsOnly.disable",
     targetType: "Space",
@@ -153,7 +155,7 @@ export async function deleteAnnouncementAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
   const announcementId = String(fd.get("announcementId"));
-  const { tenant, space } = await loadSpace(slug, spaceId);
+  const { tenant, space, user } = await loadSpace(slug, spaceId);
   if (!space) return;
 
   const announcements = parseAnnouncements(space.settings);
@@ -162,6 +164,7 @@ export async function deleteAnnouncementAction(fd: FormData): Promise<void> {
 
   await persist(slug, space, next);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "announcement.delete",
     targetType: "Space",

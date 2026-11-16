@@ -14,10 +14,17 @@ export interface SidebarCommunity {
   primaryColor: string;
 }
 
-const NAV: { href: string; labelKey: "home" | "discover" | "studio"; icon: IconName; exact?: boolean }[] = [
+const NAV: {
+  href: string;
+  labelKey: "home" | "discover" | "creatorArea";
+  icon: IconName;
+  exact?: boolean;
+  creatorOnly?: boolean;
+}[] = [
   { href: "/home", labelKey: "home", icon: "home", exact: true },
   { href: "/home/search", labelKey: "discover", icon: "search" },
-  { href: "/dashboard", labelKey: "studio", icon: "dashboard" },
+  // Nur für Inhaber und Team — Mitglieder landeten sonst im Creator-Assistenten.
+  { href: "/dashboard", labelKey: "creatorArea", icon: "dashboard", creatorOnly: true },
 ];
 
 /**
@@ -29,10 +36,12 @@ export function HomeSidebar({
   communities,
   user,
   loggedIn,
+  isCreator = false,
 }: {
   communities: SidebarCommunity[];
   user: { name: string; avatarUrl: string | null } | null;
   loggedIn: boolean;
+  isCreator?: boolean;
 }) {
   const pathname = usePathname();
   const router = useRouter();
@@ -57,7 +66,7 @@ export function HomeSidebar({
 
       {/* Primary nav */}
       <nav className="mt-1 space-y-1 px-2 lg:px-3">
-        {NAV.map((item) => {
+        {NAV.filter((item) => !item.creatorOnly || isCreator).map((item) => {
           const base = item.href.split("?")[0];
           const active = item.exact
             ? pathname === base && !`${item.href}`.includes("discover")
@@ -133,8 +142,8 @@ export function HomeSidebar({
       {/* Footer: create + account */}
       <div className="mt-auto space-y-3 border-t border-slate-100 p-2 lg:p-3">
         <Link
-          href={loggedIn ? "/dashboard" : "/signup"}
-          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-3 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
+          href={loggedIn ? (isCreator ? "/dashboard" : "/start") : "/signup"}
+          className="flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-3 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2"
         >
           <Icon name="plus" size={18} className="shrink-0" />
           <span className="hidden lg:block">{t("create")}</span>
@@ -143,7 +152,7 @@ export function HomeSidebar({
         {user ? (
           <button
             type="button"
-            onClick={() => router.push("/dashboard")}
+            onClick={() => router.push("/member/account?from=/home")}
             className="flex w-full items-center gap-2.5 rounded-xl px-2 py-1.5 text-left transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
           >
             <Avatar name={user.name} src={user.avatarUrl} size={32} />

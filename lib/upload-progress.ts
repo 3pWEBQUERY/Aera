@@ -4,15 +4,20 @@
  * Fortschritt aller laufenden Uploads — ein Speicher fuer die ganze App.
  *
  * Jeder Upload laeuft ueber `uploadMediaFile`, und dort meldet sich jeder
- * Auftrag hier an. Die Anzeige unten rechts (components/ui/upload-dock)
+ * Auftrag hier an. Die Anzeige oben rechts (components/ui/upload-dock)
  * hoert zu. Dadurch muss keine der zwoelf Upload-Oberflaechen etwas davon
  * wissen: wer hochlaedt, wird gezeigt.
+ *
+ * Der Speicher kennt nur Fortschritt. Ein Fehler gehoert an das Feld, in dem
+ * er passiert ist — dort steht auch „Erneut hochladen“. Fehlgeschlagene
+ * Auftraege verlassen die Anzeige darum sofort; frueher blieben sie als Karte
+ * stehen und lagen ueber den Speichern-Knoepfen der Sheets.
  *
  * Bewusst ohne Zustandsbibliothek — ein Set von Zuhoerern und ein Array
  * reichen. Der Speicher lebt im Browser-Modul, also so lange wie der Tab.
  */
 
-export type UploadPhase = "preparing" | "uploading" | "verifying" | "done" | "error";
+export type UploadPhase = "preparing" | "uploading" | "verifying" | "done";
 
 export interface UploadJob {
   id: string;
@@ -25,7 +30,6 @@ export interface UploadJob {
   percent: number;
   /** Geschaetzte Restzeit in Sekunden; null, solange nichts messbar ist. */
   secondsLeft: number | null;
-  error?: string;
   startedAt: number;
   endedAt?: number;
 }
@@ -36,8 +40,11 @@ let jobs: UploadJob[] = [];
 const listeners = new Set<Listener>();
 let counter = 0;
 
-/** Erledigte Uploads verschwinden von selbst — Fehler bleiben stehen. */
-const AUTO_DISMISS_MS = 4000;
+/**
+ * So lange bleibt die Erfolgskarte stehen. Die Anzeige haelt die Zeit an,
+ * solange der Zeiger darauf liegt oder sie den Fokus hat (siehe upload-dock).
+ */
+export const DONE_VISIBLE_MS = 10_000;
 
 function emit() {
   const snapshot = jobs.slice();
@@ -71,10 +78,11 @@ export function dismissUpload(id: string) {
 }
 
 export interface UploadHandle {
-  setPhase(phase: Exclude<UploadPhase, "done" | "error">): void;
+  setPhase(phase: Exclude<UploadPhase, "done">): void;
   setPercent(percent: number): void;
   done(): void;
-  fail(message: string): void;
+  /** Nimmt den Auftrag aus der Anzeige; den Fehler zeigt das Upload-Feld. */
+  fail(): void;
 }
 
 /**
@@ -129,11 +137,11 @@ export function beginUpload(file: File): UploadHandle {
       });
     },
     done() {
+      // Das Ausblenden steuert die Karte selbst (Pause bei Hover/Fokus).
       patch(id, { phase: "done", percent: 100, secondsLeft: 0, endedAt: Date.now() });
-      setTimeout(() => dismissUpload(id), AUTO_DISMISS_MS);
     },
-    fail(message) {
-      patch(id, { phase: "error", error: message, secondsLeft: null, endedAt: Date.now() });
+    fail() {
+      dismissUpload(id);
     },
   };
 }

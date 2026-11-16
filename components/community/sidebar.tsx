@@ -55,6 +55,7 @@ export function CommunitySidebar({
   user,
   slug,
   isStaff,
+  moderatorOnly = false,
   isCreator = false,
   loginHref,
   currentCreator,
@@ -63,6 +64,8 @@ export function CommunitySidebar({
   user: SidebarUser | null;
   slug: string;
   isStaff: boolean;
+  /** Nur Moderator: der Dashboard-Eintrag führt direkt zur Moderation. */
+  moderatorOnly?: boolean;
   /** Owns a community or has a staff role somewhere → view switcher. */
   isCreator?: boolean;
   loginHref: string;
@@ -401,11 +404,11 @@ export function CommunitySidebar({
 
             {isStaff && (
               <Link
-                href={`/dashboard/${slug}`}
-                aria-label={!expanded ? t("dashboard") : undefined}
+                href={moderatorOnly ? `/dashboard/${slug}/moderation` : `/dashboard/${slug}`}
+                aria-label={!expanded ? (moderatorOnly ? t("moderation") : t("dashboard")) : undefined}
                 className={rowClass(false)}
               >
-                <RowInner icon="dashboard" label={t("dashboard")} />
+                <RowInner icon="dashboard" label={moderatorOnly ? t("moderation") : t("dashboard")} />
               </Link>
             )}
 

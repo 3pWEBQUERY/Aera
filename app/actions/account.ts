@@ -3,7 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import prisma, { systemPrisma } from "@/lib/prisma";
-import { hashPassword, verifyPassword, getCurrentUser } from "@/lib/auth";
+import { hashPassword, verifyPassword, getCurrentUser, homePathFor } from "@/lib/auth";
 import { setSessionCookie } from "@/lib/session";
 import { features } from "@/lib/env";
 import { sendEmail, renderAccountActionHtml } from "@/lib/email";
@@ -27,6 +27,9 @@ import {
 export interface AccountState {
   error?: string;
   ok?: boolean;
+  /** Eingegebene E-Mail (nur /forgot), damit das Feld nach einem Fehler
+   *  stehen bleibt. */
+  email?: string;
 }
 
 function safeNextPath(value: FormDataEntryValue | null, fallback = "/home") {
@@ -52,12 +55,13 @@ export async function requestPasswordResetAction(
   fd: FormData,
 ): Promise<AccountState> {
   const t = await getErrorTranslator();
+  const typed = String(fd.get("email") || "").trim().slice(0, 254);
   const ip = await clientIp();
   if (!(await rateLimit(`reset:${ip}`, 5, 15 * 60 * 1000))) {
-    return { error: t("tooManyRequests") };
+    return { error: t("tooManyRequests"), email: typed };
   }
 
-  const email = String(fd.get("email") || "").trim().toLowerCase();
+  const email = typed.toLowerCase();
   if (!email) return { error: t("enterEmail") };
 
   const user = await prisma.user.findUnique({ where: { email } });
@@ -148,12 +152,21 @@ async function setPasswordWithToken(
     action: purpose === "invite" ? "user.invite.accept" : "user.password_reset.complete",
   });
 
-  const safe = safeRelativePath(fd.get("next"), "/dashboard");
+  // Reset: Creator ins Dashboard, Mitglieder nach /home — /dashboard ohne
+  // eigene Community führt sonst in den Creator-Wizard. Einladungen behalten
+  // ihr bisheriges Ziel.
+  const fallback = purpose === "reset" ? await homePathFor(updatedUser.id) : "/dashboard";
+  const requestedNext = fd.get("next");
+  const safe = safeRelativePath(requestedNext, fallback);
   // A mailbox link proves the e-mail, not the second factor. With TOTP
   // enabled the new password must go through the regular login, otherwise a
   // reset link alone would bypass 2FA (including for platform admins).
   if (updatedUser.totpEnabledAt && updatedUser.totpSecret) {
-    redirect(`/login?next=${encodeURIComponent(safe)}`);
+    const params = new URLSearchParams();
+    if (purpose === "reset") params.set("reset", "1");
+    // Ohne ausdrückliches Ziel entscheidet der Login selbst (nach Rolle).
+    if (purpose === "invite" || requestedNext) params.set("next", safe);
+    redirect(`/login?${params.toString()}`);
   }
   await setSessionCookie({
     userId: updatedUser.id,
@@ -284,6 +297,33 @@ export interface TotpState {
   otpauth?: string;
   qrDataUrl?: string;
   enabled?: boolean;
+  /** Neue Wiederherstellungscodes im Klartext — nur in genau dieser Antwort. */
+  recoveryCodes?: string[];
+  /** Verbleibende unbenutzte Codes nach der Aktion. */
+  recoveryCodesLeft?: number;
+}
+
+/**
+ * Zweiter Faktor für Aktionen im Konto (2FA abschalten, neue Codes): ein
+ * aktueller App-Code oder ein Wiederherstellungscode, der dabei verbraucht
+ * wird. So kommt auch weiter, wer die App verloren hat.
+ */
+async function verifySecondFactor(
+  user: { id: string; totpSecret: string | null },
+  code: string,
+): Promise<boolean> {
+  if (!user.totpSecret) return false;
+  const normalized = code.replace(/\s+/g, "");
+  if (/^\d{6}$/.test(normalized)) {
+    const { verifyTotp } = await import("@/lib/totp");
+    try {
+      return verifyTotp(decryptSecret(user.totpSecret), normalized);
+    } catch {
+      return false;
+    }
+  }
+  const { consumeRecoveryCode } = await import("@/lib/totp-recovery");
+  return consumeRecoveryCode(user.id, code.slice(0, 64));
 }
 
 /** Startet die 2FA-Einrichtung: erzeugt Secret + QR-Code (noch nicht aktiv). */
@@ -348,12 +388,19 @@ export async function confirmTotpAction(
         : {}),
     },
   });
+  const { replaceRecoveryCodes } = await import("@/lib/totp-recovery");
+  const recoveryCodes = await replaceRecoveryCodes(user.id);
   await setSessionCookie({
     userId: updatedUser.id,
     sessionVersion: updatedUser.sessionVersion,
   });
   await writeAudit({ actorUserId: user.id, action: "user.totp.enable" });
-  return { ok: true, enabled: true };
+  return {
+    ok: true,
+    enabled: true,
+    recoveryCodes,
+    recoveryCodesLeft: recoveryCodes.length,
+  };
 }
 
 /** Deaktiviert 2FA — erfordert einen gültigen aktuellen Code. */
@@ -373,16 +420,9 @@ export async function disableTotpAction(
     return { error: t("tooManyAttempts") };
   }
 
-  const { verifyTotp } = await import("@/lib/totp");
   const code = String(fd.get("code") || "");
-  let totpSecret: string;
-  try {
-    totpSecret = decryptSecret(user.totpSecret);
-  } catch {
-    return { error: t("codeInvalid") };
-  }
-  if (!verifyTotp(totpSecret, code)) {
-    return { error: t("codeInvalid") };
+  if (!(await verifySecondFactor(user, code))) {
+    return { error: t("secondFactorInvalid") };
   }
 
   const updatedUser = await prisma.user.update({
@@ -393,12 +433,46 @@ export async function disableTotpAction(
       sessionVersion: { increment: 1 },
     },
   });
+  const { deleteRecoveryCodes } = await import("@/lib/totp-recovery");
+  await deleteRecoveryCodes(user.id);
   await setSessionCookie({
     userId: updatedUser.id,
     sessionVersion: updatedUser.sessionVersion,
   });
   await writeAudit({ actorUserId: user.id, action: "user.totp.disable" });
   return { ok: true, enabled: false };
+}
+
+/**
+ * Erzeugt neue Wiederherstellungscodes; alle alten werden ungültig. Verlangt
+ * einen App-Code oder einen der bisherigen Codes, damit eine übernommene
+ * Sitzung allein keine dauerhafte 2FA-Umgehung erzeugen kann.
+ */
+export async function regenerateRecoveryCodesAction(
+  _p: TotpState,
+  fd: FormData,
+): Promise<TotpState> {
+  const t = await getErrorTranslator();
+  const user = await getCurrentUser();
+  if (!user) return { error: t("notLoggedIn") };
+  if (!user.totpEnabledAt || !user.totpSecret) {
+    return { error: t("totpStartFirst") };
+  }
+
+  const ip = await clientIp();
+  if (!(await rateLimit(`totp:${user.id}:${ip}`, 10, 10 * 60 * 1000))) {
+    return { error: t("tooManyAttempts") };
+  }
+
+  const code = String(fd.get("code") || "");
+  if (!(await verifySecondFactor(user, code))) {
+    return { error: t("secondFactorInvalid") };
+  }
+
+  const { replaceRecoveryCodes } = await import("@/lib/totp-recovery");
+  const recoveryCodes = await replaceRecoveryCodes(user.id);
+  await writeAudit({ actorUserId: user.id, action: "user.totp.recovery_codes.regenerate" });
+  return { ok: true, enabled: true, recoveryCodes, recoveryCodesLeft: recoveryCodes.length };
 }
 
 /** Re-send the e-mail verification link for the logged-in account. */

@@ -1,6 +1,7 @@
 import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
 import { AssistantWorkspace } from "@/components/dashboard/assistant-workspace";
+import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 
 export default async function AssistantPage({
   params,
@@ -21,6 +22,7 @@ export default async function AssistantPage({
     <AssistantWorkspace
       slug={slug}
       geminiOn={features.gemini}
+      isPlatformAdmin={hasPlatformAdminAccess(user)}
       user={{ name: user.name, avatarUrl: user.avatarUrl }}
       initialCreditsOpen={returnedFromBilling}
       initialCheckoutError={billing === "checkout-error"}

@@ -29,15 +29,30 @@ export function canParticipate(ctx: AccessContext): boolean {
 }
 
 /** Space types whose composer is offered to regular members. */
-const MEMBER_POST_SPACE_TYPES = new Set(["FEED", "FORUM"]);
+export const MEMBER_POST_SPACE_TYPES = new Set(["FEED", "FORUM"]);
+
+/** Wer in einem Feed- oder Forum-Space neue Beiträge schreibt. */
+export type PostingPolicy = "members" | "team";
+
+/**
+ * Liest `postingPolicy` aus dem Settings-JSON eines Space. Alles ausser
+ * "team" heisst: Mitglieder dürfen posten (bisheriges Verhalten).
+ */
+export function postingPolicyOf(settings: unknown): PostingPolicy {
+  if (settings && typeof settings === "object" && !Array.isArray(settings)) {
+    if ((settings as Record<string, unknown>).postingPolicy === "team") return "team";
+  }
+  return "members";
+}
 
 /** May this viewer create a new post in `space`? */
 export function canCreatePostIn(
-  space: { type: string; isArchived: boolean },
+  space: { type: string; isArchived: boolean; settings?: unknown },
   ctx: AccessContext,
 ): boolean {
   if (!canParticipate(ctx) || space.isArchived) return false;
-  return ctx.isStaff || MEMBER_POST_SPACE_TYPES.has(space.type);
+  if (ctx.isStaff) return true;
+  return MEMBER_POST_SPACE_TYPES.has(space.type) && postingPolicyOf(space.settings) === "members";
 }
 
 /** All currently valid entitlement keys for a user within a tenant. */

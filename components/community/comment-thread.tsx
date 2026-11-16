@@ -65,6 +65,10 @@ function buildTree(comments: ThreadComment[]): Node[] {
   return roots;
 }
 
+function containsId(node: Node, id: string): boolean {
+  return node.id === id || node.children.some((c) => containsId(c, id));
+}
+
 function countAll(nodes: Node[]): number {
   return nodes.reduce((sum, n) => sum + 1 + countAll(n.children), 0);
 }
@@ -148,8 +152,19 @@ function CommentNode({
   const hidden = Math.max(0, node.children.length - VISIBLE_REPLIES);
   const shown = showAll ? node.children : node.children.slice(0, VISIBLE_REPLIES);
 
+  // Link aus einer Benachrichtigung (#comment-<id>) auf eine eingeklappte
+  // Antwort: aufklappen und hinscrollen, sonst liefe der Anker ins Leere.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash.startsWith("#comment-")) return;
+    const id = hash.slice("#comment-".length);
+    if (!node.children.slice(VISIBLE_REPLIES).some((c) => containsId(c, id))) return;
+    setShowAll(true);
+    requestAnimationFrame(() => document.getElementById(`comment-${id}`)?.scrollIntoView());
+  }, [node.children]);
+
   return (
-    <div className="flex gap-2.5">
+    <div id={`comment-${node.id}`} className="flex scroll-mt-24 gap-2.5">
       <Avatar name={node.authorName} src={node.authorAvatar} size={32} />
       <div className="min-w-0 flex-1">
         {/* Blase wie im Messenger: der Text steht auf einer eigenen Flaeche,
@@ -270,7 +285,15 @@ function ReplyForm({
       <input type="hidden" name="postId" value={postId} />
       <input type="hidden" name="parentId" value={parentId} />
       <FormError message={state.error} />
-      <Textarea ref={boxRef} name="body" rows={2} required placeholder={placeholder} />
+      <Textarea
+        ref={boxRef}
+        name="body"
+        rows={2}
+        required
+        aria-label={parentId ? t("replyFieldLabel") : t("commentFieldLabel")}
+        aria-invalid={state.error ? true : undefined}
+        placeholder={placeholder}
+      />
       <div className="flex items-center justify-end gap-2">
         <EmojiPicker targetRef={boxRef} label={t("emojiLabel")} />
         <span className="flex-1" />
@@ -286,7 +309,7 @@ function ReplyForm({
         <button
           type="submit"
           disabled={pending}
-          className="rounded-lg bg-[var(--action)] px-4 py-1.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+          className="rounded-lg bg-[var(--primary)] px-4 py-1.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
         >
           {pending ? t("sending") : cta}
         </button>

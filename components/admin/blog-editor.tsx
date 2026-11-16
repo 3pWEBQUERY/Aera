@@ -86,6 +86,10 @@ export function BlogEditor({
   const [cover, setCover] = useState(post.coverUrl);
   const [dirty, setDirty] = useState(false);
   const [savedAt, setSavedAt] = useState<Date | null>(null);
+  // Der Editor meldet seinen Inhalt auch beim Einsetzen des Startwerts. Erst
+  // eine Abweichung vom zuletzt gemeldeten Stand ist eine echte Eingabe —
+  // sonst warnte schon ein leerer, unberuehrter Beitrag beim Verlassen.
+  const lastBody = useRef(post.bodyHtml);
 
   const ids = {
     title: useId(),
@@ -145,7 +149,7 @@ export function BlogEditor({
           zweimal und der erste Wert gewaenne, also immer der alte. */}
 
       {/* Kopfzeile: wo man ist, was der Stand ist, was man tun kann. */}
-      <div className="sticky top-0 z-20 -mx-4 mb-6 border-b border-slate-200 bg-slate-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
+      <div className="sticky top-14 z-20 -mx-4 mb-6 md:top-0 border-b border-slate-200 bg-slate-50/90 px-4 py-3 backdrop-blur sm:-mx-6 sm:px-6">
         <div className="flex flex-wrap items-center gap-3">
           <Link
             href="/admin/blog"
@@ -243,7 +247,11 @@ export function BlogEditor({
             // Bild und Video ja, Dokumente nein — /api/admin/blog-media nimmt
             // nur Medien an.
             hideAttachments
-            onChange={() => setDirty(true)}
+            onChange={(html) => {
+              if (html === lastBody.current) return;
+              lastBody.current = html;
+              setDirty(true);
+            }}
           />
         </div>
 
@@ -271,7 +279,7 @@ export function BlogEditor({
                       "rounded-lg px-3 py-2 text-sm font-semibold transition",
                       status === value
                         ? "bg-white text-slate-900 shadow-sm"
-                        : "text-slate-500 hover:text-slate-900",
+                        : "text-slate-600 hover:text-slate-900",
                     )}
                   >
                     {t(value === "DRAFT" ? "statusDraft" : "statusPublished")}
@@ -504,7 +512,7 @@ function SaveButton({
           name="status"
           value="PUBLISHED"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-lg bg-[var(--action)] px-3.5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-lg bg-[var(--primary)] px-3.5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
         >
           {t("publish")}
         </button>

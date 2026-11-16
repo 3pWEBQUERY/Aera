@@ -3,6 +3,7 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth";
+import { safeRelativePath } from "@/lib/safe-redirect";
 import { LoginForm } from "@/components/forms/auth-forms";
 import logoBkButton from "@/public/logo_bk_button.svg";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
@@ -15,11 +16,11 @@ export async function generateMetadata() {
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; reset?: string }>;
 }) {
-  const { next } = await searchParams;
+  const { next, reset } = await searchParams;
   const user = await getCurrentUser();
-  if (user) redirect(next && next.startsWith("/") ? next : "/home");
+  if (user) redirect(safeRelativePath(next, "/home"));
   const t = await getTranslations("authPages");
 
   return (
@@ -48,7 +49,18 @@ export default async function LoginPage({
           {t("loginText")}
         </p>
 
-        <div className="mt-8 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7">
+        {reset === "1" && (
+          <p
+            role="status"
+            className="mt-8 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-800"
+          >
+            {t("resetDoneNotice")}
+          </p>
+        )}
+
+        <div
+          className={`${reset === "1" ? "mt-4" : "mt-8"} rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7`}
+        >
           <LoginForm next={next} />
         </div>
 
@@ -59,6 +71,14 @@ export default async function LoginPage({
             className="font-semibold text-[#161613] underline underline-offset-4 hover:opacity-70"
           >
             {t("register")}
+          </Link>
+        </p>
+        <p className="mt-3 text-center text-sm">
+          <Link
+            href="/hilfe/kontakt"
+            className="font-medium text-[#161613]/65 underline underline-offset-4 hover:text-[#161613]"
+          >
+            {t("loginHelp")}
           </Link>
         </p>
       </div>

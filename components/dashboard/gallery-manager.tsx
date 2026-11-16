@@ -19,6 +19,7 @@ import { Pill, FormError } from "@/components/ui/misc";
 import { formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface GalleryItem {
   id: string;
@@ -92,7 +93,7 @@ export function GalleryManager({
           </Link>
           <button
             onClick={openCreate}
-            className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
           >
             <Icon name="plus" size={18} />
             {t("mediaPackage")}
@@ -111,7 +112,7 @@ export function GalleryManager({
           </p>
           <button
             onClick={openCreate}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={18} /> {t("createPackage")}
           </button>
@@ -170,6 +171,7 @@ function FolderCard({
   const videoCount = pkg.items.filter((i) => i.type === "VIDEO").length;
   const paid = pkg.priceCents > 0;
   const t = useTranslations("dashboard.gallery");
+  const [confirm, confirmDialog] = useConfirm();
   const locale = useLocale();
 
   return (
@@ -232,13 +234,22 @@ function FolderCard({
         <button
           aria-label={t("deletePackageAria")}
           className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/90 text-red-600 shadow hover:bg-white"
-          onClick={(e) => {
-            if (!confirm(t("confirmDeletePackage"))) e.preventDefault();
+          type="button"
+          onClick={async (e) => {
+            const form = e.currentTarget.form;
+            const ok = await confirm({
+              title: t("confirmDeletePackageTitle", { title: pkg.title }),
+              body: t("confirmDeletePackageBody"),
+              confirmLabel: t("confirmDeletePackageCta"),
+              tone: "danger",
+            });
+            if (ok) form?.requestSubmit();
           }}
         >
           <Icon name="close" size={15} />
         </button>
       </form>
+      {confirmDialog}
     </div>
   );
 }
@@ -410,7 +421,7 @@ function PackageForm({
           <button
             type="submit"
             disabled={pending}
-            className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
           >
             {pending ? t("saving") : isEdit ? t("saveChanges") : t("createPackageCta")}
           </button>

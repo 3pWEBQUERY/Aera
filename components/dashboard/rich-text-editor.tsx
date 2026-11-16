@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
 import { EMOJIS } from "@/lib/emoji";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { UploadError, uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 
 /* Small inline glyph icons for the formatting toolbar (kept local & crisp). */
 const svg = (d: React.ReactNode) => (
@@ -52,6 +52,7 @@ export function RichTextEditor({
   name = "bodyHtml",
   defaultHtml = "",
   placeholder,
+  ariaLabel,
   variant = "boxed",
   titleSlot,
   coverSlot,
@@ -77,6 +78,8 @@ export function RichTextEditor({
   name?: string;
   defaultHtml?: string;
   placeholder?: string;
+  /** Zugaenglicher Name des Textfelds (Standard: „Text“). */
+  ariaLabel?: string;
   /**
    * "boxed"    — self-contained bordered card with the toolbar on top
    *              (used inline in the dashboard forms).
@@ -113,6 +116,7 @@ export function RichTextEditor({
   onChange?: (html: string) => void;
 }) {
   const t = useTranslations("dashboard.rte");
+  const uploadErrorText = useUploadErrorText();
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRange = useRef<Range | null>(null);
   const imgInput = useRef<HTMLInputElement>(null);
@@ -234,9 +238,7 @@ export function RichTextEditor({
       }
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploading(false);
@@ -564,7 +566,7 @@ export function RichTextEditor({
         placeholder={t("linkPlaceholder")}
         className="flex-1 rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
       />
-      <button type="button" onClick={applyLink} className="rounded-lg bg-[var(--action)] px-3 py-1.5 text-xs font-semibold text-[var(--action-fg)] hover:bg-[var(--action-hover)]">
+      <button type="button" onClick={applyLink} className="rounded-lg bg-[var(--primary)] px-3 py-1.5 text-xs font-semibold text-[var(--primary-fg)] hover:bg-[var(--primary-hover)]">
         {t("applyLink")}
       </button>
       <button type="button" onClick={() => setLinkOpen(false)} className="rounded-lg px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100">
@@ -615,6 +617,11 @@ export function RichTextEditor({
 
   const editableHandlers = {
     contentEditable: true,
+    // Ein contentEditable-div ist fuer Screenreader sonst nur "Gruppe" ohne
+    // Namen: so wird es als mehrzeiliges Textfeld mit Beschriftung angesagt.
+    role: "textbox",
+    "aria-multiline": true,
+    "aria-label": ariaLabel ?? t("bodyLabel"),
     suppressContentEditableWarning: true,
     onInput: () => {
       sync();
@@ -1068,7 +1075,7 @@ function RecordVideoModal({
               <button
                 type="button"
                 onClick={() => recorderRef.current?.stop()}
-                className="inline-flex items-center gap-2 rounded-full bg-[var(--action)] px-5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
               >
                 <span className="h-2.5 w-2.5 rounded-[3px] bg-white" />
                 {t("recStop")}
@@ -1086,7 +1093,7 @@ function RecordVideoModal({
                 <button
                   type="button"
                   onClick={insert}
-                  className="inline-flex items-center gap-2 rounded-full bg-[var(--action)] px-5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                  className="inline-flex items-center gap-2 rounded-full bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
                 >
                   {t("recInsert")}
                 </button>

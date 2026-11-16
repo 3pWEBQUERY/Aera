@@ -1,6 +1,8 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
 import prisma from "./prisma";
+import { buildAccessContext, canAccess } from "./entitlements";
+import { isPostLocked } from "./post-access";
 import { env, features } from "./env";
 import { LOCALE_ENGLISH_NAMES, normalizeLocale } from "@/i18n/locales";
 
@@ -515,6 +517,8 @@ export interface DisplayRec {
   href: string;
   title: string;
   reason: string;
+  /** Für die Person gesperrt — die Oberfläche zeigt dann ein Schloss. */
+  locked?: boolean;
 }
 
 /**
@@ -544,6 +548,9 @@ async function displayRecommendationsUncached(
   locale = "de",
 ): Promise<DisplayRec[]> {
   const recs = await computeRecommendations(tenantId, userId, limit * 2);
+  // Gesperrtes wird als gesperrt markiert (Schloss in der Liste), damit eine
+  // Empfehlung nicht wie ein offener Inhalt aussieht und dann vor der Sperre endet.
+  const ctx = await buildAccessContext(tenantId, userId);
   const out: DisplayRec[] = [];
   for (const r of recs) {
     if (out.length >= limit) break;
@@ -561,15 +568,25 @@ async function displayRecommendationsUncached(
         });
     } else if (r.refType === "POST") {
       const p = await prisma.post.findFirst({
-        where: { id: r.refId, tenantId },
+        where: { id: r.refId, tenantId, isPublished: true, publishedAt: { lte: new Date() } },
         include: { space: true },
       });
-      if (p)
+      // Der Textanfang taugt nur bei frei lesbaren Beitraegen als Titel —
+      // bei gesperrten (Beitrag oder Space) waere er bereits der Inhalt.
+      const openPost =
+        p &&
+        p.visibility === "PUBLIC" &&
+        p.priceCents <= 0 &&
+        p.space.visibility === "PUBLIC" &&
+        !p.space.requiredEntitlementKey;
+      const title = p ? p.title || (openPost ? p.body.slice(0, 60) : "") : "";
+      if (p && title)
         out.push({
           type: "post",
           href: `/c/${slug}/s/${p.space.slug}/${p.id}`,
-          title: p.title ?? p.body.slice(0, 60),
+          title,
           reason: r.reason,
+          locked: !canAccess(p.space, ctx) || isPostLocked(p, ctx),
         });
     } else if (r.refType === "EVENT") {
       const e = await prisma.event.findFirst({
@@ -582,18 +599,22 @@ async function displayRecommendationsUncached(
           href: `/c/${slug}/s/${e.space.slug}`,
           title: e.title,
           reason: r.reason,
+          locked:
+            !canAccess(e.space, ctx) ||
+            (!!e.requiredEntitlementKey && !ctx.isStaff && !ctx.keys.has(e.requiredEntitlementKey)),
         });
     } else if (r.refType === "COURSE") {
       const c = await prisma.course.findFirst({
         where: { id: r.refId, tenantId },
         include: { space: true },
       });
-      if (c)
+      if (c && (c.isPublished || ctx.isStaff))
         out.push({
           type: "course",
           href: `/c/${slug}/s/${c.space.slug}`,
           title: c.title,
           reason: r.reason,
+          locked: !canAccess(c.space, ctx),
         });
     }
   }

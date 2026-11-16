@@ -59,9 +59,12 @@ function RailIcon({
 export function HomeRail({
   memberships,
   user,
+  isCreator = false,
 }: {
   memberships: RailMembership[];
   user: { name: string; avatarUrl: string | null } | null;
+  /** Besitzt eine Community oder hat dort eine Team-Rolle → Creator-Bereich. */
+  isCreator?: boolean;
 }) {
   const pathname = usePathname();
   const t = useTranslations("discover.rail");
@@ -89,7 +92,19 @@ export function HomeRail({
         label={t("discover")}
         active={pathname.startsWith("/home/search")}
       />
-      {user && <RailIcon href="/dashboard" icon="dashboard" label={t("myCommunities")} />}
+      {/* Mitglieder landen bei ihrer Liste auf /home, nicht im Creator-Assistenten.
+          Den Creator-Bereich sehen nur, die wirklich eine Community betreuen. */}
+      {user && memberships.length > 0 && (
+        <RailIcon href="/home#deine-communities" icon="members" label={t("myCommunities")} />
+      )}
+      {user && isCreator && (
+        <RailIcon
+          href="/dashboard"
+          icon="dashboard"
+          label={t("creatorArea")}
+          active={pathname.startsWith("/dashboard")}
+        />
+      )}
 
       {memberships.length > 0 && (
         <>

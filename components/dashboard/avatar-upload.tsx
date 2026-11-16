@@ -4,7 +4,8 @@ import { useRef, useState } from "react";
 import { Icon } from "./icons";
 import { initials } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
 
 export function AvatarUpload({
   tenant,
@@ -22,9 +23,11 @@ export function AvatarUpload({
   onChange?: (url: string) => void;
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [url, setUrlState] = useState<string>(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [failedFile, setFailedFile] = useState<File | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function setUrl(next: string) {
@@ -32,24 +35,26 @@ export function AvatarUpload({
     onChange?.(next);
   }
 
-  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    e.target.value = "";
-    if (!file) return;
+  async function upload(file: File) {
     setError(null);
+    setFailedFile(null);
     setUploading(true);
     try {
       const uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
       setUrl(uploadedUrl);
     } catch (uploadError) {
-      setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
-      );
+      setError(uploadErrorText(uploadError));
+      setFailedFile(file);
     } finally {
       setUploading(false);
     }
+  }
+
+  async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    await upload(file);
   }
 
   return (
@@ -60,7 +65,7 @@ export function AvatarUpload({
           <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-violet-100 text-xl font-semibold text-violet-700">
             {url ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={url} alt="Avatar" className="h-full w-full object-cover" />
+              <img src={url} alt="" className="h-full w-full object-cover" />
             ) : fallbackName ? (
               initials(fallbackName)
             ) : (
@@ -74,8 +79,8 @@ export function AvatarUpload({
           )}
         </div>
 
-        <div>
-          <div className="flex items-center gap-2">
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
@@ -89,14 +94,20 @@ export function AvatarUpload({
               <button
                 type="button"
                 onClick={() => setUrl("")}
-                className="rounded-lg px-2.5 py-1.5 text-sm font-medium text-red-600 transition hover:bg-red-50"
+                className="rounded-lg px-2.5 py-1.5 text-sm font-medium text-red-700 transition hover:bg-red-50"
               >
                 {t("remove")}
               </button>
             )}
           </div>
           <p className="mt-1.5 text-xs text-slate-500">{t("imageHint")}</p>
-          {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+          {/* Der Fehler steht genau einmal, hier am Feld (die Upload-Anzeige
+              oben zeigt nur den Fortschritt). */}
+          <UploadFieldError
+            message={error}
+            retrying={uploading}
+            onRetry={failedFile ? () => void upload(failedFile) : undefined}
+          />
         </div>
       </div>
       <input
@@ -104,6 +115,8 @@ export function AvatarUpload({
         type="file"
         accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
         className="hidden"
+        tabIndex={-1}
+        aria-hidden="true"
         onChange={onPick}
       />
     </div>

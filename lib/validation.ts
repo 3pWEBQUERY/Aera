@@ -54,7 +54,10 @@ export const spaceSchema = z.object({
   ]),
   description: z.string().max(280).optional().or(z.literal("")),
   visibility: z.enum(["PUBLIC", "MEMBERS", "PAID"]),
-  requiredEntitlementKey: z.string().optional().or(z.literal("")),
+  // Kein Freitext mehr: Die Oberfläche bietet nur die bezahlten
+  // Mitgliedschaften der Community an. Die Action prüft den Wert zusätzlich
+  // gegen die Keys des Tenants (siehe resolveSpaceAccessKey).
+  requiredEntitlementKey: z.string().trim().max(200).optional().or(z.literal("")),
 });
 
 export const postSchema = z.object({

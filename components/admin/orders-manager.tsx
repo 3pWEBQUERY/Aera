@@ -13,6 +13,8 @@ import { Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Label, Select } from "@/components/ui/field";
 import { formatDateTime, formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface OrderRowData {
   id: string;
@@ -109,7 +111,7 @@ export function OrdersManager({
           />
           <button
             type="submit"
-            className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+            className="shrink-0 rounded-full bg-[var(--primary)] px-3.5 py-1 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
           >
             {tc("search")}
           </button>
@@ -199,6 +201,8 @@ function InfoRow({ label, value, mono }: { label: string; value: string; mono?: 
 function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }) {
   const [state, action, pending] = useActionState(adminUpdateOrderAction, initial);
   const t = useTranslations("admin.orders");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const locale = useLocale();
   useEffect(() => {
@@ -261,16 +265,19 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
               <Icon name="alert" size={15} />
               {tc("dangerZone")}
             </p>
-            <p className="mt-1 text-xs text-red-600/90">
+            <p className="mt-1 text-xs text-red-700">
               {t("dangerDesc")}
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm"))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirmTitle", { name: order.description }),
+                  body: t("dangerDesc"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3"
             >
               <input type="hidden" name="orderId" value={order.id} />
@@ -297,11 +304,12 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
           type="submit"
           form={formId}
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
         >
           {pending ? tc("saving") : tc("saveChanges")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

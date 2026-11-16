@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { Icon } from "./icons";
 
 export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
@@ -33,7 +33,7 @@ export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
           <button
             type="button"
             onClick={() => setOpen(true)}
-            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2 sm:self-center"
+            className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] focus-visible:ring-offset-2 sm:self-center"
           >
             {t("cta")}
             <Icon name="chevron" size={15} className="-rotate-90" />
@@ -41,11 +41,10 @@ export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
         </div>
       </section>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={open}
         onClose={() => setOpen(false)}
         slug={slug}
-        focusPlans
       />
     </>
   );

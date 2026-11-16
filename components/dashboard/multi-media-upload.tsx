@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -37,6 +37,7 @@ export function MultiMediaUpload({
   defaultItems?: { type: "IMAGE" | "VIDEO"; url: string; caption?: string | null }[];
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [items, setItems] = useState<MItem[]>(() =>
     defaultItems.map((d) => ({ key: nextKey(), type: d.type, url: d.url, caption: d.caption ?? "" })),
   );
@@ -66,9 +67,7 @@ export function MultiMediaUpload({
       ]);
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploads((u) => u.filter((x) => x.key !== key));

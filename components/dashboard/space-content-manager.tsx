@@ -117,7 +117,7 @@ export function SpaceContentManager({
             {t("view")}
           </Link>
           {(isPost || isKnowledge) && (
-            <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
+            <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]">
               <Icon name="plus" size={18} />
               {createLabelFor(space.type)}
             </button>
@@ -242,7 +242,7 @@ function PostForm({
           {ty === "GALLERY" && (
             <div>
               <Label>{t("imageLabel")}</Label>
-              <ImageUpload tenant={slug} name="imageUrl" purpose="gallery" />
+              <ImageUpload tenant={slug} name="imageUrl" purpose="gallery" libraryPicker />
             </div>
           )}
           {ty === "VIDEOS" && (
@@ -259,7 +259,7 @@ function PostForm({
               </div>
               <div>
                 <Label>{t("podcastCover")}</Label>
-                <ImageUpload tenant={slug} name="imageUrl" purpose="podcast-cover" />
+                <ImageUpload tenant={slug} name="imageUrl" purpose="podcast-cover" libraryPicker />
               </div>
             </>
           )}
@@ -267,7 +267,7 @@ function PostForm({
             <>
               <div>
                 <Label>{t("musicCover")}</Label>
-                <ImageUpload tenant={slug} name="imageUrl" purpose="music-cover" />
+                <ImageUpload tenant={slug} name="imageUrl" purpose="music-cover" libraryPicker />
                 <p className="mt-1.5 text-xs text-slate-500">{t("musicCoverHint")}</p>
               </div>
               <div>
@@ -286,7 +286,7 @@ function PostForm({
           {ty === "BLOG" && (
             <div>
               <Label>{t("blogCover")}</Label>
-              <ImageUpload tenant={slug} name="imageUrl" purpose="blog-cover" />
+              <ImageUpload tenant={slug} name="imageUrl" purpose="blog-cover" libraryPicker />
             </div>
           )}
           {ty === "FEED" && (
@@ -296,8 +296,20 @@ function PostForm({
                 tenant={slug}
                 imagePurpose="feed-image"
                 videoPurpose="feed-video"
+                libraryPicker
               />
               <p className="mt-1 text-xs text-slate-500">{t("mediaCountHint")}</p>
+            </div>
+          )}
+
+          {/* Feed-Beitraege brauchen keinen Titel. Wer einen setzt, gibt dem
+              Beitrag eine Ueberschrift, die auch sieht, wem er gesperrt ist —
+              bei Einzelkauf und „Nur für Mitglieder“ der Kaufanreiz. */}
+          {ty === "FEED" && (
+            <div>
+              <Label htmlFor="sc-title">{t("previewTitleLabel")}</Label>
+              <Input id="sc-title" name="title" maxLength={200} aria-describedby="sc-title-hint" className="text-base" />
+              <p id="sc-title-hint" className="mt-1 text-xs text-slate-500">{t("previewTitleHint")}</p>
             </div>
           )}
 
@@ -358,6 +370,10 @@ function PostForm({
               <div className="mt-1 grid gap-2 sm:grid-cols-3">
                 {ACCESS_CHOICES.map((c) => {
                   const on = visibility === c.value;
+                  // „Bezahlbar“ hiess im Composer Einzelkauf — so heisst es jetzt
+                  // auch. Eine Mitgliedschaft schaltet so einen Beitrag nicht frei.
+                  const title = c.value === "PAID" ? t("accessSingle") : tb(c.titleKey);
+                  const text = c.value === "PAID" ? t("accessSingleHint") : tb(c.textKey);
                   return (
                     <button
                       key={c.value}
@@ -380,10 +396,10 @@ function PostForm({
                         <Icon name={c.icon} size={17} />
                       </span>
                       <span className="mt-3 block text-sm font-semibold text-slate-900">
-                        {tb(c.titleKey)}
+                        {title}
                       </span>
-                      <span className="mt-1 block text-xs leading-5 text-slate-500">
-                        {tb(c.textKey)}
+                      <span className="mt-1 block text-xs leading-5 text-slate-600">
+                        {text}
                       </span>
                     </button>
                   );
@@ -391,20 +407,31 @@ function PostForm({
               </div>
             </div>
 
-            {/* Preis und Vorschaubild gehoeren nur zum Einzelverkauf. Sie
-                bleiben im DOM, damit ein Reiterwechsel nichts verwirft — die
-                Action ignoriert sie, solange visibility nicht PAID ist. */}
-            <div className={visibility === "PAID" ? "space-y-4 rounded-2xl border border-slate-200 p-4" : "hidden"}>
+            {/* Preis und Vorschaubild gehoeren nur zum Einzelkauf. Sie
+                bleiben im DOM, damit ein Wechsel der Auswahl nichts verwirft;
+                das deaktivierte fieldset schickt sie sonst nicht mit. Ohne
+                „Kostenlos“: jeder Preis > 0 macht den Beitrag zum Einzelkauf
+                (siehe readPostVisibility), ein Preis von 0 hiesse hier etwas
+                anderes, als die Auswahl verspricht. */}
+            <fieldset
+              disabled={visibility !== "PAID"}
+              className={visibility === "PAID" ? "space-y-4 rounded-2xl border border-slate-200 p-4" : "hidden"}
+            >
               <div>
                 <Label htmlFor="sc-price">{t("ppvPriceLabel")}</Label>
-                <PricePointSelect id="sc-price" name="priceCents" kind="oneTime" allowFree defaultCents={0} />
-                <p className="mt-1 text-xs text-slate-500">{t("ppvPriceHint")}</p>
+                <PricePointSelect
+                  id="sc-price"
+                  name="priceCents"
+                  kind="oneTime"
+                  required
+                />
+                <p id="sc-price-hint" className="mt-1 text-xs text-slate-500">{t("ppvPriceHint")}</p>
               </div>
               <div>
                 <Label>{t("ppvTeaserLabel")}</Label>
-                <ImageUpload tenant={slug} name="teaserUrl" purpose="ppv-teaser" />
+                <ImageUpload tenant={slug} name="teaserUrl" purpose="ppv-teaser" libraryPicker />
               </div>
-            </div>
+            </fieldset>
 
             <div>
               <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
@@ -458,7 +485,7 @@ function Footer({ pending, onDone, cta }: { pending: boolean; onDone: () => void
   return (
     <div className="flex shrink-0 items-center justify-end gap-3 border-t border-slate-200 bg-white px-6 py-4">
       <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+      <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
         {pending ? t("saving") : cta}
       </button>
     </div>
@@ -477,7 +504,7 @@ function SpaceEmpty({
   const t = useTranslations("dashboard.spaceContent");
   return (
     <EmptyState icon={icon} title={t("emptyTitle")} hint={t("emptyHint")}>
-      <button onClick={onCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+      <button onClick={onCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
         <Icon name="plus" size={18} /> {label}
       </button>
     </EmptyState>

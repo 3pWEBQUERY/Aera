@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useEffect, useState } from "react";
+import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createTierAction,
@@ -16,6 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Pill, FormError } from "@/components/ui/misc";
 import { cn, formatPrice } from "@/lib/utils";
 import { PricePointSelect } from "./price-point-select";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 export interface TierRowData {
   id: string;
@@ -40,18 +42,25 @@ const initial: ActionState = {};
 export function TiersManager({
   slug,
   tiers,
+  payoutsReady,
   stripeReady,
   showSetupHint = false,
 }: {
   slug: string;
   tiers: TierRowData[];
+  /** Die Community hat ein Stripe-Konto für Auszahlungen (`stripeAccountId`). */
+  payoutsReady: boolean;
   stripeReady: boolean;
-  /** Env-Setup-Hinweis (STRIPE_SECRET_KEY) — nur für Plattform-Admins. */
+  /**
+   * Plattform-Admins: Env-Setup-Hinweis (STRIPE_SECRET_KEY) und der technische
+   * Schlüssel einer Mitgliedschaft. Creator brauchen beides nicht.
+   */
   showSetupHint?: boolean;
 }) {
   const [createOpen, setCreateOpen] = useState(false);
   const [editing, setEditing] = useState<TierRowData | null>(null);
   const t = useTranslations("dashboard.tiers");
+  const tIntervals = useTranslations("dashboard.tierIntervals");
   const locale = useLocale();
   const suffix = (interval: string) =>
     interval === "MONTH" ? t("suffixMonth") : interval === "YEAR" ? t("suffixYear") : "";
@@ -67,12 +76,16 @@ export function TiersManager({
         </div>
         <button
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] sm:self-auto"
         >
           <Icon name="plus" size={18} />
           {t("create")}
         </button>
       </div>
+
+      {!payoutsReady && tiers.some((tier) => tier.priceCents > 0) && (
+        <PayoutsHint slug={slug} className="mb-5" />
+      )}
 
       {!stripeReady && showSetupHint && (
         <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
@@ -108,7 +121,7 @@ export function TiersManager({
             </div>
             <p className="mt-4 font-semibold text-slate-900">{tier.name}</p>
             <div className="mt-1 flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-slate-900">{formatPrice(tier.priceCents, tier.currency, locale)}</span>
+              <span className="text-2xl font-bold text-slate-900">{formatPrice(tier.priceCents, tier.currency, locale, tIntervals("FREE.label"))}</span>
               {tier.priceCents > 0 && (
                 <span className="text-sm text-slate-500">{suffix(tier.interval)}</span>
               )}
@@ -136,7 +149,11 @@ export function TiersManager({
         subtitle={t("createSubtitle")}
         icon="tiers"
       >
-        <TierForm slug={slug} onDone={() => setCreateOpen(false)} />
+        <TierForm
+          slug={slug}
+          payoutsReady={payoutsReady}
+          onDone={() => setCreateOpen(false)}
+        />
       </Sheet>
 
       <Sheet
@@ -151,6 +168,8 @@ export function TiersManager({
             key={editing.id}
             slug={slug}
             tier={editing}
+            payoutsReady={payoutsReady}
+            showTechnical={showSetupHint}
             onDone={() => setEditing(null)}
           />
         )}
@@ -159,13 +178,39 @@ export function TiersManager({
   );
 }
 
+/** Creator ohne Stripe-Konto: bezahlte Mitgliedschaften brächten kein Geld an. */
+function PayoutsHint({ slug, className }: { slug: string; className?: string }) {
+  const t = useTranslations("dashboard.tiers");
+  return (
+    <div
+      className={cn(
+        "flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900 sm:flex-row sm:items-center sm:justify-between sm:gap-4",
+        className,
+      )}
+    >
+      <p>{t("payoutsMissing")}</p>
+      <Link
+        href={`/dashboard/${slug}/settings?tab=integrations`}
+        className="shrink-0 font-semibold text-amber-900 underline underline-offset-2 hover:no-underline"
+      >
+        {t("payoutsSetup")}
+      </Link>
+    </div>
+  );
+}
+
 function TierForm({
   slug,
   tier,
+  payoutsReady,
+  showTechnical = false,
   onDone,
 }: {
   slug: string;
   tier?: TierRowData;
+  payoutsReady: boolean;
+  /** Technischer Schlüssel — nur für Plattform-Admins. */
+  showTechnical?: boolean;
   onDone: () => void;
 }) {
   const isEdit = !!tier;
@@ -180,6 +225,7 @@ function TierForm({
   const [interval, setInterval] = useState(tier?.interval ?? "FREE");
   const [deleting, setDeleting] = useState(false);
   const [deleteError, setDeleteError] = useState<string>();
+  const [confirm, confirmDialog] = useConfirm();
 
   useEffect(() => {
     if (state.ok) onDone();
@@ -187,7 +233,17 @@ function TierForm({
 
   async function onDelete() {
     if (!tier) return;
-    if (!confirm(t("confirmDelete", { name: tier.name }))) return;
+    // Bezahlte Mitgliedschaften blendet der Server nur aus (laufende Zahlungen).
+    const paid = tier.priceCents > 0;
+    const confirmed = await confirm({
+      title: t(paid ? "confirmHide" : "confirmDelete", { name: tier.name }),
+      body: paid
+        ? t("confirmHideBody")
+        : t("confirmDeleteBody", { count: tier.memberCount }),
+      confirmLabel: paid ? t("hideTier") : t("deleteTier"),
+      tone: "danger",
+    });
+    if (!confirmed) return;
     setDeleting(true);
     setDeleteError(undefined);
     const fd = new FormData();
@@ -227,14 +283,15 @@ function TierForm({
           </div>
 
           <div>
-            <p className="mb-3 text-sm font-medium text-slate-700">{t("billing")}</p>
-            <div className="grid grid-cols-3 gap-3">
+            <p id="tf-billing" className="mb-3 text-sm font-medium text-slate-700">{t("billing")}</p>
+            <div role="group" aria-labelledby="tf-billing" className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-3">
               {INTERVALS.map((iv) => {
                 const sel = iv === interval;
                 return (
                   <button
                     key={iv}
                     type="button"
+                    aria-pressed={sel}
                     onClick={() => setInterval(iv)}
                     className={cn(
                       "rounded-2xl border p-4 text-left transition-colors duration-200",
@@ -266,6 +323,8 @@ function TierForm({
                 </div>
                 <span className="shrink-0 text-sm text-slate-500">{suffix(interval)}</span>
               </div>
+              <p className="mt-1.5 text-xs text-slate-500">{t("priceHint")}</p>
+              {!payoutsReady && <PayoutsHint slug={slug} className="mt-3" />}
             </div>
           )}
 
@@ -307,7 +366,7 @@ function TierForm({
             )}
           </div>
 
-          {isEdit && (
+          {isEdit && showTechnical && (
             <div className="rounded-xl bg-slate-50 px-4 py-3">
               <p className="text-xs text-slate-500">{t("entitlementKeyLabel")}</p>
               <p className="font-mono text-sm text-slate-600">{tier!.entitlementKey}</p>
@@ -323,7 +382,7 @@ function TierForm({
                 className="inline-flex items-center gap-2 rounded-xl border border-red-200 px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-50 disabled:opacity-50"
               >
                 <Icon name="archive" size={16} />
-                {deleting ? t("deleting") : t("deleteTier")}
+                {deleting ? t("deleting") : tier!.priceCents > 0 ? t("hideTier") : t("deleteTier")}
               </button>
             </div>
           )}
@@ -334,10 +393,11 @@ function TierForm({
         <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">
           {t("cancel")}
         </button>
-        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+        <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
           {pending ? t("saving") : isEdit ? t("saveChanges") : t("createTier")}
         </button>
       </div>
+      {confirmDialog}
     </form>
   );
 }

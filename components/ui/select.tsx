@@ -168,7 +168,7 @@ export function Select({
           disabled && "cursor-not-allowed opacity-50",
         )}
       >
-        <span className={cn("truncate", !selectedOpt && (dark ? "text-white/50" : "text-slate-400"))}>
+        <span className={cn("truncate", !selectedOpt && (dark ? "text-white/50" : "text-slate-500"))}>
           {selectedOpt?.label ?? placeholder ?? "Auswählen"}
         </span>
         <Icon

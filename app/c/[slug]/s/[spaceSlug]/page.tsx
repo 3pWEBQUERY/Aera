@@ -5,8 +5,10 @@ import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
-import { canAccess } from "@/lib/entitlements";
-import { isPostLocked, postLockKind } from "@/lib/post-access";
+import { SpacePaywall } from "@/components/community/space-paywall";
+import { joinOfferFor } from "@/lib/join-offer";
+import { canAccess, canCreatePostIn } from "@/lib/entitlements";
+import { isPostLocked, postLockKind, unlockedPostWhere } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
 import { MusicPlayer, type MusicTrack } from "@/components/community/music-player";
@@ -82,6 +84,8 @@ export default async function SpacePage({
   const tShop = await getTranslations("community.render.shop");
   const tSidebar = await getTranslations("community.render.sidebar");
   const tLegal = await getTranslations("legalPurchase");
+  const tSafety = await getTranslations("billingSafety");
+  const tPostTile = await getTranslations("community.render.postTile");
   const locale = await getLocale();
 
   const space = await prisma.space.findFirst({
@@ -93,32 +97,95 @@ export default async function SpacePage({
 
   const allowed = canAccess(space, ctx);
   const isMember = ctx.membership?.status === "ACTIVE";
+  // Composer nur, wo der Server das Posten auch annimmt (Feed/Forum, nicht
+  // archiviert, nicht "nur das Team").
+  const canPost = canCreatePostIn(space, ctx);
 
-  if (!allowed) {
+  if (!allowed && (space.visibility === "PAID" || space.requiredEntitlementKey)) {
+    // Bezahlter Space: Mitgliedschaft und Preis nennen statt "passender
+    // Mitgliedschaft". Mit eigenem Key genau dieser Tarif, sonst (jede
+    // bezahlte Mitgliedschaft) der guenstigste.
+    const tPaywall = await getTranslations("community.render.paywall");
+    const paidTiers = await prisma.membershipTier.findMany({
+      where: {
+        tenantId: tenant.id,
+        isPublic: true,
+        priceCents: { gt: 0 },
+        ...(space.requiredEntitlementKey ? { entitlementKey: space.requiredEntitlementKey } : {}),
+      },
+      orderBy: [{ priceCents: "asc" }, { sortOrder: "asc" }],
+      select: { id: true, name: true, priceCents: true, currency: true, interval: true },
+    });
+    const tier = paidTiers[0];
+    const price = tier ? formatPrice(tier.priceCents, tier.currency, locale) : "";
+    const priceLabel = !tier
+      ? ""
+      : tier.interval === "MONTH"
+        ? tPaywall("pricePerMonth", { price })
+        : tier.interval === "YEAR"
+          ? tPaywall("pricePerYear", { price })
+          : price;
     return (
-      <div className="mx-auto max-w-xl">
-        <Card>
-          <CardBody className="text-center">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)]">
-              <Icon name="lock" size={26} className="text-[var(--brand)]" />
-            </div>
-            <h1 className="display-serif mt-3 text-2xl text-[#161613]">{space.name}</h1>
-            <p className="mt-2 text-[#161613]/60">
-              {space.visibility === "PAID" ? t("lockedDescPaid") : t("lockedDesc")}
-            </p>
-            <div className="mt-5">
-              <ButtonLink href={`/c/${slug}/join`} variant="brand">
-                {isMember ? t("upgradeMembership") : t("join")}
-              </ButtonLink>
-            </div>
-          </CardBody>
-        </Card>
-      </div>
+      <SpacePaywall
+        variant="paid"
+        spaceName={space.name}
+        message={
+          !tier
+            ? t("lockedDescPaid")
+            : paidTiers.length > 1
+              ? tPaywall("anyPaidFrom", { space: space.name, tier: tier.name, price: priceLabel })
+              : tPaywall("belongsTo", { space: space.name, tier: tier.name, price: priceLabel })
+        }
+        detail={isMember && tier ? tPaywall("memberHint") : null}
+        cta={
+          tier
+            ? {
+                href: `/c/${slug}/join?tier=${tier.id}#tier-${tier.id}`,
+                label: tPaywall("viewTier", { tier: tier.name }),
+              }
+            : { href: `/c/${slug}/join`, label: isMember ? t("upgradeMembership") : tPaywall("becomeMember") }
+        }
+      />
     );
   }
 
+  if (!allowed) {
+    // Mitglieder-Space ohne Preis: sagen, dass die Mitgliedschaft nichts
+    // kostet, und mit `next` hierher zurückführen.
+    const offer = await joinOfferFor(tenant.id, null);
+    const joinHref = `/c/${slug}/join?next=${encodeURIComponent(`/c/${slug}/s/${spaceSlug}`)}`;
+    const tPaywall = await getTranslations("community.render.paywall");
+    return offer.kind === "free" ? (
+      <SpacePaywall
+        variant="free"
+        spaceName={space.name}
+        message={tPaywall("freeMembers", { space: space.name })}
+        cta={{ href: joinHref, label: tPaywall("joinFree") }}
+      />
+    ) : (
+      <SpacePaywall
+        variant="paid"
+        spaceName={space.name}
+        message={t("lockedDesc")}
+        cta={{ href: joinHref, label: isMember ? t("upgradeMembership") : t("join") }}
+      />
+    );
+  }
+
+  // Zahlung nicht gestartet (Checkout) — gilt für jeden Kauf aus diesem Space.
+  const checkoutAlert =
+    error === "checkout" || error === "payments-unavailable" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {tSafety("checkoutNotStarted")}
+      </p>
+    ) : null;
+
   const header = (
     <div className="mb-6">
+      {checkoutAlert}
       {error === "legal-consent" && (
         <p
           role="alert"
@@ -207,11 +274,20 @@ export default async function SpacePage({
         tenantId: tenant.id,
         spaceId: space.id,
         isPublished: true,
+        // Scheduled posts stay hidden from the community until go-live.
+        ...(ctx.isStaff ? {} : { publishedAt: { lte: new Date() } }),
+        // Den Text nur durchsuchen, wo der Viewer ihn lesen darf — sonst
+        // bestaetigt die Trefferliste Woerter aus gesperrten Beitraegen.
         ...(forumQuery
           ? {
               OR: [
                 { title: { contains: forumQuery, mode: "insensitive" as const } },
-                { body: { contains: forumQuery, mode: "insensitive" as const } },
+                {
+                  AND: [
+                    { body: { contains: forumQuery, mode: "insensitive" as const } },
+                    unlockedPostWhere(ctx),
+                  ],
+                },
               ],
             }
           : {}),
@@ -269,6 +345,7 @@ export default async function SpacePage({
 
     return (
       <>
+        {checkoutAlert}
         {error === "legal-consent" && (
           <p
             role="alert"
@@ -291,7 +368,7 @@ export default async function SpacePage({
               </p>
             )}
           </div>
-          {isMember && (
+          {canPost && (
             <ForumPostComposer slug={slug} space={spaceSlug} spaceName={space.name} />
           )}
         </div>
@@ -347,10 +424,13 @@ export default async function SpacePage({
                   </div>
                   <Link href={`/c/${slug}/s/${spaceSlug}/${p.id}`}>
                     <h3 className="mt-1 font-semibold text-[#161613] hover:text-[color:var(--brand)]">
-                      {p.title || excerpt(p.body, 80)}
+                      {p.title ||
+                        (isPostLocked(p, ctx)
+                          ? tPostTile(p.priceCents > 0 ? "paidUntitled" : "lockedUntitled")
+                          : excerpt(p.body, 80))}
                     </h3>
                   </Link>
-                  {p.body && p.title && (
+                  {p.body && p.title && !isPostLocked(p, ctx) && (
                     <p className={cn("mt-0.5 text-sm text-[#161613]/60", !forumSettings.get(p.id)?.disableTruncation && "line-clamp-2")}>
                       {forumSettings.get(p.id)?.disableTruncation ? p.body : excerpt(p.body, 160)}
                     </p>
@@ -386,6 +466,7 @@ export default async function SpacePage({
           spaceId={space.id}
           isMember={isMember}
           query={forumQuery}
+          readableWhere={unlockedPostWhere(ctx)}
           hideSearch
         />
         </div>
@@ -489,7 +570,11 @@ export default async function SpacePage({
       const postLocked = kind !== "none";
       return {
         id: p.id,
-        title: p.title || excerpt(p.body, 60) || t("untitled"),
+        title:
+          p.title ||
+          (postLocked
+            ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+            : excerpt(p.body, 60) || t("untitled")),
         // Der Auszug geht nie mit — der Text ist der Gegenwert. Das Titelbild
         // dagegen bleibt bei "nur fuer Mitglieder" stehen: es ist die Werbung.
         // Beim Einzelverkauf gehoert es zum Gekauften, dort steht nur das
@@ -538,7 +623,13 @@ export default async function SpacePage({
           ? {
               OR: [
                 { title: { contains: feedQuery, mode: "insensitive" as const } },
-                { body: { contains: feedQuery, mode: "insensitive" as const } },
+                // Text nur dort durchsuchen, wo der Viewer ihn lesen darf.
+                {
+                  AND: [
+                    { body: { contains: feedQuery, mode: "insensitive" as const } },
+                    unlockedPostWhere(ctx),
+                  ],
+                },
               ],
             }
           : {}),
@@ -558,7 +649,9 @@ export default async function SpacePage({
       const locked = isPostLocked(p, ctx);
       return {
         id: p.id,
-        title: p.title,
+        title:
+          p.title ||
+          (locked ? tPostTile(p.priceCents > 0 ? "paidUntitled" : "lockedUntitled") : null),
         // Never leak gated body/media to non-buyers.
         body: locked ? "" : p.body,
         bodyHtml: locked ? null : p.bodyHtml,
@@ -579,7 +672,8 @@ export default async function SpacePage({
             ? p.teaserUrl
             : (p.imageUrls[0] ?? p.imageUrl)
           : null,
-        lockedExcerpt: locked ? excerpt(p.body, 180) : null,
+        // Kein Textauszug: ein kurzer Beitrag waere sonst ganz lesbar.
+        lockedExcerpt: null,
         priceCents: p.priceCents,
         currency: p.currency,
         teaserUrl: p.teaserUrl,
@@ -756,7 +850,7 @@ export default async function SpacePage({
               </Link>
             )}
           </div>
-          {isMember && !feedQuery && <PostComposer slug={slug} space={spaceSlug} />}
+          {canPost && !feedQuery && <PostComposer slug={slug} space={spaceSlug} />}
           {posts.length === 0 ? (
             feedQuery ? (
               <EmptyState
@@ -765,7 +859,12 @@ export default async function SpacePage({
                 hint={t("tryOtherTerm")}
               />
             ) : (
-              <EmptyState icon="feed" title={t("feedNoPostsTitle")} hint={t("feedNoPostsHint")} />
+              <EmptyState
+                icon="feed"
+                title={t("feedNoPostsTitle")}
+                // Wer hier nicht posten darf, wird nicht zum Anfangen ermuntert.
+                hint={canPost ? t("feedNoPostsHint") : t("feedNoPostsTeamHint")}
+              />
             )
           ) : (
             posts.map((p) => (
@@ -782,6 +881,7 @@ export default async function SpacePage({
           spaceId={space.id}
           isMember={isMember}
           query={feedQuery}
+          readableWhere={unlockedPostWhere(ctx)}
         />
       </div>
     );
@@ -984,7 +1084,7 @@ export default async function SpacePage({
               className="mt-3 w-full rounded-lg border border-[#161613]/15 px-3 py-2 text-sm focus:border-[var(--brand)] focus:outline-none"
             />
             <div className="mt-3 flex justify-end">
-              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+              <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                 {tReq("submit")}
               </button>
             </div>
@@ -1024,7 +1124,7 @@ export default async function SpacePage({
                       <input type="hidden" name="tenant" value={slug} />
                       <input type="hidden" name="space" value={spaceSlug} />
                       <input type="hidden" name="requestId" value={r.id} />
-                      <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+                      <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                         <Icon name="lock" size={15} />
                         {tReq("payFor", { price: formatPrice(r.priceCents, r.currency, locale) })}
                       </button>
@@ -1085,7 +1185,7 @@ export default async function SpacePage({
                         <input type="hidden" name="tenant" value={slug} />
                         <input type="hidden" name="space" value={spaceSlug} />
                         <input type="hidden" name="slotId" value={s.id} />
-                        <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]">
+                        <button className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]">
                           {tBook("reserve")}
                         </button>
                       </form>
@@ -1641,8 +1741,8 @@ export default async function SpacePage({
         {header}
         {events.map((e) => (
           <Card key={e.id}>
-            <CardBody className="flex items-center justify-between gap-4">
-              <div>
+            <CardBody className="flex flex-wrap items-center justify-between gap-4">
+              <div className="min-w-0">
                 <p className="font-semibold text-[#161613]">{e.title}</p>
                 <p className="mt-1 text-sm text-[#161613]/60">
                   {formatDateTime(e.startsAt, locale)}
@@ -1650,13 +1750,22 @@ export default async function SpacePage({
                 </p>
               </div>
               {isMember && (
-                <form action={rsvpEventAction}>
-                  <input type="hidden" name="tenant" value={slug} />
-                  <input type="hidden" name="eventId" value={e.id} />
-                  <Button size="sm" variant={myRsvps.has(e.id) ? "secondary" : "brand"}>
-                    {myRsvps.has(e.id) ? t("attended") : t("attend")}
-                  </Button>
-                </form>
+                <div className="flex shrink-0 flex-col items-end gap-1.5 sm:flex-row sm:items-center sm:gap-3">
+                  {/* Status als Text, der Knopf nennt die Aktion. */}
+                  {myRsvps.has(e.id) && (
+                    <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-700">
+                      <Icon name="check" size={14} />
+                      {t("rsvpGoing")}
+                    </span>
+                  )}
+                  <form action={rsvpEventAction}>
+                    <input type="hidden" name="tenant" value={slug} />
+                    <input type="hidden" name="eventId" value={e.id} />
+                    <Button size="sm" variant={myRsvps.has(e.id) ? "secondary" : "brand"}>
+                      {myRsvps.has(e.id) ? t("withdrawRsvp") : t("attend")}
+                    </Button>
+                  </form>
+                </div>
               )}
             </CardBody>
           </Card>

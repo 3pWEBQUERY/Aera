@@ -11,6 +11,7 @@ import { Icon } from "./icons";
 import { Avatar, FormError } from "@/components/ui/misc";
 import { cn, timeAgo } from "@/lib/utils";
 import { Select } from "@/components/ui/select";
+import { useConfirm } from "@/components/ui/confirm-dialog";
 
 type Phase = "idle" | "starting" | "live" | "error";
 
@@ -50,6 +51,7 @@ export function BrowserStudio({
 }) {
   const t = useTranslations("dashboard.live");
   const tUi = useTranslations("ui.dashboard");
+  const [confirm, confirmDialog] = useConfirm();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -81,7 +83,7 @@ export function BrowserStudio({
 
   const dialogRef = useModalAccessibility<HTMLDivElement>({
     open: true,
-    onClose: () => requestClose(),
+    onClose: () => void requestClose(),
   });
 
   useEffect(() => {
@@ -285,8 +287,17 @@ export function BrowserStudio({
 
   // Schliessen beendet die lokale Uebertragung — auf Sendung lieber einmal
   // zu viel fragen als ein versehentlich abgebrochenes Bild beim Publikum.
-  function requestClose() {
-    if (phase === "live" && !window.confirm(t("studioCloseConfirm"))) return;
+  async function requestClose() {
+    if (phase === "live") {
+      const ok = await confirm({
+        title: t("studioCloseTitle"),
+        body: t("studioCloseBody"),
+        confirmLabel: t("studioCloseCta"),
+        cancelLabel: t("studioCloseCancel"),
+        tone: "danger",
+      });
+      if (!ok) return;
+    }
     setShown(false);
     setTimeout(onClose, 280);
   }
@@ -352,7 +363,7 @@ export function BrowserStudio({
             </button>
             <button
               type="button"
-              onClick={requestClose}
+              onClick={() => void requestClose()}
               aria-label={tUi("close")}
               className="flex h-9 w-9 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/10 hover:text-white"
             >
@@ -573,6 +584,7 @@ export function BrowserStudio({
             </div>
           )}
         </div>
+        {confirmDialog}
       </div>
     </div>
   );

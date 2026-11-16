@@ -78,13 +78,14 @@ export async function registerUser(input: {
 }
 
 export type AuthResult =
-  | { ok: true; user: User }
+  | { ok: true; user: User; usedRecoveryCode?: boolean }
   | { ok: false; error?: string; needsTotp?: boolean };
 
 export async function authenticate(
   email: string,
   password: string,
   totp?: string,
+  options: { recoveryCode?: string } = {},
 ): Promise<AuthResult> {
   const normalizedEmail = email.trim().toLowerCase();
   // Per-account budget on top of the per-IP limit in the callers: rotating
@@ -103,7 +104,20 @@ export async function authenticate(
   if (!valid) return { ok: false, error: "invalidCredentials" };
 
   // Zwei-Faktor: erst nach korrektem Passwort abfragen (kein User-Enum-Leak).
+  let usedRecoveryCode = false;
   if (user.totpEnabledAt && user.totpSecret) {
+    const recoveryCode = options.recoveryCode?.trim();
+    if (recoveryCode) {
+      // Ersatz für den App-Code; verbraucht den Code (genau einmal gültig).
+      // Das Budget oben zählt auch diese Versuche.
+      const { consumeRecoveryCode } = await import("./totp-recovery");
+      if (!(await consumeRecoveryCode(user.id, recoveryCode))) {
+        return { ok: false, needsTotp: true, error: "recoveryCodeInvalid" };
+      }
+      usedRecoveryCode = true;
+    }
+  }
+  if (user.totpEnabledAt && user.totpSecret && !usedRecoveryCode) {
     if (!totp) return { ok: false, needsTotp: true };
     const { verifyTotp } = await import("./totp");
     let totpSecret: string;
@@ -125,7 +139,35 @@ export async function authenticate(
   }
 
   await setSessionCookie({ userId: user.id, sessionVersion: user.sessionVersion });
-  return { ok: true, user };
+  return { ok: true, user, ...(usedRecoveryCode ? { usedRecoveryCode } : {}) };
+}
+
+/**
+ * Startseite nach Anmeldung oder Passwort-Reset: Creator (Besitzer oder Team
+ * einer aktiven Community) ins Dashboard, alle anderen nach /home. Mitglieder
+ * dürfen nie in /dashboard landen — dort beginnt der Creator-Wizard.
+ */
+export async function homePathFor(userId: string): Promise<string> {
+  const [ownsTenant, staff] = await Promise.all([
+    prisma.tenant.count({
+      where: {
+        ownerId: userId,
+        status: "ACTIVE",
+        memberships: {
+          some: { userId, role: "OWNER", status: "ACTIVE" },
+        },
+      },
+    }),
+    prisma.membership.count({
+      where: {
+        userId,
+        status: "ACTIVE",
+        role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
+        tenant: { status: "ACTIVE" },
+      },
+    }),
+  ]);
+  return ownsTenant > 0 || staff > 0 ? "/dashboard" : "/home";
 }
 
 /** Request-deduped: layout + page share one DB lookup per request. */

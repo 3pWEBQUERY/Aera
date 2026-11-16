@@ -49,6 +49,15 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   "event-cover": image("PUBLIC"),
   "course-cover": image("PUBLIC"),
   "product-cover": image("PUBLIC"),
+  // Datei, die Käufer eines digitalen Produkts bekommen. PUBLIC wie andere
+  // Inhaltsdateien: das eigentliche Tor ist die Referenz im Produkt
+  // (`downloadUrl` → nur Käufer mit bezahlter Bestellung, lib/media-access),
+  // damit auch Käufer ohne Mitgliedschaft ihren Download öffnen können.
+  "product-file": {
+    visibility: "PUBLIC",
+    kinds: ["file", "image", "audio", "video"],
+    maxBytes: MAX_VIDEO_BYTES,
+  },
   announcement: image("PUBLIC"),
   "community-cover": image("PUBLIC"),
   // Bilder des Mosaik-Kopfbereichs — stehen ueber jeder Community-Startseite

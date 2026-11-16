@@ -4,6 +4,7 @@ import {
   buildAccessContext,
   canAccess,
   type AccessContext,
+  canCreatePostIn,
 } from "@/lib/entitlements";
 import { unreadNotificationCount } from "@/lib/notifications";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
@@ -397,7 +398,7 @@ export interface PostRow {
 
 // Die Sperr-Logik liegt in lib/post-access, damit Web und Mobile nicht
 // auseinanderlaufen koennen. Re-Export, weil viele Aufrufer hier importieren.
-import { isPostLocked } from "../post-access";
+import { isPostLocked, unlockedPostWhere } from "../post-access";
 export { isPostLocked };
 
 export interface PostEngagement {
@@ -1563,6 +1564,17 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
         ],
       }
     : {};
+  // Beitraege: der Text eines gesperrten Beitrags darf nicht durchsucht
+  // werden, sonst bestaetigt die Trefferliste Woerter aus bezahltem Inhalt
+  // (gleiche Regel wie lib/search.ts).
+  const postTextFilter = q
+    ? {
+        OR: [
+          { title: { contains: q, mode: "insensitive" as const } },
+          { AND: [{ body: { contains: q, mode: "insensitive" as const } }, unlockedPostWhere(ctx)] },
+        ],
+      }
+    : {};
 
   switch (space.type) {
     case "FEED":
@@ -1579,7 +1591,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
           spaceId: space.id,
           isPublished: true,
           publishedAt: { lte: now },
-          ...textFilter,
+          ...postTextFilter,
         },
         orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }, { id: "desc" }],
         take: args.limit + 1,
@@ -1592,7 +1604,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       return {
         kind: "posts",
         posts,
-        canPost: isActiveMember || ctx.isStaff,
+        canPost: canCreatePostIn(space, ctx),
         nextCursor: hasMore ? page[page.length - 1]!.id : null,
       };
     }
@@ -1601,7 +1613,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       const tab: "top" | "new" = args.tab === "new" ? "new" : "top";
       if (tab === "new") {
         const rows = await prisma.post.findMany({
-          where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...textFilter },
+          where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter },
           orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }, { id: "desc" }],
           take: args.limit + 1,
           ...(args.cursor ? { cursor: { id: args.cursor }, skip: 1 } : {}),
@@ -1613,14 +1625,14 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
         return {
           kind: "forum",
           posts,
-          canPost: isActiveMember || ctx.isStaff,
+          canPost: canCreatePostIn(space, ctx),
           tab,
           nextCursor: hasMore ? page[page.length - 1]!.id : null,
         };
       }
       // "top": Score-Sortierung wie im Web (Fenster von 200, dann Cursor-Slice).
       const rows = await prisma.post.findMany({
-        where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...textFilter },
+        where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter },
         orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
         take: 200,
         include: POST_INCLUDE,
@@ -1640,7 +1652,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       return {
         kind: "forum",
         posts: page,
-        canPost: isActiveMember || ctx.isStaff,
+        canPost: canCreatePostIn(space, ctx),
         tab,
         nextCursor: hasMore && page.length ? page[page.length - 1]!.id : null,
       };
@@ -1656,7 +1668,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
             : cfg.sort === "ZA"
               ? { title: "desc" as const }
               : { createdAt: "desc" as const };
-      const where = { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...textFilter };
+      const where = { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter };
       const total = await prisma.post.count({ where });
       const perPage = cfg.pageSize > 0 ? cfg.pageSize : Math.max(total, 1);
       const totalPages = Math.max(1, Math.ceil(total / perPage));

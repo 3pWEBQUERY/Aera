@@ -76,7 +76,10 @@ export function activeRoleAtLeast(
   );
 }
 
-export async function userTenants(userId: string): Promise<Tenant[]> {
+export async function userTenants(
+  userId: string,
+  options: { includeModerator?: boolean } = {},
+): Promise<Tenant[]> {
   // Dashboard navigation intentionally spans tenants, so it must not inherit
   // the currently selected tenant's RLS context. The userId + ACTIVE filters
   // are the explicit privileged boundary.
@@ -84,7 +87,7 @@ export async function userTenants(userId: string): Promise<Tenant[]> {
     where: {
       userId,
       status: "ACTIVE",
-      role: { in: ["OWNER", "ADMIN"] },
+      role: { in: options.includeModerator ? ["OWNER", "ADMIN", "MODERATOR"] : ["OWNER", "ADMIN"] },
       tenant: { status: "ACTIVE" },
     },
     include: { tenant: true },

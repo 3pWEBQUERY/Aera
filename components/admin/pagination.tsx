@@ -44,7 +44,10 @@ export async function AdminPagination({
           {t("prev")}
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-300">
+        <span
+          aria-disabled="true"
+          className="cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-500"
+        >
           {t("prev")}
         </span>
       )}
@@ -59,7 +62,10 @@ export async function AdminPagination({
           {t("next")}
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-300">
+        <span
+          aria-disabled="true"
+          className="cursor-not-allowed rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-500"
+        >
           {t("next")}
         </span>
       )}

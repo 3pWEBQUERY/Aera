@@ -83,8 +83,8 @@ export function PlatformSeoManager({
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
-        <form action={action} className="space-y-5">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+        <form action={action} className="min-w-0 space-y-5">
           <FormError message={state.error} />
 
           <Field id={ids.site} label={t("siteName")} hint={t("siteNameHint")}>
@@ -170,7 +170,7 @@ export function PlatformSeoManager({
             <button
               type="submit"
               disabled={pending}
-              className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
             >
               {pending ? t("saving") : t("save")}
             </button>

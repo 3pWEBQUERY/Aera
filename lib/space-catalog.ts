@@ -31,6 +31,8 @@ export interface SpaceBlueprint {
   visibility: "PUBLIC" | "MEMBERS" | "PAID";
   icon: IconName;
   tagline: string;
+  /** Feed/Forum: "team" = nur das Team postet (z. B. Ankündigungen). */
+  postingPolicy?: "team";
 }
 
 /** Catalogue of spaces a creator can pre-provision during onboarding. */
@@ -44,7 +46,7 @@ export interface SpaceBlueprint {
  */
 export const SPACE_BLUEPRINTS: SpaceBlueprint[] = [
   // ---- Free ---------------------------------------------------------------
-  { type: "FEED", name: "Ankündigungen", slug: "ankuendigungen", description: "Neuigkeiten und Updates aus der Community.", visibility: "PUBLIC", icon: "feed", tagline: "Neuigkeiten & Updates" },
+  { type: "FEED", name: "Ankündigungen", slug: "ankuendigungen", description: "Neuigkeiten und Updates aus der Community.", visibility: "PUBLIC", icon: "feed", tagline: "Neuigkeiten & Updates", postingPolicy: "team" },
   { type: "FORUM", name: "Community", slug: "community", description: "Stelle Fragen, teile Ideen und vernetze dich.", visibility: "MEMBERS", icon: "forum", tagline: "Diskussionen im Reddit-Stil" },
   { type: "BLOG", name: "Blog", slug: "blog", description: "Artikel und Geschichten für deine Community.", visibility: "PUBLIC", icon: "blog", tagline: "Artikel & Magazin" },
   { type: "GALLERY", name: "Galerie", slug: "galerie", description: "Bild- & Video-Pakete, frei oder zum Verkauf.", visibility: "MEMBERS", icon: "gallery", tagline: "Medien-Ordner & Verkauf" },

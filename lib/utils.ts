@@ -59,19 +59,23 @@ export function slugify(input: string): string {
 }
 
 // Locale-Parameter (Default "de"): migrierte Oberflächen reichen die aktive
-// Sprache (useLocale/getLocale) durch; alte Aufrufer bleiben deutsch. Der
-// `freeLabel` erlaubt es, das "Kostenlos" für den 0-Fall zu lokalisieren.
+// Sprache (useLocale/getLocale) durch; alte Aufrufer bleiben deutsch.
+//
+// 0 ist ein Betrag ("0,00 CHF"), kein Preisschild: Umsatz- und Summenanzeigen
+// duerfen nie "Kostenlos" zeigen. Wer fuer einen Preis von 0 ein Wort wie
+// "Kostenlos" will, uebergibt es uebersetzt als `freeLabel`.
 export function formatPrice(
   cents: number,
   currency: string = PLATFORM_CURRENCY,
   locale = "de",
-  freeLabel = "Kostenlos",
+  freeLabel?: string,
 ): string {
-  if (!cents) return freeLabel;
+  const amount = Number.isFinite(cents) ? cents : 0;
+  if (amount === 0 && freeLabel) return freeLabel;
   return new Intl.NumberFormat(locale, {
     style: "currency",
     currency: currency.toUpperCase(),
-  }).format(cents / 100);
+  }).format(amount / 100);
 }
 
 // Locale-Parameter (Default "de"): migrierte Oberflächen reichen die aktive

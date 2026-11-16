@@ -1,3 +1,4 @@
+import { writeAudit } from "@/lib/audit";
 import { z } from "zod";
 import { authenticate } from "@/lib/auth";
 import { signSession } from "@/lib/session";
@@ -7,12 +8,15 @@ import { toUserDto } from "@/lib/mobile/serializers";
 
 // POST /api/mobile/v1/auth/login  { email, password, totp? } → { token, user }
 // Bei aktivem TOTP ohne/mit falschem Code: 401 totp_required.
+// Statt `totp` kann ein Wiederherstellungscode (`recoveryCode`) kommen; er
+// wird dabei verbraucht.
 // Rate-Limit wie Web-Login (app/actions/auth.ts): 10/10min/IP.
 
 const schema = z.object({
   email: z.string().email(),
   password: z.string().min(1),
   totp: z.string().max(16).optional(),
+  recoveryCode: z.string().max(32).optional(),
 });
 
 export async function POST(req: Request) {
@@ -28,12 +32,16 @@ export async function POST(req: Request) {
     parsed.data.email,
     parsed.data.password,
     parsed.data.totp?.trim() || undefined,
+    { recoveryCode: parsed.data.recoveryCode?.trim() || undefined },
   );
   if (!result.ok) {
     if (result.needsTotp) {
       return jsonError("totp_required", "A valid TOTP code is required.", 401);
     }
     return jsonError("invalid_credentials", "E-mail or password is incorrect.", 401);
+  }
+  if (result.usedRecoveryCode) {
+    await writeAudit({ actorUserId: result.user.id, action: "user.totp.recovery_code_used" });
   }
   const token = await signSession({
     userId: result.user.id,

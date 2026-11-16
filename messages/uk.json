@@ -38,19 +38,18 @@
     "ownerCantCancel": "Як власник ви не можете скасувати власне членство.",
     "noPaidMembership": "У вас немає платного членства.",
     "stripeCancelFailed": "Не вдалося скасувати в Stripe. Спробуйте ще раз.",
-    "defaultTierCantDelete": "Рівень за замовчуванням не можна видалити.",
-    "tierDeleteStripeBlocked": "Цей рівень можна видалити лише після того, як Stripe підтвердить завершення всіх пов’язаних підписок. Дані не було видалено.",
+    "defaultTierCantDelete": "Членство за замовчуванням не можна видалити. Спершу призначте за замовчуванням інше членство.",
+    "tierDeleteStripeBlocked": "Це членство можна видалити лише після того, як Stripe підтвердить завершення всіх пов’язаних підписок. Дані не видалено.",
     "memberRemoveStripeFailed": "Не вдалося безпечно завершити підписку Stripe. Учасника та локальні права доступу не було видалено.",
     "tenantDeleteConfirmMismatch": "Введений slug спільноти не збігається.",
     "tenantDeleteStripeSubscriptionsActive": "Спільноту можна видалити лише після завершення всіх підписок Stripe. Дані не було видалено.",
     "tenantDeleteStripeCleanupFailed": "Не вдалося очистити Stripe або Connect. Спільноту та її дані не було видалено.",
-    "paidTierArchivedInsteadOfDeleted": "Платний рівень безпечно приховано замість видалення, щоб відкриті платежі Stripe можна було правильно обробити.",
     "pendingPaymentsBlockDeletion": "Видалення заблоковано, доки існують платежі або бронювання в очікуванні. Дані не було видалено.",
     "productArchivedBecauseOrdersExist": "Продукт приховано замість видалення, оскільки на нього посилаються замовлення. Платежі в очікуванні можна й надалі безпечно обробляти.",
     "postNotFound": "Допис не знайдено.",
     "commentsClosed": "Коментарі закрито.",
     "invalidCommentRef": "Недійсне посилання на коментар.",
-    "tierNotFound": "Рівень не знайдено.",
+    "tierNotFound": "Цього членства більше немає. Оновіть сторінку.",
     "productNotFound": "Товар не знайдено.",
     "courseNotFound": "Курс не знайдено.",
     "lessonNotFound": "Урок не знайдено.",
@@ -130,7 +129,7 @@
     "subTaken": "Цей піддомен уже зайнятий.",
     "planSpaceTypeLocked": "Цей тип простору доступний з пакету {plan}. Онови пакет, щоб створити його.",
     "planSpaceLimitReached": "Твій пакет {plan} дозволяє {limit} активних просторів. Онови пакет, щоб отримати більше місця.",
-    "planTierLimitReached": "Твій пакет {plan} дозволяє {limit} рівнів членства. Онови пакет, щоб додати ще.",
+    "planTierLimitReached": "Ваш пакет {plan} дозволяє {limit} членств. Змініть пакет, щоб додати більше.",
     "planFeatureLocked": "Ця функція доступна з пакету {plan}. Онови пакет, щоб нею користуватися.",
     "planMemberLimitReached": "Твій пакет {plan} розрахований на {limit} активних учасників. Онови пакет, щоб продовжувати зростати.",
     "planStaffLimitReached": "Твій пакет {plan} дозволяє {limit} місць у команді (адміни/модератори). Онови пакет, щоб отримати більше.",
@@ -149,7 +148,31 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "Для курсів потрібен простір курсів, але твій пакет {plan} дозволяє лише {limit} активних просторів, і всі зайняті. Заархівуй простір або зміни пакет — тоді курс можна буде створити.",
+    "planAutoSpaceEvents": "Для подій потрібен простір подій, але твій пакет {plan} дозволяє лише {limit} активних просторів, і всі зайняті. Заархівуй простір або зміни пакет — тоді подію можна буде створити.",
+    "campaignNoSubscribers": "На твою розсилку ще ніхто не підписався. Надіслати можна буде, щойно з’являться отримувачі.",
+    "campaignSegmentEmpty": "У цьому сегменті зараз нікого немає. Обери інший сегмент, щоб надіслати.",
+    "campaignTestDeliveryFailed": "Поштовий сервіс не прийняв лист ({detail}). Спробуй пізніше.",
+    "recoveryCodeInvalid": "Цей код відновлення неправильний або вже використаний. Перевірте написання або спробуйте інший код.",
+    "secondFactorInvalid": "Код не підходить. Введіть поточний код із застосунку або невикористаний код відновлення.",
+    "productPriceRequired": "Виберіть ціну або «Безкоштовно».",
+    "productFileRequired": "Завантажте файл для покупців або вставте посилання.",
+    "productFileUrlInvalid": "Посилання на файл має починатися з https://.",
+    "productCourseRequired": "Виберіть курс, який отримають покупці.",
+    "productCourseGated": "Цей курс належить до членства й не продається окремо.",
+    "productGrantLocked": "Після першого продажу тип і курс більше не можна змінити, щоб покупці зберегли доступ.",
+    "productTypeUnavailable": "Цей тип товару більше не пропонується. Виберіть інший тип.",
+    "spaceAccessTierInvalid": "Такої підписки немає або вона безкоштовна. Виберіть платну підписку зі списку.",
+    "spaceTypeLockedContent": "Тип більше не можна змінити: у цьому просторі {count, plural, one {# матеріал} few {# матеріали} many {# матеріалів} other {# матеріалу}}. Для іншого типу створіть новий простір.",
+    "forumContentRequired": "Напиши кілька слів, перш ніж публікувати.",
+    "ownerCantLeave": "Власну спільноту покинути не можна.",
+    "leaveWhilePaidActive": "Підписка ще діє. Спершу скасуй її — коли оплачений період завершиться, ти зможеш покинути спільноту.",
+    "adminDomainInvalid": "Введіть лише домен, наприклад community.example.ua (без https://).",
+    "adminTenantDeleting": "Ця спільнота видаляється, змінити її вже не можна.",
+    "invalidColor": "Основний колір указано неправильно. Введіть шістнадцяткове значення, наприклад #6D28D9.",
+    "cantBanSelf": "Не можна заблокувати самого себе.",
+    "logoInvalid": "Не вдалося застосувати логотип. Завантажте зображення ще раз."
   },
   "nameStatus": {
     "checking": "Перевірка доступності…",
@@ -201,10 +224,9 @@
     "descLabel": "Опис",
     "descPlaceholder": "Опишіть кількома реченнями, що очікує учасників.",
     "primaryColor": "Основний колір",
-    "accentColor": "Акцентний колір",
     "preview": "Перегляд",
     "previewNameFallback": "Ваша спільнота",
-    "accentBadge": "Акцент",
+    "accentBadge": "Приєднатися",
     "customColor": "Власний колір",
     "tierNameLabel": "Назва безкоштовної підписки",
     "defaultMembership": "Учасник",
@@ -402,19 +424,19 @@
     "searchAria": "Пошук у довідці",
     "searchSubmit": "Шукати",
     "comingSoon": "Центр допомоги створюється — завітайте згодом.",
-    "noResults": "Немає результатів за запитом «{query}»",
-    "resultsCount": "{count, plural, one {# результат} few {# результати} many {# результатів} other {# результату}} за запитом «{query}»",
+    "noResults": "Немає статей за запитом «{query}»",
+    "resultsCount": "{count, plural, one {# стаття} few {# статті} many {# статей} other {# статті}} за запитом «{query}»",
     "resetSearch": "Скинути пошук",
     "articleCount": "{count, plural, one {# допис} few {# дописи} many {# дописів} other {# допису}}",
     "contactTitle": "Не знайшли те, що шукали?",
-    "contactText": "Просто почніть — більшість відповідей ви знайдете прямо у своїй спільноті або в панелі автора.",
-    "contactCta": "Почати безкоштовно",
+    "contactText": "Напишіть нам — ми відповімо електронною поштою або у вашому акаунті.",
+    "contactCta": "Написати повідомлення",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "Ім’я (необов’язково)",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -428,7 +450,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "Просто почніть — більшість відповідей ви знайдете прямо у своїй спільноті або в панелі автора.",
+    "startCta": "Почати безкоштовно",
+    "startTitle": "Ще немає спільноти?"
   },
   "account": {
     "metaTitle": "Обліковий запис",
@@ -502,14 +527,12 @@
     "changingPassword": "Зміна…",
     "twoFaActive": "Двофакторна автентифікація активна",
     "twoFaActiveDesc": "Під час входу, окрім пароля, запитується код із вашого застосунку-автентифікатора.",
-    "twoFaDisableLabel": "Для вимкнення: поточний код",
+    "twoFaDisableLabel": "Щоб вимкнути: код із застосунку або код відновлення",
     "twoFaDisabling": "Вимкнення…",
     "twoFaDisable": "Вимкнути 2FA",
     "twoFaSetupIntro": "Відскануйте QR-код застосунком-автентифікатором (Google Authenticator, 1Password, Authy …) і підтвердьте показаним кодом.",
     "twoFaQrAlt": "QR-код для застосунку-автентифікатора",
-    "twoFaNoScanner": "Немає сканера QR? Введіть секрет вручну:",
-    "twoFaHideSecret": "Сховати секрет",
-    "twoFaShowSecret": "Показати секрет",
+    "twoFaNoScanner": "Немає QR-сканера? Введіть цей ключ налаштування в застосунку:",
     "twoFaCodeFromApp": "Код із застосунку",
     "twoFaChecking": "Перевірка…",
     "twoFaActivate": "Активувати",
@@ -534,13 +557,13 @@
     "newsletterWithdraw": "Відписатися від розсилки",
     "privacyEyebrow": "Дані та приватність",
     "privacyTitle": "Ваші дані й обліковий запис",
-    "privacyText": "Завантажте структуровану копію даних. Видалення безпечно ставиться в чергу й завершується після очищення платежів і сховища.",
+    "privacyText": "Завантаж копію своїх даних або видали акаунт.",
     "privacyExportButton": "Завантажити дані",
     "privacyDeleteButton": "Видалити обліковий запис",
-    "privacyDeleteHint": "Точно введіть адресу електронної пошти й пароль. Спершу видаліть власні спільноти та владнайте незавершені платежі.",
-    "privacyConfirmationLabel": "Підтвердьте адресу пошти",
-    "privacyDeleting": "Видалення ставиться в чергу…",
-    "privacyDeleteFailed": "Не вдалося поставити видалення в чергу.",
+    "privacyDeleteHint": "Ти одразу вийдеш з акаунта й більше не зможеш увійти. Чинні підписки одразу завершаться, потім ми видалимо твої дані. Рахунки ми зберігаємо згідно із законом. Це не можна скасувати. Спершу видали власні спільноти.",
+    "privacyConfirmationLabel": "Для підтвердження введи свою електронну адресу",
+    "privacyDeleting": "Видаляємо акаунт…",
+    "privacyDeleteFailed": "Не вдалося видалити акаунт. Спробуй ще раз за кілька хвилин.",
     "privacyDeleteBlockedOwned": "Спершу видаліть власні спільноти.",
     "privacyDeleteBlockedPending": "Спершу владнайте незавершені платежі або бронювання.",
     "privacyDeleteInvalidPassword": "Пароль неправильний.",
@@ -548,7 +571,52 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "Скопіювати ключ",
+    "twoFaKeyCopied": "Ключ скопійовано.",
+    "twoFaOpenInApp": "Відкрити в застосунку-автентифікаторі",
+    "secondFactorLabel": "Код із застосунку або код відновлення",
+    "recoveryCodesTitle": "Коди відновлення",
+    "recoveryCodesIntro": "З цими кодами ви ввійдете, якщо не маєте доступу до застосунку-автентифікатора. Кожен код працює лише один раз. Збережіть їх зараз, наприклад у менеджері паролів, — вони показуються лише цей один раз.",
+    "recoveryCopy": "Скопіювати коди",
+    "recoveryCopied": "Коди скопійовано.",
+    "recoveryDownload": "Завантажити як текстовий файл",
+    "recoverySaved": "Коди збережено",
+    "recoveryFileTitle": "Aera — коди відновлення для {email}",
+    "recoveryFileHint": "Кожен код працює лише один раз. Нові коди можна створити в акаунті: Налаштування > Двофакторна автентифікація.",
+    "recoveryCodesLeft": "{count, plural, =0 {Кодів не лишилося. Створіть нові, щоб входити й без застосунку.} one {Лишився # код із 10.} few {Лишилося # коди з 10.} many {Лишилося # кодів із 10.} other {Лишилося # коду з 10.}}",
+    "recoveryRegenerate": "Створити нові коди",
+    "recoveryRegenConfirmTitle": "Створити нові коди відновлення?",
+    "recoveryRegenConfirmBody": "Поточні коди перестануть працювати. Одразу збережіть нові.",
+    "recoveryUsedNotice": "{count, plural, =0 {Ви ввійшли з останнім кодом відновлення. Якщо застосунок ще у вас, створіть нові коди зараз. Інакше напишіть нам через «Допомога зі входом».} one {Ви ввійшли з кодом відновлення. Лишився # код. Немає доступу до застосунку? Вимкніть 2FA нижче цим кодом і налаштуйте знову.} few {Ви ввійшли з кодом відновлення. Лишилося # коди. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.} many {Ви ввійшли з кодом відновлення. Лишилося # кодів. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.} other {Ви ввійшли з кодом відновлення. Лишилося # коду. Немає доступу до застосунку? Вимкніть 2FA нижче іншим кодом і налаштуйте знову.}}",
+    "emailUnverified": "Не підтверджено",
+    "backTo": "Назад до {name}",
+    "backToDiscover": "Назад до огляду",
+    "back": "Назад",
+    "leftNotice": "Ти покинув(-ла) {name}. Придбане залишиться у твоєму акаунті.",
+    "membershipActions": {
+      "ownerNote": "Це твоя спільнота — покинути її не можна.",
+      "leaveCta": "Припинити членство",
+      "leaving": "Припиняємо…",
+      "leaveTitle": "Покинути {name}?",
+      "leaveBody": "Ти втратиш доступ до матеріалів для учасників. Придбане залишиться в тебе.",
+      "leaveConfirm": "Покинути спільноту",
+      "cancelCta": "Скасувати підписку",
+      "cancelling": "Скасовуємо…",
+      "cancelTitle": "Скасувати підписку на {name}?",
+      "cancelBodyUntil": "Підписка більше не продовжиться. Доступ залишиться до {date}, потім ти будеш безкоштовним учасником. Придбане залишиться в тебе.",
+      "cancelBodyNow": "Доступ до матеріалів цього членства завершиться одразу, ти залишишся безкоштовним учасником. Придбане залишиться в тебе.",
+      "cancelConfirm": "Скасувати підписку",
+      "cancelledUntil": "Підписку скасовано · доступ до {date}. Після цього можна й зовсім покинути спільноту.",
+      "cancelledNow": "Підписку скасовано."
+    },
+    "privacyExportTitle": "Копія твоїх даних",
+    "privacyExportText": "Файл з усім, що зберігається у твоєму акаунті.",
+    "privacyDeleteTitle": "Видалити акаунт",
+    "privacyConfirmationMismatch": "Електронна адреса не збігається з твоїм акаунтом.",
+    "privacyPasswordRequired": "Введи пароль.",
+    "privacyTooManyAttempts": "Забагато спроб. Зачекай 15 хвилин і спробуй знову.",
+    "privacyConfirmationRequired": "Введи електронну адресу."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -581,7 +649,10 @@
       "seo": "SEO",
       "support": "Support",
       "unreadAria": "{count} unread",
-      "blog": "Blog"
+      "blog": "Blog",
+      "ariaLabel": "Навігація адміністратора",
+      "openMenu": "Відкрити меню",
+      "openMenuUnread": "Відкрити меню, непрочитаних: {count}"
     },
     "pagination": {
       "prev": "Назад",
@@ -596,13 +667,13 @@
       "activeMemberships": "Активні підписки",
       "posts": "Дописи",
       "paidOrders": "Оплачені замовлення",
-      "revenueWithFee": "Дохід (комісія {fee})",
+      "revenueWithFee": "Дохід (комісія платформи: {fee})",
       "latestCommunities": "Найновіші спільноти",
       "latestUsers": "Найновіші користувачі",
       "viewAll": "Показати всі",
-      "membersShort": "{count} уч.",
       "noCommunities": "Поки немає спільнот.",
-      "noUsers": "Поки немає користувачів."
+      "noUsers": "Поки немає користувачів.",
+      "membersCount": "{count, plural, one {# учасник} few {# учасники} many {# учасників} other {# учасника}}"
     },
     "communities": {
       "title": "Спільноти",
@@ -612,8 +683,7 @@
       "emptyTitle": "Поки немає спільнот",
       "noResultsHint": "Спільнот за запитом «{q}» не знайдено.",
       "emptyHint": "Коли автори створять спільноти, вони з’являться тут.",
-      "membersShort": "{count} уч.",
-      "postsShort": "{count} дописів",
+      "postsShort": "{count, plural, one {# допис} few {# дописи} many {# дописів} other {# допису}}",
       "since": "з {date}",
       "editTitle": "Редагувати спільноту",
       "owner": "Власник: {name} ({email})",
@@ -625,7 +695,7 @@
       "fee": "Комісія платформи (%)",
       "customDomain": "Власний домен (необов’язково)",
       "customDomainPlaceholder": "community.example.com",
-      "customDomainHint": "Залиште порожнім, щоб видалити домен.",
+      "customDomainHint": "Лише домен, наприклад community.example.ua (без https://). Залиште порожнім, щоб видалити домен.",
       "status": "Статус",
       "statusActive": "Активна",
       "statusSuspended": "Призупинена",
@@ -641,7 +711,27 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "Усіх учасників, простори, матеріали й замовлення цієї спільноти буде видалено.",
+      "membersCount": "{count, plural, one {# учасник} few {# учасники} many {# учасників} other {# учасника}}",
+      "statusDeleting": "Видаляється",
+      "deletingHint": "Триває видалення. Спільноту більше не можна змінити.",
+      "filterAll": "Усі",
+      "applyFilters": "Застосувати фільтри",
+      "resetFilters": "Скинути фільтри",
+      "noFilterResultsHint": "Жодна спільнота не відповідає цим фільтрам.",
+      "editAria": "Змінити: {name}",
+      "openAria": "Відкрити {name} у новій вкладці",
+      "domainVerified": "Підтверджено",
+      "domainUnverified": "Не підтверджено",
+      "domainVerifiedHint": "Підтвердження DNS з {date}. Спільнота доступна за цим доменом.",
+      "domainUnverifiedHint": "Домен запрацює лише після правильного підтвердження DNS. Потрібні такі записи:",
+      "domainTxt": "Підтвердження: TXT-запис <code>_aera.{domain}</code> зі значенням <code>{value}</code>",
+      "domainCname": "Переспрямування: CNAME <code>{domain}</code> → <code>{root}</code>",
+      "domainCheck": "Перевірити DNS",
+      "domainChecking": "Перевіряємо DNS…",
+      "domainSaveFirst": "Спершу збережіть змінений домен.",
+      "domainCheckOk": "Підтвердження DNS знайдено. Домен підтверджено."
     },
     "users": {
       "title": "Користувачі",
@@ -652,11 +742,11 @@
       "noResultsHint": "Користувачів за запитом «{q}» не знайдено.",
       "emptyHint": "Коли користувачі зареєструються, вони з’являться тут.",
       "ownerBadge": "Власник · {count}",
-      "membershipsShort": "{count} підписок",
-      "ordersShort": "{count} замовлень",
+      "membershipsShort": "{count, plural, one {# членство} few {# членства} many {# членств} other {# членства}}",
+      "ordersShort": "{count, plural, one {# замовлення} few {# замовлення} many {# замовлень} other {# замовлення}}",
       "registeredLine": "{email} · зареєстровано {date}",
       "editTitle": "Редагувати користувача",
-      "editSummary": "зареєстровано {date} · {memberships} підписок · {orders} замовлень",
+      "editSummary": "зареєстровано {date} · {memberships, plural, one {# членство} few {# членства} many {# членств} other {# членства}} · {orders, plural, one {# замовлення} few {# замовлення} many {# замовлень} other {# замовлення}}",
       "name": "Ім’я",
       "email": "Email",
       "resetTitle": "Посилання для скидання пароля",
@@ -695,12 +785,12 @@
       "date": "Дата",
       "key": "Key",
       "openInNewTab": "Відкрити в новій вкладці",
-      "deleteConfirm": "Справді видалити цей медіафайл?",
       "deleteBtn": "Видалити медіа",
       "dangerDesc": "Видаляє файл із доставки. Вміст, що посилається на нього, більше не показуватиме медіа.",
       "visPublic": "Публічно",
       "visMembers": "Учасники",
-      "visPaid": "Платно"
+      "visPaid": "Платно",
+      "deleteConfirmTitle": "Видалити «{name}»?"
     },
     "posts": {
       "title": "Дописи",
@@ -718,7 +808,9 @@
       "unpublishedBadge": "Знято з публікації",
       "unpublish": "Зняти з публікації",
       "publish": "Опублікувати",
-      "deleteConfirm": "Справді безповоротно видалити цей допис?"
+      "deleteConfirmTitle": "Видалити допис «{title}»?",
+      "deleteConfirmBody": "Допис буде видалено разом з усіма коментарями. Цю дію не можна скасувати.",
+      "deleteCta": "Видалити допис"
     },
     "orders": {
       "title": "Замовлення",
@@ -744,16 +836,16 @@
       "fulfilled": "Виконано",
       "fulfilledHint": "Позначає замовлення як доставлене або завершене.",
       "dangerDesc": "Безповоротно видаляє замовлення з бази даних. Платежі в Stripe залишаються незмінними.",
-      "deleteConfirm": "Справді безповоротно видалити це замовлення?",
       "deleteBtn": "Видалити замовлення",
       "statusPending": "Очікує",
       "statusPaid": "Оплачено",
       "statusRefunded": "Повернено",
-      "statusFailed": "Не вдалося"
+      "statusFailed": "Не вдалося",
+      "deleteConfirmTitle": "Видалити замовлення «{name}»?"
     },
     "help": {
       "title": "Центр довідки",
-      "metaBefore": "{categories} категорій · {articles} записів · публічно за адресою ",
+      "metaBefore": "{categories, plural, one {# категорія} few {# категорії} many {# категорій} other {# категорії}} · {articles, plural, one {# стаття} few {# статті} many {# статей} other {# статті}} · публічно за адресою ",
       "createCategory": "Створити категорію",
       "emptyTitle": "Поки немає вмісту довідки",
       "emptyHint": "Спершу створіть категорію (напр. «Перші кроки»), потім запитання й відповіді в ній.",
@@ -785,10 +877,181 @@
     },
     "audit": {
       "title": "Журнал аудиту",
-      "subtitle": "{count} зафіксованих дій — найновіші спершу.",
+      "subtitle": "{count, plural, one {# зафіксована дія} few {# зафіксовані дії} many {# зафіксованих дій} other {# зафіксованої дії}} — найновіші спершу.",
       "emptyTitle": "Поки немає записів",
       "emptyHint": "Адміністративні дії та важливі події фіксуються тут.",
-      "system": "Система"
+      "system": "Система",
+      "events": {
+        "admin_blog_create": "{actor}: створено допис у блозі",
+        "admin_blog_update": "{actor}: змінено допис у блозі",
+        "admin_blog_publish": "{actor}: опубліковано допис у блозі",
+        "admin_blog_unpublish": "{actor}: допис у блозі знято з публікації",
+        "admin_blog_delete": "{actor}: видалено допис у блозі",
+        "admin_blog_duplicate": "{actor}: створено копію допису в блозі",
+        "admin_blog_feature": "{actor}: допис у блозі виділено",
+        "admin_blog_unfeature": "{actor}: знято виділення допису в блозі",
+        "admin_help_article_create": "{actor}: створено довідкову статтю",
+        "admin_help_article_update": "{actor}: змінено довідкову статтю",
+        "admin_help_article_delete": "{actor}: видалено довідкову статтю",
+        "admin_help_category_create": "{actor}: створено категорію довідки",
+        "admin_help_category_update": "{actor}: змінено категорію довідки",
+        "admin_help_category_delete": "{actor}: видалено категорію довідки",
+        "admin_media_delete": "{actor}: видалено медіафайл",
+        "admin_order_delete": "{actor}: видалено замовлення",
+        "admin_order_update": "{actor}: змінено замовлення",
+        "admin_post_delete": "{actor}: видалено допис",
+        "admin_post_publish": "{actor}: допис знову опубліковано",
+        "admin_post_unpublish": "{actor}: допис приховано",
+        "admin_promo_create": "{actor}: створено промокоди",
+        "admin_promo_delete": "{actor}: видалено промокод",
+        "admin_promo_activate": "{actor}: промокод активовано",
+        "admin_promo_pause": "{actor}: промокод призупинено",
+        "admin_seo_update": "{actor}: змінено налаштування SEO платформи",
+        "admin_tenant_delete_blocked": "{actor}: спробу видалити спільноту заблоковано",
+        "admin_tenant_delete_queued": "{actor}: розпочато видалення спільноти",
+        "admin_tenant_plan": "{actor}: змінено тариф спільноти",
+        "admin_tenant_update": "{actor}: змінено налаштування спільноти",
+        "admin_tenant_suspend": "{actor}: спільноту призупинено",
+        "admin_tenant_activate": "{actor}: спільноту знову активовано",
+        "admin_tenant_domain_verify": "{actor}: власний домен спільноти підтверджено",
+        "admin_tenant_domain_unverified": "{actor}: перевірка DNS – власний домен більше не підтверджено",
+        "admin_user_delete_queued": "{actor}: розпочато видалення акаунта",
+        "admin_user_reset_link": "{actor}: створено посилання для скидання пароля",
+        "admin_user_update": "{actor}: змінено акаунт",
+        "aeli_link_code_issued": "{actor}: створено код прив’язки Aeli",
+        "aeli_linked": "{actor}: прив’язано профіль Aeli",
+        "aeli_page_created": "{actor}: створено сторінку Aeli",
+        "aeli_unlinked": "{actor}: відв’язано профіль Aeli",
+        "announcement_create": "{actor}: створено оголошення",
+        "announcement_update": "{actor}: змінено оголошення",
+        "announcement_delete": "{actor}: видалено оголошення",
+        "apikey_create": "{actor}: створено ключ API",
+        "apikey_revoke": "{actor}: відкликано ключ API",
+        "apple_iap_refunded": "App Store: кошти за покупку повернено",
+        "apple_iap_tier": "{actor}: придбано членство в App Store",
+        "apple_iap_product": "{actor}: придбано товар в App Store",
+        "apple_iap_post": "{actor}: придбано допис в App Store",
+        "apple_iap_media": "{actor}: придбано медіа в App Store",
+        "apple_iap_media_item": "{actor}: придбано медіафайл в App Store",
+        "apple_iap_tip": "{actor}: чайові через App Store",
+        "apple_iap_request": "{actor}: оплачено запит через App Store",
+        "apple_iap_booking": "{actor}: оплачено бронювання через App Store",
+        "automation_step_create": "{actor}: додано крок автоматизації",
+        "automation_step_delete": "{actor}: видалено крок автоматизації",
+        "branding_cover_set": "{actor}: встановлено обкладинку",
+        "branding_cover_remove": "{actor}: обкладинку видалено",
+        "campaign_delete": "{actor}: видалено розсилку",
+        "campaign_queue": "{actor}: розсилку поставлено в чергу на надсилання",
+        "chatMessage_delete": "{actor}: видалено повідомлення в чаті",
+        "comment_delete": "{actor}: видалено коментар",
+        "course_delete": "{actor}: видалено курс",
+        "course_update": "{actor}: змінено курс",
+        "creator_checkout_failed": "{actor}: придбати тариф не вдалося",
+        "event_delete": "{actor}: видалено подію",
+        "event_update": "{actor}: змінено подію",
+        "live_create": "{actor}: створено пряму трансляцію",
+        "live_start": "{actor}: розпочато пряму трансляцію",
+        "live_status": "{actor}: змінено статус прямої трансляції",
+        "media_delete": "{actor}: видалено медіафайл",
+        "member_add": "{actor}: додано учасника",
+        "member_join": "{actor}: приєднання до спільноти",
+        "member_remove": "{actor}: учасника видалено",
+        "member_remove_blocked": "{actor}: спробу видалити учасника заблоковано",
+        "member_update": "{actor}: змінено дані учасника",
+        "member_ban": "{actor}: учасника заблоковано",
+        "member_update_blocked": "{actor}: спробу змінити учасника заблоковано",
+        "membership_cancel": "{actor}: членство скасовано",
+        "membership_cancel_failed": "{actor}: скасувати членство не вдалося",
+        "membership_leave": "{actor}: вихід зі спільноти",
+        "membership_leave_blocked": "{actor}: спробу вийти зі спільноти заблоковано",
+        "moderation_approve": "{actor}: скаргу перевірено, вміст залишено",
+        "moderation_remove": "{actor}: видалено вміст за скаргою",
+        "newsletter_consent_opt_in": "{actor}: підписка на розсилку",
+        "newsletter_consent_withdraw": "{actor}: відписка від розсилки",
+        "order_fulfill": "{actor}: замовлення позначено як виконане",
+        "page_create": "{actor}: створено сторінку",
+        "page_delete": "{actor}: видалено сторінку",
+        "plan_create": "{actor}: створено контент-план",
+        "plan_promo_redeem": "{actor}: застосовано промокод",
+        "platform_admin_create_user": "Акаунт створено скриптом",
+        "platform_admin_verify_email": "Адресу ел. пошти підтверджено скриптом",
+        "platform_admin_grant": "Права адміністратора платформи надано скриптом",
+        "platform_admin_revoke": "Права адміністратора платформи відкликано скриптом",
+        "product_delete": "{actor}: видалено товар",
+        "product_delete_blocked": "{actor}: спробу видалити товар заблоковано",
+        "product_update": "{actor}: змінено товар",
+        "profile_update": "{actor}: змінено власний профіль",
+        "referrals_settings_update": "{actor}: змінено налаштування рекомендацій",
+        "space_ad_create": "{actor}: створено рекламу в просторі",
+        "space_ad_update": "{actor}: змінено рекламу в просторі",
+        "space_ad_delete": "{actor}: видалено рекламу в просторі",
+        "space_announcementsOnly_enable": "{actor}: у просторі залишено тільки оголошення",
+        "space_announcementsOnly_disable": "{actor}: у просторі знято режим «тільки оголошення»",
+        "space_archive": "{actor}: простір архівовано",
+        "space_restore": "{actor}: простір відновлено",
+        "space_chatSettings_update": "{actor}: змінено налаштування чату простору",
+        "space_create": "{actor}: створено простір",
+        "space_create_assistant": "{actor}: простір створено за допомогою асистента",
+        "space_delete": "{actor}: видалено простір",
+        "space_link_create": "{actor}: додано посилання в просторі",
+        "space_link_update": "{actor}: змінено посилання в просторі",
+        "space_link_delete": "{actor}: видалено посилання з простору",
+        "space_storySettings_update": "{actor}: змінено налаштування історій простору",
+        "space_update": "{actor}: змінено простір",
+        "stripe_charge_partially_refunded": "Stripe: платіж частково повернено",
+        "stripe_charge_refunded": "Stripe: платіж повернено",
+        "stripe_checkout_auto_refunded": "Stripe: платіж автоматично повернено",
+        "stripe_checkout_completed": "{actor}: оплата через Stripe",
+        "stripe_dispute_created": "Stripe: платіж оскаржено",
+        "stripe_dispute_lost": "Stripe: спір програно",
+        "stripe_dispute_won": "Stripe: спір виграно",
+        "stripe_product_reservation_released": "Stripe: резерв товару знято",
+        "support_ticket_create": "{actor}: створено звернення до підтримки",
+        "support_ticket_reply": "{actor}: відповідь на звернення до підтримки",
+        "tenant_create": "{actor}: створено спільноту",
+        "tenant_delete_blocked": "{actor}: спробу видалити спільноту заблоковано",
+        "tenant_delete_queued": "{actor}: розпочато видалення спільноти",
+        "tenant_domain": "{actor}: змінено власний домен",
+        "tenant_domain_unverified": "{actor}: перевірка DNS – власний домен більше не підтверджено",
+        "tenant_domain_verify": "{actor}: власний домен підтверджено",
+        "tenant_seo_update": "{actor}: змінено налаштування SEO",
+        "tenant_stripe_disconnect": "{actor}: Stripe від’єднано",
+        "tenant_stripe_disconnect_blocked": "{actor}: спробу від’єднати Stripe заблоковано",
+        "tenant_subdomain": "{actor}: змінено піддомен",
+        "tier_delete": "{actor}: видалено членство",
+        "tier_delete_blocked": "{actor}: спробу видалити членство заблоковано",
+        "tier_update": "{actor}: змінено членство",
+        "user_delete_queued": "{actor}: розпочато видалення власного акаунта",
+        "user_invite_accept": "{actor}: запрошення прийнято",
+        "user_legal_accept": "{actor}: прийнято умови та політику конфіденційності",
+        "user_password_change": "{actor}: пароль змінено",
+        "user_password_reset_complete": "{actor}: пароль скинуто",
+        "user_password_reset_request": "{actor}: запитано посилання для скидання пароля",
+        "user_profile_update": "{actor}: змінено власний профіль",
+        "user_signup": "{actor}: реєстрація",
+        "user_totp_disable": "{actor}: двофакторний вхід вимкнено",
+        "user_totp_enable": "{actor}: двофакторний вхід увімкнено",
+        "user_totp_recovery_code_used": "{actor}: вхід за кодом відновлення",
+        "user_totp_recovery_codes_regenerate": "{actor}: створено нові коди відновлення",
+        "user_verification_resend": "{actor}: повторно запитано лист із підтвердженням",
+        "webhook_create": "{actor}: створено вебхук",
+        "webhook_delete": "{actor}: видалено вебхук",
+        "member_ban_blocked": "{actor}: спробу заблокувати учасника заблоковано",
+        "member_unban": "{actor}: учасника розблоковано",
+        "branding_logo_set": "{actor}: встановлено логотип",
+        "branding_logo_remove": "{actor}: логотип видалено"
+      },
+      "deletedAccount": "Видалений акаунт",
+      "guest": "Гість",
+      "unknownEvent": "{actor}: виконано «{action}»",
+      "targetSeparator": ": ",
+      "inCommunity": "у спільноті {community}",
+      "details": "Подробиці",
+      "detailAction": "Дія",
+      "detailTarget": "Об’єкт",
+      "detailCommunity": "Спільнота",
+      "detailActor": "Виконавець",
+      "detailMetadata": "Метадані"
     },
     "codes": {
       "metaTitle": "Промокоди",
@@ -846,7 +1109,7 @@
       "activate": "Активувати",
       "delete": "Видалити",
       "usage": "{used} / {max} використано",
-      "runtimeDays": "{days} днів дії",
+      "runtimeDays": "Строк дії: {days, plural, one {# день} few {# дні} many {# днів} other {# дня}}",
       "runtimeLifetime": "Необмежений термін дії",
       "validUntil": "дійсний до {date}",
       "createdMeta": "{date} · {name}",
@@ -993,7 +1256,9 @@
       "subtitle": "Виберіть спільноту для керування — або створіть нову.",
       "membersCount": "{count, plural, one {# учасник} few {# учасники} many {# учасників} other {# учасника}}",
       "newCommunity": "Нова спільнота",
-      "myAccount": "My account"
+      "myAccount": "My account",
+      "deletedNotice": "«{name}» видаляється. Це займе кілька хвилин.",
+      "moderatorRole": "Ви модеруєте"
     },
     "assistant": {
       "title": "AI-асистент",
@@ -1010,7 +1275,6 @@
       "chatEmptyDesc": "Я можу проаналізувати вашу спільноту, писати тексти й виконувати дії, як-от створення просторів.",
       "imageEmptyTitle": "Генерувати зображення",
       "imageEmptyDesc": "Опишіть, що ви хочете побачити. Ви також можете завантажити зображення як шаблон — асистент відредагує їх або надихнеться ними.",
-      "geminiOff": "Google Gemini неактивний — задайте GEMINI_API_KEY у розділі Налаштування → Інтеграції.",
       "chatPlaceholder": "Повідомлення асистенту…",
       "sendAria": "Надіслати",
       "chatHint": "Enter — надіслати · Shift+Enter — новий рядок. Дії застосовуються до вашої спільноти напряму.",
@@ -1084,7 +1348,9 @@
           "title": "Маскот",
           "prompt": "Дружній ілюстративний аватар-маскот для моєї спільноти, округлі форми, яскраві кольори."
         }
-      }
+      },
+      "geminiOffCreator": "AI-асистента на цій платформі ще не налаштовано.",
+      "geminiOffAdmin": "Google Gemini не активний. Задайте GEMINI_API_KEY у середовищі сервера й перезапустіть застосунок. Це повідомлення бачать лише адміністратори платформи."
     },
     "announcements": {
       "statusDraft": "Чернетка",
@@ -1132,7 +1398,9 @@
       "cancel": "Скасувати",
       "saving": "Збереження…",
       "saveChanges": "Зберегти зміни",
-      "createBtn": "Створити оголошення"
+      "createBtn": "Створити оголошення",
+      "confirmDeleteBody": "Банер одразу зникне з усіх сторінок спільноти.",
+      "confirmDeleteCta": "Видалити оголошення"
     },
     "spaceContent": {
       "view": "Переглянути",
@@ -1202,9 +1470,9 @@
         "EVENTS": "Події",
         "NEWSLETTER": "Розсилка"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "Ціна разової покупки",
+      "ppvPriceHint": "Ті, хто не купив, бачать лише зображення прев’ю, заголовок прев’ю та ціну.",
+      "ppvTeaserLabel": "Зображення прев’ю (розмите для тих, хто не купив)",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "Зображення та відео",
@@ -1224,7 +1492,16 @@
       "removeTrackAria": "Видалити трек",
       "trackUploading": "Завантаження {count} … {percent}%",
       "deleteQuestion": "Видалити допис назавжди?",
-      "deleteConfirm": "Видалити допис"
+      "deleteConfirm": "Видалити допис",
+      "mediaFailedOne": "Файл «{name}» не завантажено. {reason}",
+      "mediaFailedMany": "{count, plural, one {# файл не завантажено} few {# файли не завантажено} many {# файлів не завантажено} other {# файлу не завантажено}}. {reason}",
+      "pickFromLibrary": "Вибрати з медіатеки",
+      "pickFromLibraryHint": "Виберіть зображення, яке вже є в медіатеці",
+      "previewTitleLabel": "Заголовок прев’ю (видно всім)",
+      "previewTitleHint": "Необов’язково. Показується над дописом, зокрема тим, для кого він закритий.",
+      "accessSingle": "Разова покупка",
+      "accessSingleHint": "Продається окремо. Членство не відкриває цей допис.",
+      "bannersElsewhere": "Банери оголошень для всієї спільноти налаштовуються в просторі <link>«{name}»</link>."
     },
     "chat": {
       "badge": "Чат",
@@ -1239,7 +1516,6 @@
       "messagesHeading": "Повідомлення",
       "messagesDesc": "Найновіші повідомлення. Недоречні дописи можна видалити.",
       "emptyMessages": "У цьому чаті ще немає повідомлень.",
-      "confirmDeleteMessage": "Видалити це повідомлення?",
       "deleteMessageAria": "Видалити повідомлення",
       "relNone": "—",
       "relNow": "щойно",
@@ -1274,7 +1550,10 @@
       "historyMessages": "{count} повідомлень",
       "cancel": "Скасувати",
       "saving": "Збереження…",
-      "saveSettings": "Зберегти налаштування"
+      "saveSettings": "Зберегти налаштування",
+      "confirmDeleteMessageTitle": "Видалити повідомлення від {name}?",
+      "confirmDeleteMessageBody": "Повідомлення зникне з чату для всіх.",
+      "confirmDeleteMessageCta": "Видалити повідомлення"
     },
     "newsletter": {
       "title": "Розсилка",
@@ -1331,7 +1610,6 @@
       "testSend": "Надіслати тест мені",
       "testSending": "Надсилання…",
       "testSent": "Тестовий лист надіслано!",
-      "testFailed": "Тест не вдався",
       "recipientsEstimate": "≈ {count} отримувачів",
       "formatText": "Текст",
       "formatHtml": "HTML",
@@ -1345,7 +1623,25 @@
       "ruleTier": "Рівень: {name}",
       "ruleMinPoints": "від {count} балів",
       "ruleActiveSince": "Учасник ≥ {days} днів",
-      "ruleAll": "Усі учасники"
+      "ruleAll": "Усі учасники",
+      "confirmSendTitle": "Надіслати «{subject}» зараз {count, plural, one {# отримувачу} other {# отримувачам}}?",
+      "confirmSendBody": "Надсилання почнеться одразу, скасувати його не можна.",
+      "confirmSendScheduledTitle": "Заплановано на {date}. Усе одно надіслати зараз?",
+      "confirmSendScheduledBody": "«{subject}» одразу піде {count, plural, one {# отримувачу} other {# отримувачам}}. Цю дію не можна скасувати.",
+      "confirmSendLabel": "Надіслати {count} зараз",
+      "sendQueued": "«{subject}» надсилається.",
+      "sendingNow": "Надсилання…",
+      "noSubscribersHint": "На твою розсилку ще ніхто не підписався. Надіслати можна буде, щойно з’являться отримувачі.",
+      "segmentEmptyHint": "У цьому сегменті зараз нікого немає. Обери інший сегмент, щоб надіслати.",
+      "noRecipientsShort": "Немає отримувачів",
+      "sendNowEllipsis": "Надіслати зараз…",
+      "testFailedReason": "Тест не надіслано: {reason}",
+      "testFailedUnknown": "Невідома помилка. Спробуй ще раз.",
+      "schedulePastWarning": "Цей час уже минув. Після збереження кампанія залишиться чернеткою.",
+      "confirmDeleteCampaignBody": "«{subject}» буде видалено. Цю дію не можна скасувати.",
+      "confirmDeleteSegmentBody": "Чернетки й заплановані кампанії з цим сегментом потім підуть усім підписникам.",
+      "deleteSegmentConfirm": "Видалити сегмент",
+      "segmentNameLabel": "Назва сегмента"
     },
     "ads": {
       "badge": "Реклама",
@@ -1503,19 +1799,20 @@
       "closeLesson": "Закрити",
       "deleteLesson": "Видалити",
       "confirmDeleteLesson": "Видалити урок «{title}»?",
-      "lessonTitlePlaceholder": "Назва",
-      "videoUrlPlaceholder": "URL відео (необовʼязково)",
-      "contentPlaceholder": "Вміст",
-      "dripLabel": "Відкриття: днів після приєднання (порожньо/0 = одразу)",
       "dripPlaceholder": "напр. 7",
       "lessonSaving": "Збереження…",
       "lessonSave": "Зберегти",
       "addLesson": "Додати урок",
-      "addLessonTitlePlaceholder": "Назва уроку",
-      "addContentPlaceholder": "Вміст (необовʼязково)",
-      "addDripPlaceholder": "Відкриття: днів після приєднання (порожньо = одразу)",
       "adding": "Додавання…",
-      "add": "Додати"
+      "cannotUndo": "Цю дію не можна скасувати.",
+      "deleteLessonConfirm": "Видалити урок",
+      "createdAddLesson": "Курс створено — тепер додай перший урок.",
+      "lessonTitleLabel": "Назва уроку",
+      "lessonVideoLabel": "URL відео (необов’язково)",
+      "lessonContentLabel": "Зміст (необов’язково)",
+      "lessonDripLabel": "Відкриття після вступу (днів)",
+      "lessonDripHint": "Порожньо або 0: доступно одразу.",
+      "addLessonBtn": "Додати урок"
     },
     "gallery": {
       "badge": "Галерея",
@@ -1532,7 +1829,6 @@
       "video": "Відео",
       "mediaCount": "{count, plural, one {# елемент} few {# елементи} many {# елементів} other {# елемента}}",
       "deletePackageAria": "Видалити пакет",
-      "confirmDeletePackage": "Видалити цей медіапакет?",
       "removeAria": "Прибрати",
       "contentCount": "Вміст ({count})",
       "titleLabel": "Назва",
@@ -1553,7 +1849,10 @@
       "saveChanges": "Зберегти зміни",
       "createPackageCta": "Створити пакет",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "Видалити медіапакет «{title}»?",
+      "confirmDeletePackageBody": "Усі зображення й відео в ньому теж буде видалено. Цю дію не можна скасувати.",
+      "confirmDeletePackageCta": "Видалити пакет"
     },
     "sortLabels": {
       "NEWEST": "Спочатку новіші",
@@ -1573,7 +1872,6 @@
       "emptyHint": "Напишіть свою першу статтю блогу за допомогою редактора.",
       "edit": "Редагувати",
       "delete": "Видалити",
-      "confirmDelete": "Видалити цей допис?",
       "sheetWrite": "Написати допис",
       "sheetEdit": "Редагувати допис",
       "sheetSettings": "Налаштування блогу",
@@ -1636,7 +1934,10 @@
       "pollAddOption": "Додати відповідь",
       "pollMultipleLabel": "Дозволити кілька відповідей",
       "statusDraft": "Не опубліковано",
-      "statusScheduled": "Заплановано на {date}"
+      "statusScheduled": "Заплановано на {date}",
+      "confirmDeleteTitle": "Видалити допис «{title}»?",
+      "confirmDeleteBody": "Допис буде видалено разом з усіма коментарями. Цю дію не можна скасувати.",
+      "confirmDeleteCta": "Видалити допис"
     },
     "knowledge": {
       "badge": "База знань",
@@ -1650,7 +1951,6 @@
       "emptyHint": "Напишіть свою першу статтю бази знань.",
       "edit": "Редагувати",
       "delete": "Видалити",
-      "confirmDelete": "Видалити цю статтю?",
       "sheetWrite": "Написати статтю",
       "sheetEdit": "Редагувати статтю",
       "sheetSettings": "Налаштування відображення",
@@ -1680,7 +1980,10 @@
       "showDatesHint": "Дата публікації для кожної статті",
       "saveSettings": "Зберегти налаштування",
       "cancel": "Скасувати",
-      "saving": "Збереження…"
+      "saving": "Збереження…",
+      "confirmDeleteTitle": "Видалити статтю «{title}»?",
+      "confirmDeleteBody": "Стаття зникне з бази знань. Цю дію не можна скасувати.",
+      "confirmDeleteCta": "Видалити статтю"
     },
     "rte": {
       "poll": "Опитування",
@@ -1722,7 +2025,8 @@
       "recPrep": "Підготовка камери…",
       "paragraph": "Абзац",
       "attach": "Прикріпити файл",
-      "file": "Файл"
+      "file": "Файл",
+      "bodyLabel": "Текст"
     },
     "links": {
       "badge": "Посилання",
@@ -1774,7 +2078,9 @@
       "deleteEvent": "Видалити подію",
       "cancel": "Скасувати",
       "saving": "Збереження…",
-      "saveChanges": "Зберегти зміни"
+      "saveChanges": "Зберегти зміни",
+      "confirmDeleteBody": "Усі відповіді учасників буде втрачено. Цю дію не можна скасувати.",
+      "meetingUrlMissing": "Без посилання учасники не зможуть долучитися. Його можна додати пізніше."
     },
     "settings": {
       "title": "Налаштування",
@@ -1784,7 +2090,6 @@
       "tabDomain": "Домен",
       "tabDanger": "Небезпечна зона",
       "integrationsHeading": "Інтеграції",
-      "integrationsDesc": "Підключені сервіси цієї інсталяції.",
       "intStripe": "Платежі",
       "intResend": "Email",
       "intGemini": "ШІ",
@@ -1856,15 +2161,23 @@
         "copy": "Копіювати",
         "copied": "Скопійовано",
         "toStudio": "Відкрити студію Aeli"
-      }
+      },
+      "discardTitle": "Скасувати незбережені зміни?",
+      "discardBody": "Усе, що ви змінили тут і не зберегли, буде втрачено.",
+      "discardConfirm": "Скасувати зміни",
+      "discardCancel": "Продовжити редагування",
+      "unsavedMarker": "(є незбережені зміни)",
+      "integrationsDescCreator": "Сервіси, які ви підключаєте до своєї спільноти.",
+      "platformHeading": "Сервіси цієї інсталяції",
+      "platformDesc": "Видно лише адміністраторам платформи. Показує, які ключі налаштовано.",
+      "paymentsUnavailable": "Платежі на цій платформі ще не налаштовано. Зверніться до підтримки, якщо хочете продавати членство.",
+      "connectErrorCreator": "Не вдалося підключитися до Stripe. Спробуйте ще раз; якщо знову не вийде, зверніться до підтримки."
     },
     "branding": {
       "heading": "Бренд",
-      "desc": "Логотип, назва та кольори вашої спільноти.",
-      "saved": "Бренд збережено.",
-      "coverLabel": "Зображення шапки (головна сторінка спільноти)",
+      "desc": "Назва, зображення й основний колір вашої спільноти.",
+      "coverLabel": "Обкладинка",
       "logoLabel": "Логотип",
-      "logoHint": "PNG або JPG, квадратне, щонайменше 256 × 256 px.",
       "nameLabel": "Назва",
       "taglineLabel": "Слоган",
       "taglinePlaceholder": "Одне речення, що описує вашу спільноту",
@@ -1873,18 +2186,22 @@
       "noCategory": "Без категорії",
       "categoryHint": "Визначає, під якою темою ваша спільнота зʼявляється на сторінці огляду.",
       "primaryColor": "Основний колір",
-      "accentColor": "Акцентний колір",
       "preview": "Попередній перегляд",
       "previewName": "Ваша спільнота",
-      "joinButtonLabel": "Кнопка приєднання",
       "join": "Приєднатися",
       "saving": "Збереження…",
       "saveBranding": "Зберегти бренд",
       "pickAria": "Вибрати {label}",
       "hexAria": "{label} як hex-значення",
-      "hexError": "Із цього не виходить колір.",
+      "hexError": "Це не схоже на колір. Введіть шістнадцяткове значення, наприклад #6D28D9.",
       "hexHint": "З # або без, три чи шість символів — #6D28D9, 6d28d9, #a1b або rgb(109, 40, 217).",
-      "contrastWarning": "На цьому кольорі білий текст — його важко читати. Виберіть темніший відтінок."
+      "contrastWarning": "На цьому кольорі білий текст — його важко читати. Виберіть темніший відтінок.",
+      "savedAt": "Збережено · {time}",
+      "unsaved": "Є незбережені зміни",
+      "imagesHeading": "Зображення",
+      "imagesApplied": "Обкладинка й логотип застосовуються одразу після завантаження. Усе, що нижче, застосовується кнопкою «Зберегти бренд».",
+      "logoSaving": "Застосовуємо логотип…",
+      "previewHint": "Так відвідувачі бачать шапку вашої спільноти."
     },
     "domain": {
       "heading": "Адреса та домен",
@@ -1893,33 +2210,59 @@
       "subdomainLabel": "Піддомен",
       "copiedAria": "Скопійовано",
       "copyAria": "Копіювати {label}",
-      "customDomainLabel": "Власний домен (необовʼязково)",
       "savedDomain": "Домен збережено.",
       "saving": "Збереження…",
       "save": "Зберегти",
       "customDomainPlaceholder": "community.ваш-домен.ua",
-      "cnameHint": "Потім налаштуйте запис CNAME, що вказує на {rootDomain}, і TXT-запис для підтвердження.",
-      "verifiedActive": "Підтверджено та активно",
-      "verifyPending": "Очікує підтвердження",
-      "checkNow": "Перевірити зараз",
+      "checkNow": "Перевірити домен",
       "checkingDns": "Перевірка DNS…",
-      "dnsIntro": "Налаштуйте обидва DNS-записи:",
-      "optionA": "<b>Маршрутизація:</b> CNAME <code>{domain}</code> → <code>{root}</code> (для кореня домену: ALIAS/ANAME)",
-      "optionB": "<b>Підтвердження (обов'язково):</b> TXT <code>_aera.{domain}</code> = <code>aera-verify={tenantId}</code>",
-      "dnsWait": "Потім «Перевірити зараз» — зміни DNS іноді тривають до години.",
       "subEditLabel": "Бажаний піддомен",
       "subPlaceholder": "vasha-spilnota",
-      "subHint": "Лише малі літери, цифри та дефіси (3–63 символи). Спільнота буде доступна за цією адресою. Залиште поле порожнім для адреси за замовчуванням (вашого ідентифікатора).",
-      "subSaved": "Піддомен збережено."
+      "subHint": "Лише малі літери, цифри й дефіси (3–63 символи).",
+      "subSaved": "Піддомен збережено.",
+      "copy": "Копіювати",
+      "copied": "Скопійовано",
+      "customHeading": "Власний домен",
+      "customStatus": {
+        "none": "Не підключено",
+        "pending": "Очікує DNS",
+        "verified": "Підключено"
+      },
+      "customDesc": "Ваша спільнота на вашій власній адресі, наприклад community.your-domain.ua.",
+      "customLabel": "Домен",
+      "customHint": "Лише домен, без https:// і без шляху. Очистьте поле й збережіть, щоб видалити домен.",
+      "customSave": "Зберегти домен",
+      "customErrorUrl": "Введіть лише домен, без https:// і без «/», наприклад community.your-domain.ua.",
+      "customErrorFormat": "Це недійсний домен. Приклад: community.your-domain.ua.",
+      "customErrorRoot": "Адреси на {root} задаються вище як піддомен.",
+      "customLocked": "Власні домени доступні з тарифу {plan}.",
+      "customUpgrade": "Перейти на {plan}",
+      "guideHeading": "Як підключити {domain}",
+      "guideStep1": "Увійдіть у кабінет реєстратора домену (наприклад, Imena.ua, GoDaddy, IONOS).",
+      "guideStep2": "Відкрийте налаштування DNS домену.",
+      "guideStep3": "Створіть ці два записи:",
+      "guideStep4": "Натисніть «Перевірити домен». Зміни набувають чинності протягом години.",
+      "recordType": "Тип",
+      "recordName": "Ім’я",
+      "recordValue": "Значення",
+      "recordFullName": "Повне ім’я: {name}",
+      "routeNoteCname": "Спрямовує відвідувачів вашого домену на Aera.",
+      "routeNoteApex": "Для домену без префікса (без «www.» тощо) більшість провайдерів не дозволяють запис CNAME — використайте тип ALIAS або ANAME, він робить те саме.",
+      "txtNote": "Так ви підтверджуєте, що домен належить вам. «Перевірити домен» перевіряє саме цей запис.",
+      "verifiedNow": "{domain} підключено.",
+      "verifiedHint": "{domain} підключено. Перевірте ще раз, якщо змінювали записи DNS.",
+      "subWarning": "Увага: поточна адреса {old} перестане працювати — посилання, якими ви ділилися, нікуди не вестимуть.",
+      "subFallback": "Порожньо = стандартна адреса {address}, вона працює завжди."
     },
     "danger": {
       "heading": "Небезпечна зона",
       "desc": "Незворотні дії для цієї спільноти.",
       "deleteCommunity": "Видалити спільноту",
       "deleteDesc": "Незворотно видаляє всіх учасників, простори, контент і замовлення.",
-      "confirmDelete": "Видалити назавжди «{name}» та весь контент?",
-      "confirmPlaceholder": "Введіть «{slug}» для підтвердження",
-      "deleting": "Видалення…"
+      "deleting": "Видалення…",
+      "confirmDeleteCta": "Видалити спільноту назавжди",
+      "confirmLabel": "Введіть коротке ім’я {slug} для підтвердження",
+      "exportFirst": "Спершу завантажте свої дані: <link>До експорту даних</link>."
     },
     "developers": {
       "metaTitle": "Розробникам і API",
@@ -1968,20 +2311,20 @@
     "export": {
       "metaTitle": "Експорт даних",
       "title": "Експорт даних",
-      "subtitle": "Ваші дані належать вам — експортуйте їх будь-коли, відфільтрованими за вашим тенантом.",
+      "subtitle": "Ваші дані належать вам — завантажуйте їх будь-коли.",
       "fullExport": "Повний експорт",
-      "fullExportDesc": "JSON-пакет з усіма {count} записами: учасники, замовлення, підписки, права доступу, дописи, коментарі, товари, курси, події, розсилки та сегменти.",
+      "fullExportDesc": "Один JSON-пакет з усіма даними спільноти: учасники, замовлення, підписки, доступи, дописи, коментарі, товари, курси, події, розсилки й сегменти.",
       "downloadJson": "Завантажити JSON",
       "singleDatasets": "Окремі набори даних",
       "csvOrJson": "CSV (Excel) або JSON",
       "entries": "{count, plural, one {# запис} few {# записи} many {# записів} other {# запису}}",
       "noData": "Немає даних",
-      "footer": "Усі експорти суворо обмежені вашою спільнотою та потребують прав адміністратора. Електронні адреси включені лише в експорт учасників.",
+      "footer": "Експорт містить лише дані цієї спільноти, завантажити його може лише власник. Адреси e-mail є лише в експорті учасників.",
       "datasets": {
         "members": "Учасники",
         "orders": "Замовлення",
         "subscriptions": "Підписки",
-        "entitlements": "Права доступу",
+        "entitlements": "Доступи",
         "posts": "Дописи",
         "comments": "Коментарі",
         "products": "Товари",
@@ -1994,15 +2337,13 @@
     "moderation": {
       "metaTitle": "Модерація",
       "title": "Модерація",
-      "subtitleAi": "Нові дописи та коментарі автоматично перевіряються ШІ — рішення ухвалює ваша команда.",
-      "subtitleHeuristic": "Нові дописи та коментарі перевіряються евристикою (з ключем Gemini: класифікація ШІ).",
       "refPost": "Допис",
       "refComment": "Коментар",
       "unknown": "Невідомо",
-      "sourceAi": "ШІ",
-      "sourceHeuristic": "Евристика",
+      "sourceAi": "Перевірка ШІ",
+      "sourceHeuristic": "Фільтр слів",
       "emptyTitle": "Немає що перевіряти",
-      "emptyHint": "Наразі немає поскаржених матеріалів. Авто-позначки нових дописів і коментарів зʼявляться тут.",
+      "emptyHint": "Наразі перевіряти нічого. Якщо новий допис чи коментар здасться підозрілим, він з’явиться тут.",
       "approve": "Схвалити (хибна тривога)",
       "removeContent": "Видалити контент",
       "recentDecisions": "Нещодавно вирішено",
@@ -2012,13 +2353,20 @@
         "spam": "Спам",
         "toxisch": "Токсично",
         "belaestigung": "Домагання"
-      }
+      },
+      "subtitle": "Нові дописи й коментарі перевіряються автоматично. Усе підозріле потрапляє сюди — вирішуєте ви.",
+      "viewInContext": "Переглянути в дописі",
+      "banAuthor": "Заблокувати: {name}",
+      "authorBanned": "Автора заблоковано",
+      "removeTitlePost": "Видалити допис назавжди?",
+      "removeTitleComment": "Видалити коментар назавжди?",
+      "removeBody": "«{excerpt}» буде видалено без можливості відновлення."
     },
     "layout": {
       "titleHub": "Редагувати вашу сторінку",
-      "titleHeader": "Деталі",
-      "titleSections": "Макет сторінки",
-      "titleNav": "Навігація сторінки",
+      "titleHeader": "Шапка",
+      "titleSections": "Головна: розділи",
+      "titleNav": "Бічна панель",
       "back": "Назад",
       "backToDashboard": "Back to the dashboard",
       "desktopPreview": "Перегляд для десктопа",
@@ -2026,25 +2374,23 @@
       "saved": "Збережено",
       "cancel": "Скасувати",
       "saving": "Збереження…",
-      "save": "Зберегти",
-      "nameTaken": "Назва сторінки вже зайнята",
+      "save": "Зберегти сторінку",
+      "nameTaken": "Ця назва вже зайнята",
       "livePreview": "Перегляд у реальному часі",
-      "hubHeader": "Деталі шапки",
-      "hubSections": "Макет сторінки",
-      "hubNav": "Меню навігації",
-      "pageName": "Назва сторінки",
+      "hubHeader": "Шапка",
+      "hubSections": "Головна: розділи",
+      "hubNav": "Бічна панель",
+      "pageName": "Назва",
       "nameUpdateHint": "Це оновить ваше імʼя всюди у спільноті.",
-      "profilePhoto": "Фото профілю",
-      "profilePhotoHint": "Квадратне, щонайменше 512×512 px",
-      "changePhotoAria": "Змінити фото профілю",
+      "profilePhoto": "Логотип",
+      "changePhotoAria": "Змінити логотип",
       "change": "Змінити",
-      "headerOptions": "Параметри шапки",
-      "usePhoto": "Використати фото профілю",
-      "colorScheme": "Колірна схема",
-      "colorSchemeHint": "Виберіть акцентний колір вашої сторінки.",
-      "uploadCover": "Завантажити обкладинку",
-      "coverApplied": "Обкладинка застосовується одразу.",
-      "about": "Про нас",
+      "headerOptions": "Фон шапки",
+      "usePhoto": "Кольоровий фон із логотипом",
+      "colorScheme": "Основний колір",
+      "colorSchemeHint": "Для кнопок, посилань і кольорового фону шапки.",
+      "uploadCover": "Обкладинка",
+      "about": "Опис",
       "aboutHint": "Представте себе та свою спільноту.",
       "socialLinks": "Посилання на соцмережі",
       "add": "Додати",
@@ -2073,8 +2419,8 @@
       "noOptions": "Немає доступних варіантів.",
       "audiences": {
         "PAID": "Платний учасник",
-        "FREE": "Неплатний учасник",
-        "PUBLIC": "Публічно"
+        "FREE": "Безкоштовний учасник",
+        "PUBLIC": "Відвідувач"
       },
       "sections": {
         "RECENT_POSTS": "Нові дописи",
@@ -2137,12 +2483,33 @@
       "mosaicTitle": "Зображення в шапці",
       "mosaicHint": "Ці зображення утворюють мозаїку в такому порядку — перетягніть, щоб змінити. Парна кількість заповнює сітку без залишку; найкраще виглядають 6 або 12.",
       "mosaicUploadError": "Не вдалося завантажити зображення. Спробуйте ще раз.",
-      "hubMenu": "Меню шапки",
-      "titleMenu": "Меню шапки"
+      "hubMenu": "Кнопки в шапці",
+      "titleMenu": "Кнопки в шапці",
+      "hubHeaderHint": "Назва, логотип, основний колір, обкладинка, опис і соцмережі",
+      "hubMenuHint": "Кнопки під назвою, наприклад «Приєднатися» або «Чайові»",
+      "hubSectionsHint": "Які розділи показує головна і в якому порядку",
+      "hubPagesHint": "Додаткові сторінки, наприклад «Про нас» або «FAQ»",
+      "hubNavHint": "Пункти меню в навігації ліворуч",
+      "hubBannerHint": "Банери для оголошень і акцій",
+      "savedAt": "Збережено · {time}",
+      "unsaved": "Не збережено",
+      "discardTitle": "Скасувати незбережені зміни?",
+      "discardBody": "Якщо піти зараз, зміни сторінки буде втрачено.",
+      "discardConfirm": "Скасувати зміни",
+      "discardCancel": "Продовжити редагування",
+      "previewMobile": "Перегляд",
+      "editMobile": "Редагувати",
+      "previewAs": "Перегляд як",
+      "colorPresetAria": "Основний колір {color}",
+      "colorCustomAria": "Вибрати власний основний колір",
+      "hideNamedAria": "Приховати «{name}»",
+      "removeNamedAria": "Видалити «{name}»",
+      "removeImageAria": "Видалити зображення {n}",
+      "socialInputAria": "Профіль {name}"
     },
     "pages": {
       "title": "Сторінки",
-      "hub": "Сторінки",
+      "hub": "Власні сторінки",
       "intro": "Створюйте власні сторінки: «Про мене», «Питання» чи «Преса». Вони з’являються вкладками поруч із головною.",
       "homeTab": "Головна",
       "homeTabHint": "Незмінна — показує те, що ви зібрали в розкладці сторінки.",
@@ -2463,7 +2830,11 @@
       "colSent": "Надіслано",
       "colRecipients": "Одержувачі",
       "colOpens": "Відкриття",
-      "colClicks": "Кліки"
+      "colClicks": "Кліки",
+      "growthSummary": "{total, plural, one {# приєднання} few {# приєднання} many {# приєднань} other {# приєднання}} за останні 6 місяців, з них {current, number} цього місяця.",
+      "growthEmpty": "За останні 6 місяців ніхто не приєднався. Нові учасники з’являться тут за місяцями.",
+      "colMonth": "Місяць",
+      "colNewMembers": "Нові учасники"
     },
     "gamification": {
       "title": "Гейміфікація",
@@ -2480,8 +2851,6 @@
       "rule": "Правило",
       "maxPerDay": "макс. {count}/день",
       "pts": "бал.",
-      "savePointsAria": "Зберегти бали",
-      "deleteRuleAria": "Видалити правило",
       "confirmDeleteRule": "Видалити правило «{name}»?",
       "rulesEmptyTitle": "Правил ще немає",
       "rulesEmptyHint": "Додайте правило нарахування балів для дії.",
@@ -2561,7 +2930,14 @@
       "iconLabel": "Символ",
       "manualHint": "Значки з умовою «вручну» ви надаєте самі —",
       "manualBadge": "Вручну",
-      "manualHintLink": "у списку учасників."
+      "manualHintLink": "у списку учасників.",
+      "pointsForRuleAria": "Бали за «{name}»",
+      "savePointsForRuleAria": "Зберегти бали за «{name}»",
+      "deleteRuleForAria": "Видалити правило «{name}»",
+      "confirmDeleteRuleBody": "За цю дію більше не нараховуватимуться бали.",
+      "confirmDeleteRuleCta": "Видалити правило",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {Цей значок ще нікому не видано.} one {# учасник втратить значок.} few {# учасники втратять значок.} many {# учасників втратять значок.} other {# учасника втратять значок.}}",
+      "confirmDeleteBadgeCta": "Видалити значок"
     },
     "referrals": {
       "metaTitle": "Реферали",
@@ -2644,22 +3020,22 @@
       },
       "BUNDLE": {
         "label": "Набір",
-        "desc": "Комплект контенту"
+        "desc": "Більше не пропонується"
       },
       "COURSE_ACCESS": {
         "label": "Доступ до курсу",
         "desc": "Відкриває курс"
       },
       "TIER_GRANT": {
-        "label": "Доступ до рівня",
-        "desc": "Відкриває рівень"
+        "label": "Доступ до членства",
+        "desc": "Більше не пропонується"
       }
     },
     "tiers": {
       "title": "Членства",
       "subtitle": "{count, plural, one {# членство} few {# членства} many {# членств} other {# членства}} · так вони відображаються на сторінці приєднання.",
       "create": "Створити членство",
-      "stripeWarning": "Stripe ще не підключено — безкоштовні рівні працюють одразу; для платних рівнів додайте <code>STRIPE_SECRET_KEY</code> у <code>.env</code>.",
+      "stripeWarning": "Stripe ще не підключено: безкоштовні членства працюють одразу. Для платних членств додайте <code>STRIPE_SECRET_KEY</code> у <code>.env</code>.",
       "recommended": "Рекомендовано",
       "default": "За замовчуванням",
       "hidden": "Приховано",
@@ -2667,9 +3043,9 @@
       "edit": "Редагувати",
       "suffixMonth": "/ міс",
       "suffixYear": "/ рік",
-      "createTitle": "Створити новий рівень",
+      "createTitle": "Нове членство",
       "createSubtitle": "Задайте членство та ціну",
-      "editTitle": "Редагувати рівень",
+      "editTitle": "Редагувати членство",
       "nameLabel": "Назва",
       "namePlaceholder": "напр. Premium",
       "coverLabel": "Обкладинка (необовʼязково)",
@@ -2683,17 +3059,24 @@
       "publicHint": "Відображається на сторінці приєднання.",
       "recommendedLabel": "Рекомендовано автором",
       "recommendedHint": "Виділяє це членство на сторінці приєднання (макс. одне).",
-      "defaultLabel": "Рівень за замовчуванням",
-      "defaultHintActive": "Нові учасники отримують цей рівень.",
+      "defaultLabel": "Членство за замовчуванням",
+      "defaultHintActive": "Нові учасники отримують це членство.",
       "defaultHintInactive": "Зробити рівнем за замовчуванням для нових учасників.",
-      "entitlementKeyLabel": "Ключ права (фіксований)",
-      "confirmDelete": "Справді видалити рівень «{name}»?",
+      "entitlementKeyLabel": "Технічний ключ (видно лише адміністраторам платформи)",
+      "confirmDelete": "Видалити членство «{name}»?",
       "deleting": "Видалення…",
-      "deleteTier": "Видалити рівень",
+      "deleteTier": "Видалити членство",
       "cancel": "Скасувати",
       "saving": "Збереження…",
       "saveChanges": "Зберегти зміни",
-      "createTier": "Створити рівень"
+      "createTier": "Створити членство",
+      "priceHint": "Фіксовані рівні цін, щоб ціна діяла й у магазинах застосунків.",
+      "payoutsMissing": "Щоб отримувати платежі, спершу налаштуйте виплати.",
+      "payoutsSetup": "Налаштувати виплати",
+      "confirmDeleteBody": "{count, plural, =0 {Членство буде видалено назавжди.} one {# учасник втрачає доступ до матеріалів цього членства.} few {# учасники втрачають доступ до матеріалів цього членства.} many {# учасників втрачають доступ до матеріалів цього членства.} other {# учасника втрачають доступ до матеріалів цього членства.}} Цю дію не можна скасувати.",
+      "confirmHide": "Приховати членство «{name}»?",
+      "confirmHideBody": "Платні членства не видаляються, а прибираються зі сторінки вступу, щоб поточні платежі й надалі оброблялися. Наявні учасники зберігають доступ.",
+      "hideTier": "Приховати членство"
     },
     "products": {
       "title": "Товари",
@@ -2716,7 +3099,6 @@
       "namePlaceholder": "напр. Електронна книга",
       "typeLabel": "Тип",
       "priceLabel": "Ціна",
-      "downloadUrlLabel": "URL для завантаження (необовʼязково)",
       "shipping": "Доставка",
       "shipFreeLabel": "Безкоштовна доставка",
       "shipFreeDesc": "Без витрат на доставку",
@@ -2729,13 +3111,43 @@
       "descPlaceholder": "Що отримують покупці?",
       "publishedLabel": "Опубліковано",
       "publishedHint": "Видно та доступно для покупки у спільноті.",
-      "confirmDelete": "Справді видалити товар «{name}»?",
+      "confirmDelete": "Видалити товар «{name}»?",
       "deleting": "Видалення…",
       "deleteProduct": "Видалити товар",
       "cancel": "Скасувати",
       "saving": "Збереження…",
       "saveChanges": "Зберегти зміни",
-      "createProduct": "Створити товар"
+      "createProduct": "Створити товар",
+      "confirmDeleteBody": "Товар зникне з магазину. Цю дію не можна скасувати.",
+      "confirmHide": "Приховати товар «{name}»?",
+      "confirmHideBody": "Для цього товару є замовлення, тому його не видалено, а прибрано з магазину. Покупці зберігають доступ.",
+      "hideProduct": "Приховати товар",
+      "priceHint": "Фіксовані рівні цін, щоб ціна діяла й у магазинах застосунків.",
+      "pricePlaceholder": "Виберіть ціну",
+      "priceRequired": "Виберіть ціну або «Безкоштовно».",
+      "fileLabel": "Файл для покупців",
+      "fileHint": "Завантажте файл або вставте посилання. Покупці побачать завантаження після покупки.",
+      "fileUpload": "Завантажити файл",
+      "fileReplace": "Завантажити інший файл",
+      "fileRemove": "Вилучити",
+      "fileUploading": "Завантаження…",
+      "fileUploaded": "Завантажений файл",
+      "fileOpen": "Відкрити",
+      "fileLinkLabel": "Або посилання на файл",
+      "fileRequired": "Завантажте файл або вставте посилання.",
+      "fileLinkInvalid": "Посилання має починатися з https://.",
+      "courseLabel": "Який курс відкривається?",
+      "coursePlaceholder": "Виберіть курс",
+      "courseHint": "Після збереження курс відкритий лише для покупців і вашої команди. Уроки з позначкою «попередній перегляд» залишаються видимими для всіх.",
+      "courseRequired": "Виберіть курс, який отримають покупці.",
+      "courseLocked": "Після першого продажу курс більше не можна змінити, щоб покупці зберегли доступ.",
+      "noCourses": "У вас ще немає курсу, який можна продавати окремо.",
+      "createCourse": "Створити курс",
+      "tierGrantRetired": "Цей тип не відкриває членство. Виберіть інший тип. Платні членства створюються в розділі «Членства».",
+      "viewInShop": "Переглянути в магазині",
+      "payoutsMissing": "Щоб отримувати платежі, спершу налаштуйте виплати.",
+      "payoutsSetup": "Налаштувати виплати",
+      "bundleRetired": "Набори більше не пропонуються: покупка не відкривала жодного конкретного вмісту. Попередні покупки залишаються дійсними. Для нових пропозицій оберіть «Цифровий» або «Доступ до курсу»."
     },
     "payouts": {
       "title": "Виплати",
@@ -2788,7 +3200,8 @@
     "memberStatus": {
       "ACTIVE": "Активний",
       "PENDING": "Очікує",
-      "BANNED": "Заблокований"
+      "BANNED": "Заблокований",
+      "INVITED": "Запрошено"
     },
     "members": {
       "title": "Учасники",
@@ -2797,7 +3210,7 @@
       "tabTeam": "Команда",
       "tabBanned": "Заблоковані",
       "allHeading": "Усі учасники",
-      "allDesc": "Керуйте ролями, рівнями та доступом.",
+      "allDesc": "Керуйте ролями, членствами й доступом.",
       "allEmptyTitle": "Учасників ще немає",
       "allEmptyHint": "Додайте першого учасника або поділіться посиланням для приєднання.",
       "teamHeading": "Команда",
@@ -2825,14 +3238,13 @@
       "profilePhoto": "Фото профілю",
       "emailLabel": "Електронна адреса",
       "emailPlaceholder": "імʼя@приклад.ua",
-      "emailHint": "Якщо облікового запису ще немає, його буде створено автоматично.",
+      "emailHint": "Якщо облікового запису ще немає, ми створимо його й надішлемо запрошення. Наявні облікові записи додаються одразу, без листа.",
       "roleLabel": "Роль",
-      "tierLabel": "Рівень",
-      "noTier": "Без рівня",
+      "tierLabel": "Членство",
+      "noTier": "Без членства",
       "cancel": "Скасувати",
       "adding": "Додавання…",
       "statusLabel": "Статус",
-      "confirmRemove": "Справді видалити «{name}» зі спільноти?",
       "removing": "Видалення…",
       "removeMember": "Видалити учасника",
       "saving": "Збереження…",
@@ -2855,7 +3267,37 @@
       "awarding": "Надається…",
       "revoke": "Прибрати",
       "revoking": "Прибирається…",
-      "awardedOn": "Надано {date}"
+      "awardedOn": "Надано {date}",
+      "confirmRemoveTitle": "Видалити «{name}» зі спільноти?",
+      "confirmRemoveBody": "Активні підписки одразу припиняться, а доступ за членством зникне. Разові покупки збережуться.",
+      "confirmRemoveCta": "Видалити учасника",
+      "tierHint": "Відкриває те, що входить у це членство, — без оплати.",
+      "roleHints": {
+        "MEMBER": "Бачить те, що відкриває членство, і пише в стрічці та на форумі.",
+        "MODERATOR": "Бачить усі простори й може писати будь-де; його дописи не проходять автоматичну перевірку. У панелі бачить лише модерацію: перевіряти, схвалювати або видаляти позначені дописи.",
+        "ADMIN": "Керує спільнотою в панелі: контент, учасники, модерація й налаштування. Призначати адмінів, підключати платежі, експортувати дані й видаляти спільноту може лише власник."
+      },
+      "statusHint": "«Очікує»: учасника додано, але він ще не має доступу до матеріалів для учасників.",
+      "invitedOn": "запрошено {date}",
+      "noticeInviteSent": "Запрошення надіслано на {email}.",
+      "noticeInviteNotSent": "Обліковий запис для {email} створено, але запрошення не вдалося надіслати. Пароль можна встановити через «Забули пароль?».",
+      "noticeAdded": "{email} додано з роллю «{role}».",
+      "dismissNotice": "Закрити повідомлення",
+      "searchLabel": "Пошук учасника",
+      "searchPlaceholder": "Ім’я або e-mail",
+      "searchCount": "{shown} з {total} учасників",
+      "searchEmpty": "Ніхто не відповідає «{query}».",
+      "ban": "Заблокувати учасника",
+      "unban": "Розблокувати",
+      "banning": "Блокуємо…",
+      "unbanning": "Розблоковуємо…",
+      "banTitle": "Заблокувати {name}?",
+      "banBody": "{name} одразу втратить доступ до {community}.",
+      "banBodySubscription": "Платну підписку ({membership}, {price}) буде скасовано.",
+      "banConfirm": "Заблокувати учасника",
+      "pricePerMonth": "{price} на місяць",
+      "pricePerYear": "{price} на рік",
+      "bannedInfo": "{name} заблоковано, доступу до спільноти немає."
     },
     "spaceTypes": {
       "FEED": {
@@ -2946,15 +3388,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "Публічний",
-        "desc": "Видно всім"
+        "desc": "Видно всім, навіть без акаунта"
       },
       "MEMBERS": {
         "label": "Учасники",
-        "desc": "Лише для авторизованих"
+        "desc": "Лише учасники спільноти"
       },
       "PAID": {
         "label": "Платний",
-        "desc": "Потрібне членство"
+        "desc": "Лише з платною підпискою"
       }
     },
     "spaces": {
@@ -2972,15 +3414,12 @@
       "createSubtitle": "Виберіть тип і видимість",
       "editTitle": "Редагувати простір",
       "edit": "Редагувати",
-      "reactivate": "Активувати",
-      "archive": "В архів",
+      "archive": "Архівувати",
       "postCount": "{count, plural, one {# допис} few {# дописи} many {# дописів} other {# допису}}",
       "nameLabel": "Назва простору",
       "namePlaceholder": "напр. Оголошення",
       "typeLabel": "Тип",
       "visibilityLabel": "Видимість",
-      "entitlementLabel": "Потрібне право",
-      "entitlementHint": "Залиште порожнім, щоб приймати будь-яке платне членство.",
       "descLabel": "Опис (необов'язково)",
       "descPlaceholder": "Про що цей простір?",
       "deleting": "Видалення…",
@@ -2990,7 +3429,43 @@
       "saveChanges": "Зберегти зміни",
       "deleteConfirmTitle": "Видалити простір?",
       "deleteConfirmText": "«{name}» буде видалено назавжди. Весь контент усередині буде втрачено — це не можна скасувати.",
-      "delete": "Видалити"
+      "delete": "Видалити",
+      "restore": "Відновити",
+      "archiveNamed": "Архівувати «{name}»",
+      "restoreNamed": "Відновити «{name}»",
+      "archivedNotice": "«{name}» в архіві — учасники його не бачать.",
+      "restoredNotice": "«{name}» відновлено — учасники знову його бачать.",
+      "undo": "Скасувати",
+      "dismissNotice": "Закрити повідомлення",
+      "typeLockedHint": "Тип зафіксовано, бо в цьому просторі вже {count, plural, one {# матеріал} few {# матеріали} many {# матеріалів} other {# матеріалу}}. З іншим типом їх не буде видно. Для іншого типу створіть новий простір.",
+      "access": {
+        "legend": "Які підписки мають доступ?",
+        "anyPaid": "Будь-яка платна підписка",
+        "anyPaidDesc": "А також ті, хто купив щось платне, наприклад товар",
+        "pricePerMonth": "{price}/міс.",
+        "pricePerYear": "{price}/рік",
+        "tierHidden": "{price} · не продається",
+        "legacyLabel": "Попереднє правило доступу",
+        "legacyFreeTier": "Безкоштовна підписка — давнє налаштування",
+        "legacyKey": "Ключ «{key}» — давнє налаштування",
+        "hintTier": "Простір бачать лише учасники саме з цією підпискою. Ви і ваша команда завжди маєте доступ.",
+        "hintAny": "Простір бачать усі учасники з платною підпискою. Ви і ваша команда завжди маєте доступ.",
+        "noPaidTitle": "Платної підписки ще немає",
+        "noPaidText": "Створіть платну підписку, щоб учасники могли відкрити цей простір.",
+        "noPaidCta": "Спершу створити підписку",
+        "specificTier": "Певна підписка"
+      },
+      "postingLabel": "Хто може писати дописи?",
+      "posting": {
+        "members": {
+          "label": "Усі учасники",
+          "desc": "Учасники пишуть власні дописи."
+        },
+        "team": {
+          "label": "Лише команда",
+          "desc": "Учасники читають, реагують і коментують."
+        }
+      }
     },
     "roles": {
       "OWNER": "Власник",
@@ -3022,9 +3497,10 @@
     },
     "userMenu": {
       "myAccount": "My account",
-      "mySubscription": "Моя підписка",
+      "mySubscription": "Моє членство",
       "switchCommunities": "Змінити спільноту",
-      "logout": "Вийти"
+      "logout": "Вийти",
+      "toggleAria": "Меню користувача {name}"
     },
     "search": {
       "placeholder": "Пошук учасників, просторів, дописів …",
@@ -3081,14 +3557,14 @@
       "leaveTitle": "Покинути спільноту",
       "cancelText": "Доступ до платного контенту завершиться разом з оплаченим періодом. Придбані товари залишаться вашими.",
       "leaveText": "Ви втратите доступ до контенту для учасників. Придбані товари залишаться вашими.",
-      "confirmCancel": "Справді скасувати членство?",
       "cancelling": "Скасування…",
       "cancelNow": "Скасувати зараз",
       "confirmLeave": "Справді покинути спільноту «{name}»?",
       "leaving": "Вихід…",
       "leaveCommunity": "Покинути спільноту",
       "perMonth": "/міс",
-      "perYear": "/рік"
+      "perYear": "/рік",
+      "confirmCancelTitle": "Скасувати членство в «{name}»?"
     },
     "credits": {
       "title": "Кредити та використання",
@@ -3150,7 +3626,11 @@
       "mobileSubtitle": "Навігація панелі",
       "planner": "Планувальник",
       "lockedSuffix": "лише з {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "У старших тарифах ({count})",
+      "moderatorGroup": "Ваш розділ",
+      "moderatorHint": "Ви перевіряєте позначені дописи й коментарі. Учасниками, вмістом і налаштуваннями керує команда адміністраторів.",
+      "moderatorRole": "Модерація"
     },
     "media": {
       "metaTitle": "Медіа",
@@ -3180,8 +3660,6 @@
       "edit": "Редагувати",
       "delete": "Видалити",
       "moveToFolder": "Перемістити до теки",
-      "confirmDeleteFolder": "Видалити цю теку? Медіа всередині залишаться без теки.",
-      "confirmDeleteMedia": "Справді видалити цей файл? Після цього він буде недоступний.",
       "folderMenuAria": "Параметри теки {name}",
       "itemMenuAria": "Параметри файлу {name}",
       "openAria": "Відкрити {name}",
@@ -3208,9 +3686,18 @@
       "openInStudio": "Редагувати в студії",
       "uploadMedia": "Завантажити медіа",
       "uploadingProgress": "Завантаження… {done}/{total}",
-      "uploadFailed": "Не вдалося завантажити: {name}",
       "storageTitle": "Сховище медіа",
-      "storageOf": "Використано {used} з {limit}"
+      "storageOf": "Використано {used} з {limit}",
+      "uploadFailedCount": "{count, plural, one {# файл не завантажено} few {# файли не завантажено} many {# файлів не завантажено} other {# файлу не завантажено}}",
+      "uploadFailedLine": "{name}: {reason}",
+      "retryUpload": "Завантажити ще раз",
+      "dismissUploadErrors": "Закрити повідомлення",
+      "confirmDeleteFolderTitle": "Видалити теку «{name}»?",
+      "confirmDeleteFolderBody": "Файли з теки збережуться й опиняться в розділі «Без теки».",
+      "confirmDeleteFolderCta": "Видалити теку",
+      "confirmDeleteMediaTitle": "Видалити «{name}» назавжди?",
+      "confirmDeleteMediaBody": "Файл буде видалено. Дописи й сторінки, які його використовують, більше не показуватимуть його.",
+      "confirmDeleteMediaCta": "Видалити назавжди"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3376,7 +3863,6 @@
       "studioChatShow": "Показати чат",
       "studioChatHide": "Сховати чат",
       "studioFullscreen": "На весь екран",
-      "studioCloseConfirm": "Ви в ефірі. Закриття студії перерве трансляцію. Все одно закрити?",
       "studioNoPreview": "Трансляція триває — попередній перегляд доступний лише на пристрої, який транслює.",
       "studioMirror": "Віддзеркалити перегляд",
       "studioLevel": "Рівень звуку",
@@ -3392,7 +3878,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "Закрити студію й завершити трансляцію?",
+      "studioCloseBody": "Ви зараз в ефірі. Якщо закрити студію, трансляція перерветься.",
+      "studioCloseCta": "Закрити студію",
+      "studioCloseCancel": "Продовжити ефір"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3710,7 +4200,8 @@
       "quotaSpaces": "Простори",
       "quotaMembers": "Учасники",
       "quotaCredits": "AI-кредити",
-      "unlimited": "необмежено"
+      "unlimited": "необмежено",
+      "quotaRemaining": "Залишилося {rest} з {total} кредитів"
     },
     "seo": {
       "metaTitle": "SEO",
@@ -3718,7 +4209,7 @@
       "subtitle": "How your community appears on Google and when shared. Empty fields are filled automatically from your community details.",
       "metaTitleHint": "The blue headline in a search result. Empty = your community name.",
       "metaDescription": "Description",
-      "metaDescriptionHint": "The grey text below the title. Empty = your onboarding tagline.",
+      "metaDescriptionHint": "Сірий текст під заголовком. Порожньо = слоган із розділу «Бренд».",
       "keywords": "Keywords",
       "keywordsHint": "Comma separated. Empty = derived from name and category.",
       "image": "Social image",
@@ -3831,6 +4322,42 @@
         "desc": "Поділіться посиланням або запросіть e-mailом.",
         "cta": "Запросити учасників"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "У твоєму часовому поясі: {zone} ({abbr})",
+      "pastWarning": "Ця дата вже минула."
+    },
+    "planSheet": {
+      "title": "Змінити тариф",
+      "subtitle": "Що входить у кожен тариф",
+      "loading": "Завантаження тарифів …",
+      "loadFailed": "Не вдалося завантажити тарифи.",
+      "retry": "Завантажити знову",
+      "pricePerMonth": "{price} на місяць",
+      "free": "Безкоштовно",
+      "current": "Ваш тариф",
+      "currentPlan": "Ваш поточний тариф",
+      "limitSpaces": "{count, plural, one {# активний простір} few {# активні простори} many {# активних просторів} other {# активного простору}}",
+      "limitSpacesUnlimited": "Без обмеження просторів",
+      "limitMembers": "{count, plural, one {# активний учасник} few {# активні учасники} many {# активних учасників} other {# активного учасника}}",
+      "limitMembersUnlimited": "Без обмеження учасників",
+      "limitTiers": "До {count, plural, one {# підписки} few {# підписок} many {# підписок} other {# підписки}}",
+      "limitTiersUnlimited": "Без обмеження підписок",
+      "limitStaff": "{count, plural, one {# місце в команді} few {# місця в команді} many {# місць у команді} other {# місця в команді}}",
+      "limitStaffUnlimited": "Без обмеження місць у команді",
+      "limitCredits": "{n} ШІ-кредитів на місяць",
+      "everythingFrom": "Усе з {plan}, а також:",
+      "baseSpaces": "Входить:",
+      "spaceTypesList": "Типи просторів: {list}",
+      "freeHint": "Щоб повернутися на Free, скасуйте тариф.",
+      "switching": "Запуск …",
+      "switchTo": "Перейти на {plan}",
+      "checkoutFailed": "Не вдалося почати оплату. Спробуйте ще раз.",
+      "cancelFailed": "Не вдалося оформити скасування. Спробуйте ще раз.",
+      "footnote": "Ціни на місяць, скасувати можна щомісяця. Оплата проходить через Stripe.",
+      "spacesUsedNotice": "Ви використовуєте {used} з {max} просторів.",
+      "creditsTeaser": "Зараз: {plan}. Тарифи відрізняються просторами, учасниками й функціями.",
+      "open": "Змінити тариф"
     }
   },
   "common": {
@@ -3855,13 +4382,23 @@
     "totpHint": "Ваш акаунт захищено двофакторною автентифікацією.",
     "legalAcceptance": "Я приймаю <terms>Умови використання</terms> та підтверджую ознайомлення з <privacy>Повідомленням про конфіденційність</privacy>.",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6-значний код",
+    "codeFor": "Вхід як <strong>{email}</strong>.",
+    "useOtherEmail": "Використати інший e-mail",
+    "useRecoveryCode": "Немає доступу до застосунку? Використати код відновлення",
+    "useAppCode": "Використати код із застосунку",
+    "recoveryHeading": "Введіть код відновлення",
+    "recoveryLabel": "Код відновлення",
+    "recoveryHint": "Один із кодів, які ви зберегли під час налаштування 2FA. Кожен код працює лише один раз.",
+    "passwordTooShortField": "Пароль закороткий — щонайменше {min} символів."
   },
   "verifyBanner": {
-    "prompt": "Підтвердьте свою адресу ел. пошти <strong>{email}</strong>.",
+    "prompt": "Підтвердьте <strong>{email}</strong>, щоб отримувати розсилки й листи від ваших спільнот.",
     "resend": "Надіслати посилання ще раз",
     "resending": "Надсилання …",
-    "sent": "Нове посилання для підтвердження надіслано на <strong>{email}</strong> — перевірте пошту."
+    "sent": "Нове посилання для підтвердження надіслано на <strong>{email}</strong> — перевірте пошту.",
+    "sendLink": "Надіслати посилання для підтвердження"
   },
   "community": {
     "join": "Стати учасником",
@@ -4018,7 +4555,7 @@
       },
       "space": {
         "lockedDesc": "Цей простір доступний лише для учасників.",
-        "lockedDescPaid": "Цей простір доступний лише для учасників із відповідною підпискою.",
+        "lockedDescPaid": "Цей матеріал входить до платної підписки.",
         "upgradeMembership": "Оновити підписку",
         "join": "Приєднатися",
         "noLinks": "Поки немає посилань",
@@ -4056,7 +4593,7 @@
         "noProducts": "Поки немає товарів",
         "noProductsHint": "Товари з вашого каталогу з’являться тут.",
         "noEvents": "Поки немає подій",
-        "rsvps": "{count} записаних",
+        "rsvps": "{count, plural, one {# учасник} few {# учасники} many {# учасників} other {# учасника}}",
         "attended": "Записано ✓",
         "attend": "Взяти участь",
         "noNewsletters": "Поки немає випусків",
@@ -4086,16 +4623,25 @@
         },
         "liveOwnStream": "Ефір через Aera",
         "liveWatchNow": "Дивитися зараз",
-        "liveWatchReplay": "Дивитися запис"
+        "liveWatchReplay": "Дивитися запис",
+        "withdrawRsvp": "Скасувати участь",
+        "rsvpGoing": "Ти береш участь",
+        "feedNoPostsTeamHint": "Тут пише команда. Нові дописи з’являться тут."
       },
       "spaceCard": {
         "space": "Простір",
-        "locked": "Заблоковано"
+        "locked": "Заблоковано",
+        "membersOnly": "Лише учасники",
+        "paidOnly": "Платне членство"
       },
       "postTile": {
         "becomeMember": "Стати учасником",
         "exclusive": "Лише для учасників",
-        "locked": "Закрито"
+        "locked": "Закрито",
+        "lockedUntitled": "Допис для учасників",
+        "paidUntitled": "Платний допис",
+        "lockedHint": "Цей допис для учасників.",
+        "paidHint": "Цей допис можна відкрити окремо."
       },
       "planCard": {
         "current": "Ваш тариф",
@@ -4213,6 +4759,17 @@
         "like": "Подобається",
         "unlike": "Більше не подобається",
         "locked": "Заблоковано"
+      },
+      "paywall": {
+        "belongsTo": "«{space}» входить до {tier} ({price}).",
+        "anyPaidFrom": "«{space}» входить до будь-якої платної підписки — від {tier} ({price}).",
+        "pricePerMonth": "{price}/міс.",
+        "pricePerYear": "{price}/рік",
+        "viewTier": "Переглянути {tier}",
+        "becomeMember": "Стати учасником",
+        "memberHint": "Ваша поточна підписка не містить цього простору.",
+        "freeMembers": "«{space}» — для учасників. Членство безкоштовне.",
+        "joinFree": "Приєднатися безкоштовно"
       }
     },
     "nav": {
@@ -4220,7 +4777,8 @@
       "home": "Головна",
       "library": "Бібліотека",
       "members": "Учасники",
-      "membership": "Підписка"
+      "membership": "Підписка",
+      "accountAndMembership": "Акаунт і членство"
     },
     "chrome": {
       "navAria": "Навігація спільноти",
@@ -4237,7 +4795,8 @@
       "accountAndPurchases": "Обліковий запис і покупки",
       "dashboard": "Панель",
       "logout": "Вийти",
-      "login": "Увійти"
+      "login": "Увійти",
+      "moderation": "Модерація"
     },
     "joinPage": {
       "title": "Обери своє членство",
@@ -4248,7 +4807,7 @@
       "signupCta": "Приєднатися до {name} безкоштовно",
       "haveAccount": "Вже є акаунт?",
       "login": "Увійти",
-      "orChoose": "Або обери рівень напряму",
+      "orChoose": "Або одразу обери членство",
       "recommendedBadge": "Рекомендація автора",
       "popularBadge": "Популярний",
       "currentBadge": "Твій план",
@@ -4266,7 +4825,10 @@
       "showLess": "Згорнути",
       "noTiers": "У цієї спільноти поки немає публічних членств.",
       "footnote": "Скасування будь-коли. Платежі безпечно обробляються через Stripe.",
-      "memberLimitReached": "Ця спільнота зараз не приймає нових учасників. Спробуй, будь ласка, пізніше."
+      "memberLimitReached": "Ця спільнота зараз не приймає нових учасників. Спробуй, будь ласка, пізніше.",
+      "guestPaidCta": "Створити акаунт і приєднатися",
+      "guestFreeHint": "Безкоштовно — через форму",
+      "selectedBadge": "Твій вибір"
     },
     "members": {
       "title": "Учасники",
@@ -4336,6 +4898,35 @@
     "banner": {
       "close": "Закрити",
       "aria": "Повідомлення спільноти"
+    },
+    "gate": {
+      "postTitle": "Цей допис лише для учасників",
+      "membersOnly": "Лише для учасників",
+      "freeText": "Приєднуйся до {name} — членство безкоштовне.",
+      "tierText": "Для цього потрібне членство «{tier}» у {name} ({price}).",
+      "noneText": "Це бачать лише учасники {name}.",
+      "joinFree": "Приєднатися безкоштовно",
+      "joinTier": "Обрати {tier}",
+      "upgradeTo": "Перейти на {tier}",
+      "viewMemberships": "Переглянути членства",
+      "login": "Увійти",
+      "postUnlocked": "Допис відкрито."
+    },
+    "accountMenu": {
+      "open": "Меню акаунта: {name}",
+      "account": "Акаунт і членство",
+      "creatorArea": "Розділ автора",
+      "logout": "Вийти",
+      "moderation": "Модерація"
+    },
+    "welcome": {
+      "title": "Ласкаво просимо до {name}! Тепер ти учасник.",
+      "titleTier": "Ласкаво просимо до {name}! Тепер у тебе членство {tier}.",
+      "pendingTitle": "Дякуємо! Підтверджуємо твою оплату в {name}.",
+      "pendingText": "Зазвичай це займає мить. Невдовзі онови сторінку — і ти в спільноті.",
+      "stepForum": "Представся в «{space}»",
+      "stepSpace": "Перейти до «{space}»",
+      "dismiss": "Закрити повідомлення"
     }
   },
   "notifications": {
@@ -4348,7 +4939,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} вподобав(-ла) твій коментар."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} прокоментував(-ла) твій допис «{title}».",
+      "COMMENT_REPLY": "{actor} відповів(-ла) на твій коментар до «{title}».",
+      "REACTION": "{actor} вподобав(-ла) твій допис «{title}».",
+      "REACTION_COMMENT": "{actor} вподобав(-ла) твій коментар до «{title}»."
     }
   },
   "search": {
@@ -4371,7 +4969,8 @@
     "title": "Мова інтерфейсу",
     "hint": "Діє для вашого відображення Aera на цьому пристрої.",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "Мова інтерфейсу: {language}"
   },
   "spaces": {
     "commentsClosed": "Коментарі закрито.",
@@ -4422,7 +5021,21 @@
     "joinToRead": "Стати учасником, щоб читати",
     "showReplies": "Показати ще {count} відповідей",
     "emojiLabel": "Вставити емодзі",
-    "morePosts": "Більше дописів у {space}"
+    "morePosts": "Більше дописів у {space}",
+    "backToSpace": "Назад до {name}",
+    "upvoteAria": "Голос за (рахунок {score})",
+    "downvoteAria": "Голос проти (рахунок {score})",
+    "commentFieldLabel": "Написати коментар",
+    "replyFieldLabel": "Написати відповідь",
+    "titleLabel": "Заголовок (необов’язково)",
+    "titlePlaceholderExample": "Про що йдеться?",
+    "draftKept": "Чернетка збережеться, навіть якщо ти закриєш вікно.",
+    "discardDraft": "Видалити чернетку",
+    "discardDraftTitle": "Видалити чернетку?",
+    "discardDraftBody": "Заголовок і текст буде видалено. Це не можна скасувати.",
+    "discardDraftConfirm": "Видалити",
+    "discardDraftCancel": "Писати далі",
+    "likeAria": "Подобається ({count, plural, =0 {поки немає} one {#} few {#} many {#} other {#}})"
   },
   "discover": {
     "eyebrow": "Спільноти та автори",
@@ -4459,7 +5072,8 @@
       "myCommunities": "Твої спільноти",
       "create": "Створити спільноту",
       "account": "Твій акаунт",
-      "login": "Увійти"
+      "login": "Увійти",
+      "creatorArea": "Розділ автора"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4492,6 +5106,11 @@
         "product": "Продукти",
         "knowledge": "Знання"
       }
+    },
+    "postCount": "{count, plural, one {# допис} few {# дописи} many {# дописів} other {# допису}}",
+    "memberFeed": {
+      "title": "Нове у твоїх спільнотах",
+      "event": "Подія: {date}"
     }
   },
   "categories": {
@@ -4525,10 +5144,10 @@
       },
       "s2": {
         "title": "Спейси для всього, що ти робиш",
-        "text": "Створи стільки спейсів, скільки потрібно: стрічку для новин, форум для обговорень, курси, магазин, розсилки, події, блог, базу знань, фотогалереї, відеотеку, чат, подкаст, колекцію посилань і власні рекламні місця. Для кожного спейса ти вирішуєш, чи видно його всім, лише учасникам чи лише платним учасникам.",
-        "tag1": "14 типів спейсів",
+        "text": "Створи потрібні спейси: стрічку для новин, форум для обговорень, курси, магазин, розсилки, події, блог, базу знань, фотогалереї, відеотеку, чат, подкаст, колекцію посилань і власні рекламні місця. Для кожного спейса ти вирішуєш, чи видно його всім, лише учасникам чи лише платним учасникам.",
+        "tag1": "{count} типів спейсів",
         "tag2": "Видимість на вибір",
-        "tag3": "Скільки завгодно спейсів"
+        "tag3": "Кількість залежить від пакета"
       },
       "s3": {
         "title": "Дописи, коментарі та реакції",
@@ -4634,7 +5253,11 @@
     "forgotSubmit": "Запросити посилання",
     "forgotSending": "Надсилання…",
     "backTo": "Назад до",
-    "backToLogin": "входу"
+    "backToLogin": "входу",
+    "resetDoneNotice": "Пароль змінено. Тепер увійдіть із новим паролем.",
+    "loginHelp": "Допомога зі входом",
+    "signupJoinContext": "Ти приєднуєшся до {name}",
+    "signupJoinContextTier": "Ти приєднуєшся до {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Ціни",
@@ -4646,17 +5269,17 @@
     "topupTitle": "Докупити кредити",
     "topupText": "Потрібно більше? Придбані кредити не згорають і використовуються лише після місячного ліміту.",
     "creditsLabel": "Кредити",
-    "footnote": "1 кредит — це приблизно 1 000 токенів; типовий запит до асистента коштує 1–3 кредити. Комісії платформи з доходів спільноти виставляються окремо — лише з реального доходу.",
+    "footnote": "1 кредит — це приблизно 1 000 токенів; типовий запит до асистента коштує 1–3 кредити.",
     "plans": {
       "FREE": {
         "tagline": "Щоб почати",
-        "f1": "11 базових просторів: стрічка, форум, курси, події, блог …",
+        "f1": "{count} базових просторів: стрічка, форум, курси, події, блог …",
         "f2": "До 5 просторів і 100 учасників",
-        "f3": "Членства, медіа та модерація",
+        "f3": "До {tiers} членств (зокрема платних), медіа та модерація",
         "f4": "500 AI-кредитів на місяць"
       },
       "STARTER": {
-        "tagline": "Коли хочеш заробляти",
+        "tagline": "Для магазину, товарів і статистики",
         "f1": "Усе з Free",
         "f2": "Статистика, товари та виплати",
         "f3": "Магазин, чат, чайові, календар і планувальник",
@@ -4681,7 +5304,7 @@
     "compare": {
       "eyebrow": "Детальніше",
       "title": "Що входить у кожен пакет",
-      "subtitle": "Кожен рядок — це те, чим ти можеш скористатися у своєму дашборді просто зараз. Ніщо не зникає, коли ти переходиш на інший пакет — лише додається більше.",
+      "subtitle": "Кожен рядок — це те, чим ти можеш скористатися у своєму дашборді просто зараз. Під час переходу на більший пакет функції лише додаються.",
       "spacesGroup": "Типи просторів",
       "featuresGroup": "Функції",
       "limitsGroup": "Ліміти",
@@ -4697,8 +5320,17 @@
       "limitStorage": "Сховище для медіа",
       "limitCredits": "AI-кредити на місяць",
       "storageValue": "{gb} ГБ",
-      "note": "Промокод від партнера розблоковує твій пакет миттєво — без платіжних даних."
-    }
+      "note": "Промокод від партнера розблоковує твій пакет миттєво — без платіжних даних.",
+      "feeNote": "З кожного продажу у твоїй спільноті ми утримуємо {fee} комісії платформи — у будь-якому пакеті. Додатково стягується комісія платіжного провайдера (Stripe).",
+      "feesGroup": "Комісії",
+      "feePlatform": "Комісія з твоїх продажів",
+      "feeProvider": "Комісія платіжного провайдера",
+      "feeProviderValue": "За тарифами Stripe",
+      "membersNote": "Активні учасники — це всі учасники твоєї спільноти, включно з тобою та твоєю командою, безкоштовні й платні. Коли ліміт досягнуто, нові учасники зможуть приєднатися лише після переходу на вищий пакет.",
+      "scrollHint": "Гортай убік, щоб порівняти",
+      "tableLabel": "Порівняння пакетів"
+    },
+    "feeLine": "Комісія з твоїх продажів: {fee}"
   },
   "marketing": {
     "navDiscover": "Відкривати",
@@ -4722,7 +5354,10 @@
     "footerPrivacy": "Політика конфіденційності",
     "footerWithdrawal": "Право на відмову",
     "footerTagline": "Твоя спільнота. Твій бренд. Твій бізнес.",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "З пакета {plan}: {items}",
+    "footerContact": "Контакти",
+    "legalGermanOnly": "Цей юридичний текст доступний лише німецькою мовою. Обов’язковою є німецька версія."
   },
   "home": {
     "badge": "Спільнота · Членство · Продажі",
@@ -4798,7 +5433,7 @@
       "c1": {
         "title": "Спейси для всього, що ти робиш",
         "text": "Стрічка, форум, блог і база знань, фотогалереї, відеотека та подкаст, а також чат, колекція посилань і власні рекламні місця. Кожен спейс може бути відкритим для всіх, лише для учасників або лише для платних учасників — і всюди можна коментувати та реагувати.",
-        "tag1": "14 типів спейсів",
+        "tag1": "{count} типів спейсів",
         "tag2": "Видимість на вибір",
         "tag3": "Дописи, коментарі та реакції"
       },
@@ -4896,11 +5531,11 @@
       "colYou": "Aera",
       "rowBase": "Базова ціна на місяць",
       "rowFee": "Частка з вашого доходу",
-      "rowFull": "Повний набір функцій від",
+      "rowFull": "Усі функції від",
       "aera": {
         "base": "0 — почати безкоштовно",
-        "fee": "5 %",
-        "full": "{pro} на місяць"
+        "fee": "{fee}",
+        "full": "{price} на місяць ({plan})"
       },
       "patreon": {
         "name": "Patreon",
@@ -4921,26 +5556,27 @@
         "full": "99 $ (Pro)"
       },
       "footnote": "Дані з публічних сторінок із цінами, станом на липень 2026 року. Комісії платіжного провайдера (близько 2,9 % + 0,30) додаються в усіх — і в нас теж.",
-      "includedTitle": "В Aera без доплат",
+      "includedTitle": "Входить у кожен пакет",
       "included": {
         "i1": {
-          "title": "20 розділів",
-          "text": "Стрічка, форум, курси, розсилка, події, блог, база знань, галерея, відео, магазин, чат, подкаст, ефір та інше — під одним дахом."
+          "title": "{count} базових просторів",
+          "text": "{list} — усе в одному місці."
         },
         "i2": {
-          "title": "Чотири джерела доходу, одна каса",
-          "text": "Підписки, цифрові товари, платний контент і події проходять через одну касу."
+          "title": "Членства з першого дня",
+          "text": "До {tiers} членств, безкоштовних чи платних, плюс платний контент — усе через одну касу."
         },
         "i3": {
           "title": "Ваш бренд, ваша адреса",
-          "text": "Власний домен, власні кольори, власний логотип. Учасники бачать вас, а не нас."
+          "text": "Власний логотип, власні кольори та власна адреса на Aera. Учасники бачать вас, а не нас."
         },
         "i4": {
-          "title": "Ваші дані лишаються вашими",
-          "text": "Учасників, матеріали та дохід можна вивантажити будь-коли."
+          "title": "AI-асистент включено",
+          "text": "{credits} AI-кредитів на місяць для текстів та ідей, плюс {gb} ГБ сховища для медіа."
         }
       }
-    }
+    },
+    "fromPlan": "з пакета {plan}"
   },
   "legalPurchase": {
     "immediateAccess": "Я прошу надати негайний доступ і розумію, що моє право на відмову припиняється з початком цифрового постачання. <withdrawal>Докладніше</withdrawal>.",
@@ -4965,24 +5601,25 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Не вдалося розпочати оплату. Нічого не списано. Спробуй ще раз за кілька хвилин."
   },
   "ui": {
     "auth": {
-      "inviteMeta": "Прийняти запрошення — Aera",
+      "inviteMeta": "Прийняти запрошення",
       "inviteInvalidTitle": "Недійсне запрошення",
       "inviteInvalidText": "Це посилання-запрошення застаріло або вже використане. Попросіть адміністратора спільноти надіслати нове — або скористайтеся «Забули пароль», якщо ваш обліковий запис уже активний.",
       "forgotPassword": "Забули пароль",
       "inviteWelcome": "Ласкаво просимо до Aera",
       "inviteActivate": "Активуйте обліковий запис {email}, встановивши пароль.",
-      "resetMeta": "Скинути пароль — Aera",
+      "resetMeta": "Скинути пароль",
       "invalidLinkTitle": "Недійсне посилання",
       "resetInvalidText": "Це посилання застаріло або вже використане.",
       "requestNewLink": "Надіслати нове посилання",
       "resetTitle": "Встановіть новий пароль",
       "forAccount": "Для облікового запису {email}",
-      "verifyMeta": "Підтвердити пошту — Aera",
-      "verifyInvalidText": "Це посилання для підтвердження застаріло або недійсне. Увійдіть і замовте нове зі свого облікового запису.",
+      "verifyMeta": "Підтвердити пошту",
+      "verifyInvalidText": "Термін дії посилання минув, або його вже використано. Запросіть нове посилання.",
       "toLogin": "До входу",
       "alreadyVerifiedTitle": "Уже підтверджено",
       "verifiedTitle": "Пошту підтверджено",
@@ -5009,10 +5646,12 @@
       "rootDescription": "Aera — платформа «усе в одному» для авторів: спільнота, підписки, курси, події, розсилки, продажі та ШІ — під вашим власним брендом.",
       "loginMeta": "Увійти",
       "signupMeta": "Створити обліковий запис",
-      "forgotMeta": "Забули пароль — Aera",
+      "forgotMeta": "Забули пароль",
       "pricingMeta": "Ціни",
       "featuresMeta": "Можливості",
-      "manifestDescription": "Ваші спільноти: дописи, курси, події та повідомлення — усе в одному місці."
+      "manifestDescription": "Ваші спільноти: дописи, курси, події та повідомлення — усе в одному місці.",
+      "verifyInvalidVerified": "Посилання більше не дійсне, але ваш e-mail уже підтверджено.",
+      "loginForNewLink": "Увійти, щоб отримати нове посилання"
     },
     "emails": {
       "sentVia": "Надіслано через Aera",
@@ -5053,7 +5692,7 @@
       "remove": "Прибрати",
       "uploadImage": "Завантажити зображення",
       "uploadCover": "Завантажити обкладинку",
-      "uploadHeader": "Завантажити зображення шапки",
+      "uploadHeader": "Завантажити обкладинку",
       "headerHint": "Рекомендовано 1600 × 400 px · макс. 5 МБ",
       "appliedImmediately": "Діє одразу.",
       "otherVideo": "Вибрати інше відео",
@@ -5065,7 +5704,7 @@
       "uploadingAudio": "Завантаження аудіо…",
       "uploadAudio": "Завантажити аудіо",
       "audioHint": "MP3, M4A, WAV або OGG · до 256 МБ",
-      "imageHint": "JPG, PNG, WebP або GIF · макс. 5 МБ",
+      "imageHint": "JPG, PNG, WebP або GIF · до 5 МБ · краще квадратне, від 512 × 512 px",
       "coverHint": "JPG, PNG, WebP · макс. 5 МБ",
       "close": "Закрити",
       "coverBadge": "Обкладинка",
@@ -5087,7 +5726,8 @@
       "imageTooLarge": "Зображення більше за 5 МБ.",
       "allCommunities": "Усі спільноти",
       "newCommunity": "Нова спільнота",
-      "createNewCommunity": "Створити нову спільноту"
+      "createNewCommunity": "Створити нову спільноту",
+      "coverAlt": "Обкладинка"
     },
     "frontend": {
       "homeSidebar": {
@@ -5097,7 +5737,8 @@
         "yourCommunities": "Ваші спільноти",
         "create": "Створити",
         "memberships": "Ваші підписки",
-        "login": "Увійти"
+        "login": "Увійти",
+        "creatorArea": "Розділ автора"
       },
       "chatHub": {
         "title": "Чати",
@@ -5160,7 +5801,8 @@
       "notFound": {
         "title": "Сторінку не знайдено",
         "text": "Такої спільноти або сторінки не існує.",
-        "home": "Повернутися на головну"
+        "home": "Повернутися на головну",
+        "help": "До довідкового центру"
       },
       "articleShare": {
         "label": "Поділитися",
@@ -5243,6 +5885,9 @@
       "bundle": "Набір",
       "tagline": "Гасло",
       "logoUrl": "Адреса логотипа"
+    },
+    "pricePoint": {
+      "free": "Безкоштовно"
     }
   },
   "unsubscribe": {
@@ -5288,11 +5933,26 @@
     "preparing": "Підготовка …",
     "verifying": "Перевірка …",
     "done": "Готово",
-    "failed": "Не вдалося",
     "secondsLeft": "{count, plural, one {лишилася # секунда} few {лишилося # секунди} many {лишилося # секунд} other {лишилося # секунди}}",
     "minutesLeft": "{count, plural, one {лишилася # хвилина} few {лишилося # хвилини} many {лишилося # хвилин} other {лишилося # хвилини}}",
     "more": "{count, plural, one {ще # файл} few {ще # файли} many {ще # файлів} other {ще # файлу}}",
-    "dismiss": "Сховати"
+    "dismiss": "Сховати",
+    "retry": "Завантажити ще раз",
+    "doneAnnounce": "Завантажено: {names}",
+    "errors": {
+      "connection": "Не вдалося під’єднатися до сховища. Перевірте інтернет-з’єднання та спробуйте ще раз.",
+      "canceled": "Завантаження перервано. Спробуйте ще раз.",
+      "storageRejected": "Сховище відхилило файл. Спробуйте ще раз; якщо це повториться, зверніться до підтримки.",
+      "notStarted": "Не вдалося почати завантаження. Спробуйте ще раз за мить.",
+      "verification": "Не вдалося перевірити файл після завантаження. Спробуйте ще раз.",
+      "rejected": "Файл не пройшов перевірку. Перевірте тип і вміст файлу або виберіть інший.",
+      "quota": "Сховище заповнене. Видаліть файли в медіатеці або перейдіть на більший тариф.",
+      "tooMany": "Забагато завантажень за короткий час. Зачекайте трохи й спробуйте знову.",
+      "signedOut": "Ви більше не в системі. Увійдіть знову й завантажте файл ще раз.",
+      "unavailable": "Завантаження зараз недоступне. Спробуйте за кілька хвилин.",
+      "invalid": "Цей файл не можна завантажити сюди. Перевірте тип і розмір файлу.",
+      "failed": "Завантаження не вдалося. Спробуйте ще раз."
+    }
   },
   "blog": {
     "metaTitle": "Blog",

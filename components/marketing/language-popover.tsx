@@ -37,12 +37,20 @@ function Flag({ locale, size = 24 }: { locale: AppLocale; size?: number }) {
   );
 }
 
+/** Sichtbares Kürzel der Sprache: "DE", "EN", "PT", "ZH". */
+function localeCode(locale: AppLocale): string {
+  return locale.split("-")[0]!.toUpperCase();
+}
+
 /**
- * Runder Sprach-Button für den dunklen Marketing-Header: zeigt die Flagge
- * der aktiven Sprache und öffnet ein Popover mit allen Sprachen (runde
- * SVG-Flaggen + native Namen). Auswahl speichert das Cookie per Server-Action.
+ * Sprach-Button für den Marketing-Header: Flagge + Kürzel der aktiven Sprache,
+ * öffnet ein Popover mit allen Sprachen (runde SVG-Flaggen + native Namen).
+ * Auswahl speichert das Cookie per Server-Action.
+ *
+ * `tone="dark"` für den dunklen Header, `tone="light"` für die hellen
+ * Anmeldeseiten ohne Header (siehe MarketingChrome).
  */
-export function LanguagePopover() {
+export function LanguagePopover({ tone = "dark" }: { tone?: "dark" | "light" }) {
   const locale = useLocale() as AppLocale;
   const t = useTranslations("language");
   const [open, setOpen] = useState(false);
@@ -85,19 +93,26 @@ export function LanguagePopover() {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={t("title")}
+        aria-label={t("current", { language: LOCALE_LABELS[locale] })}
         aria-expanded={open}
         aria-haspopup="menu"
         className={
-          "group flex h-10 w-10 items-center justify-center rounded-full border transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 " +
-          (open
-            ? "border-white/40 bg-white/10"
-            : "border-white/15 hover:border-white/40 hover:bg-white/10")
+          "group flex h-10 items-center gap-1.5 rounded-full border pl-1.5 pr-2.5 text-xs font-bold tracking-[0.08em] transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 " +
+          (tone === "light"
+            ? "text-[#161613]/75 focus-visible:ring-[#161613]/30 " +
+              (open
+                ? "border-[#161613]/40 bg-[#161613]/5"
+                : "border-[#161613]/15 hover:border-[#161613]/40 hover:bg-[#161613]/5")
+            : "text-white/80 focus-visible:ring-white/40 " +
+              (open
+                ? "border-white/40 bg-white/10"
+                : "border-white/15 hover:border-white/40 hover:bg-white/10"))
         }
       >
         <span className="transition-transform duration-200 group-hover:scale-105 group-active:scale-95">
           <Flag locale={locale} size={26} />
         </span>
+        <span aria-hidden="true">{localeCode(locale)}</span>
       </button>
 
       {open && (
@@ -127,7 +142,9 @@ export function LanguagePopover() {
                   }
                 >
                   <Flag locale={l} size={22} />
-                  <span className="min-w-0 flex-1 truncate">
+                  {/* Umbrechen statt abschneiden: "English (United States)"
+                      passt in der zweispaltigen Ansicht nicht in eine Zeile. */}
+                  <span className="min-w-0 flex-1 break-words leading-snug">
                     {LOCALE_LABELS[l]}
                   </span>
                   {active && (

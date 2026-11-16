@@ -17,7 +17,8 @@ import { Icon } from "./icons";
 import { PollEditor } from "./poll-editor";
 import { RichTextEditor } from "./rich-text-editor";
 import { CoverBanner } from "@/components/community/cover-banner";
-import { uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
 import { Textarea } from "@/components/ui/field";
 import { Pill, FormError } from "@/components/ui/misc";
 import { formatDate, excerpt } from "@/lib/utils";
@@ -103,6 +104,8 @@ export function ForumModerationManager({
   const [cover, setCover] = useState<CoverState>(DEFAULT_COVER);
   const [cropOpen, setCropOpen] = useState(false);
   const [coverBusy, setCoverBusy] = useState(false);
+  const [coverError, setCoverError] = useState<{ message: string; file: File } | null>(null);
+  const uploadErrorText = useUploadErrorText();
   const coverInput = useRef<HTMLInputElement>(null);
   const t = useTranslations("dashboard.forumMod");
 
@@ -136,12 +139,14 @@ export function ForumModerationManager({
 
   async function onCoverFile(file: File) {
     setCoverBusy(true);
+    setCoverError(null);
     try {
       const url = await uploadMediaFile({ file, tenant: slug, purpose: "blog-image" });
       setCover({ url, x: 50, y: 50, zoom: 100 });
       setCropOpen(true);
-    } catch {
-      // Upload failed — leave the composer as-is; the button re-enables.
+    } catch (uploadError) {
+      // Der Fehler steht oben im Sheet — die Upload-Anzeige zeigt nur Fortschritt.
+      setCoverError({ message: uploadErrorText(uploadError), file });
     } finally {
       setCoverBusy(false);
     }
@@ -175,7 +180,7 @@ export function ForumModerationManager({
             <Icon name="external" size={16} className="text-slate-500" />
             {t("viewForum")}
           </Link>
-          <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
+          <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]">
             <Icon name="plus" size={18} />
             {t("createTopic")}
           </button>
@@ -237,6 +242,15 @@ export function ForumModerationManager({
           ) : null
         }
       >
+        {coverError && (
+          <div className="mx-auto w-full max-w-xl px-6 pt-4">
+            <UploadFieldError
+              message={coverError.message}
+              retrying={coverBusy}
+              onRetry={() => void onCoverFile(coverError.file)}
+            />
+          </div>
+        )}
         <ThreadForm
           key={nonce}
           slug={slug}
@@ -387,7 +401,7 @@ function CommentItem({ slug, space, comment }: { slug: string; space: SpaceInfo;
           <Textarea name="body" rows={2} defaultValue={comment.body} required />
           <div className="flex justify-end gap-2">
             <button type="button" onClick={() => setEditing(false)} className="rounded-md px-2.5 py-1 text-xs font-medium text-slate-500 hover:bg-slate-200">{t("cancel")}</button>
-            <button type="submit" disabled={pending} className="rounded-md bg-[var(--action)] px-3 py-1 text-xs font-semibold text-[var(--action-fg)] hover:bg-[var(--action-hover)] disabled:opacity-50">
+            <button type="submit" disabled={pending} className="rounded-md bg-[var(--primary)] px-3 py-1 text-xs font-semibold text-[var(--primary-fg)] hover:bg-[var(--primary-hover)] disabled:opacity-50">
               {pending ? t("saving") : t("save")}
             </button>
           </div>
@@ -544,7 +558,7 @@ function ThreadForm({
         </p>
         <div className="flex shrink-0 items-center gap-2.5">
           <button type="button" onClick={onDone} className="rounded-xl px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-100">{t("cancel")}</button>
-          <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50">
+          <button type="submit" disabled={pending} className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50">
             {pending ? t("saving") : isEdit ? t("saveChanges") : t("sheetCreate")}
           </button>
         </div>
@@ -645,7 +659,7 @@ function SettingsPanel({
         <button
           type="button"
           onClick={onClose}
-          className="rounded-xl bg-[var(--action)] px-4 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+          className="rounded-xl bg-[var(--primary)] px-4 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
         >
           {t("done")}
         </button>
@@ -822,7 +836,7 @@ function CoverCropModal({
           <button
             type="button"
             onClick={() => onSave({ x, y, zoom })}
-            className="rounded-xl bg-[var(--action)] px-5 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]"
+            className="rounded-xl bg-[var(--primary)] px-5 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98]"
           >
             {t("coverSave")}
           </button>

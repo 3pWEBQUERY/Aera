@@ -38,19 +38,18 @@
     "ownerCantCancel": "作为所有者，你无法取消自己的会员资格。",
     "noPaidMembership": "你没有付费会员资格。",
     "stripeCancelFailed": "Stripe 取消失败。请重试。",
-    "defaultTierCantDelete": "默认等级无法删除。",
-    "tierDeleteStripeBlocked": "只有在 Stripe 确认所有关联订阅均已结束后，才能删除此等级。未删除任何数据。",
+    "defaultTierCantDelete": "默认会员无法删除。请先将其他会员设为默认。",
+    "tierDeleteStripeBlocked": "只有在 Stripe 确认所有关联订阅均已结束后，才能删除此会员。未删除任何数据。",
     "memberRemoveStripeFailed": "无法安全终止 Stripe 订阅。成员和本地访问权限均未被删除。",
     "tenantDeleteConfirmMismatch": "输入的社区标识不匹配。",
     "tenantDeleteStripeSubscriptionsActive": "只有在所有 Stripe 订阅结束后，才能删除该社区。未删除任何数据。",
     "tenantDeleteStripeCleanupFailed": "Stripe 或 Connect 清理失败。社区及其数据均未被删除。",
-    "paidTierArchivedInsteadOfDeleted": "付费等级已安全隐藏而非删除，以便未完成的 Stripe 付款仍可正确处理。",
     "pendingPaymentsBlockDeletion": "存在待处理付款或预订时无法删除。未删除任何数据。",
     "productArchivedBecauseOrdersExist": "由于订单仍引用该商品，商品已隐藏而非删除。待处理付款仍可安全完成。",
     "postNotFound": "未找到帖子。",
     "commentsClosed": "评论已关闭。",
     "invalidCommentRef": "评论引用无效。",
-    "tierNotFound": "未找到等级。",
+    "tierNotFound": "该会员已不存在。请刷新页面。",
     "productNotFound": "未找到商品。",
     "courseNotFound": "未找到课程。",
     "lessonNotFound": "未找到课时。",
@@ -130,7 +129,7 @@
     "subTaken": "此子域名已被使用。",
     "planSpaceTypeLocked": "此版块类型需要 {plan} 套餐及以上版本，升级后即可创建。",
     "planSpaceLimitReached": "你的 {plan} 套餐支持 {limit} 个活跃版块，升级以获得更多空间。",
-    "planTierLimitReached": "你的 {plan} 套餐支持 {limit} 个会员等级，升级以添加更多。",
+    "planTierLimitReached": "你的 {plan} 套餐最多允许 {limit} 个会员。更换套餐即可添加更多。",
     "planFeatureLocked": "此功能需要 {plan} 套餐及以上版本，升级即可使用。",
     "planMemberLimitReached": "你的 {plan} 套餐支持 {limit} 名活跃成员，升级以继续增长。",
     "planStaffLimitReached": "你的 {plan} 套餐支持 {limit} 个团队席位（管理员/版主），升级以获得更多席位。",
@@ -149,7 +148,31 @@
     "pageTitleRequired": "The page needs a title.",
     "pageLimitReached": "More than {max} pages are not possible.",
     "blogBodyRequired": "Please write something before saving.",
-    "blogSlugTaken": "Another post already uses this address."
+    "blogSlugTaken": "Another post already uses this address.",
+    "planAutoSpaceCourse": "课程需要一个课程空间，但你的 {plan} 套餐最多允许 {limit} 个活跃空间，且已全部占用。归档一个空间或更换套餐后即可创建课程。",
+    "planAutoSpaceEvents": "活动需要一个活动空间，但你的 {plan} 套餐最多允许 {limit} 个活跃空间，且已全部占用。归档一个空间或更换套餐后即可创建活动。",
+    "campaignNoSubscribers": "还没有人订阅你的新闻通讯。有收件人后即可发送。",
+    "campaignSegmentEmpty": "此分组目前没有任何人。请选择其他分组后发送。",
+    "campaignTestDeliveryFailed": "邮件服务未接受这封邮件（{detail}）。请稍后再试。",
+    "recoveryCodeInvalid": "此恢复码不正确或已被使用。请检查拼写，或换一个恢复码。",
+    "secondFactorInvalid": "代码不匹配。请输入应用中的当前代码或一个未使用的恢复码。",
+    "productPriceRequired": "请选择价格或“免费”。",
+    "productFileRequired": "请上传给买家的文件或粘贴链接。",
+    "productFileUrlInvalid": "文件链接必须以 https:// 开头。",
+    "productCourseRequired": "请选择买家获得的课程。",
+    "productCourseGated": "此课程属于某个会员，无法单独出售。",
+    "productGrantLocked": "首次售出后无法再更改类型和课程，以确保买家保留访问权限。",
+    "productTypeUnavailable": "此商品类型已不再提供。请选择其他类型。",
+    "spaceAccessTierInvalid": "该会员资格不存在或是免费的。请从列表中选择付费会员资格。",
+    "spaceTypeLockedContent": "类型已无法更改：此空间已有 {count, plural, other {# 项内容}}。如需其他类型，请新建空间。",
+    "forumContentRequired": "发布前请先写几句话。",
+    "ownerCantLeave": "你不能退出自己拥有的社区。",
+    "leaveWhilePaidActive": "你的订阅仍在生效。请先取消订阅；付费周期结束后即可退出社区。",
+    "adminDomainInvalid": "请只填写域名，例如 community.example.cn（不含 https://）。",
+    "adminTenantDeleting": "此社区正在删除中，已无法编辑。",
+    "invalidColor": "主色无效。请输入类似 #6D28D9 的十六进制值。",
+    "cantBanSelf": "你不能封禁自己。",
+    "logoInvalid": "无法应用标志。请重新上传图片。"
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -201,10 +224,9 @@
     "descLabel": "描述",
     "descPlaceholder": "用几句话描述成员可以期待什么。",
     "primaryColor": "主色",
-    "accentColor": "强调色",
     "preview": "预览",
     "previewNameFallback": "你的社区",
-    "accentBadge": "强调",
+    "accentBadge": "加入",
     "customColor": "自定义颜色",
     "tierNameLabel": "免费会员的名称",
     "defaultMembership": "成员",
@@ -402,19 +424,19 @@
     "searchAria": "搜索帮助",
     "searchSubmit": "搜索",
     "comingSoon": "帮助中心正在建设中——请稍后再来。",
-    "noResults": "没有关于“{query}”的结果",
-    "resultsCount": "关于“{query}”的{count, plural, other {# 条结果}}",
+    "noResults": "没有关于“{query}”的文章",
+    "resultsCount": "关于“{query}”的{count, plural, other {# 篇文章}}",
     "resetSearch": "重置搜索",
     "articleCount": "{count, plural, other {# 篇文章}}",
     "contactTitle": "没找到你需要的内容？",
-    "contactText": "直接开始吧——大多数答案都能在你的社区或创作者仪表板中找到。",
-    "contactCta": "免费开始",
+    "contactText": "给我们留言——我们会通过邮件或在你的账户中回复。",
+    "contactCta": "写留言",
     "contact": {
       "metaTitle": "Contact",
       "back": "Back to help",
       "title": "Write to us",
       "intro": "Describe your request in a few sentences. We reply as fast as we can — on average within one business day.",
-      "name": "Name",
+      "name": "姓名（选填）",
       "email": "Email address",
       "subject": "Subject",
       "subjectPlaceholder": "What is it about?",
@@ -428,7 +450,10 @@
       "sentTextGuest": "We have your request and will reply by email.",
       "footnoteMember": "We reply to the address on your account.",
       "footnoteGuest": "We use your address only for the reply."
-    }
+    },
+    "startText": "直接开始吧——大多数答案都能在你的社区或创作者仪表板中找到。",
+    "startCta": "免费开始",
+    "startTitle": "还没有社区？"
   },
   "account": {
     "metaTitle": "账户",
@@ -502,14 +527,12 @@
     "changingPassword": "修改中…",
     "twoFaActive": "两步验证已启用",
     "twoFaActiveDesc": "登录时，除密码外还需要输入身份验证器应用中的验证码。",
-    "twoFaDisableLabel": "如需停用：当前验证码",
+    "twoFaDisableLabel": "如需停用：应用中的代码或恢复码",
     "twoFaDisabling": "停用中…",
     "twoFaDisable": "停用两步验证",
     "twoFaSetupIntro": "用身份验证器应用（Google Authenticator、1Password、Authy 等）扫描二维码，并用显示的验证码确认。",
     "twoFaQrAlt": "身份验证器应用的二维码",
-    "twoFaNoScanner": "没有二维码扫描器？请手动输入密钥：",
-    "twoFaHideSecret": "隐藏密钥",
-    "twoFaShowSecret": "显示密钥",
+    "twoFaNoScanner": "没有二维码扫描器？请在应用中输入此设置密钥：",
     "twoFaCodeFromApp": "应用中的验证码",
     "twoFaChecking": "检查中…",
     "twoFaActivate": "启用",
@@ -534,13 +557,13 @@
     "newsletterWithdraw": "取消订阅简报",
     "privacyEyebrow": "数据与隐私",
     "privacyTitle": "你的数据和账户",
-    "privacyText": "下载结构化的数据副本。账户删除会安全进入队列，并在账单和存储清理后完成。",
+    "privacyText": "下载你的数据副本，或删除你的账户。",
     "privacyExportButton": "下载数据",
     "privacyDeleteButton": "删除账户",
-    "privacyDeleteHint": "请输入准确的电子邮箱和密码。请先删除你拥有的社区并处理待付款项。",
-    "privacyConfirmationLabel": "确认电子邮箱",
-    "privacyDeleting": "正在提交删除…",
-    "privacyDeleteFailed": "无法提交删除请求。",
+    "privacyDeleteHint": "你将立即退出登录，并且无法再次登录。进行中的订阅会立即结束，随后我们会删除你的数据。依法保留账单。此操作无法撤销。请先删除你拥有的社区。",
+    "privacyConfirmationLabel": "请输入你的邮箱地址以确认",
+    "privacyDeleting": "正在删除账户…",
+    "privacyDeleteFailed": "无法删除账户。请过几分钟再试。",
     "privacyDeleteBlockedOwned": "请先删除你拥有的社区。",
     "privacyDeleteBlockedPending": "请先处理待付款项或预订。",
     "privacyDeleteInvalidPassword": "密码不正确。",
@@ -548,7 +571,52 @@
     "supportEyebrow": "Support",
     "supportTitle": "Your requests",
     "supportText": "Every message to the Aera team in one place. New replies show up here first.",
-    "supportCta": "Write a new request"
+    "supportCta": "Write a new request",
+    "twoFaCopyKey": "复制密钥",
+    "twoFaKeyCopied": "密钥已复制。",
+    "twoFaOpenInApp": "在验证器应用中打开",
+    "secondFactorLabel": "应用中的代码或恢复码",
+    "recoveryCodesTitle": "恢复码",
+    "recoveryCodesIntro": "无法使用验证器应用时，可用这些恢复码登录。每个恢复码只能使用一次。请立即保存（例如保存在密码管理器中），它们只显示这一次。",
+    "recoveryCopy": "复制恢复码",
+    "recoveryCopied": "恢复码已复制。",
+    "recoveryDownload": "下载为文本文件",
+    "recoverySaved": "我已保存恢复码",
+    "recoveryFileTitle": "Aera – {email} 的恢复码",
+    "recoveryFileHint": "每个恢复码只能使用一次。可在账户的“设置 > 双重验证”中生成新的恢复码。",
+    "recoveryCodesLeft": "{count, plural, =0 {恢复码已用完。请生成新的恢复码，以便在没有应用时也能登录。} other {还剩 # 个恢复码（共 10 个）。}}",
+    "recoveryRegenerate": "生成新的恢复码",
+    "recoveryRegenConfirmTitle": "要生成新的恢复码吗？",
+    "recoveryRegenConfirmBody": "现有恢复码将失效。请在生成后立即保存新的恢复码。",
+    "recoveryUsedNotice": "{count, plural, =0 {你使用最后一个恢复码登录了。如果应用还在，请立即生成新的恢复码；否则请通过“登录帮助”联系我们。} other {你使用恢复码登录了，还剩 # 个。无法再使用应用？请在下方用另一个恢复码停用双重验证，然后重新设置。}}",
+    "emailUnverified": "未验证",
+    "backTo": "返回 {name}",
+    "backToDiscover": "返回发现",
+    "back": "返回",
+    "leftNotice": "你已退出 {name}。已购买的内容仍保留在你的账户中。",
+    "membershipActions": {
+      "ownerNote": "这是你的社区，无法退出。",
+      "leaveCta": "结束会员资格",
+      "leaving": "正在结束…",
+      "leaveTitle": "退出 {name}？",
+      "leaveBody": "你将无法再访问仅限会员的内容。已购买的内容会保留。",
+      "leaveConfirm": "退出社区",
+      "cancelCta": "取消订阅",
+      "cancelling": "正在取消…",
+      "cancelTitle": "取消 {name} 的订阅？",
+      "cancelBodyUntil": "订阅将不再续订。{date} 前仍可访问，之后你将成为免费会员。已购买的内容会保留。",
+      "cancelBodyNow": "此会员资格的内容访问将立即结束，你将成为免费会员。已购买的内容会保留。",
+      "cancelConfirm": "取消订阅",
+      "cancelledUntil": "订阅已取消 · 可访问至 {date}。之后你也可以完全退出社区。",
+      "cancelledNow": "订阅已取消。"
+    },
+    "privacyExportTitle": "你的数据副本",
+    "privacyExportText": "一个包含你账户所有已存数据的文件。",
+    "privacyDeleteTitle": "删除账户",
+    "privacyConfirmationMismatch": "邮箱地址与你的账户不一致。",
+    "privacyPasswordRequired": "请输入你的密码。",
+    "privacyTooManyAttempts": "尝试次数过多。请等待 15 分钟后再试。",
+    "privacyConfirmationRequired": "请输入你的邮箱地址。"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -581,7 +649,10 @@
       "seo": "SEO",
       "support": "Support",
       "unreadAria": "{count} unread",
-      "blog": "Blog"
+      "blog": "Blog",
+      "ariaLabel": "管理导航",
+      "openMenu": "打开菜单",
+      "openMenuUnread": "打开菜单，{count} 条未读"
     },
     "pagination": {
       "prev": "上一页",
@@ -596,13 +667,13 @@
       "activeMemberships": "有效会员",
       "posts": "帖子",
       "paidOrders": "已付款订单",
-      "revenueWithFee": "收入（手续费 {fee}）",
+      "revenueWithFee": "收入（平台手续费：{fee}）",
       "latestCommunities": "最新社区",
       "latestUsers": "最新用户",
       "viewAll": "查看全部",
-      "membersShort": "{count} 名成员",
       "noCommunities": "还没有社区。",
-      "noUsers": "还没有用户。"
+      "noUsers": "还没有用户。",
+      "membersCount": "{count, plural, other {# 位成员}}"
     },
     "communities": {
       "title": "社区",
@@ -612,8 +683,7 @@
       "emptyTitle": "还没有社区",
       "noResultsHint": "未找到与“{q}”匹配的社区。",
       "emptyHint": "当创作者创建社区后，将显示在此处。",
-      "membersShort": "{count} 名成员",
-      "postsShort": "{count} 个帖子",
+      "postsShort": "{count, plural, other {# 个帖子}}",
       "since": "自 {date}",
       "editTitle": "编辑社区",
       "owner": "所有者：{name}（{email}）",
@@ -625,7 +695,7 @@
       "fee": "平台手续费（%）",
       "customDomain": "自定义域名（可选）",
       "customDomainPlaceholder": "community.example.com",
-      "customDomainHint": "留空以移除域名。",
+      "customDomainHint": "只填写域名，例如 community.example.cn（不含 https://）。留空以移除域名。",
       "status": "状态",
       "statusActive": "启用",
       "statusSuspended": "已暂停",
@@ -641,7 +711,27 @@
         "MANUAL": "Granted manually. Does not expire and is superseded by a later Stripe subscription.",
         "PROMO": "Currently unlocked by a promo code. Changing it here replaces that grant.",
         "STRIPE": "Last set by Stripe, no active subscription right now. A change is possible."
-      }
+      },
+      "deleteConfirmBody": "该社区的所有成员、空间、内容和订单都将被删除。",
+      "membersCount": "{count, plural, other {# 位成员}}",
+      "statusDeleting": "正在删除",
+      "deletingHint": "正在删除中，此社区已无法编辑。",
+      "filterAll": "全部",
+      "applyFilters": "应用筛选",
+      "resetFilters": "重置筛选",
+      "noFilterResultsHint": "没有符合这些筛选条件的社区。",
+      "editAria": "编辑 {name}",
+      "openAria": "在新标签页中打开 {name}",
+      "domainVerified": "已验证",
+      "domainUnverified": "未验证",
+      "domainVerifiedHint": "自 {date} 起已通过 DNS 验证，可通过此域名访问社区。",
+      "domainUnverifiedHint": "DNS 验证通过后才会启用该域名。需要以下记录：",
+      "domainTxt": "验证：TXT 记录 <code>_aera.{domain}</code>，值为 <code>{value}</code>",
+      "domainCname": "转发：CNAME <code>{domain}</code> → <code>{root}</code>",
+      "domainCheck": "立即检查 DNS",
+      "domainChecking": "正在检查 DNS…",
+      "domainSaveFirst": "请先保存修改后的域名。",
+      "domainCheckOk": "已找到 DNS 验证记录，域名已验证。"
     },
     "users": {
       "title": "用户",
@@ -652,11 +742,11 @@
       "noResultsHint": "未找到与“{q}”匹配的用户。",
       "emptyHint": "当用户注册后，将显示在此处。",
       "ownerBadge": "所有者 · {count}",
-      "membershipsShort": "{count} 个会员",
-      "ordersShort": "{count} 个订单",
+      "membershipsShort": "{count, plural, other {# 个会员资格}}",
+      "ordersShort": "{count, plural, other {# 个订单}}",
       "registeredLine": "{email} · 注册于 {date}",
       "editTitle": "编辑用户",
-      "editSummary": "注册于 {date} · {memberships} 个会员 · {orders} 个订单",
+      "editSummary": "注册于 {date} · {memberships, plural, other {# 个会员资格}} · {orders, plural, other {# 个订单}}",
       "name": "姓名",
       "email": "邮箱",
       "resetTitle": "密码重置链接",
@@ -695,12 +785,12 @@
       "date": "日期",
       "key": "Key",
       "openInNewTab": "在新标签页中打开",
-      "deleteConfirm": "确定要移除此媒体吗？",
       "deleteBtn": "移除媒体",
       "dangerDesc": "将文件从分发中移除。引用它的内容将不再显示该媒体。",
       "visPublic": "公开",
       "visMembers": "会员",
-      "visPaid": "付费"
+      "visPaid": "付费",
+      "deleteConfirmTitle": "移除“{name}”？"
     },
     "posts": {
       "title": "帖子",
@@ -718,7 +808,9 @@
       "unpublishedBadge": "已取消发布",
       "unpublish": "取消发布",
       "publish": "发布",
-      "deleteConfirm": "确定要永久删除此帖子吗？"
+      "deleteConfirmTitle": "删除帖子“{title}”？",
+      "deleteConfirmBody": "帖子及其所有评论都将被删除。此操作无法撤销。",
+      "deleteCta": "删除帖子"
     },
     "orders": {
       "title": "订单",
@@ -744,16 +836,16 @@
       "fulfilled": "已履行",
       "fulfilledHint": "将订单标记为已交付或已完成。",
       "dangerDesc": "从数据库中永久删除该订单。Stripe 上的付款不受影响。",
-      "deleteConfirm": "确定要永久删除此订单吗？",
       "deleteBtn": "删除订单",
       "statusPending": "待处理",
       "statusPaid": "已付款",
       "statusRefunded": "已退款",
-      "statusFailed": "失败"
+      "statusFailed": "失败",
+      "deleteConfirmTitle": "删除订单“{name}”？"
     },
     "help": {
       "title": "帮助中心",
-      "metaBefore": "{categories} 个分类 · {articles} 篇文章 · 公开于 ",
+      "metaBefore": "{categories, plural, other {# 个分类}} · {articles, plural, other {# 篇文章}} · 公开于 ",
       "createCategory": "创建分类",
       "emptyTitle": "还没有帮助内容",
       "emptyHint": "请先创建一个分类（例如“入门”），然后在其中添加问题和答案。",
@@ -785,10 +877,181 @@
     },
     "audit": {
       "title": "审计日志",
-      "subtitle": "{count} 条已记录的操作——最新的在前。",
+      "subtitle": "{count, plural, other {# 条已记录的操作}}——最新的在前。",
       "emptyTitle": "还没有条目",
       "emptyHint": "管理操作和重要事件会记录在此处。",
-      "system": "系统"
+      "system": "系统",
+      "events": {
+        "admin_blog_create": "{actor} 创建了一篇博客文章",
+        "admin_blog_update": "{actor} 编辑了一篇博客文章",
+        "admin_blog_publish": "{actor} 发布了一篇博客文章",
+        "admin_blog_unpublish": "{actor} 撤回了一篇博客文章",
+        "admin_blog_delete": "{actor} 删除了一篇博客文章",
+        "admin_blog_duplicate": "{actor} 复制了一篇博客文章",
+        "admin_blog_feature": "{actor} 将一篇博客文章设为精选",
+        "admin_blog_unfeature": "{actor} 取消了一篇博客文章的精选",
+        "admin_help_article_create": "{actor} 创建了一篇帮助文章",
+        "admin_help_article_update": "{actor} 编辑了一篇帮助文章",
+        "admin_help_article_delete": "{actor} 删除了一篇帮助文章",
+        "admin_help_category_create": "{actor} 创建了一个帮助分类",
+        "admin_help_category_update": "{actor} 编辑了一个帮助分类",
+        "admin_help_category_delete": "{actor} 删除了一个帮助分类",
+        "admin_media_delete": "{actor} 删除了一个媒体文件",
+        "admin_order_delete": "{actor} 删除了一个订单",
+        "admin_order_update": "{actor} 编辑了一个订单",
+        "admin_post_delete": "{actor} 删除了一个帖子",
+        "admin_post_publish": "{actor} 重新发布了一个帖子",
+        "admin_post_unpublish": "{actor} 取消发布了一个帖子",
+        "admin_promo_create": "{actor} 创建了优惠码",
+        "admin_promo_delete": "{actor} 删除了一个优惠码",
+        "admin_promo_activate": "{actor} 启用了一个优惠码",
+        "admin_promo_pause": "{actor} 暂停了一个优惠码",
+        "admin_seo_update": "{actor} 更改了平台的 SEO 设置",
+        "admin_tenant_delete_blocked": "{actor} 尝试删除一个社区，已被阻止",
+        "admin_tenant_delete_queued": "{actor} 开始删除一个社区",
+        "admin_tenant_plan": "{actor} 更改了一个社区的套餐",
+        "admin_tenant_update": "{actor} 更改了一个社区的设置",
+        "admin_tenant_suspend": "{actor} 停用了一个社区",
+        "admin_tenant_activate": "{actor} 重新启用了一个社区",
+        "admin_tenant_domain_verify": "{actor} 验证了一个社区的自定义域名",
+        "admin_tenant_domain_unverified": "{actor} 检查了 DNS 记录——自定义域名已不再验证",
+        "admin_user_delete_queued": "{actor} 开始删除一个账户",
+        "admin_user_reset_link": "{actor} 创建了一个重置密码链接",
+        "admin_user_update": "{actor} 编辑了一个账户",
+        "aeli_link_code_issued": "{actor} 创建了一个 Aeli 关联码",
+        "aeli_linked": "{actor} 关联了一个 Aeli 个人资料",
+        "aeli_page_created": "{actor} 创建了一个 Aeli 页面",
+        "aeli_unlinked": "{actor} 取消关联了一个 Aeli 个人资料",
+        "announcement_create": "{actor} 创建了一条公告",
+        "announcement_update": "{actor} 编辑了一条公告",
+        "announcement_delete": "{actor} 删除了一条公告",
+        "apikey_create": "{actor} 创建了一个 API 密钥",
+        "apikey_revoke": "{actor} 撤销了一个 API 密钥",
+        "apple_iap_refunded": "App Store：一笔购买已退款",
+        "apple_iap_tier": "{actor} 在 App Store 购买了会员等级",
+        "apple_iap_product": "{actor} 在 App Store 购买了商品",
+        "apple_iap_post": "{actor} 在 App Store 购买了帖子",
+        "apple_iap_media": "{actor} 在 App Store 购买了媒体",
+        "apple_iap_media_item": "{actor} 在 App Store 购买了一个媒体文件",
+        "apple_iap_tip": "{actor} 通过 App Store 打赏了",
+        "apple_iap_request": "{actor} 通过 App Store 支付了一个请求",
+        "apple_iap_booking": "{actor} 通过 App Store 支付了一个预约",
+        "automation_step_create": "{actor} 添加了一个自动化步骤",
+        "automation_step_delete": "{actor} 删除了一个自动化步骤",
+        "branding_cover_set": "{actor} 设置了封面图",
+        "branding_cover_remove": "{actor} 移除了封面图",
+        "campaign_delete": "{actor} 删除了一封电子报",
+        "campaign_queue": "{actor} 将一封电子报加入发送队列",
+        "chatMessage_delete": "{actor} 删除了一条聊天消息",
+        "comment_delete": "{actor} 删除了一条评论",
+        "course_delete": "{actor} 删除了一门课程",
+        "course_update": "{actor} 编辑了一门课程",
+        "creator_checkout_failed": "{actor} 的套餐购买失败",
+        "event_delete": "{actor} 删除了一个活动",
+        "event_update": "{actor} 编辑了一个活动",
+        "live_create": "{actor} 创建了一场直播",
+        "live_start": "{actor} 开始了一场直播",
+        "live_status": "{actor} 更改了一场直播的状态",
+        "media_delete": "{actor} 删除了一个媒体文件",
+        "member_add": "{actor} 添加了一位成员",
+        "member_join": "{actor} 加入了社区",
+        "member_remove": "{actor} 移除了一位成员",
+        "member_remove_blocked": "{actor} 尝试移除一位成员，已被阻止",
+        "member_update": "{actor} 编辑了一位成员",
+        "member_ban": "{actor} 封禁了一位成员",
+        "member_update_blocked": "{actor} 尝试编辑一位成员，已被阻止",
+        "membership_cancel": "{actor} 取消了一项会员资格",
+        "membership_cancel_failed": "{actor} 尝试取消一项会员资格，但失败了",
+        "membership_leave": "{actor} 退出了社区",
+        "membership_leave_blocked": "{actor} 尝试退出社区，已被阻止",
+        "moderation_approve": "{actor} 审核了一条举报并保留了内容",
+        "moderation_remove": "{actor} 删除了被举报的内容",
+        "newsletter_consent_opt_in": "{actor} 订阅了电子报",
+        "newsletter_consent_withdraw": "{actor} 退订了电子报",
+        "order_fulfill": "{actor} 将一个订单标记为已完成",
+        "page_create": "{actor} 创建了一个页面",
+        "page_delete": "{actor} 删除了一个页面",
+        "plan_create": "{actor} 创建了一个内容计划",
+        "plan_promo_redeem": "{actor} 使用了一个优惠码",
+        "platform_admin_create_user": "已通过脚本创建一个账户",
+        "platform_admin_verify_email": "已通过脚本确认一个邮箱地址",
+        "platform_admin_grant": "已通过脚本授予平台管理员权限",
+        "platform_admin_revoke": "已通过脚本撤销平台管理员权限",
+        "product_delete": "{actor} 删除了一个商品",
+        "product_delete_blocked": "{actor} 尝试删除一个商品，已被阻止",
+        "product_update": "{actor} 编辑了一个商品",
+        "profile_update": "{actor} 编辑了自己的个人资料",
+        "referrals_settings_update": "{actor} 更改了推荐设置",
+        "space_ad_create": "{actor} 在一个空间中创建了广告",
+        "space_ad_update": "{actor} 编辑了一个空间中的广告",
+        "space_ad_delete": "{actor} 删除了一个空间中的广告",
+        "space_announcementsOnly_enable": "{actor} 将一个空间设为仅限公告",
+        "space_announcementsOnly_disable": "{actor} 取消了一个空间的仅限公告",
+        "space_archive": "{actor} 归档了一个空间",
+        "space_restore": "{actor} 恢复了一个空间",
+        "space_chatSettings_update": "{actor} 更改了一个空间的聊天设置",
+        "space_create": "{actor} 创建了一个空间",
+        "space_create_assistant": "{actor} 使用助手创建了一个空间",
+        "space_delete": "{actor} 删除了一个空间",
+        "space_link_create": "{actor} 在一个空间中添加了链接",
+        "space_link_update": "{actor} 编辑了一个空间中的链接",
+        "space_link_delete": "{actor} 从一个空间中移除了链接",
+        "space_storySettings_update": "{actor} 更改了一个空间的快拍设置",
+        "space_update": "{actor} 编辑了一个空间",
+        "stripe_charge_partially_refunded": "Stripe：一笔付款已部分退款",
+        "stripe_charge_refunded": "Stripe：一笔付款已退款",
+        "stripe_checkout_auto_refunded": "Stripe：一笔付款已自动退款",
+        "stripe_checkout_completed": "{actor} 通过 Stripe 完成了付款",
+        "stripe_dispute_created": "Stripe：一笔付款被提出争议",
+        "stripe_dispute_lost": "Stripe：一项争议败诉",
+        "stripe_dispute_won": "Stripe：一项争议胜诉",
+        "stripe_product_reservation_released": "Stripe：一项商品预留已释放",
+        "support_ticket_create": "{actor} 提交了一个支持请求",
+        "support_ticket_reply": "{actor} 回复了一个支持请求",
+        "tenant_create": "{actor} 创建了一个社区",
+        "tenant_delete_blocked": "{actor} 尝试删除一个社区，已被阻止",
+        "tenant_delete_queued": "{actor} 开始删除一个社区",
+        "tenant_domain": "{actor} 更改了自定义域名",
+        "tenant_domain_unverified": "{actor} 检查了 DNS 记录——自定义域名已不再验证",
+        "tenant_domain_verify": "{actor} 验证了自定义域名",
+        "tenant_seo_update": "{actor} 更改了 SEO 设置",
+        "tenant_stripe_disconnect": "{actor} 断开了 Stripe 连接",
+        "tenant_stripe_disconnect_blocked": "{actor} 尝试断开 Stripe 连接，已被阻止",
+        "tenant_subdomain": "{actor} 更改了子域名",
+        "tier_delete": "{actor} 删除了一个会员等级",
+        "tier_delete_blocked": "{actor} 尝试删除一个会员等级，已被阻止",
+        "tier_update": "{actor} 编辑了一个会员等级",
+        "user_delete_queued": "{actor} 开始删除自己的账户",
+        "user_invite_accept": "{actor} 接受了邀请",
+        "user_legal_accept": "{actor} 同意了服务条款和隐私政策",
+        "user_password_change": "{actor} 更改了密码",
+        "user_password_reset_complete": "{actor} 重置了密码",
+        "user_password_reset_request": "{actor} 申请了重置密码链接",
+        "user_profile_update": "{actor} 编辑了自己的个人资料",
+        "user_signup": "{actor} 注册了账户",
+        "user_totp_disable": "{actor} 关闭了两步验证",
+        "user_totp_enable": "{actor} 开启了两步验证",
+        "user_totp_recovery_code_used": "{actor} 使用恢复码登录",
+        "user_totp_recovery_codes_regenerate": "{actor} 创建了新的恢复码",
+        "user_verification_resend": "{actor} 重新申请了确认邮件",
+        "webhook_create": "{actor} 创建了一个 Webhook",
+        "webhook_delete": "{actor} 删除了一个 Webhook",
+        "member_ban_blocked": "{actor} 尝试封禁一位成员，已被阻止",
+        "member_unban": "{actor} 解除了一位成员的封禁",
+        "branding_logo_set": "{actor} 设置了标志",
+        "branding_logo_remove": "{actor} 移除了标志"
+      },
+      "deletedAccount": "已删除的账户",
+      "guest": "访客",
+      "unknownEvent": "{actor} 执行了“{action}”",
+      "targetSeparator": "：",
+      "inCommunity": "在 {community}",
+      "details": "详情",
+      "detailAction": "操作",
+      "detailTarget": "对象",
+      "detailCommunity": "社区",
+      "detailActor": "执行者",
+      "detailMetadata": "元数据"
     },
     "codes": {
       "metaTitle": "推广代码",
@@ -846,7 +1109,7 @@
       "activate": "激活",
       "delete": "删除",
       "usage": "已兑换 {used} / {max}",
-      "runtimeDays": "有效期 {days} 天",
+      "runtimeDays": "{days, plural, other {有效期 # 天}}",
       "runtimeLifetime": "无限期有效",
       "validUntil": "兑换截止至 {date}",
       "createdMeta": "{date} · {name}",
@@ -993,7 +1256,9 @@
       "subtitle": "选择一个要管理的社区——或创建下一个。",
       "membersCount": "{count, plural, other {# 名成员}}",
       "newCommunity": "新社区",
-      "myAccount": "My account"
+      "myAccount": "My account",
+      "deletedNotice": "正在删除“{name}”。这需要几分钟。",
+      "moderatorRole": "你是审核员"
     },
     "assistant": {
       "title": "AI 助手",
@@ -1010,7 +1275,6 @@
       "chatEmptyDesc": "我可以分析您的社区、撰写文本，并执行创建空间等操作。",
       "imageEmptyTitle": "生成图片",
       "imageEmptyDesc": "描述您想看到的内容。您也可以上传图片作为模板——助手会对其进行编辑或从中获取灵感。",
-      "geminiOff": "Google Gemini 未启用——请在设置 → 集成中设置 GEMINI_API_KEY。",
       "chatPlaceholder": "给助手发消息…",
       "sendAria": "发送",
       "chatHint": "回车发送 · Shift+回车换行。操作会直接作用于您的社区。",
@@ -1084,7 +1348,9 @@
           "title": "吉祥物",
           "prompt": "为我的社区设计一个友好、插画风格的吉祥物头像，圆润造型，鲜艳色彩。"
         }
-      }
+      },
+      "geminiOffCreator": "此平台尚未设置 AI 助手。",
+      "geminiOffAdmin": "Google Gemini 未启用。请在服务器环境中设置 GEMINI_API_KEY 并重启应用。只有平台管理员能看到此提示。"
     },
     "announcements": {
       "statusDraft": "草稿",
@@ -1132,7 +1398,9 @@
       "cancel": "取消",
       "saving": "保存中……",
       "saveChanges": "保存更改",
-      "createBtn": "创建公告"
+      "createBtn": "创建公告",
+      "confirmDeleteBody": "横幅会立即从所有社区页面消失。",
+      "confirmDeleteCta": "删除公告"
     },
     "spaceContent": {
       "view": "查看",
@@ -1202,9 +1470,9 @@
         "EVENTS": "活动",
         "NEWSLETTER": "邮件通讯"
       },
-      "ppvPriceLabel": "Price in cents (0 = free)",
-      "ppvPriceHint": "From 1 cent the post is shown behind a paywall.",
-      "ppvTeaserLabel": "Teaser image (blurred for non-buyers)",
+      "ppvPriceLabel": "单独购买价格",
+      "ppvPriceHint": "未购买的人只能看到预览图、预览标题和价格。",
+      "ppvTeaserLabel": "预览图（未购买者看到模糊版本）",
       "scheduleLabel": "Schedule publication (optional)",
       "scheduleHint": "If the time is in the future, the post appears only then.",
       "feedMedia": "图片与视频",
@@ -1224,7 +1492,16 @@
       "removeTrackAria": "移除曲目",
       "trackUploading": "正在上传 {count} 个 … {percent}%",
       "deleteQuestion": "永久删除这篇帖子？",
-      "deleteConfirm": "删除帖子"
+      "deleteConfirm": "删除帖子",
+      "mediaFailedOne": "“{name}”未上传。{reason}",
+      "mediaFailedMany": "{count, plural, other {# 个文件未上传}}。{reason}",
+      "pickFromLibrary": "从媒体库选择",
+      "pickFromLibraryHint": "选择媒体库中已有的图片",
+      "previewTitleLabel": "预览标题（所有人可见）",
+      "previewTitleHint": "可选。显示在帖子上方，未解锁的人也能看到。",
+      "accessSingle": "单独购买",
+      "accessSingleHint": "单独出售。会员资格不会解锁此帖子。",
+      "bannersElsewhere": "整个社区的公告横幅在空间<link>“{name}”</link>中管理。"
     },
     "chat": {
       "badge": "聊天",
@@ -1239,7 +1516,6 @@
       "messagesHeading": "消息",
       "messagesDesc": "最新的消息。你可以删除不当内容。",
       "emptyMessages": "此聊天暂无消息。",
-      "confirmDeleteMessage": "删除这条消息？",
       "deleteMessageAria": "删除消息",
       "relNone": "—",
       "relNow": "刚刚",
@@ -1274,7 +1550,10 @@
       "historyMessages": "{count} 条消息",
       "cancel": "取消",
       "saving": "保存中……",
-      "saveSettings": "保存设置"
+      "saveSettings": "保存设置",
+      "confirmDeleteMessageTitle": "删除 {name} 的消息？",
+      "confirmDeleteMessageBody": "该消息将从所有人的聊天中消失。",
+      "confirmDeleteMessageCta": "删除消息"
     },
     "newsletter": {
       "title": "邮件通讯",
@@ -1331,7 +1610,6 @@
       "testSend": "给我发送测试",
       "testSending": "发送中…",
       "testSent": "测试邮件已发送！",
-      "testFailed": "测试失败",
       "recipientsEstimate": "约 {count} 位收件人",
       "formatText": "文本",
       "formatHtml": "HTML",
@@ -1345,7 +1623,25 @@
       "ruleTier": "等级：{name}",
       "ruleMinPoints": "{count} 分以上",
       "ruleActiveSince": "加入 ≥ {days} 天",
-      "ruleAll": "所有成员"
+      "ruleAll": "所有成员",
+      "confirmSendTitle": "现在将“{subject}”发送给 {count} 位收件人吗？",
+      "confirmSendBody": "发送会立即开始，且无法撤销。",
+      "confirmSendScheduledTitle": "已计划于 {date} 发送。仍要现在发送吗？",
+      "confirmSendScheduledBody": "“{subject}”将立即发送给 {count} 位收件人，且无法撤销。",
+      "confirmSendLabel": "立即发送给 {count} 人",
+      "sendQueued": "正在发送“{subject}”。",
+      "sendingNow": "发送中…",
+      "noSubscribersHint": "还没有人订阅你的新闻通讯。有收件人后即可发送。",
+      "segmentEmptyHint": "此分组目前没有任何人。请选择其他分组后发送。",
+      "noRecipientsShort": "无收件人",
+      "sendNowEllipsis": "立即发送…",
+      "testFailedReason": "测试邮件未发送：{reason}",
+      "testFailedUnknown": "未知错误，请重试。",
+      "schedulePastWarning": "该时间已过去。保存后，活动仍为草稿。",
+      "confirmDeleteCampaignBody": "“{subject}”将被删除，且无法撤销。",
+      "confirmDeleteSegmentBody": "使用此分组的草稿和已计划的活动之后会发送给所有订阅者。",
+      "deleteSegmentConfirm": "删除分组",
+      "segmentNameLabel": "分组名称"
     },
     "ads": {
       "badge": "广告",
@@ -1503,19 +1799,20 @@
       "closeLesson": "关闭",
       "deleteLesson": "删除",
       "confirmDeleteLesson": "删除课时“{title}”？",
-      "lessonTitlePlaceholder": "标题",
-      "videoUrlPlaceholder": "视频 URL（可选）",
-      "contentPlaceholder": "内容",
-      "dripLabel": "解锁：加入后天数（空/0 = 立即）",
       "dripPlaceholder": "例如：7",
       "lessonSaving": "保存中……",
       "lessonSave": "保存",
       "addLesson": "添加课时",
-      "addLessonTitlePlaceholder": "课时标题",
-      "addContentPlaceholder": "内容（可选）",
-      "addDripPlaceholder": "解锁：加入后天数（空 = 立即）",
       "adding": "添加中……",
-      "add": "添加"
+      "cannotUndo": "此操作无法撤销。",
+      "deleteLessonConfirm": "删除课时",
+      "createdAddLesson": "课程已创建——现在添加第一个课时。",
+      "lessonTitleLabel": "课时标题",
+      "lessonVideoLabel": "视频链接（可选）",
+      "lessonContentLabel": "内容（可选）",
+      "lessonDripLabel": "加入后解锁（天）",
+      "lessonDripHint": "留空或 0：立即可用。",
+      "addLessonBtn": "添加课时"
     },
     "gallery": {
       "badge": "图库",
@@ -1532,7 +1829,6 @@
       "video": "视频",
       "mediaCount": "{count, plural, other {# 个媒体}}",
       "deletePackageAria": "删除套装",
-      "confirmDeletePackage": "删除这个媒体套装？",
       "removeAria": "移除",
       "contentCount": "内容（{count}）",
       "titleLabel": "标题",
@@ -1553,7 +1849,10 @@
       "saveChanges": "保存更改",
       "createPackageCta": "创建套装",
       "availableUntilLabel": "Available until (optional)",
-      "availableUntilHint": "After this time the package is hidden from the community."
+      "availableUntilHint": "After this time the package is hidden from the community.",
+      "confirmDeletePackageTitle": "删除媒体包“{title}”？",
+      "confirmDeletePackageBody": "其中的所有图片和视频也会一并删除。此操作无法撤销。",
+      "confirmDeletePackageCta": "删除媒体包"
     },
     "sortLabels": {
       "NEWEST": "最新优先",
@@ -1573,7 +1872,6 @@
       "emptyHint": "用编辑器撰写你的第一篇博客文章。",
       "edit": "编辑",
       "delete": "删除",
-      "confirmDelete": "删除这篇帖子？",
       "sheetWrite": "撰写帖子",
       "sheetEdit": "编辑帖子",
       "sheetSettings": "博客设置",
@@ -1636,7 +1934,10 @@
       "pollAddOption": "添加选项",
       "pollMultipleLabel": "允许多选",
       "statusDraft": "未发布",
-      "statusScheduled": "计划于 {date} 发布"
+      "statusScheduled": "计划于 {date} 发布",
+      "confirmDeleteTitle": "删除帖子“{title}”？",
+      "confirmDeleteBody": "帖子及其所有评论都将被删除。此操作无法撤销。",
+      "confirmDeleteCta": "删除帖子"
     },
     "knowledge": {
       "badge": "知识库",
@@ -1650,7 +1951,6 @@
       "emptyHint": "撰写你的第一篇知识文章。",
       "edit": "编辑",
       "delete": "删除",
-      "confirmDelete": "删除这篇文章？",
       "sheetWrite": "撰写文章",
       "sheetEdit": "编辑文章",
       "sheetSettings": "显示设置",
@@ -1680,7 +1980,10 @@
       "showDatesHint": "每篇文章的发布日期",
       "saveSettings": "保存设置",
       "cancel": "取消",
-      "saving": "保存中……"
+      "saving": "保存中……",
+      "confirmDeleteTitle": "删除文章“{title}”？",
+      "confirmDeleteBody": "文章将从知识库中移除。此操作无法撤销。",
+      "confirmDeleteCta": "删除文章"
     },
     "rte": {
       "poll": "投票",
@@ -1722,7 +2025,8 @@
       "recPrep": "正在准备摄像头…",
       "paragraph": "段落",
       "attach": "附加文件",
-      "file": "文件"
+      "file": "文件",
+      "bodyLabel": "正文"
     },
     "links": {
       "badge": "链接",
@@ -1774,7 +2078,9 @@
       "deleteEvent": "删除活动",
       "cancel": "取消",
       "saving": "保存中……",
-      "saveChanges": "保存更改"
+      "saveChanges": "保存更改",
+      "confirmDeleteBody": "所有报名都会丢失，且无法撤销。",
+      "meetingUrlMissing": "没有链接，成员就无法参加。你可以稍后补充。"
     },
     "settings": {
       "title": "设置",
@@ -1784,7 +2090,6 @@
       "tabDomain": "域名",
       "tabDanger": "危险区",
       "integrationsHeading": "集成",
-      "integrationsDesc": "此安装已连接的服务。",
       "intStripe": "支付",
       "intResend": "邮件",
       "intGemini": "AI",
@@ -1856,15 +2161,23 @@
         "copy": "复制",
         "copied": "已复制",
         "toStudio": "打开 Aeli 工作室"
-      }
+      },
+      "discardTitle": "放弃未保存的更改？",
+      "discardBody": "你在此处更改但未保存的内容将会丢失。",
+      "discardConfirm": "放弃更改",
+      "discardCancel": "继续编辑",
+      "unsavedMarker": "（有未保存的更改）",
+      "integrationsDescCreator": "你连接到社区的服务。",
+      "platformHeading": "此安装的服务",
+      "platformDesc": "仅平台管理员可见。显示已配置哪些密钥。",
+      "paymentsUnavailable": "此平台尚未设置付款。如需出售会员资格，请联系客服。",
+      "connectErrorCreator": "连接 Stripe 失败。请重试；如果再次失败，请联系客服。"
     },
     "branding": {
       "heading": "品牌",
-      "desc": "你社区的徽标、名称和颜色。",
-      "saved": "品牌已保存。",
-      "coverLabel": "页眉图片（社区首页）",
+      "desc": "社区的名称、图片和主色。",
+      "coverLabel": "封面图",
       "logoLabel": "徽标",
-      "logoHint": "PNG 或 JPG，正方形，至少 256 × 256 px。",
       "nameLabel": "名称",
       "taglineLabel": "标语",
       "taglinePlaceholder": "一句描述你社区的话",
@@ -1873,18 +2186,22 @@
       "noCategory": "无分类",
       "categoryHint": "决定你的社区在发现页面上出现在哪个主题下。",
       "primaryColor": "主色",
-      "accentColor": "强调色",
       "preview": "预览",
       "previewName": "你的社区",
-      "joinButtonLabel": "加入按钮",
       "join": "加入",
       "saving": "保存中…",
       "saveBranding": "保存品牌",
       "pickAria": "选择 {label}",
       "hexAria": "{label} 的十六进制值",
-      "hexError": "这读不出颜色。",
+      "hexError": "无法识别为颜色。请输入类似 #6D28D9 的十六进制值。",
       "hexHint": "带不带 # 都行，三位或六位均可——#6D28D9、6d28d9、#a1b 或 rgb(109, 40, 217)。",
-      "contrastWarning": "这个颜色上面是白色文字，会很难辨认——请选择更深的色调。"
+      "contrastWarning": "这个颜色上面是白色文字，会很难辨认——请选择更深的色调。",
+      "savedAt": "已保存 · {time}",
+      "unsaved": "有未保存的更改",
+      "imagesHeading": "图片",
+      "imagesApplied": "封面图和标志上传后立即生效。下方内容需点击“保存品牌”才会生效。",
+      "logoSaving": "正在应用标志…",
+      "previewHint": "访客看到的社区顶部就是这样。"
     },
     "domain": {
       "heading": "地址和域名",
@@ -1893,33 +2210,59 @@
       "subdomainLabel": "子域名",
       "copiedAria": "已复制",
       "copyAria": "复制 {label}",
-      "customDomainLabel": "自定义域名（可选）",
       "savedDomain": "域名已保存。",
       "saving": "保存中…",
       "save": "保存",
       "customDomainPlaceholder": "community.你的域名.com",
-      "cnameHint": "然后设置一条指向 {rootDomain} 的 CNAME 记录，并添加 TXT 验证记录。",
-      "verifiedActive": "已验证并生效",
-      "verifyPending": "验证待完成",
-      "checkNow": "立即检查",
+      "checkNow": "检查域名",
       "checkingDns": "正在检查 DNS…",
-      "dnsIntro": "请同时设置以下两条 DNS 记录：",
-      "optionA": "<b>路由：</b> CNAME <code>{domain}</code> → <code>{root}</code>（根域名使用 ALIAS/ANAME）",
-      "optionB": "<b>验证（必需）：</b> TXT <code>_aera.{domain}</code> = <code>aera-verify={tenantId}</code>",
-      "dnsWait": "然后点“立即检查”——DNS 更改有时最多需要一小时。",
       "subEditLabel": "自定义子域名",
       "subPlaceholder": "my-community",
-      "subHint": "仅可使用小写字母、数字和连字符（3–63 个字符）。你的社区将通过此地址访问。留空则使用默认地址（你的用户名）。",
-      "subSaved": "子域名已保存。"
+      "subHint": "仅限小写字母、数字和连字符（3–63 个字符）。",
+      "subSaved": "子域名已保存。",
+      "copy": "复制",
+      "copied": "已复制",
+      "customHeading": "自定义域名",
+      "customStatus": {
+        "none": "未连接",
+        "pending": "等待 DNS",
+        "verified": "已连接"
+      },
+      "customDesc": "让社区使用你自己的地址，例如 community.your-domain.com。",
+      "customLabel": "域名",
+      "customHint": "只填域名，不要 https:// 和路径。清空并保存即可移除域名。",
+      "customSave": "保存域名",
+      "customErrorUrl": "请只输入域名，不要 https:// 和“/”，例如 community.your-domain.com。",
+      "customErrorFormat": "这不是有效的域名。示例：community.your-domain.com。",
+      "customErrorRoot": "{root} 下的地址请在上方的子域名中设置。",
+      "customLocked": "自定义域名从 {plan} 套餐起提供。",
+      "customUpgrade": "升级到 {plan}",
+      "guideHeading": "如何连接 {domain}",
+      "guideStep1": "登录你的域名服务商（例如阿里云、腾讯云、GoDaddy）。",
+      "guideStep2": "打开该域名的 DNS 设置。",
+      "guideStep3": "创建以下两条记录：",
+      "guideStep4": "点击“检查域名”。更改最多需要一小时生效。",
+      "recordType": "类型",
+      "recordName": "名称",
+      "recordValue": "目标/值",
+      "recordFullName": "完整名称：{name}",
+      "routeNoteCname": "将访问你域名的用户引导到 Aera。",
+      "routeNoteApex": "对于不带前缀的域名（没有“www.”等），大多数服务商不允许 CNAME 记录——请改用作用相同的 ALIAS 或 ANAME 类型。",
+      "txtNote": "此记录用于证明域名归你所有。“检查域名”检查的正是这条记录。",
+      "verifiedNow": "{domain} 已连接。",
+      "verifiedHint": "{domain} 已连接。如果更改了 DNS 记录，请重新检查。",
+      "subWarning": "注意：当前地址 {old} 将无法使用，已分享的链接将失效。",
+      "subFallback": "留空 = 默认地址 {address}，始终可用。"
     },
     "danger": {
       "heading": "危险区",
       "desc": "针对此社区的不可逆操作。",
       "deleteCommunity": "删除社区",
       "deleteDesc": "不可逆地删除所有成员、空间、内容和订单。",
-      "confirmDelete": "永久删除“{name}”及所有内容？",
-      "confirmPlaceholder": "输入“{slug}”以确认",
-      "deleting": "删除中…"
+      "deleting": "删除中…",
+      "confirmDeleteCta": "永久删除社区",
+      "confirmLabel": "输入标识 {slug} 以确认",
+      "exportFirst": "请先下载你的数据：<link>前往数据导出</link>。"
     },
     "developers": {
       "metaTitle": "开发者与 API",
@@ -1968,20 +2311,20 @@
     "export": {
       "metaTitle": "数据导出",
       "title": "数据导出",
-      "subtitle": "你的数据属于你——随时导出，按你的租户过滤。",
+      "subtitle": "你的数据属于你——随时可以下载。",
       "fullExport": "完整导出",
-      "fullExportDesc": "包含全部 {count} 条记录的 JSON 包：成员、订单、订阅、权限、帖子、评论、产品、课程、活动、邮件通讯和分群。",
+      "fullExportDesc": "一个包含社区全部数据的 JSON 包：成员、订单、订阅、访问权限、帖子、评论、商品、课程、活动、通讯和细分。",
       "downloadJson": "下载 JSON",
       "singleDatasets": "单个数据集",
       "csvOrJson": "CSV（Excel）或 JSON",
       "entries": "{count, plural, other {# 条}}",
       "noData": "无数据",
-      "footer": "所有导出都严格限制在你的社区范围内并需要管理员权限。电子邮件地址仅包含在成员导出中。",
+      "footer": "导出仅包含本社区的数据，且只有所有者可以下载。邮箱地址仅包含在成员导出中。",
       "datasets": {
         "members": "成员",
         "orders": "订单",
         "subscriptions": "订阅",
-        "entitlements": "权限",
+        "entitlements": "访问权限",
         "posts": "帖子",
         "comments": "评论",
         "products": "产品",
@@ -1994,15 +2337,13 @@
     "moderation": {
       "metaTitle": "审核",
       "title": "审核",
-      "subtitleAi": "新帖子和评论由 AI 自动检查——由你的团队做决定。",
-      "subtitleHeuristic": "新帖子和评论通过启发式规则检查（配置 Gemini 密钥后：AI 分类）。",
       "refPost": "帖子",
       "refComment": "评论",
       "unknown": "未知",
-      "sourceAi": "AI",
-      "sourceHeuristic": "启发式",
+      "sourceAi": "AI 检查",
+      "sourceHeuristic": "关键词过滤",
       "emptyTitle": "无需审核",
-      "emptyHint": "目前没有被举报的内容。新帖子和评论的自动标记将显示在这里。",
+      "emptyHint": "目前没有需要检查的内容。如有可疑的新帖子或评论，会显示在这里。",
       "approve": "批准（误报）",
       "removeContent": "移除内容",
       "recentDecisions": "最近的决定",
@@ -2012,13 +2353,20 @@
         "spam": "垃圾信息",
         "toxisch": "有害",
         "belaestigung": "骚扰"
-      }
+      },
+      "subtitle": "新帖子和评论会被自动检查。可疑内容会出现在这里，由你决定。",
+      "viewInContext": "在帖子中查看",
+      "banAuthor": "封禁 {name}",
+      "authorBanned": "作者已被封禁",
+      "removeTitlePost": "永久删除该帖子？",
+      "removeTitleComment": "永久删除该评论？",
+      "removeBody": "“{excerpt}”将被删除且无法恢复。"
     },
     "layout": {
       "titleHub": "编辑你的页面",
-      "titleHeader": "详情",
-      "titleSections": "页面布局",
-      "titleNav": "页面导航",
+      "titleHeader": "页眉",
+      "titleSections": "首页：板块",
+      "titleNav": "侧边栏",
       "back": "返回",
       "backToDashboard": "Back to the dashboard",
       "desktopPreview": "桌面预览",
@@ -2026,25 +2374,23 @@
       "saved": "已保存",
       "cancel": "取消",
       "saving": "保存中…",
-      "save": "保存",
-      "nameTaken": "页面名称已被占用",
+      "save": "保存页面",
+      "nameTaken": "此名称已被使用",
       "livePreview": "实时预览",
-      "hubHeader": "页眉详情",
-      "hubSections": "页面布局",
-      "hubNav": "导航菜单",
-      "pageName": "页面名称",
+      "hubHeader": "页眉",
+      "hubSections": "首页：板块",
+      "hubNav": "侧边栏",
+      "pageName": "名称",
       "nameUpdateHint": "这将更新你在整个社区中的名称。",
-      "profilePhoto": "头像",
-      "profilePhotoHint": "正方形，至少 512×512 px",
-      "changePhotoAria": "更改头像",
+      "profilePhoto": "标志",
+      "changePhotoAria": "更改标志",
       "change": "更改",
-      "headerOptions": "页眉选项",
-      "usePhoto": "使用头像",
-      "colorScheme": "配色方案",
-      "colorSchemeHint": "选择你页面的强调色。",
-      "uploadCover": "上传封面图片",
-      "coverApplied": "封面图片会立即应用。",
-      "about": "关于",
+      "headerOptions": "页眉背景",
+      "usePhoto": "带标志的纯色背景",
+      "colorScheme": "主色",
+      "colorSchemeHint": "用于按钮、链接和页眉的纯色背景。",
+      "uploadCover": "封面图",
+      "about": "简介",
       "aboutHint": "介绍你自己和你的社区。",
       "socialLinks": "社交媒体链接",
       "add": "添加",
@@ -2074,7 +2420,7 @@
       "audiences": {
         "PAID": "付费成员",
         "FREE": "免费成员",
-        "PUBLIC": "公开"
+        "PUBLIC": "访客"
       },
       "sections": {
         "RECENT_POSTS": "新帖子",
@@ -2137,12 +2483,33 @@
       "mosaicTitle": "页眉图片",
       "mosaicHint": "这些图片按此顺序组成马赛克，拖动可调整次序。数量为偶数时网格正好填满，6 张或 12 张效果最好。",
       "mosaicUploadError": "有一张图片上传失败，请重试。",
-      "hubMenu": "页头菜单",
-      "titleMenu": "页头菜单"
+      "hubMenu": "页眉按钮",
+      "titleMenu": "页眉按钮",
+      "hubHeaderHint": "名称、标志、主色、封面图、简介和社交链接",
+      "hubMenuHint": "名称下方的按钮，例如“加入”或“打赏”",
+      "hubSectionsHint": "首页显示哪些板块以及顺序",
+      "hubPagesHint": "额外页面，例如“关于我们”或“常见问题”",
+      "hubNavHint": "左侧导航中的菜单项",
+      "hubBannerHint": "用于通知和活动的横幅",
+      "savedAt": "已保存 · {time}",
+      "unsaved": "未保存",
+      "discardTitle": "放弃未保存的更改？",
+      "discardBody": "如果现在离开，对页面的更改将会丢失。",
+      "discardConfirm": "放弃更改",
+      "discardCancel": "继续编辑",
+      "previewMobile": "预览",
+      "editMobile": "编辑",
+      "previewAs": "预览身份",
+      "colorPresetAria": "主色 {color}",
+      "colorCustomAria": "自选主色",
+      "hideNamedAria": "隐藏“{name}”",
+      "removeNamedAria": "移除“{name}”",
+      "removeImageAria": "移除图片 {n}",
+      "socialInputAria": "{name} 主页"
     },
     "pages": {
       "title": "页面",
-      "hub": "页面",
+      "hub": "自定义页面",
       "intro": "创建你自己的页面，比如“关于我”“常见问题”或“媒体报道”。它们会作为标签页显示在首页旁边。",
       "homeTab": "首页",
       "homeTabHint": "固定 — 显示你在页面布局里搭好的内容。",
@@ -2463,7 +2830,11 @@
       "colSent": "发送",
       "colRecipients": "收件人",
       "colOpens": "打开",
-      "colClicks": "点击"
+      "colClicks": "点击",
+      "growthSummary": "过去 6 个月共有 {total, plural, other {# 人}}加入，其中本月 {current, number} 人。",
+      "growthEmpty": "过去 6 个月没有人加入。新成员会按月显示在这里。",
+      "colMonth": "月份",
+      "colNewMembers": "新成员"
     },
     "gamification": {
       "title": "游戏化",
@@ -2480,8 +2851,6 @@
       "rule": "规则",
       "maxPerDay": "每天最多 {count}",
       "pts": "分",
-      "savePointsAria": "保存积分",
-      "deleteRuleAria": "删除规则",
       "confirmDeleteRule": "删除规则“{name}”？",
       "rulesEmptyTitle": "暂无规则",
       "rulesEmptyHint": "为某个行为添加一条积分规则。",
@@ -2561,7 +2930,14 @@
       "iconLabel": "符号",
       "manualHint": "条件为“手动”的徽章由你自己颁发 —",
       "manualBadge": "手动",
-      "manualHintLink": "在成员列表中。"
+      "manualHintLink": "在成员列表中。",
+      "pointsForRuleAria": "{name}的积分",
+      "savePointsForRuleAria": "保存{name}的积分",
+      "deleteRuleForAria": "删除规则“{name}”",
+      "confirmDeleteRuleBody": "此操作将不再获得积分。",
+      "confirmDeleteRuleCta": "删除规则",
+      "confirmDeleteBadgeBody": "{count, plural, =0 {该徽章尚未授予任何人。} other {# 位成员将失去该徽章。}}",
+      "confirmDeleteBadgeCta": "删除徽章"
     },
     "referrals": {
       "metaTitle": "推荐",
@@ -2644,22 +3020,22 @@
       },
       "BUNDLE": {
         "label": "套装",
-        "desc": "内容组合包"
+        "desc": "已停止提供"
       },
       "COURSE_ACCESS": {
         "label": "课程权限",
         "desc": "解锁一门课程"
       },
       "TIER_GRANT": {
-        "label": "等级权限",
-        "desc": "解锁一个等级"
+        "label": "会员访问权",
+        "desc": "已不再提供"
       }
     },
     "tiers": {
       "title": "会员",
       "subtitle": "{count, plural, other {# 个会员}} · 它们在加入页面上的显示方式。",
       "create": "创建会员",
-      "stripeWarning": "Stripe 尚未连接——免费等级可立即使用；付费等级请将 <code>STRIPE_SECRET_KEY</code> 添加到你的 <code>.env</code>。",
+      "stripeWarning": "Stripe 尚未连接：免费会员可立即使用。如需付费会员，请在 <code>.env</code> 中添加 <code>STRIPE_SECRET_KEY</code>。",
       "recommended": "推荐",
       "default": "默认",
       "hidden": "隐藏",
@@ -2667,9 +3043,9 @@
       "edit": "编辑",
       "suffixMonth": "/ 月",
       "suffixYear": "/ 年",
-      "createTitle": "创建新等级",
+      "createTitle": "新建会员",
       "createSubtitle": "设置会员与价格",
-      "editTitle": "编辑等级",
+      "editTitle": "编辑会员",
       "nameLabel": "名称",
       "namePlaceholder": "例如：高级",
       "coverLabel": "封面图片（可选）",
@@ -2683,17 +3059,24 @@
       "publicHint": "显示在加入页面。",
       "recommendedLabel": "创作者推荐",
       "recommendedHint": "在加入页面突出显示此会员（最多一个）。",
-      "defaultLabel": "默认等级",
-      "defaultHintActive": "新成员将获得此等级。",
+      "defaultLabel": "默认会员",
+      "defaultHintActive": "新成员会获得此会员。",
       "defaultHintInactive": "设为新成员的默认等级。",
-      "entitlementKeyLabel": "权限键（固定）",
-      "confirmDelete": "确定要删除等级“{name}”吗？",
+      "entitlementKeyLabel": "技术密钥（仅平台管理员可见）",
+      "confirmDelete": "删除会员“{name}”？",
       "deleting": "删除中…",
-      "deleteTier": "删除等级",
+      "deleteTier": "删除会员",
       "cancel": "取消",
       "saving": "保存中…",
       "saveChanges": "保存更改",
-      "createTier": "创建等级"
+      "createTier": "创建会员",
+      "priceHint": "价格从固定档位中选择，这样在应用商店中也适用同一价格。",
+      "payoutsMissing": "要收到付款，请先设置收款。",
+      "payoutsSetup": "设置收款",
+      "confirmDeleteBody": "{count, plural, =0 {该会员将被永久删除。} other {# 位成员将无法再访问此会员的内容。}}此操作无法撤销。",
+      "confirmHide": "隐藏会员“{name}”？",
+      "confirmHideBody": "付费会员不会被删除，只会从加入页面移除，以便继续处理进行中的付款。现有成员保留访问权限。",
+      "hideTier": "隐藏会员"
     },
     "products": {
       "title": "商品",
@@ -2716,7 +3099,6 @@
       "namePlaceholder": "例如：电子书",
       "typeLabel": "类型",
       "priceLabel": "价格",
-      "downloadUrlLabel": "下载 URL（可选）",
       "shipping": "运费",
       "shipFreeLabel": "免运费",
       "shipFreeDesc": "无运费",
@@ -2729,13 +3111,43 @@
       "descPlaceholder": "买家会得到什么？",
       "publishedLabel": "已发布",
       "publishedHint": "在社区中可见并可购买。",
-      "confirmDelete": "确定要删除商品“{name}”吗？",
+      "confirmDelete": "删除商品“{name}”？",
       "deleting": "删除中…",
       "deleteProduct": "删除商品",
       "cancel": "取消",
       "saving": "保存中…",
       "saveChanges": "保存更改",
-      "createProduct": "创建商品"
+      "createProduct": "创建商品",
+      "confirmDeleteBody": "该商品将从商店中消失。此操作无法撤销。",
+      "confirmHide": "隐藏商品“{name}”？",
+      "confirmHideBody": "该商品已有订单，因此不会被删除，只会从商店中移除。买家保留访问权限。",
+      "hideProduct": "隐藏商品",
+      "priceHint": "价格从固定档位中选择，这样在应用商店中也适用同一价格。",
+      "pricePlaceholder": "选择价格",
+      "priceRequired": "请选择价格或“免费”。",
+      "fileLabel": "给买家的文件",
+      "fileHint": "上传文件或粘贴链接。买家购买后即可看到下载。",
+      "fileUpload": "上传文件",
+      "fileReplace": "上传其他文件",
+      "fileRemove": "移除",
+      "fileUploading": "正在上传…",
+      "fileUploaded": "已上传的文件",
+      "fileOpen": "打开",
+      "fileLinkLabel": "或文件链接",
+      "fileRequired": "请上传文件或粘贴链接。",
+      "fileLinkInvalid": "链接必须以 https:// 开头。",
+      "courseLabel": "解锁哪门课程？",
+      "coursePlaceholder": "选择课程",
+      "courseHint": "保存后，该课程仅对买家和你的团队开放。标记为预览的课时仍对所有人可见。",
+      "courseRequired": "请选择买家获得的课程。",
+      "courseLocked": "首次售出后无法再更改课程，以确保买家保留访问权限。",
+      "noCourses": "你还没有可以单独出售的课程。",
+      "createCourse": "创建课程",
+      "tierGrantRetired": "此类型不会解锁任何会员。请选择其他类型。付费会员请在“会员”中创建。",
+      "viewInShop": "在商店中查看",
+      "payoutsMissing": "要收到付款，请先设置收款。",
+      "payoutsSetup": "设置收款",
+      "bundleRetired": "已停止提供组合包：购买后并不会解锁特定内容。以往的购买仍然有效。新商品请选择“数字”或“课程权限”。"
     },
     "payouts": {
       "title": "提现",
@@ -2788,7 +3200,8 @@
     "memberStatus": {
       "ACTIVE": "活跃",
       "PENDING": "待处理",
-      "BANNED": "已封禁"
+      "BANNED": "已封禁",
+      "INVITED": "已邀请"
     },
     "members": {
       "title": "成员",
@@ -2797,7 +3210,7 @@
       "tabTeam": "团队",
       "tabBanned": "已封禁",
       "allHeading": "所有成员",
-      "allDesc": "管理角色、等级和访问权限。",
+      "allDesc": "管理角色、会员等级和访问权限。",
       "allEmptyTitle": "还没有成员",
       "allEmptyHint": "添加你的第一位成员，或分享加入链接。",
       "teamHeading": "团队",
@@ -2825,14 +3238,13 @@
       "profilePhoto": "头像",
       "emailLabel": "电子邮件地址",
       "emailPlaceholder": "name@example.com",
-      "emailHint": "如果尚无账户，将自动创建一个。",
+      "emailHint": "如果还没有账户，我们会创建一个并发送邀请。已有账户会直接添加，不发送邮件。",
       "roleLabel": "角色",
-      "tierLabel": "等级",
-      "noTier": "无等级",
+      "tierLabel": "会员等级",
+      "noTier": "无会员等级",
       "cancel": "取消",
       "adding": "添加中…",
       "statusLabel": "状态",
-      "confirmRemove": "确定要将“{name}”从社区中移除吗？",
       "removing": "移除中…",
       "removeMember": "移除成员",
       "saving": "保存中…",
@@ -2855,7 +3267,37 @@
       "awarding": "颁发中…",
       "revoke": "移除",
       "revoking": "移除中…",
-      "awardedOn": "{date} 颁发"
+      "awardedOn": "{date} 颁发",
+      "confirmRemoveTitle": "将“{name}”移出社区？",
+      "confirmRemoveBody": "进行中的订阅会立即结束，会员资格带来的访问权限也会取消。单独购买的内容会保留。",
+      "confirmRemoveCta": "移除成员",
+      "tierHint": "无需付款即可解锁此会员等级包含的内容。",
+      "roleHints": {
+        "MEMBER": "可查看会员等级解锁的内容，并在动态和论坛中发帖。",
+        "MODERATOR": "可查看所有空间并在任何地方发帖，其帖子不经过自动检查。在后台中只能看到审核：查看、批准或删除被标记的帖子。",
+        "ADMIN": "在控制台管理社区：内容、成员、审核和设置。只有所有者可以任命管理员、连接付款、导出数据和删除社区。"
+      },
+      "statusHint": "“待处理”：已登记，但尚无法访问成员内容。",
+      "invitedOn": "邀请于 {date}",
+      "noticeInviteSent": "已向 {email} 发送邀请。",
+      "noticeInviteNotSent": "已为 {email} 创建账户，但邀请未能发送。对方可以通过“忘记密码”设置密码。",
+      "noticeAdded": "已将 {email} 添加为{role}。",
+      "dismissNotice": "关闭消息",
+      "searchLabel": "搜索成员",
+      "searchPlaceholder": "姓名或邮箱",
+      "searchCount": "{total} 名成员中的 {shown} 名",
+      "searchEmpty": "没有与“{query}”匹配的成员。",
+      "ban": "封禁成员",
+      "unban": "解除封禁",
+      "banning": "正在封禁…",
+      "unbanning": "正在解除…",
+      "banTitle": "封禁 {name}？",
+      "banBody": "{name} 将立即失去对 {community} 的访问权限。",
+      "banBodySubscription": "付费订阅（{membership}，{price}）将被取消。",
+      "banConfirm": "封禁成员",
+      "pricePerMonth": "每月 {price}",
+      "pricePerYear": "每年 {price}",
+      "bannedInfo": "{name} 已被封禁，无法访问社区。"
     },
     "spaceTypes": {
       "FEED": {
@@ -2946,15 +3388,15 @@
     "visibility": {
       "PUBLIC": {
         "label": "公开",
-        "desc": "所有人可见"
+        "desc": "所有人可见，无需账户"
       },
       "MEMBERS": {
         "label": "成员",
-        "desc": "仅登录可见"
+        "desc": "仅限社区成员"
       },
       "PAID": {
         "label": "付费",
-        "desc": "需要会员"
+        "desc": "仅限付费会员"
       }
     },
     "spaces": {
@@ -2972,15 +3414,12 @@
       "createSubtitle": "选择类型与可见性",
       "editTitle": "编辑空间",
       "edit": "编辑",
-      "reactivate": "启用",
       "archive": "归档",
       "postCount": "{count, plural, other {# 个帖子}}",
       "nameLabel": "空间名称",
       "namePlaceholder": "例如：公告",
       "typeLabel": "类型",
       "visibilityLabel": "可见性",
-      "entitlementLabel": "所需权限",
-      "entitlementHint": "留空以接受任何付费会员。",
       "descLabel": "描述（可选）",
       "descPlaceholder": "这个空间是关于什么的？",
       "deleting": "删除中…",
@@ -2990,7 +3429,43 @@
       "saveChanges": "保存更改",
       "deleteConfirmTitle": "删除空间？",
       "deleteConfirmText": "“{name}”将被永久删除。其中的所有内容都会丢失——此操作无法撤销。",
-      "delete": "删除"
+      "delete": "删除",
+      "restore": "恢复",
+      "archiveNamed": "归档“{name}”",
+      "restoreNamed": "恢复“{name}”",
+      "archivedNotice": "“{name}”已归档，成员不可见。",
+      "restoredNotice": "“{name}”已恢复，成员可再次看到。",
+      "undo": "撤销",
+      "dismissNotice": "关闭提示",
+      "typeLockedHint": "此空间已有 {count, plural, other {# 项内容}}，因此类型已固定。换成其他类型后，这些内容将不再显示。如需其他类型，请新建空间。",
+      "access": {
+        "legend": "哪些会员资格可以访问？",
+        "anyPaid": "任意付费会员资格",
+        "anyPaidDesc": "也包括购买过付费内容（例如商品）的人",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "tierHidden": "{price} · 未在售",
+        "legacyLabel": "原有访问规则",
+        "legacyFreeTier": "免费会员资格（旧设置）",
+        "legacyKey": "密钥“{key}”（旧设置）",
+        "hintTier": "只有持有该会员资格的成员能看到此空间。你和你的团队始终可以访问。",
+        "hintAny": "所有持有付费会员资格的成员都能看到此空间。你和你的团队始终可以访问。",
+        "noPaidTitle": "还没有付费会员资格",
+        "noPaidText": "创建付费会员资格，成员才能解锁此空间。",
+        "noPaidCta": "先创建会员资格",
+        "specificTier": "特定会员资格"
+      },
+      "postingLabel": "谁可以发帖？",
+      "posting": {
+        "members": {
+          "label": "所有成员",
+          "desc": "成员可以自己发帖。"
+        },
+        "team": {
+          "label": "仅团队",
+          "desc": "成员可以阅读、互动和评论。"
+        }
+      }
     },
     "roles": {
       "OWNER": "所有者",
@@ -3022,9 +3497,10 @@
     },
     "userMenu": {
       "myAccount": "My account",
-      "mySubscription": "我的订阅",
+      "mySubscription": "我的会员资格",
       "switchCommunities": "切换社区",
-      "logout": "退出登录"
+      "logout": "退出登录",
+      "toggleAria": "{name} 的用户菜单"
     },
     "search": {
       "placeholder": "搜索成员、空间、帖子 …",
@@ -3081,14 +3557,14 @@
       "leaveTitle": "退出社区",
       "cancelText": "你对付费内容的访问将随付费周期结束。已购买的商品仍归你所有。",
       "leaveText": "你将失去对会员内容的访问。已购买的商品仍归你所有。",
-      "confirmCancel": "确定要取消会员吗？",
       "cancelling": "取消中…",
       "cancelNow": "立即取消",
       "confirmLeave": "确定要退出社区“{name}”吗？",
       "leaving": "退出中…",
       "leaveCommunity": "退出社区",
       "perMonth": "/月",
-      "perYear": "/年"
+      "perYear": "/年",
+      "confirmCancelTitle": "取消在“{name}”的会员资格？"
     },
     "credits": {
       "title": "积分与用量",
@@ -3150,7 +3626,11 @@
       "mobileSubtitle": "仪表板导航",
       "planner": "规划器",
       "lockedSuffix": "仅限 {plan}",
-      "seo": "SEO"
+      "seo": "SEO",
+      "lockedGroup": "更高套餐可用（{count}）",
+      "moderatorGroup": "你的范围",
+      "moderatorHint": "你负责审核被标记的帖子和评论。成员、内容和设置由管理员团队管理。",
+      "moderatorRole": "审核"
     },
     "media": {
       "metaTitle": "媒体",
@@ -3180,8 +3660,6 @@
       "edit": "编辑",
       "delete": "删除",
       "moveToFolder": "移到文件夹",
-      "confirmDeleteFolder": "删除这个文件夹？里面的媒体将变为未归档。",
-      "confirmDeleteMedia": "确定删除这个媒体？之后将无法再访问。",
       "folderMenuAria": "{name} 的文件夹选项",
       "itemMenuAria": "{name} 的媒体选项",
       "openAria": "打开 {name}",
@@ -3208,9 +3686,18 @@
       "openInStudio": "在工作室中编辑",
       "uploadMedia": "上传媒体",
       "uploadingProgress": "正在上传… {done}/{total}",
-      "uploadFailed": "上传失败：{name}",
       "storageTitle": "媒体存储空间",
-      "storageOf": "已用 {used}／共 {limit}"
+      "storageOf": "已用 {used}／共 {limit}",
+      "uploadFailedCount": "{count, plural, other {# 个文件未上传}}",
+      "uploadFailedLine": "{name}：{reason}",
+      "retryUpload": "重新上传",
+      "dismissUploadErrors": "关闭提示",
+      "confirmDeleteFolderTitle": "删除文件夹“{name}”？",
+      "confirmDeleteFolderBody": "其中的媒体会保留，并移到“未归档”。",
+      "confirmDeleteFolderCta": "删除文件夹",
+      "confirmDeleteMediaTitle": "永久删除“{name}”？",
+      "confirmDeleteMediaBody": "文件将被删除。使用它的帖子和页面将不再显示它。",
+      "confirmDeleteMediaCta": "永久删除"
     },
     "mediaStudio": {
       "metaTitle": "Image Studio",
@@ -3376,7 +3863,6 @@
       "studioChatShow": "显示聊天",
       "studioChatHide": "隐藏聊天",
       "studioFullscreen": "全屏",
-      "studioCloseConfirm": "你正在直播中。关闭工作室将中断直播。仍要关闭吗？",
       "studioNoPreview": "直播正在进行——视频预览仅存在于正在直播的设备上。",
       "studioMirror": "镜像预览",
       "studioLevel": "音量电平",
@@ -3392,7 +3878,11 @@
         "cameraDenied": "Without access to camera and microphone there is nothing to send. You can allow it in Settings.",
         "noIngest": "This session has no ingest.",
         "startFailed": "The broadcast could not be started."
-      }
+      },
+      "studioCloseTitle": "关闭直播间并结束直播？",
+      "studioCloseBody": "你正在直播。关闭直播间会中断直播。",
+      "studioCloseCta": "关闭直播间",
+      "studioCloseCancel": "继续直播"
     },
     "requests": {
       "subtitle": "Manage your members' wishes & custom requests.",
@@ -3710,7 +4200,8 @@
       "quotaSpaces": "版块",
       "quotaMembers": "成员",
       "quotaCredits": "AI 额度",
-      "unlimited": "无限"
+      "unlimited": "无限",
+      "quotaRemaining": "剩余 {rest} / {total} 积分"
     },
     "seo": {
       "metaTitle": "SEO",
@@ -3718,7 +4209,7 @@
       "subtitle": "How your community appears on Google and when shared. Empty fields are filled automatically from your community details.",
       "metaTitleHint": "The blue headline in a search result. Empty = your community name.",
       "metaDescription": "Description",
-      "metaDescriptionHint": "The grey text below the title. Empty = your onboarding tagline.",
+      "metaDescriptionHint": "标题下方的灰色文字。留空 = 使用“品牌”中的标语。",
       "keywords": "Keywords",
       "keywordsHint": "Comma separated. Empty = derived from name and category.",
       "image": "Social image",
@@ -3831,6 +4322,42 @@
         "desc": "分享链接，或通过邮件邀请。",
         "cta": "邀请成员"
       }
+    },
+    "dateTimeField": {
+      "tzHint": "按你的时区：{zone}（{abbr}）",
+      "pastWarning": "该日期已过去。"
+    },
+    "planSheet": {
+      "title": "更换套餐",
+      "subtitle": "各套餐包含的内容",
+      "loading": "正在加载套餐 …",
+      "loadFailed": "无法加载套餐。",
+      "retry": "重新加载",
+      "pricePerMonth": "每月 {price}",
+      "free": "免费",
+      "current": "你的套餐",
+      "currentPlan": "你当前的套餐",
+      "limitSpaces": "{count, plural, other {# 个活跃空间}}",
+      "limitSpacesUnlimited": "空间数量不限",
+      "limitMembers": "{count, plural, other {# 名活跃成员}}",
+      "limitMembersUnlimited": "成员数量不限",
+      "limitTiers": "最多 {count, plural, other {# 种会员资格}}",
+      "limitTiersUnlimited": "会员资格数量不限",
+      "limitStaff": "{count, plural, other {# 个团队席位}}",
+      "limitStaffUnlimited": "团队席位不限",
+      "limitCredits": "每月 {n} AI 点数",
+      "everythingFrom": "包含 {plan} 的全部内容，另有：",
+      "baseSpaces": "包含：",
+      "spaceTypesList": "空间类型：{list}",
+      "freeHint": "如需回到 Free，请取消你的套餐。",
+      "switching": "正在启动 …",
+      "switchTo": "切换到 {plan}",
+      "checkoutFailed": "无法启动付款。请重试。",
+      "cancelFailed": "无法登记取消。请重试。",
+      "footnote": "价格按月计，可按月取消。付款通过 Stripe 完成。",
+      "spacesUsedNotice": "你已使用 {used} 个空间，共 {max} 个。",
+      "creditsTeaser": "当前：{plan}。各套餐在空间、成员和功能上有所不同。",
+      "open": "更换套餐"
     }
   },
   "common": {
@@ -3855,13 +4382,23 @@
     "totpHint": "您的账户已启用双重验证保护。",
     "legalAcceptance": "我接受<terms>条款和条件</terms>，并确认已阅读<privacy>隐私声明</privacy>。",
     "newsletterOptInLabel": "I would like to receive news and offers from this community by email.",
-    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email."
+    "newsletterOptInHint": "Optional. You can change your choice at any time in your account or through the unsubscribe link in every email.",
+    "totpFieldLabel": "6 位代码",
+    "codeFor": "正在以 <strong>{email}</strong> 登录。",
+    "useOtherEmail": "使用其他邮箱",
+    "useRecoveryCode": "无法使用应用？改用恢复码",
+    "useAppCode": "使用应用中的代码",
+    "recoveryHeading": "输入恢复码",
+    "recoveryLabel": "恢复码",
+    "recoveryHint": "设置双重验证时保存的恢复码之一。每个恢复码只能使用一次。",
+    "passwordTooShortField": "密码太短，至少需要 {min} 个字符。"
   },
   "verifyBanner": {
-    "prompt": "请确认您的邮箱地址 <strong>{email}</strong>。",
+    "prompt": "验证 <strong>{email}</strong> 后，你才能收到社区的简报和邮件。",
     "resend": "重新发送链接",
     "resending": "发送中 …",
-    "sent": "新的确认链接已发送至 <strong>{email}</strong> — 请查收邮箱。"
+    "sent": "新的确认链接已发送至 <strong>{email}</strong> — 请查收邮箱。",
+    "sendLink": "发送验证链接"
   },
   "community": {
     "join": "成为会员",
@@ -4018,7 +4555,7 @@
       },
       "space": {
         "lockedDesc": "此空间仅对会员开放。",
-        "lockedDescPaid": "此空间仅对拥有相应会员资格的会员开放。",
+        "lockedDescPaid": "此内容属于付费会员资格。",
         "upgradeMembership": "升级会员",
         "join": "加入",
         "noLinks": "还没有链接",
@@ -4056,7 +4593,7 @@
         "noProducts": "还没有商品",
         "noProductsHint": "你目录中的商品会显示在此处。",
         "noEvents": "还没有活动",
-        "rsvps": "{count} 人报名",
+        "rsvps": "{count, plural, other {# 人报名}}",
         "attended": "已报名 ✓",
         "attend": "参加",
         "noNewsletters": "还没有期刊",
@@ -4086,16 +4623,25 @@
         },
         "liveOwnStream": "Aera 直播",
         "liveWatchNow": "立即观看",
-        "liveWatchReplay": "观看回放"
+        "liveWatchReplay": "观看回放",
+        "withdrawRsvp": "取消报名",
+        "rsvpGoing": "你已报名",
+        "feedNoPostsTeamHint": "这里由团队发帖，新帖子会显示在这里。"
       },
       "spaceCard": {
         "space": "空间",
-        "locked": "已锁定"
+        "locked": "已锁定",
+        "membersOnly": "仅限会员",
+        "paidOnly": "付费会员"
       },
       "postTile": {
         "becomeMember": "成为会员",
         "exclusive": "仅限会员",
-        "locked": "已锁定"
+        "locked": "已锁定",
+        "lockedUntitled": "会员专属帖子",
+        "paidUntitled": "付费帖子",
+        "lockedHint": "此帖子仅限会员。",
+        "paidHint": "你可以单独解锁此帖子。"
       },
       "planCard": {
         "current": "你的套餐",
@@ -4213,6 +4759,17 @@
         "like": "赞",
         "unlike": "取消赞",
         "locked": "已锁定"
+      },
+      "paywall": {
+        "belongsTo": "“{space}”属于 {tier}（{price}）。",
+        "anyPaidFrom": "“{space}”包含在所有付费会员资格中，{tier}（{price}）起。",
+        "pricePerMonth": "{price}/月",
+        "pricePerYear": "{price}/年",
+        "viewTier": "查看 {tier}",
+        "becomeMember": "成为会员",
+        "memberHint": "你当前的会员资格不包含此空间。",
+        "freeMembers": "“{space}”仅限会员。会员资格免费。",
+        "joinFree": "免费加入"
       }
     },
     "nav": {
@@ -4220,7 +4777,8 @@
       "home": "首页",
       "library": "图书库",
       "members": "成员",
-      "membership": "会员"
+      "membership": "会员",
+      "accountAndMembership": "账户与会员"
     },
     "chrome": {
       "navAria": "社区导航",
@@ -4237,7 +4795,8 @@
       "accountAndPurchases": "账户与购买",
       "dashboard": "仪表盘",
       "logout": "退出登录",
-      "login": "登录"
+      "login": "登录",
+      "moderation": "审核"
     },
     "joinPage": {
       "title": "选择你的会员方案",
@@ -4248,7 +4807,7 @@
       "signupCta": "免费加入 {name}",
       "haveAccount": "已有账户？",
       "login": "登录",
-      "orChoose": "或直接选择一个等级",
+      "orChoose": "或直接选择会员资格",
       "recommendedBadge": "创作者推荐",
       "popularBadge": "热门",
       "currentBadge": "你的方案",
@@ -4266,7 +4825,10 @@
       "showLess": "收起",
       "noTiers": "该社区还没有公开的会员方案。",
       "footnote": "随时可取消。付款通过 Stripe 安全处理。",
-      "memberLimitReached": "该社区目前暂不接受新成员加入，请稍后再试。"
+      "memberLimitReached": "该社区目前暂不接受新成员加入，请稍后再试。",
+      "guestPaidCta": "创建账户并加入",
+      "guestFreeHint": "通过表单免费加入",
+      "selectedBadge": "你的选择"
     },
     "members": {
       "title": "成员",
@@ -4336,6 +4898,35 @@
     "banner": {
       "close": "关闭",
       "aria": "社区提示"
+    },
+    "gate": {
+      "postTitle": "此帖子仅限会员查看",
+      "membersOnly": "仅限会员",
+      "freeText": "加入 {name}——会员资格免费。",
+      "tierText": "需要 {name} 的“{tier}”会员资格（{price}）。",
+      "noneText": "只有 {name} 的会员可以查看此内容。",
+      "joinFree": "免费加入",
+      "joinTier": "选择 {tier}",
+      "upgradeTo": "切换到 {tier}",
+      "viewMemberships": "查看会员资格",
+      "login": "登录",
+      "postUnlocked": "帖子已解锁。"
+    },
+    "accountMenu": {
+      "open": "{name} 的账户菜单",
+      "account": "账户与会员",
+      "creatorArea": "创作者后台",
+      "logout": "退出登录",
+      "moderation": "审核"
+    },
+    "welcome": {
+      "title": "欢迎来到 {name}！你现在是会员了。",
+      "titleTier": "欢迎来到 {name}！你现在是 {tier} 会员了。",
+      "pendingTitle": "谢谢！正在确认你对 {name} 的付款。",
+      "pendingText": "通常只需片刻。稍后刷新页面即可。",
+      "stepForum": "在“{space}”中介绍一下自己",
+      "stepSpace": "前往“{space}”",
+      "dismiss": "关闭提示"
     }
   },
   "notifications": {
@@ -4348,7 +4939,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} 赞了你的评论。"
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} 评论了你的帖子“{title}”。",
+      "COMMENT_REPLY": "{actor} 回复了你在“{title}”下的评论。",
+      "REACTION": "{actor} 赞了你的帖子“{title}”。",
+      "REACTION_COMMENT": "{actor} 赞了你在“{title}”下的评论。"
     }
   },
   "search": {
@@ -4371,7 +4969,8 @@
     "title": "显示语言",
     "hint": "适用于您在此设备上查看 Aera 的语言。",
     "de": "Deutsch",
-    "en": "English"
+    "en": "English",
+    "current": "显示语言：{language}"
   },
   "spaces": {
     "commentsClosed": "评论已关闭。",
@@ -4422,7 +5021,21 @@
     "joinToRead": "成为会员即可阅读",
     "showReplies": "再显示 {count} 条回复",
     "emojiLabel": "插入表情",
-    "morePosts": "{space} 的更多帖子"
+    "morePosts": "{space} 的更多帖子",
+    "backToSpace": "返回 {name}",
+    "upvoteAria": "赞成（得分 {score}）",
+    "downvoteAria": "反对（得分 {score}）",
+    "commentFieldLabel": "写评论",
+    "replyFieldLabel": "写回复",
+    "titleLabel": "标题（可选）",
+    "titlePlaceholderExample": "想聊什么？",
+    "draftKept": "即使关闭，草稿也会保留。",
+    "discardDraft": "放弃草稿",
+    "discardDraftTitle": "放弃草稿？",
+    "discardDraftBody": "标题和正文将被删除，且无法撤销。",
+    "discardDraftConfirm": "放弃",
+    "discardDraftCancel": "继续写",
+    "likeAria": "赞（{count, plural, =0 {暂无} other {#}}）"
   },
   "discover": {
     "eyebrow": "社区与创作者",
@@ -4459,7 +5072,8 @@
       "myCommunities": "你的社区",
       "create": "创建社区",
       "account": "你的账户",
-      "login": "登录"
+      "login": "登录",
+      "creatorArea": "创作者后台"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4492,6 +5106,11 @@
         "product": "产品",
         "knowledge": "知识"
       }
+    },
+    "postCount": "{count, plural, other {# 个帖子}}",
+    "memberFeed": {
+      "title": "你的社区有新内容",
+      "event": "活动：{date}"
     }
   },
   "categories": {
@@ -4525,10 +5144,10 @@
       },
       "s2": {
         "title": "覆盖你所有创作的空间",
-        "text": "按需创建任意数量的空间：新闻动态、讨论论坛、课程、商店、Newsletter、活动、博客、知识库、图片图库、视频库、聊天、播客、链接合集和自有广告位。每个空间都由你决定：对所有人可见、仅限成员，还是仅限付费成员。",
-        "tag1": "14 种空间类型",
+        "text": "按需创建空间：新闻动态、讨论论坛、课程、商店、Newsletter、活动、博客、知识库、图片图库、视频库、聊天、播客、链接合集和自有广告位。每个空间都由你决定：对所有人可见、仅限成员，还是仅限付费成员。",
+        "tag1": "{count} 种空间类型",
         "tag2": "可见性自由设置",
-        "tag3": "空间数量不限"
+        "tag3": "数量取决于套餐"
       },
       "s3": {
         "title": "帖子、评论与互动",
@@ -4634,7 +5253,11 @@
     "forgotSubmit": "获取链接",
     "forgotSending": "发送中…",
     "backTo": "返回",
-    "backToLogin": "登录"
+    "backToLogin": "登录",
+    "resetDoneNotice": "密码已更改。请用新密码登录。",
+    "loginHelp": "登录帮助",
+    "signupJoinContext": "你将加入 {name}",
+    "signupJoinContextTier": "你将加入 {name} · {tier}，{price}"
   },
   "pricing": {
     "eyebrow": "价格",
@@ -4646,17 +5269,17 @@
     "topupTitle": "追加购买积分",
     "topupText": "中途需要更多？追加购买的积分永不过期，且只在月度额度用完后才会使用。",
     "creditsLabel": "积分",
-    "footnote": "1 积分约等于 1,000 个 token；一次典型的助手请求消耗 1–3 积分。社区收入的平台费用单独结算 — 只按真实收入收取。",
+    "footnote": "1 积分约等于 1,000 个 token；一次典型的助手请求消耗 1–3 积分。",
     "plans": {
       "FREE": {
         "tagline": "轻松起步",
-        "f1": "11 个核心版块：动态、论坛、课程、活动、博客……",
+        "f1": "{count} 个核心版块：动态、论坛、课程、活动、博客……",
         "f2": "最多 5 个版块和 100 名成员",
-        "f3": "会员管理、媒体和内容审核",
+        "f3": "最多 {tiers} 种会员资格（含付费），媒体和内容审核",
         "f4": "每月 500 AI 额度"
       },
       "STARTER": {
-        "tagline": "当你想要开始变现",
+        "tagline": "适用于商店、商品和数据统计",
         "f1": "包含 Free 的全部功能",
         "f2": "数据分析、商品与打款",
         "f3": "商店、聊天、打赏、日历与规划器",
@@ -4681,7 +5304,7 @@
     "compare": {
       "eyebrow": "详细信息",
       "title": "各套餐包含的内容",
-      "subtitle": "每一行都是你可以在控制台中立即使用的功能。切换套餐不会失去任何功能——只会不断增加。",
+      "subtitle": "每一行都是你可以在控制台中立即使用的功能。升级到更大的套餐时，功能只会增加。",
       "spacesGroup": "版块类型",
       "featuresGroup": "功能",
       "limitsGroup": "限制",
@@ -4697,8 +5320,17 @@
       "limitStorage": "媒体存储空间",
       "limitCredits": "每月 AI 额度",
       "storageValue": "{gb} GB",
-      "note": "合作伙伴的推广代码可立即解锁你的套餐——无需填写支付信息。"
-    }
+      "note": "合作伙伴的推广代码可立即解锁你的套餐——无需填写支付信息。",
+      "feeNote": "你的社区中每笔销售我们收取 {fee} 的平台费——所有套餐相同。此外还需支付支付服务商（Stripe）的手续费。",
+      "feesGroup": "费用",
+      "feePlatform": "销售手续费",
+      "feeProvider": "支付服务商手续费",
+      "feeProviderValue": "按 Stripe 费率",
+      "membersNote": "活跃成员指你社区中的所有成员——包括你和你的团队，免费和付费成员都算在内。达到上限后，新成员需在升级套餐后才能加入。",
+      "scrollHint": "左右滑动以对比",
+      "tableLabel": "套餐对比"
+    },
+    "feeLine": "销售手续费：{fee}"
   },
   "marketing": {
     "navDiscover": "发现",
@@ -4722,7 +5354,10 @@
     "footerPrivacy": "隐私政策",
     "footerWithdrawal": "撤回权说明",
     "footerTagline": "你的社区。你的品牌。你的事业。",
-    "navBlog": "Blog"
+    "navBlog": "Blog",
+    "availableFrom": "{plan} 及以上：{items}",
+    "footerContact": "联系我们",
+    "legalGermanOnly": "本法律文本仅提供德语版本，以德语版本为准。"
   },
   "home": {
     "badge": "社区 · 会员 · 电商",
@@ -4798,7 +5433,7 @@
       "c1": {
         "title": "覆盖你所有创作的空间",
         "text": "动态、论坛、博客和知识库，图片图库、视频库和播客，还有聊天、链接合集和自有广告位。每个空间都可以对所有人开放、仅限会员或仅限付费会员 — 并且到处都能评论和互动。",
-        "tag1": "14 种空间类型",
+        "tag1": "{count} 种空间类型",
         "tag2": "可见性自由设置",
         "tag3": "帖子、评论与互动"
       },
@@ -4896,11 +5531,11 @@
       "colYou": "Aera",
       "rowBase": "每月基础价格",
       "rowFee": "从你收入中抽取",
-      "rowFull": "完整功能起价",
+      "rowFull": "全部功能起价",
       "aera": {
         "base": "0 — 免费开始",
-        "fee": "5 %",
-        "full": "每月 {pro}"
+        "fee": "{fee}",
+        "full": "每月 {price}（{plan}）"
       },
       "patreon": {
         "name": "Patreon",
@@ -4921,26 +5556,27 @@
         "full": "99 美元（Pro）"
       },
       "footnote": "数据取自各家公开价格页，截至 2026 年 7 月。支付服务商的手续费（约 2.9 % + 0.30）在所有平台都要另计——我们也一样。",
-      "includedTitle": "Aera 已包含，无需加价",
+      "includedTitle": "所有套餐均包含",
       "included": {
         "i1": {
-          "title": "20 个板块",
-          "text": "动态、论坛、课程、邮件通讯、活动、博客、知识库、图库、视频、商店、聊天、播客、直播等——都在同一处。"
+          "title": "{count} 个核心版块",
+          "text": "{list}——全部集中在一处。"
         },
         "i2": {
-          "title": "四条收入线，一个结账",
-          "text": "会员、数字商品、付费内容和活动都走同一个收银台。"
+          "title": "第一天就能设置会员",
+          "text": "最多 {tiers} 种免费或付费会员资格，外加付费内容——全部通过同一个结账流程。"
         },
         "i3": {
           "title": "你的品牌，你的地址",
-          "text": "自有域名、自有配色、自有标识。成员看到的是你，不是我们。"
+          "text": "自己的标志、自己的配色，以及 Aera 上属于你的地址。成员看到的是你，而不是我们。"
         },
         "i4": {
-          "title": "数据始终属于你",
-          "text": "成员、内容与收入随时可导出。"
+          "title": "内置 AI 助手",
+          "text": "每月 {credits} AI 积分用于文案和创意，另有 {gb} GB 媒体存储空间。"
         }
       }
-    }
+    },
+    "fromPlan": "{plan} 及以上"
   },
   "legalPurchase": {
     "immediateAccess": "我要求立即获得访问权限，并知悉数字内容开始交付后我的撤回权即告终止。<withdrawal>详情</withdrawal>。",
@@ -4965,24 +5601,25 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "无法开始付款。未产生任何扣款。请过几分钟再试。"
   },
   "ui": {
     "auth": {
-      "inviteMeta": "接受邀请 — Aera",
+      "inviteMeta": "接受邀请",
       "inviteInvalidTitle": "邀请无效",
       "inviteInvalidText": "这个邀请链接已过期或已被使用。请向社区管理员索取新的邀请；如果你的账号已经启用，可以使用“忘记密码”。",
       "forgotPassword": "忘记密码",
       "inviteWelcome": "欢迎来到 Aera",
       "inviteActivate": "设置密码以启用账号 {email}。",
-      "resetMeta": "重设密码 — Aera",
+      "resetMeta": "重设密码",
       "invalidLinkTitle": "链接无效",
       "resetInvalidText": "这个链接已过期或已被使用。",
       "requestNewLink": "申请新链接",
       "resetTitle": "设置新密码",
       "forAccount": "用于账号 {email}",
-      "verifyMeta": "确认邮箱 — Aera",
-      "verifyInvalidText": "这个确认链接已过期或无效。请登录后在账号中申请新链接。",
+      "verifyMeta": "确认邮箱",
+      "verifyInvalidText": "此验证链接已过期或已被使用。请申请新的链接。",
       "toLogin": "去登录",
       "alreadyVerifiedTitle": "已确认",
       "verifiedTitle": "邮箱已确认",
@@ -5009,10 +5646,12 @@
       "rootDescription": "Aera 是创作者的一站式平台：社区、会员、课程、活动、邮件通讯、销售与 AI，全部以你自己的品牌呈现。",
       "loginMeta": "登录",
       "signupMeta": "注册",
-      "forgotMeta": "忘记密码 — Aera",
+      "forgotMeta": "忘记密码",
       "pricingMeta": "价格",
       "featuresMeta": "功能",
-      "manifestDescription": "你的社区：帖子、课程、活动和消息，都在一处。"
+      "manifestDescription": "你的社区：帖子、课程、活动和消息，都在一处。",
+      "verifyInvalidVerified": "此链接已失效，但你的邮箱地址已经验证过了。",
+      "loginForNewLink": "登录以获取新链接"
     },
     "emails": {
       "sentVia": "通过 Aera 发送",
@@ -5053,7 +5692,7 @@
       "remove": "移除",
       "uploadImage": "上传图片",
       "uploadCover": "上传封面",
-      "uploadHeader": "上传页眉图片",
+      "uploadHeader": "上传封面图",
       "headerHint": "建议 1600 × 400 px · 最大 5 MB",
       "appliedImmediately": "立即生效。",
       "otherVideo": "选择其他视频",
@@ -5065,7 +5704,7 @@
       "uploadingAudio": "正在上传音频…",
       "uploadAudio": "上传音频",
       "audioHint": "MP3、M4A、WAV 或 OGG · 最大 256 MB",
-      "imageHint": "JPG、PNG、WebP 或 GIF · 最大 5 MB",
+      "imageHint": "JPG、PNG、WebP 或 GIF · 最大 5 MB · 最好为正方形，至少 512 × 512 px",
       "coverHint": "JPG、PNG、WebP · 最大 5 MB",
       "close": "关闭",
       "coverBadge": "封面",
@@ -5087,7 +5726,8 @@
       "imageTooLarge": "图片超过 5 MB。",
       "allCommunities": "全部社区",
       "newCommunity": "新建社区",
-      "createNewCommunity": "创建一个新社区"
+      "createNewCommunity": "创建一个新社区",
+      "coverAlt": "封面图"
     },
     "frontend": {
       "homeSidebar": {
@@ -5097,7 +5737,8 @@
         "yourCommunities": "你的社区",
         "create": "创建",
         "memberships": "你的会员",
-        "login": "登录"
+        "login": "登录",
+        "creatorArea": "创作者后台"
       },
       "chatHub": {
         "title": "聊天",
@@ -5160,7 +5801,8 @@
       "notFound": {
         "title": "页面未找到",
         "text": "这个社区或页面不存在。",
-        "home": "返回首页"
+        "home": "返回首页",
+        "help": "前往帮助中心"
       },
       "articleShare": {
         "label": "分享",
@@ -5243,6 +5885,9 @@
       "bundle": "组合包",
       "tagline": "标语",
       "logoUrl": "标志地址"
+    },
+    "pricePoint": {
+      "free": "免费"
     }
   },
   "unsubscribe": {
@@ -5288,11 +5933,26 @@
     "preparing": "正在准备 …",
     "verifying": "正在校验 …",
     "done": "完成",
-    "failed": "失败",
     "secondsLeft": "{count, plural, other {还剩 # 秒}}",
     "minutesLeft": "{count, plural, other {还剩 # 分钟}}",
     "more": "{count, plural, other {还有 # 个}}",
-    "dismiss": "隐藏"
+    "dismiss": "隐藏",
+    "retry": "重新上传",
+    "doneAnnounce": "已上传：{names}",
+    "errors": {
+      "connection": "连接存储失败。请检查网络连接后重试。",
+      "canceled": "上传已中断，请重试。",
+      "storageRejected": "存储拒绝了该文件。请重试；如果再次出现，请联系支持。",
+      "notStarted": "无法开始上传，请稍后重试。",
+      "verification": "上传后无法检查该文件，请重试。",
+      "rejected": "文件未通过检查。请检查文件类型和内容，或选择其他文件。",
+      "quota": "存储空间已满。请在媒体库中删除一些媒体，或升级到更大的套餐。",
+      "tooMany": "短时间内上传次数过多。请稍候再试。",
+      "signedOut": "你已退出登录。请重新登录后再上传文件。",
+      "unavailable": "目前无法上传。请几分钟后再试。",
+      "invalid": "此文件无法在这里上传。请检查文件类型和大小。",
+      "failed": "上传失败，请重试。"
+    }
   },
   "blog": {
     "metaTitle": "Blog",

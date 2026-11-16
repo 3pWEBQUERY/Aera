@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
@@ -50,6 +51,12 @@ const BACKDROPS: Backdrop[] = [
     lqip: "data:image/webp;base64,UklGRnQAAABXRUJQVlA4IGgAAAAwBACdASoYABAAPt1cpkyopSOiMAgBEBuJZgCdMoMYAEmgyWj77Jy0FAAA/vDV7FtOeAejSzrpU361tFb8MFOLcKYRGE/cU+asG0D7dAkWtEJGqJBNECctFlqWxaQY/6b8C7zYGRAAAA==",
   },
 ];
+
+/** Titel in der aktiven Sprache — sonst stuende der deutsche Plattform-Titel im Tab. */
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("ui.frontend.notFound");
+  return { title: t("title"), description: t("text") };
+}
 
 export default async function NotFound() {
   await connection();
@@ -106,26 +113,34 @@ export default async function NotFound() {
             <p className="mt-5 max-w-md text-base leading-7 text-white/75 sm:text-lg sm:leading-8">
               {t("text")}
             </p>
-            <Link
-              href="/"
-              className="group mt-9 inline-flex items-center gap-2.5 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 shadow-lg shadow-black/25 transition hover:bg-white/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
-            >
-              {t("home")}
-              <svg
-                viewBox="0 0 24 24"
-                width="16"
-                height="16"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-                className="transition-transform duration-200 group-hover:translate-x-0.5"
+            <div className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3">
+              <Link
+                href="/"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-white px-6 py-3.5 text-sm font-semibold text-slate-900 shadow-lg shadow-black/25 transition hover:bg-white/90 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-black/40"
               >
-                <path d="M5 12h14M13 6l6 6-6 6" />
-              </svg>
-            </Link>
+                {t("home")}
+                <svg
+                  viewBox="0 0 24 24"
+                  width="16"
+                  height="16"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                  className="transition-transform duration-200 group-hover:translate-x-0.5"
+                >
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </Link>
+              <Link
+                href="/hilfe"
+                className="inline-flex items-center rounded-full px-1 py-3.5 text-sm font-semibold text-white underline underline-offset-4 transition hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+              >
+                {t("help")}
+              </Link>
+            </div>
           </div>
         </div>
       </div>

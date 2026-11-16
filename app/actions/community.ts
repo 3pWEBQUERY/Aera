@@ -126,6 +126,8 @@ export async function createCommunityAction(
     description: tSeed(`spaceDesc.${b.type}`),
     visibility: access === "MEMBERS" && b.visibility === "PUBLIC" ? ("MEMBERS" as const) : b.visibility,
     sortOrder: i,
+    // Ankündigungen schreibt das Team; Mitglieder lesen und kommentieren.
+    ...(b.postingPolicy ? { settings: { postingPolicy: b.postingPolicy } } : {}),
   }));
 
   const tenant = await prisma.tenant.create({

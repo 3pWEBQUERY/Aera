@@ -23,9 +23,10 @@ import {
   tenantHasFeature,
 } from "@/lib/plan";
 import { planAllowsSpaceType, minPlanForSpaceType } from "@/lib/plan-features";
+import { SPACE_CONTENT_COUNT_SELECT, sumSpaceContent } from "@/lib/space-content";
 import { PLANS } from "@/lib/credit-plans";
 import { hashPassword, getCurrentUser } from "@/lib/auth";
-import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
+import { grantEntitlement, revokePreviousTierEntitlement, MEMBER_POST_SPACE_TYPES } from "@/lib/entitlements";
 import {
   spaceSchema,
   tierSchema,
@@ -34,6 +35,7 @@ import {
   campaignSchema,
 } from "@/lib/validation";
 import { slugify } from "@/lib/utils";
+import { z } from "zod";
 import { isAllowedOneTimePriceCents } from "@/lib/apple-products";
 import { sendEmail, renderAccountActionHtml, renderCampaignHtml } from "@/lib/email";
 import { signAccountToken, inviteUrl } from "@/lib/tokens";
@@ -50,7 +52,12 @@ import { parsePostSettingsForm, savePostSettings } from "@/lib/post-settings";
 import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
 import { canManageTenantMembership } from "@/lib/capabilities";
-import { queueNewsletterAudienceBatch } from "@/lib/newsletter-delivery";
+import {
+  countNewsletterAudience,
+  queueNewsletterAudienceBatch,
+  type AudienceRules,
+} from "@/lib/newsletter-delivery";
+import { parseLocalDateTime } from "@/lib/local-datetime";
 import type { Prisma, Visibility } from "@/app/generated/prisma/client";
 import { getTranslations } from "next-intl/server";
 import {
@@ -60,7 +67,7 @@ import {
 } from "@/lib/stripe-cleanup";
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion } from "@/lib/data-lifecycle";
-import { safeHexColor } from "@/lib/color";
+import { normalizeHexColor } from "@/lib/color";
 import { parseBadgeCriteria } from "@/lib/badges";
 
 export interface ActionState {
@@ -68,17 +75,69 @@ export interface ActionState {
   ok?: boolean;
   /** Invite link for freshly created member accounts (copy & share). */
   inviteUrl?: string;
+  /** Id des gerade angelegten Datensatzes (z. B. Kurs → direkt bearbeiten). */
+  createdId?: string;
+  /**
+   * Mitglied hinzufügen: was wirklich passiert ist, damit die Oberfläche es
+   * ehrlich sagen kann (Einladung verschickt, nur Link, bestehendes Konto).
+   */
+  memberAdded?: {
+    email: string;
+    role: string;
+    newAccount: boolean;
+    inviteEmailSent: boolean;
+  };
+  /** Zeitpunkt des Speicherns (ISO), für „Gespeichert · 14:32“. */
+  savedAt?: string;
 }
 
 const ok: ActionState = { ok: true };
 
 // ---------------------------------------------------------------- Spaces
+/**
+ * Zugang eines bezahlten Space festlegen.
+ *
+ * Der Key kommt aus einer Auswahl, nicht aus Freitext — trotzdem darf die
+ * Action ihm nicht trauen: Ein Key, den kein Tarif vergibt, würde auch
+ * zahlende Mitglieder aussperren. Erlaubt sind deshalb nur die Keys der
+ * bezahlten Mitgliedschaften dieses Tenants; leer heisst "jede bezahlte
+ * Mitgliedschaft" (Visibility PAID ohne Key, siehe lib/entitlements#canAccess).
+ * Ein schon gespeicherter Key bleibt beim Bearbeiten gültig, damit ältere
+ * Spaces nicht beim nächsten Speichern ihre Regel verlieren.
+ */
+async function resolveSpaceAccessKey(
+  tenantId: string,
+  visibility: string,
+  rawKey: string | undefined,
+  currentKey: string | null = null,
+): Promise<{ key: string | null; error?: undefined } | { error: string }> {
+  if (visibility !== "PAID") return { key: null };
+  const key = (rawKey ?? "").trim();
+  if (!key) return { key: null };
+  if (currentKey && key === currentKey) return { key };
+  const tier = await prisma.membershipTier.findFirst({
+    where: { tenantId, entitlementKey: key, priceCents: { gt: 0 } },
+    select: { id: true },
+  });
+  if (!tier) return { error: await tErr("spaceAccessTierInvalid") };
+  return { key };
+}
+
+/** Anzahl aller Inhalte eines Space (siehe lib/space-content). */
+async function spaceContentCount(tenantId: string, spaceId: string): Promise<number> {
+  const row = await prisma.space.findFirst({
+    where: { id: spaceId, tenantId },
+    select: { _count: { select: SPACE_CONTENT_COUNT_SELECT } },
+  });
+  return row ? sumSpaceContent(row._count) : 0;
+}
+
 export async function createSpaceAction(
   _p: ActionState,
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const parsed = spaceSchema.safeParse({
     name: fd.get("name"),
     type: fd.get("type"),
@@ -109,6 +168,12 @@ export async function createSpaceAction(
       }),
     };
   }
+  const access = await resolveSpaceAccessKey(
+    tenant.id,
+    parsed.data.visibility,
+    parsed.data.requiredEntitlementKey,
+  );
+  if (access.error !== undefined) return { error: access.error };
 
   const space = await prisma.space.create({
     data: {
@@ -118,11 +183,15 @@ export async function createSpaceAction(
       type: parsed.data.type,
       description: parsed.data.description || null,
       visibility: parsed.data.visibility,
-      requiredEntitlementKey: parsed.data.requiredEntitlementKey || null,
+      requiredEntitlementKey: access.key,
       sortOrder: await prisma.space.count({ where: { tenantId: tenant.id } }),
+      ...(MEMBER_POST_SPACE_TYPES.has(parsed.data.type) && fd.get("postingPolicy") === "team"
+        ? { settings: { postingPolicy: "team" } }
+        : {}),
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.create",
     targetType: "Space",
@@ -134,26 +203,49 @@ export async function createSpaceAction(
   return ok;
 }
 
-export async function toggleSpaceArchiveAction(fd: FormData): Promise<void> {
+/**
+ * Archivieren / Wiederherstellen. `archive` sagt, welcher Zustand gewollt ist —
+ * so macht ein doppelter Klick (oder "Rückgängig" nach einem Neuladen) nicht
+ * versehentlich das Gegenteil. Ohne `archive` wird wie bisher umgeschaltet.
+ */
+export async function toggleSpaceArchiveAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const wanted = fd.get("archive");
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id },
   });
-  if (space) {
-    // Un-archiving consumes a slot again — check the budget before it does.
-    if (space.isArchived && !(await checkSpaceLimit(tenant.id)).allowed) {
-      revalidatePath(`/dashboard/${slug}/spaces`);
-      return;
+  if (!space) return { error: await tErr("spaceNotFound") };
+  const archive = wanted === "true" ? true : wanted === "false" ? false : !space.isArchived;
+  if (archive === space.isArchived) return ok;
+  // Un-archiving consumes a slot again — check the budget before it does.
+  if (!archive) {
+    const budget = await checkSpaceLimit(tenant.id);
+    if (!budget.allowed) {
+      return {
+        error: await tErr("planSpaceLimitReached", {
+          limit: budget.limit ?? 0,
+          plan: PLANS[budget.plan].name,
+        }),
+      };
     }
-    await prisma.space.update({
-      where: { id: space.id },
-      data: { isArchived: !space.isArchived },
-    });
   }
+  await prisma.space.update({
+    where: { id: space.id },
+    data: { isArchived: archive },
+  });
+  await writeAudit({
+    actorUserId: user.id,
+    tenantId: tenant.id,
+    action: archive ? "space.archive" : "space.restore",
+    targetType: "Space",
+    targetId: space.id,
+  });
   revalidatePath(`/dashboard/${slug}/spaces`);
   revalidatePath(`/dashboard/${slug}`, "layout");
+  revalidatePath(`/c/${slug}`);
+  return ok;
 }
 
 export async function updateSpaceAction(
@@ -161,7 +253,7 @@ export async function updateSpaceAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const spaceId = String(fd.get("spaceId"));
   const parsed = spaceSchema.safeParse({
     name: fd.get("name"),
@@ -181,6 +273,12 @@ export async function updateSpaceAction(
   // Changing an existing space's type must respect the package too — otherwise
   // "create a Feed, then switch it to Podcast" would be a free upgrade.
   if (parsed.data.type !== space.type) {
+    // Ein anderer Typ liest andere Tabellen: Vorhandene Inhalte wären danach
+    // unsichtbar. Deshalb ist der Typ gesperrt, sobald es Inhalte gibt.
+    const contentCount = await spaceContentCount(tenant.id, space.id);
+    if (contentCount > 0) {
+      return { error: await tErr("spaceTypeLockedContent", { count: contentCount }) };
+    }
     const plan = await getTenantPlan(tenant.id);
     if (!planAllowsSpaceType(plan, parsed.data.type)) {
       return {
@@ -190,6 +288,26 @@ export async function updateSpaceAction(
       };
     }
   }
+  const access = await resolveSpaceAccessKey(
+    tenant.id,
+    parsed.data.visibility,
+    parsed.data.requiredEntitlementKey,
+    space.requiredEntitlementKey,
+  );
+  if (access.error !== undefined) return { error: access.error };
+
+  // Wer postet: nur fuer Feed und Forum, und nur wenn das Formular das Feld
+  // mitschickt — sonst bleibt die bisherige Einstellung unangetastet.
+  const rawPolicy = fd.get("postingPolicy");
+  const settings =
+    MEMBER_POST_SPACE_TYPES.has(parsed.data.type) && (rawPolicy === "team" || rawPolicy === "members")
+      ? {
+          ...(space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
+            ? (space.settings as Record<string, unknown>)
+            : {}),
+          postingPolicy: rawPolicy,
+        }
+      : undefined;
 
   // Slug stays stable so existing links keep working.
   await prisma.space.update({
@@ -199,10 +317,12 @@ export async function updateSpaceAction(
       type: parsed.data.type,
       description: parsed.data.description || null,
       visibility: parsed.data.visibility,
-      requiredEntitlementKey: parsed.data.requiredEntitlementKey || null,
+      requiredEntitlementKey: access.key,
+      ...(settings ? { settings: settings as Prisma.InputJsonValue } : {}),
     },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.update",
     targetType: "Space",
@@ -217,13 +337,14 @@ export async function updateSpaceAction(
 export async function deleteSpaceAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id },
   });
   if (space) {
     await prisma.space.delete({ where: { id: space.id } });
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "space.delete",
       targetType: "Space",
@@ -302,7 +423,7 @@ export async function updateTierAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const tierId = String(fd.get("tierId"));
   const parsed = tierSchema.safeParse({
     name: fd.get("name"),
@@ -352,6 +473,7 @@ export async function updateTierAction(
   }
 
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "tier.update",
     targetType: "MembershipTier",
@@ -364,7 +486,7 @@ export async function updateTierAction(
 
 export async function deleteTierAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const tierId = String(fd.get("tierId"));
   const tier = await prisma.membershipTier.findFirst({
     where: { id: tierId, tenantId: tenant.id },
@@ -382,6 +504,7 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
       data: { isPublic: false },
     });
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "tier.delete.blocked",
       targetType: "MembershipTier",
@@ -390,7 +513,9 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
     });
     revalidatePath(`/dashboard/${slug}/tiers`);
     revalidatePath(`/c/${slug}/join`);
-    return { error: await tErr("paidTierArchivedInsteadOfDeleted") };
+    // Kein Fehler: Die Rueckfrage hat bereits "ausblenden" angekuendigt
+    // (confirmHide), genau das ist passiert.
+    return { ok: true };
   }
 
   const incompleteLocalSubscriptions = await prisma.subscription.count({
@@ -398,6 +523,7 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
   });
   if (incompleteLocalSubscriptions > 0) {
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "tier.delete.blocked",
       targetType: "MembershipTier",
@@ -423,6 +549,7 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
     );
   } catch (error) {
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "tier.delete.blocked",
       targetType: "MembershipTier",
@@ -449,6 +576,7 @@ export async function deleteTierAction(fd: FormData): Promise<ActionState> {
     await tx.membershipTier.delete({ where: { id: tier.id } });
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "tier.delete",
     targetType: "MembershipTier",
@@ -489,6 +617,121 @@ function productShippingData(fd: FormData, type: string) {
   };
 }
 
+const productCourseIdSchema = z.string().trim().min(1).max(64);
+
+/**
+ * Preis eines Produkts: digitale Typen wählen eine Preisstufe, und auch
+ * „Kostenlos" (0) muss bewusst gewählt sein — ein leeres Feld ist kein Preis.
+ */
+async function productPriceError(fd: FormData, type: string): Promise<string | null> {
+  if (type === "PHYSICAL") return null;
+  const raw = fd.get("priceCents");
+  return raw === null || String(raw).trim() === "" ? tErr("productPriceRequired") : null;
+}
+
+/**
+ * „Datei für Käufer" (nur DIGITAL, Pflicht): ein eigener Upload dieser
+ * Community (`/api/media/…`, nur für Käufer lesbar, siehe lib/media-access)
+ * oder ein http(s)-Link. Andere Typen haben keine Datei.
+ */
+async function productDownloadUrl(
+  tenantId: string,
+  fd: FormData,
+  type: string,
+): Promise<{ url: string | null } | { error: string }> {
+  if (type !== "DIGITAL") return { url: null };
+  const value = String(fd.get("downloadUrl") ?? "").trim();
+  if (!value) return { error: await tErr("productFileRequired") };
+  if (value.length > 2000) return { error: await tErr("productFileUrlInvalid") };
+  if (value.startsWith("/api/media/")) {
+    const own = await prisma.storageObject.findFirst({
+      where: { tenantId, url: value },
+      select: { id: true },
+    });
+    return own ? { url: value } : { error: await tErr("productFileRequired") };
+  }
+  try {
+    const parsed = new URL(value);
+    if (parsed.protocol === "https:" || parsed.protocol === "http:") return { url: value };
+  } catch {
+    // fällt unten durch
+  }
+  return { error: await tErr("productFileUrlInvalid") };
+}
+
+/**
+ * Was ein Kauf freischaltet (`grantsEntitlementKey`). Jeder Kaufpfad (Stripe-
+ * Webhook, kostenloser Kauf, Apple) vergibt genau diesen Schlüssel.
+ *
+ * - COURSE_ACCESS: der Schlüssel, den der gewählte Kurs verlangt. Hat der Kurs
+ *   noch keinen, bekommt er `course:<slug>` (`lockCourseId`) — danach ist er
+ *   nur noch für Käufer und das Team offen. Ein Kurs, der an eine
+ *   Mitgliedschaft gebunden ist (`tier:…`), wird nicht einzeln verkauft: der
+ *   Kauf teilte sich sonst die Berechtigung mit dem Abo, das beim Kündigen
+ *   wieder entzogen wird.
+ * - TIER_GRANT: aus demselben Grund nicht mehr anlegbar; BUNDLE ebenso, weil
+ *   kein Inhalt `product:<slug>` verlangt. Bestehende Produkte behalten beim
+ *   Bearbeiten ihren Schlüssel.
+ * - sonst: `product:<slug>` (bestehende Schlüssel bleiben unverändert).
+ */
+async function productGrant(
+  tenantId: string,
+  fd: FormData,
+  type: string,
+  productSlug: string,
+  current?: { type: string; grantsEntitlementKey: string | null },
+): Promise<{ key: string | null; lockCourseId: string | null } | { error: string }> {
+  if (type === "COURSE_ACCESS") {
+    const parsedCourseId = productCourseIdSchema.safeParse(fd.get("courseId") ?? "");
+    if (!parsedCourseId.success) return { error: await tErr("productCourseRequired") };
+    const course = await prisma.course.findFirst({
+      where: { id: parsedCourseId.data, tenantId },
+      select: { id: true, slug: true, requiredEntitlementKey: true },
+    });
+    if (!course) return { error: await tErr("courseNotFound") };
+    if (course.requiredEntitlementKey && !course.requiredEntitlementKey.startsWith("course:")) {
+      return { error: await tErr("productCourseGated") };
+    }
+    return course.requiredEntitlementKey
+      ? { key: course.requiredEntitlementKey, lockCourseId: null }
+      : { key: `course:${course.slug}`, lockCourseId: course.id };
+  }
+  if (type === "TIER_GRANT" || type === "BUNDLE") {
+    if (current?.type !== type) return { error: await tErr("productTypeUnavailable") };
+    return { key: current.grantsEntitlementKey, lockCourseId: null };
+  }
+  const keep = current?.grantsEntitlementKey;
+  if (current && (keep === null || keep?.startsWith("product:"))) {
+    return { key: keep, lockCourseId: null };
+  }
+  return { key: `product:${productSlug}`, lockCourseId: null };
+}
+
+/** Sperrt einen bisher offenen Kurs auf den Schlüssel seines Kurszugang-Produkts. */
+async function lockCourseForProduct(tenantId: string, courseId: string, key: string) {
+  await prisma.course.updateMany({
+    where: { id: courseId, tenantId, requiredEntitlementKey: null },
+    data: { requiredEntitlementKey: key },
+  });
+}
+
+/**
+ * Gegenstück zu lockCourseForProduct: verkauft kein anderes Produkt den
+ * Kursschlüssel mehr, ist der Kurs wieder für alle Mitglieder offen (sonst
+ * bliebe er gesperrt, ohne dass man ihn kaufen kann).
+ */
+async function releaseCourseLock(tenantId: string, key: string | null, productId: string) {
+  if (!key?.startsWith("course:")) return;
+  const otherSellers = await prisma.product.count({
+    where: { tenantId, grantsEntitlementKey: key, id: { not: productId } },
+  });
+  if (otherSellers > 0) return;
+  await prisma.course.updateMany({
+    where: { tenantId, requiredEntitlementKey: key },
+    data: { requiredEntitlementKey: null },
+  });
+}
+
 export async function createProductAction(
   _p: ActionState,
   fd: FormData,
@@ -498,17 +741,24 @@ export async function createProductAction(
   // Package gate — server actions stay reachable after a downgrade.
   const planBlocked = await featureBlocked(tenant.id, "products");
   if (planBlocked) return { error: planBlocked };
+  // downloadUrl is checked by productDownloadUrl (own uploads are relative).
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
     description: fd.get("description") ?? "",
     priceCents: fd.get("priceCents"),
     type: fd.get("type"),
-    downloadUrl: fd.get("downloadUrl") ?? "",
+    downloadUrl: "",
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const priceError = await productPriceError(fd, parsed.data.type);
+  if (priceError) return { error: priceError };
+  const download = await productDownloadUrl(tenant.id, fd, parsed.data.type);
+  if ("error" in download) return { error: download.error };
 
   const productSlug = await uniqueChildSlug("product", tenant.id, parsed.data.name);
+  const grant = await productGrant(tenant.id, fd, parsed.data.type, productSlug);
+  if ("error" in grant) return { error: grant.error };
   const images = productImages(fd);
   const product = await prisma.product.create({
     data: {
@@ -519,14 +769,17 @@ export async function createProductAction(
       priceCents: parsed.data.priceCents,
       currency: PLATFORM_CURRENCY,
       type: parsed.data.type,
-      downloadUrl: parsed.data.downloadUrl || null,
+      downloadUrl: download.url,
       images,
       coverUrl: images[0] ?? (String(fd.get("coverUrl") || "") || null),
       isPublished: fd.get("isPublished") !== "false",
-      grantsEntitlementKey: `product:${productSlug}`,
+      grantsEntitlementKey: grant.key,
       ...productShippingData(fd, parsed.data.type),
     },
   });
+  if (grant.lockCourseId && grant.key) {
+    await lockCourseForProduct(tenant.id, grant.lockCourseId, grant.key);
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "PRODUCT",
@@ -543,27 +796,42 @@ export async function updateProductAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   // Package gate — server actions stay reachable after a downgrade.
   const planBlocked = await featureBlocked(tenant.id, "products");
   if (planBlocked) return { error: planBlocked };
   const productId = String(fd.get("productId"));
+  // downloadUrl is checked by productDownloadUrl (own uploads are relative).
   const parsed = productSchema.safeParse({
     name: fd.get("name"),
     description: fd.get("description") ?? "",
     priceCents: fd.get("priceCents"),
     type: fd.get("type"),
-    downloadUrl: fd.get("downloadUrl") ?? "",
+    downloadUrl: "",
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
+  const priceError = await productPriceError(fd, parsed.data.type);
+  if (priceError) return { error: priceError };
 
   const product = await prisma.product.findFirst({
     where: { id: productId, tenantId: tenant.id },
   });
   if (!product) return { error: await tErr("productNotFound") };
+  const download = await productDownloadUrl(tenant.id, fd, parsed.data.type);
+  if ("error" in download) return { error: download.error };
 
-  // Slug + grantsEntitlementKey stay stable so existing purchases keep access.
+  // Slug + grantsEntitlementKey stay stable so existing purchases keep access:
+  // once an order exists, what the product unlocks can no longer change.
+  const grant = await productGrant(tenant.id, fd, parsed.data.type, product.slug, product);
+  if ("error" in grant) return { error: grant.error };
+  const grantChanged = grant.key !== product.grantsEntitlementKey;
+  if (grantChanged) {
+    const orders = await prisma.order.count({
+      where: { tenantId: tenant.id, productId: product.id },
+    });
+    if (orders > 0) return { error: await tErr("productGrantLocked") };
+  }
   const imagesSubmitted = fd.get("imagesSubmitted") !== null;
   const cover = fd.get("coverUrl");
   const images = productImages(fd);
@@ -574,7 +842,8 @@ export async function updateProductAction(
       description: parsed.data.description || null,
       priceCents: parsed.data.priceCents,
       type: parsed.data.type,
-      downloadUrl: parsed.data.downloadUrl || null,
+      downloadUrl: download.url,
+      grantsEntitlementKey: grant.key,
       isPublished: fd.get("isPublished") !== "false",
       // The gallery field drives both the image list and the cover.
       ...(imagesSubmitted
@@ -585,6 +854,10 @@ export async function updateProductAction(
       ...productShippingData(fd, parsed.data.type),
     },
   });
+  if (grantChanged) await releaseCourseLock(tenant.id, product.grantsEntitlementKey, product.id);
+  if (grant.lockCourseId && grant.key) {
+    await lockCourseForProduct(tenant.id, grant.lockCourseId, grant.key);
+  }
   await indexContent({
     tenantId: tenant.id,
     sourceType: "PRODUCT",
@@ -593,6 +866,7 @@ export async function updateProductAction(
     content: parsed.data.description || parsed.data.name,
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "product.update",
     targetType: "Product",
@@ -604,7 +878,7 @@ export async function updateProductAction(
 
 export async function deleteProductAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const productId = String(fd.get("productId"));
   const product = await prisma.product.findFirst({
     where: { id: productId, tenantId: tenant.id },
@@ -622,6 +896,7 @@ export async function deleteProductAction(fd: FormData): Promise<ActionState> {
   });
   if (linkedOrders > 0) {
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "product.delete.blocked",
       targetType: "Product",
@@ -635,7 +910,10 @@ export async function deleteProductAction(fd: FormData): Promise<ActionState> {
 
   await removeFromIndex(tenant.id, "PRODUCT", product.id);
   await prisma.product.delete({ where: { id: product.id } });
+  // No orders exist, so nobody bought the course through this product.
+  await releaseCourseLock(tenant.id, product.grantsEntitlementKey, product.id);
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "product.delete",
     targetType: "Product",
@@ -649,8 +927,8 @@ export async function deleteProductAction(fd: FormData): Promise<ActionState> {
 /** Parse the online/offline delivery fields of a course from a form. */
 function courseFormatData(fd: FormData) {
   const format = String(fd.get("format") || "ONLINE") === "OFFLINE" ? "OFFLINE" : "ONLINE";
-  const startsRaw = String(fd.get("startsAt") || "");
-  const startsAt = startsRaw ? new Date(startsRaw) : null;
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(fd.get("startsAt"), fd.get("timezoneOffset"));
   const cap = Number(fd.get("capacity") || 0);
   return {
     format,
@@ -658,9 +936,48 @@ function courseFormatData(fd: FormData) {
     streamUrl: String(fd.get("streamUrl") || "") || null,
     location: String(fd.get("location") || "") || null,
     address: String(fd.get("address") || "") || null,
-    startsAt: startsAt && !isNaN(startsAt.getTime()) ? startsAt : null,
+    startsAt,
     capacity: cap > 0 ? cap : null,
   };
+}
+
+/**
+ * Legt den Standard-Space für Kurse bzw. Events an, wenn es noch keinen gibt.
+ * Läuft wie ein normales „Space erstellen“ durch Paket-Gate und Space-Limit,
+ * sonst ließe sich das Limit über „Kurs erstellen“ umgehen.
+ */
+async function createDefaultContentSpace(
+  tenantId: string,
+  type: "COURSE" | "EVENTS",
+  name: string,
+): Promise<{ space: { id: string } } | { error: string }> {
+  const plan = await getTenantPlan(tenantId);
+  if (!planAllowsSpaceType(plan, type)) {
+    return {
+      error: await tErr("planSpaceTypeLocked", { plan: PLANS[minPlanForSpaceType(type)].name }),
+    };
+  }
+  const budget = await checkSpaceLimit(tenantId);
+  if (!budget.allowed) {
+    return {
+      error: await tErr(type === "COURSE" ? "planAutoSpaceCourse" : "planAutoSpaceEvents", {
+        limit: budget.limit ?? 0,
+        plan: PLANS[plan].name,
+      }),
+    };
+  }
+  const space = await prisma.space.create({
+    data: {
+      tenantId,
+      name,
+      slug: await uniqueChildSlug("space", tenantId, name),
+      type,
+      visibility: "MEMBERS",
+      sortOrder: await prisma.space.count({ where: { tenantId } }),
+    },
+  });
+  await writeAudit({ tenantId, action: "space.create", targetType: "Space", targetId: space.id });
+  return { space };
 }
 
 export async function createCourseAction(
@@ -674,27 +991,22 @@ export async function createCourseAction(
   if (title.length < 2) return { error: await tErr("titleRequired") };
 
   // Use the selected course space, else find/create a default one.
-  let space = spaceId
+  const space = spaceId
     ? await prisma.space.findFirst({
         where: { id: spaceId, tenantId: tenant.id, type: "COURSE" },
       })
     : await prisma.space.findFirst({ where: { tenantId: tenant.id, type: "COURSE" } });
-  if (!space) {
-    space = await prisma.space.create({
-      data: {
-        tenantId: tenant.id,
-        name: "Kurse",
-        slug: await uniqueChildSlug("space", tenant.id, "Kurse"),
-        type: "COURSE",
-        visibility: "MEMBERS",
-      },
-    });
+  let spaceIdForCourse = space?.id;
+  if (!spaceIdForCourse) {
+    const created = await createDefaultContentSpace(tenant.id, "COURSE", "Kurse");
+    if ("error" in created) return { error: created.error };
+    spaceIdForCourse = created.space.id;
   }
 
   const course = await prisma.course.create({
     data: {
       tenantId: tenant.id,
-      spaceId: space.id,
+      spaceId: spaceIdForCourse,
       title,
       slug: await uniqueChildSlug("course", tenant.id, title),
       description: String(fd.get("description") || "") || null,
@@ -711,7 +1023,7 @@ export async function createCourseAction(
     content: course.description || course.title,
   });
   revalidatePath(`/dashboard/${slug}`, "layout");
-  return ok;
+  return { ok: true, createdId: course.id };
 }
 
 export async function createLessonAction(
@@ -764,31 +1076,27 @@ export async function createEventAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
-  const startsAt = new Date(parsed.data.startsAt);
-  if (isNaN(startsAt.getTime())) return { error: await tErr("invalidStartDate") };
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(parsed.data.startsAt, fd.get("timezoneOffset"));
+  if (!startsAt) return { error: await tErr("invalidStartDate") };
 
   const spaceIdInput = String(fd.get("spaceId") || "");
-  let space = spaceIdInput
+  const space = spaceIdInput
     ? await prisma.space.findFirst({
         where: { id: spaceIdInput, tenantId: tenant.id, type: { in: ["EVENTS", "CALENDAR"] } },
       })
     : await prisma.space.findFirst({ where: { tenantId: tenant.id, type: "EVENTS" } });
-  if (!space) {
-    space = await prisma.space.create({
-      data: {
-        tenantId: tenant.id,
-        name: "Events",
-        slug: await uniqueChildSlug("space", tenant.id, "Events"),
-        type: "EVENTS",
-        visibility: "MEMBERS",
-      },
-    });
+  let spaceIdForEvent = space?.id;
+  if (!spaceIdForEvent) {
+    const created = await createDefaultContentSpace(tenant.id, "EVENTS", "Events");
+    if ("error" in created) return { error: created.error };
+    spaceIdForEvent = created.space.id;
   }
   const capacityRaw = Number(fd.get("capacity") || 0);
   const event = await prisma.event.create({
     data: {
       tenantId: tenant.id,
-      spaceId: space.id,
+      spaceId: spaceIdForEvent,
       title: parsed.data.title,
       slug: await uniqueChildSlug("event", tenant.id, parsed.data.title),
       description: parsed.data.description || null,
@@ -813,68 +1121,52 @@ export async function createEventAction(
 
 // ---------------------------------------------------------------- Newsletter
 function parseCampaignSchedule(fd: FormData): Date | null {
-  const raw = String(fd.get("scheduledAt") || "").trim();
-  if (!raw) return null;
-  const offset = Number(fd.get("timezoneOffset"));
   // datetime-local deliberately has no zone. Convert the creator's browser
   // wall-clock value to UTC instead of interpreting it in Railway's timezone.
-  const localMatch = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(raw);
-  let millis: number;
-  if (localMatch && Number.isFinite(offset)) {
-    const [, year, month, day, hour, minute] = localMatch;
-    millis =
-      Date.UTC(+year!, +month! - 1, +day!, +hour!, +minute!) +
-      Math.min(Math.max(offset, -840), 840) * 60_000;
-  } else {
-    millis = Date.parse(raw);
+  const at = parseLocalDateTime(fd.get("scheduledAt"), fd.get("timezoneOffset"));
+  return at && at.getTime() > Date.now() + 60_000 ? at : null;
+}
+
+/** Wie viele Abonnenten eine Kampagne mit diesem Segment gerade erreicht. */
+async function campaignAudienceCount(tenantId: string, segmentId: string | null): Promise<number> {
+  let rules: AudienceRules = {};
+  if (segmentId) {
+    const segment = await prisma.segment.findFirst({
+      where: { id: segmentId, tenantId },
+      select: { rules: true },
+    });
+    rules = (segment?.rules ?? {}) as AudienceRules;
   }
-  return Number.isFinite(millis) && millis > Date.now() + 60_000
-    ? new Date(millis)
-    : null;
+  return countNewsletterAudience(tenantId, rules);
 }
 
-export async function createCampaignAction(
-  _p: ActionState,
-  fd: FormData,
+/** Fehlertext, wenn niemand erreicht würde; sonst null. */
+async function noRecipientsError(
+  tenantId: string,
+  segmentId: string | null,
+): Promise<string | null> {
+  if ((await campaignAudienceCount(tenantId, segmentId)) > 0) return null;
+  const anyone = segmentId ? (await campaignAudienceCount(tenantId, null)) > 0 : false;
+  return tErr(anyone ? "campaignSegmentEmpty" : "campaignNoSubscribers");
+}
+
+/**
+ * Stellt eine Kampagne in die Versandwarteschlange. Endgültig: Wer das
+ * aufruft, hat im UI vorher ausdrücklich bestätigt. Lehnt ab, wenn die
+ * Kampagne niemanden erreicht.
+ */
+async function queueCampaignSend(
+  tenant: { id: string; name: string; primaryColor: string },
+  campaignId: string,
 ): Promise<ActionState> {
-  const slug = String(fd.get("tenant"));
-  const { tenant, user } = await requireTenantAdmin(slug);
-  const parsed = campaignSchema.safeParse({
-    subject: fd.get("subject"),
-    body: fd.get("body"),
-    segmentId: fd.get("segmentId") ?? "",
-  });
-  if (!parsed.success)
-    return { error: await zodErr(parsed) };
-  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
-  const scheduledAt = parseCampaignSchedule(fd);
-
-  await prisma.newsletterCampaign.create({
-    data: {
-      tenantId: tenant.id,
-      subject: parsed.data.subject,
-      body: parsed.data.body,
-      bodyFormat,
-      segmentId: parsed.data.segmentId || null,
-      createdById: user.id,
-      status: scheduledAt ? "SCHEDULED" : "DRAFT",
-      scheduledAt,
-    },
-  });
-  revalidatePath(`/dashboard/${slug}/newsletter`);
-  return ok;
-}
-
-export async function sendCampaignAction(fd: FormData): Promise<void> {
-  const slug = String(fd.get("tenant"));
-  const campaignId = String(fd.get("campaignId"));
-  const { tenant } = await requireTenantAdmin(slug);
   const campaign = await prisma.newsletterCampaign.findFirst({
     where: { id: campaignId, tenantId: tenant.id },
   });
-  if (!campaign || campaign.status === "SENT") {
-    revalidatePath(`/dashboard/${slug}/newsletter`);
-    return;
+  if (!campaign) return { error: await tErr("campaignNotFound") };
+  if (campaign.status === "SENT") return { error: await tErr("sentCampaignReadonly") };
+  if (campaign.status !== "SENDING") {
+    const empty = await noRecipientsError(tenant.id, campaign.segmentId);
+    if (empty) return { error: empty };
   }
 
   // Atomic state transition. An already-SENDING campaign is deliberately
@@ -888,10 +1180,7 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
       where: { id: campaign.id, tenantId: tenant.id },
       select: { status: true },
     });
-    if (current?.status !== "SENDING") {
-      revalidatePath(`/dashboard/${slug}/newsletter`);
-      return;
-    }
+    if (current?.status !== "SENDING") return { error: await tErr("sentCampaignReadonly") };
   }
 
   // Snapshot a bounded audience page at a time. Very large sends are resumed
@@ -922,7 +1211,60 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
     targetId: campaign.id,
     metadata: { recipients: recipientCount },
   });
+  return ok;
+}
+
+export async function createCampaignAction(
+  _p: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant, user } = await requireTenantAdmin(slug);
+  const parsed = campaignSchema.safeParse({
+    subject: fd.get("subject"),
+    body: fd.get("body"),
+    segmentId: fd.get("segmentId") ?? "",
+  });
+  if (!parsed.success)
+    return { error: await zodErr(parsed) };
+  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
+  const scheduledAt = parseCampaignSchedule(fd);
+  // „Jetzt senden…“ im Editor: erst speichern, dann (nach Bestätigung im UI)
+  // sofort versenden. Ohne Empfänger gar nicht erst anlegen.
+  const sendNow = fd.get("sendNow") === "1";
+  const segmentId = parsed.data.segmentId || null;
+  if (sendNow) {
+    const empty = await noRecipientsError(tenant.id, segmentId);
+    if (empty) return { error: empty };
+  }
+
+  const campaign = await prisma.newsletterCampaign.create({
+    data: {
+      tenantId: tenant.id,
+      subject: parsed.data.subject,
+      body: parsed.data.body,
+      bodyFormat,
+      segmentId,
+      createdById: user.id,
+      status: scheduledAt ? "SCHEDULED" : "DRAFT",
+      scheduledAt,
+    },
+  });
+  const result = sendNow ? await queueCampaignSend(tenant, campaign.id) : ok;
   revalidatePath(`/dashboard/${slug}/newsletter`);
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result.error ? result : { ok: true, createdId: campaign.id };
+}
+
+/** „Senden“ aus der Kampagnenliste; das UI fragt vorher nach. */
+export async function sendCampaignAction(fd: FormData): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const campaignId = String(fd.get("campaignId"));
+  const { tenant } = await requireTenantAdmin(slug);
+  const result = await queueCampaignSend(tenant, campaignId);
+  revalidatePath(`/dashboard/${slug}/newsletter`);
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result;
 }
 
 export async function createSegmentAction(
@@ -978,7 +1320,11 @@ export async function sendCampaignTestAction(
     subject: `[Test] ${subject}`,
     html,
   });
-  if (!result.ok) return { error: result.error ?? "send-failed" };
+  if (!result.ok) {
+    return {
+      error: await tErr("campaignTestDeliveryFailed", { detail: result.error ?? "unknown" }),
+    };
+  }
   return ok;
 }
 
@@ -1129,7 +1475,7 @@ export async function createMemberAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole, user: actor } = await requireTenantAdmin(slug);
 
   const email = String(fd.get("email") || "").trim().toLowerCase();
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -1220,13 +1566,14 @@ export async function createMemberAction(
   // New accounts get an invite link (7 days) to set their own password —
   // without it they could never log in (random password, no reset knowledge).
   let inviteLink: string | undefined;
+  let inviteEmailSent = false;
   if (isNewAccount) {
     const token = await signAccountToken(user, "invite", "7d");
     // After activation the new member lands directly in the community.
     inviteLink = `${inviteUrl(token)}?next=${encodeURIComponent(`/c/${slug}`)}`;
     if (features.email) {
       const tMail = await getTranslations("ui.emails");
-      await sendEmail({
+      const sent = await sendEmail({
         to: user.email,
         subject: tMail("inviteSubject", { community: tenant.name }),
         html: renderAccountActionHtml({
@@ -1239,10 +1586,12 @@ export async function createMemberAction(
           footerLabel: tMail("sentVia"),
         }),
       });
+      inviteEmailSent = sent.ok && !sent.skipped;
     }
   }
 
   await writeAudit({
+    actorUserId: actor.id,
     tenantId: tenant.id,
     action: "member.add",
     targetType: "Membership",
@@ -1253,7 +1602,11 @@ export async function createMemberAction(
   // link must reach only that mailbox — handing it to the inviting admin
   // would let them claim any address as a "verified" account. Without mail
   // the link is the only way in, so it is shown as before.
-  return { ok: true, inviteUrl: features.email ? undefined : inviteLink };
+  return {
+    ok: true,
+    inviteUrl: features.email ? undefined : inviteLink,
+    memberAdded: { email, role, newAccount: isNewAccount, inviteEmailSent },
+  };
 }
 
 /** Edit a member's role, tier and status. Owners are protected. */
@@ -1262,7 +1615,7 @@ export async function updateMemberAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole, user } = await requireTenantAdmin(slug);
   const membershipId = String(fd.get("membershipId"));
   const role = String(fd.get("role") || "MEMBER");
   const status = String(fd.get("status") || "ACTIVE");
@@ -1321,6 +1674,7 @@ export async function updateMemberAction(
       );
     } catch {
       await writeAudit({
+        actorUserId: user.id,
         tenantId: tenant.id,
         action: "member.update.blocked",
         targetType: "Membership",
@@ -1377,6 +1731,7 @@ export async function updateMemberAction(
     });
   }
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "member.update",
     targetType: "Membership",
@@ -1385,6 +1740,106 @@ export async function updateMemberAction(
   });
   revalidatePath(`/dashboard/${slug}/members`);
   return { ok: true };
+}
+
+/**
+ * Mitglied sperren bzw. die Sperre aufheben — bewusst eine eigene Aktion
+ * statt einer Option im Status-Feld: Sperren kündigt laufende Abos und nimmt
+ * den Zugang sofort. Die Oberfläche fragt vorher nach und nennt die Folgen.
+ */
+export async function setMemberBanAction(fd: FormData): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant, role: actorRole, user } = await requireTenantAdmin(slug);
+  const parsed = z
+    .object({ membershipId: z.string().min(1).max(64), ban: z.enum(["1", "0"]) })
+    .safeParse({ membershipId: fd.get("membershipId"), ban: fd.get("ban") });
+  if (!parsed.success) return { error: await tErr("memberNotFound") };
+  const ban = parsed.data.ban === "1";
+
+  const membership = await prisma.membership.findFirst({
+    where: { id: parsed.data.membershipId, tenantId: tenant.id },
+    include: { tier: true },
+  });
+  if (!membership) return { error: await tErr("memberNotFound") };
+  if (membership.role === "OWNER") return { error: await tErr("ownerCantEdit") };
+  if (membership.userId === user.id) return { error: await tErr("cantBanSelf") };
+  if (!canManageTenantMembership(actorRole, membership.role)) {
+    return { error: await tErr("noPermission") };
+  }
+
+  if (ban) {
+    let canceledStripeSubscriptions = 0;
+    try {
+      // Erst extern kündigen, dann lokal sperren — sonst liefe ein Abo weiter,
+      // das keinen Zugang mehr bringt.
+      canceledStripeSubscriptions = await cancelMemberStripeSubscriptions(
+        tenant.id,
+        membership.userId,
+      );
+    } catch {
+      await writeAudit({
+        actorUserId: user.id,
+        tenantId: tenant.id,
+        action: "member.ban.blocked",
+        targetType: "Membership",
+        targetId: membership.id,
+        metadata: { reason: "stripe_cleanup_failed" },
+      });
+      return { error: await tErr("stripeCancelFailed") };
+    }
+    await withTenantTransaction(async (tx) => {
+      await tx.membership.update({
+        where: { id: membership.id },
+        data: { status: "BANNED" },
+      });
+      await markMemberSubscriptionsCanceled(tx, tenant.id, membership.userId);
+    });
+    if (membership.tier) {
+      await revokeTierAccess(tenant.id, membership.userId, membership.tier.entitlementKey);
+    }
+    await writeAudit({
+      actorUserId: user.id,
+      tenantId: tenant.id,
+      action: "member.ban",
+      targetType: "Membership",
+      targetId: membership.id,
+      metadata: { canceledStripeSubscriptions },
+    });
+  } else {
+    // Das Abo wurde beim Sperren gekündigt. Eine bezahlte Mitgliedschaft
+    // kommt deshalb nicht kostenlos zurück: wer wieder freigeschaltet wird,
+    // landet in der kostenlosen Standard-Mitgliedschaft.
+    const keepTier = membership.tier && membership.tier.priceCents === 0 ? membership.tier : null;
+    const tier =
+      keepTier ??
+      (await prisma.membershipTier.findFirst({
+        where: { tenantId: tenant.id, isDefault: true, priceCents: 0 },
+      }));
+    await prisma.membership.update({
+      where: { id: membership.id },
+      data: { status: "ACTIVE", tierId: tier?.id ?? null },
+    });
+    if (tier) {
+      await grantEntitlement({
+        tenantId: tenant.id,
+        userId: membership.userId,
+        key: tier.entitlementKey,
+        source: "MANUAL",
+        sourceId: tier.id,
+      });
+    }
+    await writeAudit({
+      actorUserId: user.id,
+      tenantId: tenant.id,
+      action: "member.unban",
+      targetType: "Membership",
+      targetId: membership.id,
+    });
+  }
+  revalidatePath(`/dashboard/${slug}/members`);
+  revalidatePath(`/dashboard/${slug}/moderation`);
+  revalidatePath(`/dashboard/${slug}`);
+  return ok;
 }
 
 /** Edit the current user's own profile (name + avatar). Used by owners/admins. */
@@ -1430,7 +1885,7 @@ export async function updateOwnProfileAction(
 /** Remove a member from the community (membership + tenant entitlements). */
 export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant, role: actorRole } = await requireTenantAdmin(slug);
+  const { tenant, role: actorRole, user } = await requireTenantAdmin(slug);
   const membershipId = String(fd.get("membershipId"));
   const membership = await prisma.membership.findFirst({
     where: { id: membershipId, tenantId: tenant.id },
@@ -1457,6 +1912,7 @@ export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
     );
   } catch {
     await writeAudit({
+      actorUserId: user.id,
       tenantId: tenant.id,
       action: "member.remove.blocked",
       targetType: "Membership",
@@ -1482,6 +1938,7 @@ export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
     await tx.membership.delete({ where: { id: membership.id } });
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "member.remove",
     targetType: "Membership",
@@ -1498,10 +1955,6 @@ export async function deleteMemberAction(fd: FormData): Promise<ActionState> {
  * auf #rrggbb normalisiert — aber grosszuegig gelesen, damit eine Farbe nicht
  * an ihrer Schreibweise scheitert (siehe lib/color.ts).
  */
-function safeBrandColor(v: FormDataEntryValue | null, fallback: string): string {
-  return safeHexColor(v, fallback);
-}
-
 export async function updateBrandingAction(
   _p: ActionState,
   fd: FormData,
@@ -1517,22 +1970,60 @@ export async function updateBrandingAction(
   const categoryRaw = String(fd.get("category") ?? "").trim();
   const category = isValidCategory(categoryRaw) ? categoryRaw : null;
 
+  // Eine unlesbare Farbe wird abgelehnt statt still durch die alte ersetzt —
+  // sonst meldet das Formular „gespeichert“, und es bleibt die alte Farbe.
+  const rawPrimary = fd.get("primaryColor");
+  const primaryColor =
+    rawPrimary === null ? tenant.primaryColor : normalizeHexColor(String(rawPrimary));
+  if (!primaryColor) return { error: await tErr("invalidColor") };
+  // Die Akzentfarbe hat kein Feld mehr im Formular (sie wirkte nirgends);
+  // ältere Clients dürfen sie weiter schicken, aber nur gültig.
+  const rawAccent = fd.get("accentColor");
+  const accentColor =
+    rawAccent === null ? tenant.accentColor : normalizeHexColor(String(rawAccent));
+  if (!accentColor) return { error: await tErr("invalidColor") };
+
   await prisma.tenant.update({
     where: { id: tenant.id },
     // Cast: `category` ist neu im Schema — nach dem Pull einmal
     // `npm run db:migrate` ausführen (wendet Migration an + prisma generate).
     data: {
       name: String(fd.get("name") || tenant.name).slice(0, 60),
-      tagline: String(fd.get("tagline") || "") || null,
-      description: String(fd.get("description") || "") || null,
-      logoUrl: String(fd.get("logoUrl") || "") || null,
-      primaryColor: safeBrandColor(fd.get("primaryColor"), tenant.primaryColor),
-      accentColor: safeBrandColor(fd.get("accentColor"), tenant.accentColor),
+      tagline: String(fd.get("tagline") || "").slice(0, 160) || null,
+      description: String(fd.get("description") || "").slice(0, 2000) || null,
+      // Das Logo gilt sofort (siehe updateLogoAction); nur ältere Formulare
+      // schicken es noch mit.
+      ...(fd.has("logoUrl") ? { logoUrl: sanitizeAvatarUrl(fd.get("logoUrl")) } : {}),
+      primaryColor,
+      accentColor,
       category,
     } as unknown as Prisma.TenantUpdateInput,
   });
   revalidatePath(`/dashboard/${slug}/settings`);
-  revalidatePath(`/c/${slug}`);
+  revalidatePath(`/c/${slug}`, "layout");
+  revalidatePath("/home");
+  return { ok: true, savedAt: new Date().toISOString() };
+}
+
+/**
+ * Logo sofort übernehmen — wie das Titelbild. Vorher galt das Titelbild
+ * sofort, das Logo erst mit „Speichern“; wer nach dem Hochladen die Seite
+ * verließ, verlor es still.
+ */
+export async function updateLogoAction(fd: FormData): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant, user } = await requireTenantAdmin(slug);
+  const raw = String(fd.get("logoUrl") ?? "").trim();
+  const logoUrl = raw ? sanitizeAvatarUrl(raw) : null;
+  if (raw && !logoUrl) return { error: await tErr("logoInvalid") };
+  await prisma.tenant.update({ where: { id: tenant.id }, data: { logoUrl } });
+  await writeAudit({
+    actorUserId: user.id,
+    tenantId: tenant.id,
+    action: logoUrl ? "branding.logo.set" : "branding.logo.remove",
+  });
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  revalidatePath(`/c/${slug}`, "layout");
   revalidatePath("/home");
   return ok;
 }
@@ -1543,7 +2034,7 @@ export async function updateEventAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const eventId = String(fd.get("eventId"));
   const parsed = eventSchema.safeParse({
     title: fd.get("title"),
@@ -1555,8 +2046,9 @@ export async function updateEventAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
-  const startsAt = new Date(parsed.data.startsAt);
-  if (isNaN(startsAt.getTime())) return { error: await tErr("invalidStartDate") };
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(parsed.data.startsAt, fd.get("timezoneOffset"));
+  if (!startsAt) return { error: await tErr("invalidStartDate") };
 
   const event = await prisma.event.findFirst({
     where: { id: eventId, tenantId: tenant.id },
@@ -1585,7 +2077,7 @@ export async function updateEventAction(
     title: parsed.data.title,
     content: parsed.data.description || parsed.data.title,
   });
-  await writeAudit({ tenantId: tenant.id, action: "event.update", targetType: "Event", targetId: event.id });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "event.update", targetType: "Event", targetId: event.id });
   revalidatePath(`/dashboard/${slug}`, "layout");
   revalidatePath(`/c/${slug}`);
   return ok;
@@ -1593,13 +2085,13 @@ export async function updateEventAction(
 
 export async function deleteEventAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const eventId = String(fd.get("eventId"));
   const event = await prisma.event.findFirst({ where: { id: eventId, tenantId: tenant.id } });
   if (event) {
     await removeFromIndex(tenant.id, "EVENT", event.id);
     await prisma.event.delete({ where: { id: event.id } });
-    await writeAudit({ tenantId: tenant.id, action: "event.delete", targetType: "Event", targetId: event.id });
+    await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "event.delete", targetType: "Event", targetId: event.id });
   }
   revalidatePath(`/dashboard/${slug}`, "layout");
 }
@@ -1610,7 +2102,7 @@ export async function updateCourseAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const courseId = String(fd.get("courseId"));
   const title = String(fd.get("title") || "").trim();
   if (title.length < 2) return { error: await tErr("titleRequired") };
@@ -1636,20 +2128,20 @@ export async function updateCourseAction(
     title,
     content: String(fd.get("description") || "") || title,
   });
-  await writeAudit({ tenantId: tenant.id, action: "course.update", targetType: "Course", targetId: course.id });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "course.update", targetType: "Course", targetId: course.id });
   revalidatePath(`/dashboard/${slug}`, "layout");
   return ok;
 }
 
 export async function deleteCourseAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const courseId = String(fd.get("courseId"));
   const course = await prisma.course.findFirst({ where: { id: courseId, tenantId: tenant.id } });
   if (course) {
     await removeFromIndex(tenant.id, "COURSE", course.id);
     await prisma.course.delete({ where: { id: course.id } });
-    await writeAudit({ tenantId: tenant.id, action: "course.delete", targetType: "Course", targetId: course.id });
+    await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "course.delete", targetType: "Course", targetId: course.id });
   }
   revalidatePath(`/dashboard/${slug}`, "layout");
 }
@@ -1713,6 +2205,12 @@ export async function updateCampaignAction(
     return { error: await tErr("sentCampaignReadonly") };
   const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   const scheduledAt = parseCampaignSchedule(fd);
+  const sendNow = fd.get("sendNow") === "1";
+  const segmentId = parsed.data.segmentId || null;
+  if (sendNow) {
+    const empty = await noRecipientsError(tenant.id, segmentId);
+    if (empty) return { error: empty };
+  }
 
   await prisma.newsletterCampaign.update({
     where: { id: campaign.id },
@@ -1720,25 +2218,28 @@ export async function updateCampaignAction(
       subject: parsed.data.subject,
       body: parsed.data.body,
       bodyFormat,
-      segmentId: parsed.data.segmentId || null,
+      segmentId,
       scheduledAt,
       status: scheduledAt ? "SCHEDULED" : "DRAFT",
     },
   });
+  // „Jetzt senden…“: gespeichert ist schon, jetzt endgültig versenden.
+  const result = sendNow ? await queueCampaignSend(tenant, campaign.id) : ok;
   revalidatePath(`/dashboard/${slug}/newsletter`);
-  return ok;
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result;
 }
 
 export async function deleteCampaignAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const campaignId = String(fd.get("campaignId"));
   const campaign = await prisma.newsletterCampaign.findFirst({
     where: { id: campaignId, tenantId: tenant.id },
   });
   if (campaign && (campaign.status === "DRAFT" || campaign.status === "SCHEDULED")) {
     await prisma.newsletterCampaign.delete({ where: { id: campaign.id } });
-    await writeAudit({ tenantId: tenant.id, action: "campaign.delete", targetType: "NewsletterCampaign", targetId: campaign.id });
+    await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "campaign.delete", targetType: "NewsletterCampaign", targetId: campaign.id });
   }
   revalidatePath(`/dashboard/${slug}/newsletter`);
 }
@@ -2067,7 +2568,7 @@ export async function updateCustomDomainAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   // Package gate — server actions stay reachable after a downgrade.
   const planBlocked = await featureBlocked(tenant.id, "customDomain");
   if (planBlocked) return { error: planBlocked };
@@ -2100,7 +2601,7 @@ export async function updateCustomDomainAction(
           : null,
     },
   });
-  await writeAudit({ tenantId: tenant.id, action: "tenant.domain", metadata: { domain } });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "tenant.domain", metadata: { domain } });
   revalidatePath(`/dashboard/${slug}/settings`);
   return ok;
 }
@@ -2111,7 +2612,7 @@ export async function verifyCustomDomainAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   // Package gate — server actions stay reachable after a downgrade.
   const planBlocked = await featureBlocked(tenant.id, "customDomain");
   if (planBlocked) return { error: planBlocked };
@@ -2130,6 +2631,7 @@ export async function verifyCustomDomainAction(
         data: { customDomainVerifiedAt: null },
       });
       await writeAudit({
+        actorUserId: user.id,
         tenantId: tenant.id,
         action: "tenant.domain.unverified",
         metadata: { domain: tenant.customDomain, reason: result.reason },
@@ -2149,6 +2651,7 @@ export async function verifyCustomDomainAction(
     data: { customDomainVerifiedAt: new Date() },
   });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "tenant.domain.verify",
     metadata: { domain: tenant.customDomain },
@@ -2606,7 +3109,7 @@ export async function updateChatSettingsAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const spaceId = String(fd.get("spaceId"));
   const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
   if (!space) return { error: await tErr("spaceNotFound") };
@@ -2629,6 +3132,7 @@ export async function updateChatSettingsAction(
   };
   await prisma.space.update({ where: { id: space.id }, data: { settings } });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.chatSettings.update",
     targetType: "Space",
@@ -2645,7 +3149,7 @@ export async function updateStorySettingsAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const spaceId = String(fd.get("spaceId"));
   const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
   if (!space) return { error: await tErr("spaceNotFound") };
@@ -2665,6 +3169,7 @@ export async function updateStorySettingsAction(
   };
   await prisma.space.update({ where: { id: space.id }, data: { settings } });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "space.storySettings.update",
     targetType: "Space",
@@ -2678,11 +3183,12 @@ export async function updateStorySettingsAction(
 /** Moderation: delete a single chat message from a chat space. */
 export async function deleteChatMessageAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const messageId = String(fd.get("messageId"));
   const spaceSlug = String(fd.get("spaceSlug") || "");
   await prisma.chatMessage.deleteMany({ where: { id: messageId, tenantId: tenant.id } });
   await writeAudit({
+    actorUserId: user.id,
     tenantId: tenant.id,
     action: "chatMessage.delete",
     targetType: "ChatMessage",
@@ -2695,7 +3201,7 @@ export async function deleteChatMessageAction(fd: FormData): Promise<void> {
 /** Moderation: delete any comment (and its replies) in the tenant. */
 export async function deleteCommentAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const commentId = String(fd.get("commentId"));
   const spaceSlug = String(fd.get("spaceSlug") || "");
   const comment = await prisma.comment.findFirst({
@@ -2704,7 +3210,7 @@ export async function deleteCommentAction(fd: FormData): Promise<void> {
   });
   if (comment) {
     await prisma.comment.delete({ where: { id: comment.id } });
-    await writeAudit({ tenantId: tenant.id, action: "comment.delete", targetType: "Comment", targetId: comment.id });
+    await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "comment.delete", targetType: "Comment", targetId: comment.id });
     if (comment.post) revalidatePath(`/c/${slug}/s/${spaceSlug}/${comment.post.id}`);
   }
   revalidatePath(`/dashboard/${slug}/spaces/${spaceSlug}`);
@@ -3041,7 +3547,7 @@ export async function updateSubdomainAction(
   fd: FormData,
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
-  const { tenant } = await requireTenantAdmin(slug);
+  const { tenant, user } = await requireTenantAdmin(slug);
   const sub = String(fd.get("subdomain") || "")
     .trim()
     .toLowerCase()
@@ -3052,7 +3558,7 @@ export async function updateSubdomainAction(
   if (!sub || sub === tenant.slug) {
     if (tenant.subdomain !== null) {
       await prisma.tenant.update({ where: { id: tenant.id }, data: { subdomain: null } });
-      await writeAudit({ tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: null } });
+      await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: null } });
       revalidatePath(`/dashboard/${slug}/settings`);
     }
     return ok;
@@ -3074,7 +3580,7 @@ export async function updateSubdomainAction(
   if (taken) return { error: await tErr("subTaken") };
 
   await prisma.tenant.update({ where: { id: tenant.id }, data: { subdomain: sub } });
-  await writeAudit({ tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: sub } });
+  await writeAudit({ actorUserId: user.id, tenantId: tenant.id, action: "tenant.subdomain", metadata: { subdomain: sub } });
   revalidatePath(`/dashboard/${slug}/settings`);
   return ok;
 }

@@ -83,22 +83,52 @@ function clean(text: string | null | undefined, max = 90): string | null {
  * "Einstellungen" genauso trifft wie "settings" — der Nutzer sieht ja nur das
  * uebersetzte Wort.
  */
+/**
+ * Treffer nur am Wortanfang: „tom“ soll nicht „Automationen“ finden, „dom“
+ * aber „Domain“ und „Eigene Domain“.
+ */
+export function matchesWordStart(label: string, needle: string): boolean {
+  const n = needle.trim().toLowerCase();
+  if (!n) return false;
+  const l = label.toLowerCase();
+  if (l.startsWith(n)) return true;
+  return l.split(/[\s\-–—/&·,.()]+/).some((word) => word.startsWith(n));
+}
+
+/** Tabs der Einstellungen — eigene Treffer, damit „Domain“ direkt hinführt. */
+const SETTINGS_TABS: { tab: string; labelKey: string; icon: IconName; keywords: string[] }[] = [
+  { tab: "branding", labelKey: "tabBranding", icon: "branding", keywords: ["logo", "farbe", "color", "titelbild", "cover"] },
+  { tab: "integrations", labelKey: "tabIntegrations", icon: "settings", keywords: ["stripe", "auszahlung", "payout"] },
+  { tab: "domain", labelKey: "tabDomain", icon: "globe", keywords: ["subdomain", "adresse", "dns", "url"] },
+  { tab: "danger", labelKey: "tabDanger", icon: "alert", keywords: ["löschen", "delete"] },
+];
+
 async function searchPages(slug: string, term: string): Promise<DashboardSearchHit[]> {
   const t = await getTranslations("dashboard.nav");
-  const needle = term.toLowerCase();
-  return ALL_NAV_ITEMS.filter((it) => {
-    const label = t(it.labelKey).toLowerCase();
-    return label.includes(needle) || it.labelKey.toLowerCase().includes(needle);
-  })
-    .slice(0, PER_GROUP)
-    .map((it) => ({
-      id: `page:${it.href || "overview"}`,
-      group: "pages" as const,
-      icon: it.icon,
-      title: t(it.labelKey),
-      subtitle: null,
-      href: `/dashboard/${slug}${it.href}`,
-    }));
+  const tSettings = await getTranslations("dashboard.settings");
+  const navHits = ALL_NAV_ITEMS.filter(
+    (it) => matchesWordStart(t(it.labelKey), term) || matchesWordStart(it.labelKey, term),
+  ).map((it) => ({
+    id: `page:${it.href || "overview"}`,
+    group: "pages" as const,
+    icon: it.icon,
+    title: t(it.labelKey),
+    subtitle: null,
+    href: `/dashboard/${slug}${it.href}`,
+  }));
+  const settingsHits = SETTINGS_TABS.filter(
+    (it) =>
+      matchesWordStart(tSettings(it.labelKey), term) ||
+      it.keywords.some((k) => matchesWordStart(k, term)),
+  ).map((it) => ({
+    id: `settings:${it.tab}`,
+    group: "pages" as const,
+    icon: it.icon,
+    title: tSettings(it.labelKey),
+    subtitle: tSettings("title"),
+    href: `/dashboard/${slug}/settings?tab=${it.tab}`,
+  }));
+  return [...navHits, ...settingsHits].slice(0, PER_GROUP);
 }
 
 export async function searchDashboard(

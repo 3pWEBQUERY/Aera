@@ -10,7 +10,6 @@
     "tenantDeleteConfirmMismatch": "El identificador de la comunidad ingresado no coincide.",
     "tenantDeleteStripeSubscriptionsActive": "La comunidad solo se puede eliminar cuando hayan finalizado todas las suscripciones de Stripe. No se eliminó ningún dato.",
     "tenantDeleteStripeCleanupFailed": "Falló la limpieza de Stripe o Connect. No se eliminaron la comunidad ni sus datos.",
-    "paidTierArchivedInsteadOfDeleted": "El nivel pago se ocultó de forma segura en vez de eliminarse para que los pagos abiertos de Stripe puedan procesarse correctamente.",
     "pendingPaymentsBlockDeletion": "La eliminación está bloqueada mientras existan pagos o reservas pendientes. No se eliminó ningún dato.",
     "productArchivedBecauseOrdersExist": "El producto se ocultó en vez de eliminarse porque hay pedidos que lo referencian. Los pagos pendientes pueden seguir procesándose de forma segura."
   },
@@ -68,7 +67,6 @@
     "domain": {
       "subEditLabel": "Subdominio personalizado",
       "subPlaceholder": "tu-comunidad",
-      "subHint": "Solo letras minúsculas, números y guiones (3–63 caracteres). Tu comunidad estará disponible en esta dirección. Déjalo vacío para usar la dirección predeterminada (tu identificador).",
       "subSaved": "Subdominio guardado."
     },
     "media": {
@@ -76,7 +74,6 @@
       "openInStudio": "Edit in Studio",
       "uploadMedia": "Upload media",
       "uploadingProgress": "Uploading… {done}/{total}",
-      "uploadFailed": "Upload failed: {name}",
       "storageTitle": "Media storage",
       "storageOf": "{used} of {limit} used"
     },

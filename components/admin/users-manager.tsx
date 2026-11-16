@@ -13,6 +13,8 @@ import { Icon } from "@/components/dashboard/icons";
 import { Avatar, Pill, FormError, EmptyState } from "@/components/ui/misc";
 import { Input, Label } from "@/components/ui/field";
 import { formatDate } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface UserRow {
   id: string;
@@ -67,7 +69,7 @@ export function UsersManager({
           />
           <button
             type="submit"
-            className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+            className="shrink-0 rounded-full bg-[var(--primary)] px-3.5 py-1 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
           >
             {tc("search")}
           </button>
@@ -102,14 +104,14 @@ export function UsersManager({
                   <p className="font-semibold text-slate-900">{u.name}</p>
                   {u.ownedTenants > 0 && (
                     <Pill className="bg-violet-100 text-violet-700">
-                      {t("ownerBadge", { count: nf.format(u.ownedTenants) })}
+                      {t("ownerBadge", { count: u.ownedTenants })}
                     </Pill>
                   )}
                   <Pill className="bg-slate-100 text-slate-600">
-                    {t("membershipsShort", { count: nf.format(u.memberships) })}
+                    {t("membershipsShort", { count: u.memberships })}
                   </Pill>
                   <Pill className="bg-slate-100 text-slate-600">
-                    {t("ordersShort", { count: nf.format(u.orders) })}
+                    {t("ordersShort", { count: u.orders })}
                   </Pill>
                 </div>
                 <p className="mt-0.5 truncate text-sm text-slate-500">
@@ -145,7 +147,6 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
   const t = useTranslations("admin.users");
   const tc = useTranslations("admin");
   const locale = useLocale();
-  const nf = new Intl.NumberFormat(locale);
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
@@ -163,8 +164,8 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
               <p className="truncate text-sm text-slate-500">
                 {t("editSummary", {
                   date: formatDate(user.createdAt, locale),
-                  memberships: nf.format(user.memberships),
-                  orders: nf.format(user.orders),
+                  memberships: user.memberships,
+                  orders: user.orders,
                 })}
               </p>
             </div>
@@ -208,7 +209,7 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
           type="submit"
           form={formId}
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] disabled:opacity-50"
         >
           {pending ? tc("saving") : tc("saveChanges")}
         </button>
@@ -280,6 +281,8 @@ function ResetLinkSection({ userId }: { userId: string }) {
 function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
   const [state, action, pending] = useActionState(adminDeleteUserAction, initial);
   const t = useTranslations("admin.users");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   useEffect(() => {
     if (state.ok) onDone();
@@ -291,7 +294,7 @@ function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
         <Icon name="alert" size={15} />
         {tc("dangerZone")}
       </p>
-      <p className="mt-1 text-xs text-red-600/90">
+      <p className="mt-1 text-xs text-red-700">
         {t("dangerDesc")}
       </p>
       <div className="mt-3">
@@ -299,11 +302,14 @@ function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
       </div>
       <form
         action={action}
-        onSubmit={(e) => {
-          if (!window.confirm(t("deleteConfirm", { name: user.name }))) {
-            e.preventDefault();
-          }
-        }}
+        onSubmit={(e) =>
+          confirmSubmit(e, {
+            title: t("deleteConfirm", { name: user.name }),
+            body: t("dangerDesc"),
+            confirmLabel: t("deleteBtn"),
+            tone: "danger",
+          })
+        }
         className="mt-3"
       >
         <input type="hidden" name="userId" value={user.id} />
@@ -315,6 +321,7 @@ function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
           {pending ? t("deleting") : t("deleteBtn")}
         </button>
       </form>
+      {confirmDialog}
     </div>
   );
 }

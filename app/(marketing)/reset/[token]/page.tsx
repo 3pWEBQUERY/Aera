@@ -1,12 +1,31 @@
 import Link from "next/link";
+import Image from "next/image";
 import { verifyAccountToken } from "@/lib/tokens";
 import { ResetPasswordForm } from "@/components/forms/account-forms";
-import { Card, CardBody } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
+import logoBkButton from "@/public/logo_bk_button.svg";
+import { AERA_INK_VARS } from "@/lib/ui-theme";
 
 export async function generateMetadata() {
   const t = await getTranslations("ui.auth");
   return { title: t("resetMeta") };
+}
+
+/** Gleicher Rahmen wie /forgot: Beige, Logo, Serifen-Überschrift. */
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="min-h-screen bg-[#f4f1ea] text-[#161613]" style={AERA_INK_VARS}>
+      <div className="mx-auto flex max-w-md flex-col px-5 pb-24 pt-16 md:pt-20">
+        <Link
+          href="/"
+          className="mx-auto mb-8 block w-fit focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+        >
+          <Image src={logoBkButton} alt="Aera" priority className="h-14 w-14" />
+        </Link>
+        {children}
+      </div>
+    </main>
+  );
 }
 
 export default async function ResetPasswordPage({
@@ -20,33 +39,32 @@ export default async function ResetPasswordPage({
 
   if (!user) {
     return (
-      <main className="mx-auto flex max-w-md flex-col px-5 py-16 text-center">
-        <h1 className="text-2xl font-bold text-slate-900">{t("invalidLinkTitle")}</h1>
-        <p className="mt-2 text-sm text-slate-500">
-          {t("resetInvalidText")}
-        </p>
-        <p className="mt-5 text-sm">
-          <Link href="/forgot" className="font-medium text-[color:var(--brand)] hover:underline">
+      <Shell>
+        <h1 className="display-serif text-4xl leading-[1.05] sm:text-5xl">
+          {t("invalidLinkTitle")}
+        </h1>
+        <p className="mt-4 text-sm leading-6 text-[#161613]/65">{t("resetInvalidText")}</p>
+        <p className="mt-8">
+          <Link
+            href="/forgot"
+            className="inline-flex min-h-12 items-center justify-center rounded-xl bg-[var(--primary)] px-7 text-base font-semibold text-[var(--primary-fg)] transition-colors hover:bg-[var(--primary-hover)]"
+          >
             {t("requestNewLink")}
           </Link>
         </p>
-      </main>
+      </Shell>
     );
   }
 
   return (
-    <main className="mx-auto flex max-w-md flex-col px-5 py-16">
-      <h1 className="text-center text-2xl font-bold text-slate-900">
-        {t("resetTitle")}
-      </h1>
-      <p className="mt-2 text-center text-sm text-slate-500">
+    <Shell>
+      <h1 className="display-serif text-4xl leading-[1.05] sm:text-5xl">{t("resetTitle")}</h1>
+      <p className="mt-4 text-sm leading-6 text-[#161613]/65">
         {t("forAccount", { email: user.email })}
       </p>
-      <Card className="mt-8">
-        <CardBody>
-          <ResetPasswordForm token={decodeURIComponent(token)} />
-        </CardBody>
-      </Card>
-    </main>
+      <div className="mt-8 rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7">
+        <ResetPasswordForm token={decodeURIComponent(token)} />
+      </div>
+    </Shell>
   );
 }

@@ -2,8 +2,7 @@
 
 import { safeRelativePath } from "@/lib/safe-redirect";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
-import { authenticate, registerUser } from "@/lib/auth";
+import { authenticate, homePathFor, registerUser } from "@/lib/auth";
 import { clearSessionCookie } from "@/lib/session";
 import { loginSchema, signupSchema } from "@/lib/validation";
 import { writeAudit } from "@/lib/audit";
@@ -15,6 +14,13 @@ export interface AuthState {
   error?: string;
   /** Passwort korrekt, aber 2FA-Code erforderlich — Formular zeigt Code-Feld. */
   needsTotp?: boolean;
+  /** Eingegebene E-Mail, damit das Formular sie nach einem Fehler behält.
+   *  Das Passwort kommt bewusst nie zurück. */
+  email?: string;
+  /** Welches Feld der Fehler betrifft (für Fokus und aria-invalid). */
+  errorField?: "credentials" | "code";
+  /** Signup: eingegebener Name, bleibt nach einem Fehler stehen. */
+  name?: string;
 }
 
 /**
@@ -25,38 +31,20 @@ function safeNext(next: FormDataEntryValue | null, fallback: string): string {
   return safeRelativePath(next, fallback);
 }
 
-/** Creators (tenant owners / staff) land in the dashboard, members on Discover. */
-async function homeFor(userId: string): Promise<string> {
-  const [ownsTenant, staff] = await Promise.all([
-    prisma.tenant.count({
-      where: {
-        ownerId: userId,
-        status: "ACTIVE",
-        memberships: {
-          some: { userId, role: "OWNER", status: "ACTIVE" },
-        },
-      },
-    }),
-    prisma.membership.count({
-      where: {
-        userId,
-        status: "ACTIVE",
-        role: { in: ["OWNER", "ADMIN", "MODERATOR"] },
-        tenant: { status: "ACTIVE" },
-      },
-    }),
-  ]);
-  return ownsTenant > 0 || staff > 0 ? "/dashboard" : "/home";
-}
-
 export async function signupAction(
   _prev: AuthState,
   formData: FormData,
 ): Promise<AuthState> {
   const t = await getErrorTranslator();
+  // Name und E-Mail kommen nach einem Fehler zurück (defaultValue), das
+  // Passwort nie.
+  const kept = {
+    name: String(formData.get("name") ?? "").slice(0, 80),
+    email: String(formData.get("email") ?? "").trim().slice(0, 254),
+  };
   const ip = await clientIp();
   if (!(await rateLimit(`signup:${ip}`, 5, 60 * 60 * 1000))) {
-    return { error: t("tooManySignups") };
+    return { error: t("tooManySignups"), ...kept };
   }
   const parsed = signupSchema.safeParse({
     name: formData.get("name"),
@@ -64,16 +52,16 @@ export async function signupAction(
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { error: zodError(t, parsed) };
+    return { error: zodError(t, parsed), ...kept };
   }
   if (formData.get("legalAcceptance") !== "on") {
-    return { error: t("termsRequired") };
+    return { error: t("termsRequired"), ...kept };
   }
   const result = await registerUser({
     ...parsed.data,
     legalAcceptanceSource: "WEB_SIGNUP",
   });
-  if (!result.ok) return { error: t(result.error) };
+  if (!result.ok) return { error: t(result.error), ...kept };
   await writeAudit({ actorUserId: result.user.id, action: "user.signup" });
   // New accounts are plain members by default — creators opt in via /start.
   redirect(safeNext(formData.get("next"), "/home"));
@@ -84,25 +72,44 @@ export async function loginAction(
   formData: FormData,
 ): Promise<AuthState> {
   const t = await getErrorTranslator();
+  const email = String(formData.get("email") ?? "").trim().slice(0, 254);
   const ip = await clientIp();
   if (!(await rateLimit(`login:${ip}`, 10, 10 * 60 * 1000))) {
-    return { error: t("tooManyLogins") };
+    return { error: t("tooManyLogins"), email };
   }
   const parsed = loginSchema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
   });
   if (!parsed.success) {
-    return { error: zodError(t, parsed) };
+    return { error: zodError(t, parsed), email, errorField: "credentials" };
   }
   const totp = String(formData.get("totp") || "").trim() || undefined;
-  const result = await authenticate(parsed.data.email, parsed.data.password, totp);
+  const recoveryCode = String(formData.get("recoveryCode") || "").trim().slice(0, 64) || undefined;
+  const result = await authenticate(parsed.data.email, parsed.data.password, totp, {
+    recoveryCode,
+  });
   if (!result.ok)
     return {
       error: result.error ? t(result.error) : undefined,
       needsTotp: result.needsTotp,
+      email,
+      errorField: result.error
+        ? result.needsTotp
+          ? "code"
+          : result.error === "invalidCredentials"
+            ? "credentials"
+            : undefined
+        : undefined,
     };
-  const destination = safeNext(formData.get("next"), await homeFor(result.user.id));
+  if (result.usedRecoveryCode) {
+    await writeAudit({ actorUserId: result.user.id, action: "user.totp.recovery_code_used" });
+  }
+  // Mit einem Wiederherstellungscode angemeldet: Die App fehlt vermutlich.
+  // Direkt zu den 2FA-Einstellungen, dort steht, wie viele Codes übrig sind.
+  const destination = result.usedRecoveryCode
+    ? "/member/account?tab=einstellungen&recovery=1#zwei-faktor"
+    : safeNext(formData.get("next"), await homePathFor(result.user.id));
   if (!(await hasCurrentLegalEvidence(result.user.id))) {
     redirect(`/legal/accept?next=${encodeURIComponent(destination)}`);
   }

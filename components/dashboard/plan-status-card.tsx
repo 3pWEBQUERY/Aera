@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon } from "./icons";
-import { CreditsSheet } from "./credits-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { RedeemCodeSheet } from "./redeem-code-sheet";
 import { PlanBadge, PLAN_LABEL } from "./plan-badge";
 import type { PlanKey } from "@/lib/plan-features";
@@ -13,6 +13,8 @@ interface Quota {
   labelKey: "quotaSpaces" | "quotaMembers" | "quotaCredits";
   used: number;
   limit: number | null;
+  /** Als Rest anzeigen („450 von 500 Credits übrig“) statt als Verbrauch. */
+  remaining?: boolean;
 }
 
 /**
@@ -118,7 +120,12 @@ export function PlanStatusCard({
                   >
                     {q.limit === null
                       ? `${nf.format(q.used)} · ${t("unlimited")}`
-                      : `${nf.format(q.used)} / ${nf.format(q.limit)}`}
+                      : q.remaining
+                        ? t("quotaRemaining", {
+                            rest: nf.format(Math.max(0, q.limit - q.used)),
+                            total: nf.format(q.limit),
+                          })
+                        : `${nf.format(q.used)} / ${nf.format(q.limit)}`}
                   </p>
                 </div>
                 <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-100">
@@ -140,11 +147,10 @@ export function PlanStatusCard({
         </div>
       </section>
 
-      <CreditsSheet
+      <PlanSwitchSheet
         open={plansOpen}
         onClose={() => setPlansOpen(false)}
         slug={slug}
-        focusPlans
       />
       <RedeemCodeSheet open={codeOpen} onClose={() => setCodeOpen(false)} slug={slug} />
     </>

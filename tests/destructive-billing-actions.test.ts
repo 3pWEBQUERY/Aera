@@ -248,7 +248,7 @@ describe("destructive Stripe billing actions", () => {
       form({ tenant: "demo", tierId: "tier_paid" }),
     );
 
-    expect(result).toEqual({ error: "paidTierArchivedInsteadOfDeleted" });
+    expect(result).toEqual({ ok: true });
     expect(prisma.membershipTier.update).toHaveBeenCalledWith({
       where: { id: "tier_paid" },
       data: { isPublic: false },

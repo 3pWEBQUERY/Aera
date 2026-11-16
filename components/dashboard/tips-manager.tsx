@@ -72,7 +72,7 @@ export function TipsManager({
             <button
               type="submit"
               disabled={pending}
-              className="shrink-0 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+              className="shrink-0 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
             >
               {pending ? t("saving") : t("save")}
             </button>

@@ -8,6 +8,8 @@ import { Sheet } from "@/components/dashboard/sheet";
 import { Icon } from "@/components/dashboard/icons";
 import { Pill, EmptyState } from "@/components/ui/misc";
 import { formatDateTime } from "@/lib/utils";
+import { useConfirm } from "@/components/ui/confirm-dialog";
+import { useConfirmedSubmit } from "@/components/ui/use-confirmed-submit";
 
 export interface MediaRowData {
   id: string;
@@ -106,7 +108,7 @@ export function MediaManager({
             />
             <button
               type="submit"
-              className="shrink-0 rounded-full bg-[var(--action)] px-3.5 py-1 text-xs font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+              className="shrink-0 rounded-full bg-[var(--primary)] px-3.5 py-1 text-xs font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
             >
               {tc("search")}
             </button>
@@ -216,6 +218,8 @@ function InfoRow({
 
 function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void }) {
   const t = useTranslations("admin.media");
+  const [confirm, confirmDialog] = useConfirm();
+  const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
   const locale = useLocale();
   const visCls = visibilityCls[media.visibility] ?? visibilityCls.MEMBERS;
@@ -298,11 +302,14 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
             </p>
             <form
               action={handleDelete}
-              onSubmit={(e) => {
-                if (!window.confirm(t("deleteConfirm"))) {
-                  e.preventDefault();
-                }
-              }}
+              onSubmit={(e) =>
+                confirmSubmit(e, {
+                  title: t("deleteConfirmTitle", { name: media.key.split("/").pop() ?? media.key }),
+                  body: t("dangerDesc"),
+                  confirmLabel: t("deleteBtn"),
+                  tone: "danger",
+                })
+              }
               className="mt-3"
             >
               <input type="hidden" name="objectId" value={media.id} />
@@ -313,7 +320,7 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
                 {t("deleteBtn")}
               </button>
             </form>
-            <p className="mt-2 text-xs text-red-600/90">
+            <p className="mt-2 text-xs text-red-700">
               {t("dangerDesc")}
             </p>
           </div>
@@ -329,6 +336,7 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
           {tc("close")}
         </button>
       </div>
+      {confirmDialog}
     </div>
   );
 }

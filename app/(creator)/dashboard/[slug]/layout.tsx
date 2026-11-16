@@ -1,4 +1,5 @@
 import { requireTenantAdmin } from "@/lib/guards";
+import { AERA_DASHBOARD_VARS } from "@/lib/ui-theme";
 import { userTenants } from "@/lib/tenant";
 import prisma from "@/lib/prisma";
 import { CommunityRail } from "@/components/dashboard/community-rail";
@@ -6,6 +7,9 @@ import { DashboardNav } from "@/components/dashboard/dashboard-nav";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { MobileDashboardNav } from "@/components/dashboard/mobile-nav";
 import { TopHeader } from "@/components/dashboard/top-header";
+import { ModeratorNav } from "@/components/dashboard/moderator-nav";
+import { getTranslations } from "next-intl/server";
+import { VerifyEmailBanner } from "@/components/verify-email-banner";
 import type { Metadata } from "next";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { getTenantPlan } from "@/lib/plan";
@@ -32,9 +36,12 @@ export default async function DashboardLayout({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const { tenant, user } = await requireTenantAdmin(slug);
+  // MODERATOR genuegt fuer die Huelle; jede Seite ausser der Moderation
+  // verlangt selbst ADMIN und schickt Moderatoren dorthin zurueck.
+  const { tenant, user, role } = await requireTenantAdmin(slug, "MODERATOR");
+  const isModerator = role === "MODERATOR";
   const [tenants, spaces, membership, plan] = await Promise.all([
-    userTenants(user.id),
+    userTenants(user.id, { includeModerator: true }),
     prisma.space.findMany({
       where: { tenantId: tenant.id, isArchived: false },
       orderBy: { sortOrder: "asc" },
@@ -70,8 +77,16 @@ export default async function DashboardLayout({
       }
     : null;
 
+  const navTenant = {
+    slug: tenant.slug,
+    name: tenant.name,
+    logoUrl: tenant.logoUrl,
+    primaryColor: tenant.primaryColor,
+  };
+  const tModeration = await getTranslations("dashboard.moderation");
+
   return (
-    <div className="flex min-h-screen w-full bg-slate-50">
+    <div className="flex min-h-screen w-full bg-slate-50" style={AERA_DASHBOARD_VARS}>
       {/* Far-left community rail (sticky, full height). Hidden on phones,
           where it took a fifth of the width; the menu sheet links to all
           communities instead. */}
@@ -89,6 +104,9 @@ export default async function DashboardLayout({
 
       {/* Navigation (sticky, full height) */}
       <div className="sticky top-0 hidden h-screen shrink-0 self-start md:block">
+        {isModerator ? (
+          <ModeratorNav tenant={navTenant} />
+        ) : (
         <DashboardNav
           tenant={{
             slug: tenant.slug,
@@ -99,15 +117,23 @@ export default async function DashboardLayout({
           spaces={spaces}
           plan={plan}
         />
+        )}
       </div>
 
       {/* Content column */}
       <div className="flex min-w-0 flex-1 flex-col">
+        {!user.emailVerifiedAt && <VerifyEmailBanner email={user.email} />}
         <TopHeader
           slug={tenant.slug}
           user={{ name: user.name, email: user.email, avatarUrl: user.avatarUrl }}
           subscription={subscription}
+          hideSearch={isModerator}
           leading={
+            isModerator ? (
+              <span className="truncate text-sm font-semibold text-slate-900 md:hidden">
+                {tenant.name} · {tModeration("title")}
+              </span>
+            ) : (
             <MobileDashboardNav
               tenant={{
                 slug: tenant.slug,
@@ -118,6 +144,7 @@ export default async function DashboardLayout({
               spaces={spaces}
               plan={plan}
             />
+            )
           }
         />
         <DashboardContent>{children}</DashboardContent>

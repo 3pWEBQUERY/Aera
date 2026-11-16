@@ -77,7 +77,7 @@ export function EmptyState({
         </span>
       )}
       <p className="font-medium text-slate-700">{title}</p>
-      {hint && <p className="mx-auto mt-1 max-w-md text-sm text-slate-500">{hint}</p>}
+      {hint && <p className="mx-auto mt-1 max-w-md text-sm text-slate-600">{hint}</p>}
       {children && <div className="mt-5 flex justify-center">{children}</div>}
     </div>
   );

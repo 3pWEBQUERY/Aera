@@ -55,7 +55,7 @@ export function CalendarManager({
         </div>
         <button
           onClick={() => setCreateOpen(true)}
-          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98] sm:self-auto"
+          className="inline-flex items-center gap-2 self-start rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.98] sm:self-auto"
         >
           <Icon name="plus" size={18} />
           {t("create")}
@@ -71,7 +71,7 @@ export function CalendarManager({
           <p className="mx-auto mt-1 max-w-sm text-sm text-slate-500">{t("emptyHint")}</p>
           <button
             onClick={() => setCreateOpen(true)}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-4 py-2.5 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             <Icon name="plus" size={18} /> {t("create")}
           </button>

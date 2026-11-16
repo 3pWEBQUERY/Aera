@@ -6,23 +6,28 @@ import {
   type MemberRow,
   type BadgeOption,
 } from "@/components/dashboard/members-manager";
+import type { MemberSubscriptionInfo } from "@/components/dashboard/ban-member-button";
 
 export default async function MembersPage({
   params,
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ tab?: string }>;
+  searchParams: Promise<{ tab?: string; q?: string }>;
 }) {
   const { slug } = await params;
-  const { tab } = await searchParams;
+  const { tab, q } = await searchParams;
   const { tenant, user } = await requireTenantAdmin(slug);
 
-  const [memberships, tiers, badges, awards] = await Promise.all([
+  const [memberships, tiers, badges, awards, subscriptions] = await Promise.all([
     prisma.membership.findMany({
       where: { tenantId: tenant.id },
       orderBy: { joinedAt: "asc" },
-      include: { user: { select: { name: true, email: true, avatarUrl: true } } },
+      include: {
+        user: {
+          select: { name: true, email: true, avatarUrl: true, emailVerifiedAt: true, createdAt: true },
+        },
+      },
     }),
     prisma.membershipTier.findMany({
       where: { tenantId: tenant.id },
@@ -38,7 +43,26 @@ export default async function MembersPage({
       where: { tenantId: tenant.id },
       select: { badgeId: true, userId: true, awardedAt: true },
     }),
+    // Laufende bezahlte Abos — der Sperren-Dialog nennt, was gekündigt wird.
+    prisma.subscription.findMany({
+      where: { tenantId: tenant.id, status: { in: ["ACTIVE", "TRIALING", "PAST_DUE"] } },
+      orderBy: { createdAt: "desc" },
+      select: {
+        userId: true,
+        tier: { select: { name: true, priceCents: true, currency: true, interval: true } },
+      },
+    }),
   ]);
+  const subByUser = new Map<string, MemberSubscriptionInfo>();
+  for (const sub of subscriptions) {
+    if (subByUser.has(sub.userId) || sub.tier.priceCents <= 0) continue;
+    subByUser.set(sub.userId, {
+      tierName: sub.tier.name,
+      priceCents: sub.tier.priceCents,
+      currency: sub.tier.currency,
+      interval: sub.tier.interval,
+    });
+  }
 
   const badgeOptions: BadgeOption[] = badges.map((b) => {
     const c = parseBadgeCriteria(b.criteria);
@@ -70,18 +94,28 @@ export default async function MembersPage({
     status: m.status,
     joinedAt: m.joinedAt,
     tierId: m.tierId,
-    user: m.user,
+    user: { name: m.user.name, email: m.user.email, avatarUrl: m.user.avatarUrl },
     badges: byUser.get(m.userId) ?? [],
+    // „Eingeladen“: Konto und Mitgliedschaft entstanden in derselben
+    // Einladung (Mitglied hinzufügen), und die Einladung wurde noch nicht
+    // angenommen — das Annehmen bestätigt die E-Mail-Adresse.
+    invited:
+      m.role !== "OWNER" &&
+      !m.user.emailVerifiedAt &&
+      Math.abs(m.joinedAt.getTime() - m.user.createdAt.getTime()) < 10_000,
+    subscription: subByUser.get(m.userId) ?? null,
   }));
 
   return (
     <MembersManager
       slug={slug}
+      communityName={tenant.name}
       members={members}
       tiers={tiers}
       badges={badgeOptions}
       currentUserId={user.id}
       initialTab={tab}
+      initialQuery={typeof q === "string" ? q.slice(0, 120) : ""}
     />
   );
 }

@@ -22,16 +22,24 @@ import { ArticleShare } from "@/components/community/article-share";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
+import { MembersOnlyGate } from "@/components/community/members-only-gate";
 import { excerpt, formatDate, formatPrice, timeAgo } from "@/lib/utils";
 
 export default async function PostDetail({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string; spaceSlug: string; postId: string }>;
+  searchParams: Promise<{ error?: string; purchased?: string }>;
 }) {
   const { slug, spaceSlug, postId } = await params;
-  const [t, locale] = await Promise.all([
+  const { error, purchased } = await searchParams;
+  const [t, tPostTile, tGate, tSafety, tLegal, locale] = await Promise.all([
     getTranslations("spaces"),
+    getTranslations("community.render.postTile"),
+    getTranslations("community.gate"),
+    getTranslations("billingSafety"),
+    getTranslations("legalPurchase"),
     getLocale(),
   ]);
   const community = await getCommunityContext(slug);
@@ -41,10 +49,74 @@ export default async function PostDetail({
   const space = await prisma.space.findFirst({
     where: { tenantId: tenant.id, slug: spaceSlug },
   });
-  if (!space || !canAccess(space, ctx)) notFound();
+  if (!space) notFound();
 
   // A post is reachable by its id or its optional custom slug.
   const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
+  const isStaff = ctx.isStaff;
+  const isMember = ctx.membership?.status === "ACTIVE";
+  const selfHref = `/c/${slug}/s/${spaceSlug}/${postId}`;
+
+  // Geteilter Link ohne Zugriff: statt 404 eine Sperrseite mit dem Weg hinein.
+  // Nur für Beiträge, die es wirklich gibt und die veröffentlicht sind —
+  // alles andere bleibt 404. Vom Beitrag selbst steht dort nichts (kein
+  // Titel, kein Text, keine Kommentare); der Space-Name ist ohnehin in der
+  // Navigation sichtbar.
+  const gatePage = (gate: {
+    visibility: "PUBLIC" | "MEMBERS" | "PAID";
+    requiredEntitlementKey?: string | null;
+  }) => (
+    <MembersOnlyGate
+      slug={slug}
+      tenantId={tenant.id}
+      communityName={tenant.name}
+      title={tGate("postTitle")}
+      context={space.name}
+      next={selfHref}
+      loggedIn={Boolean(user)}
+      isMember={isMember}
+      gate={gate}
+    />
+  );
+  if (!canAccess(space, ctx)) {
+    const exists = await prisma.post.findFirst({
+      where: {
+        id: lookupId,
+        tenantId: tenant.id,
+        spaceId: space.id,
+        isPublished: true,
+        publishedAt: { lte: new Date() },
+      },
+      select: { id: true },
+    });
+    if (!exists) notFound();
+    return gatePage(space);
+  }
+
+  // Zahlungs- und Zustimmungsfehler nach dem Freischalten dieses Beitrags.
+  const notice =
+    error === "checkout" || error === "payments-unavailable" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {tSafety("checkoutNotStarted")}
+      </p>
+    ) : error === "legal-consent" ? (
+      <p
+        role="alert"
+        className="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800"
+      >
+        {tLegal("requiredError")}
+      </p>
+    ) : purchased ? (
+      <p
+        role="status"
+        className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
+      >
+        {tGate("postUnlocked")}
+      </p>
+    ) : null;
 
   // ----- Reddit-style forum thread -----
   if (space.type === "FORUM") {
@@ -56,28 +128,32 @@ export default async function PostDetail({
       },
     });
     if (!fpost) notFound();
+    // Geplante oder zurückgezogene Beiträge sieht vor dem Termin nur das Team.
+    if (!isStaff && (!fpost.isPublished || fpost.publishedAt.getTime() > Date.now())) {
+      notFound();
+    }
+    if (isPostLocked(fpost, ctx)) {
+      return gatePage({ visibility: fpost.priceCents > 0 ? "PAID" : fpost.visibility });
+    }
     const fcomments = await prisma.comment.findMany({
       where: { tenantId: tenant.id, postId: fpost.id },
       orderBy: { createdAt: "asc" },
       include: { author: { select: { name: true, avatarUrl: true } } },
     });
     const cIds = fcomments.map((c) => c.id);
-    const [postGroups, postMine, cGroups, cMine, cLikeGroups, cLikeMine] = await Promise.all([
+    // Im Forum wird nur abgestimmt (Pfeile). Frühere Herz-Likes an Kommentaren
+    // bleiben in der Datenbank, werden hier aber nicht mehr angezeigt.
+    const [postGroups, postMine, cGroups, cMine] = await Promise.all([
       prisma.reaction.groupBy({ by: ["type"], where: { tenantId: tenant.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, _count: true }),
       user ? prisma.reaction.findFirst({ where: { tenantId: tenant.id, userId: user.id, postId: fpost.id, type: { in: ["UP", "DOWN"] } }, select: { type: true } }) : Promise.resolve(null),
       cIds.length ? prisma.reaction.groupBy({ by: ["commentId", "type"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, _count: true }) : Promise.resolve([]),
       user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: { in: ["UP", "DOWN"] } }, select: { commentId: true, type: true } }) : Promise.resolve([]),
-      cIds.length ? prisma.reaction.groupBy({ by: ["commentId"], where: { tenantId: tenant.id, commentId: { in: cIds }, type: "LIKE" }, _count: true }) : Promise.resolve([]),
-      user && cIds.length ? prisma.reaction.findMany({ where: { tenantId: tenant.id, userId: user.id, commentId: { in: cIds }, type: "LIKE" }, select: { commentId: true } }) : Promise.resolve([]),
     ]);
     const postScore = postGroups.reduce((s, g) => s + (g.type === "UP" ? 1 : -1) * (g._count as number), 0);
     const cScore: Record<string, number> = {};
     for (const g of cGroups) if (g.commentId) cScore[g.commentId] = (cScore[g.commentId] ?? 0) + (g.type === "UP" ? 1 : -1) * (g._count as number);
     const cMy: Record<string, "UP" | "DOWN"> = {};
     for (const v of cMine) if (v.commentId) cMy[v.commentId] = v.type as "UP" | "DOWN";
-    const cLikes = new Map<string, number>();
-    for (const g of cLikeGroups) if (g.commentId) cLikes.set(g.commentId, g._count as number);
-    const cLiked = new Set(cLikeMine.map((r) => r.commentId).filter((id): id is string => !!id));
 
     const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
     const settings = await readPostSettings(tenant.id, fpost.id);
@@ -86,7 +162,7 @@ export default async function PostDetail({
       <ForumThread
         slug={slug}
         spaceSlug={spaceSlug}
-        isMember={ctx.membership?.status === "ACTIVE"}
+        isMember={isMember}
         poll={poll}
         cover={{
           url: settings.coverUrl,
@@ -124,8 +200,6 @@ export default async function PostDetail({
           parentId: c.parentId,
           score: cScore[c.id] ?? 0,
           myVote: cMy[c.id] ?? null,
-          likes: cLikes.get(c.id) ?? 0,
-          likedByMe: cLiked.has(c.id),
         }))}
       />
     );
@@ -145,7 +219,6 @@ export default async function PostDetail({
   if (!post) notFound();
 
   // Scheduled / unpublished posts are only reachable by staff before go-live.
-  const isStaff = ctx.isStaff;
   if (!isStaff && (!post.isPublished || post.publishedAt.getTime() > Date.now())) {
     notFound();
   }
@@ -184,11 +257,11 @@ export default async function PostDetail({
   for (const g of likeGroups) if (g.commentId) likeCount.set(g.commentId, g._count as number);
   const likedByMe = new Set(myLikes.map((r) => r.commentId).filter(Boolean) as string[]);
 
-  const isMember = ctx.membership?.status === "ACTIVE";
   // Geschlossene Kommentare: kein Formular (der Server lehnt ohnehin ab).
   const canComment = isMember && !post.closeComments;
 
-  const commentsBlock = (
+  // Gesperrt: keine Kommentare — die Diskussion zitiert den Inhalt.
+  const commentsBlock = locked ? null : (
     <CommentThread
       slug={slug}
       spaceSlug={spaceSlug}
@@ -272,7 +345,11 @@ export default async function PostDetail({
       const cover = relatedCovers.get(p.id);
       return {
         id: p.id,
-        title: p.title || excerpt(p.body, 80) || tSpace("untitled"),
+        title:
+          p.title ||
+          (tileLocked
+            ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+            : excerpt(p.body, 80) || tSpace("untitled")),
         href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
         // Mitglieder-Beitraege behalten ihr Titelbild — es ist die Werbung.
         // Beim Einzelverkauf steht dafuer nur das Vorschaubild bereit.
@@ -308,6 +385,7 @@ export default async function PostDetail({
 
     return (
       <article className="mx-auto max-w-3xl">
+        {notice}
         <div className="mb-6">
           <Link
             href={`/c/${slug}/s/${spaceSlug}`}
@@ -331,7 +409,10 @@ export default async function PostDetail({
             {post._count.comments === 1 ? "Kommentar" : "Kommentare"}
           </p>
           <h1 className="blog-title mx-auto mt-4 max-w-2xl text-4xl font-bold leading-[1.12] text-[#161613] sm:text-5xl">
-            {post.title || excerpt(post.body, 80) || "Ohne Titel"}
+            {post.title ||
+              (locked
+                ? tPostTile(post.priceCents > 0 ? "paidUntitled" : "lockedUntitled")
+                : excerpt(post.body, 80) || tSpace("untitled"))}
           </h1>
         </header>
 
@@ -371,24 +452,27 @@ export default async function PostDetail({
               <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#161613]/70 text-white">
                 <Icon name="lock" size={22} />
               </span>
-              <p className="mt-4 text-sm text-[#161613]/70">{excerpt(post.body, 160)}</p>
+              <p className="mt-4 text-sm text-[#161613]/70">
+                {post.priceCents > 0 ? tPostTile("paidHint") : tPostTile("lockedHint")}
+              </p>
               {post.priceCents > 0 ? (
                 <form action={purchasePostAction} className="mx-auto mt-5 max-w-xs">
                   <input type="hidden" name="tenant" value={slug} />
                   <input type="hidden" name="space" value={spaceSlug} />
                   <input type="hidden" name="postId" value={post.id} />
+                  <input type="hidden" name="returnTo" value="post" />
                   <ImmediateAccessConsent className="mb-3" />
-                  <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.99]">
+                  <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
                     <Icon name="lock" size={16} />
-                    {post.priceCents / 100} {post.currency.toUpperCase()}
+                    {t("unlockFor", { price: formatPrice(post.priceCents, post.currency, locale) })}
                   </button>
                 </form>
               ) : (
                 /* Ohne Preis gibt es nichts zu kaufen — dieser Beitrag will eine
                    Mitgliedschaft. Ein Kauf-Button waere hier eine Sackgasse. */
                 <Link
-                  href={`/c/${slug}/join`}
-                  className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                  href={`/c/${slug}/join?next=${encodeURIComponent(selfHref)}`}
+                  className="mx-auto mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
                 >
                   <Icon name="members" size={16} />
                   {tSpace("joinToRead")}
@@ -454,7 +538,9 @@ export default async function PostDetail({
 
   const card: PostCardData = {
     id: post.id,
-    title: post.title,
+    title:
+      post.title ||
+      (locked ? tPostTile(post.priceCents > 0 ? "paidUntitled" : "lockedUntitled") : null),
     body: locked ? "" : post.body,
     bodyHtml: locked ? null : post.bodyHtml,
     imageUrl: locked ? null : post.imageUrl,
@@ -471,7 +557,8 @@ export default async function PostDetail({
         ? post.teaserUrl
         : (post.imageUrls[0] ?? post.imageUrl)
       : null,
-    lockedExcerpt: locked ? excerpt(post.body, 180) : null,
+    // Kein Textauszug: ein kurzer Beitrag waere sonst ganz lesbar.
+    lockedExcerpt: null,
     priceCents: post.priceCents,
     currency: post.currency,
     teaserUrl: post.teaserUrl,
@@ -508,7 +595,11 @@ export default async function PostDetail({
     const tileLocked = kind !== "none";
     return {
       id: p.id,
-      title: p.title || excerpt(p.body, 80) || t("untitled"),
+      title:
+        p.title ||
+        (tileLocked
+          ? tPostTile(kind === "paid" ? "paidUntitled" : "lockedUntitled")
+          : excerpt(p.body, 80) || t("untitled")),
       href: `/c/${slug}/s/${spaceSlug}/${p.id}`,
       imageUrl: kind === "paid" ? p.teaserUrl : (p.imageUrls[0] ?? p.imageUrl),
       videoUrl: tileLocked ? null : p.videoUrl,
@@ -530,10 +621,11 @@ export default async function PostDetail({
     >
       <Link
         href={`/c/${slug}/s/${spaceSlug}`}
-        className="text-sm text-[#161613]/60 hover:text-[#161613]"
+        className="text-sm text-[#161613]/70 hover:text-[#161613]"
       >
-        ← Zurück zu {space.name}
+        ← {t("backToSpace", { name: space.name })}
       </Link>
+      {notice}
       <PostCard post={card} slug={slug} space={spaceSlug} detail />
       {commentsBlock}
       {moreTiles.length > 0 && (

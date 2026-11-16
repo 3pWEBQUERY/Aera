@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -25,6 +25,7 @@ export function MultiImageUpload({
   max?: number;
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [urls, setUrls] = useState<string[]>(defaultUrls.filter(Boolean));
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,9 +45,7 @@ export function MultiImageUpload({
         added.push(await uploadMediaFile({ file, tenant, purpose }));
       } catch (uploadError) {
         setError(
-          uploadError instanceof UploadError
-            ? uploadError.message
-            : t("uploadFailed"),
+          uploadErrorText(uploadError),
         );
         break;
       }

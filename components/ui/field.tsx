@@ -17,7 +17,10 @@ export function Label({
   );
 }
 
-export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+export function Input(
+  // React 19 reicht ref als normale Prop durch (wie bei Textarea).
+  props: React.InputHTMLAttributes<HTMLInputElement> & { ref?: React.Ref<HTMLInputElement> },
+) {
   return (
     <input
       {...props}

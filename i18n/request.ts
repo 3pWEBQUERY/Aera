@@ -1,5 +1,6 @@
 import { getRequestConfig } from "next-intl/server";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
+import { matchAcceptLanguage } from "./accept-language";
 import {
   FALLBACK_LOCALE,
   LOCALE_COOKIE,
@@ -13,7 +14,9 @@ export { DEFAULT_LOCALE, type AppLocale } from "./locales";
 
 /**
  * i18n ohne URL-Routing: Die Sprache kommt aus dem `NEXT_LOCALE`-Cookie
- * (Umschalter im Mitgliedskonto). Default ist Deutsch — die Plattform-Sprache.
+ * (Sprachwähler). Ohne gültiges Cookie entscheidet der `Accept-Language`-Header
+ * des Browsers; passt keine unterstützte Sprache, gilt Deutsch — die
+ * Plattform-Sprache.
  *
  * Die UI-Migration ist abgeschlossen. Neue UI- und E-Mail-Texte werden immer
  * in messages/de.json + en.json angelegt; alle weiteren Kataloge können
@@ -59,12 +62,24 @@ export function localeChain(locale: string): string[] {
   return chain;
 }
 
+/**
+ * Cookie vor Browser-Sprache: Eine ausdrückliche Wahl im Sprachwähler gewinnt
+ * immer, `Accept-Language` ist nur der Startwert für Erstbesucher.
+ */
+async function resolveRequestLocale() {
+  const cookieValue = (await cookies()).get(LOCALE_COOKIE)?.value;
+  if (cookieValue && (SUPPORTED_LOCALES as readonly string[]).includes(cookieValue)) {
+    return normalizeLocale(cookieValue);
+  }
+  return matchAcceptLanguage((await headers()).get("accept-language")) ?? normalizeLocale(undefined);
+}
+
 export default getRequestConfig(async ({ locale: explicitLocale }) => {
   // Explizite Locale (z. B. getTranslations({ locale }) in API-Routen ohne
   // Cookie-Kontext — Mobile-API) hat Vorrang vor dem NEXT_LOCALE-Cookie.
   const locale = explicitLocale
     ? normalizeLocale(explicitLocale)
-    : normalizeLocale((await cookies()).get(LOCALE_COOKIE)?.value);
+    : await resolveRequestLocale();
 
   let messages: Messages = {};
   for (const step of localeChain(locale)) {

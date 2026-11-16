@@ -37,6 +37,14 @@
   --action-soft: #e9e5f8;
   --action-fg: #161613;
 
+  /* Gefuellter Haupt-Button (eine Hauptaktion pro Ansicht). Tinte statt des
+     hellen Lavendels: der helle Ton sah aus wie ein deaktivierter Button und
+     verlor als Signifier gegen jede Karte. Lavendel bleibt fuer Auswahl,
+     aktive Navigation, Icon-Kacheln und Chips. */
+  --primary: #161613;
+  --primary-hover: #3a3934;
+  --primary-fg: #ffffff;
+
   /* Schlagschatten der Karten beim Hover.
      Tailwinds shadow-md/lg setzen zwei harte Lagen mit 10 % Schwarz — auf dem
      warmen Papierton der Community wirkt das wie ein grauer Rand. Stattdessen
@@ -178,11 +186,11 @@ body {
 .upload-sweep {
   animation: upload-sweep 1.1s ease-in-out infinite;
 }
-/* Karten der Upload-Anzeige steigen von unten auf, nicht von oben herab. */
+/* Karten der Upload-Anzeige gleiten unter der Kopfzeile herein. */
 @keyframes upload-card-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;

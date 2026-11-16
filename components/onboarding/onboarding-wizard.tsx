@@ -63,7 +63,10 @@ export function OnboardingWizard({
   const [tagline, setTagline] = useState("");
   const [description, setDescription] = useState("");
   const [primary, setPrimary] = useState(PRIMARY_PRESETS[0]);
-  const [accent, setAccent] = useState(ACCENT_PRESETS[0]);
+  // Die Akzentfarbe wirkt auf der Community-Seite nirgends (nur die
+  // Hauptfarbe). Sie wird deshalb nicht mehr abgefragt, das Feld behaelt den
+  // Standardwert.
+  const accent = ACCENT_PRESETS[0];
   const [selected, setSelected] = useState<Set<SpaceCatalogType>>(new Set(DEFAULT_SPACE_TYPES));
   const [membershipName, setMembershipName] = useState(t("defaultMembership"));
   const [promoCode, setPromoCode] = useState(initialCode);
@@ -291,7 +294,6 @@ export function OnboardingWizard({
                   <Textarea id="ob-desc" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} placeholder={t("descPlaceholder")} />
                 </div>
                 <ColorRow label={t("primaryColor")} presets={PRIMARY_PRESETS} value={primary} onChange={setPrimary} customLabel={t("customColor")} hexLabel={t("hexLabel")} />
-                <ColorRow label={t("accentColor")} presets={ACCENT_PRESETS} value={accent} onChange={setAccent} customLabel={t("customColor")} hexLabel={t("hexLabel")} />
                 {/* Live preview — flat brand tile, editorial type */}
                 <div className="rounded-2xl border border-[#161613]/10 bg-white p-5">
                   <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
@@ -312,7 +314,7 @@ export function OnboardingWizard({
                     </div>
                     <span
                       className="ml-auto hidden rounded-full px-3 py-1 text-xs font-semibold text-white sm:inline-block"
-                      style={{ backgroundColor: accent }}
+                      style={{ backgroundColor: primary }}
                     >
                       {t("accentBadge")}
                     </span>
@@ -438,10 +440,7 @@ export function OnboardingWizard({
                 <SummaryRow label={t("summaryLook")}>
                   <div className="flex items-center gap-2">
                     <span className="h-6 w-6 rounded-md" style={{ backgroundColor: primary }} />
-                    <span className="h-6 w-6 rounded-md" style={{ backgroundColor: accent }} />
-                    <span className="ml-1 text-xs text-[#161613]/65">
-                      {primary} · {accent}
-                    </span>
+                    <span className="ml-1 text-xs text-[#161613]/65">{primary}</span>
                   </div>
                 </SummaryRow>
                 <SummaryRow label={t("summarySpaces", { count: selected.size })}>

@@ -4,7 +4,7 @@ import { AsyncLocalStorage } from "node:async_hooks";
 // free, unlike headers(), which would change how a route renders.
 import { workUnitAsyncStorage } from "next/dist/server/app-render/work-unit-async-storage.external";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@/app/generated/prisma/client";
+import { PrismaClient, Prisma as PrismaRuntime } from "@/app/generated/prisma/client";
 import type { Prisma } from "@/app/generated/prisma/client";
 
 const connectionString = process.env.DATABASE_URL;
@@ -147,7 +147,17 @@ type ExtendedPrismaClient = ReturnType<typeof createClient>;
 const globalForPrisma = globalThis as unknown as {
   prisma?: ExtendedPrismaClient;
   prismaBase?: PrismaClient;
+  prismaModels?: string;
 };
+
+// Dev: Nach `prisma generate` mit neuem Modell den gecachten Client verwerfen.
+// Sonst fehlt die neue Tabelle (z. B. `prisma.totpRecoveryCode`) bis zum
+// Neustart des Dev-Servers, weil der alte Client auf globalThis überlebt.
+const modelFingerprint = Object.keys(PrismaRuntime.ModelName).join(",");
+if (globalForPrisma.prismaModels !== modelFingerprint) {
+  globalForPrisma.prisma = undefined;
+  globalForPrisma.prismaBase = undefined;
+}
 
 const baseClient = globalForPrisma.prismaBase ?? createBaseClient();
 /**
@@ -160,6 +170,7 @@ export const prisma: ExtendedPrismaClient = globalForPrisma.prisma ?? createClie
 if (process.env.NODE_ENV !== "production") {
   globalForPrisma.prisma = prisma;
   globalForPrisma.prismaBase = baseClient;
+  globalForPrisma.prismaModels = modelFingerprint;
 }
 
 export default prisma;

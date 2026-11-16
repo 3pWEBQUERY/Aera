@@ -67,7 +67,8 @@ export default function AgbPage() {
           Laufzeit, sofern sie nicht vor Ablauf gekündigt werden. Die
           Kündigung ist jederzeit zum Ende der laufenden Abrechnungsperiode
           möglich. Auf Umsätze der Creator über die Plattform erheben wir
-          eine Plattformgebühr; deren Höhe wird im Dashboard ausgewiesen.
+          eine Plattformgebühr; sie steht auf der Preisseite. Hinzu kommen die
+          Gebühren des Zahlungsdienstleisters.
         </p>
       </section>
 

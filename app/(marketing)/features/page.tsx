@@ -1,6 +1,8 @@
 import { getTranslations } from "next-intl/server";
 import { PillLink } from "@/components/marketing/pill-link";
 import { Reveal } from "@/components/marketing/reveal";
+import { PlanAvailability, type GatedItem } from "@/components/marketing/plan-availability";
+import { SPACE_TYPE_KEYS } from "@/lib/plan-features";
 
 export async function generateMetadata() {
   const t = await getTranslations("ui.auth");
@@ -12,8 +14,24 @@ const SECTION_IDS = [
   "s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11", "s12", "s13",
 ] as const;
 
+/**
+ * Was in einer Sektion beworben wird, aber ein bezahltes Paket braucht. Die
+ * Paketzuordnung selbst kommt aus lib/plan-features.ts; hier steht nur, welche
+ * Funktion zu welchem Text gehoert.
+ */
+const SECTION_GATES: Partial<Record<(typeof SECTION_IDS)[number], GatedItem[]>> = {
+  s1: [{ feature: "customDomain" }],
+  s2: [{ space: "SHOP" }, { space: "CHAT" }, { space: "PODCAST" }, { space: "ADS" }],
+  s4: [{ feature: "products" }],
+  s7: [{ space: "CHAT" }, { space: "LIVE" }],
+  s8: [{ space: "PODCAST" }],
+  s9: [{ feature: "gamification" }],
+  s13: [{ feature: "export" }],
+};
+
 export default async function FeaturesPage() {
   const t = await getTranslations("features");
+  const vars = { count: SPACE_TYPE_KEYS.length };
 
   return (
     <main className="bg-[#f4f1ea] text-[#161613]">
@@ -60,10 +78,13 @@ export default async function FeaturesPage() {
                         key={tag}
                         className="rounded-full border border-[#161613]/20 px-3.5 py-1.5 text-sm font-semibold text-[#161613]/80"
                       >
-                        {t(`sections.${id}.${tag}`)}
+                        {t(`sections.${id}.${tag}`, vars)}
                       </span>
                     ))}
                   </div>
+                  {SECTION_GATES[id] && (
+                    <PlanAvailability items={SECTION_GATES[id]} className="mt-4" />
+                  )}
                 </div>
               </article>
             </Reveal>

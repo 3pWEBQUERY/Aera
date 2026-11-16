@@ -6,8 +6,8 @@ import { Sheet } from "./sheet";
 import { Icon, type IconName } from "./icons";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils";
-import { PlanCard } from "@/components/pricing/plan-card";
 import { RedeemCodeForm } from "./redeem-code-sheet";
+import { PlanSwitchSheet } from "./plan-switch-sheet";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 interface PlanInfo {
@@ -81,14 +81,16 @@ export function CreditsSheet({
   const [summary, setSummary] = useState<CreditSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
-  const [planSlide, setPlanSlide] = useState(0);
+  const [planSheetOpen, setPlanSheetOpen] = useState(false);
   const plansRef = useRef<HTMLElement>(null);
   const t = useTranslations("dashboard.credits");
   const tSafety = useTranslations("billingSafety");
-  const [billingError, setBillingError] = useState<string | null>(() =>
-    initialCheckoutError ? tSafety("checkoutFailed") : null,
+  const tSheet = useTranslations("dashboard.planSheet");
+  // A failed purchase is shown under the button that was clicked; only the
+  // error handed in from a returning checkout (no button) sits at the top.
+  const [billingError, setBillingError] = useState<{ key: string; message: string } | null>(
+    () => (initialCheckoutError ? { key: "initial", message: tSafety("checkoutFailed") } : null),
   );
-  const tpc = useTranslations("community.render.planCard");
   const tPlans = useTranslations("dashboard.plans");
   const locale = useLocale();
   const nf = new Intl.NumberFormat(locale);
@@ -127,12 +129,6 @@ export function CreditsSheet({
     return () => cancelAnimationFrame(frame);
   }, [focusPlans, open, summary]);
 
-  useEffect(() => {
-    if (!open || !summary) return;
-    const currentIndex = summary.plans.findIndex((plan) => plan.key === summary.plan);
-    setPlanSlide(Math.max(0, Math.floor(Math.max(0, currentIndex) / 2)));
-  }, [open, summary]);
-
   const post = useCallback(
     async (body: Record<string, unknown>, busyKey: string) => {
       setBusy(busyKey);
@@ -158,28 +154,25 @@ export function CreditsSheet({
           onChanged?.(data.summary);
           return;
         }
-        setBillingError(
-          data.error === "existing_subscription"
-            ? tSafety("activeSubscriptionError")
-            : tSafety("checkoutFailed"),
-        );
+        setBillingError({
+          key: busyKey,
+          message:
+            data.error === "existing_subscription"
+              ? tSafety("activeSubscriptionError")
+              : tSheet("checkoutFailed"),
+        });
       } catch {
-        setBillingError(tSafety("checkoutFailed"));
+        setBillingError({ key: busyKey, message: tSheet("checkoutFailed") });
       } finally {
         setBusy(null);
       }
     },
-    [slug, onChanged, tSafety],
+    [slug, onChanged, tSafety, tSheet],
   );
 
   const usedPct = summary
     ? Math.min(100, Math.round((summary.usedThisPeriod / Math.max(1, summary.monthlyCredits)) * 100))
     : 0;
-  const planPages = summary
-    ? Array.from({ length: Math.ceil(summary.plans.length / 2) }, (_, index) =>
-        summary.plans.slice(index * 2, index * 2 + 2),
-      )
-    : [];
 
   return (
     <Sheet open={open} onClose={onClose} title={t("title")} subtitle={t("subtitle")} icon="bolt">
@@ -277,12 +270,12 @@ export function CreditsSheet({
                 </div>
               )}
 
-              {billingError && (
+              {billingError?.key === "initial" && (
                 <div
                   role="alert"
                   className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
                 >
-                  {billingError}
+                  {billingError.message}
                 </div>
               )}
 
@@ -311,7 +304,7 @@ export function CreditsSheet({
                           type="button"
                           disabled={busy !== null || !summary.billingEnabled}
                           onClick={() => post({ action: "buy", packId: p.id }, `buy_${p.id}`)}
-                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[var(--action)] px-3 py-2 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+                          className="inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[var(--primary)] px-3 py-2 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
                         >
                           {!summary.billingEnabled
                             ? tSafety("unavailableAction")
@@ -319,141 +312,36 @@ export function CreditsSheet({
                               ? t("buying")
                               : t("buy")}
                         </button>
+                        {billingError?.key === `buy_${p.id}` && (
+                          <p role="alert" className="mt-2 text-xs text-red-700">
+                            {billingError.message}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
               </section>
 
-              {/* Plans */}
-              <section ref={plansRef} className="scroll-mt-6">
+              {/* Package: what a package contains lives in its own sheet —
+                  this one is about AI credits. */}
+              <section
+                ref={plansRef}
+                className="scroll-mt-6 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
+              >
                 <SectionTitle
                   icon="tiers"
                   title={t("managePlan")}
-                  subtitle={t("moreCreditsMonth")}
-                  actions={
-                    planPages.length > 1 ? (
-                      <div className="flex shrink-0 items-center gap-1.5">
-                        <button
-                          type="button"
-                          disabled={planSlide === 0}
-                          onClick={() => setPlanSlide((value) => Math.max(0, value - 1))}
-                          aria-label={`← ${t("managePlan")}`}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-default disabled:opacity-35"
-                        >
-                          <Icon name="chevron" size={15} className="rotate-90" />
-                        </button>
-                        <span className="min-w-9 text-center text-xs font-semibold tabular-nums text-slate-500" aria-live="polite">
-                          {planSlide + 1}/{planPages.length}
-                        </span>
-                        <button
-                          type="button"
-                          disabled={planSlide >= planPages.length - 1}
-                          onClick={() =>
-                            setPlanSlide((value) => Math.min(planPages.length - 1, value + 1))
-                          }
-                          aria-label={`${t("managePlan")} →`}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-default disabled:opacity-35"
-                        >
-                          <Icon name="chevron" size={15} className="-rotate-90" />
-                        </button>
-                      </div>
-                    ) : null
-                  }
+                  subtitle={tSheet("creditsTeaser", { plan: summary.planName })}
                 />
-                <div className="overflow-hidden pb-1 pt-1">
-                  <div
-                    className="flex transition-transform duration-300 ease-out"
-                    style={{ transform: `translateX(-${planSlide * 100}%)` }}
-                  >
-                    {planPages.map((plans, pageIndex) => (
-                      <div
-                        key={plans.map((plan) => plan.key).join("-")}
-                        className="grid w-full shrink-0 grid-cols-2 items-stretch gap-2 px-1.5 sm:gap-4 sm:px-1"
-                        aria-hidden={pageIndex !== planSlide}
-                        inert={pageIndex !== planSlide}
-                      >
-                        {plans.map((plan) => {
-                          const current = plan.key === summary.plan;
-                          return (
-                            <PlanCard
-                              key={plan.key}
-                              name={plan.name}
-                              tagline={plan.tagline}
-                              priceCents={plan.priceCents}
-                              features={plan.features}
-                              featured={plan.key === "PRO" && !current}
-                              current={current}
-                              compact
-                              labels={{
-                                locale,
-                                current: tpc("current"),
-                                popular: tpc("popular"),
-                                perMonth: tpc("perMonth"),
-                                free: tpc("free"),
-                                credits: tpc("creditsPerMonth", {
-                                  count: nf.format(plan.monthlyCredits),
-                                }),
-                              }}
-                            >
-                              <button
-                                type="button"
-                                disabled={
-                                  current ||
-                                  busy !== null ||
-                                  !summary.billingEnabled ||
-                                  plan.priceCents <= 0
-                                }
-                                onClick={() =>
-                                  post({ action: "plan", plan: plan.key }, `plan_${plan.key}`)
-                                }
-                                className={cn(
-                                  "inline-flex w-full items-center justify-center rounded-xl px-2 py-2.5 text-xs font-semibold transition disabled:cursor-default sm:px-3 sm:text-sm",
-                                  current
-                                    ? "bg-slate-100 text-slate-600"
-                                    : "bg-[var(--action)] text-[var(--action-fg)] hover:bg-[var(--action-hover)] disabled:opacity-50",
-                                )}
-                              >
-                                {!summary.billingEnabled && !current
-                                  ? tSafety("unavailableAction")
-                                  : current
-                                    ? t("currentPlan")
-                                    : busy === `plan_${plan.key}`
-                                      ? t("switching")
-                                      : t("switchPlan")}
-                              </button>
-                            </PlanCard>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                {summary.creatorSubscriptionStatus && summary.plan !== "FREE" && (
-                  <div className="mt-4 rounded-2xl border border-slate-200 bg-white px-4 py-3">
-                    {summary.planCancelAtPeriodEnd ? (
-                      <p className="text-sm text-slate-600">
-                        {tSafety("creatorPlanEnds", {
-                          date: fmtDate(summary.planCurrentPeriodEnd ?? summary.periodEnd),
-                        })}
-                      </p>
-                    ) : (
-                      <div className="flex flex-wrap items-center justify-between gap-3">
-                        <p className="text-sm text-slate-600">{tSafety("creatorPlanCancelHint")}</p>
-                        <button
-                          type="button"
-                          disabled={busy !== null || !summary.cancellationEnabled}
-                          onClick={() => post({ action: "cancel_plan" }, "cancel_plan")}
-                          className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
-                        >
-                          {busy === "cancel_plan"
-                            ? tSafety("creatorPlanCanceling")
-                            : tSafety("creatorPlanCancel")}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                )}
+                <button
+                  type="button"
+                  onClick={() => setPlanSheetOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+                >
+                  {tSheet("open")}
+                  <Icon name="arrowRight" size={15} />
+                </button>
               </section>
 
               {/* Usage history */}
@@ -492,6 +380,14 @@ export function CreditsSheet({
           )}
         </div>
       </div>
+      <PlanSwitchSheet
+        open={planSheetOpen}
+        onClose={() => {
+          setPlanSheetOpen(false);
+          void load();
+        }}
+        slug={slug}
+      />
     </Sheet>
   );
 }

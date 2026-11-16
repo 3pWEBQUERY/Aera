@@ -3,7 +3,9 @@
 import { useRef, useState } from "react";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
+import { MediaPickerSheet } from "./media-picker-sheet";
 
 export function ImageUpload({
   tenant,
@@ -11,12 +13,15 @@ export function ImageUpload({
   defaultUrl = null,
   purpose = "cover",
   onChange,
+  libraryPicker = false,
 }: {
   tenant: string;
   name?: string;
   defaultUrl?: string | null;
   purpose?: string;
   onChange?: (url: string) => void;
+  /** Zeigt „Aus Mediathek wählen“ neben dem Upload. */
+  libraryPicker?: boolean;
 }) {
   const t = useTranslations("ui.dashboard");
   const [url, setUrlState] = useState<string>(defaultUrl ?? "");
@@ -26,23 +31,29 @@ export function ImageUpload({
   };
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [failedFile, setFailedFile] = useState<File | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const uploadErrorText = useUploadErrorText();
+  const tm = useTranslations("dashboard.spaceContent");
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     e.target.value = "";
     if (!file) return;
+    await upload(file);
+  }
+
+  async function upload(file: File) {
     setError(null);
+    setFailedFile(null);
     setUploading(true);
     try {
       const uploadedUrl = await uploadMediaFile({ file, tenant, purpose });
       setUrl(uploadedUrl);
     } catch (uploadError) {
-      setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
-      );
+      setError(uploadErrorText(uploadError));
+      setFailedFile(file);
     } finally {
       setUploading(false);
     }
@@ -71,8 +82,8 @@ export function ImageUpload({
           </div>
         )}
       </div>
-      {(url || error) && (
-        <div className="mt-2 flex items-center gap-3">
+      {(url || libraryPicker) && (
+        <div className="mt-2 flex flex-wrap items-center gap-3">
           {url && (
             <button
               type="button"
@@ -91,8 +102,36 @@ export function ImageUpload({
               {t("remove")}
             </button>
           )}
-          {error && <span className="text-xs text-red-600">{error}</span>}
+          {libraryPicker && (
+            <button
+              type="button"
+              onClick={() => setPickerOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-[var(--action-soft)]"
+            >
+              <Icon name="gallery" size={15} className="text-slate-500" />
+              {tm("pickFromLibrary")}
+            </button>
+          )}
         </div>
+      )}
+      <UploadFieldError
+        message={error}
+        retrying={uploading}
+        onRetry={failedFile ? () => void upload(failedFile) : undefined}
+      />
+      {libraryPicker && (
+        <MediaPickerSheet
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          slug={tenant}
+          subtitle={tm("pickFromLibraryHint")}
+          onPick={(item) => {
+            setPickerOpen(false);
+            setError(null);
+            setFailedFile(null);
+            setUrl(item.url);
+          }}
+        />
       )}
       <input
         ref={fileRef}

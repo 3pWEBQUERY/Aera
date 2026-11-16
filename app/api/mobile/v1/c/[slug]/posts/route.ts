@@ -41,6 +41,13 @@ export async function POST(
   if (!canAccess(space, ctx)) {
     return jsonError("not_member", "You do not have access to this space.", 403);
   }
+  // Gleiche Regel wie im Web (createPostAction): nur aktive Mitglieder, nur
+  // in Feed/Forum, nicht in archivierten oder "nur Team"-Spaces. Der Import
+  // war da, die Pruefung fehlte — Mitglieder konnten so ueber die App in
+  // Blog-, Video- oder Ankuendigungs-Spaces schreiben.
+  if (!canCreatePostIn(space, ctx)) {
+    return jsonError("forbidden", "You cannot post in this space.", 403);
+  }
 
   const title = parsed.data.title?.trim() || null;
   const body = parsed.data.body;

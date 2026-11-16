@@ -14,18 +14,21 @@ export interface PickerImage {
 /**
  * Media-Picker als Sheet: lädt die neuesten Bilder eines Tenants und gibt das
  * gewählte Bild per `onPick` zurück. Wird im AI-Assistenten über `/media`
- * geöffnet. Die eigentliche Verarbeitung (URL → Anhang) macht der Aufrufer.
+ * und im Beitrags-Composer („Aus Mediathek wählen“) geöffnet. Die eigentliche Verarbeitung (URL → Anhang) macht der Aufrufer.
  */
 export function MediaPickerSheet({
   open,
   onClose,
   slug,
   onPick,
+  subtitle,
 }: {
   open: boolean;
   onClose: () => void;
   slug: string;
   onPick: (item: PickerImage) => void;
+  /** Standard: „Wähle ein Bild zum Anhängen“ (Assistent). */
+  subtitle?: string;
 }) {
   const t = useTranslations("dashboard.assistant");
   const [items, setItems] = useState<PickerImage[]>([]);
@@ -58,14 +61,14 @@ export function MediaPickerSheet({
       open={open}
       onClose={onClose}
       title={t("mediaPickerTitle")}
-      subtitle={t("mediaPickerSubtitle")}
+      subtitle={subtitle ?? t("mediaPickerSubtitle")}
       icon="gallery"
     >
       <div className="flex-1 overflow-y-auto p-6">
         {loading ? (
           <p className="py-10 text-center text-sm text-slate-500">{t("mediaPickerLoading")}</p>
         ) : error ? (
-          <p className="py-10 text-center text-sm text-red-500">{t("mediaPickerError")}</p>
+          <p className="py-10 text-center text-sm text-red-700" role="alert">{t("mediaPickerError")}</p>
         ) : items.length === 0 ? (
           <p className="py-10 text-center text-sm text-slate-500">{t("mediaPickerEmpty")}</p>
         ) : (

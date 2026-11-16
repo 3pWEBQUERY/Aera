@@ -40,7 +40,7 @@ export function ContactForm({
         {signedIn && (
           <Link
             href={accountHref}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)]"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)]"
           >
             {t("sentCta")}
             <Icon name="chevron" size={15} className="-rotate-90" />
@@ -88,7 +88,7 @@ export function ContactForm({
         <button
           type="submit"
           disabled={pending}
-          className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-5 py-3 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] disabled:opacity-50"
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] disabled:opacity-50"
         >
           {pending ? t("sending") : t("send")}
         </button>
