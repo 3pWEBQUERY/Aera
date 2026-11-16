@@ -1,6 +1,7 @@
 import "server-only";
 import { canAccess, canParticipate, type AccessContext, type Gated } from "./entitlements";
 import { isLessonUnlocked } from "./drip";
+import prisma from "./prisma";
 
 /**
  * Schreibende Teilnahme an Events und Kursen (RSVP, Lektion abschließen).
@@ -48,4 +49,15 @@ export function canCompleteLesson(lesson: ParticipationLesson, ctx: AccessContex
     ctx.keys.has(lesson.course.requiredEntitlementKey);
   if (!courseOpen && !lesson.isPreview) return false;
   return isLessonUnlocked(ctx.membership?.joinedAt ?? null, lesson.dripAfterDays);
+}
+
+/**
+ * Ist das Event ausgebucht? `capacity` null heisst unbegrenzt. Zaehlt nur
+ * Zusagen; die Eindeutigkeit (eventId, userId) verhindert Doppelbuchungen,
+ * ein knappes Ueberbuchen bei gleichzeitigen Zusagen bleibt moeglich.
+ */
+export async function eventIsFull(event: { id: string; capacity: number | null }): Promise<boolean> {
+  if (event.capacity == null || event.capacity <= 0) return false;
+  const going = await prisma.eventRsvp.count({ where: { eventId: event.id, status: "GOING" } });
+  return going >= event.capacity;
 }

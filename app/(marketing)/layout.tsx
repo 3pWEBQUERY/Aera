@@ -39,7 +39,7 @@ export default async function MarketingLayout({
               </p>
 
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/60">
                   {t("footerProduct")}
                 </p>
                 <div className="mt-4 grid gap-3 text-sm font-medium text-white/65">
@@ -62,7 +62,7 @@ export default async function MarketingLayout({
               </div>
 
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/60">
                   {t("footerGetStarted")}
                 </p>
                 <div className="mt-4 grid gap-3 text-sm font-medium text-white/65">
@@ -79,7 +79,7 @@ export default async function MarketingLayout({
               </div>
 
               <div>
-                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/40">
+                <p className="text-xs font-bold uppercase tracking-[0.18em] text-white/60">
                   Aera.so
                 </p>
                 <div className="mt-4 grid gap-3 text-sm font-medium text-white/65">
@@ -99,7 +99,7 @@ export default async function MarketingLayout({
               </div>
             </div>
             <div className="border-t border-white/10">
-              <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-sm text-white/40 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-5 text-sm text-white/60 sm:flex-row sm:items-center sm:justify-between">
                 <span>© {new Date().getFullYear()} Aera.so</span>
                 <span>{t("footerTagline")}</span>
               </div>

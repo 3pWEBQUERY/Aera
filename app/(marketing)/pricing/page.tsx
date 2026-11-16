@@ -30,7 +30,7 @@ export default async function PricingPage() {
         {/* Intro */}
         <div className="max-w-3xl">
           <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50 sm:text-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65 sm:text-sm">
               {t("eyebrow")}
             </p>
           </Reveal>

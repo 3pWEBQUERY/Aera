@@ -15,7 +15,8 @@ import {
   grantEntitlement,
   revokePreviousTierEntitlement,
 } from "@/lib/entitlements";
-import { canCompleteLesson, canRsvpEvent } from "@/lib/participation";
+import { canCompleteLesson, canRsvpEvent, eventIsFull } from "@/lib/participation";
+import { isPostLocked } from "@/lib/post-access";
 import { awardPoints } from "@/lib/gamification";
 import { notify } from "@/lib/notifications";
 import { emitWebhookEvent } from "@/lib/webhooks";
@@ -475,6 +476,9 @@ export async function createCommentAction(
   // "Kommentare schließen" gilt serverseitig — die Oberfläche blendet das
   // Formular nur aus. Sie bietet es auch Staff nicht an, daher keine Ausnahme.
   if (post.closeComments) return { error: t("commentsClosed") };
+  // Wer einen gesperrten Beitrag (PPV, Mitglieder, bezahlt) nicht lesen darf,
+  // kommentiert ihn auch nicht.
+  if (post.authorId !== user.id && isPostLocked(post, ctx)) return { error: t("noAccess") };
 
   const parsed = commentSchema.safeParse({
     body: fd.get("body"),
@@ -740,6 +744,7 @@ export async function rsvpEventAction(fd: FormData): Promise<void> {
     // sowie aktiver Mitgliedschaft.
     const ctx = await buildAccessContext(tenant.id, user!.id);
     if (!canRsvpEvent(event, ctx)) return;
+    if (await eventIsFull(event)) return;
     await prisma.eventRsvp.create({
       data: { tenantId: tenant.id, eventId, userId: user!.id, status: "GOING" },
     });

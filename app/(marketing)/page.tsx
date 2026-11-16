@@ -259,19 +259,21 @@ export default async function LandingPage() {
                 <div className="rounded-3xl bg-[#161613] px-6 py-6 text-[#f4f1ea] sm:px-8 sm:py-7">
                   {/* Dasselbe Vierspaltenraster wie die Zeilen darunter, damit
                       Werte und Vergleichswerte untereinander stehen. */}
-                  <dl className="grid gap-x-8 gap-y-4 sm:grid-cols-[1fr_1fr_1fr_1fr] sm:items-baseline">
+                  <div className="grid gap-x-8 gap-y-4 sm:grid-cols-[1fr_1fr_1fr_1fr] sm:items-baseline">
                     <p className="display-serif text-3xl sm:text-[1.75rem]">{t("compare.colYou")}</p>
+                    {/* Je Wert eine eigene <dl>: ein <p> direkt in einer <dl>
+                        ist ungueltig (axe: definition-list). */}
                     {COMPARE_ROWS.map((row) => (
-                      <div key={row}>
-                        <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#f4f1ea]/45">
+                      <dl key={row}>
+                        <dt className="text-[11px] font-semibold uppercase tracking-[0.14em] text-[#f4f1ea]/60">
                           {t(`compare.row${row === "base" ? "Base" : row === "fee" ? "Fee" : "Full"}`)}
                         </dt>
                         <dd className="mt-1 text-base font-semibold leading-6">
                           {t(`compare.aera.${row}`, { pro: proPrice })}
                         </dd>
-                      </div>
+                      </dl>
                     ))}
-                  </dl>
+                  </div>
                 </div>
               </Reveal>
 

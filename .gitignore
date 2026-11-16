@@ -24,3 +24,5 @@ _to_delete/
 
 # Lokale Arbeitskopien von Claude-Code-Agenten.
 .claude/worktrees/
+# Von `next dev` (16.4+) automatisch erzeugt.
+AGENTS.md

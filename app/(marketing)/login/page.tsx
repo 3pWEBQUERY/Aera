@@ -36,7 +36,7 @@ export default async function LoginPage({
             className="h-14 w-14"
           />
         </Link>
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65">
           {t("loginEyebrow")}
         </p>
         <h1 className="display-serif mt-3 text-4xl leading-[1.05] sm:text-5xl">

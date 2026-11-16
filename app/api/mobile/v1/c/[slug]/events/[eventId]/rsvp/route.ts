@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import { awardPoints } from "@/lib/gamification";
 import { buildAccessContext, canParticipate } from "@/lib/entitlements";
-import { canRsvpEvent } from "@/lib/participation";
+import { canRsvpEvent, eventIsFull } from "@/lib/participation";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
 // POST /api/mobile/v1/c/{slug}/events/{eventId}/rsvp → { going, rsvpCount }
@@ -41,6 +41,9 @@ export async function POST(
     // Space-Zugriff und Event-Sperre — dieselbe Regel wie im Web.
     if (!canRsvpEvent(event, ctx)) {
       return jsonError("payment_required", "You do not have access to this event.", 403);
+    }
+    if (await eventIsFull(event)) {
+      return jsonError("event_full", "This event is fully booked.", 409);
     }
     await prisma.eventRsvp.create({
       data: { tenantId: tenant.id, eventId, userId: user.id, status: "GOING" },

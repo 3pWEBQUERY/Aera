@@ -72,7 +72,7 @@ export default async function BlogIndexPage({
       <div className="mx-auto max-w-7xl px-5 pb-24 pt-16 md:pt-24">
         <div className="max-w-3xl">
           <Reveal>
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50 sm:text-sm">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65 sm:text-sm">
               {t("eyebrow")}
             </p>
           </Reveal>
@@ -207,7 +207,7 @@ function EmptyBlog({ t }: { t: Awaited<ReturnType<typeof getTranslations<"blog">
   return (
     <main className="bg-[#f4f1ea] text-[#161613]">
       <div className="mx-auto max-w-7xl px-5 pb-32 pt-16 md:pt-24">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/50 sm:text-sm">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#161613]/65 sm:text-sm">
           {t("eyebrow")}
         </p>
         <h1 className="display-serif mt-5 max-w-2xl text-5xl leading-[1.04] sm:text-6xl">
