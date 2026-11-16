@@ -265,7 +265,7 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
               <Icon name="alert" size={15} />
               {tc("dangerZone")}
             </p>
-            <p className="mt-1 text-xs text-red-600/90">
+            <p className="mt-1 text-xs text-red-700">
               {t("dangerDesc")}
             </p>
             <form

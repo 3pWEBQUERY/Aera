@@ -1,12 +1,9 @@
 import { requireTenantAdmin } from "@/lib/guards";
 import { getCommunityCoverUrl } from "@/lib/tenant";
 import { getTranslations } from "next-intl/server";
-import prisma from "@/lib/prisma";
 import { features, env } from "@/lib/env";
-import { revalidatePath } from "next/cache";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Pill } from "@/components/ui/misc";
-import { Input, Label } from "@/components/ui/field";
 import { SettingsTabs, type SettingsSection } from "@/components/dashboard/settings-tabs";
 import { StripeConnectionTest } from "@/components/dashboard/stripe-test";
 import { getConnectStatus, createDashboardLoginLink } from "@/lib/stripe";
@@ -289,7 +286,6 @@ export default async function SettingsPage({
             content: (
               <DangerZone
                 slug={slug}
-                name={tenant.name}
                 exportAvailable={planAllowsFeature(plan, "export")}
               />
             ),

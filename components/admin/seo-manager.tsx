@@ -83,8 +83,8 @@ export function PlatformSeoManager({
         </div>
       )}
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
-        <form action={action} className="space-y-5">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+        <form action={action} className="min-w-0 space-y-5">
           <FormError message={state.error} />
 
           <Field id={ids.site} label={t("siteName")} hint={t("siteNameHint")}>

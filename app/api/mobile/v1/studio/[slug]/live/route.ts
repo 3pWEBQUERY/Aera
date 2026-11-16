@@ -33,7 +33,7 @@ export async function GET(
   const { slug } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant, user } = access;
+  const { tenant } = access;
 
   const spaces = await prisma.space.findMany({
     where: { tenantId: tenant.id, type: "LIVE", isArchived: false },

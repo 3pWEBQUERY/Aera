@@ -320,7 +320,7 @@ function DetailView({ media, onDone }: { media: MediaRowData; onDone: () => void
                 {t("deleteBtn")}
               </button>
             </form>
-            <p className="mt-2 text-xs text-red-600/90">
+            <p className="mt-2 text-xs text-red-700">
               {t("dangerDesc")}
             </p>
           </div>

@@ -67,7 +67,7 @@ import {
 } from "@/lib/stripe-cleanup";
 import { countOpenCreatorCheckouts } from "@/lib/creator-checkout";
 import { queueTenantDeletion } from "@/lib/data-lifecycle";
-import { normalizeHexColor, safeHexColor } from "@/lib/color";
+import { normalizeHexColor } from "@/lib/color";
 import { parseBadgeCriteria } from "@/lib/badges";
 
 export interface ActionState {

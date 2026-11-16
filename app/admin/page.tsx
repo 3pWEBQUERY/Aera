@@ -164,7 +164,7 @@ export default async function AdminOverviewPage() {
         />
       </div>
 
-      <div className="grid items-start gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <section className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold text-slate-900">{t("latestCommunities")}</h2>

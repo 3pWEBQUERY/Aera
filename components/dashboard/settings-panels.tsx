@@ -826,11 +826,9 @@ export function DomainPanel({
 
 export function DangerZone({
   slug,
-  name,
   exportAvailable,
 }: {
   slug: string;
-  name: string;
   /** Datenexport im Paket: dann vor dem Löschen darauf hinweisen. */
   exportAvailable: boolean;
 }) {
