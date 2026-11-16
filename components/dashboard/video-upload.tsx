@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -17,6 +17,7 @@ export function VideoUpload({
   purpose?: string;
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [url, setUrl] = useState<string>(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -46,9 +47,7 @@ export function VideoUpload({
       setUrl(uploadedUrl);
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploading(false);

@@ -5,7 +5,7 @@ import {
   setCommunityCoverAction,
   removeCommunityCoverAction,
 } from "@/app/actions/cover";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 import { Icon } from "./icons";
 import { useTranslations } from "next-intl";
 
@@ -21,6 +21,7 @@ export function CoverUpload({
   defaultUrl: string | null;
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [url, setUrl] = useState(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -45,9 +46,7 @@ export function CoverUpload({
       startTransition(() => setCommunityCoverAction(afd));
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploading(false);

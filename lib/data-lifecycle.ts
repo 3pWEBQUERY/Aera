@@ -915,6 +915,7 @@ async function deleteUserDatabase(job: NonNullable<ClaimedJob>): Promise<void> {
       WHERE "actorUserId" IS NULL
         AND metadata::text ILIKE ${`%${user.email}%`}
     `.catch(() => 0);
+    await tx.totpRecoveryCode.deleteMany({ where: { userId: user.id } });
     await tx.user.update({
       where: { id: user.id },
       data: {

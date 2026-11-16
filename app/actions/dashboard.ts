@@ -23,6 +23,7 @@ import {
   tenantHasFeature,
 } from "@/lib/plan";
 import { planAllowsSpaceType, minPlanForSpaceType } from "@/lib/plan-features";
+import { SPACE_CONTENT_COUNT_SELECT, sumSpaceContent } from "@/lib/space-content";
 import { PLANS } from "@/lib/credit-plans";
 import { hashPassword, getCurrentUser } from "@/lib/auth";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
@@ -50,7 +51,12 @@ import { parsePostSettingsForm, savePostSettings } from "@/lib/post-settings";
 import { isValidCategory } from "@/lib/categories";
 import { tErr, zodErr } from "@/lib/action-errors";
 import { canManageTenantMembership } from "@/lib/capabilities";
-import { queueNewsletterAudienceBatch } from "@/lib/newsletter-delivery";
+import {
+  countNewsletterAudience,
+  queueNewsletterAudienceBatch,
+  type AudienceRules,
+} from "@/lib/newsletter-delivery";
+import { parseLocalDateTime } from "@/lib/local-datetime";
 import type { Prisma, Visibility } from "@/app/generated/prisma/client";
 import { getTranslations } from "next-intl/server";
 import {
@@ -68,11 +74,51 @@ export interface ActionState {
   ok?: boolean;
   /** Invite link for freshly created member accounts (copy & share). */
   inviteUrl?: string;
+  /** Id des gerade angelegten Datensatzes (z. B. Kurs → direkt bearbeiten). */
+  createdId?: string;
 }
 
 const ok: ActionState = { ok: true };
 
 // ---------------------------------------------------------------- Spaces
+/**
+ * Zugang eines bezahlten Space festlegen.
+ *
+ * Der Key kommt aus einer Auswahl, nicht aus Freitext — trotzdem darf die
+ * Action ihm nicht trauen: Ein Key, den kein Tarif vergibt, würde auch
+ * zahlende Mitglieder aussperren. Erlaubt sind deshalb nur die Keys der
+ * bezahlten Mitgliedschaften dieses Tenants; leer heisst "jede bezahlte
+ * Mitgliedschaft" (Visibility PAID ohne Key, siehe lib/entitlements#canAccess).
+ * Ein schon gespeicherter Key bleibt beim Bearbeiten gültig, damit ältere
+ * Spaces nicht beim nächsten Speichern ihre Regel verlieren.
+ */
+async function resolveSpaceAccessKey(
+  tenantId: string,
+  visibility: string,
+  rawKey: string | undefined,
+  currentKey: string | null = null,
+): Promise<{ key: string | null; error?: undefined } | { error: string }> {
+  if (visibility !== "PAID") return { key: null };
+  const key = (rawKey ?? "").trim();
+  if (!key) return { key: null };
+  if (currentKey && key === currentKey) return { key };
+  const tier = await prisma.membershipTier.findFirst({
+    where: { tenantId, entitlementKey: key, priceCents: { gt: 0 } },
+    select: { id: true },
+  });
+  if (!tier) return { error: await tErr("spaceAccessTierInvalid") };
+  return { key };
+}
+
+/** Anzahl aller Inhalte eines Space (siehe lib/space-content). */
+async function spaceContentCount(tenantId: string, spaceId: string): Promise<number> {
+  const row = await prisma.space.findFirst({
+    where: { id: spaceId, tenantId },
+    select: { _count: { select: SPACE_CONTENT_COUNT_SELECT } },
+  });
+  return row ? sumSpaceContent(row._count) : 0;
+}
+
 export async function createSpaceAction(
   _p: ActionState,
   fd: FormData,
@@ -109,6 +155,12 @@ export async function createSpaceAction(
       }),
     };
   }
+  const access = await resolveSpaceAccessKey(
+    tenant.id,
+    parsed.data.visibility,
+    parsed.data.requiredEntitlementKey,
+  );
+  if (access.error !== undefined) return { error: access.error };
 
   const space = await prisma.space.create({
     data: {
@@ -118,7 +170,7 @@ export async function createSpaceAction(
       type: parsed.data.type,
       description: parsed.data.description || null,
       visibility: parsed.data.visibility,
-      requiredEntitlementKey: parsed.data.requiredEntitlementKey || null,
+      requiredEntitlementKey: access.key,
       sortOrder: await prisma.space.count({ where: { tenantId: tenant.id } }),
     },
   });
@@ -134,26 +186,48 @@ export async function createSpaceAction(
   return ok;
 }
 
-export async function toggleSpaceArchiveAction(fd: FormData): Promise<void> {
+/**
+ * Archivieren / Wiederherstellen. `archive` sagt, welcher Zustand gewollt ist —
+ * so macht ein doppelter Klick (oder "Rückgängig" nach einem Neuladen) nicht
+ * versehentlich das Gegenteil. Ohne `archive` wird wie bisher umgeschaltet.
+ */
+export async function toggleSpaceArchiveAction(fd: FormData): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const spaceId = String(fd.get("spaceId"));
+  const wanted = fd.get("archive");
   const { tenant } = await requireTenantAdmin(slug);
   const space = await prisma.space.findFirst({
     where: { id: spaceId, tenantId: tenant.id },
   });
-  if (space) {
-    // Un-archiving consumes a slot again — check the budget before it does.
-    if (space.isArchived && !(await checkSpaceLimit(tenant.id)).allowed) {
-      revalidatePath(`/dashboard/${slug}/spaces`);
-      return;
+  if (!space) return { error: await tErr("spaceNotFound") };
+  const archive = wanted === "true" ? true : wanted === "false" ? false : !space.isArchived;
+  if (archive === space.isArchived) return ok;
+  // Un-archiving consumes a slot again — check the budget before it does.
+  if (!archive) {
+    const budget = await checkSpaceLimit(tenant.id);
+    if (!budget.allowed) {
+      return {
+        error: await tErr("planSpaceLimitReached", {
+          limit: budget.limit ?? 0,
+          plan: PLANS[budget.plan].name,
+        }),
+      };
     }
-    await prisma.space.update({
-      where: { id: space.id },
-      data: { isArchived: !space.isArchived },
-    });
   }
+  await prisma.space.update({
+    where: { id: space.id },
+    data: { isArchived: archive },
+  });
+  await writeAudit({
+    tenantId: tenant.id,
+    action: archive ? "space.archive" : "space.restore",
+    targetType: "Space",
+    targetId: space.id,
+  });
   revalidatePath(`/dashboard/${slug}/spaces`);
   revalidatePath(`/dashboard/${slug}`, "layout");
+  revalidatePath(`/c/${slug}`);
+  return ok;
 }
 
 export async function updateSpaceAction(
@@ -181,6 +255,12 @@ export async function updateSpaceAction(
   // Changing an existing space's type must respect the package too — otherwise
   // "create a Feed, then switch it to Podcast" would be a free upgrade.
   if (parsed.data.type !== space.type) {
+    // Ein anderer Typ liest andere Tabellen: Vorhandene Inhalte wären danach
+    // unsichtbar. Deshalb ist der Typ gesperrt, sobald es Inhalte gibt.
+    const contentCount = await spaceContentCount(tenant.id, space.id);
+    if (contentCount > 0) {
+      return { error: await tErr("spaceTypeLockedContent", { count: contentCount }) };
+    }
     const plan = await getTenantPlan(tenant.id);
     if (!planAllowsSpaceType(plan, parsed.data.type)) {
       return {
@@ -190,6 +270,13 @@ export async function updateSpaceAction(
       };
     }
   }
+  const access = await resolveSpaceAccessKey(
+    tenant.id,
+    parsed.data.visibility,
+    parsed.data.requiredEntitlementKey,
+    space.requiredEntitlementKey,
+  );
+  if (access.error !== undefined) return { error: access.error };
 
   // Slug stays stable so existing links keep working.
   await prisma.space.update({
@@ -199,7 +286,7 @@ export async function updateSpaceAction(
       type: parsed.data.type,
       description: parsed.data.description || null,
       visibility: parsed.data.visibility,
-      requiredEntitlementKey: parsed.data.requiredEntitlementKey || null,
+      requiredEntitlementKey: access.key,
     },
   });
   await writeAudit({
@@ -649,8 +736,8 @@ export async function deleteProductAction(fd: FormData): Promise<ActionState> {
 /** Parse the online/offline delivery fields of a course from a form. */
 function courseFormatData(fd: FormData) {
   const format = String(fd.get("format") || "ONLINE") === "OFFLINE" ? "OFFLINE" : "ONLINE";
-  const startsRaw = String(fd.get("startsAt") || "");
-  const startsAt = startsRaw ? new Date(startsRaw) : null;
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(fd.get("startsAt"), fd.get("timezoneOffset"));
   const cap = Number(fd.get("capacity") || 0);
   return {
     format,
@@ -658,9 +745,48 @@ function courseFormatData(fd: FormData) {
     streamUrl: String(fd.get("streamUrl") || "") || null,
     location: String(fd.get("location") || "") || null,
     address: String(fd.get("address") || "") || null,
-    startsAt: startsAt && !isNaN(startsAt.getTime()) ? startsAt : null,
+    startsAt,
     capacity: cap > 0 ? cap : null,
   };
+}
+
+/**
+ * Legt den Standard-Space für Kurse bzw. Events an, wenn es noch keinen gibt.
+ * Läuft wie ein normales „Space erstellen“ durch Paket-Gate und Space-Limit,
+ * sonst ließe sich das Limit über „Kurs erstellen“ umgehen.
+ */
+async function createDefaultContentSpace(
+  tenantId: string,
+  type: "COURSE" | "EVENTS",
+  name: string,
+): Promise<{ space: { id: string } } | { error: string }> {
+  const plan = await getTenantPlan(tenantId);
+  if (!planAllowsSpaceType(plan, type)) {
+    return {
+      error: await tErr("planSpaceTypeLocked", { plan: PLANS[minPlanForSpaceType(type)].name }),
+    };
+  }
+  const budget = await checkSpaceLimit(tenantId);
+  if (!budget.allowed) {
+    return {
+      error: await tErr(type === "COURSE" ? "planAutoSpaceCourse" : "planAutoSpaceEvents", {
+        limit: budget.limit ?? 0,
+        plan: PLANS[plan].name,
+      }),
+    };
+  }
+  const space = await prisma.space.create({
+    data: {
+      tenantId,
+      name,
+      slug: await uniqueChildSlug("space", tenantId, name),
+      type,
+      visibility: "MEMBERS",
+      sortOrder: await prisma.space.count({ where: { tenantId } }),
+    },
+  });
+  await writeAudit({ tenantId, action: "space.create", targetType: "Space", targetId: space.id });
+  return { space };
 }
 
 export async function createCourseAction(
@@ -674,27 +800,22 @@ export async function createCourseAction(
   if (title.length < 2) return { error: await tErr("titleRequired") };
 
   // Use the selected course space, else find/create a default one.
-  let space = spaceId
+  const space = spaceId
     ? await prisma.space.findFirst({
         where: { id: spaceId, tenantId: tenant.id, type: "COURSE" },
       })
     : await prisma.space.findFirst({ where: { tenantId: tenant.id, type: "COURSE" } });
-  if (!space) {
-    space = await prisma.space.create({
-      data: {
-        tenantId: tenant.id,
-        name: "Kurse",
-        slug: await uniqueChildSlug("space", tenant.id, "Kurse"),
-        type: "COURSE",
-        visibility: "MEMBERS",
-      },
-    });
+  let spaceIdForCourse = space?.id;
+  if (!spaceIdForCourse) {
+    const created = await createDefaultContentSpace(tenant.id, "COURSE", "Kurse");
+    if ("error" in created) return { error: created.error };
+    spaceIdForCourse = created.space.id;
   }
 
   const course = await prisma.course.create({
     data: {
       tenantId: tenant.id,
-      spaceId: space.id,
+      spaceId: spaceIdForCourse,
       title,
       slug: await uniqueChildSlug("course", tenant.id, title),
       description: String(fd.get("description") || "") || null,
@@ -711,7 +832,7 @@ export async function createCourseAction(
     content: course.description || course.title,
   });
   revalidatePath(`/dashboard/${slug}`, "layout");
-  return ok;
+  return { ok: true, createdId: course.id };
 }
 
 export async function createLessonAction(
@@ -764,31 +885,27 @@ export async function createEventAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
-  const startsAt = new Date(parsed.data.startsAt);
-  if (isNaN(startsAt.getTime())) return { error: await tErr("invalidStartDate") };
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(parsed.data.startsAt, fd.get("timezoneOffset"));
+  if (!startsAt) return { error: await tErr("invalidStartDate") };
 
   const spaceIdInput = String(fd.get("spaceId") || "");
-  let space = spaceIdInput
+  const space = spaceIdInput
     ? await prisma.space.findFirst({
         where: { id: spaceIdInput, tenantId: tenant.id, type: { in: ["EVENTS", "CALENDAR"] } },
       })
     : await prisma.space.findFirst({ where: { tenantId: tenant.id, type: "EVENTS" } });
-  if (!space) {
-    space = await prisma.space.create({
-      data: {
-        tenantId: tenant.id,
-        name: "Events",
-        slug: await uniqueChildSlug("space", tenant.id, "Events"),
-        type: "EVENTS",
-        visibility: "MEMBERS",
-      },
-    });
+  let spaceIdForEvent = space?.id;
+  if (!spaceIdForEvent) {
+    const created = await createDefaultContentSpace(tenant.id, "EVENTS", "Events");
+    if ("error" in created) return { error: created.error };
+    spaceIdForEvent = created.space.id;
   }
   const capacityRaw = Number(fd.get("capacity") || 0);
   const event = await prisma.event.create({
     data: {
       tenantId: tenant.id,
-      spaceId: space.id,
+      spaceId: spaceIdForEvent,
       title: parsed.data.title,
       slug: await uniqueChildSlug("event", tenant.id, parsed.data.title),
       description: parsed.data.description || null,
@@ -813,68 +930,52 @@ export async function createEventAction(
 
 // ---------------------------------------------------------------- Newsletter
 function parseCampaignSchedule(fd: FormData): Date | null {
-  const raw = String(fd.get("scheduledAt") || "").trim();
-  if (!raw) return null;
-  const offset = Number(fd.get("timezoneOffset"));
   // datetime-local deliberately has no zone. Convert the creator's browser
   // wall-clock value to UTC instead of interpreting it in Railway's timezone.
-  const localMatch = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(raw);
-  let millis: number;
-  if (localMatch && Number.isFinite(offset)) {
-    const [, year, month, day, hour, minute] = localMatch;
-    millis =
-      Date.UTC(+year!, +month! - 1, +day!, +hour!, +minute!) +
-      Math.min(Math.max(offset, -840), 840) * 60_000;
-  } else {
-    millis = Date.parse(raw);
+  const at = parseLocalDateTime(fd.get("scheduledAt"), fd.get("timezoneOffset"));
+  return at && at.getTime() > Date.now() + 60_000 ? at : null;
+}
+
+/** Wie viele Abonnenten eine Kampagne mit diesem Segment gerade erreicht. */
+async function campaignAudienceCount(tenantId: string, segmentId: string | null): Promise<number> {
+  let rules: AudienceRules = {};
+  if (segmentId) {
+    const segment = await prisma.segment.findFirst({
+      where: { id: segmentId, tenantId },
+      select: { rules: true },
+    });
+    rules = (segment?.rules ?? {}) as AudienceRules;
   }
-  return Number.isFinite(millis) && millis > Date.now() + 60_000
-    ? new Date(millis)
-    : null;
+  return countNewsletterAudience(tenantId, rules);
 }
 
-export async function createCampaignAction(
-  _p: ActionState,
-  fd: FormData,
+/** Fehlertext, wenn niemand erreicht würde; sonst null. */
+async function noRecipientsError(
+  tenantId: string,
+  segmentId: string | null,
+): Promise<string | null> {
+  if ((await campaignAudienceCount(tenantId, segmentId)) > 0) return null;
+  const anyone = segmentId ? (await campaignAudienceCount(tenantId, null)) > 0 : false;
+  return tErr(anyone ? "campaignSegmentEmpty" : "campaignNoSubscribers");
+}
+
+/**
+ * Stellt eine Kampagne in die Versandwarteschlange. Endgültig: Wer das
+ * aufruft, hat im UI vorher ausdrücklich bestätigt. Lehnt ab, wenn die
+ * Kampagne niemanden erreicht.
+ */
+async function queueCampaignSend(
+  tenant: { id: string; name: string; primaryColor: string | null },
+  campaignId: string,
 ): Promise<ActionState> {
-  const slug = String(fd.get("tenant"));
-  const { tenant, user } = await requireTenantAdmin(slug);
-  const parsed = campaignSchema.safeParse({
-    subject: fd.get("subject"),
-    body: fd.get("body"),
-    segmentId: fd.get("segmentId") ?? "",
-  });
-  if (!parsed.success)
-    return { error: await zodErr(parsed) };
-  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
-  const scheduledAt = parseCampaignSchedule(fd);
-
-  await prisma.newsletterCampaign.create({
-    data: {
-      tenantId: tenant.id,
-      subject: parsed.data.subject,
-      body: parsed.data.body,
-      bodyFormat,
-      segmentId: parsed.data.segmentId || null,
-      createdById: user.id,
-      status: scheduledAt ? "SCHEDULED" : "DRAFT",
-      scheduledAt,
-    },
-  });
-  revalidatePath(`/dashboard/${slug}/newsletter`);
-  return ok;
-}
-
-export async function sendCampaignAction(fd: FormData): Promise<void> {
-  const slug = String(fd.get("tenant"));
-  const campaignId = String(fd.get("campaignId"));
-  const { tenant } = await requireTenantAdmin(slug);
   const campaign = await prisma.newsletterCampaign.findFirst({
     where: { id: campaignId, tenantId: tenant.id },
   });
-  if (!campaign || campaign.status === "SENT") {
-    revalidatePath(`/dashboard/${slug}/newsletter`);
-    return;
+  if (!campaign) return { error: await tErr("campaignNotFound") };
+  if (campaign.status === "SENT") return { error: await tErr("sentCampaignReadonly") };
+  if (campaign.status !== "SENDING") {
+    const empty = await noRecipientsError(tenant.id, campaign.segmentId);
+    if (empty) return { error: empty };
   }
 
   // Atomic state transition. An already-SENDING campaign is deliberately
@@ -888,10 +989,7 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
       where: { id: campaign.id, tenantId: tenant.id },
       select: { status: true },
     });
-    if (current?.status !== "SENDING") {
-      revalidatePath(`/dashboard/${slug}/newsletter`);
-      return;
-    }
+    if (current?.status !== "SENDING") return { error: await tErr("sentCampaignReadonly") };
   }
 
   // Snapshot a bounded audience page at a time. Very large sends are resumed
@@ -922,7 +1020,60 @@ export async function sendCampaignAction(fd: FormData): Promise<void> {
     targetId: campaign.id,
     metadata: { recipients: recipientCount },
   });
+  return ok;
+}
+
+export async function createCampaignAction(
+  _p: ActionState,
+  fd: FormData,
+): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const { tenant, user } = await requireTenantAdmin(slug);
+  const parsed = campaignSchema.safeParse({
+    subject: fd.get("subject"),
+    body: fd.get("body"),
+    segmentId: fd.get("segmentId") ?? "",
+  });
+  if (!parsed.success)
+    return { error: await zodErr(parsed) };
+  const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
+  const scheduledAt = parseCampaignSchedule(fd);
+  // „Jetzt senden…“ im Editor: erst speichern, dann (nach Bestätigung im UI)
+  // sofort versenden. Ohne Empfänger gar nicht erst anlegen.
+  const sendNow = fd.get("sendNow") === "1";
+  const segmentId = parsed.data.segmentId || null;
+  if (sendNow) {
+    const empty = await noRecipientsError(tenant.id, segmentId);
+    if (empty) return { error: empty };
+  }
+
+  const campaign = await prisma.newsletterCampaign.create({
+    data: {
+      tenantId: tenant.id,
+      subject: parsed.data.subject,
+      body: parsed.data.body,
+      bodyFormat,
+      segmentId,
+      createdById: user.id,
+      status: scheduledAt ? "SCHEDULED" : "DRAFT",
+      scheduledAt,
+    },
+  });
+  const result = sendNow ? await queueCampaignSend(tenant, campaign.id) : ok;
   revalidatePath(`/dashboard/${slug}/newsletter`);
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result.error ? result : { ok: true, createdId: campaign.id };
+}
+
+/** „Senden“ aus der Kampagnenliste; das UI fragt vorher nach. */
+export async function sendCampaignAction(fd: FormData): Promise<ActionState> {
+  const slug = String(fd.get("tenant"));
+  const campaignId = String(fd.get("campaignId"));
+  const { tenant } = await requireTenantAdmin(slug);
+  const result = await queueCampaignSend(tenant, campaignId);
+  revalidatePath(`/dashboard/${slug}/newsletter`);
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result;
 }
 
 export async function createSegmentAction(
@@ -978,7 +1129,11 @@ export async function sendCampaignTestAction(
     subject: `[Test] ${subject}`,
     html,
   });
-  if (!result.ok) return { error: result.error ?? "send-failed" };
+  if (!result.ok) {
+    return {
+      error: await tErr("campaignTestDeliveryFailed", { detail: result.error ?? "unknown" }),
+    };
+  }
   return ok;
 }
 
@@ -1555,8 +1710,9 @@ export async function updateEventAction(
   });
   if (!parsed.success)
     return { error: await zodErr(parsed) };
-  const startsAt = new Date(parsed.data.startsAt);
-  if (isNaN(startsAt.getTime())) return { error: await tErr("invalidStartDate") };
+  // datetime-local ohne Zone: mit dem Offset des Browsers nach UTC umrechnen.
+  const startsAt = parseLocalDateTime(parsed.data.startsAt, fd.get("timezoneOffset"));
+  if (!startsAt) return { error: await tErr("invalidStartDate") };
 
   const event = await prisma.event.findFirst({
     where: { id: eventId, tenantId: tenant.id },
@@ -1713,6 +1869,12 @@ export async function updateCampaignAction(
     return { error: await tErr("sentCampaignReadonly") };
   const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   const scheduledAt = parseCampaignSchedule(fd);
+  const sendNow = fd.get("sendNow") === "1";
+  const segmentId = parsed.data.segmentId || null;
+  if (sendNow) {
+    const empty = await noRecipientsError(tenant.id, segmentId);
+    if (empty) return { error: empty };
+  }
 
   await prisma.newsletterCampaign.update({
     where: { id: campaign.id },
@@ -1720,13 +1882,16 @@ export async function updateCampaignAction(
       subject: parsed.data.subject,
       body: parsed.data.body,
       bodyFormat,
-      segmentId: parsed.data.segmentId || null,
+      segmentId,
       scheduledAt,
       status: scheduledAt ? "SCHEDULED" : "DRAFT",
     },
   });
+  // „Jetzt senden…“: gespeichert ist schon, jetzt endgültig versenden.
+  const result = sendNow ? await queueCampaignSend(tenant, campaign.id) : ok;
   revalidatePath(`/dashboard/${slug}/newsletter`);
-  return ok;
+  revalidatePath(`/dashboard/${slug}`, "layout");
+  return result;
 }
 
 export async function deleteCampaignAction(fd: FormData): Promise<void> {

@@ -20,6 +20,8 @@ const monthFmt = new Intl.DateTimeFormat("de-DE", { month: "short", year: "2-dig
 
 export interface MonthBucket {
   label: string;
+  /** Monatsbeginn (ISO), damit die Seite den Monat in der Sprache des Nutzers schreibt. */
+  start: string;
   value: number;
 }
 
@@ -157,6 +159,7 @@ export async function getAnalyticsSummary(tenantId: string): Promise<AnalyticsSu
     const end = monthsBack(i - 1);
     memberGrowth.push({
       label: monthFmt.format(start),
+      start: start.toISOString(),
       value: joins6m.filter((m) => m.joinedAt >= start && m.joinedAt < end).length,
     });
   }

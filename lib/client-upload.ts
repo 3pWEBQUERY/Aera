@@ -1,16 +1,74 @@
 "use client";
 
+import { useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { Sha256 } from "@aws-crypto/sha256-browser";
 import { beginUpload, type UploadHandle } from "./upload-progress";
+
+/**
+ * Was beim Hochladen schiefging — als Code, nicht als fertiger Satz. Dieses
+ * Modul laeuft ausserhalb von React und kennt die Sprache des Nutzers nicht;
+ * den Text dazu liefert `useUploadErrorText` aus `uploads.errors.*`.
+ *
+ * "server": die Antwort von /api/upload bringt bereits einen uebersetzten
+ * Satz mit (dort laeuft getTranslations), der wird unveraendert gezeigt.
+ */
+export type UploadErrorCode =
+  | "connection"
+  | "canceled"
+  | "storageRejected"
+  | "notStarted"
+  | "verification"
+  | "rejected"
+  | "quota"
+  | "tooMany"
+  | "signedOut"
+  | "unavailable"
+  | "invalid"
+  | "server"
+  | "failed";
 
 export class UploadError extends Error {
   constructor(
     message: string,
     public readonly status?: number,
+    public readonly code: UploadErrorCode = "failed",
   ) {
     super(message);
     this.name = "UploadError";
   }
+}
+
+/** Ordnet eine Fehlantwort der Upload-API einem Code zu. */
+function codeForStatus(status: number, json: unknown, fallback: UploadErrorCode): UploadErrorCode {
+  if (typeof json === "object" && json !== null && "storageFull" in json) return "quota";
+  if (status === 401) return "signedOut";
+  if (status === 413) return "quota";
+  if (status === 429) return "tooMany";
+  if (status === 400) return "invalid";
+  if (status === 422) return "rejected";
+  if (status === 409 || status === 503) return "unavailable";
+  return fallback;
+}
+
+/**
+ * Uebersetzt einen Upload-Fehler fuer die Anzeige am Upload-Feld.
+ *
+ *   const uploadErrorText = useUploadErrorText();
+ *   catch (e) { setError(uploadErrorText(e)); }
+ */
+export function useUploadErrorText(): (error: unknown) => string {
+  const t = useTranslations("uploads.errors");
+  return useCallback(
+    (error: unknown) => {
+      if (error instanceof UploadError) {
+        if (error.code === "server" && error.message) return error.message;
+        if (error.code !== "server" && t.has(error.code)) return t(error.code);
+      }
+      return t("failed");
+    },
+    [t],
+  );
 }
 
 async function sha256Base64(file: File): Promise<string> {
@@ -48,8 +106,9 @@ function xhrUpload(input: {
       }
     };
     xhr.onload = () => resolve({ status: xhr.status, body: xhr.responseText });
-    xhr.onerror = () => reject(new UploadError("Upload connection failed"));
-    xhr.onabort = () => reject(new UploadError("Upload canceled"));
+    xhr.onerror = () =>
+      reject(new UploadError("Upload connection failed", undefined, "connection"));
+    xhr.onabort = () => reject(new UploadError("Upload canceled", undefined, "canceled"));
     xhr.send(input.body);
   });
 }
@@ -78,7 +137,10 @@ async function bufferedFallback(input: {
   });
   const json = JSON.parse(result.body || "{}") as { url?: string; error?: string };
   if (result.status < 200 || result.status >= 300 || !json.url) {
-    throw new UploadError(json.error ?? "Upload failed", result.status);
+    // /api/upload antwortet mit uebersetzten Saetzen — die gehen durch.
+    throw json.error
+      ? new UploadError(json.error, result.status, "server")
+      : new UploadError("Upload failed", result.status, codeForStatus(result.status, json, "failed"));
   }
   return json.url;
 }
@@ -101,7 +163,7 @@ export async function uploadMediaFile(input: {
   try {
     return await runUpload(input, job);
   } catch (error) {
-    job?.fail(error instanceof Error ? error.message : String(error));
+    job?.fail();
     throw error;
   }
 }
@@ -131,12 +193,16 @@ export async function uploadPlatformBlogFile(file: File): Promise<string> {
     });
     const json = JSON.parse(result.body || "{}") as { url?: string; error?: string };
     if (result.status < 200 || result.status >= 300 || !json.url) {
-      throw new UploadError(json.error ?? "Upload fehlgeschlagen", result.status);
+      throw new UploadError(
+        json.error ?? "Upload failed",
+        result.status,
+        codeForStatus(result.status, json, "failed"),
+      );
     }
     job.done();
     return json.url;
   } catch (error) {
-    job.fail(error instanceof Error ? error.message : String(error));
+    job.fail();
     throw error;
   }
 }
@@ -180,6 +246,7 @@ async function runUpload(
     throw new UploadError(
       errorFromJson(initJson, "Upload could not be started"),
       initiation.status,
+      codeForStatus(initiation.status, initJson, "notStarted"),
     );
   }
   if (!initJson.direct) {
@@ -197,7 +264,7 @@ async function runUpload(
     onProgress: report,
   });
   if (put.status < 200 || put.status >= 300) {
-    throw new UploadError("Object storage rejected the upload", put.status);
+    throw new UploadError("Object storage rejected the upload", put.status, "storageRejected");
   }
   report(100);
   // Der Server prueft jetzt Groesse, Pruefsumme, Dateisignatur und Schadcode.
@@ -221,6 +288,7 @@ async function runUpload(
     throw new UploadError(
       completeJson.error ?? "Uploaded file did not pass verification",
       completion.status,
+      codeForStatus(completion.status, completeJson, "verification"),
     );
   }
   job?.done();

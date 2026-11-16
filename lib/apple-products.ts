@@ -20,6 +20,7 @@
 
 import type { BillingInterval, ProductType } from "@/app/generated/prisma/client";
 import { formatPrice } from "@/lib/utils";
+import { PLATFORM_CURRENCY } from "@/lib/currency";
 
 /**
  * One-Time-Unlock-Pool (Cents) — gilt für PPV-Posts, Medien-Pakete/-Items,
@@ -133,10 +134,10 @@ export function productAppleProductId(product: {
   return product.appleProductId ?? unlockAppleProductId(product.priceCents);
 }
 
-/** Auswahloptionen für One-Time-Preise: `{ cents, label }`, Label formatiert (z. B. "9,99 €"). */
+/** Auswahloptionen für One-Time-Preise: `{ cents, label }`, Label in der Plattformwährung formatiert (z. B. "CHF 9.99"). */
 export function oneTimePriceOptions(
   locale = "de",
-  currency = "eur",
+  currency: string = PLATFORM_CURRENCY,
 ): { cents: number; label: string }[] {
   return ONE_TIME_PRICE_POINTS.map((cents) => ({
     cents,
@@ -144,10 +145,10 @@ export function oneTimePriceOptions(
   }));
 }
 
-/** Auswahloptionen für Abo-Preise: `{ cents, label }`, Label formatiert (z. B. "9,99 €"). */
+/** Auswahloptionen für Abo-Preise: `{ cents, label }`, Label in der Plattformwährung formatiert (z. B. "CHF 9.99"). */
 export function subscriptionPriceOptions(
   locale = "de",
-  currency = "eur",
+  currency: string = PLATFORM_CURRENCY,
 ): { cents: number; label: string }[] {
   return SUBSCRIPTION_PRICE_POINTS.map((cents) => ({
     cents,
@@ -158,7 +159,7 @@ export function subscriptionPriceOptions(
 /** Auswahloptionen für Trinkgeld-Preise: `{ cents, label }`, Label formatiert. */
 export function tipPriceOptions(
   locale = "de",
-  currency = "eur",
+  currency: string = PLATFORM_CURRENCY,
 ): { cents: number; label: string }[] {
   return TIP_PRICE_POINTS.map((cents) => ({
     cents,

@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import { Icon } from "./icons";
 import { initials } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 
 export function AvatarUpload({
   tenant,
@@ -22,6 +22,7 @@ export function AvatarUpload({
   onChange?: (url: string) => void;
 }) {
   const t = useTranslations("ui.dashboard");
+  const uploadErrorText = useUploadErrorText();
   const [url, setUrlState] = useState<string>(defaultUrl ?? "");
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -43,9 +44,7 @@ export function AvatarUpload({
       setUrl(uploadedUrl);
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploading(false);

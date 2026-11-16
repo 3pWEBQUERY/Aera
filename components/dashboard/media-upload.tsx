@@ -3,7 +3,9 @@
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
+import { UploadFieldError } from "@/components/ui/upload-error";
+import { MediaPickerSheet } from "./media-picker-sheet";
 
 /**
  * Ein Feld fuer mehrere Bilder *oder* ein Video.
@@ -16,6 +18,10 @@ import { UploadError, uploadMediaFile } from "@/lib/client-upload";
  * Bild und Video zusammen geht bewusst nicht — eine Beitragskarte kann beides
  * nicht sinnvoll nebeneinander zeigen. Ein Video ersetzt darum die Bilder und
  * umgekehrt; das steht auch als Hinweis im Feld, statt still zu passieren.
+ *
+ * Mit `libraryPicker` kommen Bilder auch aus der Mediathek — was dort schon
+ * liegt, muss niemand ein zweites Mal hochladen. Fehlgeschlagene Dateien
+ * merkt sich das Feld fuer „Erneut hochladen“.
  */
 
 /** Mehr Bilder traegt weder die Karte noch die Geduld beim Sortieren. */
@@ -29,6 +35,7 @@ export function MediaUpload({
   videoPurpose,
   defaultImageUrls = [],
   defaultVideoUrl = null,
+  libraryPicker = false,
 }: {
   tenant: string;
   imageName?: string;
@@ -37,6 +44,8 @@ export function MediaUpload({
   videoPurpose: string;
   defaultImageUrls?: string[];
   defaultVideoUrl?: string | null;
+  /** Zeigt „Aus Mediathek wählen“ (nur Bilder). */
+  libraryPicker?: boolean;
 }) {
   const t = useTranslations("ui.dashboard");
   const tm = useTranslations("dashboard.spaceContent");
@@ -45,6 +54,10 @@ export function MediaUpload({
   const [busy, setBusy] = useState(0);
   const [percent, setPercent] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  // Dateien, deren Upload fehlschlug — „Erneut hochladen“ schickt genau sie.
+  const [failed, setFailed] = useState<File[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const uploadErrorText = useUploadErrorText();
   const fileRef = useRef<HTMLInputElement>(null);
   const dragIndex = useRef<number | null>(null);
 
@@ -53,8 +66,13 @@ export function MediaUpload({
   async function onPick(e: React.ChangeEvent<HTMLInputElement>) {
     const files = Array.from(e.target.files ?? []);
     e.target.value = "";
+    await uploadFiles(files);
+  }
+
+  async function uploadFiles(files: File[]) {
     if (files.length === 0) return;
     setError(null);
+    setFailed([]);
 
     const video = files.find((f) => f.type.startsWith("video/"));
     if (video) {
@@ -71,7 +89,8 @@ export function MediaUpload({
         setImages([]);
         setVideoUrl(url);
       } catch (uploadError) {
-        setError(uploadError instanceof UploadError ? uploadError.message : t("uploadFailed"));
+        setError(uploadErrorText(uploadError));
+        setFailed([video]);
       } finally {
         setBusy(0);
       }
@@ -83,6 +102,8 @@ export function MediaUpload({
     const batch = files.slice(0, MAX_IMAGES - images.length);
     setBusy(batch.length);
     const done: string[] = [];
+    const missed: File[] = [];
+    let lastError: unknown = null;
     for (const file of batch) {
       setPercent(0);
       try {
@@ -90,15 +111,33 @@ export function MediaUpload({
           await uploadMediaFile({ file, tenant, purpose: imagePurpose, onProgress: setPercent }),
         );
       } catch (uploadError) {
-        setError(uploadError instanceof UploadError ? uploadError.message : t("uploadFailed"));
+        lastError = uploadError;
+        missed.push(file);
       } finally {
         setBusy((n) => n - 1);
       }
+    }
+    if (missed.length > 0) {
+      const reason = uploadErrorText(lastError);
+      setError(
+        missed.length === 1
+          ? tm("mediaFailedOne", { name: missed[0].name, reason })
+          : tm("mediaFailedMany", { count: missed.length, reason }),
+      );
+      setFailed(missed);
     }
     if (done.length > 0) {
       setVideoUrl("");
       setImages((prev) => [...prev, ...done].slice(0, MAX_IMAGES));
     }
+  }
+
+  function addFromLibrary(url: string) {
+    setPickerOpen(false);
+    setError(null);
+    setFailed([]);
+    setVideoUrl("");
+    setImages((prev) => (prev.includes(url) ? prev : [...prev, url].slice(0, MAX_IMAGES)));
   }
 
   function reorder(target: number) {
@@ -219,8 +258,31 @@ export function MediaUpload({
             {images.length}/{MAX_IMAGES}
           </span>
         )}
-        {error && <span className="text-xs text-red-600">{error}</span>}
+        {libraryPicker && !full && (
+          <button
+            type="button"
+            onClick={() => setPickerOpen(true)}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-[var(--action-soft)]"
+          >
+            <Icon name="gallery" size={15} className="text-slate-500" />
+            {tm("pickFromLibrary")}
+          </button>
+        )}
       </div>
+      <UploadFieldError
+        message={error}
+        retrying={busy > 0}
+        onRetry={failed.length > 0 ? () => void uploadFiles(failed) : undefined}
+      />
+      {libraryPicker && (
+        <MediaPickerSheet
+          open={pickerOpen}
+          onClose={() => setPickerOpen(false)}
+          slug={tenant}
+          subtitle={tm("pickFromLibraryHint")}
+          onPick={(item) => addFromLibrary(item.url)}
+        />
+      )}
 
       <input
         ref={fileRef}

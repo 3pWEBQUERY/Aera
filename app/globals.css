@@ -186,11 +186,11 @@ body {
 .upload-sweep {
   animation: upload-sweep 1.1s ease-in-out infinite;
 }
-/* Karten der Upload-Anzeige steigen von unten auf, nicht von oben herab. */
+/* Karten der Upload-Anzeige gleiten unter der Kopfzeile herein. */
 @keyframes upload-card-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(-8px);
   }
   to {
     opacity: 1;

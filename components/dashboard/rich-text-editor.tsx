@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
 import { EMOJIS } from "@/lib/emoji";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { UploadError, uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 
 /* Small inline glyph icons for the formatting toolbar (kept local & crisp). */
 const svg = (d: React.ReactNode) => (
@@ -113,6 +113,7 @@ export function RichTextEditor({
   onChange?: (html: string) => void;
 }) {
   const t = useTranslations("dashboard.rte");
+  const uploadErrorText = useUploadErrorText();
   const editorRef = useRef<HTMLDivElement>(null);
   const savedRange = useRef<Range | null>(null);
   const imgInput = useRef<HTMLInputElement>(null);
@@ -234,9 +235,7 @@ export function RichTextEditor({
       }
     } catch (uploadError) {
       setError(
-        uploadError instanceof UploadError
-          ? uploadError.message
-          : t("uploadFailed"),
+        uploadErrorText(uploadError),
       );
     } finally {
       setUploading(false);

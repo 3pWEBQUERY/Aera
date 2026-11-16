@@ -56,7 +56,7 @@ function Trend({
   const diff = prev === 0 ? 100 : Math.round(((now - prev) / prev) * 100);
   const up = diff >= 0;
   return (
-    <span className={up ? "text-emerald-600" : "text-red-600"}>
+    <span className={up ? "text-emerald-700" : "text-red-700"}>
       {label(`${up ? "+" : ""}${diff}`)}
     </span>
   );
@@ -81,6 +81,10 @@ export default async function AnalyticsPage({
   const money = (cents: number) => eur.format(cents / 100);
 
   const growthMax = Math.max(1, ...a.memberGrowth.map((b) => b.value));
+  const growthTotal = a.memberGrowth.reduce((sum, b) => sum + b.value, 0);
+  const growthCurrent = a.memberGrowth[a.memberGrowth.length - 1]?.value ?? 0;
+  const monthShort = new Intl.DateTimeFormat(locale, { month: "short" });
+  const monthLong = new Intl.DateTimeFormat(locale, { month: "long", year: "numeric" });
 
   return (
     <div>
@@ -121,23 +125,69 @@ export default async function AnalyticsPage({
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Card>
           <CardBody>
-            <h2 className="text-sm font-bold text-slate-900">
+            <h2 id="growth-heading" className="text-sm font-bold text-slate-900">
               {t("newMembers6m")}
             </h2>
-            <div className="mt-4 flex h-36 items-end gap-2">
-              {a.memberGrowth.map((b) => (
-                <div key={b.label} className="flex flex-1 flex-col items-center gap-1.5">
-                  <span className="text-xs font-semibold text-slate-600">
-                    {b.value > 0 ? nf.format(b.value) : ""}
-                  </span>
-                  <div
-                    className="w-full rounded-t-md bg-[var(--brand,#6d28d9)]/80"
-                    style={{ height: `${Math.max(4, (b.value / growthMax) * 100)}%` }}
-                  />
-                  <span className="text-[10px] text-slate-500">{b.label}</span>
+            <p className="mt-0.5 text-xs text-slate-500">
+              {t("growthSummary", { total: growthTotal, current: growthCurrent })}
+            </p>
+            {growthTotal === 0 ? (
+              <p className="mt-4 rounded-xl bg-slate-50 px-4 py-8 text-center text-sm text-slate-500">
+                {t("growthEmpty")}
+              </p>
+            ) : (
+              <figure aria-labelledby="growth-heading" className="mt-4">
+                {/* Die Balken sind nur das Bild; dieselben Zahlen stehen in der
+                    Tabelle darunter (fuer Screenreader). Jede Saeule hat eine
+                    feste Hoehe — ohne sie loeste sich die Prozenthoehe des
+                    Balkens zu 0 px auf. Die Achse beginnt bei 0. */}
+                <div aria-hidden className="flex gap-2 border-b border-slate-300">
+                  {a.memberGrowth.map((b) => {
+                    const pct = (b.value / growthMax) * 85;
+                    return (
+                      <div key={b.start} className="relative h-32 flex-1">
+                        {b.value > 0 && (
+                          <div
+                            className="absolute inset-x-0 bottom-0 rounded-t-md bg-[var(--brand,#6d28d9)]"
+                            style={{ height: `${pct}%` }}
+                          />
+                        )}
+                        <span
+                          className="absolute inset-x-0 text-center text-xs font-semibold tabular-nums text-slate-700"
+                          style={{ bottom: `calc(${pct}% + 4px)` }}
+                        >
+                          {nf.format(b.value)}
+                        </span>
+                      </div>
+                    );
+                  })}
                 </div>
-              ))}
-            </div>
+                <div aria-hidden className="mt-1.5 flex gap-2">
+                  {a.memberGrowth.map((b) => (
+                    <span key={b.start} className="flex-1 truncate text-center text-xs text-slate-500">
+                      {monthShort.format(new Date(b.start))}
+                    </span>
+                  ))}
+                </div>
+                <table className="sr-only">
+                  <caption>{t("newMembers6m")}</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{t("colMonth")}</th>
+                      <th scope="col">{t("colNewMembers")}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {a.memberGrowth.map((b) => (
+                      <tr key={b.start}>
+                        <th scope="row">{monthLong.format(new Date(b.start))}</th>
+                        <td>{nf.format(b.value)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </figure>
+            )}
           </CardBody>
         </Card>
 
@@ -188,7 +238,7 @@ export default async function AnalyticsPage({
                       })}
                     </span>
                   </div>
-                  <div className="mt-1.5 h-2 rounded-full bg-slate-100">
+                  <div aria-hidden className="mt-1.5 h-2 rounded-full bg-slate-100">
                     <div
                       className="h-2 rounded-full bg-[var(--brand,#6d28d9)]/80"
                       style={{ width: `${c.completionRate}%` }}

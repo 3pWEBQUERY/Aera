@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import {
+  DONE_VISIBLE_MS,
   dismissUpload,
   subscribeUploads,
   type UploadJob,
@@ -11,20 +12,26 @@ import {
 import { cn } from "@/lib/utils";
 
 /**
- * Anzeige laufender Uploads, unten rechts.
+ * Anzeige laufender Uploads, oben rechts unter der Kopfzeile.
  *
  * Sitzt einmal im Wurzel-Layout und hoert am Upload-Speicher; jede
  * Upload-Oberflaeche der App bekommt sie damit ohne eigenes Zutun. Mehrere
- * Dateien stehen als eigene Karten uebereinander — ein zusammengefasster
+ * Dateien stehen als eigene Karten untereinander — ein zusammengefasster
  * Balken verbirgt gerade das, was man wissen will: welche Datei haengt.
  *
- * Die Anzeige nimmt keine Klicks weg (`pointer-events-none` auf dem Stapel,
- * nur die Karten selbst sind anfassbar), damit sie die Seite darunter nicht
- * blockiert.
+ * Warum oben: Die Hauptaktionen der App („Beitrag erstellen“, „Speichern“)
+ * stehen in der Fusszeile der Sheets, unten rechts. Dort lag die Anzeige
+ * frueher und fing Klicks ab. Unter der Kopfzeile (Dashboard und Sheet sind
+ * beide 4 rem hoch) liegt nur Inhalt, der sich wegscrollen laesst.
+ *
+ * Nur Fortschritt: Fehler zeigt das Upload-Feld selbst, mit „Erneut
+ * hochladen“ (siehe lib/upload-progress). Erfolgskarten bleiben zehn
+ * Sekunden stehen; solange Zeiger oder Fokus auf ihnen liegt, laeuft die Zeit
+ * nicht weiter. Der Stapel selbst nimmt keine Klicks (`pointer-events-none`).
  */
 
 /** Mehr als das passt nicht auf einen Handy-Bildschirm. */
-const MAX_VISIBLE = 4;
+const MAX_VISIBLE = 3;
 
 function iconFor(job: UploadJob): IconName {
   if (job.name.match(/\.(mp4|mov|webm|mkv|m4v)$/i)) return "videos";
@@ -45,26 +52,31 @@ export function UploadDock() {
 
   useEffect(() => subscribeUploads(setJobs), []);
 
-  if (jobs.length === 0) return null;
+  // Fuer Screenreader nur der Abschluss — jeder Prozentschritt waere Laerm.
+  const finished = jobs.filter((j) => j.phase === "done").map((j) => j.name);
 
-  // Neueste unten: der Blick wandert beim Hinzufuegen nicht nach oben weg.
-  const visible = jobs.slice(-MAX_VISIBLE);
+  // Neueste oben, direkt unter der Kopfzeile.
+  const visible = jobs.slice(-MAX_VISIBLE).reverse();
   const hidden = jobs.length - visible.length;
 
   return (
-    <div
-      aria-live="polite"
-      className="pointer-events-none fixed inset-x-3 bottom-3 z-[60] flex flex-col items-end gap-2 sm:inset-x-auto sm:bottom-5 sm:right-5"
-    >
-      {hidden > 0 && (
-        <p className="pointer-events-auto rounded-full bg-[#161613]/85 px-3 py-1 text-[11px] font-semibold text-white backdrop-blur">
-          {t("more", { count: hidden })}
-        </p>
+    <>
+      <p aria-live="polite" className="sr-only">
+        {finished.length > 0 ? t("doneAnnounce", { names: finished.join(", ") }) : ""}
+      </p>
+      {jobs.length > 0 && (
+        <div className="pointer-events-none fixed inset-x-3 top-[4.5rem] z-[65] flex flex-col items-end gap-2 sm:inset-x-auto sm:right-5">
+          {visible.map((job) => (
+            <UploadCard key={job.id} job={job} t={t} />
+          ))}
+          {hidden > 0 && (
+            <p className="rounded-full bg-[#161613]/85 px-3 py-1 text-[11px] font-semibold text-white">
+              {t("more", { count: hidden })}
+            </p>
+          )}
+        </div>
       )}
-      {visible.map((job) => (
-        <UploadCard key={job.id} job={job} t={t} />
-      ))}
-    </div>
+    </>
   );
 }
 
@@ -75,44 +87,55 @@ function UploadCard({
   job: UploadJob;
   t: ReturnType<typeof useTranslations<"uploads">>;
 }) {
-  const failed = job.phase === "error";
   const done = job.phase === "done";
   const verifying = job.phase === "verifying";
+  const [held, setHeld] = useState(false);
+  const remaining = useRef(DONE_VISIBLE_MS);
 
-  const status = failed
-    ? (job.error ?? t("failed"))
-    : done
-      ? t("done")
-      : verifying
-        ? t("verifying")
-        : job.phase === "preparing"
-          ? t("preparing")
-          : job.secondsLeft === null
-            ? formatSize(job.sizeBytes)
-            : job.secondsLeft >= 60
-              ? t("minutesLeft", { count: Math.ceil(job.secondsLeft / 60) })
-              : t("secondsLeft", { count: Math.max(1, job.secondsLeft) });
+  // Erfolgskarte: zehn Sekunden, angehalten bei Hover oder Fokus.
+  useEffect(() => {
+    if (!done || held) return;
+    const startedAt = Date.now();
+    const timer = setTimeout(() => dismissUpload(job.id), remaining.current);
+    return () => {
+      clearTimeout(timer);
+      remaining.current = Math.max(1500, remaining.current - (Date.now() - startedAt));
+    };
+  }, [done, held, job.id]);
+
+  const status = done
+    ? t("done")
+    : verifying
+      ? t("verifying")
+      : job.phase === "preparing"
+        ? t("preparing")
+        : job.secondsLeft === null
+          ? formatSize(job.sizeBytes)
+          : job.secondsLeft >= 60
+            ? t("minutesLeft", { count: Math.ceil(job.secondsLeft / 60) })
+            : t("secondsLeft", { count: Math.max(1, job.secondsLeft) });
 
   return (
     <div
+      onPointerEnter={() => setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={() => setHeld(false)}
       className={cn(
-        "upload-card-in pointer-events-auto w-full overflow-hidden rounded-2xl bg-white p-3 ring-1 sm:w-[21rem]",
+        "upload-card-in w-full overflow-hidden rounded-2xl bg-white p-3 ring-1 ring-[#161613]/10 sm:w-[20rem]",
         "shadow-[var(--shadow-card-lg)]",
-        failed ? "ring-red-200" : "ring-[#161613]/10",
+        // Nur die fertige Karte hat etwas zum Anfassen (Ausblenden); laufende
+        // Karten lassen Klicks zur Seite darunter durch.
+        done ? "pointer-events-auto" : "pointer-events-none",
       )}
     >
       <div className="flex items-center gap-3">
-        <span
-          className={cn(
-            "relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl",
-            failed ? "bg-red-50 text-red-500" : "bg-[var(--action-soft)] text-[#161613]/60",
-          )}
-        >
-          {job.previewUrl && !failed ? (
+        <span className="relative flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[var(--action-soft)] text-[#161613]/65">
+          {job.previewUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={job.previewUrl} alt="" className="h-full w-full object-cover" />
           ) : (
-            <Icon name={failed ? "alert" : iconFor(job)} size={18} />
+            <Icon name={iconFor(job)} size={18} />
           )}
         </span>
 
@@ -122,27 +145,20 @@ function UploadCard({
               {job.name}
             </p>
             {done ? (
-              <Icon name="check" size={16} className="shrink-0 text-emerald-600" />
+              <Icon name="check" size={16} className="shrink-0 text-emerald-700" />
             ) : (
               <span className="shrink-0 text-xs font-semibold tabular-nums text-[#161613]/65">
-                {failed ? "" : `${job.percent}%`}
+                {`${job.percent}%`}
               </span>
             )}
           </div>
 
           <Bar job={job} />
 
-          <p
-            className={cn(
-              "mt-1.5 truncate text-xs",
-              failed ? "text-red-600" : "text-[#161613]/65",
-            )}
-          >
-            {status}
-          </p>
+          <p className="mt-1.5 truncate text-xs text-[#161613]/65">{status}</p>
         </div>
 
-        {(failed || done) && (
+        {done && (
           <button
             type="button"
             onClick={() => dismissUpload(job.id)}
@@ -163,9 +179,6 @@ function UploadCard({
  * Absturz.
  */
 function Bar({ job }: { job: UploadJob }) {
-  if (job.phase === "error") {
-    return <div className="mt-1.5 h-1.5 w-full rounded-full bg-red-100" />;
-  }
   if (job.phase === "verifying") {
     return (
       <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
@@ -178,7 +191,7 @@ function Bar({ job }: { job: UploadJob }) {
       <div
         className={cn(
           "h-full rounded-full transition-[width] duration-300 ease-out",
-          job.phase === "done" ? "bg-emerald-500" : "bg-[var(--action-strong)]",
+          job.phase === "done" ? "bg-emerald-600" : "bg-[var(--action-strong)]",
         )}
         style={{ width: `${Math.max(job.percent, 2)}%` }}
       />

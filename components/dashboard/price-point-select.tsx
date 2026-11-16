@@ -46,10 +46,10 @@ export function PricePointSelect({
   const locale = useLocale();
   const base =
     kind === "subscription"
-      ? subscriptionPriceOptions(locale)
+      ? subscriptionPriceOptions(locale, PLATFORM_CURRENCY)
       : kind === "tip"
-        ? tipPriceOptions(locale)
-        : oneTimePriceOptions(locale);
+        ? tipPriceOptions(locale, PLATFORM_CURRENCY)
+        : oneTimePriceOptions(locale, PLATFORM_CURRENCY);
 
   const options: { cents: number; label: string }[] = [];
   if (allowFree || !required) {

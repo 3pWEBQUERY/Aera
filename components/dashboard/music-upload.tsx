@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Icon } from "./icons";
-import { UploadError, uploadMediaFile } from "@/lib/client-upload";
+import { uploadMediaFile, useUploadErrorText } from "@/lib/client-upload";
 
 export interface MusicUploadItem {
   url: string;
@@ -30,6 +30,7 @@ export function MusicUpload({
   purpose: string;
 }) {
   const t = useTranslations("dashboard.spaceContent");
+  const uploadErrorText = useUploadErrorText();
   const [items, setItems] = useState<MusicUploadItem[]>([]);
   const [busy, setBusy] = useState(0);
   const [percent, setPercent] = useState(0);
@@ -51,7 +52,7 @@ export function MusicUpload({
         const url = await uploadMediaFile({ file, tenant, purpose, onProgress: setPercent });
         done.push({ url, name: file.name.replace(/\.[^.]+$/, "").slice(0, 160) });
       } catch (uploadError) {
-        setError(uploadError instanceof UploadError ? uploadError.message : t("uploadFailed"));
+        setError(uploadErrorText(uploadError));
       } finally {
         setBusy((n) => n - 1);
       }
