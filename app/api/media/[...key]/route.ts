@@ -1,10 +1,16 @@
 import { NextResponse } from "next/server";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { setTenantContext, withTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
-import { buildAccessContext, canAccess } from "@/lib/entitlements";
-import { getObject } from "@/lib/storage";
+import { buildAccessContext } from "@/lib/entitlements";
+import { getObject, storageProxyUrl } from "@/lib/storage";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
-import type { Visibility } from "@/app/generated/prisma/client";
+import {
+  ANONYMOUS_ACCESS,
+  canViewMedia,
+  findMediaReferences,
+  isContentGatedPurpose,
+  type MediaReference,
+} from "@/lib/media-access";
 
 export async function GET(
   req: Request,
@@ -20,31 +26,36 @@ export async function GET(
   if (!object) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   const tenantActive = object.tenant.status === "ACTIVE";
-  const isPublic =
-    tenantActive && object.visibility === "PUBLIC" && !object.requiredEntitlementKey;
+  // Media of posts, courses, gallery items and pages follows the gate of the
+  // content that uses it (lib/media-access.ts), checked on every request so
+  // that refunds and gate changes take effect at once.
+  const refs: MediaReference[] | null = isContentGatedPurpose(object.purpose)
+    ? await withTenantContext(object.tenantId, () =>
+        findMediaReferences({
+          tenantId: object.tenantId,
+          purpose: object.purpose,
+          urls: [object.url, storageProxyUrl(object.key)],
+        }),
+      )
+    : null;
+  // Truly public: an anonymous visitor would be handed this URL anyway.
+  const isPublic = tenantActive && canViewMedia(object, refs, ANONYMOUS_ACCESS);
   // Resolve the global identity before activating tenant RLS. Otherwise a
   // platform admin who is not also a tenant member would disappear behind
   // the User membership policy and could not perform moderation.
   const user = isPublic ? null : await getCurrentUser();
   setTenantContext(object.tenantId);
   if (!isPublic) {
-    // Gated object: require an active membership (MEMBERS), a paid
-    // entitlement (PAID) or the specific entitlement key. Platform admins
-    // may always view media for moderation.
+    // Gated object: the viewer needs the access the owning content asks
+    // for (membership, a paid tier or the specific entitlement key).
+    // Platform admins may always view media for moderation.
     const isPlatformAdmin = hasPlatformAdminAccess(user);
     if (!isPlatformAdmin) {
       if (!tenantActive) {
         return NextResponse.json({ error: "Not found" }, { status: 404 });
       }
       const ctx = await buildAccessContext(object.tenantId, user?.id ?? null);
-      const allowed = canAccess(
-        {
-          visibility: object.visibility as Visibility,
-          requiredEntitlementKey: object.requiredEntitlementKey,
-        },
-        ctx,
-      );
-      if (!allowed) {
+      if (!canViewMedia(object, refs, ctx)) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 });
       }
     }

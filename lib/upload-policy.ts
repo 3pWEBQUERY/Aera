@@ -36,12 +36,15 @@ export const UPLOAD_PURPOSES: Readonly<Record<string, UploadPurposePolicy>> = {
   logo: image("PUBLIC"),
   cover: image("PUBLIC"),
   "blog-cover": image("PUBLIC"),
-  "blog-image": image("PUBLIC"),
-  "blog-video": video("PUBLIC"),
-  "blog-file": { visibility: "PUBLIC", kinds: ["file"], maxBytes: MAX_FILE_BYTES },
-  "feed-image": image("PUBLIC"),
+  // Medien in Beitraegen: Beitraege koennen nur fuer Mitglieder oder einzeln
+  // verkauft sein. Wer die Datei abrufen darf, entscheidet der Beitrag, der sie
+  // verwendet (lib/media-access.ts). Ohne solchen Beitrag gilt mindestens MEMBERS.
+  "blog-image": image("MEMBERS"),
+  "blog-video": video("MEMBERS"),
+  "blog-file": { visibility: "MEMBERS", kinds: ["file"], maxBytes: MAX_FILE_BYTES },
+  "feed-image": image("MEMBERS"),
   // Video eines Feed-Beitrags — dieselbe Sichtbarkeit wie das Bild daneben.
-  "feed-video": video("PUBLIC"),
+  "feed-video": video("MEMBERS"),
   "ppv-teaser": image("PUBLIC"),
   story: image("PUBLIC"),
   "story-video": video("PUBLIC"),

@@ -48,6 +48,7 @@ export function createPrismaMock() {
     bookingReservation: model(),
     tip: model(),
     mediaItem: model(),
+    communityPage: model(),
     memberRequest: model(),
     knowledgeArticle: model(),
     newsletterCampaign: model(),

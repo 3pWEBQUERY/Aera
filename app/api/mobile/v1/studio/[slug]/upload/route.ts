@@ -15,8 +15,8 @@ import { scanStoredObject } from "@/lib/malware-scan";
 //   → { url }
 // Spiegelt app/api/upload/route.ts (MIME-Allowlists, Größenlimits, Plan-Quota,
 // Storage-Key-Schema tenants/{id}/{purpose}/{uuid}.{ext}, StorageObject-Zeile).
-// Die Mobile-Purposes mappen auf die Web-Purpose-Map (PURPOSE_VISIBILITY):
-//   post-image → "feed-image"  (PUBLIC,  nur Bilder)
+// Die Mobile-Purposes mappen auf die Web-Purpose-Map (UPLOAD_PURPOSES):
+//   post-image → "feed-image"  (MEMBERS, nur Bilder — Media-Proxy folgt dem Beitrag)
 //   post-video → "space-video" (MEMBERS, nur Videos — Media-Proxy gated)
 //   story      → "story" (Bild) bzw. "story-video" (Video), beide PUBLIC
 // Rolle ≥ ADMIN via requireStudioAccess (wie der Web-Upload für diese Purposes).
@@ -62,24 +62,20 @@ export async function POST(
   const isImage = file.type.startsWith("image/");
   const isVideo = file.type.startsWith("video/");
 
-  // Mobile-Purpose → Web-Storage-Purpose + Visibility (PURPOSE_VISIBILITY).
+  // Mobile-Purpose → Web-Storage-Purpose; die Sichtbarkeit kommt aus UPLOAD_PURPOSES.
   let storagePurpose: string;
-  let visibility: "PUBLIC" | "MEMBERS";
   if (purpose === "post-image") {
     if (!isImage) return jsonError("validation", "file: Image required (jpeg/png/webp/gif/avif).", 400);
     storagePurpose = "feed-image";
-    visibility = "PUBLIC";
   } else if (purpose === "post-video") {
     if (!isVideo) return jsonError("validation", "file: Video required (mp4/webm/ogv/mov/mkv/m4v).", 400);
     storagePurpose = "space-video";
-    visibility = "MEMBERS";
   } else {
     // story: Bild oder Video, jeweils PUBLIC wie im Web ("story"/"story-video").
     if (!isImage && !isVideo) {
       return jsonError("validation", "file: Image or video required.", 400);
     }
     storagePurpose = isVideo ? "story-video" : "story";
-    visibility = "PUBLIC";
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());
@@ -98,7 +94,7 @@ export async function POST(
     contentType: file.type,
     sizeBytes: file.size,
     checksumSha256: createHash("sha256").update(bytes).digest("base64"),
-    visibility,
+    visibility: declaration.policy.visibility,
   });
   if (!reserved.ok) {
     return jsonError(
