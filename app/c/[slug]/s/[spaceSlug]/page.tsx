@@ -1293,26 +1293,46 @@ export default async function SpacePage({
   if (space.type === "CALENDAR") {
     const tCal = await getTranslations("community.render.calendar");
     const nowC = new Date();
-    const [events, lives, scheduled] = await Promise.all([
+    // Der Kalender sammelt aus allen Spaces — er darf nur zeigen, was der
+    // Viewer dort auch sehen darf. Vorher listete er Titel aus Mitglieder-
+    // und Bezahl-Spaces für Gäste, auch geplante, noch unveröffentlichte
+    // Beiträge.
+    const calSpaces = await prisma.space.findMany({
+      where: { tenantId: tenant.id, isArchived: false },
+      select: { id: true, visibility: true, requiredEntitlementKey: true },
+    });
+    const readableSpaceIds = calSpaces.filter((s) => canAccess(s, ctx)).map((s) => s.id);
+    const keyOk = (key: string | null) => !key || ctx.isStaff || ctx.keys.has(key);
+    const [eventRows, liveRows, scheduled] = await Promise.all([
       prisma.event.findMany({
-        where: { tenantId: tenant.id, startsAt: { gte: nowC } },
+        where: { tenantId: tenant.id, startsAt: { gte: nowC }, spaceId: { in: readableSpaceIds } },
         orderBy: { startsAt: "asc" },
         take: 50,
-        select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
+        select: { id: true, title: true, startsAt: true, requiredEntitlementKey: true, space: { select: { slug: true } } },
       }),
       prisma.liveSession.findMany({
-        where: { tenantId: tenant.id, startsAt: { gte: nowC }, status: { not: "ENDED" } },
+        where: {
+          tenantId: tenant.id,
+          startsAt: { gte: nowC },
+          status: { not: "ENDED" },
+          OR: [{ spaceId: null }, { spaceId: { in: readableSpaceIds } }],
+        },
         orderBy: { startsAt: "asc" },
         take: 50,
-        select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
+        select: { id: true, title: true, startsAt: true, requiredEntitlementKey: true, space: { select: { slug: true } } },
       }),
-      prisma.post.findMany({
-        where: { tenantId: tenant.id, scheduledAt: { not: null, gte: nowC } },
-        orderBy: { scheduledAt: "asc" },
-        take: 50,
-        select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
-      }),
+      // Geplante Beiträge sind noch nicht veröffentlicht: nur das Team sieht sie.
+      ctx.isStaff
+        ? prisma.post.findMany({
+            where: { tenantId: tenant.id, scheduledAt: { not: null, gte: nowC } },
+            orderBy: { scheduledAt: "asc" },
+            take: 50,
+            select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
+          })
+        : Promise.resolve([]),
     ]);
+    const events = eventRows.filter((e) => keyOk(e.requiredEntitlementKey));
+    const lives = liveRows.filter((l) => keyOk(l.requiredEntitlementKey));
     type CalEntry = { id: string; title: string; when: Date; kind: "event" | "live" | "post"; href: string | null };
     const entries: CalEntry[] = [
       ...events.map((e) => ({ id: `e-${e.id}`, title: e.title, when: e.startsAt, kind: "event" as const, href: e.space ? `/c/${slug}/s/${e.space.slug}` : null })),

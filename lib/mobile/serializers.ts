@@ -1973,9 +1973,17 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
 
     case "CALENDAR": {
       const now = new Date();
-      const [events, lives, scheduled] = await Promise.all([
+      // Nur, was der Viewer in den jeweiligen Spaces sehen darf; geplante
+      // Beiträge nur für das Team (gleiche Regel wie im Web).
+      const calSpaces = await prisma.space.findMany({
+        where: { tenantId: tenant.id, isArchived: false },
+        select: { id: true, visibility: true, requiredEntitlementKey: true },
+      });
+      const readableSpaceIds = calSpaces.filter((s) => canAccess(s, ctx)).map((s) => s.id);
+      const keyOk = (key: string | null) => !key || ctx.isStaff || ctx.keys.has(key);
+      const [eventRows, liveRows, scheduled] = await Promise.all([
         prisma.event.findMany({
-          where: { tenantId: tenant.id, startsAt: { gte: now } },
+          where: { tenantId: tenant.id, startsAt: { gte: now }, spaceId: { in: readableSpaceIds } },
           orderBy: { startsAt: "asc" },
           take: 50,
           select: {
@@ -1983,22 +1991,32 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
             title: true,
             startsAt: true,
             location: true,
+            requiredEntitlementKey: true,
             space: { select: { slug: true } },
           },
         }),
         prisma.liveSession.findMany({
-          where: { tenantId: tenant.id, startsAt: { gte: now }, status: { not: "ENDED" } },
+          where: {
+            tenantId: tenant.id,
+            startsAt: { gte: now },
+            status: { not: "ENDED" },
+            OR: [{ spaceId: null }, { spaceId: { in: readableSpaceIds } }],
+          },
           orderBy: { startsAt: "asc" },
           take: 50,
-          select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
+          select: { id: true, title: true, startsAt: true, requiredEntitlementKey: true, space: { select: { slug: true } } },
         }),
-        prisma.post.findMany({
-          where: { tenantId: tenant.id, scheduledAt: { not: null, gte: now } },
-          orderBy: { scheduledAt: "asc" },
-          take: 50,
-          select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
-        }),
+        ctx.isStaff
+          ? prisma.post.findMany({
+              where: { tenantId: tenant.id, scheduledAt: { not: null, gte: now } },
+              orderBy: { scheduledAt: "asc" },
+              take: 50,
+              select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
+            })
+          : Promise.resolve([]),
       ]);
+      const events = eventRows.filter((e) => keyOk(e.requiredEntitlementKey));
+      const lives = liveRows.filter((l) => keyOk(l.requiredEntitlementKey));
       const items = [
         ...events.map((e) => ({
           kind: "event" as const,
