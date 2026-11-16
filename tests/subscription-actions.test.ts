@@ -35,6 +35,7 @@ vi.mock("@/lib/action-errors", () => ({
 import prismaModule from "@/lib/prisma";
 import {
   cancelOwnMembershipAction,
+  leaveCommunityAction,
   leaveOwnCommunityAction,
 } from "@/app/actions/subscription";
 
@@ -164,5 +165,24 @@ describe("leaveOwnCommunityAction", () => {
 
     expect(prisma.membership.delete).toHaveBeenCalledWith({ where: { id: "m1" } });
     expect(mocks.redirect).toHaveBeenCalledWith("/c/demo");
+  });
+
+  it("keeps a banned membership: leaving would lift the ban on rejoin", async () => {
+    prisma.membership.findUnique.mockResolvedValue({
+      id: "m1",
+      tenantId: "t1",
+      userId: "u1",
+      role: "MEMBER",
+      status: "BANNED",
+      tier: null,
+    });
+    prisma.subscription.findMany.mockResolvedValue([]);
+
+    const result = await leaveCommunityAction({}, form());
+    await leaveOwnCommunityAction(form());
+
+    expect(result).toEqual({ error: "leaveWhileBanned" });
+    expect(prisma.membership.delete).not.toHaveBeenCalled();
+    expect(mocks.redirect).not.toHaveBeenCalled();
   });
 });

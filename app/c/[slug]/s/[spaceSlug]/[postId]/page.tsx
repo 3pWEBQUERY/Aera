@@ -133,7 +133,38 @@ export default async function PostDetail({
       notFound();
     }
     if (isPostLocked(fpost, ctx)) {
-      return gatePage({ visibility: fpost.priceCents > 0 ? "PAID" : fpost.visibility });
+      // Einzeln verkaufter Beitrag: Ihn öffnet nur der eigene Kauf, keine
+      // Mitgliedschaft. Die Sperrseite darf deshalb keinen Tarif anbieten —
+      // sie zeigt den Kauf, wie der Artikel-Pfad unten.
+      if (fpost.priceCents > 0) {
+        return (
+          <div className="mx-auto max-w-md py-12 text-center sm:py-16">
+            {notice}
+            <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand-soft)] text-[color:var(--brand)] ring-1 ring-[var(--brand-ring)]">
+              <Icon name="lock" size={24} />
+            </span>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
+              {space.name}
+            </p>
+            <h1 className="display-serif mt-1 text-2xl text-[#161613] sm:text-3xl">
+              {fpost.title || tPostTile("paidUntitled")}
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-[#161613]/70">{tPostTile("paidHint")}</p>
+            <form action={purchasePostAction} className="mx-auto mt-6 max-w-xs text-left">
+              <input type="hidden" name="tenant" value={slug} />
+              <input type="hidden" name="space" value={spaceSlug} />
+              <input type="hidden" name="postId" value={fpost.id} />
+              <input type="hidden" name="returnTo" value="post" />
+              <ImmediateAccessConsent className="mb-3" />
+              <button className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--primary)] px-5 py-3 text-sm font-semibold text-[var(--primary-fg)] transition hover:bg-[var(--primary-hover)] active:scale-[0.99]">
+                <Icon name="lock" size={16} />
+                {t("unlockFor", { price: formatPrice(fpost.priceCents, fpost.currency, locale) })}
+              </button>
+            </form>
+          </div>
+        );
+      }
+      return gatePage({ visibility: fpost.visibility });
     }
     const fcomments = await prisma.comment.findMany({
       where: { tenantId: tenant.id, postId: fpost.id },

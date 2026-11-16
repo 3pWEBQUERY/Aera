@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Ta społeczność jest właśnie usuwana i nie można jej już edytować.",
     "invalidColor": "Kolor główny jest nieprawidłowy. Wpisz wartość szesnastkową, np. #6D28D9.",
     "cantBanSelf": "Nie możesz zablokować samego siebie.",
-    "logoInvalid": "Nie udało się zapisać logo. Prześlij obraz jeszcze raz."
+    "logoInvalid": "Nie udało się zapisać logo. Prześlij obraz jeszcze raz.",
+    "leaveWhileBanned": "To członkostwo jest zablokowane. Nie możesz opuścić społeczności."
   },
   "nameStatus": {
     "checking": "Sprawdzanie dostępności…",

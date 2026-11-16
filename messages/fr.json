@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Cette communauté est en cours de suppression et ne peut plus être modifiée.",
     "invalidColor": "La couleur principale n’est pas valide. Saisissez une valeur hexadécimale comme #6D28D9.",
     "cantBanSelf": "Vous ne pouvez pas vous bannir vous-même.",
-    "logoInvalid": "Le logo n’a pas pu être appliqué. Veuillez téléverser l’image à nouveau."
+    "logoInvalid": "Le logo n’a pas pu être appliqué. Veuillez téléverser l’image à nouveau.",
+    "leaveWhileBanned": "Cette adhésion est bloquée. Vous ne pouvez pas quitter la communauté."
   },
   "nameStatus": {
     "checking": "Vérification de la disponibilité…",

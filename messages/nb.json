@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Dette communityet slettes og kan ikke lenger redigeres.",
     "invalidColor": "Hovedfargen er ugyldig. Skriv inn en hex-verdi som #6D28D9.",
     "cantBanSelf": "Du kan ikke utestenge deg selv.",
-    "logoInvalid": "Logoen kunne ikke tas i bruk. Last opp bildet på nytt."
+    "logoInvalid": "Logoen kunne ikke tas i bruk. Last opp bildet på nytt.",
+    "leaveWhileBanned": "Dette medlemskapet er sperret. Du kan ikke forlate fellesskapet."
   },
   "nameStatus": {
     "checking": "Sjekker tilgjengelighet…",

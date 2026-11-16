@@ -172,7 +172,8 @@
     "adminTenantDeleting": "此社区正在删除中，已无法编辑。",
     "invalidColor": "主色无效。请输入类似 #6D28D9 的十六进制值。",
     "cantBanSelf": "你不能封禁自己。",
-    "logoInvalid": "无法应用标志。请重新上传图片。"
+    "logoInvalid": "无法应用标志。请重新上传图片。",
+    "leaveWhileBanned": "该会员资格已被封禁，无法退出社区。"
   },
   "nameStatus": {
     "checking": "正在检查可用性…",

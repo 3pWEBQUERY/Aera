@@ -190,7 +190,9 @@ export async function cancelOwnMembershipAction(
   return { ok: true };
 }
 
-type LeaveResult = { ok: true } | { ok: false; error: "notFound" | "owner" | "paidActive" };
+type LeaveResult =
+  | { ok: true }
+  | { ok: false; error: "notFound" | "owner" | "paidActive" | "banned" };
 
 /**
  * Leave the community entirely (non-owners; purchases stay untouched).
@@ -202,6 +204,9 @@ async function leaveCommunity(slug: string): Promise<LeaveResult> {
   if (!own) return { ok: false, error: "notFound" };
   const { user, tenant, membership } = own;
   if (membership.role === "OWNER") return { ok: false, error: "owner" };
+  // Die Sperre lebt in dieser Zeile. Würde sie gelöscht, liesse sich die
+  // Sperre durch Austreten und erneutes Beitreten selbst aufheben.
+  if (membership.status === "BANNED") return { ok: false, error: "banned" };
 
   // Never remove the local membership while Stripe can still charge it. The
   // member must cancel first and wait until Stripe confirms the subscription
@@ -269,7 +274,9 @@ export async function leaveCommunityAction(
     error:
       result.error === "owner"
         ? t("ownerCantLeave")
-        : result.error === "paidActive"
+        : result.error === "banned"
+          ? t("leaveWhileBanned")
+          : result.error === "paidActive"
           ? t("leaveWhilePaidActive")
           : t("membershipNotFound"),
   };

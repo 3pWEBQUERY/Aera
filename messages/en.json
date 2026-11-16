@@ -172,7 +172,8 @@
     "adminTenantDeleting": "This community is being deleted and can no longer be edited.",
     "invalidColor": "The main colour isn't valid. Enter a hex value like #6D28D9.",
     "cantBanSelf": "You can't ban yourself.",
-    "logoInvalid": "The logo couldn't be applied. Please upload the image again."
+    "logoInvalid": "The logo couldn't be applied. Please upload the image again.",
+    "leaveWhileBanned": "This membership is blocked. You can't leave the community."
   },
   "legalPurchase": {
     "immediateAccess": "I request immediate access and understand that my right of withdrawal expires once digital delivery begins. <withdrawal>Details</withdrawal>.",

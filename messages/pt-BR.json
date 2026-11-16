@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Esta comunidade está sendo excluída e não pode mais ser editada.",
     "invalidColor": "A cor principal é inválida. Digite um valor hexadecimal como #6D28D9.",
     "cantBanSelf": "Você não pode banir a si mesmo.",
-    "logoInvalid": "Não foi possível aplicar o logo. Envie a imagem novamente."
+    "logoInvalid": "Não foi possível aplicar o logo. Envie a imagem novamente.",
+    "leaveWhileBanned": "Esta assinatura está bloqueada. Você não pode sair da comunidade."
   },
   "nameStatus": {
     "checking": "Verificando disponibilidade…",

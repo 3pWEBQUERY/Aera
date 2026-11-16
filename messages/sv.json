@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Den här communityn håller på att raderas och kan inte längre redigeras.",
     "invalidColor": "Huvudfärgen är ogiltig. Ange ett hexvärde som #6D28D9.",
     "cantBanSelf": "Du kan inte stänga av dig själv.",
-    "logoInvalid": "Logotypen kunde inte sparas. Ladda upp bilden igen."
+    "logoInvalid": "Logotypen kunde inte sparas. Ladda upp bilden igen.",
+    "leaveWhileBanned": "Det här medlemskapet är spärrat. Du kan inte lämna communityn."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",

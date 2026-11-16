@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Questa community è in fase di eliminazione e non si può più modificare.",
     "invalidColor": "Il colore principale non è valido. Inserisci un valore esadecimale come #6D28D9.",
     "cantBanSelf": "Non puoi bloccare te stesso.",
-    "logoInvalid": "Non è stato possibile applicare il logo. Carica di nuovo l’immagine."
+    "logoInvalid": "Non è stato possibile applicare il logo. Carica di nuovo l’immagine.",
+    "leaveWhileBanned": "Questa iscrizione è bloccata. Non puoi lasciare la community."
   },
   "nameStatus": {
     "checking": "Verifica disponibilità…",

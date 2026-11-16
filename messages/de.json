@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Diese Community wird gerade gelöscht und lässt sich nicht mehr bearbeiten.",
     "invalidColor": "Die Hauptfarbe ist ungültig. Gib einen Hex-Wert wie #6D28D9 ein.",
     "cantBanSelf": "Du kannst dich nicht selbst sperren.",
-    "logoInvalid": "Das Logo konnte nicht übernommen werden. Lade das Bild bitte noch einmal hoch."
+    "logoInvalid": "Das Logo konnte nicht übernommen werden. Lade das Bild bitte noch einmal hoch.",
+    "leaveWhileBanned": "Diese Mitgliedschaft ist gesperrt. Austreten ist nicht möglich."
   },
   "legalPurchase": {
     "immediateAccess": "Ich verlange sofortigen Zugang und weiß, dass mein Widerrufsrecht mit Beginn der digitalen Lieferung erlischt. <withdrawal>Details</withdrawal>.",

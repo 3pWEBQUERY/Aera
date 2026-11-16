@@ -172,7 +172,8 @@
     "adminTenantDeleting": "此社群正在刪除中，已無法編輯。",
     "invalidColor": "主色無效。請輸入類似 #6D28D9 的十六進位值。",
     "cantBanSelf": "你不能封鎖自己。",
-    "logoInvalid": "無法套用標誌。請重新上傳圖片。"
+    "logoInvalid": "無法套用標誌。請重新上傳圖片。",
+    "leaveWhileBanned": "此會員資格已被封鎖，無法退出社群。"
   },
   "nameStatus": {
     "checking": "正在檢查可用性…",

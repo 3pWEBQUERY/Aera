@@ -1567,6 +1567,9 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
   // Beitraege: der Text eines gesperrten Beitrags darf nicht durchsucht
   // werden, sonst bestaetigt die Trefferliste Woerter aus bezahltem Inhalt
   // (gleiche Regel wie lib/search.ts).
+  // Geplante Beiträge erst ab ihrem Termin, wie im Web; das Team sieht sie
+  // vorher (Vorschau).
+  const publishedNow = ctx.isStaff ? {} : { publishedAt: { lte: new Date() } };
   const postTextFilter = q
     ? {
         OR: [
@@ -1613,7 +1616,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       const tab: "top" | "new" = args.tab === "new" ? "new" : "top";
       if (tab === "new") {
         const rows = await prisma.post.findMany({
-          where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter },
+          where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...publishedNow, ...postTextFilter },
           orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }, { id: "desc" }],
           take: args.limit + 1,
           ...(args.cursor ? { cursor: { id: args.cursor }, skip: 1 } : {}),
@@ -1632,7 +1635,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       }
       // "top": Score-Sortierung wie im Web (Fenster von 200, dann Cursor-Slice).
       const rows = await prisma.post.findMany({
-        where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter },
+        where: { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...publishedNow, ...postTextFilter },
         orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
         take: 200,
         include: POST_INCLUDE,
@@ -1668,7 +1671,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
             : cfg.sort === "ZA"
               ? { title: "desc" as const }
               : { createdAt: "desc" as const };
-      const where = { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...postTextFilter };
+      const where = { tenantId: tenant.id, spaceId: space.id, isPublished: true, ...publishedNow, ...postTextFilter };
       const total = await prisma.post.count({ where });
       const perPage = cfg.pageSize > 0 ? cfg.pageSize : Math.max(total, 1);
       const totalPages = Math.max(1, Math.ceil(total / perPage));

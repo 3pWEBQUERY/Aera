@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Deze community wordt verwijderd en kan niet meer worden bewerkt.",
     "invalidColor": "De hoofdkleur is ongeldig. Voer een hexwaarde in zoals #6D28D9.",
     "cantBanSelf": "Je kunt jezelf niet blokkeren.",
-    "logoInvalid": "Het logo kon niet worden toegepast. Upload de afbeelding opnieuw."
+    "logoInvalid": "Het logo kon niet worden toegepast. Upload de afbeelding opnieuw.",
+    "leaveWhileBanned": "Dit lidmaatschap is geblokkeerd. Je kunt de community niet verlaten."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",

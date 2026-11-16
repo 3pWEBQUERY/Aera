@@ -172,7 +172,8 @@
     "adminTenantDeleting": "Dette community er ved at blive slettet og kan ikke længere redigeres.",
     "invalidColor": "Hovedfarven er ugyldig. Indtast en hex-værdi som #6D28D9.",
     "cantBanSelf": "Du kan ikke blokere dig selv.",
-    "logoInvalid": "Logoet kunne ikke anvendes. Upload billedet igen."
+    "logoInvalid": "Logoet kunne ikke anvendes. Upload billedet igen.",
+    "leaveWhileBanned": "Dette medlemskab er spærret. Du kan ikke forlade fællesskabet."
   },
   "nameStatus": {
     "checking": "Tjekker tilgængelighed…",
