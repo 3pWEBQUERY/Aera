@@ -164,7 +164,10 @@
     "productGrantLocked": "Etter det første salget kan type og kurs ikke lenger endres, slik at kjøpere beholder tilgangen.",
     "productTypeUnavailable": "Denne produkttypen tilbys ikke lenger. Velg en annen type.",
     "spaceAccessTierInvalid": "Dette medlemskapet finnes ikke eller er gratis. Velg et betalt medlemskap fra listen.",
-    "spaceTypeLockedContent": "Typen kan ikke lenger endres: Dette spacet har {count, plural, one {# innhold} other {# innhold}}. Opprett et nytt space for en annen type."
+    "spaceTypeLockedContent": "Typen kan ikke lenger endres: Dette spacet har {count, plural, one {# innhold} other {# innhold}}. Opprett et nytt space for en annen type.",
+    "forumContentRequired": "Skriv noen ord før du poster.",
+    "ownerCantLeave": "Du kan ikke forlate ditt eget community.",
+    "leaveWhilePaidActive": "Abonnementet ditt løper fortsatt. Si det opp først – når den betalte perioden er over, kan du forlate communityet."
   },
   "nameStatus": {
     "checking": "Sjekker tilgjengelighet…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "Avslutt nyhetsbrevabonnement",
     "privacyEyebrow": "Data og personvern",
     "privacyTitle": "Dine data og kontoen din",
-    "privacyText": "Last ned en strukturert kopi av dataene dine. Kontosletting legges trygt i kø og fullføres etter opprydding av betaling og lagring.",
+    "privacyText": "Last ned en kopi av dataene dine, eller slett kontoen din.",
     "privacyExportButton": "Last ned data",
     "privacyDeleteButton": "Slett konto",
-    "privacyDeleteHint": "Skriv inn nøyaktig e-postadresse og passord. Egne fellesskap må slettes først, og ventende betalinger må avklares.",
-    "privacyConfirmationLabel": "Bekreft e-postadresse",
-    "privacyDeleting": "Legger sletting i kø…",
-    "privacyDeleteFailed": "Slettingen kunne ikke legges i kø.",
+    "privacyDeleteHint": "Du logges ut med en gang og kan ikke logge inn igjen. Aktive abonnementer avsluttes straks, deretter sletter vi dataene dine. Fakturaer oppbevarer vi av juridiske grunner. Dette kan ikke angres. Slett egne communityer først.",
+    "privacyConfirmationLabel": "Skriv inn e-postadressen din for å bekrefte",
+    "privacyDeleting": "Sletter konto…",
+    "privacyDeleteFailed": "Kontoen kunne ikke slettes. Prøv igjen om noen minutter.",
     "privacyDeleteBlockedOwned": "Slett først fellesskapene du eier.",
     "privacyDeleteBlockedPending": "Avklar først ventende betalinger eller reservasjoner.",
     "privacyDeleteInvalidPassword": "Passordet er feil.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "Vil du lage nye gjenopprettingskoder?",
     "recoveryRegenConfirmBody": "De nåværende kodene slutter å virke. Lagre de nye rett etterpå.",
     "recoveryUsedNotice": "{count, plural, =0 {Du logget inn med den siste gjenopprettingskoden din. Har du fortsatt appen, lag nye koder nå. Ellers kan du skrive til oss via «Hjelp med innlogging».} one {Du logget inn med en gjenopprettingskode. # kode igjen. Ingen tilgang til appen lenger? Slå av 2FA nedenfor med denne koden, og sett det opp på nytt.} other {Du logget inn med en gjenopprettingskode. # koder igjen. Ingen tilgang til appen lenger? Slå av 2FA nedenfor med en annen kode, og sett det opp på nytt.}}",
-    "emailUnverified": "Ikke bekreftet"
+    "emailUnverified": "Ikke bekreftet",
+    "backTo": "Tilbake til {name}",
+    "backToDiscover": "Tilbake til Utforsk",
+    "back": "Tilbake",
+    "leftNotice": "Du har forlatt {name}. Kjøpt innhold blir værende på kontoen din.",
+    "membershipActions": {
+      "ownerNote": "Dette er ditt community – du kan ikke forlate det.",
+      "leaveCta": "Avslutt medlemskap",
+      "leaving": "Avslutter…",
+      "leaveTitle": "Forlate {name}?",
+      "leaveBody": "Du mister tilgangen til innhold bare for medlemmer. Kjøpt innhold beholder du.",
+      "leaveConfirm": "Forlat community",
+      "cancelCta": "Si opp abonnement",
+      "cancelling": "Sier opp…",
+      "cancelTitle": "Si opp abonnementet hos {name}?",
+      "cancelBodyUntil": "Abonnementet fornyes ikke. Du har tilgang til {date}, deretter er du gratis medlem. Kjøpt innhold beholder du.",
+      "cancelBodyNow": "Tilgangen til medlemskapets innhold opphører med en gang; du forblir gratis medlem. Kjøpt innhold beholder du.",
+      "cancelConfirm": "Si opp abonnement",
+      "cancelledUntil": "Abonnement sagt opp · tilgang til {date}. Etter det kan du også forlate communityet helt.",
+      "cancelledNow": "Abonnement sagt opp."
+    },
+    "privacyExportTitle": "Kopi av dataene dine",
+    "privacyExportText": "En fil med alt som er lagret om kontoen din.",
+    "privacyDeleteTitle": "Slett konto",
+    "privacyConfirmationMismatch": "E-postadressen stemmer ikke med kontoen din.",
+    "privacyPasswordRequired": "Skriv inn passordet ditt.",
+    "privacyTooManyAttempts": "For mange forsøk. Vent 15 minutter og prøv igjen."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "Ingen produkter ennå",
         "noProductsHint": "Produkter fra katalogen din vises her.",
         "noEvents": "Ingen arrangementer ennå",
-        "rsvps": "{count} påmeldinger",
+        "rsvps": "{count, plural, one {# påmelding} other {# påmeldinger}}",
         "attended": "Påmeldt ✓",
         "attend": "Delta",
         "noNewsletters": "Ingen utgaver ennå",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Live via Aera",
         "liveWatchNow": "Se nå",
-        "liveWatchReplay": "Se opptaket"
+        "liveWatchReplay": "Se opptaket",
+        "withdrawRsvp": "Trekk påmeldingen",
+        "rsvpGoing": "Du er påmeldt"
       },
       "spaceCard": {
         "space": "Space",
-        "locked": "Låst"
+        "locked": "Låst",
+        "membersOnly": "Bare medlemmer",
+        "paidOnly": "Betalt medlemskap"
       },
       "postTile": {
         "becomeMember": "Bli medlem",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/år",
         "viewTier": "Se {tier}",
         "becomeMember": "Bli medlem",
-        "memberHint": "Ditt nåværende medlemskap inkluderer ikke dette spacet."
+        "memberHint": "Ditt nåværende medlemskap inkluderer ikke dette spacet.",
+        "freeMembers": "«{space}» er for medlemmer. Medlemskapet er gratis.",
+        "joinFree": "Bli med gratis"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "Startside",
       "library": "Bibliotek",
       "members": "Medlemmer",
-      "membership": "Medlemskap"
+      "membership": "Medlemskap",
+      "accountAndMembership": "Konto og medlemskap"
     },
     "chrome": {
       "navAria": "Fellesskapsnavigasjon",
@@ -4465,7 +4501,7 @@
       "signupCta": "Bli gratis medlem av {name}",
       "haveAccount": "Har du allerede en konto?",
       "login": "Logg inn",
-      "orChoose": "Eller velg et nivå direkte",
+      "orChoose": "Eller velg et medlemskap direkte",
       "recommendedBadge": "Anbefalt av skaperen",
       "popularBadge": "Populær",
       "currentBadge": "Din plan",
@@ -4483,7 +4519,10 @@
       "showLess": "Vis mindre",
       "noTiers": "Denne communityen har ingen offentlige medlemskap ennå.",
       "footnote": "Avslutt når som helst. Betalinger behandles trygt via Stripe.",
-      "memberLimitReached": "Denne communityen tar ikke imot nye medlemmer akkurat nå. Prøv igjen senere."
+      "memberLimitReached": "Denne communityen tar ikke imot nye medlemmer akkurat nå. Prøv igjen senere.",
+      "guestPaidCta": "Opprett konto og bli med",
+      "guestFreeHint": "Bli med gratis via skjemaet",
+      "selectedBadge": "Ditt valg"
     },
     "members": {
       "title": "Medlemmer",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "Lukk",
       "aria": "Melding fra fellesskapet"
+    },
+    "gate": {
+      "postTitle": "Dette innlegget er bare for medlemmer",
+      "membersOnly": "Bare for medlemmer",
+      "freeText": "Bli med i {name} – medlemskapet er gratis.",
+      "tierText": "Dette krever medlemskapet «{tier}» hos {name} ({price}).",
+      "noneText": "Bare medlemmer av {name} kan se dette.",
+      "joinFree": "Bli med gratis",
+      "joinTier": "Velg {tier}",
+      "upgradeTo": "Bytt til {tier}",
+      "viewMemberships": "Se medlemskap",
+      "login": "Logg inn",
+      "postUnlocked": "Innlegget er låst opp.",
+      "paidPostText": "Du kan låse opp dette innlegget for {price}.",
+      "membersPostText": "Bare medlemmer av {name} kan lese dette innlegget."
+    },
+    "accountMenu": {
+      "open": "Kontomeny for {name}",
+      "account": "Konto og medlemskap",
+      "creatorArea": "Creator-område",
+      "logout": "Logg ut"
+    },
+    "welcome": {
+      "title": "Velkommen til {name}! Du er nå medlem.",
+      "titleTier": "Velkommen til {name}! Du er nå medlem med {tier}.",
+      "pendingTitle": "Takk! Betalingen din til {name} blir bekreftet.",
+      "pendingText": "Det tar som regel bare et øyeblikk. Last inn siden på nytt om litt, så er du med.",
+      "stepForum": "Presenter deg i «{space}»",
+      "stepSpace": "Gå til «{space}»",
+      "dismiss": "Lukk melding"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} liker kommentaren din."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} har kommentert innlegget ditt «{title}».",
+      "COMMENT_REPLY": "{actor} har svart på kommentaren din til «{title}».",
+      "REACTION": "{actor} liker innlegget ditt «{title}».",
+      "REACTION_COMMENT": "{actor} liker kommentaren din til «{title}»."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "Bli medlem for å lese",
     "showReplies": "Vis {count} flere svar",
     "emojiLabel": "Sett inn emoji",
-    "morePosts": "Flere innlegg i {space}"
+    "morePosts": "Flere innlegg i {space}",
+    "backToSpace": "Tilbake til {name}",
+    "upvoteAria": "Stem opp (poeng {score})",
+    "downvoteAria": "Stem ned (poeng {score})",
+    "commentFieldLabel": "Skriv en kommentar",
+    "replyFieldLabel": "Skriv et svar",
+    "titleLabel": "Tittel (valgfritt)",
+    "titlePlaceholderExample": "Hva handler det om?",
+    "draftKept": "Utkastet ditt beholdes selv om du lukker.",
+    "discardDraft": "Forkast utkast",
+    "discardDraftTitle": "Forkaste utkastet?",
+    "discardDraftBody": "Tittel og tekst slettes. Dette kan ikke angres.",
+    "discardDraftConfirm": "Forkast",
+    "discardDraftCancel": "Skriv videre"
   },
   "discover": {
     "eyebrow": "Communities & skapere",
@@ -4677,7 +4766,8 @@
       "myCommunities": "Dine communities",
       "create": "Opprett community",
       "account": "Kontoen din",
-      "login": "Logg inn"
+      "login": "Logg inn",
+      "creatorArea": "Creator-område"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "Kunnskap"
       }
     },
-    "postCount": "{count, plural, one {# innlegg} other {# innlegg}}"
+    "postCount": "{count, plural, one {# innlegg} other {# innlegg}}",
+    "memberFeed": {
+      "title": "Nytt i communityene dine",
+      "event": "Arrangement {date}"
+    }
   },
   "categories": {
     "podcast": "Podkaster & programmer",
@@ -4855,7 +4949,9 @@
     "backTo": "Tilbake til",
     "backToLogin": "innlogging",
     "resetDoneNotice": "Passordet er endret. Logg inn med det nye passordet nå.",
-    "loginHelp": "Hjelp med innlogging"
+    "loginHelp": "Hjelp med innlogging",
+    "signupJoinContext": "Du blir med i {name}",
+    "signupJoinContextTier": "Du blir med i {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Priser",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Betalingen kunne ikke startes. Ingenting er trukket. Prøv igjen om noen minutter."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "Fellesskapene dine",
         "create": "Opprett",
         "memberships": "Medlemskapene dine",
-        "login": "Logg inn"
+        "login": "Logg inn",
+        "creatorArea": "Creator-område"
       },
       "chatHub": {
         "title": "Chatter",

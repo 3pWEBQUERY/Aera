@@ -164,7 +164,10 @@
     "productGrantLocked": "После первой продажи тип и курс больше нельзя изменить, чтобы покупатели сохранили доступ.",
     "productTypeUnavailable": "Этот тип товара больше не предлагается. Выберите другой тип.",
     "spaceAccessTierInvalid": "Такой подписки нет или она бесплатная. Выберите платную подписку из списка.",
-    "spaceTypeLockedContent": "Тип больше нельзя изменить: в этом пространстве {count, plural, one {# материал} few {# материала} many {# материалов} other {# материала}}. Для другого типа создайте новое пространство."
+    "spaceTypeLockedContent": "Тип больше нельзя изменить: в этом пространстве {count, plural, one {# материал} few {# материала} many {# материалов} other {# материала}}. Для другого типа создайте новое пространство.",
+    "forumContentRequired": "Напиши пару слов, прежде чем публиковать.",
+    "ownerCantLeave": "Свое сообщество покинуть нельзя.",
+    "leaveWhilePaidActive": "Подписка еще действует. Сначала отмени ее — когда оплаченный период закончится, ты сможешь покинуть сообщество."
   },
   "nameStatus": {
     "checking": "Проверка доступности…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "Отписаться от рассылки",
     "privacyEyebrow": "Данные и конфиденциальность",
     "privacyTitle": "Ваши данные и аккаунт",
-    "privacyText": "Скачайте структурированную копию данных. Удаление безопасно ставится в очередь и завершается после очистки платежей и хранилища.",
+    "privacyText": "Скачай копию своих данных или удали аккаунт.",
     "privacyExportButton": "Скачать данные",
     "privacyDeleteButton": "Удалить аккаунт",
-    "privacyDeleteHint": "Точно введите адрес электронной почты и пароль. Сначала удалите свои сообщества и решите вопросы с ожидающими платежами.",
-    "privacyConfirmationLabel": "Подтвердите адрес почты",
-    "privacyDeleting": "Удаление ставится в очередь…",
-    "privacyDeleteFailed": "Не удалось поставить удаление в очередь.",
+    "privacyDeleteHint": "Ты сразу выйдешь из аккаунта и больше не сможешь войти. Действующие подписки сразу закончатся, затем мы удалим твои данные. Счета мы храним по требованию закона. Это нельзя отменить. Сначала удали свои сообщества.",
+    "privacyConfirmationLabel": "Для подтверждения введи свой адрес эл. почты",
+    "privacyDeleting": "Удаляем аккаунт…",
+    "privacyDeleteFailed": "Не удалось удалить аккаунт. Попробуй еще раз через пару минут.",
     "privacyDeleteBlockedOwned": "Сначала удалите свои сообщества.",
     "privacyDeleteBlockedPending": "Сначала решите вопросы с ожидающими платежами или бронированиями.",
     "privacyDeleteInvalidPassword": "Неверный пароль.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "Создать новые коды восстановления?",
     "recoveryRegenConfirmBody": "Текущие коды перестанут работать. Сразу сохраните новые.",
     "recoveryUsedNotice": "{count, plural, =0 {Вы вошли с последним кодом восстановления. Если приложение ещё у вас, создайте новые коды сейчас. Иначе напишите нам через «Помощь со входом».} one {Вы вошли с кодом восстановления. Остался # код. Нет доступа к приложению? Отключите 2FA ниже этим кодом и настройте заново.} few {Вы вошли с кодом восстановления. Осталось # кода. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.} many {Вы вошли с кодом восстановления. Осталось # кодов. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.} other {Вы вошли с кодом восстановления. Осталось # кода. Нет доступа к приложению? Отключите 2FA ниже другим кодом и настройте заново.}}",
-    "emailUnverified": "Не подтверждён"
+    "emailUnverified": "Не подтверждён",
+    "backTo": "Назад в {name}",
+    "backToDiscover": "Назад к обзору",
+    "back": "Назад",
+    "leftNotice": "Ты покинул(а) {name}. Купленное останется в твоем аккаунте.",
+    "membershipActions": {
+      "ownerNote": "Это твое сообщество — покинуть его нельзя.",
+      "leaveCta": "Прекратить членство",
+      "leaving": "Прекращаем…",
+      "leaveTitle": "Покинуть {name}?",
+      "leaveBody": "Ты потеряешь доступ к материалам для участников. Купленное останется у тебя.",
+      "leaveConfirm": "Покинуть сообщество",
+      "cancelCta": "Отменить подписку",
+      "cancelling": "Отменяем…",
+      "cancelTitle": "Отменить подписку на {name}?",
+      "cancelBodyUntil": "Подписка больше не продлится. Доступ сохранится до {date}, затем ты останешься бесплатным участником. Купленное останется у тебя.",
+      "cancelBodyNow": "Доступ к материалам этого членства закончится сразу, ты останешься бесплатным участником. Купленное останется у тебя.",
+      "cancelConfirm": "Отменить подписку",
+      "cancelledUntil": "Подписка отменена · доступ до {date}. После этого можно и совсем покинуть сообщество.",
+      "cancelledNow": "Подписка отменена."
+    },
+    "privacyExportTitle": "Копия твоих данных",
+    "privacyExportText": "Файл со всем, что хранится в твоем аккаунте.",
+    "privacyDeleteTitle": "Удалить аккаунт",
+    "privacyConfirmationMismatch": "Адрес эл. почты не совпадает с твоим аккаунтом.",
+    "privacyPasswordRequired": "Введи пароль.",
+    "privacyTooManyAttempts": "Слишком много попыток. Подожди 15 минут и попробуй снова."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "Пока нет товаров",
         "noProductsHint": "Товары из вашего каталога появятся здесь.",
         "noEvents": "Пока нет событий",
-        "rsvps": "{count} записавшихся",
+        "rsvps": "{count, plural, one {# участник} few {# участника} many {# участников} other {# участника}}",
         "attended": "Записан ✓",
         "attend": "Участвовать",
         "noNewsletters": "Пока нет выпусков",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Эфир через Aera",
         "liveWatchNow": "Смотреть сейчас",
-        "liveWatchReplay": "Смотреть запись"
+        "liveWatchReplay": "Смотреть запись",
+        "withdrawRsvp": "Отменить участие",
+        "rsvpGoing": "Ты участвуешь"
       },
       "spaceCard": {
         "space": "Пространство",
-        "locked": "Заблокировано"
+        "locked": "Заблокировано",
+        "membersOnly": "Только участники",
+        "paidOnly": "Платное членство"
       },
       "postTile": {
         "becomeMember": "Стать участником",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/год",
         "viewTier": "Посмотреть {tier}",
         "becomeMember": "Стать участником",
-        "memberHint": "Ваша текущая подписка не включает это пространство."
+        "memberHint": "Ваша текущая подписка не включает это пространство.",
+        "freeMembers": "«{space}» — для участников. Членство бесплатное.",
+        "joinFree": "Вступить бесплатно"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "Главная",
       "library": "Библиотека",
       "members": "Участники",
-      "membership": "Подписка"
+      "membership": "Подписка",
+      "accountAndMembership": "Аккаунт и членство"
     },
     "chrome": {
       "navAria": "Навигация по сообществу",
@@ -4465,7 +4501,7 @@
       "signupCta": "Присоединиться к {name} бесплатно",
       "haveAccount": "Уже есть аккаунт?",
       "login": "Войти",
-      "orChoose": "Или выбери уровень напрямую",
+      "orChoose": "Или сразу выбери членство",
       "recommendedBadge": "Рекомендация автора",
       "popularBadge": "Популярный",
       "currentBadge": "Твой план",
@@ -4483,7 +4519,10 @@
       "showLess": "Скрыть",
       "noTiers": "У этого сообщества пока нет публичных членств.",
       "footnote": "Отмена в любой момент. Платежи безопасно обрабатываются через Stripe.",
-      "memberLimitReached": "Это сообщество сейчас не принимает новых участников. Попробуй, пожалуйста, позже."
+      "memberLimitReached": "Это сообщество сейчас не принимает новых участников. Попробуй, пожалуйста, позже.",
+      "guestPaidCta": "Создать аккаунт и вступить",
+      "guestFreeHint": "Бесплатно — через форму",
+      "selectedBadge": "Твой выбор"
     },
     "members": {
       "title": "Участники",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "Закрыть",
       "aria": "Сообщение сообщества"
+    },
+    "gate": {
+      "postTitle": "Эта публикация только для участников",
+      "membersOnly": "Только для участников",
+      "freeText": "Вступай в {name} — членство бесплатное.",
+      "tierText": "Для этого нужно членство «{tier}» в {name} ({price}).",
+      "noneText": "Это видят только участники {name}.",
+      "joinFree": "Вступить бесплатно",
+      "joinTier": "Выбрать {tier}",
+      "upgradeTo": "Перейти на {tier}",
+      "viewMemberships": "Посмотреть членства",
+      "login": "Войти",
+      "postUnlocked": "Публикация открыта.",
+      "paidPostText": "Эту публикацию можно открыть отдельно за {price}.",
+      "membersPostText": "Эту публикацию читают только участники {name}."
+    },
+    "accountMenu": {
+      "open": "Меню аккаунта: {name}",
+      "account": "Аккаунт и членство",
+      "creatorArea": "Раздел автора",
+      "logout": "Выйти"
+    },
+    "welcome": {
+      "title": "Добро пожаловать в {name}! Теперь ты участник.",
+      "titleTier": "Добро пожаловать в {name}! Теперь у тебя членство {tier}.",
+      "pendingTitle": "Спасибо! Подтверждаем твою оплату в {name}.",
+      "pendingText": "Обычно это занимает пару секунд. Скоро обнови страницу — и ты в сообществе.",
+      "stepForum": "Представься в «{space}»",
+      "stepSpace": "Перейти в «{space}»",
+      "dismiss": "Закрыть сообщение"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} нравится твой комментарий."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} прокомментировал(а) твою публикацию «{title}».",
+      "COMMENT_REPLY": "{actor} ответил(а) на твой комментарий к «{title}».",
+      "REACTION": "{actor} нравится твоя публикация «{title}».",
+      "REACTION_COMMENT": "{actor} нравится твой комментарий к «{title}»."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "Стать участником, чтобы читать",
     "showReplies": "Показать ещё {count} ответов",
     "emojiLabel": "Вставить эмодзи",
-    "morePosts": "Ещё посты в {space}"
+    "morePosts": "Ещё посты в {space}",
+    "backToSpace": "Назад в {name}",
+    "upvoteAria": "Голос за (счет {score})",
+    "downvoteAria": "Голос против (счет {score})",
+    "commentFieldLabel": "Написать комментарий",
+    "replyFieldLabel": "Написать ответ",
+    "titleLabel": "Заголовок (необязательно)",
+    "titlePlaceholderExample": "О чем речь?",
+    "draftKept": "Черновик сохранится, даже если ты закроешь окно.",
+    "discardDraft": "Удалить черновик",
+    "discardDraftTitle": "Удалить черновик?",
+    "discardDraftBody": "Заголовок и текст будут удалены. Это нельзя отменить.",
+    "discardDraftConfirm": "Удалить",
+    "discardDraftCancel": "Продолжить писать"
   },
   "discover": {
     "eyebrow": "Сообщества и авторы",
@@ -4677,7 +4766,8 @@
       "myCommunities": "Твои сообщества",
       "create": "Создать сообщество",
       "account": "Твой аккаунт",
-      "login": "Войти"
+      "login": "Войти",
+      "creatorArea": "Раздел автора"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "Знания"
       }
     },
-    "postCount": "{count, plural, one {# публикация} few {# публикации} many {# публикаций} other {# публикации}}"
+    "postCount": "{count, plural, one {# публикация} few {# публикации} many {# публикаций} other {# публикации}}",
+    "memberFeed": {
+      "title": "Новое в твоих сообществах",
+      "event": "Событие: {date}"
+    }
   },
   "categories": {
     "podcast": "Подкасты и шоу",
@@ -4855,7 +4949,9 @@
     "backTo": "Назад ко",
     "backToLogin": "входу",
     "resetDoneNotice": "Пароль изменён. Теперь войдите с новым паролем.",
-    "loginHelp": "Помощь со входом"
+    "loginHelp": "Помощь со входом",
+    "signupJoinContext": "Ты вступаешь в {name}",
+    "signupJoinContextTier": "Ты вступаешь в {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Цены",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Не удалось начать оплату. Деньги не списаны. Попробуй еще раз через пару минут."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "Ваши сообщества",
         "create": "Создать",
         "memberships": "Ваши подписки",
-        "login": "Войти"
+        "login": "Войти",
+        "creatorArea": "Раздел автора"
       },
       "chatHub": {
         "title": "Чаты",

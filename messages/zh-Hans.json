@@ -164,7 +164,10 @@
     "productGrantLocked": "首次售出后无法再更改类型和课程，以确保买家保留访问权限。",
     "productTypeUnavailable": "此商品类型已不再提供。请选择其他类型。",
     "spaceAccessTierInvalid": "该会员资格不存在或是免费的。请从列表中选择付费会员资格。",
-    "spaceTypeLockedContent": "类型已无法更改：此空间已有 {count, plural, other {# 项内容}}。如需其他类型，请新建空间。"
+    "spaceTypeLockedContent": "类型已无法更改：此空间已有 {count, plural, other {# 项内容}}。如需其他类型，请新建空间。",
+    "forumContentRequired": "发布前请先写几句话。",
+    "ownerCantLeave": "你不能退出自己拥有的社区。",
+    "leaveWhilePaidActive": "你的订阅仍在生效。请先取消订阅；付费周期结束后即可退出社区。"
   },
   "nameStatus": {
     "checking": "正在检查可用性…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "取消订阅简报",
     "privacyEyebrow": "数据与隐私",
     "privacyTitle": "你的数据和账户",
-    "privacyText": "下载结构化的数据副本。账户删除会安全进入队列，并在账单和存储清理后完成。",
+    "privacyText": "下载你的数据副本，或删除你的账户。",
     "privacyExportButton": "下载数据",
     "privacyDeleteButton": "删除账户",
-    "privacyDeleteHint": "请输入准确的电子邮箱和密码。请先删除你拥有的社区并处理待付款项。",
-    "privacyConfirmationLabel": "确认电子邮箱",
-    "privacyDeleting": "正在提交删除…",
-    "privacyDeleteFailed": "无法提交删除请求。",
+    "privacyDeleteHint": "你将立即退出登录，并且无法再次登录。进行中的订阅会立即结束，随后我们会删除你的数据。依法保留账单。此操作无法撤销。请先删除你拥有的社区。",
+    "privacyConfirmationLabel": "请输入你的邮箱地址以确认",
+    "privacyDeleting": "正在删除账户…",
+    "privacyDeleteFailed": "无法删除账户。请过几分钟再试。",
     "privacyDeleteBlockedOwned": "请先删除你拥有的社区。",
     "privacyDeleteBlockedPending": "请先处理待付款项或预订。",
     "privacyDeleteInvalidPassword": "密码不正确。",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "要生成新的恢复码吗？",
     "recoveryRegenConfirmBody": "现有恢复码将失效。请在生成后立即保存新的恢复码。",
     "recoveryUsedNotice": "{count, plural, =0 {你使用最后一个恢复码登录了。如果应用还在，请立即生成新的恢复码；否则请通过“登录帮助”联系我们。} other {你使用恢复码登录了，还剩 # 个。无法再使用应用？请在下方用另一个恢复码停用双重验证，然后重新设置。}}",
-    "emailUnverified": "未验证"
+    "emailUnverified": "未验证",
+    "backTo": "返回 {name}",
+    "backToDiscover": "返回发现",
+    "back": "返回",
+    "leftNotice": "你已退出 {name}。已购买的内容仍保留在你的账户中。",
+    "membershipActions": {
+      "ownerNote": "这是你的社区，无法退出。",
+      "leaveCta": "结束会员资格",
+      "leaving": "正在结束…",
+      "leaveTitle": "退出 {name}？",
+      "leaveBody": "你将无法再访问仅限会员的内容。已购买的内容会保留。",
+      "leaveConfirm": "退出社区",
+      "cancelCta": "取消订阅",
+      "cancelling": "正在取消…",
+      "cancelTitle": "取消 {name} 的订阅？",
+      "cancelBodyUntil": "订阅将不再续订。{date} 前仍可访问，之后你将成为免费会员。已购买的内容会保留。",
+      "cancelBodyNow": "此会员资格的内容访问将立即结束，你将成为免费会员。已购买的内容会保留。",
+      "cancelConfirm": "取消订阅",
+      "cancelledUntil": "订阅已取消 · 可访问至 {date}。之后你也可以完全退出社区。",
+      "cancelledNow": "订阅已取消。"
+    },
+    "privacyExportTitle": "你的数据副本",
+    "privacyExportText": "一个包含你账户所有已存数据的文件。",
+    "privacyDeleteTitle": "删除账户",
+    "privacyConfirmationMismatch": "邮箱地址与你的账户不一致。",
+    "privacyPasswordRequired": "请输入你的密码。",
+    "privacyTooManyAttempts": "尝试次数过多。请等待 15 分钟后再试。"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "还没有商品",
         "noProductsHint": "你目录中的商品会显示在此处。",
         "noEvents": "还没有活动",
-        "rsvps": "{count} 人报名",
+        "rsvps": "{count, plural, other {# 人报名}}",
         "attended": "已报名 ✓",
         "attend": "参加",
         "noNewsletters": "还没有期刊",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Aera 直播",
         "liveWatchNow": "立即观看",
-        "liveWatchReplay": "观看回放"
+        "liveWatchReplay": "观看回放",
+        "withdrawRsvp": "取消报名",
+        "rsvpGoing": "你已报名"
       },
       "spaceCard": {
         "space": "空间",
-        "locked": "已锁定"
+        "locked": "已锁定",
+        "membersOnly": "仅限会员",
+        "paidOnly": "付费会员"
       },
       "postTile": {
         "becomeMember": "成为会员",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/年",
         "viewTier": "查看 {tier}",
         "becomeMember": "成为会员",
-        "memberHint": "你当前的会员资格不包含此空间。"
+        "memberHint": "你当前的会员资格不包含此空间。",
+        "freeMembers": "“{space}”仅限会员。会员资格免费。",
+        "joinFree": "免费加入"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "首页",
       "library": "图书库",
       "members": "成员",
-      "membership": "会员"
+      "membership": "会员",
+      "accountAndMembership": "账户与会员"
     },
     "chrome": {
       "navAria": "社区导航",
@@ -4465,7 +4501,7 @@
       "signupCta": "免费加入 {name}",
       "haveAccount": "已有账户？",
       "login": "登录",
-      "orChoose": "或直接选择一个等级",
+      "orChoose": "或直接选择会员资格",
       "recommendedBadge": "创作者推荐",
       "popularBadge": "热门",
       "currentBadge": "你的方案",
@@ -4483,7 +4519,10 @@
       "showLess": "收起",
       "noTiers": "该社区还没有公开的会员方案。",
       "footnote": "随时可取消。付款通过 Stripe 安全处理。",
-      "memberLimitReached": "该社区目前暂不接受新成员加入，请稍后再试。"
+      "memberLimitReached": "该社区目前暂不接受新成员加入，请稍后再试。",
+      "guestPaidCta": "创建账户并加入",
+      "guestFreeHint": "通过表单免费加入",
+      "selectedBadge": "你的选择"
     },
     "members": {
       "title": "成员",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "关闭",
       "aria": "社区提示"
+    },
+    "gate": {
+      "postTitle": "此帖子仅限会员查看",
+      "membersOnly": "仅限会员",
+      "freeText": "加入 {name}——会员资格免费。",
+      "tierText": "需要 {name} 的“{tier}”会员资格（{price}）。",
+      "noneText": "只有 {name} 的会员可以查看此内容。",
+      "joinFree": "免费加入",
+      "joinTier": "选择 {tier}",
+      "upgradeTo": "切换到 {tier}",
+      "viewMemberships": "查看会员资格",
+      "login": "登录",
+      "postUnlocked": "帖子已解锁。",
+      "paidPostText": "此帖子可单独解锁，价格 {price}。",
+      "membersPostText": "只有 {name} 的会员可以阅读此帖子。"
+    },
+    "accountMenu": {
+      "open": "{name} 的账户菜单",
+      "account": "账户与会员",
+      "creatorArea": "创作者后台",
+      "logout": "退出登录"
+    },
+    "welcome": {
+      "title": "欢迎来到 {name}！你现在是会员了。",
+      "titleTier": "欢迎来到 {name}！你现在是 {tier} 会员了。",
+      "pendingTitle": "谢谢！正在确认你对 {name} 的付款。",
+      "pendingText": "通常只需片刻。稍后刷新页面即可。",
+      "stepForum": "在“{space}”中介绍一下自己",
+      "stepSpace": "前往“{space}”",
+      "dismiss": "关闭提示"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} 赞了你的评论。"
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} 评论了你的帖子“{title}”。",
+      "COMMENT_REPLY": "{actor} 回复了你在“{title}”下的评论。",
+      "REACTION": "{actor} 赞了你的帖子“{title}”。",
+      "REACTION_COMMENT": "{actor} 赞了你在“{title}”下的评论。"
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "成为会员即可阅读",
     "showReplies": "再显示 {count} 条回复",
     "emojiLabel": "插入表情",
-    "morePosts": "{space} 的更多帖子"
+    "morePosts": "{space} 的更多帖子",
+    "backToSpace": "返回 {name}",
+    "upvoteAria": "赞成（得分 {score}）",
+    "downvoteAria": "反对（得分 {score}）",
+    "commentFieldLabel": "写评论",
+    "replyFieldLabel": "写回复",
+    "titleLabel": "标题（可选）",
+    "titlePlaceholderExample": "想聊什么？",
+    "draftKept": "即使关闭，草稿也会保留。",
+    "discardDraft": "放弃草稿",
+    "discardDraftTitle": "放弃草稿？",
+    "discardDraftBody": "标题和正文将被删除，且无法撤销。",
+    "discardDraftConfirm": "放弃",
+    "discardDraftCancel": "继续写"
   },
   "discover": {
     "eyebrow": "社区与创作者",
@@ -4677,7 +4766,8 @@
       "myCommunities": "你的社区",
       "create": "创建社区",
       "account": "你的账户",
-      "login": "登录"
+      "login": "登录",
+      "creatorArea": "创作者后台"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "知识"
       }
     },
-    "postCount": "{count, plural, other {# 个帖子}}"
+    "postCount": "{count, plural, other {# 个帖子}}",
+    "memberFeed": {
+      "title": "你的社区有新内容",
+      "event": "活动：{date}"
+    }
   },
   "categories": {
     "podcast": "播客与节目",
@@ -4855,7 +4949,9 @@
     "backTo": "返回",
     "backToLogin": "登录",
     "resetDoneNotice": "密码已更改。请用新密码登录。",
-    "loginHelp": "登录帮助"
+    "loginHelp": "登录帮助",
+    "signupJoinContext": "你将加入 {name}",
+    "signupJoinContextTier": "你将加入 {name} · {tier}，{price}"
   },
   "pricing": {
     "eyebrow": "价格",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "无法开始付款。未产生任何扣款。请过几分钟再试。"
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "你的社区",
         "create": "创建",
         "memberships": "你的会员",
-        "login": "登录"
+        "login": "登录",
+        "creatorArea": "创作者后台"
       },
       "chatHub": {
         "title": "聊天",

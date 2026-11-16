@@ -164,7 +164,10 @@
     "productGrantLocked": "Dopo la prima vendita tipo e corso non si possono più cambiare, così gli acquirenti mantengono l'accesso.",
     "productTypeUnavailable": "Questo tipo di prodotto non è più disponibile. Scegli un altro tipo.",
     "spaceAccessTierInvalid": "Questa iscrizione non esiste o è gratuita. Scegli un'iscrizione a pagamento dall'elenco.",
-    "spaceTypeLockedContent": "Il tipo non si può più cambiare: questo space ha {count, plural, one {# contenuto} other {# contenuti}}. Per un altro tipo crea un nuovo space."
+    "spaceTypeLockedContent": "Il tipo non si può più cambiare: questo space ha {count, plural, one {# contenuto} other {# contenuti}}. Per un altro tipo crea un nuovo space.",
+    "forumContentRequired": "Scrivi qualche parola prima di pubblicare.",
+    "ownerCantLeave": "Non puoi lasciare la tua community.",
+    "leaveWhilePaidActive": "Il tuo abbonamento è ancora attivo. Disdicilo prima: al termine del periodo pagato potrai lasciare la community."
   },
   "nameStatus": {
     "checking": "Verifica disponibilità…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "Annulla iscrizione alla newsletter",
     "privacyEyebrow": "Dati e privacy",
     "privacyTitle": "I tuoi dati e il tuo account",
-    "privacyText": "Scarica una copia strutturata dei tuoi dati. L’eliminazione viene accodata in sicurezza e completata dopo la pulizia di pagamenti e archivio.",
+    "privacyText": "Scarica una copia dei tuoi dati o elimina il tuo account.",
     "privacyExportButton": "Scarica dati",
     "privacyDeleteButton": "Elimina account",
-    "privacyDeleteHint": "Inserisci esattamente e-mail e password. Prima elimina le community di tua proprietà e risolvi i pagamenti in sospeso.",
-    "privacyConfirmationLabel": "Conferma e-mail",
-    "privacyDeleting": "Eliminazione in coda…",
-    "privacyDeleteFailed": "Impossibile accodare l’eliminazione.",
+    "privacyDeleteHint": "Verrai disconnesso subito e non potrai più accedere. Gli abbonamenti attivi terminano immediatamente, poi eliminiamo i tuoi dati. Conserviamo le fatture per motivi di legge. L’operazione non si può annullare. Prima elimina le community di tua proprietà.",
+    "privacyConfirmationLabel": "Inserisci il tuo indirizzo email per confermare",
+    "privacyDeleting": "Eliminazione account…",
+    "privacyDeleteFailed": "Non è stato possibile eliminare l’account. Riprova tra qualche minuto.",
     "privacyDeleteBlockedOwned": "Elimina prima le community di tua proprietà.",
     "privacyDeleteBlockedPending": "Risolvi prima pagamenti o prenotazioni in sospeso.",
     "privacyDeleteInvalidPassword": "La password non è corretta.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "Creare nuovi codici di recupero?",
     "recoveryRegenConfirmBody": "I codici attuali smetteranno di funzionare. Salva subito quelli nuovi.",
     "recoveryUsedNotice": "{count, plural, =0 {Hai effettuato l’accesso con l’ultimo codice di recupero. Se hai ancora l’app, crea subito nuovi codici. Altrimenti scrivici tramite «Aiuto per l’accesso».} one {Hai effettuato l’accesso con un codice di recupero. Rimane # codice. Non hai più accesso all’app? Disattiva la 2FA qui sotto con questo codice e configurala di nuovo.} other {Hai effettuato l’accesso con un codice di recupero. Rimangono # codici. Non hai più accesso all’app? Disattiva la 2FA qui sotto con un altro codice e configurala di nuovo.}}",
-    "emailUnverified": "Non confermata"
+    "emailUnverified": "Non confermata",
+    "backTo": "Torna a {name}",
+    "backToDiscover": "Torna a Scopri",
+    "back": "Indietro",
+    "leftNotice": "Hai lasciato {name}. I contenuti acquistati restano nel tuo account.",
+    "membershipActions": {
+      "ownerNote": "È la tua community: non puoi lasciarla.",
+      "leaveCta": "Termina l’abbonamento",
+      "leaving": "Chiusura in corso…",
+      "leaveTitle": "Lasciare {name}?",
+      "leaveBody": "Perderai l’accesso ai contenuti riservati ai membri. I contenuti acquistati restano tuoi.",
+      "leaveConfirm": "Lascia la community",
+      "cancelCta": "Disdici abbonamento",
+      "cancelling": "Disdetta in corso…",
+      "cancelTitle": "Disdire l’abbonamento a {name}?",
+      "cancelBodyUntil": "L’abbonamento non si rinnoverà. Mantieni l’accesso fino al {date}, poi resti membro gratuito. I contenuti acquistati restano tuoi.",
+      "cancelBodyNow": "L’accesso ai contenuti di questo abbonamento termina subito; resti membro gratuito. I contenuti acquistati restano tuoi.",
+      "cancelConfirm": "Disdici abbonamento",
+      "cancelledUntil": "Abbonamento disdetto · accesso fino al {date}. Dopo potrai anche lasciare del tutto la community.",
+      "cancelledNow": "Abbonamento disdetto."
+    },
+    "privacyExportTitle": "Copia dei tuoi dati",
+    "privacyExportText": "Un file con tutto ciò che è salvato nel tuo account.",
+    "privacyDeleteTitle": "Elimina account",
+    "privacyConfirmationMismatch": "L’indirizzo email non corrisponde al tuo account.",
+    "privacyPasswordRequired": "Inserisci la tua password.",
+    "privacyTooManyAttempts": "Troppi tentativi. Attendi 15 minuti e riprova."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "Ancora nessun prodotto",
         "noProductsHint": "I prodotti del tuo catalogo appaiono qui.",
         "noEvents": "Ancora nessun evento",
-        "rsvps": "{count} adesioni",
+        "rsvps": "{count, plural, one {# partecipante} other {# partecipanti}}",
         "attended": "Partecipi ✓",
         "attend": "Partecipa",
         "noNewsletters": "Ancora nessun numero",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Live tramite Aera",
         "liveWatchNow": "Guarda ora",
-        "liveWatchReplay": "Guarda la registrazione"
+        "liveWatchReplay": "Guarda la registrazione",
+        "withdrawRsvp": "Ritira la partecipazione",
+        "rsvpGoing": "Parteciperai"
       },
       "spaceCard": {
         "space": "Space",
-        "locked": "Bloccato"
+        "locked": "Bloccato",
+        "membersOnly": "Solo membri",
+        "paidOnly": "Abbonamento a pagamento"
       },
       "postTile": {
         "becomeMember": "Diventa membro",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/anno",
         "viewTier": "Vedi {tier}",
         "becomeMember": "Diventa membro",
-        "memberHint": "La tua iscrizione attuale non include questo space."
+        "memberHint": "La tua iscrizione attuale non include questo space.",
+        "freeMembers": "“{space}” è per i membri. L’abbonamento è gratuito.",
+        "joinFree": "Iscriviti gratis"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "Home",
       "library": "Libreria",
       "members": "Membri",
-      "membership": "Abbonamento"
+      "membership": "Abbonamento",
+      "accountAndMembership": "Account e abbonamento"
     },
     "chrome": {
       "navAria": "Navigazione della community",
@@ -4465,7 +4501,7 @@
       "signupCta": "Unisciti gratis a {name}",
       "haveAccount": "Hai già un account?",
       "login": "Accedi",
-      "orChoose": "Oppure scegli direttamente un livello",
+      "orChoose": "Oppure scegli direttamente un abbonamento",
       "recommendedBadge": "Consigliato dal creator",
       "popularBadge": "Popolare",
       "currentBadge": "Il tuo piano",
@@ -4483,7 +4519,10 @@
       "showLess": "Mostra di meno",
       "noTiers": "Questa community non ha ancora membership pubbliche.",
       "footnote": "Disdici quando vuoi. I pagamenti sono elaborati in sicurezza tramite Stripe.",
-      "memberLimitReached": "Questa community non accetta nuovi membri al momento. Riprova più tardi."
+      "memberLimitReached": "Questa community non accetta nuovi membri al momento. Riprova più tardi.",
+      "guestPaidCta": "Crea un account e iscriviti",
+      "guestFreeHint": "Iscriviti gratis con il modulo",
+      "selectedBadge": "La tua scelta"
     },
     "members": {
       "title": "Membri",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "Chiudi",
       "aria": "Avviso della community"
+    },
+    "gate": {
+      "postTitle": "Questo post è riservato ai membri",
+      "membersOnly": "Solo per i membri",
+      "freeText": "Iscriviti a {name}: l’abbonamento è gratuito.",
+      "tierText": "Per questo ti serve l’abbonamento “{tier}” di {name} ({price}).",
+      "noneText": "Solo i membri di {name} possono vedere questo contenuto.",
+      "joinFree": "Iscriviti gratis",
+      "joinTier": "Scegli {tier}",
+      "upgradeTo": "Passa a {tier}",
+      "viewMemberships": "Vedi gli abbonamenti",
+      "login": "Accedi",
+      "postUnlocked": "Il post è sbloccato.",
+      "paidPostText": "Puoi sbloccare questo post singolarmente per {price}.",
+      "membersPostText": "Solo i membri di {name} possono leggere questo post."
+    },
+    "accountMenu": {
+      "open": "Menu account di {name}",
+      "account": "Account e abbonamento",
+      "creatorArea": "Area creator",
+      "logout": "Esci"
+    },
+    "welcome": {
+      "title": "Benvenuto in {name}! Ora sei un membro.",
+      "titleTier": "Benvenuto in {name}! Ora sei membro con {tier}.",
+      "pendingTitle": "Grazie! Stiamo confermando il tuo pagamento a {name}.",
+      "pendingText": "Di solito basta un attimo. Ricarica la pagina tra poco e sarai dentro.",
+      "stepForum": "Presentati in “{space}”",
+      "stepSpace": "Vai a “{space}”",
+      "dismiss": "Chiudi avviso"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "A {actor} piace il tuo commento."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} ha commentato il tuo post “{title}”.",
+      "COMMENT_REPLY": "{actor} ha risposto al tuo commento su “{title}”.",
+      "REACTION": "A {actor} piace il tuo post “{title}”.",
+      "REACTION_COMMENT": "A {actor} piace il tuo commento su “{title}”."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "Diventa iscritto per leggere",
     "showReplies": "Mostra altre {count} risposte",
     "emojiLabel": "Inserisci un’emoji",
-    "morePosts": "Altri post in {space}"
+    "morePosts": "Altri post in {space}",
+    "backToSpace": "Torna a {name}",
+    "upvoteAria": "Vota su (punteggio {score})",
+    "downvoteAria": "Vota giù (punteggio {score})",
+    "commentFieldLabel": "Scrivi un commento",
+    "replyFieldLabel": "Scrivi una risposta",
+    "titleLabel": "Titolo (facoltativo)",
+    "titlePlaceholderExample": "Di cosa si tratta?",
+    "draftKept": "La bozza resta salvata anche se chiudi.",
+    "discardDraft": "Elimina bozza",
+    "discardDraftTitle": "Eliminare la bozza?",
+    "discardDraftBody": "Titolo e testo verranno eliminati. L’operazione non si può annullare.",
+    "discardDraftConfirm": "Elimina",
+    "discardDraftCancel": "Continua a scrivere"
   },
   "discover": {
     "eyebrow": "Community & creator",
@@ -4677,7 +4766,8 @@
       "myCommunities": "Le tue community",
       "create": "Crea community",
       "account": "Il tuo account",
-      "login": "Accedi"
+      "login": "Accedi",
+      "creatorArea": "Area creator"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "Conoscenza"
       }
     },
-    "postCount": "{count, plural, one {# post} other {# post}}"
+    "postCount": "{count, plural, one {# post} other {# post}}",
+    "memberFeed": {
+      "title": "Novità nelle tue community",
+      "event": "Evento il {date}"
+    }
   },
   "categories": {
     "podcast": "Podcast & programmi",
@@ -4855,7 +4949,9 @@
     "backTo": "Torna al",
     "backToLogin": "login",
     "resetDoneNotice": "Password modificata. Accedi ora con la nuova password.",
-    "loginHelp": "Aiuto per l’accesso"
+    "loginHelp": "Aiuto per l’accesso",
+    "signupJoinContext": "Ti stai iscrivendo a {name}",
+    "signupJoinContextTier": "Ti stai iscrivendo a {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Prezzi",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Non è stato possibile avviare il pagamento. Non è stato addebitato nulla. Riprova tra qualche minuto."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "Le tue community",
         "create": "Crea",
         "memberships": "I tuoi abbonamenti",
-        "login": "Accedi"
+        "login": "Accedi",
+        "creatorArea": "Area creator"
       },
       "chatHub": {
         "title": "Chat",

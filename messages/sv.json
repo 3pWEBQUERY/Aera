@@ -164,7 +164,10 @@
     "productGrantLocked": "Efter den första försäljningen kan typ och kurs inte längre ändras, så att köpare behåller sin åtkomst.",
     "productTypeUnavailable": "Den här produkttypen erbjuds inte längre. Välj en annan typ.",
     "spaceAccessTierInvalid": "Det här medlemskapet finns inte eller är gratis. Välj ett betalt medlemskap i listan.",
-    "spaceTypeLockedContent": "Typen kan inte längre ändras: det här spacet har {count, plural, one {# innehåll} other {# innehåll}}. Skapa ett nytt space för en annan typ."
+    "spaceTypeLockedContent": "Typen kan inte längre ändras: det här spacet har {count, plural, one {# innehåll} other {# innehåll}}. Skapa ett nytt space för en annan typ.",
+    "forumContentRequired": "Skriv några ord innan du publicerar.",
+    "ownerCantLeave": "Du kan inte lämna din egen community.",
+    "leaveWhilePaidActive": "Din prenumeration löper fortfarande. Säg upp den först – när den betalda perioden är slut kan du lämna communityn."
   },
   "nameStatus": {
     "checking": "Kontrollerar tillgänglighet…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "Avsluta prenumerationen",
     "privacyEyebrow": "Data och integritet",
     "privacyTitle": "Dina data och ditt konto",
-    "privacyText": "Ladda ner en strukturerad kopia av dina data. Kontoborttagning köas säkert och slutförs efter rensning av betalning och lagring.",
+    "privacyText": "Ladda ned en kopia av dina data eller radera ditt konto.",
     "privacyExportButton": "Ladda ner data",
     "privacyDeleteButton": "Ta bort konto",
-    "privacyDeleteHint": "Ange exakt e-postadress och lösenord. Egna communities måste tas bort först och väntande betalningar lösas.",
-    "privacyConfirmationLabel": "Bekräfta e-postadress",
-    "privacyDeleting": "Köar borttagning…",
-    "privacyDeleteFailed": "Borttagningen kunde inte köas.",
+    "privacyDeleteHint": "Du loggas ut direkt och kan inte logga in igen. Aktiva prenumerationer upphör direkt, sedan raderar vi dina data. Fakturor sparar vi av juridiska skäl. Det går inte att ångra. Radera dina egna communities först.",
+    "privacyConfirmationLabel": "Ange din e-postadress för att bekräfta",
+    "privacyDeleting": "Raderar konto…",
+    "privacyDeleteFailed": "Kontot kunde inte raderas. Försök igen om några minuter.",
     "privacyDeleteBlockedOwned": "Ta först bort dina egna communities.",
     "privacyDeleteBlockedPending": "Lös först väntande betalningar eller bokningar.",
     "privacyDeleteInvalidPassword": "Lösenordet är felaktigt.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "Skapa nya återställningskoder?",
     "recoveryRegenConfirmBody": "Dina nuvarande koder slutar fungera. Spara de nya direkt efteråt.",
     "recoveryUsedNotice": "{count, plural, =0 {Du loggade in med din sista återställningskod. Har du fortfarande appen, skapa nya koder nu. Annars kan du skriva till oss via ”Hjälp med inloggning”.} one {Du loggade in med en återställningskod. # kod kvar. Kommer du inte längre åt appen? Stäng av 2FA nedan med den här koden och konfigurera den igen.} other {Du loggade in med en återställningskod. # koder kvar. Kommer du inte längre åt appen? Stäng av 2FA nedan med en annan kod och konfigurera den igen.}}",
-    "emailUnverified": "Inte bekräftad"
+    "emailUnverified": "Inte bekräftad",
+    "backTo": "Tillbaka till {name}",
+    "backToDiscover": "Tillbaka till Upptäck",
+    "back": "Tillbaka",
+    "leftNotice": "Du har lämnat {name}. Köpt innehåll finns kvar på ditt konto.",
+    "membershipActions": {
+      "ownerNote": "Det här är din community – du kan inte lämna den.",
+      "leaveCta": "Avsluta medlemskap",
+      "leaving": "Avslutar…",
+      "leaveTitle": "Lämna {name}?",
+      "leaveBody": "Du förlorar åtkomsten till innehåll för medlemmar. Köpt innehåll behåller du.",
+      "leaveConfirm": "Lämna communityn",
+      "cancelCta": "Säg upp prenumeration",
+      "cancelling": "Säger upp…",
+      "cancelTitle": "Säga upp prenumerationen hos {name}?",
+      "cancelBodyUntil": "Prenumerationen förnyas inte. Du har åtkomst till {date}, sedan är du gratismedlem. Köpt innehåll behåller du.",
+      "cancelBodyNow": "Åtkomsten till medlemskapets innehåll upphör direkt; du förblir gratismedlem. Köpt innehåll behåller du.",
+      "cancelConfirm": "Säg upp prenumeration",
+      "cancelledUntil": "Prenumerationen är uppsagd · åtkomst till {date}. Därefter kan du även lämna communityn helt.",
+      "cancelledNow": "Prenumerationen är uppsagd."
+    },
+    "privacyExportTitle": "Kopia av dina data",
+    "privacyExportText": "En fil med allt som sparats för ditt konto.",
+    "privacyDeleteTitle": "Radera konto",
+    "privacyConfirmationMismatch": "E-postadressen stämmer inte med ditt konto.",
+    "privacyPasswordRequired": "Ange ditt lösenord.",
+    "privacyTooManyAttempts": "För många försök. Vänta 15 minuter och försök igen."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "Inga produkter ännu",
         "noProductsHint": "Produkter från din katalog visas här.",
         "noEvents": "Inga evenemang ännu",
-        "rsvps": "{count} anmälningar",
+        "rsvps": "{count, plural, one {# anmälan} other {# anmälningar}}",
         "attended": "Anmäld ✓",
         "attend": "Delta",
         "noNewsletters": "Inga utgåvor ännu",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Live via Aera",
         "liveWatchNow": "Titta nu",
-        "liveWatchReplay": "Titta på inspelningen"
+        "liveWatchReplay": "Titta på inspelningen",
+        "withdrawRsvp": "Dra tillbaka anmälan",
+        "rsvpGoing": "Du är anmäld"
       },
       "spaceCard": {
         "space": "Space",
-        "locked": "Låst"
+        "locked": "Låst",
+        "membersOnly": "Endast medlemmar",
+        "paidOnly": "Betalt medlemskap"
       },
       "postTile": {
         "becomeMember": "Bli medlem",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/år",
         "viewTier": "Visa {tier}",
         "becomeMember": "Bli medlem",
-        "memberHint": "Ditt nuvarande medlemskap omfattar inte det här spacet."
+        "memberHint": "Ditt nuvarande medlemskap omfattar inte det här spacet.",
+        "freeMembers": "”{space}” är för medlemmar. Medlemskapet är gratis.",
+        "joinFree": "Gå med gratis"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "Start",
       "library": "Bibliotek",
       "members": "Medlemmar",
-      "membership": "Medlemskap"
+      "membership": "Medlemskap",
+      "accountAndMembership": "Konto och medlemskap"
     },
     "chrome": {
       "navAria": "Community-navigering",
@@ -4465,7 +4501,7 @@
       "signupCta": "Gå med i {name} gratis",
       "haveAccount": "Har du redan ett konto?",
       "login": "Logga in",
-      "orChoose": "Eller välj en nivå direkt",
+      "orChoose": "Eller välj ett medlemskap direkt",
       "recommendedBadge": "Rekommenderas av kreatören",
       "popularBadge": "Populär",
       "currentBadge": "Din plan",
@@ -4483,7 +4519,10 @@
       "showLess": "Visa mindre",
       "noTiers": "Den här communityn har inga offentliga medlemskap ännu.",
       "footnote": "Avsluta när som helst. Betalningar hanteras säkert via Stripe.",
-      "memberLimitReached": "Den här communityn tar inte emot nya medlemmar just nu. Försök igen senare."
+      "memberLimitReached": "Den här communityn tar inte emot nya medlemmar just nu. Försök igen senare.",
+      "guestPaidCta": "Skapa konto och gå med",
+      "guestFreeHint": "Gå med gratis via formuläret",
+      "selectedBadge": "Ditt val"
     },
     "members": {
       "title": "Medlemmar",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "Stäng",
       "aria": "Meddelande från gemenskapen"
+    },
+    "gate": {
+      "postTitle": "Det här inlägget är bara för medlemmar",
+      "membersOnly": "Endast för medlemmar",
+      "freeText": "Gå med i {name} – medlemskapet är gratis.",
+      "tierText": "Det kräver medlemskapet ”{tier}” hos {name} ({price}).",
+      "noneText": "Bara medlemmar i {name} kan se det här.",
+      "joinFree": "Gå med gratis",
+      "joinTier": "Välj {tier}",
+      "upgradeTo": "Byt till {tier}",
+      "viewMemberships": "Visa medlemskap",
+      "login": "Logga in",
+      "postUnlocked": "Inlägget är upplåst.",
+      "paidPostText": "Du kan låsa upp det här inlägget separat för {price}.",
+      "membersPostText": "Bara medlemmar i {name} kan läsa det här inlägget."
+    },
+    "accountMenu": {
+      "open": "Kontomeny för {name}",
+      "account": "Konto och medlemskap",
+      "creatorArea": "Kreatörsyta",
+      "logout": "Logga ut"
+    },
+    "welcome": {
+      "title": "Välkommen till {name}! Du är nu medlem.",
+      "titleTier": "Välkommen till {name}! Du är nu medlem med {tier}.",
+      "pendingTitle": "Tack! Din betalning till {name} bekräftas.",
+      "pendingText": "Det tar oftast bara ett ögonblick. Ladda om sidan strax så är du med.",
+      "stepForum": "Presentera dig i ”{space}”",
+      "stepSpace": "Gå till ”{space}”",
+      "dismiss": "Stäng meddelande"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} gillar din kommentar."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} har kommenterat ditt inlägg ”{title}”.",
+      "COMMENT_REPLY": "{actor} har svarat på din kommentar till ”{title}”.",
+      "REACTION": "{actor} gillar ditt inlägg ”{title}”.",
+      "REACTION_COMMENT": "{actor} gillar din kommentar till ”{title}”."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "Bli medlem för att läsa",
     "showReplies": "Visa {count} svar till",
     "emojiLabel": "Infoga emoji",
-    "morePosts": "Fler inlägg i {space}"
+    "morePosts": "Fler inlägg i {space}",
+    "backToSpace": "Tillbaka till {name}",
+    "upvoteAria": "Rösta upp (poäng {score})",
+    "downvoteAria": "Rösta ned (poäng {score})",
+    "commentFieldLabel": "Skriv en kommentar",
+    "replyFieldLabel": "Skriv ett svar",
+    "titleLabel": "Rubrik (valfritt)",
+    "titlePlaceholderExample": "Vad handlar det om?",
+    "draftKept": "Ditt utkast sparas även om du stänger.",
+    "discardDraft": "Släng utkast",
+    "discardDraftTitle": "Slänga utkastet?",
+    "discardDraftBody": "Rubrik och text raderas. Det går inte att ångra.",
+    "discardDraftConfirm": "Släng",
+    "discardDraftCancel": "Fortsätt skriva"
   },
   "discover": {
     "eyebrow": "Communities & kreatörer",
@@ -4677,7 +4766,8 @@
       "myCommunities": "Dina communities",
       "create": "Skapa community",
       "account": "Ditt konto",
-      "login": "Logga in"
+      "login": "Logga in",
+      "creatorArea": "Kreatörsyta"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "Kunskap"
       }
     },
-    "postCount": "{count, plural, one {# inlägg} other {# inlägg}}"
+    "postCount": "{count, plural, one {# inlägg} other {# inlägg}}",
+    "memberFeed": {
+      "title": "Nytt i dina communities",
+      "event": "Evenemang {date}"
+    }
   },
   "categories": {
     "podcast": "Poddar & program",
@@ -4855,7 +4949,9 @@
     "backTo": "Tillbaka till",
     "backToLogin": "inloggning",
     "resetDoneNotice": "Lösenordet är ändrat. Logga in med ditt nya lösenord nu.",
-    "loginHelp": "Hjälp med inloggning"
+    "loginHelp": "Hjälp med inloggning",
+    "signupJoinContext": "Du går med i {name}",
+    "signupJoinContextTier": "Du går med i {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Priser",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "Betalningen kunde inte startas. Ingenting har dragits. Försök igen om några minuter."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "Dina gemenskaper",
         "create": "Skapa",
         "memberships": "Dina medlemskap",
-        "login": "Logga in"
+        "login": "Logga in",
+        "creatorArea": "Kreatörsyta"
       },
       "chatHub": {
         "title": "Chattar",

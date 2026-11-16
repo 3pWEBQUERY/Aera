@@ -164,7 +164,10 @@
     "productGrantLocked": "Na de eerste verkoop kunnen type en cursus niet meer worden gewijzigd, zodat kopers hun toegang houden.",
     "productTypeUnavailable": "Dit producttype wordt niet meer aangeboden. Kies een ander type.",
     "spaceAccessTierInvalid": "Dit lidmaatschap bestaat niet of is gratis. Kies een betaald lidmaatschap uit de lijst.",
-    "spaceTypeLockedContent": "Het type kan niet meer worden gewijzigd: deze space heeft {count, plural, one {# item} other {# items}}. Maak voor een ander type een nieuwe space aan."
+    "spaceTypeLockedContent": "Het type kan niet meer worden gewijzigd: deze space heeft {count, plural, one {# item} other {# items}}. Maak voor een ander type een nieuwe space aan.",
+    "forumContentRequired": "Schrijf een paar woorden voordat je post.",
+    "ownerCantLeave": "Je kunt je eigen community niet verlaten.",
+    "leaveWhilePaidActive": "Je abonnement loopt nog. Zeg het eerst op – na afloop van de betaalde periode kun je de community verlaten."
   },
   "nameStatus": {
     "checking": "Beschikbaarheid controleren…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "Afmelden voor nieuwsbrief",
     "privacyEyebrow": "Gegevens en privacy",
     "privacyTitle": "Je gegevens en account",
-    "privacyText": "Download een gestructureerde kopie van je gegevens. Accountverwijdering wordt veilig ingepland en afgerond na opschoning van betalingen en opslag.",
+    "privacyText": "Download een kopie van je gegevens of verwijder je account.",
     "privacyExportButton": "Gegevens downloaden",
     "privacyDeleteButton": "Account verwijderen",
-    "privacyDeleteHint": "Voer exact je e-mailadres en wachtwoord in. Verwijder eerst je eigen communities en handel openstaande betalingen af.",
-    "privacyConfirmationLabel": "E-mailadres bevestigen",
-    "privacyDeleting": "Verwijdering inplannen…",
-    "privacyDeleteFailed": "De verwijdering kon niet worden ingepland.",
+    "privacyDeleteHint": "Je wordt meteen uitgelogd en kunt niet meer inloggen. Lopende abonnementen stoppen direct, daarna verwijderen we je gegevens. Facturen bewaren we om wettelijke redenen. Dit kan niet ongedaan worden gemaakt. Verwijder eerst je eigen community’s.",
+    "privacyConfirmationLabel": "Vul ter bevestiging je e-mailadres in",
+    "privacyDeleting": "Account wordt verwijderd…",
+    "privacyDeleteFailed": "Het account kon niet worden verwijderd. Probeer het over een paar minuten opnieuw.",
     "privacyDeleteBlockedOwned": "Verwijder eerst je eigen communities.",
     "privacyDeleteBlockedPending": "Handel eerst openstaande betalingen of reserveringen af.",
     "privacyDeleteInvalidPassword": "Het wachtwoord is onjuist.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "Nieuwe herstelcodes maken?",
     "recoveryRegenConfirmBody": "Je huidige codes werken daarna niet meer. Bewaar de nieuwe direct daarna.",
     "recoveryUsedNotice": "{count, plural, =0 {Je bent ingelogd met je laatste herstelcode. Heb je de app nog, maak dan nu nieuwe codes. Zo niet, neem contact op via ‘Hulp bij inloggen’.} one {Je bent ingelogd met een herstelcode. Nog # code over. Geen toegang meer tot de app? Schakel 2FA hieronder uit met deze code en stel het opnieuw in.} other {Je bent ingelogd met een herstelcode. Nog # codes over. Geen toegang meer tot de app? Schakel 2FA hieronder uit met een andere code en stel het opnieuw in.}}",
-    "emailUnverified": "Niet bevestigd"
+    "emailUnverified": "Niet bevestigd",
+    "backTo": "Terug naar {name}",
+    "backToDiscover": "Terug naar Ontdekken",
+    "back": "Terug",
+    "leftNotice": "Je hebt {name} verlaten. Gekochte content blijft in je account.",
+    "membershipActions": {
+      "ownerNote": "Dit is je eigen community – je kunt hem niet verlaten.",
+      "leaveCta": "Lidmaatschap beëindigen",
+      "leaving": "Bezig met beëindigen…",
+      "leaveTitle": "{name} verlaten?",
+      "leaveBody": "Je verliest de toegang tot content voor leden. Gekochte content blijft van jou.",
+      "leaveConfirm": "Community verlaten",
+      "cancelCta": "Abonnement opzeggen",
+      "cancelling": "Bezig met opzeggen…",
+      "cancelTitle": "Abonnement bij {name} opzeggen?",
+      "cancelBodyUntil": "Het abonnement wordt niet verlengd. Tot {date} houd je toegang, daarna blijf je gratis lid. Gekochte content blijft van jou.",
+      "cancelBodyNow": "De toegang tot de content van dit lidmaatschap stopt meteen; je blijft gratis lid. Gekochte content blijft van jou.",
+      "cancelConfirm": "Abonnement opzeggen",
+      "cancelledUntil": "Abonnement opgezegd · toegang tot {date}. Daarna kun je de community ook helemaal verlaten.",
+      "cancelledNow": "Abonnement opgezegd."
+    },
+    "privacyExportTitle": "Kopie van je gegevens",
+    "privacyExportText": "Een bestand met alles wat bij je account is opgeslagen.",
+    "privacyDeleteTitle": "Account verwijderen",
+    "privacyConfirmationMismatch": "Dit e-mailadres komt niet overeen met je account.",
+    "privacyPasswordRequired": "Vul je wachtwoord in.",
+    "privacyTooManyAttempts": "Te veel pogingen. Wacht 15 minuten en probeer het dan opnieuw."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "Nog geen producten",
         "noProductsHint": "Producten uit je catalogus verschijnen hier.",
         "noEvents": "Nog geen evenementen",
-        "rsvps": "{count} aanmeldingen",
+        "rsvps": "{count, plural, one {# aanmelding} other {# aanmeldingen}}",
         "attended": "Aangemeld ✓",
         "attend": "Deelnemen",
         "noNewsletters": "Nog geen edities",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Live via Aera",
         "liveWatchNow": "Nu kijken",
-        "liveWatchReplay": "Opname bekijken"
+        "liveWatchReplay": "Opname bekijken",
+        "withdrawRsvp": "Aanmelding intrekken",
+        "rsvpGoing": "Je bent aangemeld"
       },
       "spaceCard": {
         "space": "Space",
-        "locked": "Vergrendeld"
+        "locked": "Vergrendeld",
+        "membersOnly": "Alleen leden",
+        "paidOnly": "Betaald lidmaatschap"
       },
       "postTile": {
         "becomeMember": "Word lid",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/jaar",
         "viewTier": "{tier} bekijken",
         "becomeMember": "Lid worden",
-        "memberHint": "Je huidige lidmaatschap bevat deze space niet."
+        "memberHint": "Je huidige lidmaatschap bevat deze space niet.",
+        "freeMembers": "‘{space}’ is voor leden. Het lidmaatschap is gratis.",
+        "joinFree": "Gratis lid worden"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "Home",
       "library": "Bibliotheek",
       "members": "Leden",
-      "membership": "Lidmaatschap"
+      "membership": "Lidmaatschap",
+      "accountAndMembership": "Account en lidmaatschap"
     },
     "chrome": {
       "navAria": "Communitynavigatie",
@@ -4465,7 +4501,7 @@
       "signupCta": "Word gratis lid van {name}",
       "haveAccount": "Heb je al een account?",
       "login": "Inloggen",
-      "orChoose": "Of kies direct een niveau",
+      "orChoose": "Of kies direct een lidmaatschap",
       "recommendedBadge": "Aanbevolen door de creator",
       "popularBadge": "Populair",
       "currentBadge": "Jouw plan",
@@ -4483,7 +4519,10 @@
       "showLess": "Minder tonen",
       "noTiers": "Deze community heeft nog geen openbare lidmaatschappen.",
       "footnote": "Altijd opzegbaar. Betalingen worden veilig verwerkt via Stripe.",
-      "memberLimitReached": "Deze community accepteert op dit moment geen nieuwe leden. Probeer het later nog eens."
+      "memberLimitReached": "Deze community accepteert op dit moment geen nieuwe leden. Probeer het later nog eens.",
+      "guestPaidCta": "Account maken en lid worden",
+      "guestFreeHint": "Gratis lid worden via het formulier",
+      "selectedBadge": "Jouw keuze"
     },
     "members": {
       "title": "Leden",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "Sluiten",
       "aria": "Bericht van de community"
+    },
+    "gate": {
+      "postTitle": "Dit bericht is alleen voor leden",
+      "membersOnly": "Alleen voor leden",
+      "freeText": "Word lid van {name} – het lidmaatschap is gratis.",
+      "tierText": "Hiervoor heb je het lidmaatschap ‘{tier}’ bij {name} nodig ({price}).",
+      "noneText": "Alleen leden van {name} kunnen dit zien.",
+      "joinFree": "Gratis lid worden",
+      "joinTier": "{tier} kiezen",
+      "upgradeTo": "Overstappen naar {tier}",
+      "viewMemberships": "Lidmaatschappen bekijken",
+      "login": "Inloggen",
+      "postUnlocked": "Het bericht is ontgrendeld.",
+      "paidPostText": "Je kunt dit bericht los ontgrendelen voor {price}.",
+      "membersPostText": "Alleen leden van {name} kunnen dit bericht lezen."
+    },
+    "accountMenu": {
+      "open": "Accountmenu van {name}",
+      "account": "Account en lidmaatschap",
+      "creatorArea": "Creatoromgeving",
+      "logout": "Uitloggen"
+    },
+    "welcome": {
+      "title": "Welkom bij {name}! Je bent nu lid.",
+      "titleTier": "Welkom bij {name}! Je bent nu lid met {tier}.",
+      "pendingTitle": "Bedankt! Je betaling aan {name} wordt bevestigd.",
+      "pendingText": "Dat duurt meestal maar even. Laad de pagina zo opnieuw en je bent erbij.",
+      "stepForum": "Stel je voor in ‘{space}’",
+      "stepSpace": "Naar ‘{space}’",
+      "dismiss": "Melding sluiten"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} vindt je reactie leuk."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} heeft gereageerd op je bericht ‘{title}’.",
+      "COMMENT_REPLY": "{actor} heeft geantwoord op je reactie bij ‘{title}’.",
+      "REACTION": "{actor} vindt je bericht ‘{title}’ leuk.",
+      "REACTION_COMMENT": "{actor} vindt je reactie bij ‘{title}’ leuk."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "Word lid om te lezen",
     "showReplies": "{count} reacties meer tonen",
     "emojiLabel": "Emoji invoegen",
-    "morePosts": "Meer berichten in {space}"
+    "morePosts": "Meer berichten in {space}",
+    "backToSpace": "Terug naar {name}",
+    "upvoteAria": "Omhoog stemmen (score {score})",
+    "downvoteAria": "Omlaag stemmen (score {score})",
+    "commentFieldLabel": "Reactie schrijven",
+    "replyFieldLabel": "Antwoord schrijven",
+    "titleLabel": "Titel (optioneel)",
+    "titlePlaceholderExample": "Waar gaat het over?",
+    "draftKept": "Je concept blijft bewaard, ook als je sluit.",
+    "discardDraft": "Concept verwijderen",
+    "discardDraftTitle": "Concept verwijderen?",
+    "discardDraftBody": "Titel en tekst worden verwijderd. Dit kan niet ongedaan worden gemaakt.",
+    "discardDraftConfirm": "Verwijderen",
+    "discardDraftCancel": "Verder schrijven"
   },
   "discover": {
     "eyebrow": "Communities & creators",
@@ -4677,7 +4766,8 @@
       "myCommunities": "Jouw communities",
       "create": "Community aanmaken",
       "account": "Jouw account",
-      "login": "Inloggen"
+      "login": "Inloggen",
+      "creatorArea": "Creatoromgeving"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "Kennis"
       }
     },
-    "postCount": "{count, plural, one {# bericht} other {# berichten}}"
+    "postCount": "{count, plural, one {# bericht} other {# berichten}}",
+    "memberFeed": {
+      "title": "Nieuw in je community’s",
+      "event": "Event op {date}"
+    }
   },
   "categories": {
     "podcast": "Podcasts & shows",
@@ -4855,7 +4949,9 @@
     "backTo": "Terug naar",
     "backToLogin": "inloggen",
     "resetDoneNotice": "Wachtwoord gewijzigd. Log nu in met je nieuwe wachtwoord.",
-    "loginHelp": "Hulp bij inloggen"
+    "loginHelp": "Hulp bij inloggen",
+    "signupJoinContext": "Je wordt lid van {name}",
+    "signupJoinContextTier": "Je wordt lid van {name} · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "Prijzen",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "De betaling kon niet worden gestart. Er is niets afgeschreven. Probeer het over een paar minuten opnieuw."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "Jouw communities",
         "create": "Aanmaken",
         "memberships": "Jouw lidmaatschappen",
-        "login": "Inloggen"
+        "login": "Inloggen",
+        "creatorArea": "Creatoromgeving"
       },
       "chatHub": {
         "title": "Gesprekken",

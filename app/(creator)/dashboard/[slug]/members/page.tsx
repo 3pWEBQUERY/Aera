@@ -100,6 +100,7 @@ export default async function MembersPage({
     // Einladung (Mitglied hinzufügen), und die Einladung wurde noch nicht
     // angenommen — das Annehmen bestätigt die E-Mail-Adresse.
     invited:
+      m.role !== "OWNER" &&
       !m.user.emailVerifiedAt &&
       Math.abs(m.joinedAt.getTime() - m.user.createdAt.getTime()) < 10_000,
     subscription: subByUser.get(m.userId) ?? null,

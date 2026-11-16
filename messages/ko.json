@@ -164,7 +164,10 @@
     "productGrantLocked": "구매자의 접근 권한을 지키기 위해 첫 판매 후에는 유형과 강좌를 바꿀 수 없습니다.",
     "productTypeUnavailable": "이 상품 유형은 더 이상 제공하지 않습니다. 다른 유형을 선택하세요.",
     "spaceAccessTierInvalid": "이 멤버십이 없거나 무료입니다. 목록에서 유료 멤버십을 선택하세요.",
-    "spaceTypeLockedContent": "유형을 더 이상 변경할 수 없습니다. 이 스페이스에 콘텐츠가 {count, plural, other {#개}} 있습니다. 다른 유형이 필요하면 새 스페이스를 만드세요."
+    "spaceTypeLockedContent": "유형을 더 이상 변경할 수 없습니다. 이 스페이스에 콘텐츠가 {count, plural, other {#개}} 있습니다. 다른 유형이 필요하면 새 스페이스를 만드세요.",
+    "forumContentRequired": "게시하기 전에 몇 마디 적어 주세요.",
+    "ownerCantLeave": "내가 소유한 커뮤니티에서는 나갈 수 없습니다.",
+    "leaveWhilePaidActive": "구독이 아직 진행 중입니다. 먼저 해지하세요. 결제한 기간이 끝나면 커뮤니티에서 나갈 수 있습니다."
   },
   "nameStatus": {
     "checking": "사용 가능 여부 확인 중…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "뉴스레터 구독 취소",
     "privacyEyebrow": "데이터 및 개인정보",
     "privacyTitle": "내 데이터와 계정",
-    "privacyText": "데이터의 구조화된 사본을 다운로드하세요. 계정 삭제는 안전하게 대기열에 등록되며 결제 및 저장소 정리 후 완료됩니다.",
+    "privacyText": "내 데이터 사본을 다운로드하거나 계정을 삭제하세요.",
     "privacyExportButton": "데이터 다운로드",
     "privacyDeleteButton": "계정 삭제",
-    "privacyDeleteHint": "정확한 이메일 주소와 비밀번호를 입력하세요. 소유한 커뮤니티를 먼저 삭제하고 보류 중인 결제를 해결하세요.",
-    "privacyConfirmationLabel": "이메일 주소 확인",
-    "privacyDeleting": "삭제 요청 등록 중…",
-    "privacyDeleteFailed": "삭제 요청을 등록하지 못했습니다.",
+    "privacyDeleteHint": "즉시 로그아웃되며 다시 로그인할 수 없습니다. 진행 중인 구독은 바로 종료되고, 이후 데이터가 삭제됩니다. 청구서는 법적 이유로 보관합니다. 되돌릴 수 없습니다. 소유한 커뮤니티는 먼저 삭제해야 합니다.",
+    "privacyConfirmationLabel": "확인을 위해 이메일 주소를 입력하세요",
+    "privacyDeleting": "계정 삭제 중…",
+    "privacyDeleteFailed": "계정을 삭제하지 못했습니다. 몇 분 후에 다시 시도해 주세요.",
     "privacyDeleteBlockedOwned": "소유한 커뮤니티를 먼저 삭제하세요.",
     "privacyDeleteBlockedPending": "보류 중인 결제 또는 예약을 먼저 해결하세요.",
     "privacyDeleteInvalidPassword": "비밀번호가 올바르지 않습니다.",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "새 복구 코드를 만들까요?",
     "recoveryRegenConfirmBody": "기존 코드는 더 이상 작동하지 않습니다. 새 코드를 바로 저장하세요.",
     "recoveryUsedNotice": "{count, plural, =0 {마지막 복구 코드로 로그인했습니다. 앱이 아직 있다면 지금 새 코드를 만드세요. 없다면 ‘로그인 도움말’로 문의하세요.} other {복구 코드로 로그인했습니다. #개 남았습니다. 앱에 더 이상 접근할 수 없나요? 아래에서 다른 코드로 2FA를 끄고 다시 설정하세요.}}",
-    "emailUnverified": "미확인"
+    "emailUnverified": "미확인",
+    "backTo": "{name}(으)로 돌아가기",
+    "backToDiscover": "둘러보기로 돌아가기",
+    "back": "돌아가기",
+    "leftNotice": "{name}에서 나갔습니다. 구매한 콘텐츠는 계정에 남아 있습니다.",
+    "membershipActions": {
+      "ownerNote": "내 커뮤니티이므로 나갈 수 없습니다.",
+      "leaveCta": "멤버십 종료",
+      "leaving": "종료 중…",
+      "leaveTitle": "{name}에서 나갈까요?",
+      "leaveBody": "멤버 전용 콘텐츠에 접근할 수 없게 됩니다. 구매한 콘텐츠는 그대로 남습니다.",
+      "leaveConfirm": "커뮤니티 나가기",
+      "cancelCta": "구독 해지",
+      "cancelling": "해지 중…",
+      "cancelTitle": "{name} 구독을 해지할까요?",
+      "cancelBodyUntil": "구독이 더 이상 갱신되지 않습니다. {date}까지 이용할 수 있고, 이후에는 무료 멤버로 남습니다. 구매한 콘텐츠는 그대로 남습니다.",
+      "cancelBodyNow": "이 멤버십 콘텐츠 이용은 즉시 종료되며 무료 멤버로 남습니다. 구매한 콘텐츠는 그대로 남습니다.",
+      "cancelConfirm": "구독 해지",
+      "cancelledUntil": "구독 해지됨 · {date}까지 이용 가능. 이후 커뮤니티에서 완전히 나갈 수도 있습니다.",
+      "cancelledNow": "구독이 해지되었습니다."
+    },
+    "privacyExportTitle": "내 데이터 사본",
+    "privacyExportText": "내 계정에 저장된 모든 정보가 담긴 파일입니다.",
+    "privacyDeleteTitle": "계정 삭제",
+    "privacyConfirmationMismatch": "이메일 주소가 계정과 일치하지 않습니다.",
+    "privacyPasswordRequired": "비밀번호를 입력하세요.",
+    "privacyTooManyAttempts": "시도 횟수가 너무 많습니다. 15분 후에 다시 시도해 주세요."
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "아직 제품이 없습니다",
         "noProductsHint": "카탈로그의 제품이 여기에 표시됩니다.",
         "noEvents": "아직 이벤트가 없습니다",
-        "rsvps": "참석 {count}명",
+        "rsvps": "{count, plural, other {참석 #명}}",
         "attended": "참석 예정 ✓",
         "attend": "참석",
         "noNewsletters": "아직 발행호가 없습니다",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Aera 라이브",
         "liveWatchNow": "지금 시청",
-        "liveWatchReplay": "다시 보기"
+        "liveWatchReplay": "다시 보기",
+        "withdrawRsvp": "참석 취소",
+        "rsvpGoing": "참석 예정"
       },
       "spaceCard": {
         "space": "스페이스",
-        "locked": "잠김"
+        "locked": "잠김",
+        "membersOnly": "멤버 전용",
+        "paidOnly": "유료 멤버십"
       },
       "postTile": {
         "becomeMember": "멤버 되기",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/년",
         "viewTier": "{tier} 보기",
         "becomeMember": "멤버 되기",
-        "memberHint": "현재 멤버십에는 이 스페이스가 포함되어 있지 않습니다."
+        "memberHint": "현재 멤버십에는 이 스페이스가 포함되어 있지 않습니다.",
+        "freeMembers": "‘{space}’은(는) 멤버 전용입니다. 멤버십은 무료입니다.",
+        "joinFree": "무료로 가입"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "홈",
       "library": "라이브러리",
       "members": "멤버",
-      "membership": "멤버십"
+      "membership": "멤버십",
+      "accountAndMembership": "계정 및 멤버십"
     },
     "chrome": {
       "navAria": "커뮤니티 내비게이션",
@@ -4465,7 +4501,7 @@
       "signupCta": "{name}에 무료로 가입",
       "haveAccount": "이미 계정이 있나요?",
       "login": "로그인",
-      "orChoose": "또는 바로 등급을 선택하세요",
+      "orChoose": "또는 멤버십을 바로 선택하세요",
       "recommendedBadge": "크리에이터 추천",
       "popularBadge": "인기",
       "currentBadge": "내 플랜",
@@ -4483,7 +4519,10 @@
       "showLess": "접기",
       "noTiers": "이 커뮤니티에는 아직 공개 멤버십이 없습니다.",
       "footnote": "언제든 해지 가능. 결제는 Stripe를 통해 안전하게 처리됩니다.",
-      "memberLimitReached": "이 커뮤니티는 현재 신규 멤버를 받고 있지 않아요. 나중에 다시 시도해 주세요."
+      "memberLimitReached": "이 커뮤니티는 현재 신규 멤버를 받고 있지 않아요. 나중에 다시 시도해 주세요.",
+      "guestPaidCta": "계정 만들고 가입하기",
+      "guestFreeHint": "양식으로 무료 가입",
+      "selectedBadge": "선택한 멤버십"
     },
     "members": {
       "title": "멤버",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "닫기",
       "aria": "커뮤니티 알림"
+    },
+    "gate": {
+      "postTitle": "이 게시물은 멤버 전용입니다",
+      "membersOnly": "멤버 전용",
+      "freeText": "{name}에 가입하세요. 멤버십은 무료입니다.",
+      "tierText": "이 콘텐츠를 보려면 {name}의 ‘{tier}’ 멤버십({price})이 필요합니다.",
+      "noneText": "{name} 멤버만 볼 수 있는 콘텐츠입니다.",
+      "joinFree": "무료로 가입",
+      "joinTier": "{tier} 선택",
+      "upgradeTo": "{tier}(으)로 변경",
+      "viewMemberships": "멤버십 보기",
+      "login": "로그인",
+      "postUnlocked": "게시물이 잠금 해제되었습니다.",
+      "paidPostText": "이 게시물은 {price}에 개별로 잠금 해제할 수 있습니다.",
+      "membersPostText": "{name} 멤버만 이 게시물을 읽을 수 있습니다."
+    },
+    "accountMenu": {
+      "open": "{name} 계정 메뉴",
+      "account": "계정 및 멤버십",
+      "creatorArea": "크리에이터 영역",
+      "logout": "로그아웃"
+    },
+    "welcome": {
+      "title": "{name}에 오신 것을 환영합니다! 이제 멤버입니다.",
+      "titleTier": "{name}에 오신 것을 환영합니다! 이제 {tier} 멤버입니다.",
+      "pendingTitle": "감사합니다! {name} 결제를 확인하고 있습니다.",
+      "pendingText": "보통 잠깐이면 됩니다. 잠시 후 페이지를 새로고침하면 가입이 완료됩니다.",
+      "stepForum": "‘{space}’에서 자기소개하기",
+      "stepSpace": "‘{space}’(으)로 이동",
+      "dismiss": "알림 닫기"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor}님이 내 댓글을 좋아합니다."
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor}님이 내 게시물 ‘{title}’에 댓글을 남겼습니다.",
+      "COMMENT_REPLY": "{actor}님이 ‘{title}’에 남긴 내 댓글에 답글을 달았습니다.",
+      "REACTION": "{actor}님이 내 게시물 ‘{title}’을(를) 좋아합니다.",
+      "REACTION_COMMENT": "{actor}님이 ‘{title}’에 남긴 내 댓글을 좋아합니다."
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "읽으려면 멤버 되기",
     "showReplies": "답글 {count}개 더 보기",
     "emojiLabel": "이모지 넣기",
-    "morePosts": "{space}의 다른 게시물"
+    "morePosts": "{space}의 다른 게시물",
+    "backToSpace": "{name}(으)로 돌아가기",
+    "upvoteAria": "추천 (점수 {score})",
+    "downvoteAria": "비추천 (점수 {score})",
+    "commentFieldLabel": "댓글 쓰기",
+    "replyFieldLabel": "답글 쓰기",
+    "titleLabel": "제목 (선택)",
+    "titlePlaceholderExample": "어떤 이야기인가요?",
+    "draftKept": "닫아도 초안은 유지됩니다.",
+    "discardDraft": "초안 삭제",
+    "discardDraftTitle": "초안을 삭제할까요?",
+    "discardDraftBody": "제목과 본문이 삭제됩니다. 되돌릴 수 없습니다.",
+    "discardDraftConfirm": "삭제",
+    "discardDraftCancel": "계속 쓰기"
   },
   "discover": {
     "eyebrow": "커뮤니티 & 크리에이터",
@@ -4677,7 +4766,8 @@
       "myCommunities": "내 커뮤니티",
       "create": "커뮤니티 만들기",
       "account": "내 계정",
-      "login": "로그인"
+      "login": "로그인",
+      "creatorArea": "크리에이터 영역"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "지식"
       }
     },
-    "postCount": "{count, plural, other {게시물 #개}}"
+    "postCount": "{count, plural, other {게시물 #개}}",
+    "memberFeed": {
+      "title": "내 커뮤니티의 새 소식",
+      "event": "이벤트: {date}"
+    }
   },
   "categories": {
     "podcast": "팟캐스트 & 방송",
@@ -4855,7 +4949,9 @@
     "backTo": "돌아가기:",
     "backToLogin": "로그인으로",
     "resetDoneNotice": "비밀번호가 변경되었습니다. 이제 새 비밀번호로 로그인하세요.",
-    "loginHelp": "로그인 도움말"
+    "loginHelp": "로그인 도움말",
+    "signupJoinContext": "{name}에 가입합니다",
+    "signupJoinContextTier": "{name}에 가입합니다 · {tier}, {price}"
   },
   "pricing": {
     "eyebrow": "요금",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "결제를 시작할 수 없습니다. 청구된 금액은 없습니다. 몇 분 후에 다시 시도해 주세요."
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "내 커뮤니티",
         "create": "만들기",
         "memberships": "내 멤버십",
-        "login": "로그인"
+        "login": "로그인",
+        "creatorArea": "크리에이터 영역"
       },
       "chatHub": {
         "title": "채팅",

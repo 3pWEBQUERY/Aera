@@ -164,7 +164,10 @@
     "productGrantLocked": "購入者のアクセスを守るため、最初の販売後はタイプとコースを変更できません。",
     "productTypeUnavailable": "この商品タイプは現在提供していません。別のタイプを選んでください。",
     "spaceAccessTierInvalid": "このメンバーシップは存在しないか、無料です。一覧から有料メンバーシップを選んでください。",
-    "spaceTypeLockedContent": "タイプは変更できません。このスペースには{count, plural, other {#件のコンテンツ}}があります。別のタイプにするには新しいスペースを作成してください。"
+    "spaceTypeLockedContent": "タイプは変更できません。このスペースには{count, plural, other {#件のコンテンツ}}があります。別のタイプにするには新しいスペースを作成してください。",
+    "forumContentRequired": "投稿する前に、ひとこと書いてください。",
+    "ownerCantLeave": "自分が所有するコミュニティからは退会できません。",
+    "leaveWhilePaidActive": "サブスクリプションはまだ有効です。先に解約してください。支払い済み期間が終わると、コミュニティから退会できます。"
   },
   "nameStatus": {
     "checking": "利用可能か確認中…",
@@ -550,13 +553,13 @@
     "newsletterWithdraw": "ニュースレターを購読解除",
     "privacyEyebrow": "データとプライバシー",
     "privacyTitle": "データとアカウント",
-    "privacyText": "データの構造化されたコピーをダウンロードできます。アカウント削除は安全にキューへ登録され、請求とストレージの整理後に完了します。",
+    "privacyText": "データのコピーをダウンロードするか、アカウントを削除します。",
     "privacyExportButton": "データをダウンロード",
     "privacyDeleteButton": "アカウントを削除",
-    "privacyDeleteHint": "正確なメールアドレスとパスワードを入力してください。所有するコミュニティを先に削除し、保留中の支払いを解決してください。",
-    "privacyConfirmationLabel": "メールアドレスを確認",
-    "privacyDeleting": "削除を登録中…",
-    "privacyDeleteFailed": "削除を登録できませんでした。",
+    "privacyDeleteHint": "すぐにログアウトされ、再ログインできなくなります。有効なサブスクリプションは直ちに終了し、その後データを削除します。請求書は法令に基づき保管します。元に戻すことはできません。所有するコミュニティは先に削除してください。",
+    "privacyConfirmationLabel": "確認のためメールアドレスを入力してください",
+    "privacyDeleting": "アカウントを削除しています…",
+    "privacyDeleteFailed": "アカウントを削除できませんでした。数分後にもう一度お試しください。",
     "privacyDeleteBlockedOwned": "所有するコミュニティを先に削除してください。",
     "privacyDeleteBlockedPending": "保留中の支払いまたは予約を先に解決してください。",
     "privacyDeleteInvalidPassword": "パスワードが正しくありません。",
@@ -582,7 +585,33 @@
     "recoveryRegenConfirmTitle": "新しいリカバリーコードを作成しますか？",
     "recoveryRegenConfirmBody": "現在のコードは使えなくなります。作成後すぐに新しいコードを保存してください。",
     "recoveryUsedNotice": "{count, plural, =0 {最後のリカバリーコードでログインしました。まだアプリがある場合は、今すぐ新しいコードを作成してください。ない場合は「ログインのヘルプ」からお問い合わせください。} other {リカバリーコードでログインしました。残り # コード。アプリにアクセスできなくなった場合は、下で別のコードを使って2FAを無効にし、設定し直してください。}}",
-    "emailUnverified": "未確認"
+    "emailUnverified": "未確認",
+    "backTo": "{name} に戻る",
+    "backToDiscover": "「見つける」に戻る",
+    "back": "戻る",
+    "leftNotice": "{name} から退会しました。購入済みのコンテンツはアカウントに残ります。",
+    "membershipActions": {
+      "ownerNote": "あなたのコミュニティです。退会はできません。",
+      "leaveCta": "メンバーシップを終了",
+      "leaving": "終了しています…",
+      "leaveTitle": "{name} から退会しますか？",
+      "leaveBody": "メンバー限定コンテンツにアクセスできなくなります。購入済みのコンテンツはそのまま残ります。",
+      "leaveConfirm": "コミュニティから退会",
+      "cancelCta": "サブスクリプションを解約",
+      "cancelling": "解約しています…",
+      "cancelTitle": "{name} のサブスクリプションを解約しますか？",
+      "cancelBodyUntil": "サブスクリプションは更新されません。{date} まではアクセスでき、その後は無料メンバーになります。購入済みのコンテンツはそのまま残ります。",
+      "cancelBodyNow": "このメンバーシップのコンテンツへのアクセスはすぐに終了し、無料メンバーになります。購入済みのコンテンツはそのまま残ります。",
+      "cancelConfirm": "サブスクリプションを解約",
+      "cancelledUntil": "解約済み · {date} までアクセス可能。その後、コミュニティから完全に退会することもできます。",
+      "cancelledNow": "解約しました。"
+    },
+    "privacyExportTitle": "データのコピー",
+    "privacyExportText": "アカウントに保存されているすべての情報を含むファイルです。",
+    "privacyDeleteTitle": "アカウントを削除",
+    "privacyConfirmationMismatch": "メールアドレスがアカウントと一致しません。",
+    "privacyPasswordRequired": "パスワードを入力してください。",
+    "privacyTooManyAttempts": "試行回数が多すぎます。15分待ってから再度お試しください。"
   },
   "admin": {
     "brand": "Aera Admin",
@@ -4260,7 +4289,7 @@
         "noProducts": "まだ商品がありません",
         "noProductsHint": "カタログの商品がここに表示されます。",
         "noEvents": "まだイベントがありません",
-        "rsvps": "{count} 件の参加表明",
+        "rsvps": "{count, plural, other {参加表明 #件}}",
         "attended": "参加予定 ✓",
         "attend": "参加する",
         "noNewsletters": "まだ号がありません",
@@ -4290,11 +4319,15 @@
         },
         "liveOwnStream": "Aera でライブ",
         "liveWatchNow": "今すぐ視聴",
-        "liveWatchReplay": "録画を見る"
+        "liveWatchReplay": "録画を見る",
+        "withdrawRsvp": "参加表明を取り消す",
+        "rsvpGoing": "参加予定です"
       },
       "spaceCard": {
         "space": "スペース",
-        "locked": "ロック中"
+        "locked": "ロック中",
+        "membersOnly": "メンバー限定",
+        "paidOnly": "有料メンバーシップ"
       },
       "postTile": {
         "becomeMember": "メンバーになる",
@@ -4429,7 +4462,9 @@
         "pricePerYear": "{price}/年",
         "viewTier": "{tier}を見る",
         "becomeMember": "メンバーになる",
-        "memberHint": "現在のメンバーシップにはこのスペースは含まれていません。"
+        "memberHint": "現在のメンバーシップにはこのスペースは含まれていません。",
+        "freeMembers": "「{space}」はメンバー向けです。メンバーシップは無料です。",
+        "joinFree": "無料で参加"
       }
     },
     "nav": {
@@ -4437,7 +4472,8 @@
       "home": "ホーム",
       "library": "ライブラリ",
       "members": "メンバー",
-      "membership": "メンバーシップ"
+      "membership": "メンバーシップ",
+      "accountAndMembership": "アカウントとメンバーシップ"
     },
     "chrome": {
       "navAria": "コミュニティナビゲーション",
@@ -4465,7 +4501,7 @@
       "signupCta": "{name} に無料で参加",
       "haveAccount": "すでにアカウントをお持ちですか？",
       "login": "ログイン",
-      "orChoose": "または直接プランを選ぶ",
+      "orChoose": "または、メンバーシップを直接選ぶ",
       "recommendedBadge": "クリエイターのおすすめ",
       "popularBadge": "人気",
       "currentBadge": "現在のプラン",
@@ -4483,7 +4519,10 @@
       "showLess": "閉じる",
       "noTiers": "このコミュニティにはまだ公開メンバーシップがありません。",
       "footnote": "いつでも解約できます。決済は Stripe で安全に処理されます。",
-      "memberLimitReached": "このコミュニティは現在新規メンバーを受け付けていません。しばらくしてからもう一度お試しください。"
+      "memberLimitReached": "このコミュニティは現在新規メンバーを受け付けていません。しばらくしてからもう一度お試しください。",
+      "guestPaidCta": "アカウントを作成して参加",
+      "guestFreeHint": "フォームから無料で参加できます",
+      "selectedBadge": "選択中"
     },
     "members": {
       "title": "メンバー",
@@ -4553,6 +4592,36 @@
     "banner": {
       "close": "閉じる",
       "aria": "コミュニティからのお知らせ"
+    },
+    "gate": {
+      "postTitle": "この投稿はメンバー限定です",
+      "membersOnly": "メンバー限定",
+      "freeText": "{name} に参加しましょう。メンバーシップは無料です。",
+      "tierText": "これには {name} のメンバーシップ「{tier}」（{price}）が必要です。",
+      "noneText": "このコンテンツは {name} のメンバーのみ閲覧できます。",
+      "joinFree": "無料で参加",
+      "joinTier": "{tier} を選ぶ",
+      "upgradeTo": "{tier} に切り替える",
+      "viewMemberships": "メンバーシップを見る",
+      "login": "ログイン",
+      "postUnlocked": "投稿のロックが解除されました。",
+      "paidPostText": "この投稿は {price} で個別にロック解除できます。",
+      "membersPostText": "この投稿は {name} のメンバーのみ読めます。"
+    },
+    "accountMenu": {
+      "open": "{name} のアカウントメニュー",
+      "account": "アカウントとメンバーシップ",
+      "creatorArea": "クリエイターエリア",
+      "logout": "ログアウト"
+    },
+    "welcome": {
+      "title": "{name} へようこそ。メンバーになりました。",
+      "titleTier": "{name} へようこそ。{tier} のメンバーになりました。",
+      "pendingTitle": "ありがとうございます。{name} へのお支払いを確認しています。",
+      "pendingText": "通常はすぐに完了します。少ししてからページを再読み込みしてください。",
+      "stepForum": "「{space}」で自己紹介する",
+      "stepSpace": "「{space}」へ",
+      "dismiss": "お知らせを閉じる"
     }
   },
   "notifications": {
@@ -4565,7 +4634,14 @@
     "items": {
       "POST_COMMENT": "{actor} commented on your post.",
       "COMMENT_REPLY": "{actor} replied to your comment.",
-      "REACTION": "{actor} liked your post."
+      "REACTION": "{actor} liked your post.",
+      "REACTION_COMMENT": "{actor} さんがあなたのコメントにいいねしました。"
+    },
+    "itemsWithTitle": {
+      "POST_COMMENT": "{actor} さんがあなたの投稿「{title}」にコメントしました。",
+      "COMMENT_REPLY": "{actor} さんが「{title}」へのあなたのコメントに返信しました。",
+      "REACTION": "{actor} さんがあなたの投稿「{title}」にいいねしました。",
+      "REACTION_COMMENT": "{actor} さんが「{title}」へのあなたのコメントにいいねしました。"
     }
   },
   "search": {
@@ -4640,7 +4716,20 @@
     "joinToRead": "読むにはメンバーになる",
     "showReplies": "さらに {count} 件の返信を表示",
     "emojiLabel": "絵文字を挿入",
-    "morePosts": "{space} のほかの投稿"
+    "morePosts": "{space} のほかの投稿",
+    "backToSpace": "{name} に戻る",
+    "upvoteAria": "賛成票（スコア {score}）",
+    "downvoteAria": "反対票（スコア {score}）",
+    "commentFieldLabel": "コメントを書く",
+    "replyFieldLabel": "返信を書く",
+    "titleLabel": "タイトル（任意）",
+    "titlePlaceholderExample": "どんな話題ですか？",
+    "draftKept": "閉じても下書きは保持されます。",
+    "discardDraft": "下書きを破棄",
+    "discardDraftTitle": "下書きを破棄しますか？",
+    "discardDraftBody": "タイトルと本文が削除されます。元に戻すことはできません。",
+    "discardDraftConfirm": "破棄",
+    "discardDraftCancel": "書き続ける"
   },
   "discover": {
     "eyebrow": "コミュニティ & クリエイター",
@@ -4677,7 +4766,8 @@
       "myCommunities": "あなたのコミュニティ",
       "create": "コミュニティを作成",
       "account": "あなたのアカウント",
-      "login": "ログイン"
+      "login": "ログイン",
+      "creatorArea": "クリエイターエリア"
     },
     "tabbar": {
       "nav": "Navigation",
@@ -4711,7 +4801,11 @@
         "knowledge": "ナレッジ"
       }
     },
-    "postCount": "{count, plural, other {# 件の投稿}}"
+    "postCount": "{count, plural, other {# 件の投稿}}",
+    "memberFeed": {
+      "title": "参加中のコミュニティの新着",
+      "event": "イベント：{date}"
+    }
   },
   "categories": {
     "podcast": "ポッドキャスト & 番組",
@@ -4855,7 +4949,9 @@
     "backTo": "戻る：",
     "backToLogin": "ログインへ",
     "resetDoneNotice": "パスワードを変更しました。新しいパスワードでログインしてください。",
-    "loginHelp": "ログインのヘルプ"
+    "loginHelp": "ログインのヘルプ",
+    "signupJoinContext": "{name} に参加します",
+    "signupJoinContextTier": "{name} に参加します · {tier}、{price}"
   },
   "pricing": {
     "eyebrow": "料金",
@@ -5199,7 +5295,8 @@
     "creatorPlanCancelHint": "Your plan remains active until the end of the paid period.",
     "creatorPlanCancel": "Cancel plan",
     "creatorPlanCanceling": "Scheduling cancellation…",
-    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then."
+    "creatorPlanEnds": "The plan ends on {date}. Included credits remain available until then.",
+    "checkoutNotStarted": "支払いを開始できませんでした。請求は発生していません。数分後にもう一度お試しください。"
   },
   "ui": {
     "auth": {
@@ -5333,7 +5430,8 @@
         "yourCommunities": "あなたのコミュニティ",
         "create": "作成",
         "memberships": "あなたのメンバーシップ",
-        "login": "ログイン"
+        "login": "ログイン",
+        "creatorArea": "クリエイターエリア"
       },
       "chatHub": {
         "title": "チャット",

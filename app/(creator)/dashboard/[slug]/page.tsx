@@ -115,6 +115,7 @@ export default async function OverviewPage({
             labelKey: "quotaCredits",
             used: Math.max(0, wallet.monthlyCredits - wallet.includedRemaining),
             limit: wallet.monthlyCredits,
+            remaining: true,
           },
         ]}
       />
@@ -153,8 +154,19 @@ export default async function OverviewPage({
                   <li key={m.id} className="flex items-center gap-3 py-3">
                     <Avatar name={m.user.name} src={m.user.avatarUrl} size={36} />
                     <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium text-slate-800">
-                        {m.user.name}
+                      <p className="flex min-w-0 items-center gap-2 text-sm font-medium text-slate-800">
+                        <span className="truncate">{m.user.name}</span>
+                        {m.status !== "ACTIVE" && (
+                          <span
+                            className={`shrink-0 rounded-full px-2 py-0.5 text-[11px] font-semibold ${
+                              m.status === "BANNED"
+                                ? "bg-red-100 text-red-700"
+                                : "bg-amber-100 text-amber-800"
+                            }`}
+                          >
+                            {td(`memberStatus.${m.status}`)}
+                          </span>
+                        )}
                       </p>
                       <p className="text-xs text-slate-500">
                         {m.tier?.name ? `${m.tier.name} · ` : ""}
