@@ -128,7 +128,9 @@ proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
   privilegiert bleiben. Sobald ein Tenant-Kontext gesetzt ist, wechselt Prisma
   in derselben Transaktion mit `SET LOCAL ROLE aera_app` in die eingeschränkte
   Rolle und setzt `aera.tenant_id`. Dadurch greift RLS auch dann tatsächlich,
-  wenn `DATABASE_URL` dem DB-Owner gehört.
+  wenn `DATABASE_URL` dem DB-Owner gehört. Der Tenant-Kontext hängt am
+  Request-Store von Next (`lib/prisma.ts`), nicht an `AsyncLocalStorage.enterWith`
+  — unter Node 24 ging er sonst nach jedem Guard verloren.
 - Globale Audit-Einträge (`tenantId = null`) werden über die eng begrenzte
   Funktion `aera_write_audit` append-only geschrieben; Auditfehler werden
   protokolliert und nicht mehr still verschluckt.
@@ -151,6 +153,13 @@ proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
 
   Vor `admin:grant` muss sich das Konto regulär registriert, die E-Mail
   verifiziert und TOTP in den Kontoeinstellungen vollständig aktiviert haben.
+  Solange noch kein Mailversand (Resend) eingerichtet ist, kann der Betreiber
+  die E-Mail des ersten Admins direkt bestätigen (auditiert):
+
+  ```bash
+  npm run admin:verify-email -- --email admin@aera.so --confirm verify-email:admin@aera.so
+  npm run admin:status -- --email admin@aera.so
+  ```
 - Tenant- und Staff-Rechte gelten nur bei `Tenant.status=ACTIVE` und einer
   `Membership.status=ACTIVE`. `SUSPENDED`/`DELETING` schließen Community,
   Creator-Dashboard und Mobile-Studio, ohne für Billing-Cleanup benötigte Daten
