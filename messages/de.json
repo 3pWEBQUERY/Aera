@@ -201,9 +201,9 @@
         "subtitle": "Beschreibung und Farben prägen den ersten Eindruck."
       },
       "spaces": {
-        "label": "Bereiche",
+        "label": "Spaces",
         "title": "Was soll deine Community haben?",
-        "subtitle": "Wähle die Bereiche aus. Sie werden direkt angelegt und sind sofort verfügbar."
+        "subtitle": "Spaces sind die Bereiche deiner Community – etwa Feed, Forum oder Kurs. Sie werden direkt angelegt und sind sofort verfügbar."
       },
       "access": {
         "label": "Mitgliedschaft",
@@ -221,8 +221,8 @@
     "addressLabel": "Adresse",
     "alsoReachable": "Auch erreichbar unter {url}",
     "slugFallback": "deine-community",
-    "taglineLabel": "Kurzbeschreibung (optional)",
-    "taglinePlaceholder": "Worum geht es in deiner Community?",
+    "taglineLabel": "Slogan (optional)",
+    "taglinePlaceholder": "Ein Satz, der neugierig macht – z. B. „Yoga für jeden Morgen“",
     "descLabel": "Beschreibung",
     "descPlaceholder": "Erzähle in ein paar Sätzen, was Mitglieder erwartet.",
     "primaryColor": "Primärfarbe",
@@ -241,7 +241,7 @@
     "membersDesc": "Inhalte sind erst nach dem Beitritt sichtbar.",
     "summaryCommunity": "Community",
     "summaryLook": "Look",
-    "summarySpaces": "Bereiche ({count})",
+    "summarySpaces": "Spaces ({count})",
     "summaryMembership": "Mitgliedschaft",
     "membersOnlyVisible": "Nur für Mitglieder sichtbar",
     "publicFindable": "Öffentlich auffindbar",
@@ -341,7 +341,9 @@
     "promoLabel": "Promo-Code (optional)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Hast du einen Code von einem Partner oder Creator? Dann startet deine Community direkt im höheren Paket – ohne Zahlungsdaten.",
-    "hexLabel": "Eigener Hex-Code"
+    "hexLabel": "Eigener Hex-Code",
+    "nameRequired": "Gib deiner Community einen Namen (mindestens 2 Zeichen).",
+    "spacesRequired": "Wähle mindestens einen Space aus."
   },
   "seed": {
     "tierDescription": "Kostenloser Zugang zur Community.",
@@ -1116,7 +1118,7 @@
       "standaloneSubtitle": "Banner-Verwaltung · dieser Space ist für Mitglieder unsichtbar.",
       "heading": "Ankündigungs-Banner",
       "headingDesc": "Erscheinen ganz oben auf allen Community-Seiten — mit Farben, Bild, Button und Countdown.",
-      "addBtn": "Ankündigung",
+      "addBtn": "Banner anlegen",
       "onlyToggleLabel": "Nur für Banner verwenden",
       "onlyToggleHint": "Versteckt den Space aus Navigation und Community — die Seite hier zeigt dann nur noch die Banner-Verwaltung.",
       "endsAt": "Endet {date}",
@@ -1245,7 +1247,9 @@
       "trackUploadHint": "Mehrere auf einmal · MP3, M4A, WAV oder OGG",
       "trackTitleAria": "Titel des Stücks",
       "removeTrackAria": "Titel entfernen",
-      "trackUploading": "{count} wird hochgeladen … {percent}%"
+      "trackUploading": "{count} wird hochgeladen … {percent}%",
+      "deleteQuestion": "Beitrag endgültig löschen?",
+      "deleteConfirm": "Endgültig löschen"
     },
     "chat": {
       "badge": "Chat",
@@ -3208,7 +3212,8 @@
       "statPurchases": "Käufe",
       "statRevenue": "Umsatz",
       "recentMembers": "Neueste Mitglieder",
-      "noMembers": "Noch keine Mitglieder. Teile deinen Community-Link, um zu starten."
+      "noMembers": "Noch keine Mitglieder. Teile deinen Community-Link, um zu starten.",
+      "welcomeNew": "Schön, dass du da bist. Diese Schritte bringen {name} an den Start."
     },
     "topbar": {
       "viewCommunity": "Community ansehen"
@@ -3573,10 +3578,10 @@
       "pickerLoading": "Wird geladen…",
       "pickerError": "Medien konnten nicht geladen werden",
       "pickerEmpty": "Keine Bilder gefunden",
-      "upcomingTitle": "Anstehende Pläne",
-      "upcomingViewAll": "Alle Pläne",
-      "upcomingEmpty": "Keine anstehenden Pläne",
-      "upcomingCta": "Ersten Plan anlegen"
+      "upcomingTitle": "Geplante Inhalte",
+      "upcomingViewAll": "Zum Content-Planer",
+      "upcomingEmpty": "Noch nichts geplant",
+      "upcomingCta": "Ersten Inhalt planen"
     },
     "calendar": {
       "subtitle": "Termine & Releases deiner Community an einem Ort.",
@@ -3829,6 +3834,28 @@
       },
       "urlMissing": "Noch keine Adresse",
       "close": "Schließen"
+    },
+    "gettingStarted": {
+      "title": "Erste Schritte",
+      "progress": "{done} von {total} erledigt",
+      "done": "erledigt",
+      "viewCommunity": "Community ansehen",
+      "viewCommunityHint": "so sehen Besucher deine Seite.",
+      "post": {
+        "title": "Ersten Beitrag veröffentlichen",
+        "desc": "Begrüße deine Community – ein paar Sätze reichen.",
+        "cta": "Beitrag schreiben"
+      },
+      "look": {
+        "title": "Titelbild und Logo hinzufügen",
+        "desc": "Damit deine Community-Seite nach dir aussieht.",
+        "cta": "Branding öffnen"
+      },
+      "invite": {
+        "title": "Erste Mitglieder einladen",
+        "desc": "Teile deinen Link oder lade Leute per E-Mail ein.",
+        "cta": "Mitglieder einladen"
+      }
     }
   },
   "common": {
@@ -3989,9 +4016,9 @@
       },
       "home": {
         "untitled": "Ohne Titel",
-        "postsCount": "{count} Posts",
+        "postsCount": "{count, plural, one {# Beitrag} other {# Beiträge}}",
         "membersCount": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
-        "newPosts": "Neue Posts",
+        "newPosts": "Neue Beiträge",
         "noPostsTitle": "Noch keine Beiträge",
         "noPostsHintMember": "Sei die erste Person, die etwas teilt — geh in einen Space.",
         "noPostsHintGuest": "Tritt der Community bei, um Beiträge zu sehen und mitzumachen.",
@@ -4018,7 +4045,9 @@
         "membershipOptions": "Mitgliedschafts-Optionen",
         "errCheckout": "Der Bezahlvorgang konnte nicht gestartet werden. Bitte versuch es erneut.",
         "errPaymentsUnavailable": "Zahlungen sind aktuell nicht verfügbar. Bitte versuch es später erneut.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Deine Community ist startklar. Mit dem ersten Beitrag sehen Besucher, worum es geht.",
+        "writeFirstPost": "Ersten Beitrag schreiben"
       },
       "shop": {
         "heading": "Shop",
@@ -4525,7 +4554,7 @@
       "s2": {
         "title": "Bereiche für alles, was du machst",
         "text": "Richte so viele Bereiche ein, wie du brauchst: einen Feed für Neuigkeiten, ein Forum für Diskussionen, Kurse, einen Shop, Newsletter, Events, einen Blog, einen Wissens-Bereich, Bildergalerien, eine Videothek, Chat, Podcast, eine Link-Sammlung und eigene Werbeflächen. Für jeden Bereich entscheidest du, ob er für alle sichtbar ist, nur für Mitglieder oder nur für zahlende Mitglieder.",
-        "tag1": "14 Bereichs-Typen",
+        "tag1": "14 Space-Typen",
         "tag2": "Sichtbarkeit frei wählbar",
         "tag3": "Beliebig viele Bereiche"
       },
@@ -4797,7 +4826,7 @@
       "c1": {
         "title": "Bereiche für alles, was du machst",
         "text": "Feed, Forum, Blog und Wissens-Bereich, Bildergalerien, Videothek und Podcast, dazu Chat, Link-Sammlung und eigene Werbeflächen. Jeder Bereich kann für alle offen sein, nur für Mitglieder oder nur für zahlende Mitglieder — und in jedem wird kommentiert und reagiert.",
-        "tag1": "14 Bereichs-Typen",
+        "tag1": "14 Space-Typen",
         "tag2": "Sichtbarkeit frei wählbar",
         "tag3": "Beiträge, Kommentare & Reaktionen"
       },

@@ -77,9 +77,9 @@ export function AdsManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{t("badge")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("badge")}</Pill>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               /{space.slug} · {t("meta", { count: ads.length, active: activeCount })}
             </p>
           </div>
@@ -89,7 +89,7 @@ export function AdsManager({
             href={`/c/${slug}`}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("viewCommunity")}
           </Link>
           <button
@@ -150,14 +150,14 @@ export function AdsManager({
                   <div className="flex flex-wrap items-center gap-2">
                     <p className="font-semibold text-slate-900">{a.title}</p>
                     {!a.isPublished ? (
-                      <Pill className="bg-slate-100 text-slate-500">{t("draft")}</Pill>
+                      <Pill className="bg-slate-100 text-slate-600">{t("draft")}</Pill>
                     ) : ended ? (
                       <Pill className="bg-amber-100 text-amber-700">{t("ended")}</Pill>
                     ) : (
                       <Pill className="bg-emerald-100 text-emerald-700">{t("active")}</Pill>
                     )}
                   </div>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-slate-500">
                     {a.mediaType === "VIDEO" ? t("video") : t("image")} · {t("durationInfo", { seconds: a.durationSec })}
                     {a.endsAt && ` · ${t("untilDate", { date: formatDate(a.endsAt, locale) })}`}
                   </p>
@@ -181,7 +181,7 @@ export function AdsManager({
                     <button
                       disabled={i === 0}
                       aria-label={t("moveUp")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                     >
                       <Icon name="chevron" size={15} className="rotate-180" />
                     </button>
@@ -194,7 +194,7 @@ export function AdsManager({
                     <button
                       disabled={i === ads.length - 1}
                       aria-label={t("moveDown")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                     >
                       <Icon name="chevron" size={15} />
                     </button>
@@ -202,7 +202,7 @@ export function AdsManager({
                   <button
                     onClick={() => openEdit(a)}
                     aria-label={t("edit")}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                   >
                     <Icon name="edit" size={15} />
                   </button>
@@ -331,7 +331,7 @@ function AdForm({
                 <button
                   type="button"
                   aria-label={t("recommendedSizeAria")}
-                  className="flex h-5 w-5 items-center justify-center rounded-full text-slate-400 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
+                  className="flex h-5 w-5 items-center justify-center rounded-full text-slate-500 transition hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-400"
                 >
                   <Icon name="info" size={15} />
                 </button>
@@ -376,7 +376,7 @@ function AdForm({
               defaultValue={ad?.targetUrl ?? ""}
               placeholder={t("targetPlaceholder")}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("targetHint")}
             </p>
           </div>
@@ -392,7 +392,7 @@ function AdForm({
                 max={60}
                 defaultValue={ad?.durationSec ?? 8}
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500">
                 {t("durationHint")}
               </p>
             </div>
@@ -404,7 +404,7 @@ function AdForm({
                 type="datetime-local"
                 defaultValue={endsAtLocal}
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500">
                 {t("endsHint")}
               </p>
             </div>
@@ -421,7 +421,7 @@ function AdForm({
               <span className="block text-sm font-semibold text-slate-900">
                 {t("publishedLabel")}
               </span>
-              <span className="block text-xs text-slate-400">
+              <span className="block text-xs text-slate-500">
                 {t("publishedHint")}
               </span>
             </span>

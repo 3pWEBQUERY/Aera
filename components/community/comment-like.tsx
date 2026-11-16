@@ -36,7 +36,7 @@ export function CommentLikeButton({
         aria-label={label}
         className={cn(
           "inline-flex items-center gap-1 text-xs font-semibold transition",
-          liked ? "text-[var(--action-strong)]" : "text-[#161613]/55 hover:text-[#161613]",
+          liked ? "text-[var(--action-strong)]" : "text-[#161613]/65 hover:text-[#161613]",
         )}
       >
         <Icon name="heart" size={13} fill={liked ? "currentColor" : "none"} />

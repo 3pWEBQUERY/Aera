@@ -25,10 +25,14 @@ const sizes: Record<Size, string> = {
   lg: "px-6 py-3 text-base",
 };
 
+// The soft action colour of the primary button is close to a faded,
+// "disabled-looking" button. Disabled therefore never just fades the colour:
+// it turns neutral grey, so enabled and disabled cannot be confused.
 const base =
   "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition " +
   "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] " +
-  "focus-visible:ring-offset-2";
+  "focus-visible:ring-offset-2 " +
+  "disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-100 disabled:text-slate-400 disabled:shadow-none";
 
 interface BaseProps {
   variant?: Variant;

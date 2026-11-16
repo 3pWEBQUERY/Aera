@@ -142,7 +142,7 @@ export default async function JoinPage({
       {!user && (
         <div className="mx-auto w-full max-w-md lg:mx-0 lg:max-w-none">
           <div className="rounded-2xl border border-[#161613]/10 bg-white p-6 sm:p-7">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
               {t("newEyebrow", { name: tenant.name })}
             </p>
             <h2 className="display-serif mt-1.5 text-2xl text-[#161613]">
@@ -168,7 +168,7 @@ export default async function JoinPage({
               </a>
             </p>
           </div>
-          <p className="mt-8 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/40">
+          <p className="mt-8 text-center text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65">
             {t("orChoose")}
           </p>
         </div>
@@ -237,7 +237,7 @@ export default async function JoinPage({
                 )}
               </div>
               {memberCount > 0 && (
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-slate-500">
                   {t("memberCount", { count: memberCount })}
                 </p>
               )}
@@ -328,7 +328,7 @@ export default async function JoinPage({
         </p>
       )}
 
-      <p className="mt-8 text-center text-xs text-slate-400">
+      <p className="mt-8 text-center text-xs text-slate-500">
         {t("footnote")}
       </p>
     </div>

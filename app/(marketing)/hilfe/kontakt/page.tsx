@@ -18,7 +18,7 @@ export default async function ContactPage() {
     <main className="mx-auto w-full max-w-2xl px-5 py-14 sm:py-20">
       <Link
         href="/hilfe"
-        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#161613]/55 transition hover:text-[#161613]"
+        className="inline-flex items-center gap-1.5 text-sm font-medium text-[#161613]/65 transition hover:text-[#161613]"
       >
         <Icon name="chevron" size={15} className="rotate-90" />
         {t("back")}

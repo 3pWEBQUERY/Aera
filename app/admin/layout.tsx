@@ -30,7 +30,7 @@ export default async function AdminLayout({
           </span>
           <div>
             <p className="text-sm font-bold leading-none text-slate-900">{t("brand")}</p>
-            <p className="mt-0.5 text-xs text-slate-400">{t("brandSubtitle")}</p>
+            <p className="mt-0.5 text-xs text-slate-500">{t("brandSubtitle")}</p>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-2">
@@ -46,7 +46,7 @@ export default async function AdminLayout({
               <span className="block truncate text-sm font-medium text-slate-800">
                 {admin.name}
               </span>
-              <span className="block truncate text-xs text-slate-400">
+              <span className="block truncate text-xs text-slate-500">
                 {t("backToDashboard")}
               </span>
             </span>

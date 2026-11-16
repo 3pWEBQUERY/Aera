@@ -215,9 +215,9 @@ export function MediaLibrary({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{nf.format(items.length)}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{nf.format(items.length)}</Pill>
             </div>
-            <p className="text-sm text-slate-400">{t("subtitle")}</p>
+            <p className="text-sm text-slate-500">{t("subtitle")}</p>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -225,7 +225,7 @@ export function MediaLibrary({
             href={`/dashboard/${slug}/media/studio`}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="sparkles" size={17} className="text-slate-400" />
+            <Icon name="sparkles" size={17} className="text-slate-500" />
             {t("openStudio")}
           </Link>
           <button
@@ -233,7 +233,7 @@ export function MediaLibrary({
             onClick={() => setCreateOpen(true)}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="archive" size={17} className="text-slate-400" />
+            <Icon name="archive" size={17} className="text-slate-500" />
             {t("createFolder")}
           </button>
           <button
@@ -292,7 +292,7 @@ export function MediaLibrary({
 
       <div className="mb-5 flex flex-wrap items-center gap-3">
         <div className="flex w-full max-w-md items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+          <Icon name="search" size={17} className="shrink-0 text-slate-500" />
           <input
             type="search"
             value={q}
@@ -397,21 +397,21 @@ export function MediaLibrary({
                     <span className="min-w-0 flex-1 truncate text-sm font-semibold text-slate-900">
                       {name}
                     </span>
-                    <Pill className="bg-slate-100 text-slate-500">
+                    <Pill className="bg-slate-100 text-slate-600">
                       {t("itemCount", { count: panelItems.length })}
                     </Pill>
                     <button
                       type="button"
                       onClick={() => setActive(null)}
                       aria-label={t("closeFolder")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                     >
                       <Icon name="close" size={16} />
                     </button>
                   </div>
                   <div className="bg-slate-50/50 p-4">
                     {panelItems.length === 0 ? (
-                      <p className="py-8 text-center text-sm text-slate-400">
+                      <p className="py-8 text-center text-sm text-slate-500">
                         {isUnfiled ? t("unfiledEmpty") : t("folderEmpty")}
                       </p>
                     ) : (
@@ -579,7 +579,7 @@ function MediaCard({
             <Icon name="play" size={26} />
           </span>
         ) : (
-          <span className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-100 text-slate-500">
+          <span className="flex h-full w-full flex-col items-center justify-center gap-2 bg-slate-100 text-slate-600">
             <Icon name="archive" size={26} />
           </span>
         )}
@@ -645,7 +645,7 @@ function PeekCard({
             <Icon name="play" size={18} />
           </span>
         ) : (
-          <span className="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
+          <span className="flex h-full w-full items-center justify-center bg-slate-100 text-slate-600">
             <Icon name="archive" size={18} />
           </span>
         )
@@ -862,7 +862,7 @@ function FolderMenu({
             }}
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100"
           >
-            <Icon name="settings" size={15} className="text-slate-400" />
+            <Icon name="settings" size={15} className="text-slate-500" />
             {t("folderSettings")}
           </button>
           <button
@@ -956,7 +956,7 @@ function ItemMenu({
             }}
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100"
           >
-            <Icon name="eye" size={15} className="text-slate-400" />
+            <Icon name="eye" size={15} className="text-slate-500" />
             {t("edit")}
           </button>
           <button
@@ -968,7 +968,7 @@ function ItemMenu({
             }}
             className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100"
           >
-            <Icon name="edit" size={15} className="text-slate-400" />
+            <Icon name="edit" size={15} className="text-slate-500" />
             {t("rename")}
           </button>
           {folders.length > 0 && (
@@ -980,13 +980,13 @@ function ItemMenu({
                 className="flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100"
               >
                 <span className="flex items-center gap-2.5">
-                  <Icon name="archive" size={15} className="text-slate-400" />
+                  <Icon name="archive" size={15} className="text-slate-500" />
                   {t("moveToFolder")}
                 </span>
                 <Icon
                   name="chevron"
                   size={14}
-                  className={cn("text-slate-400 transition", moveOpen && "rotate-180")}
+                  className={cn("text-slate-500 transition", moveOpen && "rotate-180")}
                 />
               </button>
               {moveOpen && (
@@ -1276,7 +1276,7 @@ function EditMediaView({
               onClick={onRename}
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              <Icon name="edit" size={15} className="text-slate-400" />
+              <Icon name="edit" size={15} className="text-slate-500" />
               {t("rename")}
             </button>
             <a
@@ -1285,7 +1285,7 @@ function EditMediaView({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              <Icon name="external" size={15} className="text-slate-400" />
+              <Icon name="external" size={15} className="text-slate-500" />
               {t("openInNewTab")}
             </a>
             {isImage(item) && (
@@ -1293,7 +1293,7 @@ function EditMediaView({
                 href={`/dashboard/${slug}/media/studio?image=${item.id}`}
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
               >
-                <Icon name="sparkles" size={15} className="text-slate-400" />
+                <Icon name="sparkles" size={15} className="text-slate-500" />
                 {t("openInStudio")}
               </Link>
             )}
@@ -1339,7 +1339,7 @@ function EditMediaView({
 function InfoRow({ label, value }: { label: string; value: React.ReactNode }) {
   return (
     <div className="flex items-baseline justify-between gap-4 py-1.5">
-      <span className="shrink-0 text-sm text-slate-400">{label}</span>
+      <span className="shrink-0 text-sm text-slate-500">{label}</span>
       <span className="min-w-0 truncate text-right text-sm font-medium text-slate-800">{value}</span>
     </div>
   );

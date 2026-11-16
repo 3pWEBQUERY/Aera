@@ -64,7 +64,7 @@ export function PostCard({
           <Avatar name={post.author.name} src={post.author.avatarUrl} size={36} />
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-[#161613]">{post.author.name}</p>
-            <p className="text-xs text-[#161613]/50">{timeAgo(post.createdAt, locale)}</p>
+            <p className="text-xs text-[#161613]/65">{timeAgo(post.createdAt, locale)}</p>
           </div>
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#161613]/[0.06] px-2.5 py-1.5 text-xs font-semibold text-[#161613]/70">
             <Icon name="lock" size={13} />
@@ -118,7 +118,7 @@ export function PostCard({
         </div>
 
         <div className="mt-5 h-px w-full bg-[#161613]/10" />
-        <div className="px-5 py-3 text-xs text-[#161613]/45">
+        <div className="px-5 py-3 text-xs text-[#161613]/65">
           {t("commentCount", { count: post.comments })}
         </div>
       </article>
@@ -131,7 +131,7 @@ export function PostCard({
         <Avatar name={post.author.name} src={post.author.avatarUrl} size={36} />
         <div>
           <p className="text-sm font-medium text-[#161613]">{post.author.name}</p>
-          <p className="text-xs text-[#161613]/50">{timeAgo(post.createdAt, locale)}</p>
+          <p className="text-xs text-[#161613]/65">{timeAgo(post.createdAt, locale)}</p>
         </div>
       </div>
       {post.title &&

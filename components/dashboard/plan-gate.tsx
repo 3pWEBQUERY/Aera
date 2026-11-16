@@ -188,7 +188,7 @@ export function PlanGate({
             </span>
 
             <div className="mt-4 flex items-center justify-center gap-2">
-              <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-400">
+              <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-slate-500">
                 {t("gateEyebrow")}
               </span>
               <PlanBadge plan={requiredPlan} locked />
@@ -231,7 +231,7 @@ export function PlanGate({
               </button>
             </div>
 
-            <p className="mt-4 text-xs text-slate-400">
+            <p className="mt-4 text-xs text-slate-500">
               {t("gateFootnote", { plan: PLAN_LABEL[currentPlan] })}
             </p>
           </div>

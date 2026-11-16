@@ -111,7 +111,7 @@ function Stats({ d, tone = "ink" }: { d: CommunityHeroData; tone?: "ink" | "ligh
   return (
     <p
       className={`text-[11px] font-semibold uppercase tracking-[0.15em] ${
-        tone === "light" ? "text-white/70" : "text-[#161613]/50"
+        tone === "light" ? "text-white/70" : "text-[#161613]/65"
       }`}
     >
       {d.labels.posts}

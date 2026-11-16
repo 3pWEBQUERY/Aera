@@ -64,7 +64,7 @@ export function CalendarManager({
 
       {own.length === 0 && aggregated.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
             <Icon name="events" size={24} />
           </span>
           <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -80,7 +80,7 @@ export function CalendarManager({
         <div className="space-y-8">
           {own.length > 0 && (
             <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
                 {t("own")}
               </h2>
               <div className="space-y-2">
@@ -97,7 +97,7 @@ export function CalendarManager({
                         {e.location ? ` · ${e.location}` : ""}
                       </span>
                     </span>
-                    <span className="flex shrink-0 items-center gap-2 text-xs text-slate-400">
+                    <span className="flex shrink-0 items-center gap-2 text-xs text-slate-500">
                       {t("rsvps", { count: e.rsvpCount })}
                       <Icon name="chevron" size={14} className="-rotate-90" />
                     </span>
@@ -109,7 +109,7 @@ export function CalendarManager({
 
           {aggregated.length > 0 && (
             <section>
-              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
+              <h2 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-500">
                 {t("auto")}
               </h2>
               <div className="space-y-2">
@@ -126,7 +126,7 @@ export function CalendarManager({
                   </div>
                 ))}
               </div>
-              <p className="mt-2 text-xs text-slate-400">{t("autoHint")}</p>
+              <p className="mt-2 text-xs text-slate-500">{t("autoHint")}</p>
             </section>
           )}
         </div>

@@ -69,7 +69,7 @@ export async function PlannerUpcoming({ slug, tenantId }: { slug: string; tenant
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-slate-800">{p.title}</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       {t(`type.${p.type}`)}
                       {p.scheduledAt ? ` · ${dateFmt.format(p.scheduledAt)}` : ""}
                     </p>

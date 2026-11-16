@@ -43,7 +43,7 @@ export function PollEditor({
         <button
           type="button"
           onClick={onRemove}
-          className="text-xs font-medium text-slate-400 transition hover:text-red-600"
+          className="text-xs font-medium text-slate-500 transition hover:text-red-600"
         >
           {t("pollRemove")}
         </button>
@@ -58,7 +58,7 @@ export function PollEditor({
       <div className="mt-2.5 space-y-2">
         {options.map((opt, i) => (
           <div key={i} className="flex items-center gap-2">
-            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[10px] font-semibold text-slate-400">
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-slate-300 text-[10px] font-semibold text-slate-500">
               {i + 1}
             </span>
             <input
@@ -73,7 +73,7 @@ export function PollEditor({
                 type="button"
                 onClick={() => setOptions(options.filter((_, idx) => idx !== i))}
                 aria-label={t("pollRemove")}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-200 hover:text-slate-700"
               >
                 <Icon name="close" size={14} />
               </button>

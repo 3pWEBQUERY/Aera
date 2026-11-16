@@ -128,7 +128,7 @@ export function SpacesManager({
             </button>
           </div>
           {spaceLimit !== null && (
-            <p className="text-xs font-medium text-slate-400">
+            <p className="text-xs font-medium text-slate-500">
               {tp("limits.spacesUsed", { used: active.length, limit: spaceLimit })}
             </p>
           )}
@@ -164,7 +164,7 @@ export function SpacesManager({
 
       {spaces.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
             <Icon name="spaces" size={24} />
           </span>
           <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -189,7 +189,7 @@ export function SpacesManager({
           />
           {archived.length > 0 && (
             <>
-              <p className="px-1 pb-2 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-400">
+              <p className="px-1 pb-2 pt-6 text-xs font-semibold uppercase tracking-wider text-slate-500">
                 {t("archived")}
               </p>
               <SpaceCollection
@@ -301,19 +301,14 @@ function Card({
   const t = useTranslations("dashboard");
   return (
     <div
+      // Whole card clickable for the mouse; keyboard and screen readers use
+      // the real button on the name — a role="button" container must not
+      // contain the archive button (axe: nested-interactive).
       onClick={onEdit}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onEdit();
-        }
-      }}
       className={cn(
         "group flex h-full cursor-pointer flex-col rounded-2xl border border-slate-200 bg-white p-4 transition",
         "hover:border-slate-300 hover:shadow-[var(--shadow-card)]",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+        "focus-within:ring-2 focus-within:ring-[var(--brand-ring)]",
         space.isArchived && "opacity-60",
       )}
     >
@@ -326,8 +321,17 @@ function Card({
         </Pill>
       </div>
 
-      <p className="mt-3 line-clamp-2 font-semibold leading-snug text-slate-900">{space.name}</p>
-      <p className="mt-0.5 truncate text-sm text-slate-400">/{space.slug}</p>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          onEdit();
+        }}
+        className="mt-3 line-clamp-2 text-left font-semibold leading-snug text-slate-900 focus-visible:outline-none"
+      >
+        {space.name}
+      </button>
+      <p className="mt-0.5 truncate text-sm text-slate-500">/{space.slug}</p>
 
       {/* Die Beschreibung fuellt die Karte mit dem, was den Space
           unterscheidet — zwei Zeilen reichen, danach wird gekuerzt. */}
@@ -348,26 +352,23 @@ function Card({
           ueber alle Karten einer Reihe auf einer Linie. */}
       <div className="mt-auto flex items-center justify-between gap-2 pt-4">
         <div className="flex min-w-0 items-center gap-2">
-          <Pill className="bg-slate-100 text-slate-500">
+          <Pill className="bg-slate-100 text-slate-600">
             {t(`spaceTypes.${space.type}.label`)}
           </Pill>
-          <span className="truncate text-xs text-slate-400">
+          <span className="truncate text-xs text-slate-500">
             {t("spaces.postCount", { count: space.postCount })}
           </span>
         </div>
         <form
           action={toggleSpaceArchiveAction}
           onClick={(e) => e.stopPropagation()}
-          // Sonst oeffnet die Karte beim Absenden per Taste zusaetzlich die
-          // Bearbeitung.
-          onKeyDown={(e) => e.stopPropagation()}
         >
           <input type="hidden" name="tenant" value={slug} />
           <input type="hidden" name="spaceId" value={space.id} />
           <button
             aria-label={space.isArchived ? t("spaces.reactivate") : t("spaces.archive")}
             title={space.isArchived ? t("spaces.reactivate") : t("spaces.archive")}
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100"
           >
             <Icon name="archive" size={16} />
           </button>
@@ -389,18 +390,13 @@ function Row({
   const t = useTranslations("dashboard");
   return (
     <div
+      // Whole card clickable for the mouse; keyboard and screen readers use
+      // the real button on the name — a role="button" container must not
+      // contain the archive button (axe: nested-interactive).
       onClick={onEdit}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          onEdit();
-        }
-      }}
       className={cn(
         "group flex cursor-pointer flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:shadow-sm sm:flex-nowrap sm:gap-4",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+        "focus-within:ring-2 focus-within:ring-[var(--brand-ring)]",
         space.isArchived && "opacity-60",
       )}
     >
@@ -409,8 +405,17 @@ function Row({
       </span>
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
-          <p className="font-semibold text-slate-900">{space.name}</p>
-          <Pill className="bg-slate-100 text-slate-500">{t(`spaceTypes.${space.type}.label`)}</Pill>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit();
+            }}
+            className="text-left font-semibold text-slate-900 focus-visible:outline-none"
+          >
+            {space.name}
+          </button>
+          <Pill className="bg-slate-100 text-slate-600">{t(`spaceTypes.${space.type}.label`)}</Pill>
           <Pill className={visCls[space.visibility] ?? visCls.MEMBERS}>{t(`visibility.${space.visibility}.label`)}</Pill>
           {space.requiredEntitlementKey && (
             <span className="inline-flex max-w-full items-center gap-1 truncate rounded-full bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">
@@ -419,7 +424,7 @@ function Row({
             </span>
           )}
         </div>
-        <p className="mt-0.5 text-sm text-slate-400">
+        <p className="mt-0.5 text-sm text-slate-500">
           /{space.slug} · {t("spaces.postCount", { count: space.postCount })}
         </p>
       </div>
@@ -542,7 +547,7 @@ function SpaceForm({
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-slate-900">{t(`visibility.${v.value}.label`)}</span>
-                      <span className="block text-xs text-slate-400">{t(`visibility.${v.value}.desc`)}</span>
+                      <span className="block text-xs text-slate-500">{t(`visibility.${v.value}.desc`)}</span>
                     </span>
                   </button>
                 );
@@ -559,7 +564,7 @@ function SpaceForm({
                 defaultValue={space?.requiredEntitlementKey ?? ""}
                 placeholder="tier:premium"
               />
-              <p className="mt-1 text-xs text-slate-400">{t("spaces.entitlementHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("spaces.entitlementHint")}</p>
             </div>
           )}
 

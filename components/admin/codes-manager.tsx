@@ -40,7 +40,7 @@ const STATUS_TONE: Record<PromoCodeRow["status"], string> = {
   ACTIVE: "bg-emerald-50 text-emerald-700 ring-emerald-200",
   PAUSED: "bg-slate-100 text-slate-600 ring-slate-200",
   EXPIRED: "bg-amber-50 text-amber-700 ring-amber-200",
-  USED_UP: "bg-slate-100 text-slate-500 ring-slate-200",
+  USED_UP: "bg-slate-100 text-slate-600 ring-slate-200",
 };
 
 const initial: AdminState = {};
@@ -127,7 +127,7 @@ export function PromoCodesManager({
               <Icon name={s.icon} size={17} />
             </span>
             <p className="mt-3 text-2xl font-bold leading-none text-slate-900">{s.value}</p>
-            <p className="mt-1 text-xs font-medium text-slate-400">{t(s.key)}</p>
+            <p className="mt-1 text-xs font-medium text-slate-500">{t(s.key)}</p>
           </div>
         ))}
       </div>
@@ -136,7 +136,7 @@ export function PromoCodesManager({
       <div className="mt-6 rounded-2xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 px-5 py-4">
           <h2 className="text-sm font-bold text-slate-900">{t("createTitle")}</h2>
-          <p className="mt-0.5 text-xs text-slate-400">{t("createSubtitle")}</p>
+          <p className="mt-0.5 text-xs text-slate-500">{t("createSubtitle")}</p>
         </div>
 
         <form action={action} className="space-y-5 p-5">
@@ -163,7 +163,7 @@ export function PromoCodesManager({
                     )}
                   >
                     <PlanBadge plan={p} />
-                    <span className="text-xs text-slate-400">{t(`planHint.${p}`)}</span>
+                    <span className="text-xs text-slate-500">{t(`planHint.${p}`)}</span>
                   </button>
                 );
               })}
@@ -181,7 +181,7 @@ export function PromoCodesManager({
                 max={50}
                 defaultValue={1}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("quantityHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("quantityHint")}</p>
             </div>
             <div>
               <Label htmlFor={formIds.prefix}>{t("prefixLabel")}</Label>
@@ -192,7 +192,7 @@ export function PromoCodesManager({
                 placeholder={t("prefixPlaceholder")}
                 className="uppercase"
               />
-              <p className="mt-1 text-xs text-slate-400">{t("prefixHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("prefixHint")}</p>
             </div>
             <div>
               <Label htmlFor={formIds.label}>{t("labelLabel")}</Label>
@@ -202,7 +202,7 @@ export function PromoCodesManager({
                 maxLength={120}
                 placeholder={t("labelPlaceholder")}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("labelHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("labelHint")}</p>
             </div>
             <div>
               <Label htmlFor={formIds.duration}>{t("durationLabel")}</Label>
@@ -214,7 +214,7 @@ export function PromoCodesManager({
                 max={3650}
                 defaultValue={0}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("durationHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("durationHint")}</p>
             </div>
             <div>
               <Label htmlFor={formIds.max}>{t("maxLabel")}</Label>
@@ -226,12 +226,12 @@ export function PromoCodesManager({
                 max={100000}
                 defaultValue={1}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("maxHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("maxHint")}</p>
             </div>
             <div>
               <Label htmlFor={formIds.expires}>{t("expiresLabel")}</Label>
               <Input id={formIds.expires} name="expiresAt" type="date" />
-              <p className="mt-1 text-xs text-slate-400">{t("expiresHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("expiresHint")}</p>
             </div>
           </div>
 
@@ -308,7 +308,7 @@ export function PromoCodesManager({
       <div className="mt-4 space-y-2.5">
         {visible.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-14 text-center">
-            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+            <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
               <Icon name="sparkles" size={22} />
             </span>
             <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -377,7 +377,7 @@ export function PromoCodesManager({
                 </div>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate-400">
+              <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1.5 text-xs text-slate-500">
                 <span className="inline-flex items-center gap-1.5">
                   <Icon name="members" size={13} />
                   {t("usage", { used: c.redemptionCount, max: c.maxRedemptions })}
@@ -416,7 +416,7 @@ export function PromoCodesManager({
 
               {c.recentRedemptions.length > 0 && (
                 <div className="mt-3 flex flex-wrap gap-1.5 border-t border-slate-100 pt-3">
-                  <span className="text-xs font-medium text-slate-400">
+                  <span className="text-xs font-medium text-slate-500">
                     {t("redeemedBy")}
                   </span>
                   {c.recentRedemptions.map((r) => (
@@ -434,7 +434,7 @@ export function PromoCodesManager({
         )}
       </div>
 
-      <p className="mt-6 text-xs leading-5 text-slate-400">
+      <p className="mt-6 text-xs leading-5 text-slate-500">
         {t("footnote", { plans: PLAN_ORDER_LABEL })}
       </p>
     </div>

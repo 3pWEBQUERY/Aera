@@ -74,9 +74,9 @@ export function KnowledgeManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{t("badge")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("badge")}</Pill>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               /{space.slug} · {t("articleCount", { count: articles.length })}
             </p>
           </div>
@@ -86,14 +86,14 @@ export function KnowledgeManager({
             href={`/c/${slug}/s/${space.slug}`}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("view")}
           </Link>
           <button
             onClick={() => setSettingsOpen(true)}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="settings" size={16} className="text-slate-400" />
+            <Icon name="settings" size={16} className="text-slate-500" />
             {t("settings")}
           </button>
           <button
@@ -108,7 +108,7 @@ export function KnowledgeManager({
 
       {/* Active display config, so the creator sees what visitors get. */}
       <div className="mb-6 flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5">
-        <span className="mr-1 text-xs font-medium text-slate-400">{t("displayLabel")}</span>
+        <span className="mr-1 text-xs font-medium text-slate-500">{t("displayLabel")}</span>
         {summary.map((s) => (
           <Pill key={s} className="bg-white text-slate-600 ring-1 ring-slate-200">
             {s}
@@ -124,7 +124,7 @@ export function KnowledgeManager({
 
       {articles.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
             <Icon name="knowledge" size={24} />
           </div>
           <p className="mt-3 font-medium text-slate-700">{t("emptyTitle")}</p>
@@ -143,7 +143,7 @@ export function KnowledgeManager({
               <div className="flex items-start justify-between gap-3">
                 <button onClick={() => setEditing(a)} className="min-w-0 flex-1 text-left">
                   <p className="font-semibold text-slate-900">{a.title}</p>
-                  <p className="text-xs text-slate-400">{formatDate(a.createdAt, locale)}</p>
+                  <p className="text-xs text-slate-500">{formatDate(a.createdAt, locale)}</p>
                   {a.body && <p className="mt-2 text-sm text-slate-500">{excerpt(a.body, 200)}</p>}
                 </button>
                 <div className="flex shrink-0 items-center gap-1">

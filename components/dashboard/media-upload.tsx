@@ -142,7 +142,7 @@ export function MediaUpload({
           onClick={() => fileRef.current?.click()}
           className="relative flex aspect-[16/9] w-full items-center justify-center overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-50 transition hover:border-violet-400 hover:bg-violet-50/40"
         >
-          <span className="flex flex-col items-center gap-1.5 text-slate-400">
+          <span className="flex flex-col items-center gap-1.5 text-slate-500">
             <Icon name="gallery" size={26} />
             <span className="text-sm font-medium">{tm("mediaUpload")}</span>
             <span className="text-xs">{tm("mediaHint")}</span>
@@ -189,7 +189,7 @@ export function MediaUpload({
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="flex aspect-square items-center justify-center rounded-xl border border-dashed border-slate-300 text-slate-400 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-600"
+              className="flex aspect-square items-center justify-center rounded-xl border border-dashed border-slate-300 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-600"
             >
               <Icon name="plus" size={18} />
             </button>
@@ -212,10 +212,10 @@ export function MediaUpload({
           </button>
         )}
         {images.length > 1 && (
-          <span className="text-xs text-slate-400">{tm("mediaOrderHint")}</span>
+          <span className="text-xs text-slate-500">{tm("mediaOrderHint")}</span>
         )}
         {images.length > 0 && (
-          <span className="ml-auto text-xs tabular-nums text-slate-400">
+          <span className="ml-auto text-xs tabular-nums text-slate-500">
             {images.length}/{MAX_IMAGES}
           </span>
         )}

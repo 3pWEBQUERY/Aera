@@ -68,7 +68,7 @@ export function TipsSheet({
             <div className="mb-6 rounded-2xl border border-[#161613]/10 bg-white p-5">
               <div className="flex items-center justify-between text-sm">
                 <span className="font-semibold text-[#161613]">{raised}</span>
-                <span className="text-[#161613]/50">{t("goal", { goal })}</span>
+                <span className="text-[#161613]/65">{t("goal", { goal })}</span>
               </div>
               <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
                 <div
@@ -109,7 +109,7 @@ export function TipsSheet({
                     <p className="text-sm">
                       <span className="font-semibold text-[#161613]">{tp.name}</span>{" "}
                       <span className="text-[color:var(--brand)]">{tp.amount}</span>{" "}
-                      <span className="text-xs font-normal text-[#161613]/45">· {tp.time}</span>
+                      <span className="text-xs font-normal text-[#161613]/65">· {tp.time}</span>
                     </p>
                     {tp.message && (
                       <p className="mt-0.5 text-sm text-[#161613]/70">{tp.message}</p>

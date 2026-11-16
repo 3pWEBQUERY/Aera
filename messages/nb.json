@@ -196,7 +196,7 @@
     "addressLabel": "Adresse",
     "alsoReachable": "Også tilgjengelig på {url}",
     "slugFallback": "ditt-fellesskap",
-    "taglineLabel": "Kort beskrivelse (valgfritt)",
+    "taglineLabel": "Slagord (valgfritt)",
     "taglinePlaceholder": "Hva handler fellesskapet ditt om?",
     "descLabel": "Beskrivelse",
     "descPlaceholder": "Beskriv med et par setninger hva medlemmer kan forvente.",
@@ -316,7 +316,9 @@
     "promoLabel": "Promo-kode (valgfritt)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Har du en kode fra en partner eller creator? Da starter communityen din rett på den høyere pakken — uten behov for betalingsinformasjon.",
-    "hexLabel": "Egen hex-kode"
+    "hexLabel": "Egen hex-kode",
+    "nameRequired": "Gi communityet ditt et navn (minst 2 tegn).",
+    "spacesRequired": "Velg minst ett område."
   },
   "seed": {
     "tierDescription": "Gratis tilgang til fellesskapet.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Flere om gangen · MP3, M4A, WAV eller OGG",
       "trackTitleAria": "Sporets tittel",
       "removeTrackAria": "Fjern spor",
-      "trackUploading": "Laster opp {count} … {percent}%"
+      "trackUploading": "Laster opp {count} … {percent}%",
+      "deleteQuestion": "Slette innlegget for godt?",
+      "deleteConfirm": "Slett innlegg"
     },
     "chat": {
       "badge": "Chat",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Kjøp",
       "statRevenue": "Inntekt",
       "recentMembers": "Nyeste medlemmer",
-      "noMembers": "Ingen medlemmer ennå. Del fellesskapslenken din for å komme i gang."
+      "noMembers": "Ingen medlemmer ennå. Del fellesskapslenken din for å komme i gang.",
+      "welcomeNew": "Fint at du er her. Disse stegene får {name} i gang."
     },
     "topbar": {
       "viewCommunity": "Se fellesskap"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Ingen adresse ennå",
       "close": "Lukk"
+    },
+    "gettingStarted": {
+      "title": "Kom i gang",
+      "progress": "{done} av {total} fullført",
+      "done": "fullført",
+      "viewCommunity": "Se community",
+      "viewCommunityHint": "slik ser besøkende siden din.",
+      "post": {
+        "title": "Publiser ditt første innlegg",
+        "desc": "Ønsk communityet velkommen – noen setninger holder.",
+        "cta": "Skriv et innlegg"
+      },
+      "look": {
+        "title": "Legg til forsidebilde og logo",
+        "desc": "Så community-siden ser ut som deg.",
+        "cta": "Åpne profil"
+      },
+      "invite": {
+        "title": "Inviter de første medlemmene",
+        "desc": "Del lenken din eller inviter via e-post.",
+        "cta": "Inviter medlemmer"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Medlemskapsalternativer",
         "errCheckout": "Betalingen kunne ikke startes. Prøv igjen.",
         "errPaymentsUnavailable": "Betalinger er utilgjengelige for øyeblikket. Prøv igjen senere.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Communityet ditt er klart. Det første innlegget viser besøkende hva det handler om.",
+        "writeFirstPost": "Skriv ditt første innlegg"
       },
       "shop": {
         "heading": "Butikk",

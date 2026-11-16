@@ -88,7 +88,7 @@ export default async function ReferralsPage({
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardBody>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
               {t("statReferred")}
             </p>
             <p className="mt-1 text-2xl font-bold text-slate-900">
@@ -98,7 +98,7 @@ export default async function ReferralsPage({
         </Card>
         <Card>
           <CardBody>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
               {t("statPurchases")}
             </p>
             <p className="mt-1 text-2xl font-bold text-slate-900">
@@ -108,13 +108,13 @@ export default async function ReferralsPage({
         </Card>
         <Card>
           <CardBody>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
               {t("statCommission")}
             </p>
             <p className="mt-1 text-2xl font-bold text-slate-900">
               {eur.format(totalCommission / 100)}
             </p>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("commissionNote")}
             </p>
           </CardBody>
@@ -201,7 +201,7 @@ export default async function ReferralsPage({
                         </span>
                       </span>
                     )}
-                    <span className="w-20 text-right text-xs text-slate-400">
+                    <span className="w-20 text-right text-xs text-slate-500">
                       {dateFmt.format(c.createdAt)}
                     </span>
                   </li>

@@ -77,7 +77,7 @@ export function MySubscription({
 
           <dl className="mt-5 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4 text-sm">
             <div>
-              <dt className="text-xs text-slate-400">{t("price")}</dt>
+              <dt className="text-xs text-slate-500">{t("price")}</dt>
               <dd className="mt-0.5 font-semibold text-slate-900">
                 {isPaid
                   ? `${formatPrice(data.priceCents, data.currency, locale)} ${intervalSuffix}`
@@ -85,14 +85,14 @@ export function MySubscription({
               </dd>
             </div>
             <div>
-              <dt className="text-xs text-slate-400">{t("memberSince")}</dt>
+              <dt className="text-xs text-slate-500">{t("memberSince")}</dt>
               <dd className="mt-0.5 font-semibold text-slate-900">
                 {formatDate(data.memberSince, locale)}
               </dd>
             </div>
             {isPaid && data.currentPeriodEnd && (
               <div>
-                <dt className="text-xs text-slate-400">
+                <dt className="text-xs text-slate-500">
                   {cancelled ? t("accessUntil") : t("nextRenewal")}
                 </dt>
                 <dd className="mt-0.5 font-semibold text-slate-900">
@@ -101,7 +101,7 @@ export function MySubscription({
               </div>
             )}
             <div>
-              <dt className="text-xs text-slate-400">{t("role")}</dt>
+              <dt className="text-xs text-slate-500">{t("role")}</dt>
               <dd className="mt-0.5 font-semibold text-slate-900">
                 {tRoles(data.role)}
               </dd>
@@ -122,7 +122,7 @@ export function MySubscription({
             className="inline-flex shrink-0 items-center justify-center gap-2 self-start rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:self-auto"
           >
             {t("viewPlans")}
-            <Icon name="external" size={15} className="text-slate-400" />
+            <Icon name="external" size={15} className="text-slate-500" />
           </Link>
         </section>
 

@@ -116,7 +116,7 @@ export function ForumThread({
           {!settings?.hideMetaInfo && (
             <div className="flex items-center gap-2.5">
               <Avatar name={post.authorName} src={post.authorAvatar} size={38} />
-              <p className="text-xs text-[#161613]/50">
+              <p className="text-xs text-[#161613]/65">
                 <span className="font-semibold text-[#161613]/80">{post.authorName}</span> · {timeAgo(post.createdAt, locale)}
               </p>
             </div>
@@ -161,7 +161,7 @@ export function ForumThread({
         <>
           <div className="rounded-2xl border border-[#161613]/10 bg-white p-4">
             {settings?.closeComments ? (
-              <p className="inline-flex items-center gap-1.5 text-sm text-[#161613]/55">
+              <p className="inline-flex items-center gap-1.5 text-sm text-[#161613]/65">
                 <Icon name="lock" size={15} /> {t("commentsClosed")}
               </p>
             ) : isMember ? (
@@ -178,7 +178,7 @@ export function ForumThread({
 
           <div className="space-y-3">
             {tree.length === 0 ? (
-              <p className="py-6 text-center text-sm text-[#161613]/50">{t("noComments")}</p>
+              <p className="py-6 text-center text-sm text-[#161613]/65">{t("noComments")}</p>
             ) : (
               tree.map((node) => (
                 // Geschlossene Kommentare: auch keine Antworten mehr anbieten.
@@ -215,7 +215,7 @@ function CommentNode({
       <div className="flex gap-2.5">
         <Avatar name={node.authorName} src={node.authorAvatar} size={30} />
         <div className="min-w-0 flex-1">
-          <p className="text-xs text-[#161613]/50">
+          <p className="text-xs text-[#161613]/65">
             <span className="font-semibold text-[#161613]/80">{node.authorName}</span> · {timeAgo(node.createdAt, locale)}
           </p>
           <p className="mt-0.5 whitespace-pre-wrap text-sm text-[#161613]/80">{node.body}</p>

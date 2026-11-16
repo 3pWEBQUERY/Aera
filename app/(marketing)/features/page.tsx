@@ -29,7 +29,7 @@ export default async function FeaturesPage() {
             <h1 className="display-serif mt-5 text-5xl leading-[1.04] sm:text-6xl md:text-7xl">
               {t("titleA")}
               <br />
-              <span className="text-[#161613]/50">{t("titleB")}</span>
+              <span className="text-[#161613]/65">{t("titleB")}</span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
@@ -44,7 +44,7 @@ export default async function FeaturesPage() {
           {SECTION_IDS.map((id, i) => (
             <Reveal key={id} delay={i * 50}>
               <article className="grid gap-5 border-t border-[#161613]/15 py-10 md:grid-cols-[80px_1.1fr_1fr] md:gap-10 md:py-12">
-                <p className="display-serif text-2xl text-[#161613]/40 md:text-3xl">
+                <p className="display-serif text-2xl text-[#161613]/65 md:text-3xl">
                   {String(i + 1).padStart(2, "0")}
                 </p>
                 <h2 className="display-serif text-3xl leading-[1.12] sm:text-4xl">

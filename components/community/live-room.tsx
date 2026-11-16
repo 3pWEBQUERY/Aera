@@ -510,13 +510,13 @@ export function LiveRoom({
         </div>
         <div ref={listRef} className="min-h-0 flex-1 space-y-3 overflow-y-auto px-4 py-3">
           {messages.length === 0 ? (
-            <p className="text-sm text-[#161613]/50">{t("chatEmpty")}</p>
+            <p className="text-sm text-[#161613]/65">{t("chatEmpty")}</p>
           ) : (
             messages.map((m) => (
               <div key={m.id} className="flex gap-2.5">
                 <Avatar name={m.user.name} src={m.user.avatarUrl} size={28} />
                 <div className="min-w-0">
-                  <p className="text-xs text-[#161613]/50">
+                  <p className="text-xs text-[#161613]/65">
                     <span className="font-medium text-[#161613]/80">{m.user.name}</span> · {timeAgo(new Date(m.createdAt), locale)}
                   </p>
                   <p className="whitespace-pre-wrap break-words text-sm text-[#161613]/85">{m.body}</p>

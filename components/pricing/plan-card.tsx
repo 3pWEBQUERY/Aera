@@ -93,7 +93,7 @@ export function PlanCard({
             <span className={cn("font-bold tracking-tight text-slate-900", compact ? "text-2xl sm:text-4xl" : "text-4xl")}>
               {formatPrice(priceCents, PLATFORM_CURRENCY, labels.locale)}
             </span>
-            <span className={cn("font-medium text-slate-400", compact ? "text-[10px] sm:text-sm" : "text-sm")}>{labels.perMonth}</span>
+            <span className={cn("font-medium text-slate-500", compact ? "text-[10px] sm:text-sm" : "text-sm")}>{labels.perMonth}</span>
           </>
         ) : (
           <span className={cn("font-bold tracking-tight text-slate-900", compact ? "text-2xl sm:text-4xl" : "text-4xl")}>{labels.free}</span>

@@ -106,18 +106,18 @@ export function PushSettings({ vapidPublicKey }: { vapidPublicKey: string }) {
   }
 
   if (state === "loading") {
-    return <p className="text-sm text-[#161613]/50">{t("pushChecking")}</p>;
+    return <p className="text-sm text-[#161613]/65">{t("pushChecking")}</p>;
   }
   if (state === "unsupported") {
     return (
-      <p className="text-sm text-[#161613]/50">
+      <p className="text-sm text-[#161613]/65">
         {t("pushUnsupported")}
       </p>
     );
   }
   if (state === "denied") {
     return (
-      <p className="text-sm text-[#161613]/50">
+      <p className="text-sm text-[#161613]/65">
         {t("pushDenied")}
       </p>
     );

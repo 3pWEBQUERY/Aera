@@ -190,7 +190,7 @@ function Media({
 
 function Meta({ post, locale }: { post: PostTileData; locale: string }) {
   return (
-    <p className="mt-1.5 flex items-center gap-2.5 text-xs text-[#161613]/50">
+    <p className="mt-1.5 flex items-center gap-2.5 text-xs text-[#161613]/65">
       <span>{timeAgo(post.createdAt, locale)}</span>
       {post.likes > 0 && (
         <span className="inline-flex items-center gap-1">

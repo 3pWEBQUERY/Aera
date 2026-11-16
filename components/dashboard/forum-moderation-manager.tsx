@@ -165,14 +165,14 @@ export function ForumModerationManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{t("badge")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("badge")}</Pill>
             </div>
-            <p className="text-sm text-slate-400">{t("subtitle")}</p>
+            <p className="text-sm text-slate-500">{t("subtitle")}</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/c/${slug}/s/${space.slug}`} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("viewForum")}
           </Link>
           <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
@@ -185,7 +185,7 @@ export function ForumModerationManager({
       <div className="mb-6 grid grid-cols-3 gap-4">
         {stats.map((s) => (
           <div key={s.label} className="rounded-xl border border-slate-200 bg-white p-4">
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{s.label}</p>
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{s.label}</p>
             <p className="mt-1 text-2xl font-bold text-slate-900">{s.value}</p>
           </div>
         ))}
@@ -194,7 +194,7 @@ export function ForumModerationManager({
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
           <h2 className="text-sm font-semibold text-slate-900">{t("topics")}</h2>
-          <span className="text-xs text-slate-400">{t("totalCount", { count: threads.length })}</span>
+          <span className="text-xs text-slate-500">{t("totalCount", { count: threads.length })}</span>
         </div>
         {threads.length === 0 ? (
           <p className="px-5 py-12 text-center text-sm text-slate-500">{t("emptyTopics")}</p>
@@ -221,7 +221,7 @@ export function ForumModerationManager({
                 onClick={() => setSettingsOpen(true)}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
               >
-                <Icon name="settings" size={16} className="text-slate-400" />
+                <Icon name="settings" size={16} className="text-slate-500" />
                 <span className="hidden sm:inline">{t("settings")}</span>
               </button>
               <button
@@ -230,7 +230,7 @@ export function ForumModerationManager({
                 disabled={coverBusy}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900 disabled:opacity-50"
               >
-                <Icon name="gallery" size={16} className="text-slate-400" />
+                <Icon name="gallery" size={16} className="text-slate-500" />
                 <span className="hidden sm:inline">{coverBusy ? t("coverUploading") : t("addCover")}</span>
               </button>
             </>
@@ -303,7 +303,7 @@ function ThreadRow({
             </Link>
             {thread.isPinned && <Pill className="bg-amber-100 text-amber-700">{t("pinned")}</Pill>}
           </div>
-          <p className="mt-0.5 text-xs text-slate-400">
+          <p className="mt-0.5 text-xs text-slate-500">
             {t.rich("threadBy", {
               author: thread.authorName,
               date: formatDate(thread.createdAt, locale),
@@ -315,11 +315,11 @@ function ThreadRow({
           )}
           <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
             <span className="inline-flex items-center gap-1.5">
-              <Icon name="gamification" size={13} className="text-slate-400" />
+              <Icon name="gamification" size={13} className="text-slate-500" />
               {t("votes", { count: thread.score })}
             </span>
             <button onClick={() => setShowComments((v) => !v)} className="inline-flex items-center gap-1.5 font-medium text-slate-500 hover:text-slate-800">
-              <Icon name="forum" size={13} className="text-slate-400" />
+              <Icon name="forum" size={13} className="text-slate-500" />
               {t("commentCount", { count: thread.commentCount })}
               <Icon name="chevron" size={12} className={`transition-transform ${showComments ? "rotate-180" : ""}`} />
             </button>
@@ -328,7 +328,7 @@ function ThreadRow({
 
         <div className="flex shrink-0 items-center gap-1">
           <button onClick={onEdit} className="flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs font-medium text-slate-600 transition hover:bg-slate-100" title={t("edit")}>
-            <Icon name="settings" size={14} className="text-slate-400" />
+            <Icon name="settings" size={14} className="text-slate-500" />
             {t("edit")}
           </button>
           <form action={togglePinPostAction}>
@@ -355,7 +355,7 @@ function ThreadRow({
       {showComments && (
         <div className="mt-3 space-y-2 rounded-xl bg-slate-50 p-3">
           {thread.comments.length === 0 ? (
-            <p className="text-xs text-slate-400">{t("noComments")}</p>
+            <p className="text-xs text-slate-500">{t("noComments")}</p>
           ) : (
             thread.comments.map((c) => (
               <CommentItem key={c.id} slug={slug} space={space} comment={c} />
@@ -395,7 +395,7 @@ function CommentItem({ slug, space, comment }: { slug: string; space: SpaceInfo;
       ) : (
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-500">
               {t.rich("commentBy", {
                 author: comment.authorName,
                 date: formatDate(comment.createdAt, locale),
@@ -539,7 +539,7 @@ function ThreadForm({
 
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-slate-200 bg-white px-5 py-3.5 sm:px-6">
         <p className="inline-flex min-w-0 items-center gap-1.5 text-xs text-slate-500">
-          <Icon name="forum" size={14} className="shrink-0 text-slate-400" />
+          <Icon name="forum" size={14} className="shrink-0 text-slate-500" />
           <span className="truncate">{t("postingIn", { space: space.name })}</span>
         </p>
         <div className="flex shrink-0 items-center gap-2.5">
@@ -656,7 +656,7 @@ function SettingsPanel({
           <SettingsSection title={t("secPublishing")}>
             <SettingsRow label={t("customSlug")}>
               <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 focus-within:border-violet-500 focus-within:ring-2 focus-within:ring-violet-200">
-                <span className="whitespace-nowrap bg-slate-50 px-2.5 py-2 text-xs text-slate-400">
+                <span className="whitespace-nowrap bg-slate-50 px-2.5 py-2 text-xs text-slate-500">
                   /c/{slug}/…/{spaceSlug}/
                 </span>
                 <input
@@ -700,7 +700,7 @@ function SettingsPanel({
                 placeholder="<!-- Insert your code here -->"
                 className="w-full rounded-lg border border-slate-300 px-3 py-2 font-mono text-xs text-slate-800 outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200"
               />
-              <p className="mt-1.5 text-xs text-slate-400">{t("customHtmlHint")}</p>
+              <p className="mt-1.5 text-xs text-slate-500">{t("customHtmlHint")}</p>
             </div>
           </SettingsSection>
         </div>
@@ -796,9 +796,9 @@ function CoverCropModal({
               ))}
             </div>
           </div>
-          <p className="mt-2 text-center text-xs text-slate-400">{t("coverHint")}</p>
+          <p className="mt-2 text-center text-xs text-slate-500">{t("coverHint")}</p>
           <div className="mt-4 flex items-center gap-3">
-            <Icon name="gallery" size={15} className="shrink-0 text-slate-400" />
+            <Icon name="gallery" size={15} className="shrink-0 text-slate-500" />
             <input
               type="range"
               min={100}

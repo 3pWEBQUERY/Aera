@@ -196,7 +196,7 @@
     "addressLabel": "Adresse",
     "alsoReachable": "Également accessible sur {url}",
     "slugFallback": "votre-communaute",
-    "taglineLabel": "Brève description (facultatif)",
+    "taglineLabel": "Slogan (facultatif)",
     "taglinePlaceholder": "De quoi parle votre communauté ?",
     "descLabel": "Description",
     "descPlaceholder": "Décrivez en quelques phrases ce qui attend les membres.",
@@ -316,7 +316,9 @@
     "promoLabel": "Code promo (facultatif)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Tu as un code d'un partenaire ou d'un créateur ? Ta communauté démarre alors directement dans le forfait supérieur — sans coordonnées de paiement.",
-    "hexLabel": "Code hexadécimal personnalisé"
+    "hexLabel": "Code hexadécimal personnalisé",
+    "nameRequired": "Donne un nom à ta communauté (au moins 2 caractères).",
+    "spacesRequired": "Choisis au moins un espace."
   },
   "seed": {
     "tierDescription": "Accès gratuit à la communauté.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Plusieurs à la fois · MP3, M4A, WAV ou OGG",
       "trackTitleAria": "Titre du morceau",
       "removeTrackAria": "Retirer le morceau",
-      "trackUploading": "Envoi de {count} … {percent}%"
+      "trackUploading": "Envoi de {count} … {percent}%",
+      "deleteQuestion": "Supprimer définitivement cette publication ?",
+      "deleteConfirm": "Supprimer"
     },
     "chat": {
       "badge": "Chat",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Achats",
       "statRevenue": "Revenus",
       "recentMembers": "Membres les plus récents",
-      "noMembers": "Aucun membre pour l'instant. Partagez le lien de votre communauté pour commencer."
+      "noMembers": "Aucun membre pour l'instant. Partagez le lien de votre communauté pour commencer.",
+      "welcomeNew": "Ravi de t’accueillir. Ces étapes lancent {name}."
     },
     "topbar": {
       "viewCommunity": "Voir la communauté"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Pas encore d’adresse",
       "close": "Fermer"
+    },
+    "gettingStarted": {
+      "title": "Premiers pas",
+      "progress": "{done} sur {total} terminés",
+      "done": "terminé",
+      "viewCommunity": "Voir la communauté",
+      "viewCommunityHint": "voici ce que voient tes visiteurs.",
+      "post": {
+        "title": "Publie ta première publication",
+        "desc": "Souhaite la bienvenue à ta communauté – quelques phrases suffisent.",
+        "cta": "Écrire une publication"
+      },
+      "look": {
+        "title": "Ajoute une image de couverture et un logo",
+        "desc": "Pour que la page de ta communauté te ressemble.",
+        "cta": "Ouvrir l’image de marque"
+      },
+      "invite": {
+        "title": "Invite tes premiers membres",
+        "desc": "Partage ton lien ou invite par e-mail.",
+        "cta": "Inviter des membres"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Options d’abonnement",
         "errCheckout": "Le paiement n’a pas pu démarrer. Veuillez réessayer.",
         "errPaymentsUnavailable": "Les paiements sont actuellement indisponibles. Veuillez réessayer plus tard.",
-        "liveHeading": "En direct"
+        "liveHeading": "En direct",
+        "noPostsHintStaff": "Ta communauté est prête. Ta première publication montre aux visiteurs de quoi il s’agit.",
+        "writeFirstPost": "Écris ta première publication"
       },
       "shop": {
         "heading": "Boutique",

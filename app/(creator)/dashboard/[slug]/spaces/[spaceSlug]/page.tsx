@@ -687,21 +687,25 @@ export default async function SpaceContentPage({
 
   return (
     <div>
-      {/* Announcement banners are managed from FEED spaces ("Ankündigungen"). */}
-      {space.type === "FEED" && (
-        <AnnouncementsManager
-          slug={slug}
-          spaceId={space.id}
-          spaceName={space.name}
-          announcements={parseAnnouncements(space.settings)}
-        />
-      )}
+      {/* Posts first: they are what a creator comes here for. The banners
+          used to sit on top, and their "+ Ankündigung" button competed with
+          "Beitrag erstellen" in a space that is itself called "Ankündigungen". */}
       <SpaceContentManager
         slug={slug}
         space={{ id: space.id, slug: space.slug, name: space.name, type: space.type }}
         posts={posts}
         articles={[]}
       />
+      {space.type === "FEED" && (
+        <div className="mt-8">
+          <AnnouncementsManager
+            slug={slug}
+            spaceId={space.id}
+            spaceName={space.name}
+            announcements={parseAnnouncements(space.settings)}
+          />
+        </div>
+      )}
     </div>
   );
 }

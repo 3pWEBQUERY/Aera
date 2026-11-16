@@ -53,7 +53,7 @@ export async function CommunityPageTabs({
                 className={`relative block whitespace-nowrap px-4 py-3.5 text-sm font-semibold transition-colors ${
                   tab.active
                     ? "text-[color:var(--brand)]"
-                    : "text-[#161613]/55 hover:text-[#161613]"
+                    : "text-[#161613]/65 hover:text-[#161613]"
                 }`}
               >
                 {tab.label}

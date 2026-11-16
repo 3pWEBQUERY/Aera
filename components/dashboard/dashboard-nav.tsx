@@ -142,7 +142,7 @@ export function DashboardNav({
             onClick={() => toggleSection(sectionKey)}
             aria-expanded={open}
             aria-controls={panelId}
-            className="-mx-1 flex min-w-0 flex-1 items-center gap-1 rounded px-1 py-0.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-400 transition-colors hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
+            className="-mx-1 flex min-w-0 flex-1 items-center gap-1 rounded px-1 py-0.5 text-left text-[11px] font-semibold uppercase tracking-wider text-slate-500 transition-colors hover:text-slate-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
           >
             <Icon
               name="chevron"
@@ -195,11 +195,11 @@ export function DashboardNav({
                   size={18}
                   className={cn(
                     "shrink-0",
-                    active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600",
+                    active ? "text-[var(--action-fg)]" : "text-slate-500 group-hover:text-slate-600",
                     locked && !active && "text-slate-300",
                   )}
                 />
-                <span className={cn("min-w-0 flex-1 truncate", locked && !active && "text-slate-400")}>
+                <span className={cn("min-w-0 flex-1 truncate", locked && !active && "text-slate-500")}>
                   {t(`nav.${it.labelKey}`)}
                 </span>
                 {locked && it.feature && !active && (
@@ -230,7 +230,7 @@ export function DashboardNav({
           action={
             <Link
               href={`${base}/spaces`}
-              className="shrink-0 text-slate-400 transition hover:text-slate-700"
+              className="shrink-0 text-slate-500 transition hover:text-slate-700"
               aria-label={t("nav.manageSpacesAria")}
             >
               <Icon name="plus" size={14} />
@@ -239,7 +239,7 @@ export function DashboardNav({
         >
           <nav className="space-y-0.5">
             {spaces.length === 0 ? (
-              <p className="px-3 py-1.5 text-xs text-slate-400">{t("nav.noSpaces")}</p>
+              <p className="px-3 py-1.5 text-xs text-slate-500">{t("nav.noSpaces")}</p>
             ) : (
               spaces.map((s) => {
                 const href = `${base}/spaces/${s.slug}`;
@@ -253,7 +253,7 @@ export function DashboardNav({
                       active ? "bg-[var(--action)] text-[var(--action-fg)]" : "text-slate-600 hover:bg-[var(--action-soft)] hover:text-slate-900",
                     )}
                   >
-                    <Icon name={spaceTypeIcon(s.type)} size={18} className={active ? "text-[var(--action-fg)]" : "text-slate-400 group-hover:text-slate-600"} />
+                    <Icon name={spaceTypeIcon(s.type)} size={18} className={active ? "text-[var(--action-fg)]" : "text-slate-500 group-hover:text-slate-600"} />
                     <span className="truncate">{s.name}</span>
                   </Link>
                 );
@@ -292,9 +292,9 @@ export function DashboardNav({
           </span>
           <span className="min-w-0 flex-1">
             <span className="block truncate text-sm font-semibold text-slate-900">{tenant.name}</span>
-            <span className="block text-xs text-slate-400">{t("nav.yourCommunity")}</span>
+            <span className="block text-xs text-slate-500">{t("nav.yourCommunity")}</span>
           </span>
-          <Icon name="settings" size={16} className="text-slate-400" />
+          <Icon name="settings" size={16} className="text-slate-500" />
         </Link>
       </div>
     </div>

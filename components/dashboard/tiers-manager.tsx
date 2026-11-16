@@ -103,14 +103,14 @@ export function TiersManager({
                   <Pill className="bg-[var(--brand-soft)] text-[var(--brand)]">{t("recommended")}</Pill>
                 )}
                 {tier.isDefault && <Pill className="bg-green-100 text-green-700">{t("default")}</Pill>}
-                {!tier.isPublic && <Pill className="bg-slate-100 text-slate-500">{t("hidden")}</Pill>}
+                {!tier.isPublic && <Pill className="bg-slate-100 text-slate-600">{t("hidden")}</Pill>}
               </div>
             </div>
             <p className="mt-4 font-semibold text-slate-900">{tier.name}</p>
             <div className="mt-1 flex items-baseline gap-1">
               <span className="text-2xl font-bold text-slate-900">{formatPrice(tier.priceCents, tier.currency, locale)}</span>
               {tier.priceCents > 0 && (
-                <span className="text-sm text-slate-400">{suffix(tier.interval)}</span>
+                <span className="text-sm text-slate-500">{suffix(tier.interval)}</span>
               )}
             </div>
             {tier.description && (
@@ -120,7 +120,7 @@ export function TiersManager({
               <span className="text-sm text-slate-500">
                 {t("memberCount", { count: tier.memberCount })}
               </span>
-              <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-400 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
+              <span className="inline-flex items-center gap-1 text-xs font-medium text-slate-500 sm:opacity-0 sm:transition sm:group-hover:opacity-100">
                 <Icon name="settings" size={14} /> {t("edit")}
               </span>
             </div>
@@ -221,7 +221,7 @@ function TierForm({
           <div>
             <Label>{t("coverLabel")}</Label>
             <ImageUpload tenant={slug} name="coverUrl" purpose="tier-cover" defaultUrl={tier?.coverUrl ?? null} />
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs text-slate-500">
               {t("coverHint")}
             </p>
           </div>
@@ -244,7 +244,7 @@ function TierForm({
                     )}
                   >
                     <span className="block text-sm font-semibold text-slate-900">{tIntervals(`${iv}.label`)}</span>
-                    <span className="block text-xs text-slate-400">{tIntervals(`${iv}.desc`)}</span>
+                    <span className="block text-xs text-slate-500">{tIntervals(`${iv}.desc`)}</span>
                   </button>
                 );
               })}
@@ -264,7 +264,7 @@ function TierForm({
                     defaultCents={tier && tier.priceCents > 0 ? tier.priceCents : undefined}
                   />
                 </div>
-                <span className="shrink-0 text-sm text-slate-400">{suffix(interval)}</span>
+                <span className="shrink-0 text-sm text-slate-500">{suffix(interval)}</span>
               </div>
             </div>
           )}
@@ -278,7 +278,7 @@ function TierForm({
               defaultValue={tier?.description ?? undefined}
               placeholder={t("benefitsPlaceholder")}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("benefitsHint")}
             </p>
           </div>
@@ -309,7 +309,7 @@ function TierForm({
 
           {isEdit && (
             <div className="rounded-xl bg-slate-50 px-4 py-3">
-              <p className="text-xs text-slate-400">{t("entitlementKeyLabel")}</p>
+              <p className="text-xs text-slate-500">{t("entitlementKeyLabel")}</p>
               <p className="font-mono text-sm text-slate-600">{tier!.entitlementKey}</p>
             </div>
           )}

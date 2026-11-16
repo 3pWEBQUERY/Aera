@@ -85,7 +85,7 @@ export function CoursesManager({
 
       {courses.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
             <Icon name="courses" size={24} />
           </span>
           <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -121,7 +121,7 @@ export function CoursesManager({
                   </Pill>
                 </div>
                 {c.description && <p className="mt-1 line-clamp-2 text-sm text-slate-500">{c.description}</p>}
-                <p className="mt-3 border-t border-slate-100 pt-3 text-sm text-slate-400">
+                <p className="mt-3 border-t border-slate-100 pt-3 text-sm text-slate-500">
                   {c.format === "OFFLINE" && c.location
                     ? `${c.location} · `
                     : ""}
@@ -219,7 +219,7 @@ function CourseForm({
                       </span>
                       <span>
                         <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
-                        <span className="block text-xs text-slate-400">{o.desc}</span>
+                        <span className="block text-xs text-slate-500">{o.desc}</span>
                       </span>
                     </button>
                   );
@@ -237,7 +237,7 @@ function CourseForm({
                   <Label htmlFor="cf-stream">{t("streamLabel")}</Label>
                   <Input id="cf-stream" name="streamUrl" type="url" defaultValue={course?.streamUrl ?? ""} placeholder={t("streamPlaceholder")} />
                 </div>
-                <p className="text-xs text-slate-400">{t("onlineHint")}</p>
+                <p className="text-xs text-slate-500">{t("onlineHint")}</p>
               </div>
             ) : (
               <div className="space-y-4 rounded-2xl bg-slate-50 p-4">
@@ -280,7 +280,7 @@ function CourseForm({
                   <LessonRow key={l.id} slug={slug} lesson={l} />
                 ))}
                 {course!.lessons.length === 0 && (
-                  <p className="text-sm text-slate-400">{t("noLessons")}</p>
+                  <p className="text-sm text-slate-500">{t("noLessons")}</p>
                 )}
               </div>
               <AddLesson slug={slug} courseId={course!.id} />
@@ -333,9 +333,9 @@ function LessonRow({ slug, lesson }: { slug: string; lesson: LessonData }) {
   return (
     <div className="rounded-xl border border-slate-200">
       <div className="flex items-center gap-2 px-3 py-2.5">
-        <Icon name="courses" size={16} className="text-slate-400" />
+        <Icon name="courses" size={16} className="text-slate-500" />
         <span className="flex-1 truncate text-sm font-medium text-slate-800">{lesson.title}</span>
-        {lesson.videoUrl && <Pill className="bg-slate-100 text-slate-500">{t("videoBadge")}</Pill>}
+        {lesson.videoUrl && <Pill className="bg-slate-100 text-slate-600">{t("videoBadge")}</Pill>}
         {(lesson.dripAfterDays ?? 0) > 0 && (
           <Pill className="bg-amber-50 text-amber-700">{t("dripBadge", { days: lesson.dripAfterDays ?? 0 })}</Pill>
         )}

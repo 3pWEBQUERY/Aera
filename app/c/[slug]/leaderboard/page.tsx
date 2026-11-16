@@ -11,7 +11,7 @@ import { Icon } from "@/components/dashboard/icons";
 // Medal accents for the top three ranks — restrained, palette-consistent.
 const MEDAL = [
   { avatarRing: "ring-2 ring-amber-300", ped: "bg-amber-50 text-amber-600 ring-1 ring-amber-200", h: "h-20" },
-  { avatarRing: "ring-2 ring-slate-300", ped: "bg-slate-100 text-slate-500 ring-1 ring-slate-200", h: "h-14" },
+  { avatarRing: "ring-2 ring-slate-300", ped: "bg-slate-100 text-slate-600 ring-1 ring-slate-200", h: "h-14" },
   { avatarRing: "ring-2 ring-orange-300", ped: "bg-orange-50 text-orange-700 ring-1 ring-orange-200", h: "h-10" },
 ] as const;
 
@@ -71,7 +71,7 @@ export default async function LeaderboardPage({
       {board.length === 0 ? (
         <Card>
           <CardBody className="py-14 text-center">
-            <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-400 ring-1 ring-slate-200">
+            <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-50 text-slate-500 ring-1 ring-slate-200">
               <Icon name="trophy" size={24} />
             </span>
             <p className="text-sm font-medium text-slate-800">
@@ -117,7 +117,7 @@ export default async function LeaderboardPage({
                           {row.name}
                         </p>
                         {row.levelName && (
-                          <p className="max-w-full truncate text-center text-xs text-slate-400">
+                          <p className="max-w-full truncate text-center text-xs text-slate-500">
                             {row.levelName}
                           </p>
                         )}
@@ -155,7 +155,7 @@ export default async function LeaderboardPage({
                       >
                         <span
                           className={`w-6 text-center text-sm font-bold ${
-                            medal ? "text-amber-500" : "text-slate-400"
+                            medal ? "text-amber-500" : "text-slate-500"
                           }`}
                         >
                           {rank}
@@ -170,14 +170,14 @@ export default async function LeaderboardPage({
                               </span>
                             )}
                           </p>
-                          <p className="flex items-center gap-2 truncate text-xs text-slate-400">
+                          <p className="flex items-center gap-2 truncate text-xs text-slate-500">
                             {row.levelName && <span className="truncate">{row.levelName}</span>}
                             <BadgeRow badges={badgeBy.get(row.userId) ?? []} size={18} max={3} />
                           </p>
                         </div>
                         <span className="shrink-0 font-bold text-[color:var(--brand)]">
                           {nf.format(row.points)}
-                          <span className="ml-1 text-xs font-medium text-slate-400">
+                          <span className="ml-1 text-xs font-medium text-slate-500">
                             {t("pts")}
                           </span>
                         </span>

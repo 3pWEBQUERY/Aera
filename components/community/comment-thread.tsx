@@ -156,7 +156,7 @@ function CommentNode({
             Name und Zeit darueber — so bleibt eine tiefe Verschachtelung
             lesbar. */}
         <div className="inline-block max-w-full rounded-2xl bg-[#161613]/[0.04] px-3.5 py-2.5">
-          <p className="text-xs text-[#161613]/50">
+          <p className="text-xs text-[#161613]/65">
             <span className="font-semibold text-[#161613]/80">{node.authorName}</span>
             {" · "}
             {timeAgo(node.createdAt, locale)}
@@ -179,7 +179,7 @@ function CommentNode({
             <button
               type="button"
               onClick={() => setReplyOpen((v) => !v)}
-              className="text-xs font-semibold text-[#161613]/55 transition hover:text-[#161613]"
+              className="text-xs font-semibold text-[#161613]/65 transition hover:text-[#161613]"
             >
               {t("replyCta")}
             </button>
@@ -221,7 +221,7 @@ function CommentNode({
               <button
                 type="button"
                 onClick={() => setShowAll(true)}
-                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#161613]/55 transition hover:text-[#161613]"
+                className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#161613]/65 transition hover:text-[#161613]"
               >
                 <Icon name="chevron" size={13} />
                 {t("showReplies", { count: hidden })}

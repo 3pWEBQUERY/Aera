@@ -63,11 +63,11 @@ export function MediaPickerSheet({
     >
       <div className="flex-1 overflow-y-auto p-6">
         {loading ? (
-          <p className="py-10 text-center text-sm text-slate-400">{t("mediaPickerLoading")}</p>
+          <p className="py-10 text-center text-sm text-slate-500">{t("mediaPickerLoading")}</p>
         ) : error ? (
           <p className="py-10 text-center text-sm text-red-500">{t("mediaPickerError")}</p>
         ) : items.length === 0 ? (
-          <p className="py-10 text-center text-sm text-slate-400">{t("mediaPickerEmpty")}</p>
+          <p className="py-10 text-center text-sm text-slate-500">{t("mediaPickerEmpty")}</p>
         ) : (
           <div className="mx-auto grid max-w-4xl grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
             {items.map((item) => (

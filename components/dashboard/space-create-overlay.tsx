@@ -101,7 +101,7 @@ export function SpaceCreateOverlay({
                         </span>
                         <span>
                           <span className="block text-sm font-semibold text-slate-900">{t(`visibility.${v.value}.label`)}</span>
-                          <span className="block text-xs text-slate-400">{t(`visibility.${v.value}.desc`)}</span>
+                          <span className="block text-xs text-slate-500">{t(`visibility.${v.value}.desc`)}</span>
                         </span>
                       </button>
                     );
@@ -113,7 +113,7 @@ export function SpaceCreateOverlay({
                 <div className="mt-6">
                   <Label htmlFor="ov-key">{t("spaces.entitlementLabel")}</Label>
                   <Input id="ov-key" name="requiredEntitlementKey" placeholder="tier:premium" />
-                  <p className="mt-1 text-xs text-slate-400">{t("spaces.entitlementHint")}</p>
+                  <p className="mt-1 text-xs text-slate-500">{t("spaces.entitlementHint")}</p>
                 </div>
               )}
 

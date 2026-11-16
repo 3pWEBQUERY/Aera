@@ -84,7 +84,7 @@ export function CategoryChips({ active }: { active: string | null }) {
               <Icon
                 name={c.icon}
                 size={15}
-                className={on ? "text-white/70" : "text-[#161613]/40"}
+                className={on ? "text-white/70" : "text-[#161613]/65"}
               />
               {tCat(c.key)}
             </Link>

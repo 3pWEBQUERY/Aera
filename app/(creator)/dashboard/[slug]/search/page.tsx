@@ -77,7 +77,7 @@ export default async function SearchPage({
                     <Avatar name={m.user.name} src={m.user.avatarUrl} size={36} />
                     <div className="min-w-0">
                       <p className="truncate font-medium text-slate-800">{m.user.name}</p>
-                      <p className="truncate text-xs text-slate-400">{m.user.email}</p>
+                      <p className="truncate text-xs text-slate-500">{m.user.email}</p>
                     </div>
                     {m.tier && <Pill className="ml-auto bg-slate-100 text-slate-600">{m.tier.name}</Pill>}
                   </CardBody>
@@ -96,7 +96,7 @@ export default async function SearchPage({
                   <Card className="transition hover:shadow-md">
                     <CardBody className="py-3">
                       <p className="font-medium text-slate-800">{s.name}</p>
-                      <p className="text-xs text-slate-400">{tSpaceTypes(`${s.type}.label`)} · /{s.slug}</p>
+                      <p className="text-xs text-slate-500">{tSpaceTypes(`${s.type}.label`)} · /{s.slug}</p>
                     </CardBody>
                   </Card>
                 </Link>

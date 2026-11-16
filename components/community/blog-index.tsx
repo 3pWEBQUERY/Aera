@@ -104,7 +104,7 @@ function Meta({ post, cfg, locale, readTime }: { post: BlogPost; cfg: BlogSettin
   const hasNumbers = post.likes > 0 || post.comments > 0;
   if (!cfg.showAuthor && !cfg.showDate && !cfg.showReadTime && !hasNumbers) return null;
   return (
-    <div className="mt-4 flex items-center gap-2 text-xs text-[#161613]/50">
+    <div className="mt-4 flex items-center gap-2 text-xs text-[#161613]/65">
       {cfg.showAuthor && (
         <>
           <Avatar name={post.authorName} src={post.authorAvatar} size={22} />
@@ -241,7 +241,7 @@ export async function BlogIndex({
               {t("previous")}
             </Link>
           ) : (
-            <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/30">{t("previous")}</span>
+            <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/65">{t("previous")}</span>
           )}
           <span className="px-3 text-sm text-[#161613]/60">{t("page", { page, pageCount })}</span>
           {page < pageCount ? (
@@ -249,7 +249,7 @@ export async function BlogIndex({
               {t("next")}
             </Link>
           ) : (
-            <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/30">{t("next")}</span>
+            <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/65">{t("next")}</span>
           )}
         </div>
       )}

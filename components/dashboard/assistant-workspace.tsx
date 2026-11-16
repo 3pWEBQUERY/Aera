@@ -590,7 +590,7 @@ export function AssistantWorkspace({
 
         <div className="min-h-0 flex-1 overflow-y-auto px-2 pb-3">
           {active.length === 0 && archived.length === 0 ? (
-            <p className="px-3 py-4 text-xs text-slate-400">
+            <p className="px-3 py-4 text-xs text-slate-500">
               {mode === "image" ? t("emptyImages") : t("emptyChats")}
             </p>
           ) : (
@@ -615,7 +615,7 @@ export function AssistantWorkspace({
               <button
                 type="button"
                 onClick={() => setShowArchived((v) => !v)}
-                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-400 transition hover:bg-slate-100"
+                className="flex w-full items-center justify-between rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-500 transition hover:bg-slate-100"
               >
                 {t("archived", { count: archived.length })}
                 <Icon name="chevron" size={12} className={cn("transition", showArchived ? "" : "-rotate-90")} />
@@ -693,7 +693,7 @@ export function AssistantWorkspace({
                       disabled={!geminiOn}
                       className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-slate-300 hover:shadow-sm disabled:opacity-50"
                     >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
                         <Icon name={s.icon} size={17} />
                       </span>
                       <span className="min-w-0">
@@ -730,7 +730,7 @@ export function AssistantWorkspace({
                     disabled={!geminiOn}
                     className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-left transition hover:border-slate-300 hover:shadow-sm disabled:opacity-50"
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
                       <Icon name={s.icon} size={17} />
                     </span>
                     <span className="min-w-0">
@@ -811,7 +811,7 @@ export function AssistantWorkspace({
                 </button>
               </div>
             </div>
-            <p className="mx-auto mt-1.5 max-w-3xl px-1 text-[11px] text-slate-400">
+            <p className="mx-auto mt-1.5 max-w-3xl px-1 text-[11px] text-slate-500">
               {t("chatHint")}
             </p>
           </div>
@@ -875,7 +875,7 @@ export function AssistantWorkspace({
                 </button>
               </div>
             </div>
-            <p className="mx-auto mt-1.5 max-w-3xl px-1 text-[11px] text-slate-400">
+            <p className="mx-auto mt-1.5 max-w-3xl px-1 text-[11px] text-slate-500">
               {t("imgHint")}
             </p>
           </div>
@@ -992,7 +992,7 @@ function ConversationRow({
         <span className="block truncate text-sm font-medium text-slate-800" title={c.title}>
           {c.title}
         </span>
-        <span className="block text-[11px] text-slate-400">{relTime(c.updatedAt, t, locale)}</span>
+        <span className="block text-[11px] text-slate-500">{relTime(c.updatedAt, t, locale)}</span>
       </button>
       <div className="flex shrink-0 items-center opacity-0 transition group-hover:opacity-100">
         {archived ? (
@@ -1004,7 +1004,7 @@ function ConversationRow({
               e.stopPropagation();
               onUnarchive?.();
             }}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-200 hover:text-slate-700"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-200 hover:text-slate-700"
           >
             <Icon name="archive" size={14} />
           </button>
@@ -1017,7 +1017,7 @@ function ConversationRow({
               e.stopPropagation();
               onArchive?.();
             }}
-            className="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-slate-200 hover:text-slate-700"
+            className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-slate-200 hover:text-slate-700"
           >
             <Icon name="archive" size={14} />
           </button>
@@ -1030,7 +1030,7 @@ function ConversationRow({
             e.stopPropagation();
             onDelete?.();
           }}
-          className="flex h-7 w-7 items-center justify-center rounded-md text-slate-400 hover:bg-red-50 hover:text-red-600"
+          className="flex h-7 w-7 items-center justify-center rounded-md text-slate-500 hover:bg-red-50 hover:text-red-600"
         >
           <Icon name="trash" size={14} />
         </button>

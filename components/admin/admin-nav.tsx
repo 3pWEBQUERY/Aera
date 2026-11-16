@@ -52,7 +52,7 @@ export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
             <Icon
               name={item.icon}
               size={17}
-              className={cn("shrink-0", active ? "text-[var(--action-fg)]/70" : "text-slate-400")}
+              className={cn("shrink-0", active ? "text-[var(--action-fg)]/70" : "text-slate-500")}
             />
             <span className="min-w-0 flex-1 truncate">{t(item.key)}</span>
             {(badges[item.key] ?? 0) > 0 && (

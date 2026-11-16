@@ -124,7 +124,7 @@ function UploadCard({
             {done ? (
               <Icon name="check" size={16} className="shrink-0 text-emerald-600" />
             ) : (
-              <span className="shrink-0 text-xs font-semibold tabular-nums text-[#161613]/45">
+              <span className="shrink-0 text-xs font-semibold tabular-nums text-[#161613]/65">
                 {failed ? "" : `${job.percent}%`}
               </span>
             )}
@@ -135,7 +135,7 @@ function UploadCard({
           <p
             className={cn(
               "mt-1.5 truncate text-xs",
-              failed ? "text-red-600" : "text-[#161613]/50",
+              failed ? "text-red-600" : "text-[#161613]/65",
             )}
           >
             {status}
@@ -147,7 +147,7 @@ function UploadCard({
             type="button"
             onClick={() => dismissUpload(job.id)}
             aria-label={t("dismiss")}
-            className="-mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#161613]/40 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+            className="-mr-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-[#161613]/65 transition hover:bg-[#161613]/5 hover:text-[#161613]"
           >
             <Icon name="close" size={14} />
           </button>

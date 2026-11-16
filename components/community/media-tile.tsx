@@ -91,7 +91,7 @@ export function MediaTile({ pkg }: { pkg: MediaTileData }) {
       <h3 className="mt-2.5 line-clamp-1 text-sm font-semibold text-[#161613]">
         {pkg.title}
       </h3>
-      <p className="mt-0.5 text-xs text-[#161613]/50">
+      <p className="mt-0.5 text-xs text-[#161613]/65">
         {pkg.owned || !paid
           ? t("itemsCount", { count: pkg.itemCount })
           : formatPrice(pkg.priceCents, pkg.currency, locale)}

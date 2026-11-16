@@ -92,7 +92,7 @@ export function ContactForm({
         >
           {pending ? t("sending") : t("send")}
         </button>
-        <p className="text-xs leading-5 text-[#161613]/45">
+        <p className="text-xs leading-5 text-[#161613]/65">
           {signedIn ? t("footnoteMember") : t("footnoteGuest")}
         </p>
       </div>

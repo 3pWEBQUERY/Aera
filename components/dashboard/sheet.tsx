@@ -138,7 +138,7 @@ export function Sheet({
                 )}
                 <div>
                   <h2 id={titleId} className="text-sm font-semibold text-slate-900">{title}</h2>
-                  {subtitle && <p id={subtitleId} className="text-xs text-slate-400">{subtitle}</p>}
+                  {subtitle && <p id={subtitleId} className="text-xs text-slate-500">{subtitle}</p>}
                 </div>
               </div>
               <div className="flex items-center gap-1.5">

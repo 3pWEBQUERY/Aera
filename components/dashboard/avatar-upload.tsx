@@ -95,7 +95,7 @@ export function AvatarUpload({
               </button>
             )}
           </div>
-          <p className="mt-1.5 text-xs text-slate-400">{t("imageHint")}</p>
+          <p className="mt-1.5 text-xs text-slate-500">{t("imageHint")}</p>
           {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
         </div>
       </div>

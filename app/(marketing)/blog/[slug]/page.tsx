@@ -133,7 +133,7 @@ export default async function BlogPostPage({
       <div className="mx-auto max-w-3xl px-5 pb-20 pt-12 md:pt-16">
         <Link
           href="/blog"
-          className="text-sm font-semibold text-[#161613]/50 transition hover:text-[#161613]"
+          className="text-sm font-semibold text-[#161613]/65 transition hover:text-[#161613]"
         >
           {t("backToBlog")}
         </Link>
@@ -150,7 +150,7 @@ export default async function BlogPostPage({
         )}
 
         <header className="mt-8">
-          <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/45">
+          <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65">
             {isBlogCategory(post.category) && (
               <>
                 <Link
@@ -186,7 +186,7 @@ export default async function BlogPostPage({
               <Avatar name={post.author.name} src={post.author.avatarUrl} size={38} />
               <div className="min-w-0 text-sm">
                 <p className="font-semibold text-[#161613]">{post.author.name}</p>
-                <p className="text-[#161613]/50">{t("authorRole")}</p>
+                <p className="text-[#161613]/65">{t("authorRole")}</p>
               </div>
             </div>
           )}
@@ -201,7 +201,7 @@ export default async function BlogPostPage({
               className="w-full rounded-2xl border border-[#161613]/8 object-cover"
             />
             {post.coverAlt && (
-              <figcaption className="mt-3 text-sm text-[#161613]/50">{post.coverAlt}</figcaption>
+              <figcaption className="mt-3 text-sm text-[#161613]/65">{post.coverAlt}</figcaption>
             )}
           </figure>
         )}

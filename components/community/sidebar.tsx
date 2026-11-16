@@ -309,7 +309,7 @@ export function CommunitySidebar({
                       href="/dashboard"
                       role="menuitem"
                       onClick={() => setMenuOpen(false)}
-                      className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-[#161613]/55 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+                      className="flex items-center justify-between gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-[#161613]/65 transition hover:bg-[#161613]/5 hover:text-[#161613]"
                     >
                       {t("yourPage")}
                       <span className="block h-5 w-5 rounded-full border-2 border-[#161613]/25" />

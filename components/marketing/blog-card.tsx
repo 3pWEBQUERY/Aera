@@ -70,7 +70,7 @@ async function Meta({
 }) {
   const t = await getTranslations("blog");
   return (
-    <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/45">
+    <p className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65">
       {isBlogCategory(post.category) && (
         <>
           <span className="text-[#161613]/70">{t(`categories.${post.category}`)}</span>

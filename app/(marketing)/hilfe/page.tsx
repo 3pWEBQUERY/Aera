@@ -76,7 +76,7 @@ export default async function HelpCenterPage({
           <Reveal delay={240}>
             <form method="GET" action="/hilfe" className="mx-auto mt-8 max-w-xl">
               <div className="flex items-center gap-3 rounded-full bg-white py-2 pl-5 pr-2 text-[#161613]">
-                <Icon name="search" size={20} className="shrink-0 text-[#161613]/40" />
+                <Icon name="search" size={20} className="shrink-0 text-[#161613]/65" />
                 <input
                   type="search"
                   name="q"
@@ -127,7 +127,7 @@ export default async function HelpCenterPage({
                 >
                   <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 [&::-webkit-details-marker]:hidden">
                     <span className="min-w-0">
-                      <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+                      <span className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
                         {a.categoryTitle}
                       </span>
                       <span className="mt-0.5 block font-semibold">{a.question}</span>
@@ -135,7 +135,7 @@ export default async function HelpCenterPage({
                     <Icon
                       name="chevron"
                       size={17}
-                      className="shrink-0 text-[#161613]/40 transition-transform group-open:rotate-180"
+                      className="shrink-0 text-[#161613]/65 transition-transform group-open:rotate-180"
                     />
                   </summary>
                   <div className="border-t border-[#161613]/10 px-5 py-4">
@@ -192,7 +192,7 @@ export default async function HelpCenterPage({
                         {c.description}
                       </span>
                     )}
-                    <span className="mt-auto pt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+                    <span className="mt-auto pt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
                       {t("articleCount", { count: c.articles.length })}
                     </span>
                   </a>
@@ -223,7 +223,7 @@ export default async function HelpCenterPage({
                           <Icon
                             name="chevron"
                             size={17}
-                            className="shrink-0 text-[#161613]/40 transition-transform group-open:rotate-180"
+                            className="shrink-0 text-[#161613]/65 transition-transform group-open:rotate-180"
                           />
                         </summary>
                         <div className="border-t border-[#161613]/10 px-5 py-4">

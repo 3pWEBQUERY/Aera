@@ -84,7 +84,7 @@ export function MediaManager({
       <div>
         <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
           {t("title")}
-          <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+          <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           {t("subtitle")}
@@ -95,7 +95,7 @@ export function MediaManager({
         <form method="GET" action="/admin/media" className="w-full max-w-md">
           {type && <input type="hidden" name="type" value={type} />}
           <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-            <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+            <Icon name="search" size={17} className="shrink-0 text-slate-500" />
             <input
               type="search"
               name="q"
@@ -202,7 +202,7 @@ function InfoRow({
 }) {
   return (
     <div className="flex items-baseline justify-between gap-4 py-1.5">
-      <span className="shrink-0 text-sm text-slate-400">{label}</span>
+      <span className="shrink-0 text-sm text-slate-500">{label}</span>
       <span
         className={`min-w-0 truncate text-right text-sm font-medium text-slate-800 ${
           mono ? "font-mono text-xs" : ""

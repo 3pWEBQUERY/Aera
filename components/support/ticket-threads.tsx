@@ -17,7 +17,7 @@ import type { TicketView } from "@/lib/support";
 const STATUS_TONE: Record<string, string> = {
   OPEN: "bg-amber-50 text-amber-700 ring-amber-200",
   ANSWERED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  CLOSED: "bg-slate-100 text-slate-500 ring-slate-200",
+  CLOSED: "bg-slate-100 text-slate-600 ring-slate-200",
 };
 
 /**
@@ -49,7 +49,7 @@ export function TicketThreads({
   if (tickets.length === 0) {
     return (
       <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-14 text-center">
-        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+        <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
           <Icon name="messages" size={22} />
         </span>
         <p className="mt-4 font-semibold text-slate-800">{t(`empty.${side}.title`)}</p>
@@ -101,7 +101,7 @@ export function TicketThreads({
                     </span>
                   )}
                 </span>
-                <span className="mt-1 block text-xs text-slate-400">
+                <span className="mt-1 block text-xs text-slate-500">
                   {side === "staff" && (
                     <>
                       {ticket.name || ticket.email}
@@ -133,7 +133,7 @@ export function TicketThreads({
                       )}
                     >
                       <p className="whitespace-pre-line">{m.body}</p>
-                      <p className={cn("mt-1.5 text-[11px]", m.fromStaff ? "text-[var(--action-fg)]/50" : "text-slate-400")}>
+                      <p className={cn("mt-1.5 text-[11px]", m.fromStaff ? "text-[var(--action-fg)]/50" : "text-slate-500")}>
                         {m.fromStaff ? t("fromTeam") : m.authorName || t("fromYou")} · {fmt(m.createdAt)}
                       </p>
                     </div>
@@ -143,7 +143,7 @@ export function TicketThreads({
                 {ticket.status !== "CLOSED" || side === "staff" ? (
                   <ReplyForm ticketId={ticket.id} side={side} />
                 ) : (
-                  <p className="mt-4 rounded-xl bg-white px-4 py-3 text-center text-xs text-slate-400 ring-1 ring-slate-200">
+                  <p className="mt-4 rounded-xl bg-white px-4 py-3 text-center text-xs text-slate-500 ring-1 ring-slate-200">
                     {t("closedHint")}
                   </p>
                 )}
@@ -156,7 +156,7 @@ export function TicketThreads({
                       name="status"
                       value={ticket.status === "CLOSED" ? "OPEN" : "CLOSED"}
                     />
-                    <button className="text-xs font-medium text-slate-400 underline underline-offset-2 hover:text-slate-700">
+                    <button className="text-xs font-medium text-slate-500 underline underline-offset-2 hover:text-slate-700">
                       {ticket.status === "CLOSED" ? t("reopen") : t("close")}
                     </button>
                   </form>

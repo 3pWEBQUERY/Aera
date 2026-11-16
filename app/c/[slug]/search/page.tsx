@@ -82,13 +82,13 @@ export default async function CommunitySearchPage({
           <p className="text-sm font-medium text-slate-700">
             {t("noResults", { query })}
           </p>
-          <p className="mt-1 text-sm text-slate-400">{t("tryAgain")}</p>
+          <p className="mt-1 text-sm text-slate-500">{t("tryAgain")}</p>
         </div>
       )}
 
       {results.length > 0 && (
         <>
-          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-slate-400">
+          <p className="mb-3 text-xs font-medium uppercase tracking-wide text-slate-500">
             {t("resultCount", { count: results.length })}
           </p>
           <ul className="space-y-2">
@@ -103,7 +103,7 @@ export default async function CommunitySearchPage({
                     href={r.locked ? `/c/${slug}/join` : r.href}
                     className="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-slate-300 hover:shadow-sm"
                   >
-                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+                    <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                       <Icon name={r.locked ? "lock" : meta.icon} size={16} />
                     </span>
                     <span className="min-w-0 flex-1">
@@ -113,11 +113,11 @@ export default async function CommunitySearchPage({
                           {meta.label}
                         </span>
                         {r.spaceName && (
-                          <span className="text-xs text-slate-400">{r.spaceName}</span>
+                          <span className="text-xs text-slate-500">{r.spaceName}</span>
                         )}
                       </span>
                       {r.locked ? (
-                        <span className="mt-1 block text-sm text-slate-400">
+                        <span className="mt-1 block text-sm text-slate-500">
                           {t("lockedHint")}
                         </span>
                       ) : (

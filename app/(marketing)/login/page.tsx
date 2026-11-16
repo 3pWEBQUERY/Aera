@@ -42,7 +42,7 @@ export default async function LoginPage({
         <h1 className="display-serif mt-3 text-4xl leading-[1.05] sm:text-5xl">
           {t("loginTitleA")}
           <br />
-          <span className="text-[#161613]/50">{t("loginTitleB")}</span>
+          <span className="text-[#161613]/65">{t("loginTitleB")}</span>
         </h1>
         <p className="mt-4 text-sm leading-6 text-[#161613]/60">
           {t("loginText")}

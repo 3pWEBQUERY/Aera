@@ -28,7 +28,7 @@ export async function TopHeader({
         href={`/c/${slug}`}
         className="hidden items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 sm:flex"
       >
-        <Icon name="external" size={16} className="text-slate-400" />
+        <Icon name="external" size={16} className="text-slate-500" />
         {t("topbar.viewCommunity")}
       </Link>
       <UserMenu user={user} slug={slug} subscription={subscription} />

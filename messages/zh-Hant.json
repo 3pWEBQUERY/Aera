@@ -196,7 +196,7 @@
     "addressLabel": "位址",
     "alsoReachable": "也可透過 {url} 存取",
     "slugFallback": "your-community",
-    "taglineLabel": "簡短描述（選填）",
+    "taglineLabel": "標語（選填）",
     "taglinePlaceholder": "你的社群是關於什麼的？",
     "descLabel": "描述",
     "descPlaceholder": "用幾句話描述成員可以期待什麼。",
@@ -316,7 +316,9 @@
     "promoLabel": "促銷代碼（選填）",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "拿到合作夥伴或創作者提供的代碼了嗎？你的社群將立即以更高階方案啟用——無需提供付款資訊。",
-    "hexLabel": "自訂色碼"
+    "hexLabel": "自訂色碼",
+    "nameRequired": "請為你的社群取個名字（至少 2 個字元）。",
+    "spacesRequired": "請至少選擇一個版塊。"
   },
   "seed": {
     "tierDescription": "免費加入社群。",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "可一次多選 · MP3、M4A、WAV 或 OGG",
       "trackTitleAria": "曲目名稱",
       "removeTrackAria": "移除曲目",
-      "trackUploading": "正在上傳 {count} 個 … {percent}%"
+      "trackUploading": "正在上傳 {count} 個 … {percent}%",
+      "deleteQuestion": "永久刪除這篇貼文？",
+      "deleteConfirm": "刪除貼文"
     },
     "chat": {
       "badge": "聊天",
@@ -3010,7 +3014,8 @@
       "statPurchases": "購買",
       "statRevenue": "收入",
       "recentMembers": "最新成員",
-      "noMembers": "還沒有成員。分享你的社群連結開始吧。"
+      "noMembers": "還沒有成員。分享你的社群連結開始吧。",
+      "welcomeNew": "歡迎！完成這些步驟，{name} 就能上線。"
     },
     "topbar": {
       "viewCommunity": "查看社群"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "還沒有位址",
       "close": "關閉"
+    },
+    "gettingStarted": {
+      "title": "入門步驟",
+      "progress": "已完成 {done}/{total}",
+      "done": "已完成",
+      "viewCommunity": "查看社群",
+      "viewCommunityHint": "看看訪客眼中的頁面。",
+      "post": {
+        "title": "發布第一篇貼文",
+        "desc": "向社群打個招呼，幾句話就夠了。",
+        "cta": "寫貼文"
+      },
+      "look": {
+        "title": "新增封面圖與標誌",
+        "desc": "讓社群頁面展現你的風格。",
+        "cta": "開啟品牌設定"
+      },
+      "invite": {
+        "title": "邀請第一批成員",
+        "desc": "分享連結，或透過電子郵件邀請。",
+        "cta": "邀請成員"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "會員選項",
         "errCheckout": "無法開始結帳。請重試。",
         "errPaymentsUnavailable": "目前無法付款。請稍後再試。",
-        "liveHeading": "直播"
+        "liveHeading": "直播",
+        "noPostsHintStaff": "你的社群已準備就緒。第一篇貼文會告訴訪客這裡是做什麼的。",
+        "writeFirstPost": "寫第一篇貼文"
       },
       "shop": {
         "heading": "商店",

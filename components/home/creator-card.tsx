@@ -58,7 +58,7 @@ export function CreatorCard({ c }: { c: CreatorCardData }) {
         {c.name}
       </p>
       {c.tagline && (
-        <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-[#161613]/55">
+        <p className="mt-0.5 line-clamp-2 text-xs leading-snug text-[#161613]/65">
           {c.tagline}
         </p>
       )}
@@ -88,7 +88,7 @@ export function CreatorRow({ c }: { c: CreatorCardData }) {
         <span className="block truncate text-sm font-semibold text-[#161613]">
           {c.name}
         </span>
-        <span className="mt-0.5 line-clamp-2 block text-xs leading-snug text-[#161613]/55">
+        <span className="mt-0.5 line-clamp-2 block text-xs leading-snug text-[#161613]/65">
           {c.tagline ?? `${c.memberCount} Mitglieder`}
         </span>
       </span>

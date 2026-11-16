@@ -55,7 +55,7 @@ export default async function CommunityLive({
   return (
     <div>
       <h1 className="display-serif text-3xl text-[#161613]">{t("title")}</h1>
-      <p className="mt-1 text-[#161613]/55">{t("subtitle", { name: tenant.name })}</p>
+      <p className="mt-1 text-[#161613]/65">{t("subtitle", { name: tenant.name })}</p>
 
       {groups.length === 0 ? (
         <div className="mt-8">
@@ -65,7 +65,7 @@ export default async function CommunityLive({
         <div className="mt-8 space-y-10">
           {groups.map((g) => (
             <section key={g.key}>
-              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#161613]/45">
+              <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.14em] text-[#161613]/65">
                 {g.key === "now" && (
                   <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-red-500" />
                 )}

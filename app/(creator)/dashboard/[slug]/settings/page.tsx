@@ -19,7 +19,7 @@ function StatusChip({ ok, label }: { ok: boolean; label: string }) {
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${
-        ok ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500"
+        ok ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600"
       }`}
     >
       <Icon name={ok ? "check" : "clock"} size={13} />
@@ -86,23 +86,23 @@ export default async function SettingsPage({
       <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
         {integrations.map((it) => (
           <li key={it.name} className="flex items-center gap-3 rounded-xl border border-slate-100 px-3.5 py-3">
-            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${it.ok ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-400"}`}>
+            <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${it.ok ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600"}`}>
               <Icon name={it.icon} size={18} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-medium text-slate-800">{it.name}</p>
-              {!it.ok && <p className="font-mono text-xs text-slate-400">{t("missing", { key: it.hint })}</p>}
+              {!it.ok && <p className="font-mono text-xs text-slate-500">{t("missing", { key: it.hint })}</p>}
             </div>
             {it.ok ? (
               <Pill className="bg-green-100 text-green-700">{t("active")}</Pill>
             ) : (
-              <Pill className="bg-slate-100 text-slate-500">{t("inactive")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("inactive")}</Pill>
             )}
           </li>
         ))}
       </ul>
 
-      <p className="mt-4 text-xs text-slate-400">
+      <p className="mt-4 text-xs text-slate-500">
         {t("activeNote")}
       </p>
       {role === "OWNER" && <StripeConnectionTest slug={slug} />}
@@ -134,7 +134,7 @@ export default async function SettingsPage({
           ) : tenant.stripeAccountId ? (
             <Pill className="mt-1 shrink-0 self-start bg-amber-100 text-amber-700">{t("onboardingOpen")}</Pill>
           ) : (
-            <Pill className="mt-1 shrink-0 self-start bg-slate-100 text-slate-500">{t("notConnected")}</Pill>
+            <Pill className="mt-1 shrink-0 self-start bg-slate-100 text-slate-600">{t("notConnected")}</Pill>
           )}
         </div>
 
@@ -202,7 +202,7 @@ export default async function SettingsPage({
                 {tenant.stripeAccountId ? t("continueOnboarding") : t("connectWithStripe")}
               </button>
             </form>
-            <p className="mt-2 text-xs text-slate-400">
+            <p className="mt-2 text-xs text-slate-500">
               {t("redirectNote")}
             </p>
           </div>

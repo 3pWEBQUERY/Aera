@@ -121,9 +121,9 @@ export function AutomationsManager({
                   {s.isActive ? (
                     <Pill className="bg-emerald-50 text-emerald-700">{t("active")}</Pill>
                   ) : (
-                    <Pill className="bg-slate-100 text-slate-500">{t("paused")}</Pill>
+                    <Pill className="bg-slate-100 text-slate-600">{t("paused")}</Pill>
                   )}
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-500">
                     {t("sentCount", { count: s.deliveryCount })}
                   </span>
                   <form action={toggleAutomationStepAction}>

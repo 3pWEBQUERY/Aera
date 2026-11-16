@@ -40,7 +40,7 @@ export function RedeemCodeForm({ slug }: { slug: string }) {
           <p className="text-sm text-slate-500">
             {t("successText", { plan: state.planName ?? "" })}
           </p>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             {state.expiresAt
               ? t("successUntil", {
                   date: new Date(state.expiresAt).toLocaleDateString(locale, {
@@ -72,7 +72,7 @@ export function RedeemCodeForm({ slug }: { slug: string }) {
               aria-describedby={`${inputId}-hint`}
               className="w-full rounded-xl border border-slate-300 px-4 py-3 text-center font-mono text-lg font-semibold uppercase tracking-[0.18em] text-slate-900 outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]"
             />
-            <p id={`${inputId}-hint`} className="mt-2 text-xs text-slate-400">
+            <p id={`${inputId}-hint`} className="mt-2 text-xs text-slate-500">
               {t("hint")}
             </p>
           </div>

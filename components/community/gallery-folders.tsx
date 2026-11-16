@@ -113,7 +113,7 @@ export function GalleryFolders({
                     )}
                   />
                 ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-[#161613]/30">
+                  <div className="absolute inset-0 flex items-center justify-center text-[#161613]/65">
                     <Icon name="gallery" size={30} />
                   </div>
                 )}
@@ -151,7 +151,7 @@ export function GalleryFolders({
               </div>
               <div className="p-3">
                 <p className="truncate font-semibold text-[#161613]">{p.title}</p>
-                <p className="mt-0.5 text-xs text-[#161613]/50">
+                <p className="mt-0.5 text-xs text-[#161613]/65">
                   {t("mediaCount", { count: p.itemCount })}
                 </p>
               </div>
@@ -198,7 +198,7 @@ function FolderModal({
       <div className="flex shrink-0 items-center justify-between gap-4 border-b border-[#161613]/10 px-4 py-3.5 sm:px-6">
         <div className="min-w-0">
           <h2 id={titleId} className="truncate text-lg font-bold text-[#161613]">{pkg.title}</h2>
-          <p className="text-xs text-[#161613]/50">
+          <p className="text-xs text-[#161613]/65">
             {t("mediaCount", { count: pkg.itemCount })}
             {pkg.priceCents > 0 ? ` · ${formatPrice(pkg.priceCents, PLATFORM_CURRENCY, locale)}` : ` · ${t("free")}`}
           </p>
@@ -233,7 +233,7 @@ function FolderModal({
               </div>
               <h3 className="mt-5 text-base font-semibold text-[#161613]">{t("unlockTitle")}</h3>
               {pkg.description && <p className="mt-1 text-sm text-[#161613]/60">{pkg.description}</p>}
-              <p className="mt-1 text-sm text-[#161613]/50">
+              <p className="mt-1 text-sm text-[#161613]/65">
                 {t("imagesVideos", { images: pkg.imageCount, videos: pkg.videoCount })}
               </p>
               <form action={purchaseMediaPackageAction} className="mx-auto mt-6 max-w-xs">

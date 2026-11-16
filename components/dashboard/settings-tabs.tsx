@@ -118,7 +118,7 @@ export function SettingsTabs({
                         ? s.danger
                           ? "text-red-500"
                           : "text-[var(--action-fg)]/60"
-                        : "text-slate-400",
+                        : "text-slate-500",
                     )}
                   />
                 )}

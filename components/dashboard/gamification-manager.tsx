@@ -85,7 +85,7 @@ function StatCard({ icon, label, value, tint }: { icon: IconName; label: string;
         <Icon name={icon} size={18} />
       </span>
       <p className="mt-3 text-2xl font-bold leading-none text-slate-900">{value}</p>
-      <p className="mt-1 text-xs font-medium text-slate-400">{label}</p>
+      <p className="mt-1 text-xs font-medium text-slate-500">{label}</p>
     </div>
   );
 }
@@ -130,7 +130,7 @@ export function GamificationManager({
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
             {t("rulesHeading")}
-            <Pill className="bg-slate-100 text-slate-500">{rules.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{rules.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">{t("rulesDesc")}</p>
         </div>
@@ -153,7 +153,7 @@ export function GamificationManager({
                     </span>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-slate-800">{r.name}</p>
-                      <p className="truncate text-xs text-slate-400">
+                      <p className="truncate text-xs text-slate-500">
                         {tTriggers(r.trigger)}
                         {r.maxPerDay ? ` · ${t("maxPerDay", { count: r.maxPerDay })}` : ""}
                       </p>
@@ -165,7 +165,7 @@ export function GamificationManager({
                       <input type="hidden" name="ruleId" value={r.id} />
                       <div className="flex items-center overflow-hidden rounded-lg border border-slate-300 bg-white focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
                         <Input name="points" type="number" defaultValue={r.points} className="w-16 border-0 py-1.5 text-right focus:ring-0" />
-                        <span className="pr-2 text-xs font-medium text-slate-400">{t("pts")}</span>
+                        <span className="pr-2 text-xs font-medium text-slate-500">{t("pts")}</span>
                       </div>
                       <button aria-label={t("savePointsAria")} className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--action)] text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-95">
                         <Icon name="check" size={16} />
@@ -193,7 +193,7 @@ export function GamificationManager({
                     <Icon name="sparkles" size={22} />
                   </div>
                   <p className="mt-3 text-sm font-medium text-slate-700">{t("rulesEmptyTitle")}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{t("rulesEmptyHint")}</p>
+                  <p className="mt-0.5 text-xs text-slate-500">{t("rulesEmptyHint")}</p>
                   <button
                     onClick={() => setRuleOpen(true)}
                     className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -212,13 +212,13 @@ export function GamificationManager({
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
             {t("badgesHeading")}
-            <Pill className="bg-slate-100 text-slate-500">{badges.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{badges.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">{t("badgesDesc")}</p>
           {/* Von Hand vergebene Auszeichnungen entstehen hier, verteilt werden
               sie in der Mitgliederliste — ohne den Hinweis sucht man danach. */}
           {badges.some((b) => b.type === "manual") && (
-            <p className="mt-1.5 text-sm text-slate-400">
+            <p className="mt-1.5 text-sm text-slate-500">
               {t("manualHint")}{" "}
               <Link
                 href={`/dashboard/${slug}/members`}
@@ -243,7 +243,7 @@ export function GamificationManager({
                   <Icon name="gamification" size={22} />
                 </div>
                 <p className="mt-3 text-sm font-medium text-slate-700">{t("badgesEmptyTitle")}</p>
-                <p className="mt-0.5 text-xs text-slate-400">{t("badgesDesc")}</p>
+                <p className="mt-0.5 text-xs text-slate-500">{t("badgesDesc")}</p>
                 <button
                   onClick={() => setCreateOpen(true)}
                   className="mt-4 inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
@@ -264,13 +264,13 @@ export function GamificationManager({
                     </span>
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-semibold text-slate-900">{b.name}</p>
-                      <p className="truncate text-xs text-slate-400">
+                      <p className="truncate text-xs text-slate-500">
                         {b.type === "manual"
                           ? t("manualBadge")
                           : t("badgeThreshold", { threshold: b.threshold, criterion: tCrit(b.type) })}
                       </p>
                     </div>
-                    <Pill className="shrink-0 bg-slate-100 text-slate-500">{b.awardCount}×</Pill>
+                    <Pill className="shrink-0 bg-slate-100 text-slate-600">{b.awardCount}×</Pill>
                   </button>
                 ))}
               </div>
@@ -286,11 +286,11 @@ export function GamificationManager({
       <div className="mt-5 max-w-2xl">
           {leaderboard.length === 0 ? (
             <div className="rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                 <Icon name="members" size={22} />
               </div>
               <p className="mt-3 text-sm font-medium text-slate-700">{t("lbEmptyTitle")}</p>
-              <p className="mt-0.5 text-xs text-slate-400">{t("lbEmptyHint")}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{t("lbEmptyHint")}</p>
             </div>
           ) : (
             <ol className="space-y-1.5">
@@ -305,7 +305,7 @@ export function GamificationManager({
                   <span
                     className={
                       "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold " +
-                      (i < 3 ? rankStyles[i] : "text-slate-400")
+                      (i < 3 ? rankStyles[i] : "text-slate-500")
                     }
                   >
                     {i + 1}
@@ -313,7 +313,7 @@ export function GamificationManager({
                   <Avatar name={row.name} src={row.avatarUrl} size={30} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-slate-800">{row.name}</p>
-                    {row.levelName && <p className="truncate text-xs text-slate-400">{row.levelName}</p>}
+                    {row.levelName && <p className="truncate text-xs text-slate-500">{row.levelName}</p>}
                   </div>
                   <span className="shrink-0 text-sm font-bold text-slate-900">{row.points}</span>
                 </li>
@@ -385,7 +385,7 @@ function RuleForm({
                 </option>
               ))}
             </Select>
-            <p className="mt-1 text-xs text-slate-400">{t("triggerHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("triggerHint")}</p>
           </div>
           <div>
             <Label htmlFor="rf-name">{t("nameLabel")}</Label>
@@ -491,7 +491,7 @@ function BadgeForm({
             </div>
           </div>
           {type === "manual" && (
-            <p className="-mt-2 text-xs text-slate-400">{t("manualHint")}</p>
+            <p className="-mt-2 text-xs text-slate-500">{t("manualHint")}</p>
           )}
 
           {/* Gestaltung mit Vorschau: was der Creator waehlt, steht sofort
@@ -504,7 +504,7 @@ function BadgeForm({
             <div className="flex items-start gap-5">
               <div className="flex w-24 shrink-0 flex-col items-center gap-2">
                 <BadgeMedal look={{ shape, tier, icon }} size={72} />
-                <span className="text-center text-[11px] font-medium text-slate-400">
+                <span className="text-center text-[11px] font-medium text-slate-500">
                   {t("preview")}
                 </span>
               </div>

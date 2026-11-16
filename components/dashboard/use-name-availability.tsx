@@ -68,7 +68,7 @@ export function NameStatusHint({ status }: { status: NameCheck }) {
 
   if (status === "checking") {
     return (
-      <p className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-400">
+      <p className="mt-1.5 flex items-center gap-1.5 text-xs text-slate-500">
         <span className="h-3 w-3 animate-spin rounded-full border-[1.5px] border-slate-300 border-t-slate-500" />
         {t("checking")}
       </p>
@@ -91,10 +91,10 @@ export function NameStatusHint({ status }: { status: NameCheck }) {
     );
   }
   if (status === "short") {
-    return <p className="mt-1.5 text-xs text-slate-400">{t("short")}</p>;
+    return <p className="mt-1.5 text-xs text-slate-500">{t("short")}</p>;
   }
   if (status === "long") {
     return <p className="mt-1.5 text-xs font-medium text-red-600">{t("long")}</p>;
   }
-  return <p className="mt-1.5 text-xs text-slate-400">{t("error")}</p>;
+  return <p className="mt-1.5 text-xs text-slate-500">{t("error")}</p>;
 }

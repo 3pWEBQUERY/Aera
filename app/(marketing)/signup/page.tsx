@@ -48,13 +48,13 @@ export default async function SignupPage({
             <>
               {t("signupCreatorTitleA")}
               <br />
-              <span className="text-[#161613]/50">{t("signupCreatorTitleB")}</span>
+              <span className="text-[#161613]/65">{t("signupCreatorTitleB")}</span>
             </>
           ) : (
             <>
               {t("signupTitleA")}
               <br />
-              <span className="text-[#161613]/50">{t("signupTitleB")}</span>
+              <span className="text-[#161613]/65">{t("signupTitleB")}</span>
             </>
           )}
         </h1>

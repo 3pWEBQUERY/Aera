@@ -92,7 +92,7 @@ export default async function NotificationsPage({
                   />
                   <span className="min-w-0 flex-1">
                     <span className="block text-sm text-slate-800">{notificationText(n)}</span>
-                    <span className="mt-0.5 block text-xs text-slate-400">
+                    <span className="mt-0.5 block text-xs text-slate-500">
                       {dateFmt.format(n.createdAt)}
                     </span>
                   </span>

@@ -81,7 +81,7 @@ export function AudioUpload({
       ) : (
         <div
           onClick={pick}
-          className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-slate-400 transition hover:border-violet-400 hover:bg-violet-50/40"
+          className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-slate-500 transition hover:border-violet-400 hover:bg-violet-50/40"
         >
           <Icon name="podcast" size={26} />
           <span className="text-sm font-medium text-slate-600">{t("uploadAudio")}</span>

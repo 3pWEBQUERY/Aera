@@ -212,7 +212,7 @@ export function HeroActions({
                     <Icon
                       name={copied ? "check" : x.icon}
                       size={17}
-                      className={cn("shrink-0", copied ? "text-green-600" : "text-slate-400")}
+                      className={cn("shrink-0", copied ? "text-green-600" : "text-slate-500")}
                     />
                     {copied ? t("copied") : x.label}
                   </button>
@@ -227,7 +227,7 @@ export function HeroActions({
                       : {})}
                     className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
                   >
-                    <Icon name={x.icon} size={17} className="shrink-0 text-slate-400" />
+                    <Icon name={x.icon} size={17} className="shrink-0 text-slate-500" />
                     {x.label}
                   </Link>
                 ),
