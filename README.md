@@ -359,6 +359,11 @@ Einrichtung:
 6. Nach dem ersten Release `/api/health/ready` prüfen, den Cron- und Backupjob
    einmal manuell auslösen und `/api/cron/status` auf `200` prüfen.
 
+Der konkrete Stand des Railway-Projekts (Services, Variablen, Domains, DNS)
+steht in [`docs/operations/railway-setup.md`](docs/operations/railway-setup.md).
+Railway liest keine eigenen Config-Pfade pro Service mehr; die Werte aus
+`railway*.toml` sind deshalb direkt an den Services hinterlegt.
+
 Die vollständigen Schritte für Alarme, Railway-Backups/PITR, Offsite-Dumps,
 Restore-Drills, RPO/RTO und Incidents stehen im
 [`Produktions-Runbook`](docs/operations/production-runbook.md).
