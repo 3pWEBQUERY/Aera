@@ -36,6 +36,33 @@ const migrationCorpus = readdirSync(migrationsDirectory)
   )
   .join("\n");
 
+/** Latest migration (in apply order) that (re)creates the given policy. */
+function latestPolicyDefinition(policy: string): string {
+  const names = readdirSync(migrationsDirectory)
+    .filter((name) => /^\d{14}_[a-z0-9_]+$/.test(name))
+    .sort();
+  let definition = "";
+  for (const name of names) {
+    const sql = readFileSync(new URL(`${name}/migration.sql`, migrationsDirectory), "utf8");
+    const match = new RegExp(`CREATE POLICY ${policy} [\\s\\S]*?;`).exec(sql);
+    if (match) definition = match[0];
+  }
+  return definition;
+}
+
+/** Every (tenant table, column) pair that holds a foreign key to "User". */
+function tenantUserReferencesFromSchema(): Array<[string, string]> {
+  const refs: Array<[string, string]> = [];
+  for (const [, model, body] of schema.matchAll(/^model\s+(\w+)\s*\{([\s\S]*?)^\}/gm)) {
+    if (!/^\s*tenantId\s+String/m.test(body)) continue;
+    for (const [, args] of body.matchAll(/^\s*\w+\s+User\??\s+@relation\(([^)]*)\)/gm)) {
+      const column = /fields:\s*\[(\w+)\]/.exec(args)?.[1];
+      if (column) refs.push([model, column]);
+    }
+  }
+  return refs;
+}
+
 function tenantModelsFromSchema(): string[] {
   return [...schema.matchAll(/^model\s+(\w+)\s*\{([\s\S]*?)^\}/gm)]
     .filter((match) => /^\s*tenantId\s+/m.test(match[2]))
@@ -117,5 +144,32 @@ describe("RLS hardening migration", () => {
     expect(COLUMN_PRIVILEGES.Tenant.UPDATE).not.toContain("customDomainVerifiedAt");
     expect(COLUMN_PRIVILEGES.Tenant.UPDATE).not.toContain("referralPercent");
     expect(migrationCorpus).toContain('REVOKE UPDATE ("name", "avatarUrl", "updatedAt")');
+  });
+
+  it("lets tenants read exactly the users their own rows reference", () => {
+    // Former members keep their posts, comments, orders, ... after their
+    // Membership row is deleted. The User policy must admit every user a
+    // tenant row references, or relations to them resolve to NULL under RLS.
+    const policy = latestPolicyDefinition("tenant_member_users_select");
+    expect(policy).toContain('ON public."User"');
+    expect(policy).toContain("FOR SELECT");
+    const refs = tenantUserReferencesFromSchema();
+    expect(refs).toContainEqual(["Membership", "userId"]);
+    expect(refs).toContainEqual(["Post", "authorId"]);
+    for (const [table, column] of refs) {
+      const clause = new RegExp(
+        `FROM public\\."${table}" AS ref\\s+WHERE ref\\."${column}" = "User"\\."id"\\s+` +
+          `AND ref\\."tenantId" = current_setting\\('aera\\.tenant_id', true\\)`,
+      );
+      // aera_app cannot SELECT privileged-only tables, so the policy must not
+      // consult them (the subquery would fail with "permission denied").
+      if ((PRIVILEGED_ONLY_TENANT_TABLES as readonly string[]).includes(table)) {
+        expect(policy, `${table}.${column}`).not.toMatch(clause);
+      } else {
+        expect(policy, `${table}.${column}`).toMatch(clause);
+      }
+    }
+    // Current members first: the cheap unique-index check short-circuits.
+    expect(policy.indexOf('public."Membership"')).toBeLessThan(policy.indexOf('public."Post"'));
   });
 });

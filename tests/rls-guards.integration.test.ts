@@ -22,6 +22,18 @@ const viewer = vi.hoisted(() => ({ current: null as null | { id: string } }));
 vi.mock("@/lib/auth", () => ({
   getCurrentUser: async () => viewer.current,
 }));
+// Error texts come from next-intl, which needs a Next request; keys suffice here.
+vi.mock("@/lib/action-errors", () => {
+  const t = Object.assign((key: string) => key, { has: () => true });
+  return {
+    getErrorTranslator: async () => t,
+    tErr: async (key: string) => key,
+    zodError: (_t: unknown, r: { error: { issues: { message?: string }[] } }) =>
+      r.error.issues[0]?.message ?? "invalidInput",
+    zodErr: async (r: { error: { issues: { message?: string }[] } }) =>
+      r.error.issues[0]?.message ?? "invalidInput",
+  };
+});
 vi.mock("next/cache", () => ({ revalidatePath: () => undefined, revalidateTag: () => undefined }));
 vi.mock("next/navigation", () => ({
   redirect: (url: string) => {
@@ -172,6 +184,42 @@ describe.skipIf(!enabled)("tenant RLS context after guards (Postgres)", async ()
     });
   });
 
+  it("resolves former members' content but never unrelated users", async () => {
+    const former = randomUUID();
+    const stranger = randomUUID();
+    for (const id of [former, stranger]) {
+      await systemPrisma.user.create({
+        data: { id, email: `rls-guard-${id}@aera.test`, passwordHash: "x", name: `User ${id.slice(0, 4)}` },
+      });
+    }
+    try {
+      const space = await systemPrisma.space.findFirstOrThrow({ where: { tenantId: tenantA.id } });
+      // Left the community: Membership row deleted, the post stays.
+      const post = await systemPrisma.post.create({
+        data: { tenantId: tenantA.id, spaceId: space.id, authorId: former, title: "kept", body: "" },
+      });
+      await withTenantContext(tenantA.id, async () => {
+        const row = await prisma.post.findUniqueOrThrow({
+          where: { id: post.id },
+          include: { author: { select: { id: true, name: true } } },
+        });
+        expect(row.author?.id).toBe(former);
+        const visible = await prisma.user.findMany({
+          where: { id: { in: [former, stranger] } },
+          select: { id: true },
+        });
+        expect(visible).toEqual([{ id: former }]);
+        // Column grants still apply to visible users.
+        await expect(
+          prisma.user.findUnique({ where: { id: former }, select: { passwordHash: true } }),
+        ).rejects.toThrow();
+      });
+    } finally {
+      await systemPrisma.post.deleteMany({ where: { authorId: former } });
+      await systemPrisma.user.deleteMany({ where: { id: { in: [former, stranger] } } });
+    }
+  });
+
   it("keeps prisma.$transaction atomic and RLS-scoped inside a tenant context", async () => {
     await withTenantContext(tenantA.id, async () => {
       const state = await prisma.$transaction(async (tx) => {
@@ -308,5 +356,142 @@ describe.skipIf(!enabled)("server actions write under RLS after their guard (Pos
     expect(logged).toEqual([
       { table: "EventRsvp", role: "aera_app", tenant_id: tenant.id, row_tenant: tenant.id },
     ]);
+  });
+});
+
+/**
+ * Smoke over the main dashboard and community write paths: each action runs
+ * after its guard, under RLS, and must neither throw (e.g. "permission denied"
+ * on a global table) nor return an error. Writes are recorded by a temporary
+ * trigger and must all come from aera_app with the tenant GUC set.
+ */
+describe.skipIf(!enabled)("main dashboard and community actions under RLS (Postgres)", async () => {
+  const { systemPrisma } = await import("@/lib/prisma");
+  const dashboard = await import("@/app/actions/dashboard");
+  const engage = await import("@/app/actions/engage");
+
+  const run = randomUUID().slice(0, 8);
+  const probe = `rls_flow_${run}`;
+  const ownerId = randomUUID();
+  const memberId = randomUUID();
+  const tenant = { id: randomUUID(), slug: `rls-flow-${run}` };
+  const probed = ["Space", "MembershipTier", "Event", "Badge", "Post", "Comment", "Reaction", "Membership", "Tenant"];
+
+  const form = (fields: Record<string, string>) => {
+    const fd = new FormData();
+    fd.set("tenant", tenant.slug);
+    for (const [key, value] of Object.entries(fields)) fd.set(key, value);
+    return fd;
+  };
+  const writes = () =>
+    systemPrisma.$queryRawUnsafe<Array<{ table: string; role: string; tenant_id: string | null }>>(
+      `SELECT "table", "role", "tenant_id" FROM "${probe}"."log" ORDER BY "at"`,
+    );
+
+  beforeAll(async () => {
+    for (const [id, name] of [[ownerId, "Flow Owner"], [memberId, "Flow Member"]] as const) {
+      await systemPrisma.user.create({
+        data: { id, email: `rls-flow-${id}@aera.test`, passwordHash: "x", name, emailVerifiedAt: new Date() },
+      });
+    }
+    await systemPrisma.tenant.create({
+      data: { id: tenant.id, name: `RLS Flow ${run}`, slug: tenant.slug, subdomain: tenant.slug, ownerId },
+    });
+    await systemPrisma.membership.createMany({
+      data: [
+        { tenantId: tenant.id, userId: ownerId, role: "OWNER", status: "ACTIVE" },
+        { tenantId: tenant.id, userId: memberId, role: "MEMBER", status: "ACTIVE" },
+      ],
+    });
+    const statements = [
+      `CREATE SCHEMA "${probe}"`,
+      `CREATE TABLE "${probe}"."log" ("at" timestamptz NOT NULL DEFAULT clock_timestamp(),
+         "table" text NOT NULL, "role" text NOT NULL, "tenant_id" text)`,
+      `GRANT USAGE ON SCHEMA "${probe}" TO aera_app`,
+      `GRANT INSERT ON "${probe}"."log" TO aera_app`,
+      `CREATE FUNCTION "${probe}"."capture"() RETURNS trigger LANGUAGE plpgsql AS $fn$
+       BEGIN
+         INSERT INTO "${probe}"."log" ("table", "role", "tenant_id")
+         VALUES (TG_TABLE_NAME, current_user::text, NULLIF(current_setting('aera.tenant_id', true), ''));
+         RETURN NEW;
+       END
+       $fn$`,
+      ...probed.map(
+        (table) =>
+          `CREATE TRIGGER "${probe}" AFTER INSERT OR UPDATE ON public."${table}"
+           FOR EACH ROW WHEN (NEW.${table === "Tenant" ? '"id"' : '"tenantId"'} = '${tenant.id}')
+           EXECUTE FUNCTION "${probe}"."capture"()`,
+      ),
+    ];
+    for (const statement of statements) await systemPrisma.$executeRawUnsafe(statement);
+  });
+
+  afterAll(async () => {
+    viewer.current = null;
+    for (const table of probed) {
+      await systemPrisma.$executeRawUnsafe(`DROP TRIGGER IF EXISTS "${probe}" ON public."${table}"`);
+    }
+    await systemPrisma.$executeRawUnsafe(`DROP SCHEMA IF EXISTS "${probe}" CASCADE`);
+    await systemPrisma.tenant.deleteMany({ where: { id: tenant.id } });
+    await systemPrisma.user.deleteMany({ where: { id: { in: [ownerId, memberId] } } });
+    await systemPrisma.$disconnect();
+  });
+
+  it("runs the creator dashboard actions", async () => {
+    viewer.current = { id: ownerId };
+    expect(await dashboard.createSpaceAction({}, form({ name: "Feed", type: "FEED", visibility: "PUBLIC" }))).toEqual({ ok: true });
+    expect(await dashboard.createSpaceAction({}, form({ name: "Events", type: "EVENTS", visibility: "PUBLIC" }))).toEqual({ ok: true });
+    const spaces = await systemPrisma.space.findMany({ where: { tenantId: tenant.id } });
+    const feed = spaces.find((s) => s.type === "FEED")!;
+    const events = spaces.find((s) => s.type === "EVENTS")!;
+
+    expect(await dashboard.createTierAction({}, form({ name: "Free", priceCents: "0", interval: "FREE" }))).toEqual({ ok: true });
+    expect(
+      await dashboard.createEventAction(
+        {},
+        form({ spaceId: events.id, title: "Launch", startsAt: new Date(Date.now() + 86_400_000).toISOString().slice(0, 16) }),
+      ),
+    ).toEqual({ ok: true });
+    expect(
+      await dashboard.createSpacePostAction({}, form({ spaceId: feed.id, title: "Welcome", body: "Hello" })),
+    ).toEqual({ ok: true });
+    expect(
+      await dashboard.updateBrandingAction(
+        {},
+        form({ name: `RLS Flow ${run} Renamed`, primaryColor: "#112233", accentColor: "#445566" }),
+      ),
+    ).toEqual({ ok: true });
+    expect(await dashboard.updateSubdomainAction({}, form({ subdomain: `rls-flow-sub-${run}` }))).toEqual({ ok: true });
+
+    const membership = await systemPrisma.membership.findFirstOrThrow({ where: { tenantId: tenant.id, userId: memberId } });
+    await dashboard.updateMemberRoleAction(form({ membershipId: membership.id, role: "MODERATOR" }));
+    expect((await systemPrisma.membership.findUniqueOrThrow({ where: { id: membership.id } })).role).toBe("MODERATOR");
+
+    const row = await systemPrisma.tenant.findUniqueOrThrow({ where: { id: tenant.id } });
+    expect(row.subdomain).toBe(`rls-flow-sub-${run}`);
+    expect(await systemPrisma.event.count({ where: { tenantId: tenant.id } })).toBe(1);
+    expect(await systemPrisma.post.count({ where: { tenantId: tenant.id } })).toBe(1);
+  });
+
+  it("runs the member community actions", async () => {
+    viewer.current = { id: memberId };
+    const post = await systemPrisma.post.findFirstOrThrow({ where: { tenantId: tenant.id }, include: { space: true } });
+    expect(
+      await engage.createPostAction({}, form({ space: post.space.slug, title: "Member post", body: "Hi all" })),
+    ).toEqual({ ok: true });
+    expect(await engage.createCommentAction({}, form({ postId: post.id, body: "Nice!" }))).toEqual({ ok: true });
+    await engage.toggleReactionAction(form({ postId: post.id, space: post.space.slug }));
+
+    expect(await systemPrisma.post.count({ where: { tenantId: tenant.id, authorId: memberId } })).toBe(1);
+    expect(await systemPrisma.comment.count({ where: { tenantId: tenant.id, authorId: memberId } })).toBe(1);
+    expect(await systemPrisma.reaction.count({ where: { tenantId: tenant.id, userId: memberId } })).toBe(1);
+  });
+
+  it("issued every probed write as aera_app for this tenant", async () => {
+    const logged = await writes();
+    expect(new Set(logged.map((w) => w.table))).toEqual(
+      new Set(["Space", "MembershipTier", "Event", "Post", "Tenant", "Membership", "Comment", "Reaction"]),
+    );
+    expect(logged.filter((w) => w.role !== "aera_app" || w.tenant_id !== tenant.id)).toEqual([]);
   });
 });

@@ -11,6 +11,15 @@
 --         SET LOCAL aera.tenant_id = '<tenant-id>';
 --     inside the same transaction, enforcing isolation even when the physical
 --     connection belongs to the table owner.
+--   * The tenant context is an explicit scope (lib/prisma.ts): guards only
+--     authorize, callers run their queries in
+--     `withTenantContext(tenant.id, async () => ...)`. tests/tenant-scope.test.ts
+--     rejects call sites that skip it; tests/rls-guards.integration.test.ts
+--     proves role and GUC against Postgres.
+--   * "User" rows are visible to aera_app only for users the tenant has a
+--     Membership for or holds rows of (former members keep their content),
+--     limited to the granted profile columns
+--     (20261116120000_rls_user_content_references).
 --
 -- Example policy (created for each tenant table):
 --   ALTER TABLE "Post" ENABLE ROW LEVEL SECURITY;
