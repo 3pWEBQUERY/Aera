@@ -14,6 +14,16 @@ const COOKIE = "aera_sid";
 const LEGACY_COOKIE = "aera_session";
 const secret = new TextEncoder().encode(env.AUTH_SECRET);
 
+async function requestHost(): Promise<string> {
+  return ((await headers()).get("host") ?? "").split(":")[0].toLowerCase();
+}
+
+function isPlatformHost(host: string): boolean {
+  const root = env.ROOT_DOMAIN;
+  if (!root || !root.includes(".")) return true;
+  return host === root || host.endsWith(`.${root}`);
+}
+
 /**
  * Scope the session to `.aera.so` so every tenant subdomain shares one login
  * with the apex. A custom domain is a different registrable domain and
@@ -24,11 +34,25 @@ async function sessionCookieDomain(): Promise<string | undefined> {
   // Local development runs on a bare host with no dot — a Domain attribute
   // there is invalid and browsers drop the cookie entirely.
   if (!root || root === "localhost" || !root.includes(".")) return undefined;
-  const host = ((await headers()).get("host") ?? "")
-    .split(":")[0]
-    .toLowerCase();
-  if (host === root || host.endsWith(`.${root}`)) return `.${root}`;
-  return undefined;
+  return isPlatformHost(await requestHost()) ? `.${root}` : undefined;
+}
+
+/**
+ * Audience a session token is valid for. Tokens minted on the platform
+ * (apex, tenant subdomains, mobile API) carry PLATFORM_AUDIENCE. A creator's
+ * custom domain is controlled by the creator (their DNS, possibly their own
+ * CDN/proxy in front), so a cookie set there could be read by them — it must
+ * never be replayable on aera.so. Such tokens are bound to exactly that host.
+ */
+export const PLATFORM_AUDIENCE = "aera";
+
+export function sessionAudienceForHost(host: string): string {
+  const normalized = host.split(":")[0].toLowerCase();
+  return isPlatformHost(normalized) ? PLATFORM_AUDIENCE : `custom:${normalized}`;
+}
+
+async function currentAudience(): Promise<string> {
+  return sessionAudienceForHost(await requestHost());
 }
 
 /**
@@ -40,12 +64,16 @@ export interface SessionPayload {
   sessionVersion: number;
 }
 
-export async function signSession(payload: SessionPayload): Promise<string> {
+export async function signSession(
+  payload: SessionPayload,
+  audience: string = PLATFORM_AUDIENCE,
+): Promise<string> {
   return await new SignJWT({
     userId: payload.userId,
     sessionVersion: payload.sessionVersion,
   })
     .setProtectedHeader({ alg: "HS256" })
+    .setAudience(audience)
     .setIssuedAt()
     .setExpirationTime("30d")
     .sign(secret);
@@ -53,12 +81,18 @@ export async function signSession(payload: SessionPayload): Promise<string> {
 
 export async function verifySession(
   token: string,
+  audience: string = PLATFORM_AUDIENCE,
 ): Promise<SessionPayload | null> {
   try {
-    const { payload } = await jwtVerify(token, secret);
+    // Tokens without an audience predate host binding and are rejected: one
+    // minted on a custom domain could otherwise be replayed on the platform.
+    const { payload } = await jwtVerify(token, secret, {
+      audience,
+      algorithms: ["HS256"],
+    });
     if (typeof payload.userId !== "string" || !payload.userId) return null;
-    // Legacy tokens map to version 0, preserving existing sessions until the
-    // first security-sensitive account change.
+    // Tokens without a version map to 0 until the first security-sensitive
+    // account change.
     const sessionVersion =
       typeof payload.sessionVersion === "number" &&
       Number.isSafeInteger(payload.sessionVersion) &&
@@ -75,11 +109,11 @@ export async function getSession(): Promise<SessionPayload | null> {
   const store = await cookies();
   const token = store.get(COOKIE)?.value ?? store.get(LEGACY_COOKIE)?.value;
   if (!token) return null;
-  return verifySession(token);
+  return verifySession(token, await currentAudience());
 }
 
 export async function setSessionCookie(payload: SessionPayload): Promise<void> {
-  const token = await signSession(payload);
+  const token = await signSession(payload, await currentAudience());
   const store = await cookies();
   store.set(COOKIE, token, {
     httpOnly: true,

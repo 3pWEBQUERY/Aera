@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { safeRelativePath } from "@/lib/safe-redirect";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -19,10 +20,7 @@ export default async function SignupPage({
 }) {
   const { next } = await searchParams;
   const user = await getCurrentUser();
-  const safeNext =
-    next?.startsWith("/") && !next.startsWith("//") && !next.startsWith("/\\")
-      ? next
-      : "/home";
+  const safeNext = safeRelativePath(next, "/home");
   if (user) redirect(safeNext);
   const t = await getTranslations("authPages");
 

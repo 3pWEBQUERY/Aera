@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { canAccess, type AccessContext } from "@/lib/entitlements";
+import { canAccess, canParticipate, type AccessContext } from "@/lib/entitlements";
 import { parseChatSettings } from "@/lib/space-settings";
 import { insertDirectMessage, insertSpaceMessage, lastMessageAt } from "@/lib/chat";
 import { publish, chatChannel } from "@/lib/realtime";
@@ -40,7 +40,11 @@ async function resolveConversation(
     },
     select: { id: true },
   });
-  if (dm) return { kind: "dm", conversationId: dm.id };
+  // Banned/removed members keep their conversation seat; only an ACTIVE
+  // membership may still read or send direct messages.
+  if (dm) {
+    return ctx.membership?.status === "ACTIVE" ? { kind: "dm", conversationId: dm.id } : null;
+  }
 
   const space = await prisma.space.findFirst({
     where: { id: conversationId, tenantId: tenant.id, type: "CHAT", isArchived: false },
@@ -131,6 +135,10 @@ export async function POST(
   const s = await setup(req, slug, conversationId);
   if ("response" in s) return s.response;
   const { tenant, user, ctx, target } = s;
+  // Reading a public room is open; writing needs an ACTIVE membership.
+  if (!canParticipate(ctx)) {
+    return jsonError("not_member", "Active membership required to chat.", 403);
+  }
 
   const parsed = await parseJsonBody(req, postSchema);
   if ("response" in parsed) return parsed.response;

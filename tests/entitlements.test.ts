@@ -125,15 +125,29 @@ describe("buildAccessContext / hasPaidEntitlement", () => {
     );
   });
 
-  it("purchase-backed keys (product:/media:) count as paid without a DB check", async () => {
+  it("purchase-backed media keys count as paid without a DB check", async () => {
+    prisma.membership.findUnique.mockResolvedValue({
+      id: "m1", tenantId: "t1", userId: "u1", role: "MEMBER", status: "ACTIVE",
+    });
+    prisma.entitlement.findMany.mockResolvedValue([{ key: "media:pack" }]);
+
+    const result = await buildAccessContext("t1", "u1");
+    expect(result.hasPaidEntitlement).toBe(true);
+    expect(prisma.membershipTier.findFirst).not.toHaveBeenCalled();
+  });
+
+  it("counts product keys as paid only while a priced product grants them", async () => {
     prisma.membership.findUnique.mockResolvedValue({
       id: "m1", tenantId: "t1", userId: "u1", role: "MEMBER", status: "ACTIVE",
     });
     prisma.entitlement.findMany.mockResolvedValue([{ key: "product:ebook" }]);
 
-    const result = await buildAccessContext("t1", "u1");
-    expect(result.hasPaidEntitlement).toBe(true);
-    expect(prisma.membershipTier.findFirst).not.toHaveBeenCalled();
+    prisma.product.findFirst.mockResolvedValueOnce({ id: "p1" });
+    expect((await buildAccessContext("t1", "u1")).hasPaidEntitlement).toBe(true);
+
+    // A free lead-magnet product must not open generic PAID gates.
+    prisma.product.findFirst.mockResolvedValueOnce(null);
+    expect((await buildAccessContext("t1", "u1")).hasPaidEntitlement).toBe(false);
   });
 
   it("marks moderators and above as staff", async () => {

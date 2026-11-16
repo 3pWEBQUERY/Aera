@@ -417,7 +417,11 @@ function jsonStream(input: {
 
 function csvEscape(value: unknown): string {
   if (value === null || value === undefined) return "";
-  const raw = typeof value === "object" ? JSON.stringify(value) : String(value);
+  let raw = typeof value === "object" ? JSON.stringify(value) : String(value);
+  // Member-written text ends up in the owner's spreadsheet. A cell starting
+  // with = + - @ (or a tab/CR) would be evaluated as a formula (CSV
+  // injection), so it is prefixed with an apostrophe.
+  if (typeof value === "string" && /^[=+\-@\t\r]/.test(raw)) raw = `'${raw}`;
   return /[",\n\r]/.test(raw) ? `"${raw.replace(/"/g, '""')}"` : raw;
 }
 

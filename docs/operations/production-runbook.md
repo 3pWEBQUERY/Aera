@@ -123,7 +123,7 @@ npm run db:backup -- --retention-days 30
 Für Railway ist dafür `railway.backup.toml` plus `Dockerfile.backup`
 vorbereitet. Einen dritten Service aus demselben Repository anlegen und als
 Custom Config Path `/railway.backup.toml` setzen. Der Job läuft täglich um
-02:17 UTC, enthält einen PostgreSQL-17-Client sowie `age` und beendet sich nach
+02:17 UTC, enthält einen PostgreSQL-18-Client sowie `age` und beendet sich nach
 dem Upload. `DATABASE_URL` wird als Referenz auf Postgres gesetzt; alle
 `BACKUP_*`-Werte gehören nur in diesen Service. Im unabhängigen Bucket bleiben
 Object Lock/Versionierung und eine Lifecycle-Retention von mindestens 30 Tagen

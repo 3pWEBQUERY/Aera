@@ -9,6 +9,8 @@ import { env, features } from "@/lib/env";
 import {
   buildAccessContext,
   canAccess,
+  canCreatePostIn,
+  canParticipate,
   entitlementKeys,
   grantEntitlement,
   revokePreviousTierEntitlement,
@@ -378,6 +380,10 @@ export async function createPostAction(
 
   const acc = await spaceAccess(tenant.id, spaceSlug, user.id);
   if (!acc.space || !acc.allowed) return { error: t("noAccessSpace") };
+  // Members post only where the UI offers a composer (feed/forum) and only
+  // while their membership is active; blog, video, podcast … stay creator
+  // content.
+  if (!canCreatePostIn(acc.space, acc.ctx)) return { error: t("noAccessSpace") };
 
   // The forum popover submits rich `bodyHtml`; the inline feed composer submits
   // a plain `body` validated by postSchema.
@@ -464,7 +470,7 @@ export async function createCommentAction(
   });
   if (!space) return { error: t("noAccess") };
   const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(space, ctx)) return { error: t("noAccess") };
+  if (!canAccess(space, ctx) || !canParticipate(ctx)) return { error: t("noAccess") };
 
   const parsed = commentSchema.safeParse({
     body: fd.get("body"),
@@ -568,7 +574,7 @@ export async function toggleCommentLikeAction(fd: FormData): Promise<void> {
   });
   if (!comment) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(comment.post.space, ctx)) return;
+  if (!canAccess(comment.post.space, ctx) || !canParticipate(ctx)) return;
 
   const existing = await prisma.reaction.findFirst({
     where: { tenantId: tenant.id, commentId, userId: user!.id, type: "LIKE" },
@@ -631,7 +637,7 @@ export async function toggleReactionAction(fd: FormData): Promise<void> {
   });
   if (!post) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(post.space, ctx)) return;
+  if (!canAccess(post.space, ctx) || !canParticipate(ctx)) return;
 
   const existing = await prisma.reaction.findFirst({
     where: { tenantId: tenant.id, postId, userId: user!.id, type: "LIKE" },
@@ -695,7 +701,7 @@ export async function votePollAction(fd: FormData): Promise<void> {
   });
   if (!post) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(post.space, ctx)) return;
+  if (!canAccess(post.space, ctx) || !canParticipate(ctx)) return;
   const indices = fd
     .getAll("optionIndex")
     .map((v) => Number(v))
@@ -1264,7 +1270,7 @@ export async function voteAction(fd: FormData): Promise<void> {
         )?.space;
   if (!targetSpace) return;
   const ctx = await buildAccessContext(tenant.id, user!.id);
-  if (!canAccess(targetSpace, ctx)) return;
+  if (!canAccess(targetSpace, ctx) || !canParticipate(ctx)) return;
 
   const scope =
     targetType === "comment"

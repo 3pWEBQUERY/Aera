@@ -1,3 +1,4 @@
+import { canParticipate } from "@/lib/entitlements";
 import { NextResponse } from "next/server";
 import { fetchLiveMessagesSince, fetchRecentLiveMessages, insertLiveMessage } from "@/lib/live";
 import { publish, liveChannel } from "@/lib/realtime";
@@ -39,7 +40,10 @@ export async function POST(
   if (!body.trim()) return NextResponse.json({ error: "empty" }, { status: 400 });
 
   const r = await resolveLiveAccess(slug, sessionId);
-  if (!r) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  // Reading a public room is open; writing needs an ACTIVE membership.
+  if (!r || !canParticipate(r.community.ctx)) {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
 
   const message = await insertLiveMessage(
     r.community.tenant.id,

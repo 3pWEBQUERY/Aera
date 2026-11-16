@@ -124,6 +124,13 @@ export async function fulfillTierPurchase(input: {
   }
 
   const currentPeriodEnd = txDate(txn.expiresDate);
+  // A subscription JWS is a snapshot. Replaying the original one after the
+  // period ended (or after an EXPIRED/REFUND notification cancelled it) must
+  // not reactivate the membership — only a current, unexpired transaction
+  // may grant access. Renewals arrive as new transactions with a later date.
+  if (!currentPeriodEnd || currentPeriodEnd.getTime() <= Date.now()) {
+    throw new IapFulfillmentError("iap_invalid", "Subscription transaction has expired.", 409);
+  }
   const priorMembership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId } },
     select: { tierId: true, status: true },
@@ -359,6 +366,13 @@ async function resolveOneTimeTarget(input: {
       if (!req || req.priceCents <= 0) {
         throw new IapFulfillmentError("not_found", "Priced request not found.", 404);
       }
+      // Same rules as the web checkout: only the requester pays, and only
+      // while the request is waiting for payment (FULFILLED stays allowed so
+      // an interrupted fulfillment can be retried idempotently). Otherwise
+      // anyone could buy someone else's commissioned deliverable.
+      if (req.requesterId !== userId || (req.status !== "PRICED" && req.status !== "FULFILLED")) {
+        throw new IapFulfillmentError("not_found", "Priced request not found.", 404);
+      }
       requirePoolMatch(req.priceCents, "request price");
       const key = req.entitlementKey ?? `request:${req.id}`;
       return {
@@ -471,10 +485,33 @@ export async function fulfillOneTimePurchase(input: {
 
   const existingOrder = await prisma.order.findUnique({
     where: { appleTransactionId: txn.transactionId },
-    select: { id: true, tenantId: true, userId: true },
+    select: {
+      id: true,
+      tenantId: true,
+      userId: true,
+      productId: true,
+      description: true,
+      grantedEntitlementKey: true,
+    },
   });
   if (existingOrder && (existingOrder.tenantId !== tenant.id || existingOrder.userId !== userId)) {
     throw new IapFulfillmentError("iap_invalid", "Transaction already redeemed by another account.", 409);
+  }
+  // A retry may only repair the purchase this transaction originally paid
+  // for. Consumables share one Apple product per price point, so without
+  // this check one transaction could be replayed against every other item
+  // at the same price and unlock all of them.
+  if (
+    existingOrder &&
+    ((existingOrder.grantedEntitlementKey ?? null) !== (target.entitlementKey ?? null) ||
+      (existingOrder.productId ?? null) !== (target.productId ?? null) ||
+      existingOrder.description !== target.description)
+  ) {
+    throw new IapFulfillmentError(
+      "iap_invalid",
+      "Transaction was already redeemed for a different item.",
+      409,
+    );
   }
 
   const firstFulfillment = !existingOrder;

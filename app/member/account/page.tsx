@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { safeRelativePath } from "@/lib/safe-redirect";
 import { TicketThreads } from "@/components/support/ticket-threads";
 import { listUserTickets, userUnreadCount, markReadForUser } from "@/lib/support";
 import { redirect } from "next/navigation";
@@ -57,8 +58,7 @@ function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
 }
 
 function safeFrom(from?: string): string {
-  if (from && from.startsWith("/") && !from.startsWith("//")) return from;
-  return "/home";
+  return safeRelativePath(from, "/home");
 }
 
 /**

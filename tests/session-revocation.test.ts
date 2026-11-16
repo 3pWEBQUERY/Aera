@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { SignJWT } from "jose";
 import { env } from "@/lib/env";
-import { signSession, verifySession } from "@/lib/session";
+import {
+  PLATFORM_AUDIENCE,
+  sessionAudienceForHost,
+  signSession,
+  verifySession,
+} from "@/lib/session";
 import { sessionMatchesUser } from "@/lib/auth";
 
 const secret = new TextEncoder().encode(env.AUTH_SECRET);
@@ -16,9 +21,10 @@ describe("session revocation versions", () => {
     });
   });
 
-  it("keeps legacy pre-version tokens compatible as version zero", async () => {
+  it("maps tokens without a session version to version zero", async () => {
     const legacy = await new SignJWT({ userId: "u1" })
       .setProtectedHeader({ alg: "HS256" })
+      .setAudience(PLATFORM_AUDIENCE)
       .setIssuedAt()
       .setExpirationTime("1h")
       .sign(secret);
@@ -26,6 +32,29 @@ describe("session revocation versions", () => {
     await expect(verifySession(legacy)).resolves.toEqual({
       userId: "u1",
       sessionVersion: 0,
+    });
+  });
+
+  it("rejects tokens without an audience", async () => {
+    const unbound = await new SignJWT({ userId: "u1", sessionVersion: 1 })
+      .setProtectedHeader({ alg: "HS256" })
+      .setIssuedAt()
+      .setExpirationTime("1h")
+      .sign(secret);
+
+    await expect(verifySession(unbound)).resolves.toBeNull();
+  });
+
+  it("never accepts a custom-domain session on the platform", async () => {
+    const audience = sessionAudienceForHost("creator-domain.example");
+    expect(audience).toBe("custom:creator-domain.example");
+    const token = await signSession({ userId: "u1", sessionVersion: 1 }, audience);
+
+    await expect(verifySession(token)).resolves.toBeNull();
+    await expect(verifySession(token, "custom:other.example")).resolves.toBeNull();
+    await expect(verifySession(token, audience)).resolves.toEqual({
+      userId: "u1",
+      sessionVersion: 1,
     });
   });
 

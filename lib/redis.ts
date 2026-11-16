@@ -94,6 +94,10 @@ async function getRedisConnection(role: RedisConnectionRole): Promise<Redis | nu
         connectTimeout: 2_000,
         enableOfflineQueue: false,
         enableReadyCheck: true,
+        // Resolve both A and AAAA records: Railway's private network
+        // (redis.railway.internal) may be IPv6-only, and ioredis defaults to
+        // IPv4 lookups.
+        family: 0,
         keepAlive: 10_000,
         lazyConnect: false,
         maxRetriesPerRequest: 1,

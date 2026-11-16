@@ -1,6 +1,6 @@
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { buildAccessContext, canAccess } from "@/lib/entitlements";
+import { buildAccessContext, canAccess, canCreatePostIn } from "@/lib/entitlements";
 import { awardPoints } from "@/lib/gamification";
 import { moderateContent } from "@/lib/moderation";
 import { indexContent } from "@/lib/ai";

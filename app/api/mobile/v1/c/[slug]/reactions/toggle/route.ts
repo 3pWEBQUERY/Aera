@@ -1,6 +1,6 @@
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { buildAccessContext, canAccess } from "@/lib/entitlements";
+import { buildAccessContext, canAccess, canParticipate } from "@/lib/entitlements";
 import { awardPoints } from "@/lib/gamification";
 import { notify } from "@/lib/notifications";
 import { jsonError, jsonOk, parseJsonBody, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
@@ -46,7 +46,7 @@ export async function POST(
     });
     if (!comment) return jsonError("not_found", "Comment not found.", 404);
     const ctx = await buildAccessContext(tenant.id, user.id);
-    if (!canAccess(comment.post.space, ctx)) {
+    if (!canAccess(comment.post.space, ctx) || !canParticipate(ctx)) {
       return jsonError("not_member", "You do not have access to this space.", 403);
     }
 
@@ -108,7 +108,7 @@ export async function POST(
   });
   if (!post) return jsonError("not_found", "Post not found.", 404);
   const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(post.space, ctx)) {
+  if (!canAccess(post.space, ctx) || !canParticipate(ctx)) {
     return jsonError("not_member", "You do not have access to this space.", 403);
   }
 

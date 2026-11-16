@@ -1,7 +1,8 @@
 FROM node:24.14.1-bookworm-slim
 
 # pg_dump must be at least as new as the PostgreSQL server. Railway currently
-# deploys modern Postgres images, so install the pinned v17 client from PGDG.
+# deploys Postgres 18 (railwayapp-templates/postgres-ssl:18), so install the
+# pinned v18 client from PGDG. A v18 pg_dump also dumps older servers.
 RUN apt-get update \
   && apt-get install -y --no-install-recommends age ca-certificates curl \
   && install -d /usr/share/postgresql-common/pgdg \
@@ -10,7 +11,7 @@ RUN apt-get update \
   && echo "deb [signed-by=/usr/share/postgresql-common/pgdg/apt.postgresql.org.asc] https://apt.postgresql.org/pub/repos/apt bookworm-pgdg main" \
     > /etc/apt/sources.list.d/pgdg.list \
   && apt-get update \
-  && apt-get install -y --no-install-recommends postgresql-client-17 \
+  && apt-get install -y --no-install-recommends postgresql-client-18 \
   && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

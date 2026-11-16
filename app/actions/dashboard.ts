@@ -1241,7 +1241,11 @@ export async function createMemberAction(
     metadata: { email, role },
   });
   revalidatePath(`/dashboard/${slug}/members`);
-  return { ok: true, inviteUrl: inviteLink };
+  // Accepting an invite marks the address as verified. When mail works, the
+  // link must reach only that mailbox — handing it to the inviting admin
+  // would let them claim any address as a "verified" account. Without mail
+  // the link is the only way in, so it is shown as before.
+  return { ok: true, inviteUrl: features.email ? undefined : inviteLink };
 }
 
 /** Edit a member's role, tier and status. Owners are protected. */
@@ -2094,8 +2098,10 @@ export async function updateCustomDomainAction(
     if (!/^([a-z0-9-]+\.)+[a-z]{2,}$/.test(domain)) {
       return { error: await tErr("validDomain") };
     }
-    const taken = await prisma.tenant.findFirst({
+    // Global check: the tenant-scoped client cannot see other tenants.
+    const taken = await systemPrisma.tenant.findFirst({
       where: { customDomain: domain, id: { not: tenant.id } },
+      select: { id: true },
     });
     if (taken) return { error: await tErr("domainTaken") };
   }
@@ -3056,7 +3062,10 @@ export async function updateSubdomainAction(
   if (RESERVED_SUBDOMAINS.has(sub)) {
     return { error: await tErr("subReserved") };
   }
-  const taken = await prisma.tenant.findFirst({
+  // Uniqueness spans ALL tenants. The tenant-scoped client only sees this
+  // tenant's own row under RLS, which would let anyone claim another
+  // community's slug as their subdomain and hijack `<slug>.aera.so`.
+  const taken = await systemPrisma.tenant.findFirst({
     where: { id: { not: tenant.id }, OR: [{ subdomain: sub }, { slug: sub }] },
     select: { id: true },
   });

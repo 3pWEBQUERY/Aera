@@ -1,6 +1,6 @@
 import { z } from "zod";
 import prisma from "@/lib/prisma";
-import { buildAccessContext, canAccess } from "@/lib/entitlements";
+import { buildAccessContext, canAccess, canParticipate } from "@/lib/entitlements";
 import { awardPoints } from "@/lib/gamification";
 import { moderateContent } from "@/lib/moderation";
 import { notify } from "@/lib/notifications";
@@ -43,7 +43,7 @@ export async function POST(
   });
   if (!space) return jsonError("not_found", "Space not found.", 404);
   const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(space, ctx)) {
+  if (!canAccess(space, ctx) || !canParticipate(ctx)) {
     return jsonError("not_member", "You do not have access to this space.", 403);
   }
 

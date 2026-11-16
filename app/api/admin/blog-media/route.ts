@@ -27,6 +27,13 @@ const noStore = { "Cache-Control": "no-store" };
 const MAX_BLOG_VIDEO_BYTES = 32 * 1024 * 1024;
 
 export async function POST(req: Request) {
+  // Tenant subdomains are *same-site* with the admin host, so SameSite=Lax
+  // does not stop a form post from there. Only same-origin requests (or
+  // clients that send no Fetch Metadata) may reach the admin uploads.
+  const fetchSite = req.headers.get("sec-fetch-site");
+  if (fetchSite && fetchSite !== "same-origin") {
+    return NextResponse.json({ error: "forbidden" }, { status: 403 });
+  }
   // Wirft fuer alle anderen einen 404 — der Admin-Bereich bleibt unsichtbar.
   const admin = await requirePlatformAdmin();
 

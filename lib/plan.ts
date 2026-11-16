@@ -33,14 +33,29 @@ export const getTenantPlan = cache(async function getTenantPlan(
 ): Promise<PlanKey> {
   const wallet = await prisma.aiCreditWallet.findUnique({
     where: { tenantId },
-    select: { plan: true, planSource: true, promoExpiresAt: true },
+    select: {
+      plan: true,
+      planSource: true,
+      promoExpiresAt: true,
+      creatorSubscriptionStatus: true,
+    },
   });
   if (!wallet) return "FREE";
   const promoElapsed =
     wallet.planSource === "PROMO" &&
     wallet.promoExpiresAt !== null &&
     wallet.promoExpiresAt <= new Date();
-  return promoElapsed ? "FREE" : wallet.plan;
+  // Checkout completion only associates a Stripe subscription (status
+  // INCOMPLETE); the plan's features start with the first paid invoice
+  // (ACTIVE). An unpaid SEPA mandate or a cancelled subscription therefore
+  // never unlocks paid features. PAST_DUE keeps them during Stripe's dunning
+  // retries; a final failure ends the subscription and downgrades.
+  const unpaidStripePlan =
+    wallet.planSource === "STRIPE" &&
+    wallet.creatorSubscriptionStatus !== "ACTIVE" &&
+    wallet.creatorSubscriptionStatus !== "TRIALING" &&
+    wallet.creatorSubscriptionStatus !== "PAST_DUE";
+  return promoElapsed || unpaidStripePlan ? "FREE" : wallet.plan;
 });
 
 /** Full capability snapshot — safe to hand to client components. */
