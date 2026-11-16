@@ -12,7 +12,7 @@ import { join } from "node:path";
  * Genau dieser Fall ist einmal passiert; der Test haelt ihn fest.
  */
 describe("Content-Security-Policy", () => {
-  const config = readFileSync(join(process.cwd(), "next.config.ts"), "utf8");
+  const config = readFileSync(join(process.cwd(), "lib/csp.ts"), "utf8");
   const connectSrc = config
     .split("\n")
     .find((line) => line.includes("connect-src"));

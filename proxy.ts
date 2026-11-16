@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { contentSecurityPolicy, createNonce } from "./lib/csp";
 
 /**
  * Host-based routing:
@@ -169,7 +170,12 @@ function isStaticAsset(pathname: string): boolean {
   return lastSegment.includes(".");
 }
 
-function rewriteToCommunity(req: NextRequest, slug: string) {
+/** Pass the request on, with the headers that carry the per-request nonce. */
+function next(forward: Headers): NextResponse {
+  return NextResponse.next({ request: { headers: forward } });
+}
+
+function rewriteToCommunity(req: NextRequest, slug: string, forward: Headers) {
   const rewritten = req.nextUrl.clone();
   const path = req.nextUrl.pathname;
 
@@ -186,7 +192,7 @@ function rewriteToCommunity(req: NextRequest, slug: string) {
   } else {
     rewritten.pathname = `/c/${slug}${path === "/" ? "" : path}`;
   }
-  return NextResponse.rewrite(rewritten);
+  return NextResponse.rewrite(rewritten, { request: { headers: forward } });
 }
 
 function unknownTenantHost(): NextResponse {
@@ -196,7 +202,7 @@ function unknownTenantHost(): NextResponse {
   });
 }
 
-export async function proxy(req: NextRequest) {
+async function route(req: NextRequest, forward: Headers): Promise<NextResponse> {
   const host = req.headers.get("host") ?? "";
   const hostname = host.split(":")[0].toLowerCase();
   const root = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost")
@@ -212,13 +218,13 @@ export async function proxy(req: NextRequest) {
     hostname === "localhost" ||
     hostname === "127.0.0.1";
 
-  if (isApex) return NextResponse.next();
+  if (isApex) return next(forward);
 
   if (
     isStaticAsset(url.pathname) ||
     matchesPrefix(url.pathname, HOST_NEUTRAL_PREFIXES)
   ) {
-    return NextResponse.next();
+    return next(forward);
   }
 
   // Platform pages belong on the apex. Only safe methods are redirected: a
@@ -232,7 +238,7 @@ export async function proxy(req: NextRequest) {
         308,
       );
     }
-    return NextResponse.next();
+    return next(forward);
   }
 
   // Subdomain of the root domain -> resolve to a community. Matches a tenant
@@ -243,16 +249,32 @@ export async function proxy(req: NextRequest) {
     const sub = hostname.slice(0, -1 * (root.length + 1));
     if (sub && sub !== "www" && sub !== "app") {
       const resolved = await resolveHost(hostname);
-      return resolved ? rewriteToCommunity(req, resolved) : unknownTenantHost();
+      return resolved ? rewriteToCommunity(req, resolved, forward) : unknownTenantHost();
     }
-    return NextResponse.next();
+    return next(forward);
   }
 
   // Anything else is a potential custom domain (Tenant.customDomain).
   const slug = await resolveHost(hostname);
-  if (slug) return rewriteToCommunity(req, slug);
+  if (slug) return rewriteToCommunity(req, slug, forward);
 
   return unknownTenantHost();
+}
+
+/**
+ * Every response gets a Content-Security-Policy with a fresh nonce. Next
+ * picks the nonce up from the forwarded request header and applies it to its
+ * own scripts, so 'strict-dynamic' blocks anything injected.
+ */
+export async function proxy(req: NextRequest) {
+  const nonce = createNonce();
+  const csp = contentSecurityPolicy(nonce);
+  const headers = new Headers(req.headers);
+  headers.set("x-nonce", nonce);
+  headers.set("Content-Security-Policy", csp);
+  const response = await route(req, headers);
+  response.headers.set("Content-Security-Policy", csp);
+  return response;
 }
 
 export const config = {
