@@ -66,8 +66,24 @@ import { excerpt } from "@/lib/utils";
 import { getTranslations } from "next-intl/server";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { features } from "@/lib/env";
+import type { Metadata } from "next";
 
 const POST_TYPES = ["FEED", "VIDEOS", "PODCAST", "MUSIC"];
+
+// Titel "{Space} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; spaceSlug: string }>;
+}): Promise<Metadata> {
+  const { slug, spaceSlug } = await params;
+  const { tenant } = await requireTenantAdmin(slug);
+  const space = await prisma.space.findFirst({
+    where: { tenantId: tenant.id, slug: spaceSlug },
+    select: { name: true },
+  });
+  return space ? { title: space.name } : {};
+}
 
 export default async function SpaceContentPage({
   params,

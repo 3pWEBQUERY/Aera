@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -172,7 +173,7 @@ export function TicketThreads({
 
 function ReplyForm({ ticketId, side }: { ticketId: string; side: "user" | "staff" }) {
   const t = useTranslations("support");
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     side === "staff" ? replyStaffAction : replyTicketAction,
     {} as SupportState,
   );

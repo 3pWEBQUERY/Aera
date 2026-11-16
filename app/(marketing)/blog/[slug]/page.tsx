@@ -10,6 +10,9 @@ import { isBlogCategory, isScheduled } from "@/lib/blog";
 import { Avatar } from "@/components/ui/misc";
 import { formatDate } from "@/lib/utils";
 import { env } from "@/lib/env";
+import { buildPlatformPageMetadata } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { blogPostingJsonLd } from "@/lib/json-ld";
 
 /**
  * Ein Beitrag.
@@ -48,38 +51,19 @@ export async function generateMetadata({
   });
   if (!post) return {};
 
-  const description = post.seoDescription ?? post.excerpt ?? undefined;
-  const url = `${env.APP_URL}/blog/${post.slug}`;
-  const image = post.coverUrl
-    ? post.coverUrl.startsWith("http")
-      ? post.coverUrl
-      : `${env.APP_URL}${post.coverUrl}`
-    : undefined;
-
-  return {
+  return buildPlatformPageMetadata({
     title: post.seoTitle ?? post.title,
-    description,
-    alternates: { canonical: url },
-    // Ein Entwurf traegt `noindex` unabhaengig von der Einstellung: die
-    // Vorschau ist fuer Menschen gedacht, nicht fuer Suchmaschinen.
-    robots:
-      post.noindex || post.status !== "PUBLISHED" ? { index: false, follow: false } : undefined,
-    openGraph: {
-      type: "article",
-      title: post.seoTitle ?? post.title,
-      description,
-      url,
-      publishedTime: post.publishedAt?.toISOString(),
-      modifiedTime: post.updatedAt.toISOString(),
-      ...(image ? { images: [{ url: image }] } : {}),
-    },
-    twitter: {
-      card: image ? "summary_large_image" : "summary",
-      title: post.seoTitle ?? post.title,
-      description,
-      ...(image ? { images: [image] } : {}),
-    },
-  };
+    description: post.seoDescription ?? post.excerpt ?? undefined,
+    path: `/blog/${post.slug}`,
+    type: "article",
+    image: post.coverUrl,
+    // Ein Entwurf oder geplanter Beitrag traegt `noindex` unabhaengig von der
+    // Einstellung: die Vorschau ist fuer Menschen gedacht, nicht fuer
+    // Suchmaschinen.
+    noindex: post.noindex || post.status !== "PUBLISHED" || isScheduled(post),
+    publishedTime: post.publishedAt?.toISOString(),
+    modifiedTime: post.updatedAt.toISOString(),
+  });
 }
 
 export default async function BlogPostPage({
@@ -105,30 +89,27 @@ export default async function BlogPostPage({
   });
 
   const url = `${env.APP_URL}/blog/${post.slug}`;
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
+  const jsonLd = blogPostingJsonLd({
+    url,
     headline: post.title,
-    ...(post.excerpt ? { description: post.excerpt } : {}),
-    ...(post.coverUrl
-      ? { image: post.coverUrl.startsWith("http") ? post.coverUrl : `${env.APP_URL}${post.coverUrl}` }
-      : {}),
-    ...(post.publishedAt ? { datePublished: post.publishedAt.toISOString() } : {}),
-    dateModified: post.updatedAt.toISOString(),
-    ...(post.author?.name ? { author: { "@type": "Person", name: post.author.name } } : {}),
-    publisher: { "@type": "Organization", name: "Aera" },
-    mainEntityOfPage: url,
+    description: post.seoDescription ?? post.excerpt,
+    image: post.coverUrl
+      ? post.coverUrl.startsWith("http")
+        ? post.coverUrl
+        : `${env.APP_URL}${post.coverUrl}`
+      : null,
+    datePublished: post.publishedAt,
+    dateModified: post.updatedAt,
+    authorName: post.author?.name,
     inLanguage: post.locale,
-  };
+    publisher: { name: "Aera", url: env.APP_URL, logo: `${env.APP_URL}/icon-512.png` },
+  });
 
   return (
     <main className="bg-[#f4f1ea] text-[#161613]">
-      {/* Nur für Suchmaschinen; der Inhalt steht ohnehin sichtbar darunter. */}
-      <script
-        type="application/ld+json"
-        // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      {/* Nur für Suchmaschinen; der Inhalt steht ohnehin sichtbar darunter.
+          Entwürfe und geplante Beiträge bekommen keine strukturierten Daten. */}
+      {!hidden && <JsonLd data={jsonLd} />}
 
       <div className="mx-auto max-w-3xl px-5 pb-20 pt-12 md:pt-16">
         <Link

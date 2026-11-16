@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createSpacePostAction,
@@ -169,7 +170,7 @@ function PostForm({
   space: SpaceInfo;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(createSpacePostAction, initial);
+  const [state, action, pending] = useResilientActionState(createSpacePostAction, initial);
   const t = useTranslations("dashboard.spaceContent");
   // Zugriff und Reiter heissen im Blog-Composer schon genau so — dieselben
   // Begriffe fuer dieselbe Sache, statt einer zweiten Uebersetzung.
@@ -453,7 +454,7 @@ const ACCESS_CHOICES = [
 ];
 
 function ArticleForm({ slug, space, onDone }: { slug: string; space: SpaceInfo; onDone: () => void }) {
-  const [state, action, pending] = useActionState(createArticleAction, initial);
+  const [state, action, pending] = useResilientActionState(createArticleAction, initial);
   const t = useTranslations("dashboard.spaceContent");
   useEffect(() => {
     if (state.ok) onDone();

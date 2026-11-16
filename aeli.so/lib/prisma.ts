@@ -4,7 +4,7 @@ import { PrismaClient } from "@/app/generated/prisma/client";
 import type { Prisma } from "@/app/generated/prisma/client";
 
 /**
- * Zwei Clients, zwei Rechtelagen.
+ * Ein Client, eine Rolle.
  *
  * `prisma` — der Normalfall. Jede Abfrage laeuft in einer Transaktion, die
  *   zuerst `SET LOCAL ROLE aeli_app` ausfuehrt. Damit greifen die
@@ -17,10 +17,13 @@ import type { Prisma } from "@/app/generated/prisma/client";
  *   veroeffentlicht ist — der oeffentliche Lesepfad der Bio-Seite braucht also
  *   keine einzige eigene `where`-Klausel, um sicher zu sein.
  *
- * `systemPrisma` — die privilegierte Verbindung. Genau zwei Aufgaben:
- *   Anmeldung/Registrierung (schreibt `User`, worauf `aeli_app` bewusst keinen
- *   Zugriff hat) und der Blick auf laufende Live-Sessions einer verknuepften
- *   Community. Alles andere gehoert nach oben.
+ * Eine privilegierte Verbindung gibt es nicht mehr. Was `aeli_app` nicht darf
+ *   (Anmeldung, Handle-Verfuegbarkeit, Auszahlungsziel, Trinkgeld-Status …),
+ *   laeuft ueber eng geschnittene SECURITY-DEFINER-Funktionen der Migration
+ *   20261116210000_aeli_least_privilege — aufgerufen unter derselben Rolle,
+ *   ueber lib/db-functions.ts. Damit kann die Verbindung spaeter einer
+ *   eigenen Login-Rolle `aeli_login` gehoeren, die ausser `aeli_app` nichts
+ *   ist (README, „Vor dem Livegang“).
  */
 
 const connectionString = process.env.DATABASE_URL;
@@ -147,7 +150,6 @@ const globalForPrisma = globalThis as unknown as { aeliPrismaBase?: PrismaClient
 
 const baseClient = globalForPrisma.aeliPrismaBase ?? createBaseClient();
 
-export const systemPrisma = baseClient;
 export const prisma: ExtendedPrismaClient = createClient(baseClient);
 
 if (process.env.NODE_ENV !== "production") {

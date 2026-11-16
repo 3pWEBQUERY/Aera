@@ -17,7 +17,7 @@ export default async function DesignPage({
   const profile = await requireProfile();
   const [aera, tipsEnabled] = await Promise.all([
     profileAeraContent(profile, "de"),
-    profileTipsEnabled(profile),
+    profileTipsEnabled(profile, { asOwner: true }),
   ]);
 
   // Ohne `?karte=` gestaltet man die SEITE — das Design, das alle Karten

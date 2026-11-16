@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import {
   updateRequestAction,
@@ -152,7 +153,7 @@ function RequestForm({
   request: RequestRow;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateRequestAction, initial);
+  const [state, action, pending] = useResilientActionState(updateRequestAction, initial);
   const t = useTranslations("dashboard.requests");
   useEffect(() => {
     if (state.ok) onDone();

@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { SearchExperience } from "@/components/home/search-experience";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("discover.search");
-  return { title: t("metaTitle"), description: t("subtitle") };
+  // Jede Suche (?q=) ist eine Variante derselben Seite.
+  return buildPlatformPageMetadata({
+    title: t("metaTitle"),
+    description: t("subtitle"),
+    path: "/home/search",
+  });
 }
 
 /**

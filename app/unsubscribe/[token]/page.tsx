@@ -2,6 +2,11 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { NewsletterUnsubscribeForm } from "@/components/newsletter/unsubscribe-form";
 import { getNewsletterUnsubscribeContext } from "@/lib/marketing-consent";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
+
+// Persoenlicher Abmeldelink: gehoert in keinen Index.
+export const metadata: Metadata = { robots: NOINDEX };
 
 export default async function NewsletterUnsubscribePage({
   params,

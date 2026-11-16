@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import {
   adminCreatePromoCodesAction,
@@ -56,7 +57,7 @@ export function PromoCodesManager({
 }) {
   const t = useTranslations("admin.codes");
   const locale = useLocale();
-  const [state, action, pending] = useActionState(adminCreatePromoCodesAction, initial);
+  const [state, action, pending] = useResilientActionState(adminCreatePromoCodesAction, initial);
   const [plan, setPlan] = useState<PlanKey>("PRO");
   const [filter, setFilter] = useState<"ALL" | PromoCodeRow["status"]>("ALL");
   const [query, setQuery] = useState("");

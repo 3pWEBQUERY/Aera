@@ -6,6 +6,8 @@ import { canAccess } from "@/lib/entitlements";
 import { formatDateTime } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/misc";
 import { LiveSessionCard } from "@/components/community/live-session-card";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
 /**
  * Live-Übersicht der Community — Ziel des Menüpunkts "Live".
@@ -14,6 +16,16 @@ import { LiveSessionCard } from "@/components/community/live-session-card";
  * "läuft gerade", "geplant" und "Wiederholungen". Wer live sucht, sucht nach
  * dem Zeitpunkt, nicht nach dem Space, in dem der Stream zufällig liegt.
  */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("community.live");
+  return tenantPageMetadata(slug, { title: t("title"), path: "/live" });
+}
+
 export default async function CommunityLive({
   params,
 }: {

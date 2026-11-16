@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   createSpaceAction,
@@ -736,7 +737,7 @@ function SpaceForm({
 }) {
   const isEdit = !!space;
   const t = useTranslations("dashboard");
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateSpaceAction : createSpaceAction,
     initial,
   );

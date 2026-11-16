@@ -48,7 +48,7 @@ export function PostImages({
           className="relative mt-3 block max-h-[28rem] w-full overflow-hidden rounded-xl border border-[#161613]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] enabled:cursor-zoom-in"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={urls[0]} alt="" className="max-h-[28rem] w-full object-cover" style={blur} />
+          <img src={urls[0]} alt="" decoding="async" className="max-h-[28rem] w-full object-cover" style={blur} />
           {locked && <span className="absolute inset-0 bg-[#161613]/15" />}
         </button>
         {open !== null && (
@@ -80,7 +80,7 @@ export function PostImages({
             }`}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <img loading="lazy" decoding="async"
               src={url}
               alt=""
               className="absolute inset-0 h-full w-full object-cover"

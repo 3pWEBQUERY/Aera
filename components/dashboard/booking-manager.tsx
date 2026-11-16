@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   createBookingSlotAction,
@@ -123,7 +124,7 @@ function SlotForm({
   space: SpaceInfo;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(createBookingSlotAction, initial);
+  const [state, action, pending] = useResilientActionState(createBookingSlotAction, initial);
   const t = useTranslations("dashboard.booking");
   useEffect(() => {
     if (state.ok) onDone();

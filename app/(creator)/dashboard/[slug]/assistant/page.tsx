@@ -2,6 +2,14 @@ import { requireTenantAdmin } from "@/lib/guards";
 import { features } from "@/lib/env";
 import { AssistantWorkspace } from "@/components/dashboard/assistant-workspace";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.assistant");
+  return { title: t("title") };
+}
 
 export default async function AssistantPage({
   params,

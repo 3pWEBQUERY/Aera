@@ -184,7 +184,7 @@
     "error": "利用可否を確認できませんでした。"
   },
   "onboarding": {
-    "metaTitle": "コミュニティを作成 — Aera",
+    "metaTitle": "コミュニティを作成",
     "brand": "コミュニティを作成",
     "stepShort": "ステップ {step} / {total}",
     "eyebrow": "{label} · ステップ {step} / {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "あなたのコミュニティ — Aera",
+      "metaTitle": "あなたのコミュニティ",
       "creator": "クリエイター",
       "yourMemberships": "あなたのメンバーシップ",
       "logout": "ログアウト",
@@ -4928,6 +4928,10 @@
       "stepForum": "「{space}」で自己紹介する",
       "stepSpace": "「{space}」へ",
       "dismiss": "お知らせを閉じる"
+    },
+    "seo": {
+      "lockedPost": "{community} のメンバー向けの投稿",
+      "lockedSpace": "{community} のメンバー向けのコンテンツ"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "ログイン",
     "toDashboard": "ダッシュボードへ",
     "startCommunity": "コミュニティを始める",
-    "startShort": "始める",
+    "startShort": "無料で始める",
     "menuOpen": "メニューを開く",
     "menuClose": "メニューを閉じる",
     "footerAbout": "コミュニティ、メンバーシップ、コース、イベント、ニュースレター、コマースを自分のブランドで運営するクリエイターのためのプラットフォーム — データの主権も完全にあなたのものです。",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "{plan} 以上: {items}",
     "footerContact": "お問い合わせ",
-    "legalGermanOnly": "この法的文書はドイツ語版のみです。ドイツ語版が正本となります。"
+    "legalGermanOnly": "この法的文書はドイツ語版のみです。ドイツ語版が正本となります。",
+    "seo": {
+      "title": "Aera — あなたのコミュニティ。あなたのルール。あなたの収益。",
+      "description": "フィード、コース、イベント、ニュースレター、ショップを備えた自分だけのコミュニティを、独自ドメインと独自ブランドで。無料で始めて、いつでも拡張できます。",
+      "keywords": "コミュニティプラットフォーム, クリエイター, メンバーシップ, オンライン講座, ニュースレター, イベント, デジタル商品",
+      "discoverTitle": "見つける",
+      "discoverDescription": "Aera でコミュニティやクリエイターを見つけましょう。",
+      "pricingDescription": "Aera のプランを比較：各プランの内容、月額料金、販売時にかかる手数料を確認できます。",
+      "featuresDescription": "Aera でできること：フィード、フォーラム、コース、イベント、ニュースレター、ショップ、ライブ配信。独自ドメインと独自ブランドで。",
+      "loginDescription": "Aera にログインして、コミュニティとダッシュボードを開きます。",
+      "signupDescription": "Aera のアカウントを作成して、コミュニティを無料で始めましょう。"
+    }
   },
   "home": {
     "badge": "コミュニティ · メンバーシップ · コマース",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "{from} からのメッセージ",
       "supportInboundIntro": "サポートに新しいメッセージが届いています。",
       "supportInboundCta": "管理画面で開く",
-      "supportInboundHint": "{email} へのメールではなく管理画面から返信してください。そうしないと返信がスレッドに残りません。"
+      "supportInboundHint": "{email} へのメールではなく管理画面から返信してください。そうしないと返信がスレッドに残りません。",
+      "unsubscribeLabel": "ニュースレターの配信を停止",
+      "unsubscribeReason": "{community} のニュースレターに登録されているため、このメールをお送りしています。"
     },
     "dashboard": {
       "uploadFailed": "アップロードに失敗しました。",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "無料"
+    },
+    "state": {
+      "networkError": "サーバーに接続できません。入力内容はそのまま残っています。もう一度送信してください。",
+      "serverError": "うまくいきませんでした。もう一度お試しください。",
+      "pageErrorTitle": "ページを読み込めませんでした",
+      "pageErrorText": "しばらくしてからもう一度お試しください。",
+      "reload": "再読み込み",
+      "toHelp": "ヘルプへ",
+      "viewErrorTitle": "この画面を読み込めませんでした",
+      "toOverview": "概要へ",
+      "contentGoneTitle": "このコンテンツはもうありません",
+      "contentGoneText": "削除または移動されました。",
+      "backToCommunity": "{community}に戻る",
+      "viewNotFoundTitle": "このページは存在しません",
+      "viewNotFoundText": "削除または移動されたか、リンクが間違っています。",
+      "loading": "読み込み中…",
+      "errorRef": "エラー参照番号: {digest}"
     }
   },
   "unsubscribe": {

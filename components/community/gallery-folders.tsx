@@ -104,7 +104,7 @@ export function GalleryFolders({
               <div className="relative w-full overflow-hidden bg-[#161613]/5" style={{ aspectRatio: "1 / 1" }}>
                 {p.coverUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
+                  <img loading="lazy" decoding="async"
                     src={p.coverUrl}
                     alt={p.title}
                     className={cn(
@@ -294,7 +294,7 @@ function FolderModal({
                   >
                     {it.type === "IMAGE" ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img
+                      <img loading="lazy" decoding="async"
                         src={it.url ?? ""}
                         alt={it.caption ?? ""}
                         className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"

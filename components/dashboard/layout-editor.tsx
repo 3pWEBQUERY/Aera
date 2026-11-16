@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { cloneElement, isValidElement, useActionState, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { cloneElement, isValidElement, useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import { useConfirm } from "@/components/ui/confirm-dialog";
 import { saveLayoutAction, type LayoutState } from "@/app/actions/page-layout";
@@ -138,7 +139,7 @@ export function LayoutEditor({
   const [pages, setPages] = useState<EditablePage[]>(initial.pages);
   const [banners, setBanners] = useState<BannerConfig[]>(initial.banners);
 
-  const [state, formAction, pending] = useActionState(saveLayoutAction, initialState);
+  const [state, formAction, pending] = useResilientActionState(saveLayoutAction, initialState);
   const locale = useLocale();
   const router = useRouter();
   const [confirm, confirmDialog] = useConfirm();

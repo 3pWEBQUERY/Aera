@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createMediaPackageAction,
@@ -266,7 +267,7 @@ function PackageForm({
   onDone: () => void;
 }) {
   const isEdit = !!pkg;
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateMediaPackageAction : createMediaPackageAction,
     initial,
   );

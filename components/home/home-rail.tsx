@@ -120,7 +120,7 @@ export function HomeRail({
               >
                 {m.logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={m.logoUrl} alt="" className="h-full w-full object-cover" />
+                  <img loading="lazy" decoding="async" src={m.logoUrl} alt="" className="h-full w-full object-cover" />
                 ) : (
                   m.name.charAt(0).toUpperCase()
                 )}
@@ -148,7 +148,7 @@ export function HomeRail({
           >
             {user.avatarUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
+              <img loading="lazy" decoding="async" src={user.avatarUrl} alt="" className="h-full w-full object-cover" />
             ) : (
               initials(user.name)
             )}

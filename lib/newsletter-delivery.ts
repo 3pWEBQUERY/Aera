@@ -5,8 +5,11 @@ import { renderCampaignHtml, sendEmail } from "./email";
 import {
   appendUnsubscribeFooter,
   isNewsletterRecipientEligible,
+  marketingRecipientLocales,
   newsletterUnsubscribeUrls,
 } from "./marketing-consent";
+import { marketingEmailCopy, type UnsubscribeCopy } from "./email-i18n";
+import type { AppLocale } from "@/i18n/locales";
 
 const MAX_ATTEMPTS = 5;
 const MAX_DELIVERIES_PER_RUN = 200;
@@ -20,20 +23,35 @@ const RETRY_DELAYS_MS = [5 * 60_000, 30 * 60_000, 2 * 3_600_000, 12 * 3_600_000,
 export interface NewsletterRecipient {
   id: string;
   email: string;
+  /** Sprache des Empfängers; fehlt sie, gilt die Standardvariante. */
+  locale?: AppLocale | null;
+}
+
+/** Fertiges Mail-HTML einer Sprache, Abmelde-Fußzeile kommt pro Empfänger dazu. */
+export interface NewsletterVariant {
+  html: string;
+  unsubscribe: UnsubscribeCopy;
 }
 
 export interface QueueNewsletterInput {
   tenantId: string;
   campaignId: string;
   subject: string;
+  /** Standardvariante (Empfänger ohne eigene bzw. ohne passende Sprache). */
   html: string;
+  unsubscribe?: UnsubscribeCopy;
+  /** Varianten je Empfängersprache. */
+  variants?: Partial<Record<AppLocale, NewsletterVariant>>;
   recipients: NewsletterRecipient[];
-  unsubscribeLabel?: string;
 }
 
 /** Persist the complete recipient snapshot before any provider call happens. */
 export async function queueNewsletterCampaign(input: QueueNewsletterInput): Promise<number> {
   if (input.recipients.length === 0) return 0;
+  const fallback: NewsletterVariant = {
+    html: input.html,
+    unsubscribe: input.unsubscribe ?? { label: "Unsubscribe", reason: "" },
+  };
   const result = await prisma.newsletterDelivery.createMany({
     data: input.recipients.map((recipient) => {
       const id = randomUUID();
@@ -43,6 +61,7 @@ export async function queueNewsletterCampaign(input: QueueNewsletterInput): Prom
         userId: recipient.id,
         kind: "newsletter",
       });
+      const variant = (recipient.locale && input.variants?.[recipient.locale]) || fallback;
       return {
         id,
         tenantId: input.tenantId,
@@ -51,9 +70,9 @@ export async function queueNewsletterCampaign(input: QueueNewsletterInput): Prom
         recipientEmail: recipient.email.trim().toLowerCase(),
         subject: input.subject,
         html: appendUnsubscribeFooter(
-          input.html,
+          variant.html,
           unsubscribe.pageUrl,
-          input.unsubscribeLabel,
+          variant.unsubscribe,
         ),
         unsubscribeUrl: unsubscribe.apiUrl,
       };
@@ -61,6 +80,30 @@ export async function queueNewsletterCampaign(input: QueueNewsletterInput): Prom
     skipDuplicates: true,
   });
   return result.count;
+}
+
+/** Rendert die Kampagne einmal je vorkommender Sprache. */
+async function campaignVariants(
+  campaign: Pick<DispatchableNewsletterCampaign, "subject" | "body" | "bodyFormat" | "tenant">,
+  locales: Iterable<AppLocale>,
+): Promise<Map<AppLocale, NewsletterVariant>> {
+  const variants = new Map<AppLocale, NewsletterVariant>();
+  for (const locale of new Set(locales)) {
+    const copy = await marketingEmailCopy(locale, campaign.tenant.name);
+    variants.set(locale, {
+      html: renderCampaignHtml({
+        tenantName: campaign.tenant.name,
+        primaryColor: campaign.tenant.primaryColor,
+        subject: campaign.subject,
+        body: campaign.body,
+        bodyFormat: campaign.bodyFormat,
+        footerLabel: copy.footerLabel,
+        locale,
+      }),
+      unsubscribe: copy.unsubscribe,
+    });
+  }
+  return variants;
 }
 
 export type DispatchableNewsletterCampaign = {
@@ -73,7 +116,6 @@ export type DispatchableNewsletterCampaign = {
   status: "SCHEDULED" | "SENDING";
   scheduledAt: Date | null;
   tenant: { name: string; primaryColor: string };
-  footerLabel?: string;
 };
 
 export interface AudienceRules {
@@ -178,21 +220,26 @@ export async function queueNewsletterAudienceBatch(
     .slice(0, CAMPAIGN_BATCH_SIZE)
     .filter((consent) => consent.email.trim().toLowerCase() === consent.user.email.trim().toLowerCase())
     .map((consent) => consent.user);
-  const html = renderCampaignHtml({
-    tenantName: campaign.tenant.name,
-    primaryColor: campaign.tenant.primaryColor,
-    subject: campaign.subject,
-    body: campaign.body,
-    bodyFormat: campaign.bodyFormat,
-    footerLabel: campaign.footerLabel ?? "Aera",
-  });
+  const locales = await marketingRecipientLocales(
+    campaign.tenantId,
+    recipients.map((recipient) => recipient.id),
+  );
+  const variants = await campaignVariants(campaign, [
+    locales.fallback,
+    ...locales.byUser.values(),
+  ]);
+  const fallback = variants.get(locales.fallback)!;
   const queued = await queueNewsletterCampaign({
     tenantId: campaign.tenantId,
     campaignId: campaign.id,
     subject: campaign.subject,
-    html,
-    recipients,
-    unsubscribeLabel: "Unsubscribe",
+    html: fallback.html,
+    unsubscribe: fallback.unsubscribe,
+    variants: Object.fromEntries(variants),
+    recipients: recipients.map((recipient) => ({
+      ...recipient,
+      locale: locales.byUser.get(recipient.id) ?? locales.fallback,
+    })),
   });
   const total = await prisma.newsletterDelivery.count({
     where: { campaignId: campaign.id },
@@ -364,6 +411,26 @@ export async function processPendingNewsletterDeliveries(
   let suppressed = 0;
   let exhausted = 0;
   const touchedCampaigns = new Map<string, { tenantId: string; campaignId: string }>();
+  const senderNames = new Map<string, Promise<string | undefined>>();
+  // Absender „{Community} via Aera“; einmal je Community und Lauf nachschlagen.
+  const senderNameFor = (tenantId: string) => {
+    let name = senderNames.get(tenantId);
+    if (!name) {
+      name = (async () => {
+        try {
+          const tenant = await prisma.tenant.findUnique({
+            where: { id: tenantId },
+            select: { name: true },
+          });
+          return tenant?.name ?? undefined;
+        } catch {
+          return undefined;
+        }
+      })();
+      senderNames.set(tenantId, name);
+    }
+    return name;
+  };
 
   while (
     claimedCount < boundedLimit &&
@@ -418,6 +485,7 @@ export async function processPendingNewsletterDeliveries(
           to: delivery.recipientEmail,
           subject: delivery.subject,
           html: delivery.html,
+          senderName: await senderNameFor(delivery.tenantId),
           idempotencyKey: `newsletter-${delivery.id}`,
           category: "marketing",
           unsubscribeUrl: delivery.unsubscribeUrl,

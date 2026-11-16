@@ -11,6 +11,8 @@ import { ImmediateAccessConsent } from "@/components/community/immediate-access-
 import { Icon } from "@/components/dashboard/icons";
 import { cn, formatPrice } from "@/lib/utils";
 import { isCommunityReturnPath } from "@/lib/join-offer";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
 const INTERVAL_KEY: Record<string, string | null> = {
   FREE: null,
@@ -25,6 +27,17 @@ function benefitsOf(description: string | null): string[] {
     .split(/\r?\n/)
     .map((l) => l.replace(/^[-•*]\s*/, "").trim())
     .filter(Boolean);
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("community.nav");
+  // ?tier=, ?ref= und ?next= sind Varianten derselben Seite.
+  return tenantPageMetadata(slug, { title: t("membership"), path: "/join" });
 }
 
 export default async function JoinPage({

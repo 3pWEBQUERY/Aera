@@ -52,7 +52,8 @@ export function MarketingPlanCard({
       )}
 
       <div>
-        <h3 className="display-serif text-2xl leading-none">{name}</h3>
+        {/* h2: die Karten stehen direkt unter der h1 der Preisseite. */}
+        <h2 className="display-serif text-2xl leading-none">{name}</h2>
         <p
           className={cn(
             "mt-2 text-sm",

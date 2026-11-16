@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { isCommunityReturnPath } from "@/lib/join-offer";
 import { checkMemberLimit } from "@/lib/plan";
@@ -135,6 +136,8 @@ export async function memberSignupAction(
   const result = await registerUser({
     ...parsed.data,
     legalAcceptanceSource: "COMMUNITY_SIGNUP",
+    // Sprache, in der die Person sich registriert hat — für spätere E-Mails.
+    locale: await getLocale(),
   });
   if (!result.ok) return { error: t(result.error) };
   const user = result.user;

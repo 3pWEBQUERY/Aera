@@ -24,6 +24,102 @@ import { Icon } from "@/components/dashboard/icons";
 import { ImmediateAccessConsent } from "@/components/community/immediate-access-consent";
 import { MembersOnlyGate } from "@/components/community/members-only-gate";
 import { excerpt, formatDate, formatPrice, timeAgo } from "@/lib/utils";
+import type { Metadata } from "next";
+import { tenantPageMetadata, tenantPublicUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { discussionForumPostingJsonLd, plainText } from "@/lib/json-ld";
+
+/**
+ * Metadaten eines Beitrags. Was hier steht, sieht jede Suchmaschine und jede
+ * Link-Vorschau — deshalb gilt dieselbe Sperre wie fuer die Seite selbst:
+ *
+ * - geplant oder zurueckgezogen: nichts (auch nicht fuer das Team),
+ * - Space gesperrt: nur Space-Name und ein neutraler Satz — die Sperrseite
+ *   zeigt vom Beitrag ebenfalls nichts,
+ * - Beitrag gesperrt: Titel (steht auch auf der Sperrseite), aber nie Text
+ *   oder Titelbild aus dem gesperrten Inhalt,
+ * - indexiert wird nur, was jeder Gast lesen darf.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; spaceSlug: string; postId: string }>;
+}): Promise<Metadata> {
+  const { slug, spaceSlug, postId } = await params;
+  const community = await getCommunityContext(slug);
+  if (!community) return {};
+  const { tenant, ctx } = community;
+  const space = await prisma.space.findFirst({
+    where: { tenantId: tenant.id, slug: spaceSlug },
+    select: { id: true, slug: true, name: true, type: true, visibility: true, requiredEntitlementKey: true },
+  });
+  if (!space) return {};
+  const lookupId = (await resolvePostId(tenant.id, space.id, postId)) ?? postId;
+  const post = await prisma.post.findFirst({
+    where: { id: lookupId, tenantId: tenant.id, spaceId: space.id },
+    select: {
+      id: true,
+      title: true,
+      body: true,
+      bodyHtml: true,
+      imageUrl: true,
+      teaserUrl: true,
+      customSlug: true,
+      isPublished: true,
+      publishedAt: true,
+      updatedAt: true,
+      ...GATE_SELECT,
+    },
+  });
+  if (!post || !post.isPublished || post.publishedAt.getTime() > Date.now()) {
+    return { robots: { index: false, follow: false } };
+  }
+
+  const [tSeo, tPostTile] = await Promise.all([
+    getTranslations("community.seo"),
+    getTranslations("community.render.postTile"),
+  ]);
+  const lockedText = tSeo("lockedPost", { community: tenant.name });
+  const path = `/s/${space.slug}/${post.customSlug || post.id}`;
+  const isPublic =
+    space.visibility === "PUBLIC" &&
+    !space.requiredEntitlementKey &&
+    post.visibility === "PUBLIC" &&
+    post.priceCents <= 0;
+
+  if (!canAccess(space, ctx)) {
+    return tenantPageMetadata(slug, { title: space.name, description: lockedText, path, noindex: true });
+  }
+
+  if (isPostLocked(post, ctx)) {
+    const paid = post.priceCents > 0;
+    // Im Forum zeigt die Mitglieder-Sperre keinen Titel — dann hier auch nicht.
+    const title =
+      space.type === "FORUM" && !paid
+        ? space.name
+        : post.title || tPostTile(paid ? "paidUntitled" : "lockedUntitled");
+    return tenantPageMetadata(slug, {
+      title,
+      description: lockedText,
+      path,
+      // Das Vorschaubild eines Einzelverkaufs ist eigens oeffentlich gepflegt.
+      image: paid ? post.teaserUrl : null,
+      noindex: true,
+    });
+  }
+
+  const text = plainText(post.body || post.bodyHtml, 200);
+  return tenantPageMetadata(slug, {
+    title: post.title || plainText(post.body, 60) || space.name,
+    description: text || undefined,
+    path,
+    image: post.imageUrl,
+    type: "article",
+    publishedTime: post.publishedAt.toISOString(),
+    modifiedTime: post.updatedAt.toISOString(),
+    noindex: !isPublic,
+  });
+}
 
 export default async function PostDetail({
   params,
@@ -189,50 +285,74 @@ export default async function PostDetail({
     const poll = await readPostPoll(tenant.id, fpost.id, user?.id ?? null);
     const settings = await readPostSettings(tenant.id, fpost.id);
 
+    // Strukturierte Daten nur fuer Diskussionen, die jeder Gast lesen darf.
+    const forumJsonLd =
+      space.visibility === "PUBLIC" &&
+      !space.requiredEntitlementKey &&
+      fpost.visibility === "PUBLIC" &&
+      fpost.priceCents <= 0 &&
+      fpost.isPublished &&
+      fpost.publishedAt.getTime() <= Date.now()
+        ? discussionForumPostingJsonLd({
+            url: `${tenantPublicUrl(tenant)}/s/${space.slug}/${fpost.customSlug || fpost.id}`,
+            headline: fpost.title || plainText(fpost.body, 80) || space.name,
+            text: plainText(fpost.body || fpost.bodyHtml, 5000),
+            authorName: fpost.author.name,
+            datePublished: fpost.publishedAt,
+            dateModified: fpost.updatedAt,
+            image: fpost.imageUrl,
+            commentCount: fpost._count.comments,
+            upvotes: postScore,
+          })
+        : null;
+
     return (
-      <ForumThread
-        slug={slug}
-        spaceSlug={spaceSlug}
-        isMember={isMember}
-        poll={poll}
-        cover={{
-          url: settings.coverUrl,
-          x: settings.coverOffsetX,
-          y: settings.coverOffsetY,
-          zoom: settings.coverZoom,
-        }}
-        settings={{
-          hideMetaInfo: settings.hideMetaInfo,
-          hideLikes: settings.hideLikes,
-          hideComments: settings.hideComments,
-          closeComments: settings.closeComments,
-          customHtml: settings.customHtml,
-        }}
-        post={{
-          id: fpost.id,
-          title: fpost.title,
-          body: fpost.body,
-          bodyHtml: fpost.bodyHtml ? trimRichHtml(fpost.bodyHtml) || null : null,
-          imageUrl: fpost.imageUrl,
-          videoUrl: fpost.videoUrl,
-          authorName: fpost.author.name,
-          authorAvatar: fpost.author.avatarUrl,
-          createdAt: fpost.createdAt,
-          score: postScore,
-          myVote: (postMine?.type as "UP" | "DOWN" | undefined) ?? null,
-          commentCount: fpost._count.comments,
-        }}
-        comments={fcomments.map((c) => ({
-          id: c.id,
-          body: c.body,
-          authorName: c.author.name,
-          authorAvatar: c.author.avatarUrl,
-          createdAt: c.createdAt,
-          parentId: c.parentId,
-          score: cScore[c.id] ?? 0,
-          myVote: cMy[c.id] ?? null,
-        }))}
-      />
+      <>
+        {forumJsonLd && <JsonLd data={forumJsonLd} />}
+        <ForumThread
+          slug={slug}
+          spaceSlug={spaceSlug}
+          isMember={isMember}
+          poll={poll}
+          cover={{
+            url: settings.coverUrl,
+            x: settings.coverOffsetX,
+            y: settings.coverOffsetY,
+            zoom: settings.coverZoom,
+          }}
+          settings={{
+            hideMetaInfo: settings.hideMetaInfo,
+            hideLikes: settings.hideLikes,
+            hideComments: settings.hideComments,
+            closeComments: settings.closeComments,
+            customHtml: settings.customHtml,
+          }}
+          post={{
+            id: fpost.id,
+            title: fpost.title,
+            body: fpost.body,
+            bodyHtml: fpost.bodyHtml ? trimRichHtml(fpost.bodyHtml) || null : null,
+            imageUrl: fpost.imageUrl,
+            videoUrl: fpost.videoUrl,
+            authorName: fpost.author.name,
+            authorAvatar: fpost.author.avatarUrl,
+            createdAt: fpost.createdAt,
+            score: postScore,
+            myVote: (postMine?.type as "UP" | "DOWN" | undefined) ?? null,
+            commentCount: fpost._count.comments,
+          }}
+          comments={fcomments.map((c) => ({
+            id: c.id,
+            body: c.body,
+            authorName: c.author.name,
+            authorAvatar: c.author.avatarUrl,
+            createdAt: c.createdAt,
+            parentId: c.parentId,
+            score: cScore[c.id] ?? 0,
+            myVote: cMy[c.id] ?? null,
+          }))}
+        />
+      </>
     );
   }
 

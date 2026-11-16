@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { updateTenantSeoAction, type SeoState } from "@/app/actions/seo";
 import { PageHeader } from "./page-header";
@@ -42,7 +43,7 @@ export function SeoManager({
   communityName: string;
 }) {
   const t = useTranslations("dashboard.seo");
-  const [state, action, pending] = useActionState(updateTenantSeoAction, {} as SeoState);
+  const [state, action, pending] = useResilientActionState(updateTenantSeoAction, {} as SeoState);
   const [title, setTitle] = useState(values.seoTitle);
   const [description, setDescription] = useState(values.seoDescription);
   const [image, setImage] = useState(values.seoImageUrl);

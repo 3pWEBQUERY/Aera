@@ -2,9 +2,9 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { authenticate, registerUser } from "@/lib/auth";
+import { authenticate, endCurrentSessions, registerUser } from "@/lib/auth";
 import { clearSessionCookie } from "@/lib/session";
-import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { clientIp, rateLimit, rateLimitStatus } from "@/lib/rate-limit";
 import { checkbox, formError, text, type FormState } from "@/lib/action-state";
 
 /**
@@ -35,10 +35,19 @@ function safeNext(value: string): string {
   }
 }
 
+/** „1 Minute“, „5 Minuten“. */
+function minutes(seconds: number): string {
+  const value = Math.max(1, Math.ceil(seconds / 60));
+  return value === 1 ? "1 Minute" : `${value} Minuten`;
+}
+
+const LOGIN_WINDOW_MS = 10 * 60_000;
+
 export async function loginAction(_prev: FormState, form: FormData): Promise<FormState> {
   const email = text(form, "email", 320);
   const password = text(form, "password", 200);
-  const totp = text(form, "totp", 10);
+  // Lang genug für einen Wiederherstellungscode mit Trennzeichen.
+  const secondFactor = text(form, "totp", 40);
   const next = safeNext(text(form, "weiter", 300));
 
   if (!email || !password) {
@@ -47,38 +56,53 @@ export async function loginAction(_prev: FormState, form: FormData): Promise<For
 
   // Zwei Grenzen statt einer: die IP bremst breites Durchprobieren, die
   // E-Mail schützt ein einzelnes Konto auch dann, wenn die Versuche aus
-  // vielen Netzen kommen.
+  // vielen Netzen kommen. Gezählt werden nur FEHLVERSUCHE — wer sich
+  // mehrmals erfolgreich anmeldet (zweites Gerät, abgelaufene Sitzung), soll
+  // sich nicht selbst aussperren.
   const ip = clientIp(await headers());
-  const byIp = rateLimit(`login:ip:${ip}`, 20, 10 * 60_000);
-  const byAccount = rateLimit(`login:mail:${email.toLowerCase()}`, 8, 10 * 60_000);
+  const ipKey = `login:ip:${ip}`;
+  const accountKey = `login:mail:${email.toLowerCase()}`;
+  const [byIp, byAccount] = await Promise.all([
+    rateLimitStatus(ipKey, 20, LOGIN_WINDOW_MS),
+    rateLimitStatus(accountKey, 8, LOGIN_WINDOW_MS),
+  ]);
   if (!byIp.ok || !byAccount.ok) {
     const wait = Math.max(byIp.retryAfter, byAccount.retryAfter);
-    return formError(
-      `Zu viele Versuche. Bitte warte ${Math.ceil(wait / 60)} Minute(n) und probiere es erneut.`,
-    );
+    return formError(`Zu viele Versuche. Bitte warte ${minutes(wait)} und probiere es erneut.`);
   }
 
-  const result = await authenticate(email, password, totp || undefined);
+  const result = await authenticate(email, password, secondFactor || undefined);
 
   if (!result.ok) {
+    // Die erste Rückfrage nach dem zweiten Faktor ist kein Fehlversuch.
+    if (result.error) {
+      await Promise.all([
+        rateLimit(ipKey, 20, LOGIN_WINDOW_MS),
+        rateLimit(accountKey, 8, LOGIN_WINDOW_MS),
+      ]);
+    }
     if (result.needsTotp) {
+      const errors: Record<string, string> = {
+        totpCodeInvalid: "Der Code stimmt nicht. Gib den aktuellen Code aus deiner App ein.",
+        recoveryCodeInvalid:
+          "Dieser Wiederherstellungscode passt nicht oder wurde schon benutzt.",
+        totpUnavailable:
+          "Wir können App-Codes hier gerade nicht prüfen. Nimm einen Wiederherstellungscode oder melde dich über aera.so an.",
+      };
       return {
         // Kein Fehler beim ersten Mal: das Konto hat Zwei-Faktor, das ist kein
         // Fehlverhalten. Erst ein falscher Code ist einer.
-        error: result.error === "totpCodeInvalid" ? "Der Code stimmt nicht." : undefined,
+        fieldErrors: result.error ? { totp: errors[result.error] ?? errors.totpCodeInvalid! } : undefined,
         notice: "Gib den Code aus deiner Authenticator-App ein.",
         data: { needsTotp: true, email },
       };
     }
-    if (result.error === "totpUnavailable") {
-      return formError(
-        "Dein Konto nutzt Zwei-Faktor, wir können den Code hier gerade nicht prüfen. " +
-          "Melde dich bitte über aera.so an.",
-      );
-    }
     return formError("E-Mail-Adresse oder Passwort stimmen nicht.");
   }
 
+  if (result.usedRecoveryCode) {
+    redirect(`/studio?wiederherstellung=${result.recoveryCodesLeft ?? 0}`);
+  }
   redirect(next);
 }
 
@@ -101,7 +125,7 @@ export async function signupAction(_prev: FormState, form: FormData): Promise<Fo
   if (Object.keys(fieldErrors).length > 0) return { fieldErrors };
 
   const ip = clientIp(await headers());
-  if (!rateLimit(`signup:${ip}`, 5, 60 * 60_000).ok) {
+  if (!(await rateLimit(`signup:${ip}`, 5, 60 * 60_000)).ok) {
     return formError("Zu viele Registrierungen von hier aus. Bitte versuch es später noch einmal.");
   }
 
@@ -127,6 +151,9 @@ export async function signupAction(_prev: FormState, form: FormData): Promise<Fo
 }
 
 export async function logoutAction(): Promise<void> {
+  // Erst alle Aeli-Sitzungen entwerten, dann das Cookie löschen: ein kopiertes
+  // Token ist danach genauso wertlos wie das in diesem Browser.
+  await endCurrentSessions();
   await clearSessionCookie();
   redirect("/");
 }

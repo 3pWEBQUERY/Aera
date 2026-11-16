@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
@@ -22,7 +23,7 @@ function slugify(input: string): string {
 
 export function CommunityForm({ rootDomain }: { rootDomain: string }) {
   const t = useTranslations("ui.auth");
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     createCommunityAction,
     initial,
   );

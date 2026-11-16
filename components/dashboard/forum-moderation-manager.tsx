@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createSpacePostAction,
@@ -383,7 +384,7 @@ function ThreadRow({
 
 function CommentItem({ slug, space, comment }: { slug: string; space: SpaceInfo; comment: ModComment }) {
   const [editing, setEditing] = useState(false);
-  const [state, action, pending] = useActionState(updateCommentAction, initial);
+  const [state, action, pending] = useResilientActionState(updateCommentAction, initial);
   const t = useTranslations("dashboard.forumMod");
   const locale = useLocale();
   useEffect(() => {
@@ -457,7 +458,7 @@ function ThreadForm({
   onDone: () => void;
 }) {
   const isEdit = !!thread;
-  const [state, action, pending] = useActionState(isEdit ? updatePostAction : createSpacePostAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updatePostAction : createSpacePostAction, initial);
   const t = useTranslations("dashboard.forumMod");
   const seededOptions =
     thread?.pollOptions && thread.pollOptions.length >= 2 ? thread.pollOptions : ["", ""];

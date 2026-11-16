@@ -35,6 +35,8 @@ import { CommunityPageTabs } from "@/components/community/page-tabs";
 import { ButtonLink } from "@/components/ui/button";
 import { Avatar, EmptyState } from "@/components/ui/misc";
 import { Icon, type IconName } from "@/components/dashboard/icons";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
 // Icon shown on each recommendation, keyed by the type key from lib/ai
 // (product · post · event · course).
@@ -51,6 +53,15 @@ const rankMedal: Record<number, { ring: string; bg: string; text: string }> = {
   1: { ring: "ring-slate-300", bg: "bg-slate-100", text: "text-slate-500" },
   2: { ring: "ring-orange-300/70", bg: "bg-orange-50", text: "text-orange-700" },
 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  return tenantPageMetadata(slug, { path: "" });
+}
 
 export default async function CommunityHome({
   params,

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select, Textarea } from "@/components/ui/field";
 import { FormError } from "@/components/ui/misc";
@@ -33,7 +34,7 @@ function useResetOnOk(ok?: boolean) {
 
 export function SpaceForm({ slug }: { slug: string }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createSpaceAction, initial);
+  const [state, action, pending] = useResilientActionState(createSpaceAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -85,7 +86,7 @@ export function SpaceForm({ slug }: { slug: string }) {
 
 export function TierForm({ slug }: { slug: string }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createTierAction, initial);
+  const [state, action, pending] = useResilientActionState(createTierAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -122,7 +123,7 @@ export function TierForm({ slug }: { slug: string }) {
 
 export function ProductForm({ slug }: { slug: string }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createProductAction, initial);
+  const [state, action, pending] = useResilientActionState(createProductAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -170,7 +171,7 @@ export function CourseForm({
   spaces: { id: string; name: string }[];
 }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createCourseAction, initial);
+  const [state, action, pending] = useResilientActionState(createCourseAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -210,7 +211,7 @@ export function LessonForm({
   courses: { id: string; title: string }[];
 }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createLessonAction, initial);
+  const [state, action, pending] = useResilientActionState(createLessonAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -248,7 +249,7 @@ export function LessonForm({
 
 export function EventForm({ slug }: { slug: string }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createEventAction, initial);
+  const [state, action, pending] = useResilientActionState(createEventAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -298,7 +299,7 @@ export function CampaignForm({
   segments: { id: string; name: string }[];
 }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createCampaignAction, initial);
+  const [state, action, pending] = useResilientActionState(createCampaignAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -338,7 +339,7 @@ export function SegmentForm({
   tiers: { slug: string; name: string }[];
 }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createSegmentAction, initial);
+  const [state, action, pending] = useResilientActionState(createSegmentAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -374,7 +375,7 @@ export function SegmentForm({
 
 export function BadgeForm({ slug }: { slug: string }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(createBadgeAction, initial);
+  const [state, action, pending] = useResilientActionState(createBadgeAction, initial);
   const ref = useResetOnOk(state.ok);
   return (
     <form ref={ref} action={action} className="space-y-3">
@@ -424,7 +425,7 @@ export function BrandingForm({
   };
 }) {
   const t = useTranslations("ui.forms");
-  const [state, action, pending] = useActionState(updateBrandingAction, initial);
+  const [state, action, pending] = useResilientActionState(updateBrandingAction, initial);
   const [name, setName] = useState(tenant.name);
   const nameCheck = useNameAvailability(name, slug);
   const nameBlocks = nameCheck === "taken" || nameCheck === "long";

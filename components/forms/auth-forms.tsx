@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Input, Label } from "@/components/ui/field";
@@ -120,7 +121,7 @@ function checkNewPassword(form: HTMLFormElement, id: string, setTooShort: (v: bo
 
 export function SignupForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
-  const [state, action, pending] = useActionState(signupAction, initial);
+  const [state, action, pending] = useResilientActionState(signupAction, initial);
   const [tooShort, setTooShort] = useState(false);
   const invalid = Boolean(state.error);
   return (
@@ -153,7 +154,7 @@ type LoginStage = "credentials" | "code";
 
 export function LoginForm({ next }: { next?: string }) {
   const t = useTranslations("auth");
-  const [state, action, pending] = useActionState(loginAction, initial);
+  const [state, action, pending] = useResilientActionState(loginAction, initial);
   const [stage, setStage] = useState<LoginStage>("credentials");
   const [codeMode, setCodeMode] = useState<"totp" | "recovery">("totp");
   const [email, setEmail] = useState("");
@@ -358,7 +359,7 @@ export function MemberSignupForm({
   refCode?: string;
 }) {
   const t = useTranslations("auth");
-  const [state, action, pending] = useActionState(memberSignupAction, initialEngage);
+  const [state, action, pending] = useResilientActionState(memberSignupAction, initialEngage);
   const [tooShort, setTooShort] = useState(false);
   return (
     <form

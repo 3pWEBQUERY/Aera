@@ -51,16 +51,20 @@ export async function notifyTicketReply(input: {
     const message = ticket?.messages[0];
     if (!ticket || !message) return;
 
-    const t = await ticketTranslator(ticket.locale);
+    const locale = normalizeLocale(ticket.locale ?? undefined);
+    const t = await ticketTranslator(locale);
     const isMember = ticket.userId !== null;
+    const subject = t("supportReplySubject", { subject: ticket.subject });
 
     await sendEmail({
       to: ticket.email,
-      subject: t("supportReplySubject", { subject: ticket.subject }),
+      subject,
       // Ein Ticket kann mehrfach beantwortet werden, eine einzelne Nachricht
       // aber nur einmal — die Nachricht-Id ist der richtige Schlüssel.
       idempotencyKey: `support-reply-${message.id}`,
       html: renderSupportHtml({
+        locale,
+        title: subject,
         heading: t("supportReplyHeading"),
         intro: t("supportReplyIntro"),
         subjectLabel: t("supportSubjectLabel"),
@@ -103,22 +107,24 @@ export async function notifyTeamOfInbound(input: {
     if (!ticket || !message) return;
 
     // Das Team arbeitet in der Standardsprache der Plattform.
-    const t = await getTranslations({
-      locale: normalizeLocale(undefined),
-      namespace: "ui.emails",
-    });
+    const locale = normalizeLocale(undefined);
+    const t = await getTranslations({ locale, namespace: "ui.emails" });
     const from = ticket.name ? `${ticket.name} <${ticket.email}>` : ticket.email;
+
+    const subject = t(
+      input.isNewTicket ? "supportInboundSubjectNew" : "supportInboundSubjectReply",
+      { subject: ticket.subject },
+    );
 
     await Promise.all(
       recipients.map((to) =>
         sendEmail({
           to,
-          subject: t(
-            input.isNewTicket ? "supportInboundSubjectNew" : "supportInboundSubjectReply",
-            { subject: ticket.subject },
-          ),
+          subject,
           idempotencyKey: `support-inbound-${input.messageId}-${to}`,
           html: renderSupportHtml({
+            locale,
+            title: subject,
             heading: t("supportInboundHeading", { from }),
             intro: t("supportInboundIntro"),
             subjectLabel: t("supportSubjectLabel"),

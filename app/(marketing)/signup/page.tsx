@@ -10,10 +10,19 @@ import { AERA_INK_VARS } from "@/lib/ui-theme";
 import { signupJoinContext } from "@/lib/join-offer";
 import { formatPrice } from "@/lib/utils";
 import { getLocale } from "next-intl/server";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
-  const t = await getTranslations("ui.auth");
-  return { title: t("signupMeta") };
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, tSeo] = await Promise.all([
+    getTranslations("ui.auth"),
+    getTranslations("marketing.seo"),
+  ]);
+  return buildPlatformPageMetadata({
+    title: t("signupMeta"),
+    description: tSeo("signupDescription"),
+    path: "/signup",
+  });
 }
 
 export default async function SignupPage({

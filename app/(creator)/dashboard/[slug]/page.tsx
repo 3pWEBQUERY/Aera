@@ -12,6 +12,24 @@ import { getOrCreateWallet } from "@/lib/credits";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { getCommunityCoverUrl } from "@/lib/tenant";
 import { GettingStarted, type GettingStartedTask } from "@/components/dashboard/getting-started";
+import type { Metadata } from "next";
+import { getSeoTenant } from "@/lib/seo";
+
+// Titel "Übersicht – {Community}". Ausgeschrieben statt ueber das Template:
+// das Template des Dashboard-Layouts gilt nur fuer Unterseiten, nicht fuer die
+// Seite im selben Segment.
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const [t, tenant] = await Promise.all([
+    getTranslations("dashboard.overview"),
+    getSeoTenant(slug),
+  ]);
+  return { title: { absolute: tenant ? `${t("title")} – ${tenant.name}` : t("title") } };
+}
 
 export default async function OverviewPage({
   params,

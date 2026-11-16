@@ -1,5 +1,5 @@
 import "server-only";
-import { systemPrisma } from "./prisma";
+import { freeHandleCandidates, handleTaken } from "./db-functions";
 import { RESERVED_HANDLES, checkHandle, type HandleProblem } from "./handle";
 
 export type HandleStatus = { ok: true } | { ok: false; reason: HandleProblem | "taken" };
@@ -13,9 +13,10 @@ export type HandleStatus = { ok: true } | { ok: false; reason: HandleProblem | "
  * aus, und die Person davor bekäme beim Speichern einen Datenbankfehler statt
  * einer Antwort.
  *
- * Deshalb läuft genau diese Prüfung über die privilegierte Verbindung — mit
- * `select: { id: true }`, also ohne ein einziges Feld eines fremden Profils zu
- * lesen. Zurück kommt ja oder nein, mehr nicht.
+ * Deshalb stellt diese Prüfung eine eigene Datenbankfunktion
+ * (`aeli_handle_taken`), die kein einziges Feld eines fremden Profils
+ * herausgibt — zurück kommt ja oder nein, mehr nicht. Sie zählt auch alte
+ * Handles mit, die nach einem Wechsel noch 90 Tage reserviert sind.
  *
  * Der Unique-Index bleibt trotzdem die Instanz, die entscheidet: zwischen
  * dieser Frage und dem Speichern liegt Zeit, in der jemand anderes zugreifen
@@ -26,11 +27,7 @@ export async function handleStatus(input: string, ownProfileId?: string): Promis
   const problem = checkHandle(handle);
   if (problem) return { ok: false, reason: problem };
 
-  const existing = await systemPrisma.aeliProfile.findUnique({
-    where: { handle },
-    select: { id: true },
-  });
-  if (existing && existing.id !== ownProfileId) return { ok: false, reason: "taken" };
+  if (await handleTaken(handle, ownProfileId)) return { ok: false, reason: "taken" };
   return { ok: true };
 }
 
@@ -38,15 +35,8 @@ export async function handleStatus(input: string, ownProfileId?: string): Promis
 export async function freeHandles(candidates: string[]): Promise<string[]> {
   const usable = candidates.filter((c) => !RESERVED_HANDLES.has(c));
   if (usable.length === 0) return [];
-  const taken = new Set(
-    (
-      await systemPrisma.aeliProfile.findMany({
-        where: { handle: { in: usable } },
-        select: { handle: true },
-      })
-    ).map((row) => row.handle),
-  );
-  return usable.filter((candidate) => !taken.has(candidate));
+  const free = new Set(await freeHandleCandidates(usable));
+  return usable.filter((candidate) => free.has(candidate));
 }
 
 export const HANDLE_PROBLEM_TEXT: Record<HandleProblem | "taken", string> = {

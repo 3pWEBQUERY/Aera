@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
+import { ClientImg } from "@/components/ui/client-img";
 
 /**
  * 404 with a rotating full-bleed backdrop.
@@ -74,8 +75,9 @@ export default async function NotFound() {
         className="absolute inset-0 -z-20 scale-110 bg-cover bg-center blur-xl"
         style={{ backgroundImage: `url("${backdrop.lqip}")` }}
       />
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      {/* Client-Komponente: sonst stuende dieses Bild als Preload im Payload
+          jeder Seite (die Root-not-found rendert dort als Fallback mit). */}
+      <ClientImg
         src={`/404/${backdrop.file}-1920.webp`}
         srcSet={`/404/${backdrop.file}-1280.webp 1280w, /404/${backdrop.file}-1920.webp 1920w`}
         sizes="100vw"
@@ -98,8 +100,7 @@ export default async function NotFound() {
           aria-label="Aera"
           className="w-fit rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent"
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.svg" alt="Aera" width={104} height={28} className="h-7 w-auto opacity-90" />
+          <ClientImg src="/logo.svg" alt="Aera" width={104} height={28} className="h-7 w-auto opacity-90" />
         </Link>
 
         <div className="flex flex-1 items-center">

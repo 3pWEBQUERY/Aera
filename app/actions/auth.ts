@@ -2,10 +2,12 @@
 
 import { safeRelativePath } from "@/lib/safe-redirect";
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 import { authenticate, homePathFor, registerUser } from "@/lib/auth";
 import { clearSessionCookie } from "@/lib/session";
 import { loginSchema, signupSchema } from "@/lib/validation";
 import { writeAudit } from "@/lib/audit";
+import { systemPrisma } from "@/lib/prisma";
 import { rateLimit, clientIp } from "@/lib/rate-limit";
 import { getErrorTranslator, zodError } from "@/lib/action-errors";
 import { hasCurrentLegalEvidence } from "@/lib/legal-evidence";
@@ -60,6 +62,8 @@ export async function signupAction(
   const result = await registerUser({
     ...parsed.data,
     legalAcceptanceSource: "WEB_SIGNUP",
+    // Sprache, in der die Person sich registriert hat — für spätere E-Mails.
+    locale: await getLocale(),
   });
   if (!result.ok) return { error: t(result.error), ...kept };
   await writeAudit({ actorUserId: result.user.id, action: "user.signup" });
@@ -104,6 +108,13 @@ export async function loginAction(
     };
   if (result.usedRecoveryCode) {
     await writeAudit({ actorUserId: result.user.id, action: "user.totp.recovery_code_used" });
+  }
+  // Ältere Konten haben noch keine Mail-Sprache: beim ersten Login die
+  // aktuelle Anzeigesprache übernehmen. Eine bewusst gewählte bleibt.
+  if (!result.user.locale) {
+    await systemPrisma.user
+      .updateMany({ where: { id: result.user.id, locale: null }, data: { locale: await getLocale() } })
+      .catch(() => undefined);
   }
   // Mit einem Wiederherstellungscode angemeldet: Die App fehlt vermutlich.
   // Direkt zu den 2FA-Einstellungen, dort steht, wie viele Codes übrig sind.

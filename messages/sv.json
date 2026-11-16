@@ -184,7 +184,7 @@
     "error": "Tillgängligheten kunde inte kontrolleras."
   },
   "onboarding": {
-    "metaTitle": "Skapa community — Aera",
+    "metaTitle": "Skapa community",
     "brand": "Skapa community",
     "stepShort": "Steg {step} / {total}",
     "eyebrow": "{label} · Steg {step} av {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Dina communityn — Aera",
+      "metaTitle": "Dina communityn",
       "creator": "Creator",
       "yourMemberships": "Dina medlemskap",
       "logout": "Logga ut",
@@ -4928,6 +4928,10 @@
       "stepForum": "Presentera dig i ”{space}”",
       "stepSpace": "Gå till ”{space}”",
       "dismiss": "Stäng meddelande"
+    },
+    "seo": {
+      "lockedPost": "Inlägg för medlemmar i {community}",
+      "lockedSpace": "Innehåll för medlemmar i {community}"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "Logga in",
     "toDashboard": "Till instrumentpanelen",
     "startCommunity": "Starta en community",
-    "startShort": "Starta",
+    "startShort": "Börja gratis",
     "menuOpen": "Öppna menyn",
     "menuClose": "Stäng menyn",
     "footerAbout": "Plattformen för kreatörer som driver community, medlemskap, kurser, event, nyhetsbrev och handel under sitt eget varumärke — med full datasuveränitet.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "Från {plan}: {items}",
     "footerContact": "Kontakt",
-    "legalGermanOnly": "Den här juridiska texten finns bara på tyska. Den tyska versionen är bindande."
+    "legalGermanOnly": "Den här juridiska texten finns bara på tyska. Den tyska versionen är bindande.",
+    "seo": {
+      "title": "Aera — Din community. Dina regler. Dina intäkter.",
+      "description": "Bygg din egen community med flöde, kurser, evenemang, nyhetsbrev och butik — på din egen domän, med din egen profil. Börja gratis och väx när du vill.",
+      "keywords": "communityplattform, kreatörer, medlemskap, onlinekurser, nyhetsbrev, evenemang, digitala produkter",
+      "discoverTitle": "Upptäck",
+      "discoverDescription": "Hitta communityn och kreatörer på Aera.",
+      "pricingDescription": "Jämför Aeras paket: vad varje paket innehåller, vad det kostar per månad och vilken avgift som gäller vid försäljning.",
+      "featuresDescription": "Det här kan Aera: flöde, forum, kurser, evenemang, nyhetsbrev, butik och livesändningar — på din egen domän, med din egen profil.",
+      "loginDescription": "Logga in på Aera för att öppna dina communityn och din instrumentpanel.",
+      "signupDescription": "Skapa ditt Aera-konto och starta din community gratis."
+    }
   },
   "home": {
     "badge": "Community · Medlemskap · Handel",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "Meddelande från {from}",
       "supportInboundIntro": "Ett nytt meddelande väntar i supporten.",
       "supportInboundCta": "Öppna i administrationen",
-      "supportInboundHint": "Svara i administrationen och inte per mejl till {email} — annars saknas svaret i tråden."
+      "supportInboundHint": "Svara i administrationen och inte per mejl till {email} — annars saknas svaret i tråden.",
+      "unsubscribeLabel": "Avsluta prenumerationen på nyhetsbrevet",
+      "unsubscribeReason": "Du får det här mejlet eftersom du prenumererar på nyhetsbrevet från {community}."
     },
     "dashboard": {
       "uploadFailed": "Uppladdningen misslyckades.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "Gratis"
+    },
+    "state": {
+      "networkError": "Ingen anslutning till servern. Det du har fyllt i finns kvar – skicka formuläret igen.",
+      "serverError": "Det gick inte. Försök igen.",
+      "pageErrorTitle": "Sidan kunde inte laddas",
+      "pageErrorText": "Försök igen om en stund.",
+      "reload": "Ladda om",
+      "toHelp": "Till hjälpen",
+      "viewErrorTitle": "Den här vyn kunde inte laddas",
+      "toOverview": "Till översikten",
+      "contentGoneTitle": "Det här innehållet finns inte längre",
+      "contentGoneText": "Det har tagits bort eller flyttats.",
+      "backToCommunity": "Tillbaka till {community}",
+      "viewNotFoundTitle": "Den här sidan finns inte",
+      "viewNotFoundText": "Den har tagits bort eller flyttats, eller så är länken fel.",
+      "loading": "Laddar …",
+      "errorRef": "Felreferens: {digest}"
     }
   },
   "unsubscribe": {

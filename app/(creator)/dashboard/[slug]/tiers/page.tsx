@@ -6,6 +6,14 @@ import {
   TiersManager,
   type TierRowData,
 } from "@/components/dashboard/tiers-manager";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.tiers");
+  return { title: t("title") };
+}
 
 export default async function TiersPage({
   params,

@@ -184,7 +184,7 @@
     "error": "Beschikbaarheid kon niet worden gecontroleerd."
   },
   "onboarding": {
-    "metaTitle": "Community aanmaken — Aera",
+    "metaTitle": "Community aanmaken",
     "brand": "Community aanmaken",
     "stepShort": "Stap {step} / {total}",
     "eyebrow": "{label} · Stap {step} van {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Jouw communities — Aera",
+      "metaTitle": "Jouw communities",
       "creator": "Creator",
       "yourMemberships": "Jouw lidmaatschappen",
       "logout": "Uitloggen",
@@ -4928,6 +4928,10 @@
       "stepForum": "Stel je voor in ‘{space}’",
       "stepSpace": "Naar ‘{space}’",
       "dismiss": "Melding sluiten"
+    },
+    "seo": {
+      "lockedPost": "Bericht voor leden van {community}",
+      "lockedSpace": "Inhoud voor leden van {community}"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "Inloggen",
     "toDashboard": "Naar dashboard",
     "startCommunity": "Start een community",
-    "startShort": "Starten",
+    "startShort": "Gratis starten",
     "menuOpen": "Menu openen",
     "menuClose": "Menu sluiten",
     "footerAbout": "Het platform voor creators die community, lidmaatschappen, cursussen, evenementen, nieuwsbrieven en commerce onder hun eigen merk runnen — met volledige databezit.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "Vanaf {plan}: {items}",
     "footerContact": "Contact",
-    "legalGermanOnly": "Deze juridische tekst is alleen in het Duits beschikbaar. De Duitse versie is bindend."
+    "legalGermanOnly": "Deze juridische tekst is alleen in het Duits beschikbaar. De Duitse versie is bindend.",
+    "seo": {
+      "title": "Aera — Jouw community. Jouw regels. Jouw inkomsten.",
+      "description": "Bouw je eigen community met feed, cursussen, evenementen, nieuwsbrief en shop — op je eigen domein, met je eigen huisstijl. Start gratis en groei wanneer je wilt.",
+      "keywords": "communityplatform, creators, lidmaatschappen, online cursussen, nieuwsbrief, evenementen, digitale producten",
+      "discoverTitle": "Ontdekken",
+      "discoverDescription": "Vind communities en creators op Aera.",
+      "pricingDescription": "Vergelijk de pakketten van Aera: wat elk pakket bevat, wat het per maand kost en welke vergoeding er bij verkopen geldt.",
+      "featuresDescription": "Wat Aera kan: feed, forum, cursussen, evenementen, nieuwsbrief, shop en livestreams — op je eigen domein, met je eigen huisstijl.",
+      "loginDescription": "Log in bij Aera om je communities en je dashboard te openen.",
+      "signupDescription": "Maak je Aera-account aan en start je community gratis."
+    }
   },
   "home": {
     "badge": "Community · Lidmaatschap · Commerce",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "Bericht van {from}",
       "supportInboundIntro": "Er wacht een nieuw bericht bij de ondersteuning.",
       "supportInboundCta": "Openen in beheer",
-      "supportInboundHint": "Antwoord in het beheergedeelte, niet per mail naar {email} — anders ontbreekt het antwoord in het gesprek."
+      "supportInboundHint": "Antwoord in het beheergedeelte, niet per mail naar {email} — anders ontbreekt het antwoord in het gesprek.",
+      "unsubscribeLabel": "Afmelden voor de nieuwsbrief",
+      "unsubscribeReason": "Je ontvangt deze e-mail omdat je je hebt aangemeld voor de nieuwsbrief van {community}."
     },
     "dashboard": {
       "uploadFailed": "Uploaden is mislukt.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "Gratis"
+    },
+    "state": {
+      "networkError": "Geen verbinding met de server. Je invoer staat er nog – verstuur het formulier opnieuw.",
+      "serverError": "Dat is niet gelukt. Probeer het nog eens.",
+      "pageErrorTitle": "De pagina kon niet worden geladen",
+      "pageErrorText": "Probeer het zo nog eens.",
+      "reload": "Opnieuw laden",
+      "toHelp": "Naar de help",
+      "viewErrorTitle": "Deze weergave kon niet worden geladen",
+      "toOverview": "Naar het overzicht",
+      "contentGoneTitle": "Deze inhoud is er niet meer",
+      "contentGoneText": "Hij is verwijderd of verplaatst.",
+      "backToCommunity": "Terug naar {community}",
+      "viewNotFoundTitle": "Deze pagina bestaat niet",
+      "viewNotFoundText": "Hij is verwijderd of verplaatst, of de link klopt niet.",
+      "loading": "Laden…",
+      "errorRef": "Foutreferentie: {digest}"
     }
   },
   "unsubscribe": {

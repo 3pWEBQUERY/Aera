@@ -28,7 +28,21 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
           "/reset/",
           "/invite/",
           "/verify/",
+          "/unsubscribe/",
+          "/legal/accept",
+          "/live-studio",
           "/start",
+          // Persoenliche Community-Seiten. Pfadform auf der Plattform-Domain
+          // (`*` versteht Google wie Bing) und die Kurzform auf Subdomains
+          // und eigenen Domains, wo /c/<slug> wegfaellt. Die Seiten tragen
+          // zusaetzlich noindex — robots.txt allein entfernt nichts aus dem
+          // Index, es spart nur das Crawlen.
+          "/c/*/account",
+          "/c/*/notifications",
+          "/c/*/library",
+          "/account",
+          "/notifications",
+          "/library",
         ],
       },
     ],

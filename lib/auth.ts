@@ -34,6 +34,8 @@ export async function registerUser(input: {
   name: string;
   password: string;
   legalAcceptanceSource: "WEB_SIGNUP" | "COMMUNITY_SIGNUP" | "MOBILE_SIGNUP";
+  /** Sprache für E-Mails (Web: Request-Sprache, Mobile: Body/Accept-Language). */
+  locale?: string | null;
 }): Promise<{ ok: true; user: User } | { ok: false; error: string }> {
   const email = input.email.trim().toLowerCase();
   let user: User;
@@ -44,6 +46,7 @@ export async function registerUser(input: {
         email,
         name: input.name.trim(),
         passwordHash: await hashPassword(input.password),
+        locale: input.locale ?? null,
         legalAcceptances: {
           create: [
             {

@@ -9,6 +9,8 @@ import { MobileDashboardNav } from "@/components/dashboard/mobile-nav";
 import { TopHeader } from "@/components/dashboard/top-header";
 import { ModeratorNav } from "@/components/dashboard/moderator-nav";
 import { getTranslations } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { CREATOR_CLIENT_NAMESPACES, clientMessages } from "@/i18n/client-messages";
 import { VerifyEmailBanner } from "@/components/verify-email-banner";
 import type { Metadata } from "next";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
@@ -25,7 +27,16 @@ export async function generateMetadata({
     select: { name: true },
   });
   if (!tenant) return {};
-  return { title: `Dashboard — ${tenant.name}` };
+  // "{Seite} – {Community}": jede Dashboard-Seite setzt nur ihren Namen, das
+  // Template haengt die Community an. `absolute`, damit das Root-Template
+  // ("— Aera") nicht noch einmal angehaengt wird.
+  return {
+    title: {
+      absolute: `Dashboard – ${tenant.name}`,
+      template: `%s – ${tenant.name}`,
+    },
+    robots: { index: false, follow: false },
+  };
 }
 
 export default async function DashboardLayout({
@@ -85,7 +96,11 @@ export default async function DashboardLayout({
   };
   const tModeration = await getTranslations("dashboard.moderation");
 
+  // Dashboard-Texte nur hier an den Browser geben (siehe i18n/client-messages.ts).
+  const clientMsgs = await clientMessages(CREATOR_CLIENT_NAMESPACES);
+
   return (
+    <NextIntlClientProvider messages={clientMsgs}>
     <div className="flex min-h-screen w-full bg-slate-50" style={AERA_DASHBOARD_VARS}>
       {/* Far-left community rail (sticky, full height). Hidden on phones,
           where it took a fifth of the width; the menu sheet links to all
@@ -150,5 +165,6 @@ export default async function DashboardLayout({
         <DashboardContent>{children}</DashboardContent>
       </div>
     </div>
+    </NextIntlClientProvider>
   );
 }

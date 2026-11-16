@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import "./globals.css";
 import { buildPlatformMetadata } from "@/lib/seo";
 import { UploadDock } from "@/components/ui/upload-dock";
+import { BASE_CLIENT_NAMESPACES, clientMessages } from "@/i18n/client-messages";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,16 +13,19 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-// Editorial serifs — used only inside blog articles (see .blog-article).
+// Editorial serifs. Playfair traegt die .display-serif-Ueberschriften (u. a.
+// Startseiten-Hero) und wird deshalb vorgeladen.
 const playfair = Playfair_Display({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-serif-display",
 });
+// Lora steht nur im Fliesstext von .blog-article: kein Preload auf jeder Seite.
 const lora = Lora({
   subsets: ["latin"],
   display: "swap",
   variable: "--font-serif-body",
+  preload: false,
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -58,14 +62,16 @@ export default async function RootLayout({
 }) {
   const locale = await getLocale();
   const t = await getTranslations("ui.frontend.accessibility");
+  const messages = await clientMessages(BASE_CLIENT_NAMESPACES);
   return (
     <html
       lang={locale}
       className={`${inter.variable} ${playfair.variable} ${lora.variable}`}
     >
       <body>
-        {/* Messages werden automatisch aus i18n/request.ts geerbt. */}
-        <NextIntlClientProvider>
+        {/* Nur die Namespaces, die Client-Komponenten brauchen (siehe
+            i18n/client-messages.ts); Dashboard und Admin legen ihre eigenen nach. */}
+        <NextIntlClientProvider messages={messages}>
           <a className="skip-link" href="#main-content">
             {t("skipToContent")}
           </a>

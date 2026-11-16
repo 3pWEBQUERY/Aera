@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import {
@@ -678,7 +679,7 @@ function CreateForm({
   /** Mit Text: Rückmeldung, die nach dem Schließen in der Liste steht. */
   onDone: (message?: string) => void;
 }) {
-  const [state, action, pending] = useActionState(createMemberAction, initial);
+  const [state, action, pending] = useResilientActionState(createMemberAction, initial);
   const [role, setRole] = useState("MEMBER");
   const t = useTranslations("dashboard.members");
   const tRoles = useTranslations("dashboard.roles");
@@ -775,7 +776,7 @@ function EditForm({
   member: MemberRow;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateMemberAction, initial);
+  const [state, action, pending] = useResilientActionState(updateMemberAction, initial);
   const [role, setRole] = useState(member.role);
   const banned = member.status === "BANNED";
   const [deleting, setDeleting] = useState(false);
@@ -914,7 +915,7 @@ function ProfileEditForm({
   member: MemberRow;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateOwnProfileAction, initial);
+  const [state, action, pending] = useResilientActionState(updateOwnProfileAction, initial);
   const t = useTranslations("dashboard.members");
   const tRoles = useTranslations("dashboard.roles");
   useEffect(() => {

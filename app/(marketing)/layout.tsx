@@ -2,30 +2,33 @@ import Link from "next/link";
 import Image from "next/image";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth";
-import { resolveBlogLocale } from "@/lib/blog-query";
+import { blogNavVisible } from "@/lib/blog-query";
 import { MarketingHeader } from "@/components/marketing/marketing-header";
 import { MarketingChrome } from "@/components/marketing/marketing-chrome";
 import logo from "@/public/logo.svg";
-import type { Metadata } from "next";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations("ui.auth");
-  // `absolute`: rootTitle enthaelt "Aera" schon — mit `default` haengte das
-  // Template des Root-Layouts ein zweites "— Aera" an ("… — Aera — Aera").
-  return { title: { template: "%s — Aera", absolute: t("rootTitle") } };
-}
+// Kein eigener Titel: Vorgabe und Template ("%s — Aera") kommen aus dem
+// Root-Layout (lib/seo.ts, uebersetzt bzw. aus /admin/seo). Jede Seite setzt
+// Titel, Beschreibung und canonical selbst ueber buildPlatformPageMetadata.
 
 export default async function MarketingLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
+  // Faellt die Datenbank aus, muessen Impressum, Hilfe, Kontakt und Preise
+  // trotzdem antworten: Wer angemeldet ist, sieht dann voruebergehend die
+  // Kopfzeile fuer Gaeste — besser als eine 500 auf jeder Seite.
+  const user = await getCurrentUser().catch((error: unknown) => {
+    console.error("[marketing] Kopfzeile ohne Anmeldung — Nutzer nicht lesbar", error);
+    return null;
+  });
   const t = await getTranslations("marketing");
   // Der Blog steht erst in der Navigation, wenn es einen veroeffentlichten
   // Beitrag gibt (in der aktiven Sprache oder ihrer Fallback-Kette) — ein
-  // leerer Menuepunkt verspricht etwas, das es nicht gibt.
-  const showBlog = (await resolveBlogLocale(await getLocale())) !== null;
+  // leerer Menuepunkt verspricht etwas, das es nicht gibt. Ohne Datenbank
+  // entfaellt nur der Link.
+  const showBlog = await blogNavVisible(await getLocale());
 
   return (
     <div className="min-h-screen bg-[#0f0f0d]">

@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import prisma from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
+import { tenantPageMetadata } from "@/lib/seo";
 import { getCommunityCoverUrl } from "@/lib/tenant";
 import { parseLayout } from "@/lib/layout";
 import { readPreviewOverride } from "@/lib/preview";
@@ -30,12 +31,13 @@ export async function generateMetadata({
   if (!community) return {};
   const page = await getCommunityPage(community.tenant.id, pageSlug, community.ctx);
   if (!page) return {};
-  return {
-    title: `${page.title} · ${community.tenant.name}`,
+  return tenantPageMetadata(slug, {
+    title: page.title,
     description: page.description ?? undefined,
+    path: `/p/${pageSlug}`,
     // Entwuerfe sieht nur Staff — sie gehoeren in keinen Suchindex.
-    robots: page.isDraft ? { index: false, follow: false } : undefined,
-  };
+    noindex: page.isDraft,
+  });
 }
 
 export default async function CommunityCustomPage({

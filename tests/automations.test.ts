@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { PrismaMock } from "./helpers/prisma-mock";
 
 const mocks = vi.hoisted(() => ({
+  recipientLocales: vi.fn(async () => ({ byUser: new Map<string, string>(), fallback: "de" })),
   sendEmail: vi.fn(async (): Promise<{ ok: boolean; error?: string; id?: string }> => ({ ok: true })),
 }));
 
@@ -17,15 +18,24 @@ vi.mock("@/lib/prisma", async () => {
 });
 vi.mock("@/lib/email", () => ({
   sendEmail: mocks.sendEmail,
-  renderCampaignHtml: (args: { body: string }) => `<html>${args.body}</html>`,
+  renderCampaignHtml: (args: { body: string; locale?: string; footerLabel?: string }) =>
+    `<html lang="${args.locale}">${args.body}|${args.footerLabel}</html>`,
 }));
 vi.mock("@/lib/marketing-consent", () => ({
-  appendUnsubscribeFooter: (html: string) => `${html}<p>unsubscribe</p>`,
+  appendUnsubscribeFooter: (html: string, _url: string, copy: { label: string; reason?: string }) =>
+    `${html}<p>${copy.reason}|${copy.label}</p>`,
   newsletterUnsubscribeUrls: () => ({
     apiUrl: "http://localhost:3000/api/newsletter/unsubscribe/token",
     pageUrl: "http://localhost:3000/unsubscribe/token",
   }),
   isNewsletterRecipientEligible: vi.fn(async () => true),
+  marketingRecipientLocales: mocks.recipientLocales,
+}));
+vi.mock("@/lib/email-i18n", () => ({
+  marketingEmailCopy: async (locale: string, community: string) => ({
+    footerLabel: `sent-via:${locale}`,
+    unsubscribe: { label: `unsubscribe:${locale}`, reason: `reason:${locale}:${community}` },
+  }),
 }));
 
 import prismaModule from "@/lib/prisma";
@@ -102,6 +112,16 @@ describe("renderAutomationBody", () => {
 });
 
 describe("runAutomations", () => {
+  it("renders the footer in the member's own language", async () => {
+    mockRun({});
+    mocks.recipientLocales.mockResolvedValueOnce({ byUser: new Map([["u1", "fr"]]), fallback: "de" });
+
+    await runAutomations();
+
+    const html = prisma.automationDelivery.create.mock.calls[0]?.[0].data.html as string;
+    expect(html).toBe('<html lang="fr">Willkommen bei Demo!|sent-via:fr</html><p>reason:fr:Demo|unsubscribe:fr</p>');
+  });
+
   it("sends due steps to eligible members and records deliveries", async () => {
     mockRun({});
 

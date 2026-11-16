@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { contentSecurityPolicy, createNonce } from "./lib/csp";
+import { pathHasNul, searchWithoutNul } from "./lib/url-nul";
 
 /**
  * Host-based routing:
@@ -202,7 +203,33 @@ function unknownTenantHost(): NextResponse {
   });
 }
 
+/**
+ * `%00` in der Adresse: PostgreSQL wuerde spaeter mit 500 abbrechen. Im Pfad
+ * gibt es so eine Seite nicht (404 ueber die normale not-found-Seite), in der
+ * Suche faellt nur das Zeichen weg. Siehe lib/url-nul.ts.
+ */
+function rejectNul(req: NextRequest, forward: Headers): NextResponse | null {
+  const url = req.nextUrl;
+  if (pathHasNul(url.pathname)) {
+    // `_`-Ordner sind in app/ privat — dieser Pfad trifft sicher keine Route
+    // und rendert die Plattform-404 mit Status 404.
+    const target = url.clone();
+    target.pathname = "/_invalid-path";
+    target.search = "";
+    return NextResponse.rewrite(target, { request: { headers: forward } });
+  }
+  const cleaned = searchWithoutNul(url.search);
+  if (cleaned !== null && (req.method === "GET" || req.method === "HEAD")) {
+    const target = url.clone();
+    target.search = cleaned;
+    return NextResponse.redirect(target, 308);
+  }
+  return null;
+}
+
 async function route(req: NextRequest, forward: Headers): Promise<NextResponse> {
+  const nul = rejectNul(req, forward);
+  if (nul) return nul;
   const host = req.headers.get("host") ?? "";
   const hostname = host.split(":")[0].toLowerCase();
   const root = (process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost")

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { createCommentAction, type EngageState } from "@/app/actions/engage";
 import { Button } from "@/components/ui/button";
@@ -19,7 +20,7 @@ export function CommentForm({
   postId: string;
 }) {
   const t = useTranslations("spaces");
-  const [state, action, pending] = useActionState(createCommentAction, initial);
+  const [state, action, pending] = useResilientActionState(createCommentAction, initial);
   const ref = useRef<HTMLFormElement>(null);
   useEffect(() => {
     if (state.ok) ref.current?.reset();

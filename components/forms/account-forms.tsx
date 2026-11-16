@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/field";
@@ -20,7 +21,7 @@ const initial: AccountState = {};
 export function ForgotPasswordForm({ defaultEmail }: { defaultEmail?: string }) {
   const t = useTranslations("authPages");
   const tAuth = useTranslations("auth");
-  const [state, action, pending] = useActionState(requestPasswordResetAction, initial);
+  const [state, action, pending] = useResilientActionState(requestPasswordResetAction, initial);
 
   if (state.ok) {
     return (
@@ -97,7 +98,7 @@ function PasswordFields({ invalid = false }: { invalid?: boolean }) {
 
 export function ResetPasswordForm({ token }: { token: string }) {
   const t = useTranslations("ui.auth");
-  const [state, action, pending] = useActionState(resetPasswordAction, initial);
+  const [state, action, pending] = useResilientActionState(resetPasswordAction, initial);
   return (
     <form
       action={action}
@@ -125,7 +126,7 @@ export function AcceptInviteForm({
   next?: string;
 }) {
   const t = useTranslations("ui.auth");
-  const [state, action, pending] = useActionState(acceptInviteAction, initial);
+  const [state, action, pending] = useResilientActionState(acceptInviteAction, initial);
   const [name, setName] = useState(defaultName);
   return (
     <form
@@ -160,7 +161,7 @@ export function AcceptInviteForm({
 
 export function CurrentLegalAcceptanceForm({ next }: { next?: string }) {
   const t = useTranslations("legalReview");
-  const [state, action, pending] = useActionState(acceptCurrentLegalAction, initial);
+  const [state, action, pending] = useResilientActionState(acceptCurrentLegalAction, initial);
   return (
     <form
       action={action}

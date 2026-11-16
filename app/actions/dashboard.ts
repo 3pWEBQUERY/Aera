@@ -59,7 +59,8 @@ import {
 } from "@/lib/newsletter-delivery";
 import { parseLocalDateTime } from "@/lib/local-datetime";
 import type { Prisma, Visibility } from "@/app/generated/prisma/client";
-import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { emailTranslator, resolveEmailLocale } from "@/lib/email-i18n";
 import {
   assertStripeSubscriptionsInactive,
   cancelStripeSubscriptionsImmediately,
@@ -1186,7 +1187,8 @@ async function queueCampaignSend(
   // Snapshot a bounded audience page at a time. Very large sends are resumed
   // by the newsletter cron from their durable SENDING state instead of loading
   // every member into one server-action request.
-  const footerLabel = (await getTranslations("ui.emails"))("sentVia");
+  // Fußzeile und Abmeldelink folgen der Sprache jedes Empfängers
+  // (queueNewsletterAudienceBatch), nicht der des sendenden Admins.
   let recipientCount = 0;
   for (let batch = 0; batch < 4; batch++) {
     const result = await queueNewsletterAudienceBatch({
@@ -1199,7 +1201,6 @@ async function queueCampaignSend(
       status: "SENDING",
       scheduledAt: campaign.scheduledAt,
       tenant: { name: tenant.name, primaryColor: tenant.primaryColor },
-      footerLabel,
     });
     recipientCount = result.total;
     if (!result.hasMore) break;
@@ -1306,7 +1307,10 @@ export async function sendCampaignTestAction(
   const body = String(fd.get("body") || "").trim();
   const bodyFormat = fd.get("bodyFormat") === "HTML" ? ("HTML" as const) : ("TEXT" as const);
   if (!subject || !body) return { error: await tErr("invalidData") };
-  const footerLabel = (await getTranslations("ui.emails"))("sentVia");
+  // Testmail an den Admin selbst: in seiner Sprache, mit dem Absender, den
+  // auch die Empfänger sehen („{Community} via Aera“).
+  const mailLocale = resolveEmailLocale(user.locale, await getLocale());
+  const footerLabel = (await emailTranslator(mailLocale))("sentVia");
   const html = renderCampaignHtml({
     tenantName: tenant.name,
     primaryColor: tenant.primaryColor,
@@ -1314,11 +1318,13 @@ export async function sendCampaignTestAction(
     body,
     bodyFormat,
     footerLabel,
+    locale: mailLocale,
   });
   const result = await sendEmail({
     to: user.email,
     subject: `[Test] ${subject}`,
     html,
+    senderName: tenant.name,
   });
   if (!result.ok) {
     return {
@@ -1572,11 +1578,18 @@ export async function createMemberAction(
     // After activation the new member lands directly in the community.
     inviteLink = `${inviteUrl(token)}?next=${encodeURIComponent(`/c/${slug}`)}`;
     if (features.email) {
-      const tMail = await getTranslations("ui.emails");
+      // Sprache des Eingeladenen, sofern bekannt. Neue Konten haben noch
+      // keine; dann bleibt die Sprache der Einladenden der beste Hinweis
+      // (gleiche Community). Bei der Annahme wird die eigene gespeichert.
+      const mailLocale = resolveEmailLocale(user.locale, await getLocale());
+      const tMail = await emailTranslator(mailLocale);
       const sent = await sendEmail({
         to: user.email,
         subject: tMail("inviteSubject", { community: tenant.name }),
+        senderName: tenant.name,
         html: renderAccountActionHtml({
+          locale: mailLocale,
+          title: tMail("inviteSubject", { community: tenant.name }),
           heading: tMail("inviteHeading", { community: tenant.name }),
           body: tMail("inviteBody", { community: tenant.name }),
           ctaLabel: tMail("inviteCta"),

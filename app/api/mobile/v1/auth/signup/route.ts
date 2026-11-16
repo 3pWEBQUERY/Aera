@@ -4,9 +4,12 @@ import { signSession } from "@/lib/session";
 import { rateLimit } from "@/lib/rate-limit";
 import { jsonError, jsonOk, parseJsonBody, requestIp } from "@/lib/mobile/api";
 import { toUserDto } from "@/lib/mobile/serializers";
+import { localeFromMobileRequest } from "@/lib/email-i18n";
 
 // POST /api/mobile/v1/auth/signup
-// { name, email, password, acceptTerms: true, privacyNoticeAcknowledged: true }
+// { name, email, password, acceptTerms: true, privacyNoticeAcknowledged: true,
+//   locale? }  — locale (z. B. "de", "pt-BR") vor Accept-Language; Sprache der
+//   E-Mails an dieses Konto.
 // → { token, user }
 // Rate-Limit wie Web-Signup (app/actions/auth.ts): 5/h/IP.
 
@@ -16,6 +19,7 @@ const schema = z.object({
   password: z.string().min(8).max(200),
   acceptTerms: z.literal(true),
   privacyNoticeAcknowledged: z.literal(true),
+  locale: z.string().max(35).nullish(),
 });
 
 export async function POST(req: Request) {
@@ -32,6 +36,7 @@ export async function POST(req: Request) {
     email: parsed.data.email,
     password: parsed.data.password,
     legalAcceptanceSource: "MOBILE_SIGNUP",
+    locale: localeFromMobileRequest(req, parsed.data.locale),
   });
   if (!result.ok) {
     return jsonError("email_already_registered", "This e-mail is already registered.", 409);

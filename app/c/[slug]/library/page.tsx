@@ -7,10 +7,18 @@ import { getCommunityContext } from "@/lib/guards";
 import { Icon } from "@/components/dashboard/icons";
 import { EmptyState, Pill } from "@/components/ui/misc";
 import { formatDate, formatPrice } from "@/lib/utils";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
   const t = await getTranslations("library");
-  return { title: t("metaTitle") };
+  // Persoenlich: kein canonical, kein Index.
+  return tenantPageMetadata(slug, { title: t("metaTitle"), path: null, noindex: true });
 }
 
 const orderStatusCls: Record<string, string> = {

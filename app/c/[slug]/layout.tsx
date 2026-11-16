@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { buildTenantMetadata, TENANT_SEO_SELECT } from "@/lib/seo";
+import { buildTenantMetadata, getSeoTenant } from "@/lib/seo";
 import { notFound } from "next/navigation";
 import prisma, { systemPrisma } from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
@@ -21,6 +21,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CommunityAccountMenu } from "@/components/community/account-menu";
 import { WelcomeBanner } from "@/components/community/welcome-banner";
+import { CommunityIdentityProvider } from "@/components/community/community-identity";
 
 /** Space type → nav icon (matches the mobile SpaceNav mapping). */
 
@@ -30,13 +31,13 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const tenant = await prisma.tenant.findUnique({
-    where: { slug, status: "ACTIVE" },
-    select: TENANT_SEO_SELECT,
-  });
+  const tenant = await getSeoTenant(slug);
   if (!tenant) return {};
   // Overrides des Creators, sonst aus den Onboarding-Angaben abgeleitet.
-  return buildTenantMetadata(tenant);
+  // Bewusst OHNE canonical und og:url (`path: null`): jede Unterseite erbt
+  // diese Werte, und ein canonical hier erklaerte Spaces und Beitraege zu
+  // Duplikaten der Startseite. Jede Seite setzt ihren eigenen.
+  return buildTenantMetadata(tenant, { path: null });
 }
 
 export default async function CommunityLayout({
@@ -321,7 +322,12 @@ export default async function CommunityLayout({
 
         {/* Pages control their own containers so the home hero can bleed
             edge-to-edge like the reference design. */}
-        <main className="min-w-0 flex-1">{children}</main>
+        <main className="min-w-0 flex-1">
+          {/* Name/Adresse fuer not-found.tsx und error.tsx, die keine params bekommen. */}
+          <CommunityIdentityProvider slug={slug} name={displayName}>
+            {children}
+          </CommunityIdentityProvider>
+        </main>
       </div>
 
       {/*

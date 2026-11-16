@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { resendVerificationAction, type AccountState } from "@/app/actions/account";
 import { cn } from "@/lib/utils";
@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
  */
 export function VerifyEmailBanner({ email }: { email: string }) {
   const t = useTranslations("verifyBanner");
-  const [state, action, pending] = useActionState<AccountState, FormData>(
+  const [state, action, pending] = useResilientActionState<AccountState, FormData>(
     resendVerificationAction,
     {},
   );
@@ -59,7 +59,7 @@ export function ResendVerificationButton({
   className?: string;
 }) {
   const t = useTranslations("verifyBanner");
-  const [state, action, pending] = useActionState<AccountState, FormData>(
+  const [state, action, pending] = useResilientActionState<AccountState, FormData>(
     resendVerificationAction,
     {},
   );

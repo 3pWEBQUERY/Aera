@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
+import { env } from "@/lib/env";
 import { LoginForm } from "@/components/auth/login-form";
 
 export const metadata: Metadata = {
@@ -24,7 +25,7 @@ export default async function LoginPage({
         Du hast schon ein Konto auf aera.so? Dann melde dich einfach damit an — es ist dasselbe.
       </p>
 
-      <LoginForm next={weiter ?? "/studio"} />
+      <LoginForm next={weiter ?? "/studio"} resetUrl={env.AERA_PASSWORD_RESET_URL} />
 
       <p className="mt-8 text-center text-sm text-ash">
         Noch kein Konto?{" "}

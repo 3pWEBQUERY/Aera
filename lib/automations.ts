@@ -5,8 +5,11 @@ import { sendEmail, renderCampaignHtml } from "./email";
 import {
   appendUnsubscribeFooter,
   isNewsletterRecipientEligible,
+  marketingRecipientLocales,
   newsletterUnsubscribeUrls,
 } from "./marketing-consent";
+import { marketingEmailCopy } from "./email-i18n";
+import type { AppLocale } from "@/i18n/locales";
 
 /**
  * Onboarding-Automationen: zeitversetzte E-Mail-Serie nach Community-Beitritt
@@ -41,6 +44,19 @@ export interface AutomationRunResult {
   tenants: number;
   queued: number;
   failed: number;
+}
+
+/** Community-Name für den Absender „{Community} via Aera“; Fehler = Plattform-Absender. */
+async function senderName(tenantId: string): Promise<string | undefined> {
+  try {
+    const tenant = await prisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { name: true },
+    });
+    return tenant?.name ?? undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 async function processClaimedDelivery(ref: {
@@ -87,6 +103,7 @@ async function processClaimedDelivery(ref: {
       to: delivery.recipientEmail,
       subject: delivery.subject,
       html: delivery.html,
+      senderName: await senderName(delivery.tenantId),
       idempotencyKey: `automation-${delivery.id}`,
       category: "marketing",
       unsubscribeUrl: delivery.unsubscribeUrl,
@@ -162,6 +179,12 @@ export async function runAutomations(
         orderBy: [{ optedInAt: "asc" }, { id: "asc" }],
         take: maxSends - queued,
       });
+      // Fußzeile und Abmeldelink in der Sprache des Empfängers.
+      const locales = await marketingRecipientLocales(
+        step.tenantId,
+        consents.map((consent) => consent.user.id),
+      );
+      const copies = new Map<AppLocale, Awaited<ReturnType<typeof marketingEmailCopy>>>();
       for (const consent of consents) {
         if (queued >= maxSends) break;
         if (consent.email.trim().toLowerCase() !== consent.user.email.trim().toLowerCase()) continue;
@@ -174,12 +197,20 @@ export async function runAutomations(
           userId: consent.user.id,
           kind: "automation",
         });
+        const locale = locales.byUser.get(consent.user.id) ?? locales.fallback;
+        let copy = copies.get(locale);
+        if (!copy) {
+          copy = await marketingEmailCopy(locale, step.tenant.name);
+          copies.set(locale, copy);
+        }
         const html = appendUnsubscribeFooter(renderCampaignHtml({
           tenantName: step.tenant.name,
           primaryColor: step.tenant.primaryColor,
           subject,
           body: renderAutomationBody(step.body, vars),
-        }), unsubscribe.pageUrl);
+          footerLabel: copy.footerLabel,
+          locale,
+        }), unsubscribe.pageUrl, copy.unsubscribe);
         try {
           await prisma.automationDelivery.create({
             data: {

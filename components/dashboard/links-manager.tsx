@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   saveSpaceLinkAction,
@@ -208,7 +209,7 @@ function LinkForm({
   link: LinkRow | null;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(saveSpaceLinkAction, initial);
+  const [state, action, pending] = useResilientActionState(saveSpaceLinkAction, initial);
   const t = useTranslations("dashboard.links");
   useEffect(() => {
     if (state.ok) onDone();

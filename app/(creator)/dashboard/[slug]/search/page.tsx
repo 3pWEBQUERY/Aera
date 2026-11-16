@@ -7,6 +7,13 @@ import { Card, CardBody } from "@/components/ui/card";
 import { Avatar, EmptyState, Pill } from "@/components/ui/misc";
 import { excerpt, formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import type { Metadata } from "next";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.search");
+  return { title: t("title") };
+}
 
 export default async function SearchPage({
   params,

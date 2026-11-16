@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { normalizeHexColor } from "@/lib/color";
@@ -52,7 +53,7 @@ export function OnboardingWizard({
   /** Prefilled from an influencer link (/start?code=…). */
   initialCode?: string;
 }) {
-  const [state, action, pending] = useActionState(createCommunityAction, initial);
+  const [state, action, pending] = useResilientActionState(createCommunityAction, initial);
   const t = useTranslations("onboarding");
   const tSpaces = useTranslations("onboarding.spaces");
 

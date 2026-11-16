@@ -2,6 +2,9 @@ import "server-only";
 
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { env } from "./env";
+import { FOOTER_SLOT, OUTSIDE_TEXT } from "./email";
+import { pickSupportedLocale, resolveEmailLocale } from "./email-i18n";
+import type { AppLocale } from "@/i18n/locales";
 import prisma, {
   systemPrisma,
   withTenantContext,
@@ -100,15 +103,58 @@ export function newsletterUnsubscribeUrls(input: {
   };
 }
 
+/**
+ * Fußzeile jeder Marketing-Mail: Grund der Zustellung und Abmeldelink in der
+ * Sprache des Empfängers. Sitzt in unseren Vorlagen im Mail-Rahmen
+ * (FOOTER_SLOT), bei Creator-HTML vor `</body>` bzw. am Ende.
+ *
+ * Ein String als drittes Argument gilt als reiner Linktext (Altaufrufer).
+ */
 export function appendUnsubscribeFooter(
   html: string,
   pageUrl: string,
-  label = "Unsubscribe",
+  copy: string | { label: string; reason?: string } = "Unsubscribe",
 ): string {
-  const footer = `<p style="margin:16px auto 0;max-width:560px;text-align:center;font-family:-apple-system,Segoe UI,Roboto,sans-serif;font-size:12px;color:#6b7280"><a href="${escapeHtml(pageUrl)}" style="color:#6b7280;text-decoration:underline">${escapeHtml(label)}</a></p>`;
-  return html.includes("</body>")
-    ? html.replace("</body>", `${footer}</body>`)
+  const { label, reason } = typeof copy === "string" ? { label: copy, reason: undefined } : copy;
+  // Eigener Hintergrund: Creator-HTML kann dunkel sein, der Kontrast muss trotzdem stimmen.
+  const style = `margin:16px auto 0;max-width:560px;padding:8px 12px;background:#f3f4f6;border-radius:8px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:12px;line-height:1.6;color:${OUTSIDE_TEXT}`;
+  const reasonHtml = reason ? `${escapeHtml(reason)}<br/>` : "";
+  const footer = `<p style="${style}">${reasonHtml}<a href="${escapeHtml(pageUrl)}" style="color:${OUTSIDE_TEXT};text-decoration:underline">${escapeHtml(label)}</a></p>`;
+  if (html.includes(FOOTER_SLOT)) return html.replace(FOOTER_SLOT, () => footer);
+  // Letztes </body>: ein früheres könnte in verstecktem Creator-Markup stehen.
+  const bodyEnd = html.toLowerCase().lastIndexOf("</body>");
+  return bodyEnd >= 0
+    ? `${html.slice(0, bodyEnd)}${footer}${html.slice(bodyEnd)}`
     : `${html}${footer}`;
+}
+
+/**
+ * Gespeicherte Sprache der Empfänger und des Community-Inhabers. `locale`
+ * liegt bewusst nicht im Spalten-Grant von aera_app, daher der privilegierte
+ * Client — nur für Ids, die die RLS-Abfrage davor schon geliefert hat.
+ */
+export async function marketingRecipientLocales(
+  tenantId: string,
+  userIds: string[],
+): Promise<{ byUser: Map<string, AppLocale>; fallback: AppLocale }> {
+  const [users, tenant] = await Promise.all([
+    userIds.length > 0
+      ? systemPrisma.user.findMany({
+          where: { id: { in: userIds } },
+          select: { id: true, locale: true },
+        })
+      : Promise.resolve([]),
+    systemPrisma.tenant.findUnique({
+      where: { id: tenantId },
+      select: { owner: { select: { locale: true } } },
+    }),
+  ]);
+  const byUser = new Map<string, AppLocale>();
+  for (const user of users ?? []) {
+    const locale = pickSupportedLocale(user.locale);
+    if (locale) byUser.set(user.id, locale);
+  }
+  return { byUser, fallback: resolveEmailLocale(tenant?.owner?.locale) };
 }
 
 function escapeHtml(value: string): string {

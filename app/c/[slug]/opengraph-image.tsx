@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import prisma from "@/lib/prisma";
+import { tenantPublicUrl } from "@/lib/seo";
 
 /**
  * Dynamisches Open-Graph-Bild pro Community: Markenfarbe, Initiale/Logo,
@@ -19,12 +20,23 @@ export default async function OpengraphImage({
   const { slug } = await params;
   const tenant = await prisma.tenant.findUnique({
     where: { slug, status: "ACTIVE" },
-    select: { name: true, tagline: true, primaryColor: true, logoUrl: true },
+    select: {
+      name: true,
+      tagline: true,
+      primaryColor: true,
+      slug: true,
+      subdomain: true,
+      customDomain: true,
+      customDomainVerifiedAt: true,
+    },
   });
 
   const name = tenant?.name ?? "Aera";
   const tagline = tenant?.tagline ?? "Community, Mitgliedschaften & Kurse";
-  const color = tenant?.primaryColor ?? "#6d28d9";
+  const color = /^#[0-9a-f]{3,8}$/i.test(tenant?.primaryColor ?? "") ? tenant!.primaryColor : "#6d28d9";
+  // Die Adresse, unter der die Community wirklich erreichbar ist (eigene
+  // Domain → Subdomain → aera.so/c/slug) — nicht pauschal "aera.so".
+  const address = tenant ? tenantPublicUrl(tenant).replace(/^https?:\/\//, "") : "aera.so";
 
   return new ImageResponse(
     (
@@ -72,7 +84,7 @@ export default async function OpengraphImage({
           </div>
         </div>
         <div style={{ display: "flex", fontSize: 26, opacity: 0.7 }}>
-          Community · aera.so
+          {address.slice(0, 60)}
         </div>
       </div>
     ),

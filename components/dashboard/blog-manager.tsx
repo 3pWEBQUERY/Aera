@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createSpacePostAction,
@@ -243,7 +244,7 @@ function BlogPostForm({
   onDone: () => void;
 }) {
   const isEdit = !!post;
-  const [state, action, pending] = useActionState(isEdit ? updatePostAction : createSpacePostAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updatePostAction : createSpacePostAction, initial);
   const t = useTranslations("dashboard.blog");
   const [tab, setTab] = useState<"content" | "access" | "poll">("content");
   const [visibility, setVisibility] = useState(post?.visibility ?? "PUBLIC");
@@ -474,7 +475,7 @@ function BlogSettingsForm({
   settings: BlogSettings;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateBlogSettingsAction, initial);
+  const [state, action, pending] = useResilientActionState(updateBlogSettingsAction, initial);
   const t = useTranslations("dashboard.blog");
   const tSort = useTranslations("dashboard.sortLabels");
   useEffect(() => {

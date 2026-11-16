@@ -1,4 +1,9 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
+
+// Alte Adresse, leitet ins Konto weiter: nie indexieren.
+export const metadata: Metadata = { robots: NOINDEX };
 
 /** The member account moved to the global /member/account route. */
 export default async function LegacyAccountRedirect({

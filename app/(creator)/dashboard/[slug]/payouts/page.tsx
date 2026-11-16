@@ -12,6 +12,7 @@ import { Popover } from "@/components/ui/popover";
 import { Icon } from "@/components/dashboard/icons";
 import { formatDate } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import type { Metadata } from "next";
 
 const statusColor: Record<string, string> = {
   PAID: "bg-green-100 text-green-700",
@@ -19,6 +20,12 @@ const statusColor: Record<string, string> = {
   REFUNDED: "bg-slate-100 text-slate-600",
   FAILED: "bg-red-100 text-red-700",
 };
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.payouts");
+  return { title: t("title") };
+}
 
 export default async function PayoutsPage({
   params,

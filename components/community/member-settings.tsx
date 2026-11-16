@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   updateMemberProfileAction,
@@ -61,7 +62,7 @@ export function MemberProfileForm({
   path: string;
   user: { name: string; avatarUrl: string | null };
 }) {
-  const [state, action, pending] = useActionState(updateMemberProfileAction, initial);
+  const [state, action, pending] = useResilientActionState(updateMemberProfileAction, initial);
   const saved = useSavedFlash(state.ok, state);
   const t = useTranslations("account");
 
@@ -102,7 +103,7 @@ export function MemberProfileForm({
 }
 
 export function MemberPasswordForm() {
-  const [state, action, pending] = useActionState(changePasswordAction, initial);
+  const [state, action, pending] = useResilientActionState(changePasswordAction, initial);
   const saved = useSavedFlash(state.ok, state);
   const formRef = useRef<HTMLFormElement>(null);
   const t = useTranslations("account");

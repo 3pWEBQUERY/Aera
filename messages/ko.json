@@ -184,7 +184,7 @@
     "error": "사용 가능 여부를 확인할 수 없습니다."
   },
   "onboarding": {
-    "metaTitle": "커뮤니티 만들기 — Aera",
+    "metaTitle": "커뮤니티 만들기",
     "brand": "커뮤니티 만들기",
     "stepShort": "{total}단계 중 {step}단계",
     "eyebrow": "{label} · {total}단계 중 {step}단계",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "내 커뮤니티 — Aera",
+      "metaTitle": "내 커뮤니티",
       "creator": "크리에이터",
       "yourMemberships": "내 멤버십",
       "logout": "로그아웃",
@@ -4928,6 +4928,10 @@
       "stepForum": "‘{space}’에서 자기소개하기",
       "stepSpace": "‘{space}’(으)로 이동",
       "dismiss": "알림 닫기"
+    },
+    "seo": {
+      "lockedPost": "{community} 멤버 전용 게시물",
+      "lockedSpace": "{community} 멤버 전용 콘텐츠"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "로그인",
     "toDashboard": "대시보드로",
     "startCommunity": "커뮤니티 시작하기",
-    "startShort": "시작",
+    "startShort": "무료로 시작",
     "menuOpen": "메뉴 열기",
     "menuClose": "메뉴 닫기",
     "footerAbout": "커뮤니티, 멤버십, 코스, 이벤트, 뉴스레터, 커머스를 자신의 브랜드로 운영하는 크리에이터를 위한 플랫폼 — 데이터 주권까지 완전히 당신의 것입니다.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "{plan} 이상: {items}",
     "footerContact": "문의하기",
-    "legalGermanOnly": "이 법률 문서는 독일어로만 제공됩니다. 독일어 버전이 효력을 가집니다."
+    "legalGermanOnly": "이 법률 문서는 독일어로만 제공됩니다. 독일어 버전이 효력을 가집니다.",
+    "seo": {
+      "title": "Aera — 나의 커뮤니티. 나의 규칙. 나의 수익.",
+      "description": "피드, 강좌, 이벤트, 뉴스레터, 숍을 갖춘 나만의 커뮤니티를 내 도메인과 내 브랜드로 만드세요. 무료로 시작하고 언제든 확장할 수 있습니다.",
+      "keywords": "커뮤니티 플랫폼, 크리에이터, 멤버십, 온라인 강좌, 뉴스레터, 이벤트, 디지털 상품",
+      "discoverTitle": "둘러보기",
+      "discoverDescription": "Aera에서 커뮤니티와 크리에이터를 찾아보세요.",
+      "pricingDescription": "Aera 요금제 비교: 요금제별 포함 기능, 월 요금, 판매 시 적용되는 수수료를 확인하세요.",
+      "featuresDescription": "Aera로 할 수 있는 일: 피드, 포럼, 강좌, 이벤트, 뉴스레터, 숍, 라이브 스트리밍. 내 도메인과 내 브랜드로.",
+      "loginDescription": "Aera에 로그인해 커뮤니티와 대시보드를 여세요.",
+      "signupDescription": "Aera 계정을 만들고 커뮤니티를 무료로 시작하세요."
+    }
   },
   "home": {
     "badge": "커뮤니티 · 멤버십 · 커머스",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "{from}님의 메시지",
       "supportInboundIntro": "지원함에 새 메시지가 도착했습니다.",
       "supportInboundCta": "관리자 화면에서 열기",
-      "supportInboundHint": "{email}로 메일을 보내지 말고 관리자 화면에서 답장하세요. 그렇지 않으면 답장이 대화에 남지 않습니다."
+      "supportInboundHint": "{email}로 메일을 보내지 말고 관리자 화면에서 답장하세요. 그렇지 않으면 답장이 대화에 남지 않습니다.",
+      "unsubscribeLabel": "뉴스레터 수신 거부",
+      "unsubscribeReason": "{community} 뉴스레터를 구독하셨기 때문에 이 메일을 받으셨습니다."
     },
     "dashboard": {
       "uploadFailed": "업로드에 실패했습니다.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "무료"
+    },
+    "state": {
+      "networkError": "서버에 연결할 수 없습니다. 입력한 내용은 그대로 남아 있습니다. 양식을 다시 보내 주세요.",
+      "serverError": "처리하지 못했습니다. 다시 시도해 주세요.",
+      "pageErrorTitle": "페이지를 불러올 수 없습니다",
+      "pageErrorText": "잠시 후 다시 시도해 주세요.",
+      "reload": "새로고침",
+      "toHelp": "도움말로 이동",
+      "viewErrorTitle": "이 화면을 불러올 수 없습니다",
+      "toOverview": "개요로 이동",
+      "contentGoneTitle": "이 콘텐츠는 더 이상 없습니다",
+      "contentGoneText": "삭제되었거나 이동되었습니다.",
+      "backToCommunity": "{community}(으)로 돌아가기",
+      "viewNotFoundTitle": "이 페이지는 존재하지 않습니다",
+      "viewNotFoundText": "삭제 또는 이동되었거나 링크가 잘못되었습니다.",
+      "loading": "불러오는 중…",
+      "errorRef": "오류 참조 번호: {digest}"
     }
   },
   "unsubscribe": {

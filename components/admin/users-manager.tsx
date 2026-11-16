@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   adminUpdateUserAction,
@@ -143,7 +144,7 @@ export function UsersManager({
 }
 
 function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
-  const [state, action, pending] = useActionState(adminUpdateUserAction, initial);
+  const [state, action, pending] = useResilientActionState(adminUpdateUserAction, initial);
   const t = useTranslations("admin.users");
   const tc = useTranslations("admin");
   const locale = useLocale();
@@ -219,7 +220,7 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
 }
 
 function ResetLinkSection({ userId }: { userId: string }) {
-  const [state, action, pending] = useActionState(adminResetLinkAction, initial);
+  const [state, action, pending] = useResilientActionState(adminResetLinkAction, initial);
   const [copied, setCopied] = useState(false);
   const t = useTranslations("admin.users");
 
@@ -279,7 +280,7 @@ function ResetLinkSection({ userId }: { userId: string }) {
 }
 
 function DangerZone({ user, onDone }: { user: UserRow; onDone: () => void }) {
-  const [state, action, pending] = useActionState(adminDeleteUserAction, initial);
+  const [state, action, pending] = useResilientActionState(adminDeleteUserAction, initial);
   const t = useTranslations("admin.users");
   const [confirm, confirmDialog] = useConfirm();
   const confirmSubmit = useConfirmedSubmit(confirm);

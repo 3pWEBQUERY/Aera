@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   startTotpSetupAction,
@@ -155,10 +156,10 @@ export function TotpSettings({
   /** Gerade mit einem Wiederherstellungscode angemeldet (?recovery=1). */
   usedRecoveryCode?: boolean;
 }) {
-  const [startState, startAction, starting] = useActionState(startTotpSetupAction, initial);
-  const [confirmState, confirmAction, confirming] = useActionState(confirmTotpAction, initial);
-  const [disableState, disableAction, disabling] = useActionState(disableTotpAction, initial);
-  const [regenState, regenAction, regenerating] = useActionState(
+  const [startState, startAction, starting] = useResilientActionState(startTotpSetupAction, initial);
+  const [confirmState, confirmAction, confirming] = useResilientActionState(confirmTotpAction, initial);
+  const [disableState, disableAction, disabling] = useResilientActionState(disableTotpAction, initial);
+  const [regenState, regenAction, regenerating] = useResilientActionState(
     regenerateRecoveryCodesAction,
     initial,
   );

@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Sheet } from "@/components/dashboard/sheet";
 import { Icon } from "@/components/dashboard/icons";
+import { LinkPendingBar } from "@/components/ui/link-pending-bar";
 import type { SidebarItem } from "./sidebar";
 
 /**
@@ -94,6 +95,7 @@ export function MobileCommunityNav({
                     )}
                   />
                   <span className="flex-1 truncate">{item.label}</span>
+                  <LinkPendingBar />
                 </Link>
               );
             })}

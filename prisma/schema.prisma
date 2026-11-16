@@ -309,31 +309,36 @@ enum CreatorCheckoutStatus {
 // Global (tenant-neutral) identity
 // ----------------------------------------------------------------------------
 model User {
-  id              String        @id @default(cuid())
-  email           String        @unique
-  passwordHash    String
-  name            String
-  avatarUrl       String?
+  id                String             @id @default(cuid())
+  email             String             @unique
+  passwordHash      String
+  name              String
+  avatarUrl         String?
+  /// Sprache für E-Mails an diese Person (z. B. "de", "pt-BR"). Gesetzt bei
+  /// der Registrierung und im Sprachwähler; null = unbekannt, dann gilt die
+  /// Sprache des Requests bzw. "de". Nur über systemPrisma lesen/schreiben:
+  /// aera_app hat (wie bei passwordHash) keinen Spalten-Grant.
+  locale            String?
   /// Set once the user proved control of their mailbox (verification link,
   /// accepted invite, or completed password reset). Null = unverified.
-  emailVerifiedAt DateTime?
+  emailVerifiedAt   DateTime?
   /// Zwei-Faktor (TOTP, RFC 6238): Base32-Secret; gesetzt ab Einrichtung.
-  totpSecret      String?
+  totpSecret        String?
   /// 2FA aktiv ab diesem Zeitpunkt (nach bestätigtem Einrichtungs-Code).
-  totpEnabledAt   DateTime?
+  totpEnabledAt     DateTime?
   /// Einmal-Wiederherstellungscodes für den Fall, dass die Authenticator-App
   /// fehlt. Nur SHA-256-Hashes; siehe lib/totp-recovery.ts.
   totpRecoveryCodes TotpRecoveryCode[]
   /// Incrementing this invalidates every previously issued session token.
-  sessionVersion  Int           @default(0)
+  sessionVersion    Int                @default(0)
   /// Plattformweite Berechtigung. ADMIN ist nur zusammen mit verifizierter
   /// E-Mail und aktivem TOTP wirksam (siehe lib/platform-admin.ts).
-  platformRole    PlatformRole  @default(USER)
+  platformRole      PlatformRole       @default(USER)
   /// DELETING/DELETED identities cannot authenticate. Deletion jobs keep a
   /// pseudonymous tombstone where billing/content foreign keys require one.
-  accountStatus   AccountStatus @default(ACTIVE)
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  accountStatus     AccountStatus      @default(ACTIVE)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 
   memberships               Membership[]
   ownedTenants              Tenant[]                   @relation("TenantOwner")
@@ -385,6 +390,7 @@ model User {
   /// ohne ein zweites Passwort zu fuehren.
   aeliProfile               AeliProfile?
   aeliPayoutAccount         AeliPayoutAccount?
+  aeliAuthState             AeliAuthState?
 }
 
 /// Einmal-Wiederherstellungscode für die Zwei-Faktor-Anmeldung. Gespeichert
@@ -537,7 +543,6 @@ model Tenant {
   /// Aeli-Profile, die auf diese Community zeigen (Bruecken-Bloecke).
   aeliProfiles              AeliProfile[]              @relation("AeliLinkedTenant")
 
-  @@index([slug])
   @@index([category])
   @@index([status])
 }
@@ -566,6 +571,7 @@ model Membership {
   @@unique([tenantId, referralCode])
   @@index([tenantId])
   @@index([tenantId, role])
+  @@index([tenantId, status])
   @@index([userId, status, role])
   @@index([tenantId, referredById])
   @@index([userId])
@@ -1002,7 +1008,11 @@ model Post {
   pollVotes PollVote[]
 
   @@unique([tenantId, customSlug])
-  @@index([tenantId, spaceId])
+  // Space-Feed: veröffentlichte Beiträge eines Space, neueste zuerst. Deckt
+  // als Präfix auch die reinen (tenantId, spaceId)-Abfragen ab.
+  @@index([tenantId, spaceId, isPublished, publishedAt(sort: Desc)])
+  // Cron lib/scheduled-posts.ts: fällige geplante Beiträge.
+  @@index([isPublished, scheduledAt])
   @@index([tenantId, createdAt])
   @@index([tenantId, authorId])
 }
@@ -1270,6 +1280,7 @@ model Subscription {
   updatedAt                       DateTime           @default(now()) @updatedAt
 
   @@index([tenantId, userId])
+  @@index([tenantId, status])
 }
 
 model Entitlement {
@@ -2457,7 +2468,7 @@ model PlatformPost {
   /// Anrisstext fuer die Uebersicht. Leer heisst nicht "kein Text", sondern
   /// "leite ihn aus dem Beitrag ab" — ein Beitrag ohne Anriss saehe in der
   /// Uebersicht aus wie ein Fehler.
-  excerpt String?
+  excerpt  String?
   /// Bereits bereinigtes HTML (lib/rich-text.ts). Was hier steht, wird
   /// unveraendert ausgeliefert — die Pruefung passiert beim Speichern.
   bodyHtml String
@@ -2707,14 +2718,40 @@ model AeliProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cards  AeliCard[]
-  blocks AeliBlock[]
-  events AeliClick[]
-  leads  AeliLead[]
-  tips   AeliTip[]
+  cards           AeliCard[]
+  blocks          AeliBlock[]
+  events          AeliClick[]
+  leads           AeliLead[]
+  tips            AeliTip[]
+  handleRedirects AeliHandleRedirect[]
 
   @@index([status, publishedAt])
   @@index([linkedTenantId])
+}
+
+/// Ein alter Handle nach dem Wechsel: 90 Tage reserviert, leitet auf den
+/// neuen weiter. Geschrieben nur ueber `aeli_change_handle` (Migration
+/// 20261116210000_aeli_least_privilege).
+model AeliHandleRedirect {
+  handle    String      @id
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+
+  @@index([profileId])
+  @@index([expiresAt])
+}
+
+/// Aelis eigener Sitzungszaehler. Abmelden auf aeli.so zaehlt ihn hoch und
+/// entwertet alle Aeli-Sitzungen, ohne Aeras `User.sessionVersion` (und damit
+/// Aera-Sitzungen) anzufassen. Kein Grant fuer aeli_app; nur ueber
+/// `aeli_session_user` / `aeli_end_sessions`.
+model AeliAuthState {
+  userId         String   @id
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionVersion Int      @default(0)
+  updatedAt      DateTime @default(now())
 }
 
 /// Eine Karte im Stapel.
@@ -2886,10 +2923,10 @@ model AeliTip {
   /// Aus welchem Baustein — eine Seite darf mehrere haben.
   blockId   String?
 
-  amountCents Int
-  currency    String @default("eur")
+  amountCents    Int
+  currency       String  @default("eur")
   /// Optionaler Gruss. Der Absender bleibt sonst anonym.
-  message     String?
+  message        String?
   /// Nur, was Stripe zurueckmeldet; niemand tippt hier eine Adresse ein.
   supporterEmail String?
 

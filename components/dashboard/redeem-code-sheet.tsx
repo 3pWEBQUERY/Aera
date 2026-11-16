@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import { redeemPromoCodeAction, type RedeemCodeState } from "@/app/actions/plan";
 import { Sheet } from "./sheet";
@@ -16,7 +17,7 @@ const initial: RedeemCodeState = {};
  * previously locked areas simply appear.
  */
 export function RedeemCodeForm({ slug }: { slug: string }) {
-  const [state, action, pending] = useActionState(redeemPromoCodeAction, initial);
+  const [state, action, pending] = useResilientActionState(redeemPromoCodeAction, initial);
   const [code, setCode] = useState("");
   const inputId = useId();
   const t = useTranslations("dashboard.plans.redeem");

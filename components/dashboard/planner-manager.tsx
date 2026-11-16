@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import {
   createContentPlanAction,
@@ -311,7 +312,7 @@ function PlanForm({
 }) {
   const t = useTranslations("dashboard.planner");
   const isEdit = !!plan;
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateContentPlanAction : createContentPlanAction,
     initial,
   );

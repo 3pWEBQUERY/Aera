@@ -33,7 +33,7 @@ export default async function StudioPage({
   // wie sie ein deutschsprachiger Besucher saehe.
   const [aera, tipsEnabled] = await Promise.all([
     profileAeraContent(profile, "de"),
-    profileTipsEnabled(profile),
+    profileTipsEnabled(profile, { asOwner: true }),
   ]);
 
   const blocks: StudioBlock[] = card.blocks.map((block) => ({

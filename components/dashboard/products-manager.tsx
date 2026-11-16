@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
@@ -311,7 +312,7 @@ function ProductForm({
   const isEdit = !!product;
   const t = useTranslations("dashboard.products");
   const tTypes = useTranslations("dashboard.productTypes");
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateProductAction : createProductAction,
     initial,
   );

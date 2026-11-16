@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   adminSaveHelpCategoryAction,
@@ -320,7 +321,7 @@ function CategoryForm({
   locale: string;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(adminSaveHelpCategoryAction, initial);
+  const [state, action, pending] = useResilientActionState(adminSaveHelpCategoryAction, initial);
   const t = useTranslations("admin.help");
   useEffect(() => {
     if (state.ok) onDone();
@@ -376,7 +377,7 @@ function ArticleForm({
   article: HelpArticleRow | null;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(adminSaveHelpArticleAction, initial);
+  const [state, action, pending] = useResilientActionState(adminSaveHelpArticleAction, initial);
   const t = useTranslations("admin.help");
   useEffect(() => {
     if (state.ok) onDone();

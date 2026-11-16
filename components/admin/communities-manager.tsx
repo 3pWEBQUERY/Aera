@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useState, useTransition } from "react";
+import { useEffect, useId, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   adminUpdateTenantAction,
@@ -295,12 +296,12 @@ function EditForm({
   rootDomain: string;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(adminUpdateTenantAction, initial);
+  const [state, action, pending] = useResilientActionState(adminUpdateTenantAction, initial);
   // Ohne <form action>: React setzte das Formular sonst nach jedem Absenden auf
   // die Ausgangswerte zurueck — bei einem Fehler am Feld waere die Eingabe weg.
   const [, startSave] = useTransition();
   const [domain, setDomain] = useState(tenant.customDomain ?? "");
-  const [verifyState, verifyAction, verifying] = useActionState(
+  const [verifyState, verifyAction, verifying] = useResilientActionState(
     adminVerifyTenantDomainAction,
     initialDomain,
   );

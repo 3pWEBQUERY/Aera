@@ -15,8 +15,19 @@ import { canAccess } from "@/lib/entitlements";
 import { isPostLocked } from "@/lib/post-access";
 import { ButtonLink } from "@/components/ui/button";
 import { excerpt, formatDateTime, timeAgo } from "@/lib/utils";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Benachrichtigungen" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("notifications");
+  // Persoenlich: kein canonical, kein Index.
+  return tenantPageMetadata(slug, { title: t("title"), path: null, noindex: true });
+}
 
 export default async function NotificationsPage({
   params,

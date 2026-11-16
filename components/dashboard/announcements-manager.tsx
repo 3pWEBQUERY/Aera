@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   saveAnnouncementAction,
@@ -298,7 +299,7 @@ function AnnouncementForm({
   onDone: () => void;
 }) {
   const isEdit = !!announcement;
-  const [state, action, pending] = useActionState(saveAnnouncementAction, initial);
+  const [state, action, pending] = useResilientActionState(saveAnnouncementAction, initial);
   const [deleting, setDeleting] = useState(false);
   const t = useTranslations("dashboard.announcements");
   const [confirm, confirmDialog] = useConfirm();

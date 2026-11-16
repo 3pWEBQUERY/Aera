@@ -3,10 +3,19 @@ import { PillLink } from "@/components/marketing/pill-link";
 import { Reveal } from "@/components/marketing/reveal";
 import { PlanAvailability, type GatedItem } from "@/components/marketing/plan-availability";
 import { SPACE_TYPE_KEYS } from "@/lib/plan-features";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
-  const t = await getTranslations("ui.auth");
-  return { title: t("featuresMeta") };
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, tSeo] = await Promise.all([
+    getTranslations("ui.auth"),
+    getTranslations("marketing.seo"),
+  ]);
+  return buildPlatformPageMetadata({
+    title: t("featuresMeta"),
+    description: tSeo("featuresDescription"),
+    path: "/features",
+  });
 }
 
 /* 13 Feature-Sektionen — Texte liegen lokalisiert unter features.sections.* */

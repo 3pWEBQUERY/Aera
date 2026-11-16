@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useEffect, useMemo, useRef, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import {
   createMediaFolderAction,
@@ -1137,7 +1138,7 @@ function FolderForm({
 }) {
   const t = useTranslations("dashboard.media");
   const tc = useTranslations("common");
-  const [state, formAction, pending] = useActionState(action, initial);
+  const [state, formAction, pending] = useResilientActionState(action, initial);
   const [name, setName] = useState(defaultName);
   const [color, setColor] = useState<string>(
     (FOLDER_COLORS as readonly string[]).includes(defaultColor)
@@ -1229,7 +1230,7 @@ function RenameMediaForm({
 }) {
   const t = useTranslations("dashboard.media");
   const tc = useTranslations("common");
-  const [state, formAction, pending] = useActionState(renameMediaAction, initial);
+  const [state, formAction, pending] = useResilientActionState(renameMediaAction, initial);
 
   useEffect(() => {
     if (state.ok) onDone();

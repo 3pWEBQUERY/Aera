@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
-import { systemPrisma } from "@/lib/prisma";
+import { markTipPaidRow, markTipRefundedRow } from "@/lib/db-functions";
 import { env } from "@/lib/env";
 import { getStripe, paymentIntentId } from "@/lib/stripe";
 
@@ -72,17 +72,14 @@ async function markPaid(session: Stripe.Checkout.Session): Promise<void> {
   // Zahlarten). Bezahlt ist erst `paid`.
   if (session.payment_status !== "paid") return;
 
-  await systemPrisma.aeliTip.updateMany({
-    where: { id: tipId, status: "PENDING" },
-    data: {
-      status: "PAID",
-      paidAt: new Date(),
-      stripeSessionId: session.id,
-      stripePaymentIntentId: paymentIntentId(session),
-      // Stripe fragt die Adresse fuer den Beleg ab. Sie ist das Einzige, was
-      // wir ueber den Absender erfahren, und sie bleibt beim Creator.
-      supporterEmail: session.customer_details?.email ?? null,
-    },
+  // Nur aus PENDING; die Funktion `aeli_mark_tip_paid` haelt das fest.
+  await markTipPaidRow({
+    tipId,
+    sessionId: session.id,
+    paymentIntentId: paymentIntentId(session),
+    // Stripe fragt die Adresse fuer den Beleg ab. Sie ist das Einzige, was
+    // wir ueber den Absender erfahren, und sie bleibt beim Creator.
+    supporterEmail: session.customer_details?.email ?? null,
   });
 }
 
@@ -94,8 +91,5 @@ async function markRefunded(charge: Stripe.Charge): Promise<void> {
   // „erstattet" waere dafuer das falsche Wort.
   if (charge.amount_refunded < charge.amount) return;
 
-  await systemPrisma.aeliTip.updateMany({
-    where: { stripePaymentIntentId: intent, status: "PAID" },
-    data: { status: "REFUNDED" },
-  });
+  await markTipRefundedRow(intent);
 }

@@ -53,9 +53,52 @@ import { reserveBookingAction } from "@/app/actions/booking";
 import { TipsSheet } from "@/components/community/tips-sheet";
 import { LiveSessionCard } from "@/components/community/live-session-card";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import type { Metadata } from "next";
+import { tenantPageMetadata, tenantPublicUrl } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { eventJsonLd, plainText } from "@/lib/json-ld";
 
 const PRODUCT_TYPES = ["DIGITAL", "PHYSICAL", "BUNDLE", "COURSE_ACCESS", "TIER_GRANT"];
 const productTypeKey = (type: string) => (PRODUCT_TYPES.includes(type) ? type : "DIGITAL");
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string; spaceSlug: string }>;
+}): Promise<Metadata> {
+  const { slug, spaceSlug } = await params;
+  const community = await getCommunityContext(slug);
+  if (!community) return {};
+  const space = await prisma.space.findFirst({
+    where: { tenantId: community.tenant.id, slug: spaceSlug },
+    select: {
+      slug: true,
+      name: true,
+      description: true,
+      type: true,
+      visibility: true,
+      requiredEntitlementKey: true,
+      settings: true,
+      isArchived: true,
+    },
+  });
+  if (!space || space.type === "ADS" || isAnnouncementsOnly(space.settings)) return {};
+  const tSeo = await getTranslations("community.seo");
+  // Der Name steht ohnehin in der Navigation; die Beschreibung nur, wenn der
+  // Betrachter den Space oeffnen darf. Indexiert wird nur, was jeder Gast lesen
+  // kann — eine Sperrseite ist fuer Suchmaschinen kein Inhalt.
+  const readable = canAccess(space, community.ctx);
+  const publicSpace = space.visibility === "PUBLIC" && !space.requiredEntitlementKey;
+  return tenantPageMetadata(slug, {
+    title: space.name,
+    description: readable
+      ? (space.description ?? undefined)
+      : tSeo("lockedSpace", { community: community.tenant.name }),
+    // ?sort=, ?page=, ?q= … sind Ansichten desselben Space.
+    path: `/s/${space.slug}`,
+    noindex: !publicSpace || space.isArchived,
+  });
+}
 
 export default async function SpacePage({
   params,
@@ -1756,8 +1799,35 @@ export default async function SpacePage({
           ).map((r) => r.eventId),
         )
       : new Set<string>();
+    // Strukturierte Daten nur fuer Events, die jeder sehen darf: oeffentlicher
+    // Space, kein eigener Zugangsschluessel, noch nicht vorbei. Den
+    // Zugangslink (meetingUrl) enthalten sie nie.
+    const spaceUrl = `${tenantPublicUrl(tenant)}/s/${space.slug}`;
+    const publicEvents =
+      space.visibility === "PUBLIC" && !space.requiredEntitlementKey
+        ? events.filter(
+            (e) => !e.requiredEntitlementKey && (e.endsAt ?? e.startsAt).getTime() >= Date.now(),
+          )
+        : [];
     return (
       <div className="space-y-4">
+        {publicEvents.length > 0 && (
+          <JsonLd
+            data={publicEvents.map((e) =>
+              eventJsonLd({
+                name: e.title,
+                description: plainText(e.description),
+                startDate: e.startsAt,
+                endDate: e.endsAt,
+                isOnline: e.isOnline,
+                location: e.location,
+                pageUrl: spaceUrl,
+                image: e.coverUrl,
+                organizer: { name: tenant.name, url: tenantPublicUrl(tenant) },
+              }),
+            )}
+          />
+        )}
         {header}
         {events.map((e) => (
           <Card key={e.id}>

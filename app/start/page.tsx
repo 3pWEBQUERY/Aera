@@ -5,10 +5,11 @@ import { env } from "@/lib/env";
 import { creatorPlanStartPath, parsePlanKey } from "@/lib/credit-plans";
 import { normalizePromoCode } from "@/lib/promo-codes";
 import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard";
+import { NOINDEX } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("onboarding");
-  return { title: t("metaTitle") };
+  return { title: t("metaTitle"), robots: NOINDEX };
 }
 
 export default async function StartPage({

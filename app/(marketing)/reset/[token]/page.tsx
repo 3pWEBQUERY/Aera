@@ -5,10 +5,13 @@ import { ResetPasswordForm } from "@/components/forms/account-forms";
 import { getTranslations } from "next-intl/server";
 import logoBkButton from "@/public/logo_bk_button.svg";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ui.auth");
-  return { title: t("resetMeta") };
+  // Persoenlicher Link bzw. reine Funktionsseite: gehoert in keinen Index.
+  return { title: t("resetMeta"), robots: NOINDEX };
 }
 
 /** Gleicher Rahmen wie /forgot: Beige, Logo, Serifen-Überschrift. */

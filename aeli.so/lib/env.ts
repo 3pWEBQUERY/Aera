@@ -66,6 +66,14 @@ export const env = {
   /** Fuer die Bruecke: wohin ein „Community beitreten“ zeigt. */
   AERA_ROOT_DOMAIN: hostOnly(process.env.NEXT_PUBLIC_ROOT_DOMAIN ?? "localhost"),
   AERA_APP_URL: (process.env.AERA_APP_URL ?? "http://localhost:3000").replace(/\/+$/, ""),
+  /**
+   * Wo man ein vergessenes Passwort zuruecksetzt. Das Konto gehoert beiden
+   * Apps, der Ablauf (Mail, Token, neues Passwort) lebt nur in Aera.
+   */
+  AERA_PASSWORD_RESET_URL: (
+    process.env.AERA_PASSWORD_RESET_URL ||
+    `${(process.env.AERA_APP_URL ?? "http://localhost:3000").replace(/\/+$/, "")}/forgot`
+  ).trim(),
 
   /**
    * Der Bucket im Railway-Projekt „Aeli.so" — ein eigener, nicht der von Aera.

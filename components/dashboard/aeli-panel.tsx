@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { useFormStatus } from "react-dom";
 import {
@@ -150,7 +151,7 @@ function CreateForm({
   suggested: string;
 }) {
   const t = useTranslations("dashboard.settings.aeli");
-  const [state, action] = useActionState(createAeliPageAction, EMPTY);
+  const [state, action] = useResilientActionState(createAeliPageAction, EMPTY);
   const [handle, setHandle] = useState(suggested);
   const [free, setFree] = useState<boolean | null>(null);
   const latest = useRef(0);
@@ -436,7 +437,7 @@ function ForeignPages({
  */
 function LinkCode({ slug, studioUrl }: { slug: string; studioUrl: string }) {
   const t = useTranslations("dashboard.settings.aeli");
-  const [state, action] = useActionState(issueAeliLinkCodeAction, EMPTY);
+  const [state, action] = useResilientActionState(issueAeliLinkCodeAction, EMPTY);
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 

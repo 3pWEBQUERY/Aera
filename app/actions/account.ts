@@ -17,7 +17,8 @@ import {
   secretNeedsRotation,
 } from "@/lib/secret-encryption";
 import { getErrorTranslator, type ErrorT } from "@/lib/action-errors";
-import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { emailTranslator, resolveEmailLocale } from "@/lib/email-i18n";
 import {
   CURRENT_PRIVACY_VERSION,
   CURRENT_TERMS_VERSION,
@@ -69,11 +70,16 @@ export async function requestPasswordResetAction(
     const token = await signAccountToken(user, "reset", "1h");
     const url = resetUrl(token);
     if (features.email) {
-      const tMail = await getTranslations("ui.emails");
+      // Sprache des Kontos, nicht die des anfragenden Browsers — anfragen
+      // kann jede Person, lesen soll die Mail die Kontoinhaberin.
+      const mailLocale = resolveEmailLocale(user.locale, await getLocale());
+      const tMail = await emailTranslator(mailLocale);
       await sendEmail({
         to: user.email,
         subject: tMail("resetSubject"),
         html: renderAccountActionHtml({
+          locale: mailLocale,
+          title: tMail("resetSubject"),
           heading: tMail("resetHeading"),
           body: tMail("resetBody", { name: user.name }),
           ctaLabel: tMail("resetCta"),
@@ -127,6 +133,9 @@ async function setPasswordWithToken(
       // Invites may set the display name (shadow accounts default to the
       // e-mail local part).
       ...(purpose === "invite" && name ? { name: name.slice(0, 80) } : {}),
+      // Eingeladene Konten entstehen ohne Sprache; bei der Annahme kennen
+      // wir sie zum ersten Mal (Sprache, in der die Person die Seite sieht).
+      ...(!user.locale ? { locale: await getLocale() } : {}),
       ...(purpose === "invite"
         ? {
             legalAcceptances: {

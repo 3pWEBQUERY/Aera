@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { startTransition, useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createCampaignAction,
@@ -301,7 +302,7 @@ function CampaignForm({
   onDone: () => void;
 }) {
   const isEdit = !!campaign;
-  const [state, action, pending] = useActionState(isEdit ? updateCampaignAction : createCampaignAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updateCampaignAction : createCampaignAction, initial);
   const [deleting, setDeleting] = useState(false);
   const [scheduledAt, setScheduledAt] = useState<string | Date | null>(campaign?.scheduledAt ?? null);
   const [subject, setSubject] = useState(campaign?.subject ?? "");
@@ -585,7 +586,7 @@ function SegmentsPanel({
   tiers: TierOption[];
   allCount: number;
 }) {
-  const [state, action, pending] = useActionState(createSegmentAction, initial);
+  const [state, action, pending] = useResilientActionState(createSegmentAction, initial);
   const ref = useRef<HTMLFormElement>(null);
   const t = useTranslations("dashboard.newsletter");
   const tierName = (slugKey: string | null | undefined) =>

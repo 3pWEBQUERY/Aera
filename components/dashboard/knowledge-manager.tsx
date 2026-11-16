@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createArticleAction,
@@ -213,7 +214,7 @@ function ArticleForm({
   onDone: () => void;
 }) {
   const isEdit = !!article;
-  const [state, action, pending] = useActionState(isEdit ? updateArticleAction : createArticleAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updateArticleAction : createArticleAction, initial);
   const t = useTranslations("dashboard.knowledge");
   useEffect(() => {
     if (state.ok) onDone();
@@ -286,7 +287,7 @@ function SettingsForm({
   settings: KnowledgeSettings;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateSpaceSettingsAction, initial);
+  const [state, action, pending] = useResilientActionState(updateSpaceSettingsAction, initial);
   const t = useTranslations("dashboard.knowledge");
   const tSort = useTranslations("dashboard.sortLabels");
   useEffect(() => {

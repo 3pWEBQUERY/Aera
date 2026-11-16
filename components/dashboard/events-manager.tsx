@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   createEventAction,
@@ -140,7 +141,7 @@ export function EventForm({
   onDone: () => void;
 }) {
   const isEdit = !!event;
-  const [state, action, pending] = useActionState(isEdit ? updateEventAction : createEventAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updateEventAction : createEventAction, initial);
   const [online, setOnline] = useState(event ? event.isOnline : true);
   const [meetingUrl, setMeetingUrl] = useState(event?.meetingUrl ?? "");
   const [deleting, setDeleting] = useState(false);

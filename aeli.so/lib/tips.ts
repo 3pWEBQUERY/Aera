@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
-import { systemPrisma } from "./prisma";
+import prisma from "./prisma";
+import { createTipRow, discardTipRow } from "./db-functions";
 import { env, paymentsConfigured } from "./env";
 import { resolvePayoutAccount } from "./payouts";
 import { canReceive, createTipCheckout, getConnectStatus, platformFeeCents } from "./stripe";
@@ -10,16 +11,14 @@ import { checkTipAmount } from "./tip-amount";
 /**
  * Ein Trinkgeld anlegen und zur Kasse schicken.
  *
- * Der ganze Weg laeuft ueber `systemPrisma`, und das ist Absicht. Wer eine
- * Zeile in `AeliTip` schreibt, legt fest, wohin Geld fliesst — dafuer braucht
- * es `Tenant.ownerId`, eine Spalte, die die Rolle `aeli_app` bewusst nicht
- * sieht (lib/payouts.ts erklaert, warum sie noetig ist). Ein oeffentlicher
- * Schreibpfad wie bei den Leads waere hier also nicht nur unnoetig, sondern
- * ein zweiter Ort, an dem ueber Geld entschieden wird.
- *
- * Dafuer schreibt diese Datei jede Bedingung aus, die sonst eine Policy
- * uebernaehme: nur veroeffentlichte Profile, nur der Baustein dieses Profils,
- * nur Betraege innerhalb der Grenzen.
+ * Wer eine Zeile in `AeliTip` schreibt, legt fest, wohin Geld fliesst — dafuer
+ * braucht es `Tenant.ownerId`, eine Spalte, die die Rolle `aeli_app` bewusst
+ * nicht sieht (lib/payouts.ts erklaert, warum sie noetig ist). Angelegt wird
+ * deshalb ueber die Datenbankfunktion `aeli_create_tip`: sie bestimmt das Ziel
+ * SELBST und prueft noch einmal jede Bedingung — veroeffentlichtes Profil,
+ * sichtbarer Trinkgeld-Baustein dieses Profils, Betrag innerhalb der Grenzen.
+ * Diese Datei stellt dieselben Fragen vorher, damit der Besucher eine
+ * verstaendliche Antwort bekommt statt eines „ging nicht“.
  */
 
 export type TipProblem =
@@ -57,14 +56,14 @@ export async function startTip(input: TipStart): Promise<
 
   // Nur veroeffentlichte Seiten nehmen Geld an. Ein Entwurf ist nicht
   // oeffentlich, also kann ihn auch niemand versehentlich bezahlen.
-  const profile = await systemPrisma.aeliProfile.findFirst({
+  // Ueber die oeffentliche Rolle: sie sieht ohnehin nur Veroeffentlichtes
+  // (und nur sichtbare Bausteine auf sichtbaren Karten).
+  const profile = await prisma.aeliProfile.findFirst({
     where: { handle: input.handle, status: "PUBLISHED" },
     select: {
       id: true,
-      userId: true,
       handle: true,
       displayName: true,
-      linkedTenantId: true,
       blocks: {
         where: { id: input.blockId, type: "TIP", isVisible: true },
         select: { id: true },
@@ -74,10 +73,7 @@ export async function startTip(input: TipStart): Promise<
   });
   if (!profile || profile.blocks.length === 0) return { ok: false, problem: "not-found" };
 
-  const payout = await resolvePayoutAccount({
-    userId: profile.userId,
-    linkedTenantId: profile.linkedTenantId,
-  });
+  const payout = await resolvePayoutAccount(profile.id);
   if (!payout) return { ok: false, problem: "unavailable" };
 
   // Ob das Konto WIRKLICH kassieren und auszahlen darf, weiss nur Stripe. Die
@@ -94,19 +90,17 @@ export async function startTip(input: TipStart): Promise<
   const feeCents = platformFeeCents(amountCents, env.AELI_PLATFORM_FEE_PERCENT);
   const id = randomUUID();
 
-  await systemPrisma.aeliTip.create({
-    data: {
-      id,
-      profileId: profile.id,
-      blockId: profile.blocks[0]!.id,
-      amountCents,
-      currency: "eur",
-      message: input.message.trim().slice(0, 280) || null,
-      destinationAccountId: payout.stripeAccountId,
-      platformFeeCents: feeCents,
-      status: "PENDING",
-    },
+  // Das Ziel, das die Datenbank beim Anlegen bestimmt, ist das verbindliche —
+  // aendert sich die Verknuepfung zwischen Frage und Anlegen, gilt dieses.
+  const destination = await createTipRow({
+    id,
+    profileId: profile.id,
+    blockId: profile.blocks[0]!.id,
+    amountCents,
+    message: input.message.trim().slice(0, 280),
+    feeCents,
   });
+  if (!destination) return { ok: false, problem: "unavailable" };
 
   const back = profileUrl(profile.handle);
   const url = await createTipCheckout({
@@ -116,7 +110,7 @@ export async function startTip(input: TipStart): Promise<
       currency: "eur",
       label: `Trinkgeld für ${profile.displayName}`,
     },
-    destinationAccountId: payout.stripeAccountId,
+    destinationAccountId: destination,
     applicationFeeCents: feeCents,
     successUrl: `${back}?danke=1`,
     cancelUrl: `${back}?abgebrochen=1`,
@@ -126,7 +120,7 @@ export async function startTip(input: TipStart): Promise<
     // Die Zeile wieder wegraeumen: eine PENDING-Zahlung, die nie eine Session
     // bekommen hat, kann kein Webhook mehr abschliessen. Sie bliebe fuer immer
     // stehen und wuerde die Statistik verfaelschen.
-    await systemPrisma.aeliTip.delete({ where: { id } }).catch(() => undefined);
+    await discardTipRow(id).catch(() => undefined);
     return { ok: false, problem: "checkout-failed" };
   }
 

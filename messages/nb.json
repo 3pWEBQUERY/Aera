@@ -184,7 +184,7 @@
     "error": "Kunne ikke sjekke tilgjengeligheten."
   },
   "onboarding": {
-    "metaTitle": "Opprett fellesskap — Aera",
+    "metaTitle": "Opprett fellesskap",
     "brand": "Opprett fellesskap",
     "stepShort": "Trinn {step} / {total}",
     "eyebrow": "{label} · Trinn {step} av {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Dine fellesskap — Aera",
+      "metaTitle": "Dine fellesskap",
       "creator": "Creator",
       "yourMemberships": "Dine medlemskap",
       "logout": "Logg ut",
@@ -4928,6 +4928,10 @@
       "stepForum": "Presenter deg i «{space}»",
       "stepSpace": "Gå til «{space}»",
       "dismiss": "Lukk melding"
+    },
+    "seo": {
+      "lockedPost": "Innlegg for medlemmer av {community}",
+      "lockedSpace": "Innhold for medlemmer av {community}"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "Logg inn",
     "toDashboard": "Til dashbordet",
     "startCommunity": "Start en community",
-    "startShort": "Start",
+    "startShort": "Start gratis",
     "menuOpen": "Åpne meny",
     "menuClose": "Lukk meny",
     "footerAbout": "Plattformen for skapere som driver community, medlemskap, kurs, arrangementer, nyhetsbrev og handel under sin egen merkevare — med full datasuverenitet.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "Fra {plan}: {items}",
     "footerContact": "Kontakt",
-    "legalGermanOnly": "Denne juridiske teksten finnes bare på tysk. Den tyske versjonen er bindende."
+    "legalGermanOnly": "Denne juridiske teksten finnes bare på tysk. Den tyske versjonen er bindende.",
+    "seo": {
+      "title": "Aera — Ditt fellesskap. Dine regler. Dine inntekter.",
+      "description": "Bygg ditt eget fellesskap med feed, kurs, arrangementer, nyhetsbrev og butikk — på ditt eget domene, med din egen profil. Start gratis, og voks når du vil.",
+      "keywords": "fellesskapsplattform, skapere, medlemskap, nettkurs, nyhetsbrev, arrangementer, digitale produkter",
+      "discoverTitle": "Oppdag",
+      "discoverDescription": "Finn fellesskap og skapere på Aera.",
+      "pricingDescription": "Sammenlign Aeras pakker: hva hver pakke inneholder, hva den koster per måned og hvilket gebyr som gjelder ved salg.",
+      "featuresDescription": "Dette kan Aera: feed, forum, kurs, arrangementer, nyhetsbrev, butikk og direktesendinger — på ditt eget domene, med din egen profil.",
+      "loginDescription": "Logg inn på Aera for å åpne fellesskapene dine og dashbordet ditt.",
+      "signupDescription": "Opprett Aera-kontoen din og start fellesskapet ditt gratis."
+    }
   },
   "home": {
     "badge": "Community · Medlemskap · Handel",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "Melding fra {from}",
       "supportInboundIntro": "Det venter en ny melding i supporten.",
       "supportInboundCta": "Åpne i administrasjonen",
-      "supportInboundHint": "Svar i administrasjonen og ikke per e-post til {email} — ellers mangler svaret i tråden."
+      "supportInboundHint": "Svar i administrasjonen og ikke per e-post til {email} — ellers mangler svaret i tråden.",
+      "unsubscribeLabel": "Meld deg av nyhetsbrevet",
+      "unsubscribeReason": "Du får denne e-posten fordi du abonnerer på nyhetsbrevet fra {community}."
     },
     "dashboard": {
       "uploadFailed": "Opplastingen mislyktes.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "Gratis"
+    },
+    "state": {
+      "networkError": "Får ikke kontakt med serveren. Det du har skrevet, er der fortsatt – send skjemaet på nytt.",
+      "serverError": "Det gikk ikke. Prøv igjen.",
+      "pageErrorTitle": "Siden kunne ikke lastes inn",
+      "pageErrorText": "Prøv igjen om et øyeblikk.",
+      "reload": "Last inn på nytt",
+      "toHelp": "Til hjelp",
+      "viewErrorTitle": "Denne visningen kunne ikke lastes inn",
+      "toOverview": "Til oversikten",
+      "contentGoneTitle": "Dette innholdet finnes ikke lenger",
+      "contentGoneText": "Det er slettet eller flyttet.",
+      "backToCommunity": "Tilbake til {community}",
+      "viewNotFoundTitle": "Denne siden finnes ikke",
+      "viewNotFoundText": "Den er slettet eller flyttet, eller lenken er feil.",
+      "loading": "Laster inn …",
+      "errorRef": "Feilreferanse: {digest}"
     }
   },
   "unsubscribe": {

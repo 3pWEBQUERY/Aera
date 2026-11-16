@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   updateChatSettingsAction,
@@ -283,7 +284,7 @@ function ChatSettingsForm({
   settings: ChatSettings;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(updateChatSettingsAction, initial);
+  const [state, action, pending] = useResilientActionState(updateChatSettingsAction, initial);
   const t = useTranslations("dashboard.chat");
   useEffect(() => {
     if (state.ok) onDone();

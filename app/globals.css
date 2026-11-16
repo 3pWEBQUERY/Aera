@@ -86,12 +86,14 @@ body {
   padding: 0.65rem 1rem;
   font-size: 0.875rem;
   font-weight: 700;
-  box-shadow: 0 8px 30px rgb(15 23 42 / 0.2);
+  /* Schatten erst beim Fokus: versteckt ragte er (30px Weichzeichner) sichtbar
+     oben ins Bild. */
   transition: transform 0.15s ease-out;
 }
 
 .skip-link:focus {
   transform: translateY(0);
+  box-shadow: 0 8px 30px rgb(15 23 42 / 0.2);
   outline: 3px solid color-mix(in srgb, var(--brand) 55%, white);
   outline-offset: 2px;
 }
@@ -99,6 +101,27 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .skip-link {
     transition: none;
+  }
+}
+
+/* Navigations-Fortschritt (components/ui/link-pending-bar.tsx): erscheint erst
+   nach 150 ms, damit schnelle Wechsel nicht flackern, und waechst dann
+   langsam gegen 90 % — fertig ist er, wenn die neue Seite da ist. */
+@keyframes nav-pending {
+  0% { transform: scaleX(0); opacity: 1; }
+  20% { transform: scaleX(0.35); }
+  100% { transform: scaleX(0.9); opacity: 1; }
+}
+.nav-pending-bar {
+  transform-origin: left;
+  opacity: 0;
+  animation: nav-pending 8s cubic-bezier(0.1, 0.6, 0.3, 1) 150ms forwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-pending-bar {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }
 

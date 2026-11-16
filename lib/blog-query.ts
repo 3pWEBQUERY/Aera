@@ -59,6 +59,22 @@ export async function resolveBlogLocale(locale: string): Promise<string | null> 
   return chain.find((entry) => withPosts.has(entry)) ?? null;
 }
 
+/**
+ * Ob der Blog in der Navigation steht — fuer Layouts.
+ *
+ * Anders als `resolveBlogLocale` wirft das nie: Das Marketing-Layout umgibt
+ * Impressum, Hilfe, Kontakt und Preise. Ist die Datenbank weg, soll dort nur
+ * der Blog-Link fehlen, statt dass jede dieser Seiten mit 500 antwortet.
+ */
+export async function blogNavVisible(locale: string): Promise<boolean> {
+  try {
+    return (await resolveBlogLocale(locale)) !== null;
+  } catch (error) {
+    console.error("[blog] Navigation ohne Blog-Link — Abfrage fehlgeschlagen", error);
+    return false;
+  }
+}
+
 /** Eine Seite der Uebersicht, optional auf eine Rubrik eingeschraenkt. */
 export async function listPosts(input: {
   locale: string;

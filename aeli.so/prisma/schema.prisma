@@ -113,8 +113,9 @@ model User {
 
   aeliProfile       AeliProfile?
   aeliPayoutAccount AeliPayoutAccount?
+  aeliAuthState     AeliAuthState?
   legalAcceptances  LegalAcceptance[]
-  ownedTenants     Tenant[]          @relation("TenantOwner")
+  ownedTenants      Tenant[]           @relation("TenantOwner")
 }
 
 /// Nachweis, dass jemand AGB und Datenschutzhinweis zugestimmt hat. Aeli
@@ -378,14 +379,40 @@ model AeliProfile {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  cards  AeliCard[]
-  blocks AeliBlock[]
-  events AeliClick[]
-  leads  AeliLead[]
-  tips   AeliTip[]
+  cards           AeliCard[]
+  blocks          AeliBlock[]
+  events          AeliClick[]
+  leads           AeliLead[]
+  tips            AeliTip[]
+  handleRedirects AeliHandleRedirect[]
 
   @@index([status, publishedAt])
   @@index([linkedTenantId])
+}
+
+/// Ein alter Handle nach dem Wechsel: 90 Tage reserviert, leitet auf den
+/// neuen weiter. Geschrieben nur ueber `aeli_change_handle` (Migration
+/// 20261116210000_aeli_least_privilege).
+model AeliHandleRedirect {
+  handle    String      @id
+  profileId String
+  profile   AeliProfile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime    @default(now())
+
+  @@index([profileId])
+  @@index([expiresAt])
+}
+
+/// Aelis eigener Sitzungszaehler. Abmelden auf aeli.so zaehlt ihn hoch und
+/// entwertet alle Aeli-Sitzungen, ohne Aeras `User.sessionVersion` (und damit
+/// Aera-Sitzungen) anzufassen. Kein Grant fuer aeli_app; nur ueber
+/// `aeli_session_user` / `aeli_end_sessions`.
+model AeliAuthState {
+  userId         String   @id
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  sessionVersion Int      @default(0)
+  updatedAt      DateTime @default(now())
 }
 
 /// Eine Karte im Stapel. `theme` leer heisst „wie die Seite".

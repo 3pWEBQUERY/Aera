@@ -7,10 +7,19 @@ import { safeRelativePath } from "@/lib/safe-redirect";
 import { LoginForm } from "@/components/forms/auth-forms";
 import logoBkButton from "@/public/logo_bk_button.svg";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
-  const t = await getTranslations("ui.auth");
-  return { title: t("loginMeta") };
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, tSeo] = await Promise.all([
+    getTranslations("ui.auth"),
+    getTranslations("marketing.seo"),
+  ]);
+  return buildPlatformPageMetadata({
+    title: t("loginMeta"),
+    description: tSeo("loginDescription"),
+    path: "/login",
+  });
 }
 
 export default async function LoginPage({

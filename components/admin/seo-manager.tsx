@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useState } from "react";
+import { useEffect, useId, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import { updatePlatformSeoAction, type SeoState } from "@/app/actions/seo";
 import { Icon } from "@/components/dashboard/icons";
@@ -41,7 +42,7 @@ export function PlatformSeoManager({
 }) {
   const t = useTranslations("admin.seo");
   const locale = useLocale();
-  const [state, action, pending] = useActionState(updatePlatformSeoAction, {} as SeoState);
+  const [state, action, pending] = useResilientActionState(updatePlatformSeoAction, {} as SeoState);
   const [title, setTitle] = useState(values.title);
   const [description, setDescription] = useState(values.description);
   const [image, setImage] = useState(values.imageUrl);

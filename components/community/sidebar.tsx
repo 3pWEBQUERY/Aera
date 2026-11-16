@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { Avatar } from "@/components/ui/misc";
+import { LinkPendingBar } from "@/components/ui/link-pending-bar";
 import { logoutAction } from "@/app/actions/auth";
 import logo from "@/public/logo.svg";
 import logoButton from "@/public/logo_button.svg";
@@ -281,6 +282,7 @@ export function CommunitySidebar({
               className={rowClass(active)}
             >
               <RowInner icon={item.icon} label={item.label} active={active} />
+              <LinkPendingBar />
             </Link>
           );
         })}

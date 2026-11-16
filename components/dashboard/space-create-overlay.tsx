@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { createSpaceAction, type ActionState } from "@/app/actions/dashboard";
 import { Icon } from "./icons";
@@ -27,7 +28,7 @@ export function SpaceCreateOverlay({
 }) {
   const [open, setOpen] = useState(false);
   const [plansOpen, setPlansOpen] = useState(false);
-  const [state, action, pending] = useActionState(createSpaceAction, initial);
+  const [state, action, pending] = useResilientActionState(createSpaceAction, initial);
   const [type, setType] = useState("FEED");
   const [visibility, setVisibility] = useState("MEMBERS");
   const t = useTranslations("dashboard");

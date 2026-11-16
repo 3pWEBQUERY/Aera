@@ -5,14 +5,22 @@ import { PostCard, FeaturedCard } from "@/components/marketing/blog-card";
 import { BLOG_CATEGORIES, POSTS_PER_PAGE, isBlogCategory } from "@/lib/blog";
 import { featuredPost, listPosts, resolveBlogLocale, usedCategories } from "@/lib/blog-query";
 import { env } from "@/lib/env";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("blog");
-  return {
+  const meta = await buildPlatformPageMetadata({
     title: t("metaTitle"),
     description: t("metaDescription"),
+    // Rubrik- und Seitenfilter (?rubrik=, ?seite=) sind Varianten
+    // derselben Seite — canonical bleibt die Uebersicht.
+    path: "/blog",
+  });
+  return {
+    ...meta,
     alternates: {
-      canonical: `${env.APP_URL}/blog`,
+      ...meta.alternates,
       types: { "application/rss+xml": `${env.APP_URL}/blog/rss.xml` },
     },
   };

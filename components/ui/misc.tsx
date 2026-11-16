@@ -17,7 +17,7 @@ export function Avatar({
   if (src) {
     // eslint-disable-next-line @next/next/no-img-element
     return (
-      <img
+      <img loading="lazy" decoding="async"
         src={src}
         alt={name}
         width={size}

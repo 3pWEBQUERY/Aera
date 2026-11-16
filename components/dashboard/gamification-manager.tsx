@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import {
@@ -392,7 +393,7 @@ function RuleForm({
   triggers: string[];
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(createRuleAction, initial);
+  const [state, action, pending] = useResilientActionState(createRuleAction, initial);
   const [trigger, setTrigger] = useState(triggers[0] ?? "");
   const t = useTranslations("dashboard.gamification");
   const tTriggers = useTranslations("dashboard.gamification.triggers");
@@ -453,7 +454,7 @@ function BadgeForm({
   onDone: () => void;
 }) {
   const isEdit = !!badge;
-  const [state, action, pending] = useActionState(isEdit ? updateBadgeAction : createBadgeAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updateBadgeAction : createBadgeAction, initial);
   const [deleting, setDeleting] = useState(false);
   const [confirm, confirmDialog] = useConfirm();
   const t = useTranslations("dashboard.gamification");

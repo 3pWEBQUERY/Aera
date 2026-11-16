@@ -184,7 +184,7 @@
     "error": "Nie udało się sprawdzić dostępności."
   },
   "onboarding": {
-    "metaTitle": "Utwórz społeczność — Aera",
+    "metaTitle": "Utwórz społeczność",
     "brand": "Utwórz społeczność",
     "stepShort": "Krok {step} / {total}",
     "eyebrow": "{label} · Krok {step} z {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Twoje społeczności — Aera",
+      "metaTitle": "Twoje społeczności",
       "creator": "Twórca",
       "yourMemberships": "Twoje członkostwa",
       "logout": "Wyloguj się",
@@ -4928,6 +4928,10 @@
       "stepForum": "Przedstaw się w „{space}”",
       "stepSpace": "Przejdź do „{space}”",
       "dismiss": "Zamknij komunikat"
+    },
+    "seo": {
+      "lockedPost": "Wpis dla członków społeczności {community}",
+      "lockedSpace": "Treści dla członków społeczności {community}"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "Zaloguj się",
     "toDashboard": "Do panelu",
     "startCommunity": "Załóż społeczność",
-    "startShort": "Start",
+    "startShort": "Zacznij za darmo",
     "menuOpen": "Otwórz menu",
     "menuClose": "Zamknij menu",
     "footerAbout": "Platforma dla twórców prowadzących społeczność, członkostwa, kursy, wydarzenia, newslettery i sprzedaż pod własną marką — z pełną suwerennością danych.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "Od pakietu {plan}: {items}",
     "footerContact": "Kontakt",
-    "legalGermanOnly": "Ten tekst prawny jest dostępny wyłącznie w języku niemieckim. Wiążąca jest wersja niemiecka."
+    "legalGermanOnly": "Ten tekst prawny jest dostępny wyłącznie w języku niemieckim. Wiążąca jest wersja niemiecka.",
+    "seo": {
+      "title": "Aera — Twoja społeczność. Twoje zasady. Twoje przychody.",
+      "description": "Zbuduj własną społeczność z feedem, kursami, wydarzeniami, newsletterem i sklepem — na własnej domenie i z własnym brandingiem. Zacznij za darmo, rozwijaj się w dowolnym momencie.",
+      "keywords": "platforma społecznościowa, twórcy, członkostwa, kursy online, newsletter, wydarzenia, produkty cyfrowe",
+      "discoverTitle": "Odkrywaj",
+      "discoverDescription": "Znajdź społeczności i twórców w Aera.",
+      "pricingDescription": "Porównaj pakiety Aera: co zawiera każdy pakiet, ile kosztuje miesięcznie i jaka prowizja obowiązuje przy sprzedaży.",
+      "featuresDescription": "Co potrafi Aera: feed, forum, kursy, wydarzenia, newsletter, sklep i transmisje na żywo — na własnej domenie i z własnym brandingiem.",
+      "loginDescription": "Zaloguj się do Aera, aby otworzyć swoje społeczności i panel.",
+      "signupDescription": "Załóż konto w Aera i uruchom swoją społeczność za darmo."
+    }
   },
   "home": {
     "badge": "Społeczność · Członkostwo · Sprzedaż",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "Wiadomość od {from}",
       "supportInboundIntro": "We wsparciu czeka nowa wiadomość.",
       "supportInboundCta": "Otwórz w administracji",
-      "supportInboundHint": "Odpowiadaj w panelu administracyjnym, a nie mailem na {email} — inaczej odpowiedzi zabraknie w wątku."
+      "supportInboundHint": "Odpowiadaj w panelu administracyjnym, a nie mailem na {email} — inaczej odpowiedzi zabraknie w wątku.",
+      "unsubscribeLabel": "Wypisz się z newslettera",
+      "unsubscribeReason": "Otrzymujesz tę wiadomość, ponieważ subskrybujesz newsletter społeczności {community}."
     },
     "dashboard": {
       "uploadFailed": "Przesyłanie nie powiodło się.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "Bezpłatnie"
+    },
+    "state": {
+      "networkError": "Brak połączenia z serwerem. Twoje dane nadal tu są – wyślij formularz ponownie.",
+      "serverError": "Nie udało się. Spróbuj jeszcze raz.",
+      "pageErrorTitle": "Nie udało się wczytać strony",
+      "pageErrorText": "Spróbuj ponownie za chwilę.",
+      "reload": "Wczytaj ponownie",
+      "toHelp": "Przejdź do pomocy",
+      "viewErrorTitle": "Nie udało się wczytać tego widoku",
+      "toOverview": "Przejdź do przeglądu",
+      "contentGoneTitle": "Tej treści już nie ma",
+      "contentGoneText": "Została usunięta lub przeniesiona.",
+      "backToCommunity": "Wróć do {community}",
+      "viewNotFoundTitle": "Ta strona nie istnieje",
+      "viewNotFoundText": "Została usunięta lub przeniesiona albo link jest nieprawidłowy.",
+      "loading": "Wczytywanie…",
+      "errorRef": "Identyfikator błędu: {digest}"
     }
   },
   "unsubscribe": {

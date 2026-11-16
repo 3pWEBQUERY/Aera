@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { PrismaMock } from "./helpers/prisma-mock";
 
 const mocks = vi.hoisted(() => ({
+  recipientLocales: vi.fn(async () => ({ byUser: new Map<string, string>(), fallback: "de" })),
   sendEmail: vi.fn(async (): Promise<{ ok: boolean; error?: string; id?: string }> => ({
     ok: true,
     id: "resend-1",
@@ -21,15 +22,24 @@ vi.mock("@/lib/prisma", async () => {
 });
 vi.mock("@/lib/email", () => ({
   sendEmail: mocks.sendEmail,
-  renderCampaignHtml: (args: { body: string }) => `<html>${args.body}</html>`,
+  renderCampaignHtml: (args: { body: string; locale?: string; footerLabel?: string }) =>
+    `<html lang="${args.locale}">${args.body}|${args.footerLabel}</html>`,
 }));
 vi.mock("@/lib/marketing-consent", () => ({
-  appendUnsubscribeFooter: (html: string) => `${html}<p>unsubscribe</p>`,
+  appendUnsubscribeFooter: (html: string, _url: string, copy: { label: string; reason?: string }) =>
+    `${html}<p>${copy.reason}|${copy.label}</p>`,
   newsletterUnsubscribeUrls: () => ({
     apiUrl: "http://localhost:3000/api/newsletter/unsubscribe/token",
     pageUrl: "http://localhost:3000/unsubscribe/token",
   }),
   isNewsletterRecipientEligible: vi.fn(async () => true),
+  marketingRecipientLocales: mocks.recipientLocales,
+}));
+vi.mock("@/lib/email-i18n", () => ({
+  marketingEmailCopy: async (locale: string, community: string) => ({
+    footerLabel: `sent-via:${locale}`,
+    unsubscribe: { label: `unsubscribe:${locale}`, reason: `reason:${locale}:${community}` },
+  }),
 }));
 
 import prismaModule from "@/lib/prisma";
@@ -97,6 +107,43 @@ describe("queueNewsletterCampaign", () => {
       ],
       skipDuplicates: true,
     });
+  });
+
+  it("renders footer and unsubscribe link in each recipient's language", async () => {
+    prisma.newsletterConsent.findMany.mockResolvedValue([
+      { email: "de@example.com", user: { id: "u-de", email: "de@example.com" } },
+      { email: "fr@example.com", user: { id: "u-fr", email: "fr@example.com" } },
+      { email: "x@example.com", user: { id: "u-unknown", email: "x@example.com" } },
+    ]);
+    mocks.recipientLocales.mockResolvedValueOnce({
+      byUser: new Map([["u-de", "de"], ["u-fr", "fr"]]),
+      // Ohne gespeicherte Sprache: Sprache des Community-Inhabers.
+      fallback: "en",
+    });
+    prisma.newsletterDelivery.createMany.mockResolvedValue({ count: 3 });
+    prisma.newsletterDelivery.count.mockResolvedValue(3);
+
+    await queueNewsletterAudienceBatch({
+      id: "c-i18n",
+      tenantId: "t1",
+      subject: "News",
+      body: "Hallo",
+      bodyFormat: "TEXT",
+      segmentId: null,
+      status: "SENDING",
+      scheduledAt: null,
+      tenant: { name: "Chor", primaryColor: "#123456" },
+    });
+
+    const rows = prisma.newsletterDelivery.createMany.mock.calls[0]?.[0].data as Array<{
+      userId: string;
+      html: string;
+    }>;
+    const html = Object.fromEntries(rows.map((row) => [row.userId, row.html]));
+    expect(html["u-de"]).toBe('<html lang="de">Hallo|sent-via:de</html><p>reason:de:Chor|unsubscribe:de</p>');
+    expect(html["u-fr"]).toBe('<html lang="fr">Hallo|sent-via:fr</html><p>reason:fr:Chor|unsubscribe:fr</p>');
+    expect(html["u-unknown"]).toContain("unsubscribe:en");
+    expect(mocks.recipientLocales).toHaveBeenCalledWith("t1", ["u-de", "u-fr", "u-unknown"]);
   });
 
   it("snapshots large audiences in a bounded resumable page", async () => {
@@ -210,6 +257,7 @@ describe("processPendingNewsletterDeliveries", () => {
 
   it("records a successful send idempotently and completes the campaign", async () => {
     prisma.newsletterDelivery.count.mockResolvedValueOnce(0).mockResolvedValueOnce(1);
+    prisma.tenant.findUnique.mockResolvedValueOnce({ name: "Chor am See" });
 
     const result = await processPendingNewsletterDeliveries();
 
@@ -218,6 +266,8 @@ describe("processPendingNewsletterDeliveries", () => {
       expect.objectContaining({
         to: "u1@example.com",
         idempotencyKey: "newsletter-d1",
+        // Absender „Chor am See via Aera“ (lib/email.ts baut den Header).
+        senderName: "Chor am See",
         category: "marketing",
         unsubscribeUrl: "http://localhost:3000/api/newsletter/unsubscribe/token",
       }),

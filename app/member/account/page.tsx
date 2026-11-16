@@ -23,10 +23,12 @@ import { DataPrivacySettings } from "@/components/community/data-privacy-setting
 import { setNewsletterConsentAction } from "@/app/actions/newsletter";
 import { AERA_INK_VARS } from "@/lib/ui-theme";
 import { MembershipActions } from "@/components/community/membership-actions";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("account");
-  return { title: t("metaTitle") };
+  return { title: t("metaTitle"), robots: NOINDEX };
 }
 
 const intervalKey: Record<string, string> = {

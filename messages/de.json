@@ -210,7 +210,7 @@
     "error": "Verfügbarkeit konnte nicht geprüft werden."
   },
   "onboarding": {
-    "metaTitle": "Community erstellen — Aera",
+    "metaTitle": "Community erstellen",
     "brand": "Community erstellen",
     "stepShort": "Schritt {step} / {total}",
     "eyebrow": "{label} · Schritt {step} von {total}",
@@ -1274,7 +1274,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Deine Communities — Aera",
+      "metaTitle": "Deine Communities",
       "creator": "Creator",
       "yourMemberships": "Deine Mitgliedschaften",
       "logout": "Abmelden",
@@ -4964,6 +4964,10 @@
       "stepForum": "Stell dich im Space „{space}“ vor",
       "stepSpace": "Zum Space „{space}“",
       "dismiss": "Hinweis schließen"
+    },
+    "seo": {
+      "lockedPost": "Beitrag für Mitglieder von {community}",
+      "lockedSpace": "Inhalte für Mitglieder von {community}"
     }
   },
   "notifications": {
@@ -5369,7 +5373,7 @@
     "login": "Anmelden",
     "toDashboard": "Zum Dashboard",
     "startCommunity": "Community starten",
-    "startShort": "Starten",
+    "startShort": "Kostenlos starten",
     "menuOpen": "Menü öffnen",
     "menuClose": "Menü schließen",
     "footerAbout": "Die Plattform für Creator, die Community, Membership, Kurse, Events, Newsletter und Commerce unter der eigenen Marke führen — mit voller Datenhoheit.",
@@ -5386,7 +5390,18 @@
     "navBlog": "Blog",
     "availableFrom": "Ab {plan}: {items}",
     "footerContact": "Kontakt",
-    "legalGermanOnly": "Dieser Rechtstext ist nur auf Deutsch verfügbar. Maßgeblich ist die deutsche Fassung."
+    "legalGermanOnly": "Dieser Rechtstext ist nur auf Deutsch verfügbar. Maßgeblich ist die deutsche Fassung.",
+    "seo": {
+      "title": "Aera — Deine Community. Deine Regeln. Deine Einnahmen.",
+      "description": "Baue deine eigene Community mit Feed, Kursen, Events, Newsletter und Shop — auf deiner Domain, mit deinem Branding. Kostenlos starten, jederzeit wachsen.",
+      "keywords": "Community-Plattform, Creator, Mitgliedschaften, Online-Kurse, Newsletter, Events, Digitale Produkte",
+      "discoverTitle": "Entdecken",
+      "discoverDescription": "Finde Communities und Creator auf Aera.",
+      "pricingDescription": "Die Pakete von Aera im Vergleich: was jedes Paket enthält, was es im Monat kostet und welche Gebühr bei Verkäufen anfällt.",
+      "featuresDescription": "Was Aera kann: Feed, Forum, Kurse, Events, Newsletter, Shop und Live-Streams — auf deiner Domain, mit deinem Branding.",
+      "loginDescription": "Melde dich bei Aera an, um deine Communities und dein Dashboard zu öffnen.",
+      "signupDescription": "Erstelle dein Aera-Konto und starte deine Community kostenlos."
+    }
   },
   "home": {
     "badge": "Community · Membership · Commerce",
@@ -5687,7 +5702,9 @@
       "supportInboundHeading": "Nachricht von {from}",
       "supportInboundIntro": "Im Support wartet eine neue Nachricht.",
       "supportInboundCta": "Im Admin öffnen",
-      "supportInboundHint": "Antworten bitte im Admin-Bereich, nicht per Mail an {email} — sonst fehlt die Antwort im Verlauf."
+      "supportInboundHint": "Antworten bitte im Admin-Bereich, nicht per Mail an {email} — sonst fehlt die Antwort im Verlauf.",
+      "unsubscribeLabel": "Newsletter abbestellen",
+      "unsubscribeReason": "Du erhältst diese E-Mail, weil du den Newsletter von {community} abonniert hast."
     },
     "dashboard": {
       "uploadFailed": "Upload fehlgeschlagen.",
@@ -5891,6 +5908,23 @@
     },
     "pricePoint": {
       "free": "Kostenlos"
+    },
+    "state": {
+      "networkError": "Keine Verbindung zum Server. Deine Eingaben sind noch da – sende das Formular erneut.",
+      "serverError": "Das hat nicht geklappt. Bitte versuche es noch einmal.",
+      "pageErrorTitle": "Die Seite konnte nicht geladen werden",
+      "pageErrorText": "Versuch es in einem Moment noch einmal.",
+      "reload": "Neu laden",
+      "toHelp": "Zur Hilfe",
+      "viewErrorTitle": "Diese Ansicht konnte nicht geladen werden",
+      "toOverview": "Zur Übersicht",
+      "contentGoneTitle": "Dieser Inhalt ist nicht mehr da",
+      "contentGoneText": "Er wurde gelöscht oder verschoben.",
+      "backToCommunity": "Zurück zu {community}",
+      "viewNotFoundTitle": "Diese Seite gibt es nicht",
+      "viewNotFoundText": "Sie wurde gelöscht oder verschoben, oder der Link stimmt nicht.",
+      "loading": "Wird geladen …",
+      "errorRef": "Fehlerkennung: {digest}"
     }
   },
   "language": {

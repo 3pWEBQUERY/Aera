@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   unsubscribeNewsletterAction,
@@ -11,7 +11,7 @@ const initial: NewsletterPreferenceState = {};
 
 export function NewsletterUnsubscribeForm({ token }: { token: string }) {
   const t = useTranslations("unsubscribe");
-  const [state, action, pending] = useActionState(unsubscribeNewsletterAction, initial);
+  const [state, action, pending] = useResilientActionState(unsubscribeNewsletterAction, initial);
   if (state.ok) {
     return <p className="text-sm leading-6 text-slate-600">{t("success")}</p>;
   }

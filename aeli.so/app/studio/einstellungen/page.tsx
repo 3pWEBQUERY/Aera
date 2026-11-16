@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { requireProfile } from "@/lib/profile";
 import { getCurrentUser } from "@/lib/auth";
-import { systemPrisma } from "@/lib/prisma";
+import { withUserContext } from "@/lib/prisma";
+import { ownedTenants } from "@/lib/db-functions";
 import { env } from "@/lib/env";
 import { profileUrlLabelParts } from "@/lib/url";
 import { paymentsConfigured } from "@/lib/env";
@@ -24,13 +25,9 @@ export default async function SettingsPage() {
 
   // Welche Communities gehören diesem Konto? Die Besitzfrage steht in
   // `Tenant.ownerId`, und darauf hat die Rolle `aeli_app` keinen Blick (ihre
-  // Policy kennt nur „aktiv“). Deshalb hier ein enger, privilegierter Griff:
-  // gefiltert auf genau diesen Nutzer, ausgelesen werden Name und ID.
-  const tenants = await systemPrisma.tenant.findMany({
-    where: { ownerId: user.id, status: "ACTIVE" },
-    select: { id: true, name: true },
-    orderBy: { name: "asc" },
-  });
+  // Policy kennt nur „aktiv“). Die Datenbankfunktion `aeli_owned_tenants`
+  // liefert genau Name und ID der eigenen, aktiven Communities.
+  const tenants = await withUserContext(user.id, () => ownedTenants());
 
   // Nicht selbst zusammengebaut: dieselbe Adresse, die die Kopfzeile, der
   // QR-Code und der Teilen-Knopf zeigen. Begruendung in lib/url.ts.
@@ -40,12 +37,13 @@ export default async function SettingsPage() {
   // und was steuert die verknuepfte Community bei. Die Statusabfrage bei
   // Stripe kostet einen Netzwerkaufruf — sie laeuft deshalb nur, wenn es
   // ueberhaupt ein eigenes Konto gibt.
-  const owner = { userId: user.id, linkedTenantId: profile.linkedTenantId };
-  const [active, ownAccountId, linkedCommunity] = await Promise.all([
-    resolvePayoutAccount(owner),
-    ownPayoutAccountId(user.id),
-    linkedCommunityPayout(owner),
-  ]);
+  const [active, ownAccountId, linkedCommunity] = await withUserContext(user.id, () =>
+    Promise.all([
+      resolvePayoutAccount(profile.id),
+      ownPayoutAccountId(user.id),
+      linkedCommunityPayout(),
+    ]),
+  );
   const ownAccountReady = ownAccountId ? canReceive(await getConnectStatus(ownAccountId)) : false;
 
   const payout: PayoutView = {

@@ -14,10 +14,19 @@ import { PLAN_LIMITS, SPACE_TYPE_KEYS, planAllowsSpaceType } from "@/lib/plan-fe
 import { formatPlatformFee } from "@/lib/platform-fee";
 import { formatPrice } from "@/lib/utils";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
-  const t = await getTranslations("ui.auth");
-  return { title: t("pricingMeta") };
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, tSeo] = await Promise.all([
+    getTranslations("ui.auth"),
+    getTranslations("marketing.seo"),
+  ]);
+  return buildPlatformPageMetadata({
+    title: t("pricingMeta"),
+    description: tSeo("pricingDescription"),
+    path: "/pricing",
+  });
 }
 
 export default async function PricingPage() {

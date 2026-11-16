@@ -4,11 +4,19 @@ import { getCurrentUser } from "@/lib/auth";
 import { HomeRail, type RailMembership } from "@/components/home/home-rail";
 import { MobileTabbar } from "@/components/home/mobile-tabbar";
 import { VerifyEmailBanner } from "@/components/verify-email-banner";
+import { getTranslations } from "next-intl/server";
+import { getPlatformSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Entdecken — Aera",
-  description: "Finde Communities und Creator auf Aera.",
-};
+// Titel und Beschreibung fuer alle Entdecken-Seiten; canonical setzt jede
+// Seite selbst (/home bzw. /home/search).
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, seo] = await Promise.all([getTranslations("marketing.seo"), getPlatformSeo()]);
+  return {
+    // Mit Template, sonst verloeren Unterseiten wie /home/search das "— Aera".
+    title: { default: t("discoverTitle"), template: seo.titleTemplate },
+    description: t("discoverDescription"),
+  };
+}
 
 export default async function HomeLayout({
   children,

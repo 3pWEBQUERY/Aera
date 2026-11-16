@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useId, useRef, useState, useTransition } from "react";
+import { useEffect, useId, useRef, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -61,7 +62,7 @@ export function BrandingPanel({
   };
   coverUrl: string | null;
 }) {
-  const [state, action, pending] = useActionState(updateBrandingAction, initial);
+  const [state, action, pending] = useResilientActionState(updateBrandingAction, initial);
   const t = useTranslations("dashboard.branding");
   const tCat = useTranslations("categories");
   const formatTime = useTimeFormat();
@@ -526,8 +527,8 @@ function CustomDomainSection({
   allowed: boolean;
 }) {
   const t = useTranslations("dashboard.domain");
-  const [saveState, saveAction, saving] = useActionState(updateCustomDomainAction, initial);
-  const [verifyState, verifyAction, verifying] = useActionState(verifyCustomDomainAction, initial);
+  const [saveState, saveAction, saving] = useResilientActionState(updateCustomDomainAction, initial);
+  const [verifyState, verifyAction, verifying] = useResilientActionState(verifyCustomDomainAction, initial);
   const [value, setValue] = useState(customDomain ?? "");
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [plansOpen, setPlansOpen] = useState(false);
@@ -708,7 +709,7 @@ export function DomainPanel({
   customDomainVerified: boolean;
   customDomainAllowed: boolean;
 }) {
-  const [state, action, pending] = useActionState(updateSubdomainAction, initial);
+  const [state, action, pending] = useResilientActionState(updateSubdomainAction, initial);
   const t = useTranslations("dashboard.domain");
   const current = subdomain ?? slug;
   const [draft, setDraft] = useState(current);

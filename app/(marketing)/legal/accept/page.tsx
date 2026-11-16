@@ -9,6 +9,10 @@ import {
   CURRENT_TERMS_VERSION,
 } from "@/lib/legal";
 import { hasCurrentLegalEvidence } from "@/lib/legal-evidence";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
+
+export const metadata: Metadata = { robots: NOINDEX };
 
 export default async function LegalAcceptancePage({
   searchParams,

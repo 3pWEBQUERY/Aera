@@ -15,7 +15,7 @@ function CoverArt({ c }: { c: CreatorCardData }) {
   if (c.coverUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <img loading="lazy" decoding="async"
         src={c.coverUrl}
         alt=""
         className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
@@ -25,7 +25,7 @@ function CoverArt({ c }: { c: CreatorCardData }) {
   if (c.logoUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img
+      <img loading="lazy" decoding="async"
         src={c.logoUrl}
         alt=""
         className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.04]"
@@ -75,7 +75,7 @@ export function CreatorRow({ c }: { c: CreatorCardData }) {
     >
       {c.logoUrl ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={c.logoUrl} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
+        <img loading="lazy" decoding="async" width={48} height={48} src={c.logoUrl} alt="" className="h-12 w-12 shrink-0 rounded-xl object-cover" />
       ) : (
         <span
           className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-base font-bold text-white"

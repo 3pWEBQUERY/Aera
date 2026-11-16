@@ -1,8 +1,10 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
-import { systemPrisma } from "@/lib/prisma";
+import { withUserContext } from "@/lib/prisma";
+import { connectPayoutAccountRow, disconnectPayoutAccountRow } from "@/lib/db-functions";
 import { getCurrentUser } from "@/lib/auth";
 import { getOwnProfile } from "@/lib/profile";
 import { env, paymentsConfigured } from "@/lib/env";
@@ -17,11 +19,10 @@ import { formError, type FormState } from "@/lib/action-state";
 /**
  * Das Auszahlungskonto verbinden, ansehen, trennen.
  *
- * Alles hier läuft über `systemPrisma`, obwohl `AeliPayoutAccount` für den
- * Besitzer auch unter `aeli_app` lesbar wäre. Der Grund ist die Symmetrie mit
- * `lib/payouts.ts`: Konten anzulegen und Konten zu benutzen soll denselben Weg
- * gehen, damit es nicht zwei Stellen gibt, an denen über Geld entschieden wird.
- * `GRANT` hat die Rolle ohnehin nur auf SELECT.
+ * `aeli_app` darf `AeliPayoutAccount` nur lesen. Angelegt und getrennt wird
+ * über zwei Datenbankfunktionen (`aeli_connect_payout_account`,
+ * `aeli_disconnect_payout_account`), die den Besitzer aus dem
+ * Besitzerkontext nehmen — deshalb läuft hier alles in `withUserContext`.
  */
 
 const SETTINGS = "/studio/einstellungen";
@@ -45,14 +46,13 @@ export async function connectPayoutAction(): Promise<void> {
   const user = await requireUser();
   if (!paymentsConfigured()) redirect(`${SETTINGS}?zahlung=nicht-eingerichtet`);
 
-  let accountId = await ownPayoutAccountId(user.id);
+  let accountId = await withUserContext(user.id, () => ownPayoutAccountId(user.id));
 
   if (!accountId) {
     accountId = await createConnectAccount(user.email);
     if (!accountId) redirect(`${SETTINGS}?zahlung=fehlgeschlagen`);
-    await systemPrisma.aeliPayoutAccount.create({
-      data: { userId: user.id, stripeAccountId: accountId },
-    });
+    const created = accountId;
+    await withUserContext(user.id, () => connectPayoutAccountRow(randomUUID(), created));
   }
 
   const link = await createOnboardingLink(
@@ -70,7 +70,7 @@ export async function connectPayoutAction(): Promise<void> {
 /** Einmal-Link in das Stripe-Dashboard des Creators. */
 export async function payoutDashboardAction(): Promise<void> {
   const user = await requireUser();
-  const accountId = await ownPayoutAccountId(user.id);
+  const accountId = await withUserContext(user.id, () => ownPayoutAccountId(user.id));
   if (!accountId) redirect(SETTINGS);
 
   const link = await createDashboardLoginLink(accountId);
@@ -91,8 +91,8 @@ export async function disconnectPayoutAction(_prev: FormState): Promise<FormStat
   const user = await requireUser();
   const profile = await getOwnProfile();
 
-  const deleted = await systemPrisma.aeliPayoutAccount.deleteMany({ where: { userId: user.id } });
-  if (deleted.count === 0) return formError("Es war kein Konto verbunden.");
+  const deleted = await withUserContext(user.id, () => disconnectPayoutAccountRow());
+  if (deleted === 0) return formError("Es war kein Konto verbunden.");
 
   revalidatePath(SETTINGS);
   if (profile) revalidatePath(`/p/${profile.handle}`);
@@ -100,10 +100,7 @@ export async function disconnectPayoutAction(_prev: FormState): Promise<FormStat
   // Nach dem Trennen kann die Aera-Community einspringen. Das ist kein Fehler,
   // aber eine Änderung, die man erfahren sollte.
   const fallback = profile
-    ? await resolvePayoutAccount({
-        userId: user.id,
-        linkedTenantId: profile.linkedTenantId,
-      })
+    ? await withUserContext(user.id, () => resolvePayoutAccount(profile.id))
     : null;
 
   return {

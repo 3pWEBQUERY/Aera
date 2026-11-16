@@ -153,7 +153,14 @@ const globalForPrisma = globalThis as unknown as {
 // Dev: Nach `prisma generate` mit neuem Modell den gecachten Client verwerfen.
 // Sonst fehlt die neue Tabelle (z. B. `prisma.totpRecoveryCode`) bis zum
 // Neustart des Dev-Servers, weil der alte Client auf globalThis überlebt.
-const modelFingerprint = Object.keys(PrismaRuntime.ModelName).join(",");
+// Neue Spalten (z. B. User.locale) zählen mit: Sonst lehnt der alte Client
+// `data: { locale }` als unbekanntes Argument ab.
+const modelFingerprint = JSON.stringify([
+  Object.keys(PrismaRuntime.ModelName),
+  Object.entries(PrismaRuntime)
+    .filter(([key]) => key.endsWith("ScalarFieldEnum"))
+    .map(([, fields]) => Object.keys(fields as object)),
+]);
 if (globalForPrisma.prismaModels !== modelFingerprint) {
   globalForPrisma.prisma = undefined;
   globalForPrisma.prismaBase = undefined;

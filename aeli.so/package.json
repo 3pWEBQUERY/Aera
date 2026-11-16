@@ -50,7 +50,7 @@
     "eslint-config-next": "^16.4.6",
     "tailwindcss": "^4.1.0",
     "typescript": "^5.9.0",
-    "vitest": "^3.2.7"
+    "vitest": "^4.1.12"
   },
   "overrides": {
     "sharp": "^0.35.5",

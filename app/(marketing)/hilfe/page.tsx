@@ -4,10 +4,16 @@ import prisma from "@/lib/prisma";
 import { Icon } from "@/components/dashboard/icons";
 import { Reveal } from "@/components/marketing/reveal";
 import { PillLink } from "@/components/marketing/pill-link";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("help");
-  return { title: t("metaTitle"), description: t("metaDescription") };
+  return buildPlatformPageMetadata({
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    path: "/hilfe",
+  });
 }
 
 /**

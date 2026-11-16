@@ -17,6 +17,8 @@ import { CategoryChips } from "@/components/home/category-chips";
 import { HScrollRow } from "@/components/community/h-scroll-row";
 import { memberFeed, type MemberFeedItem } from "@/lib/member-feed";
 import { formatDateTime, timeAgo } from "@/lib/utils";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
 /** Poster palette — same muted tones as the landing-page marquee tiles. */
 const CATEGORY_TILE_TONES = [
@@ -128,6 +130,16 @@ async function categoriesInUse(): Promise<Map<string, number>> {
     // Column not migrated yet — hide category UI instead of crashing.
     return new Map();
   }
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("marketing.seo");
+  // ?q= und ?cat= sind Filter derselben Seite — canonical bleibt /home.
+  return buildPlatformPageMetadata({
+    title: t("discoverTitle"),
+    description: t("discoverDescription"),
+    path: "/home",
+  });
 }
 
 export default async function DiscoverPage({
@@ -336,7 +348,7 @@ export default async function DiscoverPage({
             >
               {tenant.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={tenant.logoUrl} alt="" className="h-11 w-11 shrink-0 rounded-xl object-cover" />
+                <img loading="lazy" decoding="async" width={44} height={44} src={tenant.logoUrl} alt="" className="h-11 w-11 shrink-0 rounded-xl object-cover" />
               ) : (
                 <span
                   className="display-serif flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-lg text-white"
@@ -468,7 +480,7 @@ async function MemberFeedSection({
             >
               {item.community.logoUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={item.community.logoUrl} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
+                <img loading="lazy" decoding="async" width={36} height={36} src={item.community.logoUrl} alt="" className="h-9 w-9 shrink-0 rounded-lg object-cover" />
               ) : (
                 <span
                   aria-hidden="true"

@@ -1,9 +1,17 @@
 import { LegalShell } from "@/components/marketing/legal-shell";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Widerrufsbelehrung",
-  description: "Widerrufsbelehrung für Verbraucher bei Aera.so.",
-};
+// Der Rechtstext ist nur auf Deutsch verbindlich — Titel und Beschreibung
+// deshalb ebenfalls. Die Seite ist auf jeder Community-Domain erreichbar;
+// canonical zeigt immer auf die Plattform-Adresse.
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPlatformPageMetadata({
+    title: "Widerrufsbelehrung",
+    description: "Widerrufsbelehrung für Verbraucher bei Aera.so.",
+    path: "/widerruf",
+  });
+}
 
 export default function WiderrufPage() {
   return (

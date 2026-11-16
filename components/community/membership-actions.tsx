@@ -1,6 +1,7 @@
 "use client";
 
-import { startTransition, useActionState, useState, useTransition } from "react";
+import { startTransition, useState, useTransition } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { cancelOwnMembershipAction, leaveCommunityAction } from "@/app/actions/subscription";
@@ -48,7 +49,7 @@ export function MembershipActions({
   const [confirm, confirmDialog] = useConfirm();
   const [leaveState, setLeaveState] = useState<ActionState>(initial);
   const [leaving, startLeaving] = useTransition();
-  const [cancelState, cancel, cancelling] = useActionState(cancelOwnMembershipAction, initial);
+  const [cancelState, cancel, cancelling] = useResilientActionState(cancelOwnMembershipAction, initial);
 
   if (role === "OWNER") {
     return <p className="text-xs text-[#161613]/65">{t("ownerNote")}</p>;

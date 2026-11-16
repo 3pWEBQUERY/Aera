@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   updateReferralSettingsAction,
@@ -18,7 +18,7 @@ export function ReferralSettingsForm({
   slug: string;
   referralPercent: number;
 }) {
-  const [state, action, pending] = useActionState(updateReferralSettingsAction, initial);
+  const [state, action, pending] = useResilientActionState(updateReferralSettingsAction, initial);
   const t = useTranslations("dashboard.referrals");
 
   return (

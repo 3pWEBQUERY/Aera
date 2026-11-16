@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { NextIntlClientProvider } from "next-intl";
+import { ADMIN_CLIENT_NAMESPACES, clientMessages } from "@/i18n/client-messages";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { AdminNav } from "@/components/admin/admin-nav";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
@@ -8,7 +10,9 @@ import { staffUnreadCount } from "@/lib/support";
 import { Avatar } from "@/components/ui/misc";
 
 export const metadata: Metadata = {
-  title: { default: "Admin — Aera", template: "%s — Aera Admin" },
+  // `absolute`: mit `default` haengte das Root-Template ein zweites "— Aera" an.
+  title: { absolute: "Admin — Aera", template: "%s — Aera Admin" },
+  robots: { index: false, follow: false },
 };
 
 export default async function AdminLayout({
@@ -20,8 +24,11 @@ export default async function AdminLayout({
   const t = await getTranslations("admin");
   // Ungelesene Support-Nachrichten treiben den Kreis in der Navigation.
   const support = await staffUnreadCount();
+  // Admin-Texte nur hier an den Browser geben (siehe i18n/client-messages.ts).
+  const clientMsgs = await clientMessages(ADMIN_CLIENT_NAMESPACES);
 
   return (
+    <NextIntlClientProvider messages={clientMsgs}>
     <div className="flex min-h-screen bg-slate-50">
       {/* Sidebar */}
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-slate-200 bg-white md:flex">
@@ -65,5 +72,6 @@ export default async function AdminLayout({
         <div className="mx-auto max-w-6xl px-4 py-7 sm:px-6">{children}</div>
       </main>
     </div>
+    </NextIntlClientProvider>
   );
 }

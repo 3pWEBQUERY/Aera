@@ -4,7 +4,8 @@ import { features } from "./env";
 import { sendEmail, renderAccountActionHtml } from "./email";
 import { signAccountToken, verifyUrl } from "./tokens";
 import type { User } from "@/app/generated/prisma/client";
-import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
+import { emailTranslator, resolveEmailLocale } from "./email-i18n";
 
 /**
  * E-Mail-Verifizierung (Double-Opt-in-Baustein).
@@ -18,11 +19,14 @@ import { getTranslations } from "next-intl/server";
 const TOKEN_TTL = "48h";
 
 export async function sendVerificationEmail(
-  user: Pick<User, "id" | "email" | "name" | "passwordHash">,
+  user: Pick<User, "id" | "email" | "name" | "passwordHash" | "locale">,
 ): Promise<void> {
   const token = await signAccountToken(user, "verify", TOKEN_TTL);
   const url = verifyUrl(token);
-  const t = await getTranslations("ui.emails");
+  // Sprache des Kontos; ohne gespeicherte Sprache die des Requests (bei der
+  // Registrierung ist das dieselbe).
+  const locale = resolveEmailLocale(user.locale, await getLocale());
+  const t = await emailTranslator(locale);
 
   if (!features.email) {
     // Dev ohne Mail-Provider: Link in der Server-Konsole ausgeben.
@@ -33,6 +37,8 @@ export async function sendVerificationEmail(
     to: user.email,
     subject: t("verifySubject"),
     html: renderAccountActionHtml({
+      locale,
+      title: t("verifySubject"),
       heading: t("verifyHeading"),
       body: t("verifyBody", { name: user.name }),
       ctaLabel: t("verifyCta"),

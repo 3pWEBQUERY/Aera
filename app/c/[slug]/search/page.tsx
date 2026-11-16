@@ -4,8 +4,19 @@ import { getCommunityContext } from "@/lib/guards";
 import { searchCommunity, type SearchResultType } from "@/lib/search";
 import { Icon, type IconName } from "@/components/dashboard/icons";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
-export const metadata = { title: "Suche" };
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("search");
+  // Trefferlisten (?q=) sind keine eigenen Seiten; canonical bleibt /search.
+  return tenantPageMetadata(slug, { title: t("title"), path: "/search" });
+}
 
 const TYPE_ICON: Record<SearchResultType, IconName> = {
   post: "feed",

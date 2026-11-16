@@ -8,6 +8,8 @@ import { Card, CardBody } from "@/components/ui/card";
 import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { MembersOnlyGate } from "@/components/community/members-only-gate";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
 // Medal accents for the top three ranks — restrained, palette-consistent.
 const MEDAL = [
@@ -15,6 +17,17 @@ const MEDAL = [
   { avatarRing: "ring-2 ring-slate-300", ped: "bg-slate-100 text-slate-600 ring-1 ring-slate-200", h: "h-14" },
   { avatarRing: "ring-2 ring-orange-300", ped: "bg-orange-50 text-orange-700 ring-1 ring-orange-200", h: "h-10" },
 ] as const;
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("community.leaderboard");
+  // Personenliste: erreichbar, aber nicht in Suchmaschinen.
+  return tenantPageMetadata(slug, { title: t("title"), path: null, noindex: true });
+}
 
 export default async function LeaderboardPage({
   params,

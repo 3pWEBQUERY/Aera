@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import { saveTipGoalAction, type ActionState } from "@/app/actions/tips";
 import { Icon } from "./icons";
@@ -48,7 +48,7 @@ export function TipsManager({
 }) {
   const t = useTranslations("dashboard.tips");
   const locale = useLocale();
-  const [state, action, pending] = useActionState(saveTipGoalAction, initial);
+  const [state, action, pending] = useResilientActionState(saveTipGoalAction, initial);
 
   return (
     <div>

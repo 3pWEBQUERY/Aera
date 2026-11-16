@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useId } from "react";
+import { useId } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { createTicketAction, type SupportState } from "@/app/actions/support";
@@ -24,7 +25,7 @@ export function ContactForm({
   accountHref: string;
 }) {
   const t = useTranslations("help.contact");
-  const [state, action, pending] = useActionState(createTicketAction, {} as SupportState);
+  const [state, action, pending] = useResilientActionState(createTicketAction, {} as SupportState);
   const ids = { name: useId(), email: useId(), subject: useId(), body: useId() };
 
   if (state.created) {

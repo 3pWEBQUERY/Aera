@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   createAutomationStepAction,
@@ -31,7 +32,7 @@ export function AutomationsManager({
   slug: string;
   steps: StepRow[];
 }) {
-  const [state, action, pending] = useActionState(createAutomationStepAction, initial);
+  const [state, action, pending] = useResilientActionState(createAutomationStepAction, initial);
   const ref = useRef<HTMLFormElement>(null);
   const t = useTranslations("dashboard.automations");
   useEffect(() => {

@@ -4,6 +4,14 @@ import { getCommunityCoverUrl } from "@/lib/tenant";
 import { parseLayout } from "@/lib/layout";
 import { parsePageBlocks } from "@/lib/community-pages";
 import { LayoutEditor } from "@/components/dashboard/layout-editor";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.nav");
+  return { title: t("layout") };
+}
 
 export default async function LayoutBuilderPage({
   params,

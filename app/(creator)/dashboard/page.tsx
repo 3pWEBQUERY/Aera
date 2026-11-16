@@ -12,10 +12,11 @@ import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { MobileTabbar } from "@/components/home/mobile-tabbar";
 import logoBlack from "@/public/logo_black.svg";
+import { NOINDEX } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("dashboard.index");
-  return { title: t("metaTitle") };
+  return { title: t("metaTitle"), robots: NOINDEX };
 }
 
 export default async function DashboardIndex({

@@ -9,6 +9,14 @@ import {
 import { getTenantPlan } from "@/lib/plan";
 import { limitsForPlan } from "@/lib/plan-features";
 import { SPACE_CONTENT_COUNT_SELECT, sumSpaceContent } from "@/lib/space-content";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.spaces");
+  return { title: t("title") };
+}
 
 export default async function SpacesPage({
   params,

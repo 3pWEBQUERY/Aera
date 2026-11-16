@@ -184,7 +184,7 @@
     "error": "Não foi possível verificar a disponibilidade."
   },
   "onboarding": {
-    "metaTitle": "Criar comunidade — Aera",
+    "metaTitle": "Criar comunidade",
     "brand": "Criar comunidade",
     "stepShort": "Etapa {step} / {total}",
     "eyebrow": "{label} · Etapa {step} de {total}",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Suas comunidades — Aera",
+      "metaTitle": "Suas comunidades",
       "creator": "Criador",
       "yourMemberships": "Suas assinaturas",
       "logout": "Sair",
@@ -4928,6 +4928,10 @@
       "stepForum": "Apresente-se em “{space}”",
       "stepSpace": "Ir para “{space}”",
       "dismiss": "Fechar aviso"
+    },
+    "seo": {
+      "lockedPost": "Publicação para membros de {community}",
+      "lockedSpace": "Conteúdo para membros de {community}"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "Entrar",
     "toDashboard": "Para o painel",
     "startCommunity": "Criar uma comunidade",
-    "startShort": "Começar",
+    "startShort": "Comece grátis",
     "menuOpen": "Abrir menu",
     "menuClose": "Fechar menu",
     "footerAbout": "A plataforma para criadores que gerenciam comunidade, assinaturas, cursos, eventos, newsletters e comércio sob a própria marca — com soberania total dos dados.",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "A partir do {plan}: {items}",
     "footerContact": "Contato",
-    "legalGermanOnly": "Este texto jurídico está disponível apenas em alemão. A versão em alemão é a que vale."
+    "legalGermanOnly": "Este texto jurídico está disponível apenas em alemão. A versão em alemão é a que vale.",
+    "seo": {
+      "title": "Aera — Sua comunidade. Suas regras. Sua receita.",
+      "description": "Crie sua própria comunidade com feed, cursos, eventos, newsletter e loja — no seu domínio, com a sua marca. Comece grátis e cresça quando quiser.",
+      "keywords": "plataforma de comunidades, criadores, assinaturas, cursos online, newsletter, eventos, produtos digitais",
+      "discoverTitle": "Descobrir",
+      "discoverDescription": "Encontre comunidades e criadores na Aera.",
+      "pricingDescription": "Compare os planos da Aera: o que cada plano inclui, quanto custa por mês e qual taxa se aplica às vendas.",
+      "featuresDescription": "O que a Aera faz: feed, fórum, cursos, eventos, newsletter, loja e transmissões ao vivo — no seu domínio, com a sua marca.",
+      "loginDescription": "Entre na Aera para abrir suas comunidades e seu painel.",
+      "signupDescription": "Crie sua conta na Aera e comece sua comunidade grátis."
+    }
   },
   "home": {
     "badge": "Comunidade · Assinatura · Comércio",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "Mensagem de {from}",
       "supportInboundIntro": "Há uma nova mensagem esperando no suporte.",
       "supportInboundCta": "Abrir na administração",
-      "supportInboundHint": "Responda pela área administrativa, não por e-mail para {email} — caso contrário a resposta fica fora da conversa."
+      "supportInboundHint": "Responda pela área administrativa, não por e-mail para {email} — caso contrário a resposta fica fora da conversa.",
+      "unsubscribeLabel": "Cancelar inscrição na newsletter",
+      "unsubscribeReason": "Você está recebendo este e-mail porque se inscreveu na newsletter de {community}."
     },
     "dashboard": {
       "uploadFailed": "Falha no envio.",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "Grátis"
+    },
+    "state": {
+      "networkError": "Sem conexão com o servidor. Seus dados continuam aqui – envie o formulário de novo.",
+      "serverError": "Não deu certo. Tente novamente.",
+      "pageErrorTitle": "Não foi possível carregar a página",
+      "pageErrorText": "Tente de novo em instantes.",
+      "reload": "Recarregar",
+      "toHelp": "Ir para a ajuda",
+      "viewErrorTitle": "Não foi possível carregar esta visualização",
+      "toOverview": "Ir para a visão geral",
+      "contentGoneTitle": "Este conteúdo não está mais aqui",
+      "contentGoneText": "Ele foi excluído ou movido.",
+      "backToCommunity": "Voltar para {community}",
+      "viewNotFoundTitle": "Esta página não existe",
+      "viewNotFoundText": "Ela foi excluída ou movida, ou o link está errado.",
+      "loading": "Carregando…",
+      "errorRef": "Referência do erro: {digest}"
     }
   },
   "unsubscribe": {

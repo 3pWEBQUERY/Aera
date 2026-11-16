@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -621,7 +622,7 @@ function LiveForm({
   onOpenStudio: (s: LiveSessionRow) => void;
 }) {
   const isEdit = !!session;
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateLiveSessionAction : createLiveSessionAction,
     initial,
   );

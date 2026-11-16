@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   saveSpaceAdAction,
@@ -254,7 +255,7 @@ function AdForm({
   ad: AdRow | null;
   onDone: () => void;
 }) {
-  const [state, action, pending] = useActionState(saveSpaceAdAction, initial);
+  const [state, action, pending] = useResilientActionState(saveSpaceAdAction, initial);
   const [mediaType, setMediaType] = useState<"IMAGE" | "VIDEO">(
     ad?.mediaType ?? "IMAGE",
   );

@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import {
   createCourseAction,
@@ -184,7 +185,7 @@ function CourseForm({
   onCreated?: (id: string) => void;
 }) {
   const isEdit = !!course;
-  const [state, action, pending] = useActionState(isEdit ? updateCourseAction : createCourseAction, initial);
+  const [state, action, pending] = useResilientActionState(isEdit ? updateCourseAction : createCourseAction, initial);
   const [deleting, setDeleting] = useState(false);
   const [format, setFormat] = useState(course?.format ?? "ONLINE");
   const [confirm, confirmDialog] = useConfirm();
@@ -439,7 +440,7 @@ function LessonFields({
 
 function LessonRow({ slug, lesson }: { slug: string; lesson: LessonData }) {
   const [open, setOpen] = useState(false);
-  const [state, action, pending] = useActionState(updateLessonAction, initial);
+  const [state, action, pending] = useResilientActionState(updateLessonAction, initial);
   const [deleting, setDeleting] = useState(false);
   const [confirm, confirmDialog] = useConfirm();
   const t = useTranslations("dashboard.courses");
@@ -513,7 +514,7 @@ function AddLesson({
   autoFocus?: boolean;
   describedBy?: string;
 }) {
-  const [state, action, pending] = useActionState(createLessonAction, initial);
+  const [state, action, pending] = useResilientActionState(createLessonAction, initial);
   const ref = useRef<HTMLFormElement>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const headingId = useId();

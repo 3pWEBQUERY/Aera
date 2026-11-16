@@ -311,7 +311,7 @@ function ResultRow({
       <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl">
         {item.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={item.imageUrl} alt="" className="h-full w-full object-cover" />
+          <img loading="lazy" decoding="async" src={item.imageUrl} alt="" className="h-full w-full object-cover" />
         ) : (
           <span
             className="flex h-full w-full items-center justify-center text-white"

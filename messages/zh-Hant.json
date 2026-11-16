@@ -184,7 +184,7 @@
     "error": "無法檢查可用性。"
   },
   "onboarding": {
-    "metaTitle": "建立社群 — Aera",
+    "metaTitle": "建立社群",
     "brand": "建立社群",
     "stepShort": "第 {step} / {total} 步",
     "eyebrow": "{label} · 第 {step} 步，共 {total} 步",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "你的社群 — Aera",
+      "metaTitle": "你的社群",
       "creator": "創作者",
       "yourMemberships": "你的會員資格",
       "logout": "登出",
@@ -4928,6 +4928,10 @@
       "stepForum": "在「{space}」中介紹一下自己",
       "stepSpace": "前往「{space}」",
       "dismiss": "關閉提示"
+    },
+    "seo": {
+      "lockedPost": "{community} 會員專屬貼文",
+      "lockedSpace": "{community} 會員專屬內容"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "登入",
     "toDashboard": "前往儀表板",
     "startCommunity": "建立社群",
-    "startShort": "開始",
+    "startShort": "免費開始",
     "menuOpen": "開啟選單",
     "menuClose": "關閉選單",
     "footerAbout": "為創作者打造的平台：在自己的品牌之下經營社群、會員、課程、活動、電子報與電商 — 並對資料擁有完全主權。",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "{plan} 以上：{items}",
     "footerContact": "聯絡我們",
-    "legalGermanOnly": "本法律文件僅提供德文版本，以德文版本為準。"
+    "legalGermanOnly": "本法律文件僅提供德文版本，以德文版本為準。",
+    "seo": {
+      "title": "Aera — 你的社群，你的規則，你的收入。",
+      "description": "打造屬於你自己的社群：動態、課程、活動、電子報和商店一應俱全，使用你的網域和你的品牌。免費開始，隨時擴充。",
+      "keywords": "社群平台, 創作者, 會員, 線上課程, 電子報, 活動, 數位商品",
+      "discoverTitle": "探索",
+      "discoverDescription": "在 Aera 上探索社群和創作者。",
+      "pricingDescription": "比較 Aera 的方案：每個方案包含什麼、每月費用多少，以及銷售時收取的手續費。",
+      "featuresDescription": "Aera 能做什麼：動態、論壇、課程、活動、電子報、商店和直播——使用你的網域和你的品牌。",
+      "loginDescription": "登入 Aera，開啟你的社群和控制台。",
+      "signupDescription": "建立 Aera 帳戶，免費開啟你的社群。"
+    }
   },
   "home": {
     "badge": "社群 · 會員 · 電商",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "來自 {from} 的訊息",
       "supportInboundIntro": "客服處有一則新訊息等待處理。",
       "supportInboundCta": "在後台開啟",
-      "supportInboundHint": "請在後台回覆，不要寄信到 {email}，否則回覆不會出現在對話中。"
+      "supportInboundHint": "請在後台回覆，不要寄信到 {email}，否則回覆不會出現在對話中。",
+      "unsubscribeLabel": "取消訂閱電子報",
+      "unsubscribeReason": "你收到這封信，是因為你訂閱了 {community} 的電子報。"
     },
     "dashboard": {
       "uploadFailed": "上傳失敗。",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "免費"
+    },
+    "state": {
+      "networkError": "無法連線到伺服器。你填寫的內容仍在——請重新送出表單。",
+      "serverError": "操作未成功，請再試一次。",
+      "pageErrorTitle": "無法載入頁面",
+      "pageErrorText": "請稍後再試。",
+      "reload": "重新載入",
+      "toHelp": "前往說明",
+      "viewErrorTitle": "無法載入此檢視",
+      "toOverview": "前往總覽",
+      "contentGoneTitle": "此內容已不存在",
+      "contentGoneText": "它已被刪除或移動。",
+      "backToCommunity": "返回 {community}",
+      "viewNotFoundTitle": "此頁面不存在",
+      "viewNotFoundText": "它已被刪除或移動，或連結有誤。",
+      "loading": "載入中…",
+      "errorRef": "錯誤編號：{digest}"
     }
   },
   "unsubscribe": {

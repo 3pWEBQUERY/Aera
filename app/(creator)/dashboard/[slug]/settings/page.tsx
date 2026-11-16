@@ -14,6 +14,7 @@ import { normalizeHandle } from "@/lib/aeli-handle";
 import { getTenantPlan } from "@/lib/plan";
 import { planAllowsFeature } from "@/lib/plan-features";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
+import type { Metadata } from "next";
 
 function StatusChip({ ok, label }: { ok: boolean; label: string }) {
   return (
@@ -32,6 +33,12 @@ import {
   DomainPanel,
   DangerZone,
 } from "@/components/dashboard/settings-panels";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.settings");
+  return { title: t("title") };
+}
 
 export default async function SettingsPage({
   params,

@@ -3,6 +3,8 @@ import prisma from "@/lib/prisma";
 import { PUBLIC_POST_WHERE } from "@/lib/post-access";
 import { publicPostWhere } from "@/lib/blog";
 import { env } from "@/lib/env";
+import { tenantPublicUrl } from "@/lib/seo";
+import { isAnnouncementsOnly } from "@/lib/space-settings";
 
 /**
  * Sitemap: Marketing-Seiten + öffentliche Community-Inhalte.
@@ -66,26 +68,41 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     select: {
       id: true,
       slug: true,
+      // Fuer die oeffentliche Adresse (eigene Domain → Subdomain → /c/slug):
+      // die Sitemap nennt dieselbe URL wie das canonical der Seite.
+      subdomain: true,
+      customDomain: true,
+      customDomainVerifiedAt: true,
       spaces: {
-        where: { visibility: "PUBLIC", isArchived: false },
-        select: { id: true, slug: true },
+        // Nur was jeder Gast oeffnen kann: oeffentlich, ohne eigenen
+        // Zugangsschluessel, keine Werbe-Spaces (die haben keine Seite).
+        where: {
+          visibility: "PUBLIC",
+          requiredEntitlementKey: null,
+          isArchived: false,
+          type: { not: "ADS" },
+        },
+        select: { id: true, slug: true, settings: true },
       },
     },
   });
 
   for (const t of tenants) {
+    const home = tenantPublicUrl(t);
+    // Reine Ankuendigungs-Spaces haben ebenfalls keine eigene Seite (404).
+    const spaces = t.spaces.filter((s) => !isAnnouncementsOnly(s.settings));
     entries.push({
-      url: `${base}/c/${t.slug}`,
+      url: home,
       changeFrequency: "daily",
       priority: 0.7,
     });
 
-    if (t.spaces.length === 0) continue;
-    const publicSpaceIds = new Map(t.spaces.map((s) => [s.id, s.slug]));
+    if (spaces.length === 0) continue;
+    const publicSpaceIds = new Map(spaces.map((s) => [s.id, s.slug]));
 
-    for (const s of t.spaces) {
+    for (const s of spaces) {
       entries.push({
-        url: `${base}/c/${t.slug}/s/${s.slug}`,
+        url: `${home}/s/${s.slug}`,
         changeFrequency: "daily",
         priority: 0.6,
       });
@@ -95,6 +112,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       where: {
         tenantId: t.id,
         isPublished: true,
+        // Geplante Beitraege erst ab ihrem Termin.
+        publishedAt: { lte: new Date() },
         spaceId: { in: [...publicSpaceIds.keys()] },
         // Ein Beitrag nur fuer Mitglieder gehoert nicht in die Sitemap — er
         // waere fuer jeden Besucher, der dem Link folgt, verschlossen.
@@ -102,11 +121,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
       orderBy: { publishedAt: "desc" },
       take: MAX_POSTS_PER_TENANT,
-      select: { id: true, spaceId: true, updatedAt: true },
+      select: { id: true, customSlug: true, spaceId: true, updatedAt: true },
     });
     for (const p of posts) {
       entries.push({
-        url: `${base}/c/${t.slug}/s/${publicSpaceIds.get(p.spaceId)}/${p.id}`,
+        url: `${home}/s/${publicSpaceIds.get(p.spaceId)}/${p.customSlug || p.id}`,
         lastModified: p.updatedAt,
         changeFrequency: "monthly",
         priority: 0.5,

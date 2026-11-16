@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations } from "next-intl";
 import { createPostAction, type EngageState } from "@/app/actions/engage";
 import { Sheet } from "@/components/dashboard/sheet";
@@ -108,7 +109,7 @@ function ComposerForm({
   onDone: () => void;
 }) {
   const t = useTranslations("spaces");
-  const [state, action, pending] = useActionState(createPostAction, initial);
+  const [state, action, pending] = useResilientActionState(createPostAction, initial);
   const [confirm, confirmDialog] = useConfirm();
   const key = draftKey(slug, space);
   // Der Entwurf wird einmal beim Einhängen gelesen; danach führt der Editor.

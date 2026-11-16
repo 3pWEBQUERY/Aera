@@ -1,5 +1,6 @@
 import "server-only";
-import { systemPrisma } from "./prisma";
+import prisma from "./prisma";
+import { linkedCommunityPayoutRow, profilePayout } from "./db-functions";
 
 /**
  * Wohin das Geld geht.
@@ -19,10 +20,12 @@ import { systemPrisma } from "./prisma";
  * keine Vorsichtsmassnahme, sondern die Bedingung, unter der die Bequemlichkeit
  * „nutzt automatisch Aeras Stripe" ueberhaupt zulaessig ist.
  *
- * Gelesen wird ueber die privilegierte Verbindung, weil es anders nicht geht:
- * `Tenant.ownerId` und `Tenant.stripeAccountId` sind fuer die Rolle `aeli_app`
- * gesperrt (aeli.so/scripts/check-rls.ts prueft genau das). Die Abfrage ist
- * dafuer eng: ein Nutzer, ein Tenant, drei Spalten.
+ * Beantwortet wird die Frage in der Datenbank (`aeli_profile_payout`), weil es
+ * anders nicht geht: `Tenant.ownerId` und `Tenant.stripeAccountId` sind fuer
+ * die Rolle `aeli_app` gesperrt (aeli.so/scripts/check-rls.ts prueft genau
+ * das). Die Funktion nimmt nur eine Profil-ID — veroeffentlicht, oder das
+ * eigene im Besitzerkontext — und leitet Besitzer und Community selbst daraus
+ * ab. Ein Aufrufer kann ihr also keinen fremden Besitzer unterschieben.
  */
 
 export type PayoutSource = "aeli" | "aera";
@@ -34,34 +37,14 @@ export interface PayoutAccount {
   communityName: string | null;
 }
 
-export interface PayoutOwner {
-  userId: string;
-  linkedTenantId: string | null;
-}
-
-export async function resolvePayoutAccount(owner: PayoutOwner): Promise<PayoutAccount | null> {
-  const own = await systemPrisma.aeliPayoutAccount.findUnique({
-    where: { userId: owner.userId },
-    select: { stripeAccountId: true },
-  });
-  if (own) {
-    return { stripeAccountId: own.stripeAccountId, source: "aeli", communityName: null };
-  }
-
-  if (!owner.linkedTenantId) return null;
-
-  const tenant = await systemPrisma.tenant.findFirst({
-    // `ownerId` gehoert in die Abfrage, nicht in ein `if` danach: so kann kein
-    // spaeterer Umbau den Vergleich versehentlich weglassen.
-    where: { id: owner.linkedTenantId, ownerId: owner.userId, status: "ACTIVE" },
-    select: { name: true, stripeAccountId: true },
-  });
-  if (!tenant?.stripeAccountId) return null;
-
+/** Wohin Trinkgelder fuer dieses Profil gehen — oder `null`. */
+export async function resolvePayoutAccount(profileId: string): Promise<PayoutAccount | null> {
+  const row = await profilePayout(profileId);
+  if (!row?.stripeAccountId) return null;
   return {
-    stripeAccountId: tenant.stripeAccountId,
-    source: "aera",
-    communityName: tenant.name,
+    stripeAccountId: row.stripeAccountId,
+    source: row.source === "aera" ? "aera" : "aeli",
+    communityName: row.communityName,
   };
 }
 
@@ -71,6 +54,7 @@ export async function resolvePayoutAccount(owner: PayoutOwner): Promise<PayoutAc
  * Nur fuer die Anzeige in den Einstellungen: „Diese Seite zeigt auf eine
  * Community, die dir nicht gehoert — ihr Stripe-Konto wird deshalb nicht
  * benutzt." Ohne diesen Satz wirkt die fehlende Uebernahme wie ein Fehler.
+ * Braucht den Besitzerkontext.
  */
 export interface LinkedCommunityPayout {
   name: string;
@@ -78,25 +62,17 @@ export interface LinkedCommunityPayout {
   hasStripe: boolean;
 }
 
-export async function linkedCommunityPayout(
-  owner: PayoutOwner,
-): Promise<LinkedCommunityPayout | null> {
-  if (!owner.linkedTenantId) return null;
-  const tenant = await systemPrisma.tenant.findUnique({
-    where: { id: owner.linkedTenantId },
-    select: { name: true, ownerId: true, stripeAccountId: true },
-  });
-  if (!tenant) return null;
-  return {
-    name: tenant.name,
-    ownedByYou: tenant.ownerId === owner.userId,
-    hasStripe: Boolean(tenant.stripeAccountId),
-  };
+export async function linkedCommunityPayout(): Promise<LinkedCommunityPayout | null> {
+  return linkedCommunityPayoutRow();
 }
 
-/** Das eigene, in Aeli verbundene Konto — unabhaengig davon, welches gilt. */
+/**
+ * Das eigene, in Aeli verbundene Konto — unabhaengig davon, welches gilt.
+ * `AeliPayoutAccount` ist fuer den Besitzer lesbar (Policy
+ * `aeli_owner_payout`); braucht den Besitzerkontext.
+ */
 export async function ownPayoutAccountId(userId: string): Promise<string | null> {
-  const own = await systemPrisma.aeliPayoutAccount.findUnique({
+  const own = await prisma.aeliPayoutAccount.findUnique({
     where: { userId },
     select: { stripeAccountId: true },
   });

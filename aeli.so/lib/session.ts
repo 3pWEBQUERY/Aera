@@ -31,10 +31,23 @@ export interface SessionPayload {
   userId: string;
   /** Spiegelt `User.sessionVersion`; ein Hochzaehlen entwertet alte Tokens. */
   sessionVersion: number;
+  /**
+   * Aelis eigener Zaehler (`AeliAuthState`). Abmelden zaehlt ihn hoch und
+   * entwertet damit jedes Aeli-Token dieses Kontos — Aera bleibt unberuehrt.
+   */
+  aeliSessionVersion: number;
+}
+
+function counter(value: unknown): number {
+  return typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : 0;
 }
 
 export async function signSession(payload: SessionPayload): Promise<string> {
-  return await new SignJWT({ userId: payload.userId, sessionVersion: payload.sessionVersion })
+  return await new SignJWT({
+    userId: payload.userId,
+    sessionVersion: payload.sessionVersion,
+    aeliSessionVersion: payload.aeliSessionVersion,
+  })
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
     .setExpirationTime("30d")
@@ -45,11 +58,10 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
   try {
     const { payload } = await jwtVerify(token, secret);
     if (typeof payload.userId !== "string" || !payload.userId) return null;
-    const version = payload.sessionVersion;
     return {
       userId: payload.userId,
-      sessionVersion:
-        typeof version === "number" && Number.isSafeInteger(version) && version >= 0 ? version : 0,
+      sessionVersion: counter(payload.sessionVersion),
+      aeliSessionVersion: counter(payload.aeliSessionVersion),
     };
   } catch {
     return null;

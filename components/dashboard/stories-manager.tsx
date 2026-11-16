@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useLocale, useTranslations } from "next-intl";
 import {
   createStoryAction,
@@ -301,7 +302,7 @@ function StoryForm({
   const [permanent, setPermanent] = useState(
     isEdit ? story!.expiresAt === null : defaultPermanent,
   );
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateStoryAction : createStoryAction,
     initial,
   );
@@ -442,7 +443,7 @@ function StorySettingsForm({
   onDone: () => void;
 }) {
   const t = useTranslations("dashboard.stories");
-  const [state, action, pending] = useActionState(updateStorySettingsAction, initial);
+  const [state, action, pending] = useResilientActionState(updateStorySettingsAction, initial);
   const [autoplay, setAutoplay] = useState(settings.autoplaySeconds);
   const [defaultPermanent, setDefaultPermanent] = useState(settings.defaultPermanent);
 

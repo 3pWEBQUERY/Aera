@@ -210,7 +210,7 @@
     "error": "Availability could not be checked."
   },
   "onboarding": {
-    "metaTitle": "Create community — Aera",
+    "metaTitle": "Create community",
     "brand": "Create community",
     "stepShort": "Step {step} / {total}",
     "eyebrow": "{label} · Step {step} of {total}",
@@ -1274,7 +1274,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "Your communities — Aera",
+      "metaTitle": "Your communities",
       "creator": "Creator",
       "yourMemberships": "Your memberships",
       "logout": "Log out",
@@ -4964,6 +4964,10 @@
       "stepForum": "Introduce yourself in “{space}”",
       "stepSpace": "Go to “{space}”",
       "dismiss": "Dismiss"
+    },
+    "seo": {
+      "lockedPost": "Post for members of {community}",
+      "lockedSpace": "Content for members of {community}"
     }
   },
   "notifications": {
@@ -5369,7 +5373,7 @@
     "login": "Log in",
     "toDashboard": "To dashboard",
     "startCommunity": "Start a community",
-    "startShort": "Start",
+    "startShort": "Start for free",
     "menuOpen": "Open menu",
     "menuClose": "Close menu",
     "footerAbout": "The platform for creators who run community, memberships, courses, events, newsletters and commerce under their own brand — with full data ownership.",
@@ -5386,7 +5390,18 @@
     "navBlog": "Blog",
     "availableFrom": "From {plan}: {items}",
     "footerContact": "Contact",
-    "legalGermanOnly": "This legal text is only available in German. The German version is binding."
+    "legalGermanOnly": "This legal text is only available in German. The German version is binding.",
+    "seo": {
+      "title": "Aera — Your community. Your rules. Your revenue.",
+      "description": "Build your own community with a feed, courses, events, newsletter and shop — on your domain, with your branding. Start free, grow anytime.",
+      "keywords": "community platform, creators, memberships, online courses, newsletter, events, digital products",
+      "discoverTitle": "Discover",
+      "discoverDescription": "Find communities and creators on Aera.",
+      "pricingDescription": "Compare Aera's plans: what each plan includes, what it costs per month and which fee applies to sales.",
+      "featuresDescription": "What Aera does: feed, forum, courses, events, newsletter, shop and live streams — on your domain, with your branding.",
+      "loginDescription": "Log in to Aera to open your communities and your dashboard.",
+      "signupDescription": "Create your Aera account and start your community for free."
+    }
   },
   "home": {
     "badge": "Community · Membership · Commerce",
@@ -5687,7 +5702,9 @@
       "supportInboundHeading": "Message from {from}",
       "supportInboundIntro": "A new message is waiting in support.",
       "supportInboundCta": "Open in admin",
-      "supportInboundHint": "Please reply in the admin area, not by mail to {email} — otherwise the reply is missing from the thread."
+      "supportInboundHint": "Please reply in the admin area, not by mail to {email} — otherwise the reply is missing from the thread.",
+      "unsubscribeLabel": "Unsubscribe",
+      "unsubscribeReason": "You're receiving this email because you subscribed to the {community} newsletter."
     },
     "dashboard": {
       "uploadFailed": "Upload failed.",
@@ -5891,6 +5908,23 @@
     },
     "pricePoint": {
       "free": "Free"
+    },
+    "state": {
+      "networkError": "Can't reach the server. Your entries are still here – submit the form again.",
+      "serverError": "That didn't work. Please try again.",
+      "pageErrorTitle": "This page couldn't be loaded",
+      "pageErrorText": "Try again in a moment.",
+      "reload": "Reload",
+      "toHelp": "Go to Help",
+      "viewErrorTitle": "This view couldn't be loaded",
+      "toOverview": "Go to overview",
+      "contentGoneTitle": "This content is no longer here",
+      "contentGoneText": "It was deleted or moved.",
+      "backToCommunity": "Back to {community}",
+      "viewNotFoundTitle": "This page doesn't exist",
+      "viewNotFoundText": "It was deleted or moved, or the link is wrong.",
+      "loading": "Loading…",
+      "errorRef": "Error reference: {digest}"
     }
   },
   "language": {

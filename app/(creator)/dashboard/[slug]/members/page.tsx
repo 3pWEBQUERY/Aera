@@ -7,6 +7,14 @@ import {
   type BadgeOption,
 } from "@/components/dashboard/members-manager";
 import type { MemberSubscriptionInfo } from "@/components/dashboard/ban-member-button";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.members");
+  return { title: t("title") };
+}
 
 export default async function MembersPage({
   params,

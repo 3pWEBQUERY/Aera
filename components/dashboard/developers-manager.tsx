@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   createApiKeyAction,
@@ -88,7 +89,7 @@ function ApiKeysSection({
   apiUrl: string;
   keys: ApiKeyRow[];
 }) {
-  const [state, action, pending] = useActionState(createApiKeyAction, initial);
+  const [state, action, pending] = useResilientActionState(createApiKeyAction, initial);
   const [copied, setCopied] = useState(false);
   const t = useTranslations("dashboard.developers");
   const dateFmt = useDateFmt();
@@ -216,7 +217,7 @@ function WebhooksSection({
   slug: string;
   endpoints: EndpointRow[];
 }) {
-  const [state, action, pending] = useActionState(createWebhookEndpointAction, initial);
+  const [state, action, pending] = useResilientActionState(createWebhookEndpointAction, initial);
   const [copied, setCopied] = useState(false);
   const t = useTranslations("dashboard.developers");
   const tEvents = useTranslations("dashboard.developers.events");

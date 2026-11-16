@@ -4,6 +4,14 @@ import {
   EventsManager,
   type EventRowData,
 } from "@/components/dashboard/events-manager";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.events");
+  return { title: t("title") };
+}
 
 export default async function EventsPage({
   params,

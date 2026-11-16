@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
@@ -37,7 +38,7 @@ export function MySubscription({
   slug: string;
   data: MySubscriptionData;
 }) {
-  const [state, cancelAction, pending] = useActionState(cancelOwnMembershipAction, initial);
+  const [state, cancelAction, pending] = useResilientActionState(cancelOwnMembershipAction, initial);
   const [leaving, setLeaving] = useState(false);
   const t = useTranslations("dashboard.subscription");
   const [confirm, confirmDialog] = useConfirm();

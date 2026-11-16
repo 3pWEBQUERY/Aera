@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
@@ -218,7 +219,7 @@ function TierForm({
   const tIntervals = useTranslations("dashboard.tierIntervals");
   const suffix = (iv: string) =>
     iv === "MONTH" ? t("suffixMonth") : iv === "YEAR" ? t("suffixYear") : "";
-  const [state, action, pending] = useActionState(
+  const [state, action, pending] = useResilientActionState(
     isEdit ? updateTierAction : createTierAction,
     initial,
   );

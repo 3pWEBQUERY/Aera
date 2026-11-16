@@ -4,10 +4,15 @@ import { getTranslations } from "next-intl/server";
 import { getCurrentUser } from "@/lib/auth";
 import { Icon } from "@/components/dashboard/icons";
 import { ContactForm } from "@/components/support/contact-form";
+import { buildPlatformPageMetadata } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("help.contact");
-  return { title: t("metaTitle"), description: t("intro") };
+  return buildPlatformPageMetadata({
+    title: t("metaTitle"),
+    description: t("intro"),
+    path: "/hilfe/kontakt",
+  });
 }
 
 export default async function ContactPage() {

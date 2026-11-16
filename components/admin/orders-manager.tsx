@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import { useTranslations, useLocale } from "next-intl";
 import {
   adminUpdateOrderAction,
@@ -199,7 +200,7 @@ function InfoRow({ label, value, mono }: { label: string; value: string; mono?: 
 }
 
 function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }) {
-  const [state, action, pending] = useActionState(adminUpdateOrderAction, initial);
+  const [state, action, pending] = useResilientActionState(adminUpdateOrderAction, initial);
   const t = useTranslations("admin.orders");
   const [confirm, confirmDialog] = useConfirm();
   const confirmSubmit = useConfirmedSubmit(confirm);

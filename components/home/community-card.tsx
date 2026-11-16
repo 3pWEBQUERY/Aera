@@ -31,7 +31,7 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
       <div className="relative aspect-[3/1] w-full shrink-0 overflow-hidden bg-[#161613]/5">
         {c.coverUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img
+          <img loading="lazy" decoding="async"
             src={c.coverUrl}
             alt=""
             className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
@@ -48,7 +48,7 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
         <div className="-mt-6 mb-2.5">
           {c.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <img loading="lazy" decoding="async" width={48} height={48}
               src={c.logoUrl}
               alt=""
               className="h-12 w-12 rounded-xl object-cover shadow-sm ring-2 ring-white"

@@ -8,6 +8,14 @@ import {
   type ProductRowData,
   type ProductCourseOption,
 } from "@/components/dashboard/products-manager";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+
+// Titel "{Seite} – {Community}" (Template im Dashboard-Layout).
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("dashboard.products");
+  return { title: t("title") };
+}
 
 export default async function ProductsPage({
   params,

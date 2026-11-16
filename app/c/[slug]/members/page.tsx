@@ -10,6 +10,8 @@ import { Avatar } from "@/components/ui/misc";
 import { Icon } from "@/components/dashboard/icons";
 import { InviteFriends } from "@/components/community/invite-friends";
 import { MembersOnlyGate } from "@/components/community/members-only-gate";
+import type { Metadata } from "next";
+import { tenantPageMetadata } from "@/lib/seo";
 
 const ROLE_META: Record<string, { key: string; cls: string }> = {
   OWNER: {
@@ -21,6 +23,17 @@ const ROLE_META: Record<string, { key: string; cls: string }> = {
 };
 
 const roleRank: Record<string, number> = { OWNER: 0, ADMIN: 1, MODERATOR: 2, MEMBER: 3 };
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const t = await getTranslations("community.members");
+  // Personenliste: erreichbar, aber nicht in Suchmaschinen.
+  return tenantPageMetadata(slug, { title: t("title"), path: null, noindex: true });
+}
 
 export default async function CommunityMembers({
   params,

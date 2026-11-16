@@ -1,6 +1,7 @@
 "use client";
 
-import { useActionState, useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useResilientActionState } from "@/components/forms/use-resilient-action-state";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -70,7 +71,7 @@ export function BlogEditor({
 }) {
   const t = useTranslations("admin.blog");
   const uiLocale = useLocale();
-  const [state, action, pending] = useActionState(savePostAction, {} as BlogState);
+  const [state, action, pending] = useResilientActionState(savePostAction, {} as BlogState);
 
   const [title, setTitle] = useState(post.title);
   const [slug, setSlug] = useState(post.slug);

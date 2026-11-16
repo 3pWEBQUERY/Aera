@@ -184,7 +184,7 @@
     "error": "无法检查可用性。"
   },
   "onboarding": {
-    "metaTitle": "创建社区 — Aera",
+    "metaTitle": "创建社区",
     "brand": "创建社区",
     "stepShort": "第 {step} / {total} 步",
     "eyebrow": "{label} · 第 {step} 步，共 {total} 步",
@@ -1248,7 +1248,7 @@
   },
   "dashboard": {
     "index": {
-      "metaTitle": "你的社区 — Aera",
+      "metaTitle": "你的社区",
       "creator": "创作者",
       "yourMemberships": "你的会员资格",
       "logout": "退出登录",
@@ -4928,6 +4928,10 @@
       "stepForum": "在“{space}”中介绍一下自己",
       "stepSpace": "前往“{space}”",
       "dismiss": "关闭提示"
+    },
+    "seo": {
+      "lockedPost": "{community} 会员专属帖子",
+      "lockedSpace": "{community} 会员专属内容"
     }
   },
   "notifications": {
@@ -5341,7 +5345,7 @@
     "login": "登录",
     "toDashboard": "前往仪表盘",
     "startCommunity": "创建社区",
-    "startShort": "开始",
+    "startShort": "免费开始",
     "menuOpen": "打开菜单",
     "menuClose": "关闭菜单",
     "footerAbout": "为创作者打造的平台：在自己的品牌之下运营社区、会员、课程、活动、Newsletter 和电商 — 并对数据拥有完全主权。",
@@ -5358,7 +5362,18 @@
     "navBlog": "Blog",
     "availableFrom": "{plan} 及以上：{items}",
     "footerContact": "联系我们",
-    "legalGermanOnly": "本法律文本仅提供德语版本，以德语版本为准。"
+    "legalGermanOnly": "本法律文本仅提供德语版本，以德语版本为准。",
+    "seo": {
+      "title": "Aera — 你的社区，你的规则，你的收入。",
+      "description": "打造属于你自己的社区：动态、课程、活动、电子报和商店一应俱全，使用你的域名和你的品牌。免费开始，随时扩展。",
+      "keywords": "社区平台, 创作者, 会员, 在线课程, 电子报, 活动, 数字产品",
+      "discoverTitle": "发现",
+      "discoverDescription": "在 Aera 上发现社区和创作者。",
+      "pricingDescription": "比较 Aera 的套餐：每个套餐包含什么、每月费用多少，以及销售时收取的手续费。",
+      "featuresDescription": "Aera 能做什么：动态、论坛、课程、活动、电子报、商店和直播——使用你的域名和你的品牌。",
+      "loginDescription": "登录 Aera，打开你的社区和控制台。",
+      "signupDescription": "创建 Aera 账户，免费开启你的社区。"
+    }
   },
   "home": {
     "badge": "社区 · 会员 · 电商",
@@ -5685,7 +5700,9 @@
       "supportInboundHeading": "来自 {from} 的消息",
       "supportInboundIntro": "客服处有一条新消息在等待处理。",
       "supportInboundCta": "在后台打开",
-      "supportInboundHint": "请在后台回复，不要发邮件到 {email}，否则回复不会出现在对话里。"
+      "supportInboundHint": "请在后台回复，不要发邮件到 {email}，否则回复不会出现在对话里。",
+      "unsubscribeLabel": "退订新闻通讯",
+      "unsubscribeReason": "你收到这封邮件，是因为你订阅了 {community} 的新闻通讯。"
     },
     "dashboard": {
       "uploadFailed": "上传失败。",
@@ -5889,6 +5906,23 @@
     },
     "pricePoint": {
       "free": "免费"
+    },
+    "state": {
+      "networkError": "无法连接到服务器。你填写的内容仍在——请重新提交表单。",
+      "serverError": "操作未成功，请重试。",
+      "pageErrorTitle": "页面无法加载",
+      "pageErrorText": "请稍后再试。",
+      "reload": "重新加载",
+      "toHelp": "前往帮助",
+      "viewErrorTitle": "此视图无法加载",
+      "toOverview": "前往概览",
+      "contentGoneTitle": "此内容已不存在",
+      "contentGoneText": "它已被删除或移动。",
+      "backToCommunity": "返回 {community}",
+      "viewNotFoundTitle": "此页面不存在",
+      "viewNotFoundText": "它已被删除或移动，或者链接有误。",
+      "loading": "正在加载…",
+      "errorRef": "错误编号：{digest}"
     }
   },
   "unsubscribe": {

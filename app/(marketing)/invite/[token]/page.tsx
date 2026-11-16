@@ -3,10 +3,13 @@ import { verifyAccountToken } from "@/lib/tokens";
 import { AcceptInviteForm } from "@/components/forms/account-forms";
 import { Card, CardBody } from "@/components/ui/card";
 import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
+import { NOINDEX } from "@/lib/seo";
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations("ui.auth");
-  return { title: t("inviteMeta") };
+  // Persoenlicher Link bzw. reine Funktionsseite: gehoert in keinen Index.
+  return { title: t("inviteMeta"), robots: NOINDEX };
 }
 
 export default async function InvitePage({

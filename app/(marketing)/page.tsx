@@ -9,6 +9,11 @@ import { PLATFORM_CURRENCY } from "@/lib/currency";
 import { PLAN_LIMITS, SPACE_TYPE_KEYS, spaceTypesForPlan } from "@/lib/plan-features";
 import { formatPlatformFee } from "@/lib/platform-fee";
 import { formatPrice } from "@/lib/utils";
+import type { Metadata } from "next";
+import { buildPlatformPageMetadata, getPlatformSeo } from "@/lib/seo";
+import { JsonLd } from "@/components/seo/json-ld";
+import { organizationJsonLd, websiteJsonLd } from "@/lib/json-ld";
+import { env } from "@/lib/env";
 
 /* Poster-Kacheln für die Marquee: eine Auswahl von 14 der echten Space-Typen
    (Text-Keys in messages/<locale>.json unter home.tiles.*). Die Gesamtzahl in
@@ -55,9 +60,15 @@ const tileTones = [
   "bg-[#d8d1f0] text-[#241458]",
 ];
 
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPlatformPageMetadata({ path: "/" });
+}
+
 export default async function LandingPage() {
   const t = await getTranslations("home");
   const locale = await getLocale();
+  const seo = await getPlatformSeo();
+  const siteUrl = env.APP_URL.replace(/\/+$/, "");
   const tSpaces = await getTranslations("dashboard.spaceTypes");
   const nf = new Intl.NumberFormat(locale);
   // Unsere eigenen Zahlen kommen aus dem Code, nicht aus einem Text: sonst
@@ -84,6 +95,22 @@ export default async function LandingPage() {
 
   return (
     <main className="-mt-20 bg-[#0f0f0d] text-white">
+      <JsonLd
+        data={[
+          organizationJsonLd({
+            name: seo.siteName,
+            url: siteUrl,
+            logo: `${siteUrl}/icon-512.png`,
+            description: seo.description,
+          }),
+          websiteJsonLd({
+            name: seo.siteName,
+            url: siteUrl,
+            inLanguage: locale,
+            description: seo.description,
+          }),
+        ]}
+      />
       {/* Hero — reicht unter den transparenten (sticky) Header, damit der
           bewegte Hintergrund auch hinter dem Header sichtbar ist. */}
       <section className="overflow-hidden">

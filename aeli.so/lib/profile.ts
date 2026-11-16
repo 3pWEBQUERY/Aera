@@ -1,7 +1,8 @@
 import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
-import prisma, { systemPrisma, withUserContext } from "./prisma";
+import prisma, { withUserContext } from "./prisma";
+import { tenantIsLive as tenantIsLiveRow } from "./db-functions";
 import { getCurrentUser } from "./auth";
 import { isBlockLive } from "./blocks";
 import { parseTheme, resolveTheme, DEFAULT_THEME } from "./themes";
@@ -236,16 +237,12 @@ function sortLinksByPopularity(blocks: AeliBlock[]): AeliBlock[] {
  *
  * `LiveSession` ist eine tenant-scoped Aera-Tabelle; die Rolle `aeli_app` hat
  * dort bewusst keine Rechte. Die Frage ist trotzdem harmlos — „sendet diese
- * eine Community gerade?“ — und wird deshalb über die privilegierte Verbindung
- * gestellt, eng auf die verknüpfte `tenantId` begrenzt und ohne ein einziges
- * Feld aus der Antwort zu übernehmen.
+ * eine Community gerade?“ — und wird deshalb von einer eigenen
+ * Datenbankfunktion beantwortet (`aeli_tenant_is_live`), die nur ja oder nein
+ * zurückgibt.
  */
-async function tenantIsLive(tenantId: string): Promise<boolean> {
-  const running = await systemPrisma.liveSession.findFirst({
-    where: { tenantId, status: "LIVE" },
-    select: { id: true },
-  });
-  return Boolean(running);
+function tenantIsLive(tenantId: string): Promise<boolean> {
+  return tenantIsLiveRow(tenantId);
 }
 
 /**
@@ -256,16 +253,19 @@ async function tenantIsLive(tenantId: string): Promise<boolean> {
  * beantwortet `lib/payouts.ts`; hier steht nur, wann sie gestellt wird.
  */
 export async function profileTipsEnabled(
-  profile: Pick<ProfileWithBlocks, "userId" | "linkedTenantId"> & {
+  profile: Pick<ProfileWithBlocks, "id" | "userId"> & {
     cards: { blocks: { type: AeliBlockType }[] }[];
   },
+  options: { asOwner?: boolean } = {},
 ): Promise<boolean> {
   const types = profile.cards.flatMap((card) => card.blocks.map((block) => block.type));
   if (!types.includes("TIP")) return false;
-  const payout = await resolvePayoutAccount({
-    userId: profile.userId,
-    linkedTenantId: profile.linkedTenantId,
-  });
+  // Im Studio ist die Seite oft noch ein Entwurf. Den sieht die Funktion nur
+  // im Kontext seines Besitzers — `asOwner` gilt deshalb nur für das eigene
+  // Profil aus `getOwnProfile`.
+  const payout = options.asOwner
+    ? await withUserContext(profile.userId, () => resolvePayoutAccount(profile.id))
+    : await resolvePayoutAccount(profile.id);
   return payout !== null;
 }
 
