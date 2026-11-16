@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# membro} other {# membri}}",
       "newCommunity": "Nuova community",
       "myAccount": "My account",
-      "deletedNotice": "«{name}» viene eliminata. Ci vorrà qualche minuto."
+      "deletedNotice": "«{name}» viene eliminata. Ci vorrà qualche minuto.",
+      "moderatorRole": "Moderi"
     },
     "assistant": {
       "title": "Assistente IA",
@@ -3273,7 +3274,7 @@
       "tierHint": "Sblocca ciò che include questa iscrizione, senza pagamento.",
       "roleHints": {
         "MEMBER": "Vede ciò che la sua iscrizione sblocca e può scrivere nel feed e nel forum.",
-        "MODERATOR": "Vede tutti gli space e può scrivere ovunque; i suoi post non passano dal controllo automatico. Nessun accesso alla dashboard.",
+        "MODERATOR": "Vede tutti gli spazi e può scrivere ovunque; i suoi post non passano il controllo automatico. Nella dashboard vede solo la moderazione: controllare, approvare o rimuovere i post segnalati.",
         "ADMIN": "Gestisce la community nella dashboard: contenuti, membri, moderazione e impostazioni. Solo il proprietario può nominare admin, collegare i pagamenti, esportare i dati ed eliminare la community."
       },
       "statusHint": "«In sospeso»: registrato, ma ancora senza accesso ai contenuti per i membri.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Crea un'iscrizione a pagamento perché i membri possano sbloccare questo space.",
         "noPaidCta": "Crea prima un'iscrizione",
         "specificTier": "Iscrizione specifica"
+      },
+      "postingLabel": "Chi può scrivere post?",
+      "posting": {
+        "members": {
+          "label": "Tutti i membri",
+          "desc": "I membri scrivono i propri post."
+        },
+        "team": {
+          "label": "Solo il team",
+          "desc": "I membri leggono, reagiscono e commentano."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Pianificatore",
       "lockedSuffix": "solo con {plan}",
       "seo": "SEO",
-      "lockedGroup": "Nei piani superiori ({count})"
+      "lockedGroup": "Nei piani superiori ({count})",
+      "moderatorGroup": "La tua area",
+      "moderatorHint": "Controlli i post e i commenti segnalati. Il team di amministrazione gestisce membri, contenuti e impostazioni.",
+      "moderatorRole": "Moderazione"
     },
     "media": {
       "metaTitle": "Media",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Guarda ora",
         "liveWatchReplay": "Guarda la registrazione",
         "withdrawRsvp": "Ritira la partecipazione",
-        "rsvpGoing": "Parteciperai"
+        "rsvpGoing": "Parteciperai",
+        "feedNoPostsTeamHint": "Qui scrive il team. I nuovi post appariranno qui."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Account e acquisti",
       "dashboard": "Dashboard",
       "logout": "Esci",
-      "login": "Accedi"
+      "login": "Accedi",
+      "moderation": "Moderazione"
     },
     "joinPage": {
       "title": "Scegli la tua membership",
@@ -4899,7 +4916,8 @@
       "open": "Menu account di {name}",
       "account": "Account e abbonamento",
       "creatorArea": "Area creator",
-      "logout": "Esci"
+      "logout": "Esci",
+      "moderation": "Moderazione"
     },
     "welcome": {
       "title": "Benvenuto in {name}! Ora sei un membro.",

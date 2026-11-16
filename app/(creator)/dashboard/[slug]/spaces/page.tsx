@@ -1,3 +1,4 @@
+import { postingPolicyOf } from "@/lib/entitlements";
 import { requireTenantAdmin } from "@/lib/guards";
 import prisma from "@/lib/prisma";
 import {
@@ -50,6 +51,7 @@ export default async function SpacesPage({
     isArchived: s.isArchived,
     postCount: s._count.posts,
     contentCount: sumSpaceContent(s._count),
+    postingPolicy: postingPolicyOf(s.settings),
   }));
   const tiers: SpaceAccessTier[] = tierRows.map((tr) => ({
     name: tr.name,

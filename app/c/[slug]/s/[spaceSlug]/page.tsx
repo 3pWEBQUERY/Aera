@@ -7,7 +7,7 @@ import { getPostSettingsForPosts } from "@/lib/post-settings";
 import { CoverBanner } from "@/components/community/cover-banner";
 import { SpacePaywall } from "@/components/community/space-paywall";
 import { joinOfferFor } from "@/lib/join-offer";
-import { canAccess } from "@/lib/entitlements";
+import { canAccess, canCreatePostIn } from "@/lib/entitlements";
 import { isPostLocked, postLockKind, unlockedPostWhere } from "@/lib/post-access";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
 import { PostCard, type PostCardData } from "@/components/community/post-card";
@@ -97,6 +97,9 @@ export default async function SpacePage({
 
   const allowed = canAccess(space, ctx);
   const isMember = ctx.membership?.status === "ACTIVE";
+  // Composer nur, wo der Server das Posten auch annimmt (Feed/Forum, nicht
+  // archiviert, nicht "nur das Team").
+  const canPost = canCreatePostIn(space, ctx);
 
   if (!allowed && (space.visibility === "PAID" || space.requiredEntitlementKey)) {
     // Bezahlter Space: Mitgliedschaft und Preis nennen statt "passender
@@ -365,7 +368,7 @@ export default async function SpacePage({
               </p>
             )}
           </div>
-          {isMember && (
+          {canPost && (
             <ForumPostComposer slug={slug} space={spaceSlug} spaceName={space.name} />
           )}
         </div>
@@ -847,7 +850,7 @@ export default async function SpacePage({
               </Link>
             )}
           </div>
-          {isMember && !feedQuery && <PostComposer slug={slug} space={spaceSlug} />}
+          {canPost && !feedQuery && <PostComposer slug={slug} space={spaceSlug} />}
           {posts.length === 0 ? (
             feedQuery ? (
               <EmptyState
@@ -856,7 +859,12 @@ export default async function SpacePage({
                 hint={t("tryOtherTerm")}
               />
             ) : (
-              <EmptyState icon="feed" title={t("feedNoPostsTitle")} hint={t("feedNoPostsHint")} />
+              <EmptyState
+                icon="feed"
+                title={t("feedNoPostsTitle")}
+                // Wer hier nicht posten darf, wird nicht zum Anfangen ermuntert.
+                hint={canPost ? t("feedNoPostsHint") : t("feedNoPostsTeamHint")}
+              />
             )
           ) : (
             posts.map((p) => (

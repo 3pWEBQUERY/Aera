@@ -36,6 +36,8 @@ export interface SpaceRowData {
   postCount: number;
   /** Everything stored in the space (posts, courses, products …). */
   contentCount: number;
+  /** Feed/Forum: ob Mitglieder posten dürfen oder nur das Team. */
+  postingPolicy: "members" | "team";
 }
 
 export const SPACE_VISIBILITY_OPTIONS: { value: string; icon: IconName }[] = [
@@ -622,6 +624,56 @@ function Row({
   );
 }
 
+/** Wer in Feed und Forum neue Beiträge schreibt. Kommentieren bleibt offen. */
+function SpacePostingPicker({
+  value,
+  onChange,
+}: {
+  value: "members" | "team";
+  onChange: (value: "members" | "team") => void;
+}) {
+  const t = useTranslations("dashboard");
+  const labelId = useId();
+  const options: { value: "members" | "team"; icon: IconName }[] = [
+    { value: "members", icon: "members" },
+    { value: "team", icon: "megaphone" },
+  ];
+  return (
+    <div className="mt-8">
+      <p id={labelId} className="mb-3 text-sm font-medium text-slate-700">
+        {t("spaces.postingLabel")}
+      </p>
+      <div role="group" aria-labelledby={labelId} className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {options.map((o) => {
+          const sel = o.value === value;
+          return (
+            <button
+              key={o.value}
+              type="button"
+              onClick={() => onChange(o.value)}
+              aria-pressed={sel}
+              className={cn(
+                "flex items-center gap-3 rounded-2xl border p-4 text-left transition-colors duration-200",
+                sel
+                  ? "border-[var(--action-strong)] bg-slate-50"
+                  : "border-slate-200 hover:border-slate-300 hover:bg-[var(--action-soft)]",
+              )}
+            >
+              <span className={cn("flex h-9 w-9 shrink-0 items-center justify-center rounded-lg transition", sel ? "bg-[var(--action)] text-[var(--action-fg)]" : "bg-slate-100 text-slate-600")}>
+                <Icon name={o.icon} size={18} />
+              </span>
+              <span>
+                <span className="block text-sm font-semibold text-slate-900">{t(`spaces.posting.${o.value}.label`)}</span>
+                <span className="block text-xs text-slate-500">{t(`spaces.posting.${o.value}.desc`)}</span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export function SpaceVisibilityPicker({
   value,
   onChange,
@@ -690,6 +742,10 @@ function SpaceForm({
   );
   const [type, setType] = useState(space?.type ?? "FEED");
   const [visibility, setVisibility] = useState(space?.visibility ?? "MEMBERS");
+  const [postingPolicy, setPostingPolicy] = useState<"members" | "team">(
+    space?.postingPolicy ?? "members",
+  );
+  const postingApplies = type === "FEED" || type === "FORUM";
   const [deleting, setDeleting] = useState(false);
   const [confirm, confirmDialog] = useConfirm();
   // A different type reads different tables — existing content would vanish
@@ -722,6 +778,7 @@ function SpaceForm({
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="type" value={type} />
       <input type="hidden" name="visibility" value={visibility} />
+      {postingApplies && <input type="hidden" name="postingPolicy" value={postingPolicy} />}
       {isEdit && <input type="hidden" name="spaceId" value={space!.id} />}
 
       <div className="flex-1 overflow-y-auto">
@@ -767,6 +824,10 @@ function SpaceForm({
           </div>
 
           <SpaceVisibilityPicker value={visibility} onChange={setVisibility} />
+
+          {postingApplies && (
+            <SpacePostingPicker value={postingPolicy} onChange={setPostingPolicy} />
+          )}
 
           {visibility === "PAID" && (
             <SpaceAccessPicker

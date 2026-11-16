@@ -18,6 +18,8 @@ const prisma = prismaModule as unknown as PrismaMock;
 
 import {
   canAccess,
+  canCreatePostIn,
+  postingPolicyOf,
   buildAccessContext,
   type AccessContext,
 } from "@/lib/entitlements";
@@ -188,5 +190,37 @@ describe("buildAccessContext / hasPaidEntitlement", () => {
         }),
       }),
     );
+  });
+});
+
+describe("canCreatePostIn — wer neue Beiträge schreibt", () => {
+  const feed = { type: "FEED", isArchived: false, settings: null };
+  const teamFeed = { type: "FEED", isArchived: false, settings: { postingPolicy: "team" } };
+
+  it("Mitglieder posten in Feed und Forum", () => {
+    expect(canCreatePostIn(feed, ctx())).toBe(true);
+    expect(canCreatePostIn({ ...feed, type: "FORUM" }, ctx())).toBe(true);
+  });
+
+  it("nicht in Creator-Inhalten wie Blog oder Videos", () => {
+    expect(canCreatePostIn({ ...feed, type: "BLOG" }, ctx())).toBe(false);
+    expect(canCreatePostIn({ ...feed, type: "VIDEOS" }, ctx())).toBe(false);
+  });
+
+  it("„Nur das Team“ sperrt Mitglieder, nicht das Team", () => {
+    expect(canCreatePostIn(teamFeed, ctx())).toBe(false);
+    expect(canCreatePostIn(teamFeed, ctx({ isStaff: true, role: "MODERATOR" }))).toBe(true);
+  });
+
+  it("archivierte Spaces und inaktive Mitgliedschaften posten nicht", () => {
+    expect(canCreatePostIn({ ...feed, isArchived: true }, ctx({ isStaff: true }))).toBe(false);
+    expect(canCreatePostIn(feed, ctx({ membership: null }))).toBe(false);
+  });
+
+  it("unbekannte Werte gelten als „Alle Mitglieder“", () => {
+    expect(postingPolicyOf(null)).toBe("members");
+    expect(postingPolicyOf({ postingPolicy: "everyone" })).toBe("members");
+    expect(postingPolicyOf(["team"])).toBe("members");
+    expect(postingPolicyOf({ postingPolicy: "team" })).toBe("team");
   });
 });

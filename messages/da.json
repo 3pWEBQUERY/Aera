@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# medlem} other {# medlemmer}}",
       "newCommunity": "Nyt fællesskab",
       "myAccount": "My account",
-      "deletedNotice": "„{name}“ bliver slettet. Det tager et par minutter."
+      "deletedNotice": "„{name}“ bliver slettet. Det tager et par minutter.",
+      "moderatorRole": "Du modererer"
     },
     "assistant": {
       "title": "AI-assistent",
@@ -3273,7 +3274,7 @@
       "tierHint": "Låser op for det, medlemskabet indeholder – uden betaling.",
       "roleHints": {
         "MEMBER": "Ser det, medlemskabet låser op for, og kan skrive i feed og forum.",
-        "MODERATOR": "Ser alle spaces og kan skrive overalt; indlæggene tjekkes ikke automatisk. Ingen adgang til dashboardet.",
+        "MODERATOR": "Ser alle spaces og kan skrive overalt; vedkommendes opslag tjekkes ikke automatisk. I dashboardet ses kun moderationen: gennemgå, godkend eller fjern markerede opslag.",
         "ADMIN": "Administrerer communityet i dashboardet: indhold, medlemmer, moderation og indstillinger. Kun ejeren kan udnævne administratorer, forbinde betalinger, eksportere data og slette communityet."
       },
       "statusHint": "„Afventer“: registreret, men endnu uden adgang til indhold for medlemmer.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Opret et betalt medlemskab, så medlemmer kan låse dette space op.",
         "noPaidCta": "Opret først et medlemskab",
         "specificTier": "Bestemt medlemskab"
+      },
+      "postingLabel": "Hvem må skrive opslag?",
+      "posting": {
+        "members": {
+          "label": "Alle medlemmer",
+          "desc": "Medlemmer skriver egne opslag."
+        },
+        "team": {
+          "label": "Kun teamet",
+          "desc": "Medlemmer læser, reagerer og kommenterer."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planlægger",
       "lockedSuffix": "kun med {plan}",
       "seo": "SEO",
-      "lockedGroup": "I højere pakker ({count})"
+      "lockedGroup": "I højere pakker ({count})",
+      "moderatorGroup": "Dit område",
+      "moderatorHint": "Du gennemgår markerede opslag og kommentarer. Admin-teamet styrer medlemmer, indhold og indstillinger.",
+      "moderatorRole": "Moderation"
     },
     "media": {
       "metaTitle": "Medier",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Se nu",
         "liveWatchReplay": "Se optagelsen",
         "withdrawRsvp": "Træk tilmelding tilbage",
-        "rsvpGoing": "Du er tilmeldt"
+        "rsvpGoing": "Du er tilmeldt",
+        "feedNoPostsTeamHint": "Her skriver teamet. Nye opslag vises her."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Konto & køb",
       "dashboard": "Dashboard",
       "logout": "Log ud",
-      "login": "Log ind"
+      "login": "Log ind",
+      "moderation": "Moderation"
     },
     "joinPage": {
       "title": "Vælg dit medlemskab",
@@ -4899,7 +4916,8 @@
       "open": "Kontomenu for {name}",
       "account": "Konto og medlemskab",
       "creatorArea": "Creator-område",
-      "logout": "Log ud"
+      "logout": "Log ud",
+      "moderation": "Moderation"
     },
     "welcome": {
       "title": "Velkommen til {name}! Du er nu medlem.",

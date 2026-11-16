@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# członek} few {# członków} many {# członków} other {# członka}}",
       "newCommunity": "Nowa społeczność",
       "myAccount": "My account",
-      "deletedNotice": "„{name}” jest usuwana. To potrwa kilka minut."
+      "deletedNotice": "„{name}” jest usuwana. To potrwa kilka minut.",
+      "moderatorRole": "Moderujesz"
     },
     "assistant": {
       "title": "Asystent AI",
@@ -3273,7 +3274,7 @@
       "tierHint": "Odblokowuje to, co zawiera to członkostwo – bez płatności.",
       "roleHints": {
         "MEMBER": "Widzi to, co odblokowuje członkostwo, i pisze w feedzie oraz na forum.",
-        "MODERATOR": "Widzi wszystkie spaces i może pisać wszędzie; jego posty nie są automatycznie sprawdzane. Brak dostępu do panelu.",
+        "MODERATOR": "Widzi wszystkie spaces i może pisać wszędzie; jego posty nie przechodzą automatycznej kontroli. W panelu widzi tylko moderację: sprawdzanie, zatwierdzanie lub usuwanie zgłoszonych postów.",
         "ADMIN": "Zarządza społecznością w panelu: treści, członkowie, moderacja i ustawienia. Tylko właściciel może mianować administratorów, łączyć płatności, eksportować dane i usunąć społeczność."
       },
       "statusHint": "„Oczekujący”: zapisany, ale jeszcze bez dostępu do treści dla członków.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Utwórz płatne członkostwo, aby członkowie mogli odblokować ten space.",
         "noPaidCta": "Najpierw utwórz członkostwo",
         "specificTier": "Określone członkostwo"
+      },
+      "postingLabel": "Kto może pisać posty?",
+      "posting": {
+        "members": {
+          "label": "Wszyscy członkowie",
+          "desc": "Członkowie piszą własne posty."
+        },
+        "team": {
+          "label": "Tylko zespół",
+          "desc": "Członkowie czytają, reagują i komentują."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planer",
       "lockedSuffix": "tylko z {plan}",
       "seo": "SEO",
-      "lockedGroup": "W wyższych pakietach ({count})"
+      "lockedGroup": "W wyższych pakietach ({count})",
+      "moderatorGroup": "Twój obszar",
+      "moderatorHint": "Sprawdzasz zgłoszone posty i komentarze. Członkami, treściami i ustawieniami zarządza zespół administratorów.",
+      "moderatorRole": "Moderacja"
     },
     "media": {
       "metaTitle": "Multimedia",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Oglądaj teraz",
         "liveWatchReplay": "Obejrzyj nagranie",
         "withdrawRsvp": "Wycofaj zgłoszenie",
-        "rsvpGoing": "Bierzesz udział"
+        "rsvpGoing": "Bierzesz udział",
+        "feedNoPostsTeamHint": "Tu pisze zespół. Nowe posty pojawią się w tym miejscu."
       },
       "spaceCard": {
         "space": "Strefa",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Konto i zakupy",
       "dashboard": "Panel",
       "logout": "Wyloguj się",
-      "login": "Zaloguj się"
+      "login": "Zaloguj się",
+      "moderation": "Moderacja"
     },
     "joinPage": {
       "title": "Wybierz swoje członkostwo",
@@ -4899,7 +4916,8 @@
       "open": "Menu konta: {name}",
       "account": "Konto i członkostwo",
       "creatorArea": "Panel twórcy",
-      "logout": "Wyloguj się"
+      "logout": "Wyloguj się",
+      "moderation": "Moderacja"
     },
     "welcome": {
       "title": "Witamy w {name}! Jesteś teraz członkiem.",

@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# medlem} other {# medlemmar}}",
       "newCommunity": "Ny community",
       "myAccount": "My account",
-      "deletedNotice": "”{name}” raderas. Det tar några minuter."
+      "deletedNotice": "”{name}” raderas. Det tar några minuter.",
+      "moderatorRole": "Du modererar"
     },
     "assistant": {
       "title": "AI-assistent",
@@ -3273,7 +3274,7 @@
       "tierHint": "Låser upp det medlemskapet innehåller – utan betalning.",
       "roleHints": {
         "MEMBER": "Ser det medlemskapet låser upp och kan skriva i flöde och forum.",
-        "MODERATOR": "Ser alla spaces och kan skriva överallt; inläggen kontrolleras inte automatiskt. Ingen åtkomst till instrumentpanelen.",
+        "MODERATOR": "Ser alla spaces och kan skriva överallt; inläggen kontrolleras inte automatiskt. I dashboarden syns bara modereringen: granska, godkänn eller ta bort flaggade inlägg.",
         "ADMIN": "Hanterar communityn i instrumentpanelen: innehåll, medlemmar, moderering och inställningar. Bara ägaren kan utse administratörer, koppla betalningar, exportera data och radera communityn."
       },
       "statusHint": "”Väntar”: registrerad, men ännu utan åtkomst till innehåll för medlemmar.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Skapa ett betalt medlemskap så att medlemmar kan låsa upp det här spacet.",
         "noPaidCta": "Skapa först ett medlemskap",
         "specificTier": "Visst medlemskap"
+      },
+      "postingLabel": "Vem får skriva inlägg?",
+      "posting": {
+        "members": {
+          "label": "Alla medlemmar",
+          "desc": "Medlemmar skriver egna inlägg."
+        },
+        "team": {
+          "label": "Bara teamet",
+          "desc": "Medlemmar läser, reagerar och kommenterar."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planerare",
       "lockedSuffix": "endast {plan}",
       "seo": "SEO",
-      "lockedGroup": "I högre paket ({count})"
+      "lockedGroup": "I högre paket ({count})",
+      "moderatorGroup": "Ditt område",
+      "moderatorHint": "Du granskar flaggade inlägg och kommentarer. Adminteamet hanterar medlemmar, innehåll och inställningar.",
+      "moderatorRole": "Moderering"
     },
     "media": {
       "metaTitle": "Media",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Titta nu",
         "liveWatchReplay": "Titta på inspelningen",
         "withdrawRsvp": "Dra tillbaka anmälan",
-        "rsvpGoing": "Du är anmäld"
+        "rsvpGoing": "Du är anmäld",
+        "feedNoPostsTeamHint": "Här skriver teamet. Nya inlägg visas här."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Konto & köp",
       "dashboard": "Instrumentpanel",
       "logout": "Logga ut",
-      "login": "Logga in"
+      "login": "Logga in",
+      "moderation": "Moderering"
     },
     "joinPage": {
       "title": "Välj ditt medlemskap",
@@ -4899,7 +4916,8 @@
       "open": "Kontomeny för {name}",
       "account": "Konto och medlemskap",
       "creatorArea": "Kreatörsyta",
-      "logout": "Logga ut"
+      "logout": "Logga ut",
+      "moderation": "Moderering"
     },
     "welcome": {
       "title": "Välkommen till {name}! Du är nu medlem.",

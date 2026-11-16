@@ -1283,7 +1283,8 @@
       "membersCount": "{count, plural, one {# member} other {# members}}",
       "newCommunity": "New community",
       "myAccount": "My account",
-      "deletedNotice": "“{name}” is being deleted. This takes a few minutes."
+      "deletedNotice": "“{name}” is being deleted. This takes a few minutes.",
+      "moderatorRole": "You moderate"
     },
     "assistant": {
       "title": "AI Assistant",
@@ -3475,7 +3476,7 @@
       "tierHint": "Unlocks what this membership includes – without payment.",
       "roleHints": {
         "MEMBER": "Sees what their membership unlocks and can post in feeds and forums.",
-        "MODERATOR": "Sees every space and can post anywhere; their posts skip the automatic check. No dashboard access.",
+        "MODERATOR": "Sees every space and can post anywhere; their posts skip the automatic check. In the dashboard they only see moderation: review, approve or remove flagged posts.",
         "ADMIN": "Manages the community in the dashboard: content, members, moderation and settings. Only the owner can appoint admins, connect payments, export data or delete the community."
       },
       "statusHint": "“Pending”: listed, but without access to member content yet.",
@@ -3655,6 +3656,17 @@
         "noPaidText": "Create a paid membership so members can unlock this space.",
         "noPaidCta": "Create a membership first",
         "specificTier": "Specific membership"
+      },
+      "postingLabel": "Who can write posts?",
+      "posting": {
+        "members": {
+          "label": "All members",
+          "desc": "Members write their own posts."
+        },
+        "team": {
+          "label": "Team only",
+          "desc": "Members read, react and comment."
+        }
       }
     },
     "roles": {
@@ -3817,7 +3829,10 @@
       "planner": "Planner",
       "lockedSuffix": "{plan} only",
       "seo": "SEO",
-      "lockedGroup": "On higher plans ({count})"
+      "lockedGroup": "On higher plans ({count})",
+      "moderatorGroup": "Your area",
+      "moderatorHint": "You review flagged posts and comments. The admin team manages members, content and settings.",
+      "moderatorRole": "Moderation"
     },
     "media": {
       "metaTitle": "Media",
@@ -4692,7 +4707,8 @@
         "liveWatchNow": "Watch now",
         "liveWatchReplay": "Watch the replay",
         "withdrawRsvp": "Withdraw RSVP",
-        "rsvpGoing": "You're going"
+        "rsvpGoing": "You're going",
+        "feedNoPostsTeamHint": "The team posts here. New posts will appear in this spot."
       },
       "spaceCard": {
         "space": "Space",
@@ -4815,7 +4831,8 @@
       "accountAndPurchases": "Account & purchases",
       "dashboard": "Dashboard",
       "logout": "Log out",
-      "login": "Log in"
+      "login": "Log in",
+      "moderation": "Moderation"
     },
     "joinPage": {
       "title": "Choose your membership",
@@ -4935,7 +4952,8 @@
       "open": "Account menu for {name}",
       "account": "Account & membership",
       "creatorArea": "Creator area",
-      "logout": "Log out"
+      "logout": "Log out",
+      "moderation": "Moderation"
     },
     "welcome": {
       "title": "Welcome to {name}! You're now a member.",

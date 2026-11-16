@@ -10,19 +10,22 @@ export async function TopHeader({
   user,
   leading,
   subscription = null,
+  hideSearch = false,
 }: {
   slug: string;
   user: { name: string; email: string; avatarUrl: string | null };
   /** Rendered before the search box — used for the mobile nav burger. */
   leading?: React.ReactNode;
   subscription?: MySubscriptionData | null;
+  /** Moderatoren: die Suche fuehrte nur auf Seiten, die sie nicht sehen. */
+  hideSearch?: boolean;
 }) {
   const t = await getTranslations("dashboard");
   return (
     <header className="sticky top-0 z-20 flex h-16 shrink-0 items-center gap-4 border-b border-slate-200 bg-white px-5">
       {leading}
       <div className="min-w-0 flex-1">
-        <SearchBox slug={slug} />
+        {!hideSearch && <SearchBox slug={slug} />}
       </div>
       <Link
         href={`/c/${slug}`}

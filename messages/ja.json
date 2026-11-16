@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, other {# 人のメンバー}}",
       "newCommunity": "新しいコミュニティ",
       "myAccount": "My account",
-      "deletedNotice": "「{name}」を削除しています。数分かかります。"
+      "deletedNotice": "「{name}」を削除しています。数分かかります。",
+      "moderatorRole": "モデレーター"
     },
     "assistant": {
       "title": "AIアシスタント",
@@ -3273,7 +3274,7 @@
       "tierHint": "このメンバーシップの内容を支払いなしで利用可能にします。",
       "roleHints": {
         "MEMBER": "メンバーシップで解放された内容を閲覧し、フィードとフォーラムに投稿できます。",
-        "MODERATOR": "すべてのスペースを閲覧し、どこにでも投稿できます。投稿は自動チェックされません。ダッシュボードにはアクセスできません。",
+        "MODERATOR": "すべてのスペースを閲覧し、どこでも投稿できます。投稿は自動チェックの対象外です。ダッシュボードではモデレーションのみ表示され、報告された投稿を確認・承認・削除できます。",
         "ADMIN": "ダッシュボードでコミュニティを管理します（コンテンツ、メンバー、モデレーション、設定）。管理者の任命、支払いの接続、データのエクスポート、コミュニティの削除はオーナーのみが行えます。"
       },
       "statusHint": "「保留中」：登録済みですが、メンバー向けコンテンツにはまだアクセスできません。",
@@ -3453,6 +3454,17 @@
         "noPaidText": "メンバーがこのスペースを利用できるよう、有料メンバーシップを作成してください。",
         "noPaidCta": "先にメンバーシップを作成",
         "specificTier": "特定のメンバーシップ"
+      },
+      "postingLabel": "投稿できるのは？",
+      "posting": {
+        "members": {
+          "label": "すべてのメンバー",
+          "desc": "メンバーが自分で投稿できます。"
+        },
+        "team": {
+          "label": "チームのみ",
+          "desc": "メンバーは閲覧・リアクション・コメントができます。"
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "プランナー",
       "lockedSuffix": "{plan} 限定",
       "seo": "SEO",
-      "lockedGroup": "上位プランで利用可能（{count}）"
+      "lockedGroup": "上位プランで利用可能（{count}）",
+      "moderatorGroup": "あなたの担当",
+      "moderatorHint": "報告された投稿やコメントを確認します。メンバー・コンテンツ・設定は管理チームが担当します。",
+      "moderatorRole": "モデレーション"
     },
     "media": {
       "metaTitle": "メディア",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "今すぐ視聴",
         "liveWatchReplay": "録画を見る",
         "withdrawRsvp": "参加表明を取り消す",
-        "rsvpGoing": "参加予定です"
+        "rsvpGoing": "参加予定です",
+        "feedNoPostsTeamHint": "ここではチームが投稿します。新しい投稿はここに表示されます。"
       },
       "spaceCard": {
         "space": "スペース",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "アカウントと購入",
       "dashboard": "ダッシュボード",
       "logout": "ログアウト",
-      "login": "ログイン"
+      "login": "ログイン",
+      "moderation": "モデレーション"
     },
     "joinPage": {
       "title": "メンバーシップを選ぶ",
@@ -4899,7 +4916,8 @@
       "open": "{name} のアカウントメニュー",
       "account": "アカウントとメンバーシップ",
       "creatorArea": "クリエイターエリア",
-      "logout": "ログアウト"
+      "logout": "ログアウト",
+      "moderation": "モデレーション"
     },
     "welcome": {
       "title": "{name} へようこそ。メンバーになりました。",

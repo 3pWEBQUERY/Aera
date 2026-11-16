@@ -26,7 +26,7 @@ import { planAllowsSpaceType, minPlanForSpaceType } from "@/lib/plan-features";
 import { SPACE_CONTENT_COUNT_SELECT, sumSpaceContent } from "@/lib/space-content";
 import { PLANS } from "@/lib/credit-plans";
 import { hashPassword, getCurrentUser } from "@/lib/auth";
-import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
+import { grantEntitlement, revokePreviousTierEntitlement, MEMBER_POST_SPACE_TYPES } from "@/lib/entitlements";
 import {
   spaceSchema,
   tierSchema,
@@ -185,6 +185,9 @@ export async function createSpaceAction(
       visibility: parsed.data.visibility,
       requiredEntitlementKey: access.key,
       sortOrder: await prisma.space.count({ where: { tenantId: tenant.id } }),
+      ...(MEMBER_POST_SPACE_TYPES.has(parsed.data.type) && fd.get("postingPolicy") === "team"
+        ? { settings: { postingPolicy: "team" } }
+        : {}),
     },
   });
   await writeAudit({
@@ -293,6 +296,19 @@ export async function updateSpaceAction(
   );
   if (access.error !== undefined) return { error: access.error };
 
+  // Wer postet: nur fuer Feed und Forum, und nur wenn das Formular das Feld
+  // mitschickt — sonst bleibt die bisherige Einstellung unangetastet.
+  const rawPolicy = fd.get("postingPolicy");
+  const settings =
+    MEMBER_POST_SPACE_TYPES.has(parsed.data.type) && (rawPolicy === "team" || rawPolicy === "members")
+      ? {
+          ...(space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
+            ? (space.settings as Record<string, unknown>)
+            : {}),
+          postingPolicy: rawPolicy,
+        }
+      : undefined;
+
   // Slug stays stable so existing links keep working.
   await prisma.space.update({
     where: { id: space.id },
@@ -302,6 +318,7 @@ export async function updateSpaceAction(
       description: parsed.data.description || null,
       visibility: parsed.data.visibility,
       requiredEntitlementKey: access.key,
+      ...(settings ? { settings: settings as Prisma.InputJsonValue } : {}),
     },
   });
   await writeAudit({

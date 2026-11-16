@@ -218,6 +218,7 @@ export default async function CommunityLayout({
         user={user ? { name: user.name, avatarUrl: user.avatarUrl } : null}
         slug={slug}
         isStaff={ctx.isStaff}
+        moderatorOnly={ctx.membership?.role === "MODERATOR"}
         isCreator={isCreator}
         loginHref={`/login?next=${encodeURIComponent(`/c/${slug}`)}`}
       />
@@ -292,6 +293,7 @@ export default async function CommunityLayout({
                   slug={slug}
                   user={{ name: user.name, avatarUrl: user.avatarUrl }}
                   isStaff={ctx.isStaff}
+                  moderatorOnly={ctx.membership?.role === "MODERATOR"}
                 />
               )}
               {!isMember && (

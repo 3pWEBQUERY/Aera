@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, other {# 名成员}}",
       "newCommunity": "新社区",
       "myAccount": "My account",
-      "deletedNotice": "正在删除“{name}”。这需要几分钟。"
+      "deletedNotice": "正在删除“{name}”。这需要几分钟。",
+      "moderatorRole": "你是审核员"
     },
     "assistant": {
       "title": "AI 助手",
@@ -3273,7 +3274,7 @@
       "tierHint": "无需付款即可解锁此会员等级包含的内容。",
       "roleHints": {
         "MEMBER": "可查看会员等级解锁的内容，并在动态和论坛中发帖。",
-        "MODERATOR": "可查看所有空间并在任何地方发帖，其帖子不经过自动检查。无法访问控制台。",
+        "MODERATOR": "可查看所有空间并在任何地方发帖，其帖子不经过自动检查。在后台中只能看到审核：查看、批准或删除被标记的帖子。",
         "ADMIN": "在控制台管理社区：内容、成员、审核和设置。只有所有者可以任命管理员、连接付款、导出数据和删除社区。"
       },
       "statusHint": "“待处理”：已登记，但尚无法访问成员内容。",
@@ -3453,6 +3454,17 @@
         "noPaidText": "创建付费会员资格，成员才能解锁此空间。",
         "noPaidCta": "先创建会员资格",
         "specificTier": "特定会员资格"
+      },
+      "postingLabel": "谁可以发帖？",
+      "posting": {
+        "members": {
+          "label": "所有成员",
+          "desc": "成员可以自己发帖。"
+        },
+        "team": {
+          "label": "仅团队",
+          "desc": "成员可以阅读、互动和评论。"
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "规划器",
       "lockedSuffix": "仅限 {plan}",
       "seo": "SEO",
-      "lockedGroup": "更高套餐可用（{count}）"
+      "lockedGroup": "更高套餐可用（{count}）",
+      "moderatorGroup": "你的范围",
+      "moderatorHint": "你负责审核被标记的帖子和评论。成员、内容和设置由管理员团队管理。",
+      "moderatorRole": "审核"
     },
     "media": {
       "metaTitle": "媒体",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "立即观看",
         "liveWatchReplay": "观看回放",
         "withdrawRsvp": "取消报名",
-        "rsvpGoing": "你已报名"
+        "rsvpGoing": "你已报名",
+        "feedNoPostsTeamHint": "这里由团队发帖，新帖子会显示在这里。"
       },
       "spaceCard": {
         "space": "空间",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "账户与购买",
       "dashboard": "仪表盘",
       "logout": "退出登录",
-      "login": "登录"
+      "login": "登录",
+      "moderation": "审核"
     },
     "joinPage": {
       "title": "选择你的会员方案",
@@ -4899,7 +4916,8 @@
       "open": "{name} 的账户菜单",
       "account": "账户与会员",
       "creatorArea": "创作者后台",
-      "logout": "退出登录"
+      "logout": "退出登录",
+      "moderation": "审核"
     },
     "welcome": {
       "title": "欢迎来到 {name}！你现在是会员了。",

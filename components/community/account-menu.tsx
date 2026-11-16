@@ -19,10 +19,13 @@ export function CommunityAccountMenu({
   slug,
   user,
   isStaff,
+  moderatorOnly = false,
 }: {
   slug: string;
   user: { name: string; avatarUrl: string | null };
   isStaff: boolean;
+  /** Nur Moderator: der Eintrag führt direkt zur Moderation. */
+  moderatorOnly?: boolean;
 }) {
   const t = useTranslations("community.accountMenu");
   const [open, setOpen] = useState(false);
@@ -86,9 +89,9 @@ export function CommunityAccountMenu({
             </li>
             {isStaff && (
               <li>
-                <Link href={`/dashboard/${slug}`} className={itemClass}>
+                <Link href={moderatorOnly ? `/dashboard/${slug}/moderation` : `/dashboard/${slug}`} className={itemClass}>
                   <Icon name="dashboard" size={16} className="shrink-0 text-[#161613]/65" />
-                  {t("creatorArea")}
+                  {moderatorOnly ? t("moderation") : t("creatorArea")}
                 </Link>
               </li>
             )}

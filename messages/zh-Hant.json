@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, other {# 位成員}}",
       "newCommunity": "新社群",
       "myAccount": "My account",
-      "deletedNotice": "正在刪除「{name}」。這需要幾分鐘。"
+      "deletedNotice": "正在刪除「{name}」。這需要幾分鐘。",
+      "moderatorRole": "你是審核員"
     },
     "assistant": {
       "title": "AI 助理",
@@ -3273,7 +3274,7 @@
       "tierHint": "無需付款即可解鎖此會員等級包含的內容。",
       "roleHints": {
         "MEMBER": "可查看會員等級解鎖的內容，並在動態和論壇中發文。",
-        "MODERATOR": "可查看所有空間並在任何地方發文，其貼文不經過自動檢查。無法存取控制台。",
+        "MODERATOR": "可查看所有空間並在任何地方發文，其貼文不經過自動檢查。在後台中只能看到審核：查看、核准或刪除被標記的貼文。",
         "ADMIN": "在控制台管理社群：內容、成員、審核和設定。只有擁有者可以任命管理員、連接付款、匯出資料和刪除社群。"
       },
       "statusHint": "「待處理」：已登記，但尚無法存取成員內容。",
@@ -3453,6 +3454,17 @@
         "noPaidText": "建立付費會員資格，成員才能解鎖此空間。",
         "noPaidCta": "先建立會員資格",
         "specificTier": "特定會員資格"
+      },
+      "postingLabel": "誰可以發文？",
+      "posting": {
+        "members": {
+          "label": "所有成員",
+          "desc": "成員可以自己發文。"
+        },
+        "team": {
+          "label": "僅團隊",
+          "desc": "成員可以閱讀、互動和留言。"
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "規劃器",
       "lockedSuffix": "僅限 {plan}",
       "seo": "SEO",
-      "lockedGroup": "更高方案可用（{count}）"
+      "lockedGroup": "更高方案可用（{count}）",
+      "moderatorGroup": "你的範圍",
+      "moderatorHint": "你負責審核被標記的貼文和留言。成員、內容和設定由管理員團隊管理。",
+      "moderatorRole": "審核"
     },
     "media": {
       "metaTitle": "媒體",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "立即觀看",
         "liveWatchReplay": "觀看回放",
         "withdrawRsvp": "取消報名",
-        "rsvpGoing": "你已報名"
+        "rsvpGoing": "你已報名",
+        "feedNoPostsTeamHint": "這裡由團隊發文，新貼文會顯示在這裡。"
       },
       "spaceCard": {
         "space": "空間",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "帳戶與購買",
       "dashboard": "儀表板",
       "logout": "登出",
-      "login": "登入"
+      "login": "登入",
+      "moderation": "審核"
     },
     "joinPage": {
       "title": "選擇你的會員方案",
@@ -4899,7 +4916,8 @@
       "open": "{name} 的帳戶選單",
       "account": "帳戶與會員",
       "creatorArea": "創作者後台",
-      "logout": "登出"
+      "logout": "登出",
+      "moderation": "審核"
     },
     "welcome": {
       "title": "歡迎來到 {name}！你現在是會員了。",

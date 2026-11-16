@@ -1283,7 +1283,8 @@
       "membersCount": "{count, plural, one {# Mitglied} other {# Mitglieder}}",
       "newCommunity": "Neue Community",
       "myAccount": "Mein Konto",
-      "deletedNotice": "„{name}“ wird gelöscht. Das dauert einige Minuten."
+      "deletedNotice": "„{name}“ wird gelöscht. Das dauert einige Minuten.",
+      "moderatorRole": "Du moderierst"
     },
     "assistant": {
       "title": "AI Assistent",
@@ -3475,7 +3476,7 @@
       "tierHint": "Schaltet frei, was diese Mitgliedschaft enthält – ohne Zahlung.",
       "roleHints": {
         "MEMBER": "Sieht, was die Mitgliedschaft freischaltet, und schreibt in Feed und Forum.",
-        "MODERATOR": "Sieht alle Spaces und kann überall schreiben; seine Beiträge werden nicht automatisch geprüft. Kein Zugang zum Dashboard.",
+        "MODERATOR": "Sieht alle Spaces und kann überall schreiben; seine Beiträge werden nicht automatisch geprüft. Im Dashboard sieht er nur die Moderation: gemeldete Beiträge prüfen, freigeben oder entfernen.",
         "ADMIN": "Verwaltet die Community im Dashboard: Inhalte, Mitglieder, Moderation und Einstellungen. Admins ernennen, Zahlungen verbinden, Daten exportieren und die Community löschen darf nur der Owner."
       },
       "statusHint": "„Ausstehend“: eingetragen, aber noch ohne Zugang zu Inhalten für Mitglieder.",
@@ -3655,6 +3656,17 @@
         "noPaidText": "Lege eine bezahlte Mitgliedschaft an, damit Mitglieder diesen Space freischalten können.",
         "noPaidCta": "Zuerst eine Mitgliedschaft anlegen",
         "specificTier": "Bestimmte Mitgliedschaft"
+      },
+      "postingLabel": "Wer darf Beiträge schreiben?",
+      "posting": {
+        "members": {
+          "label": "Alle Mitglieder",
+          "desc": "Mitglieder schreiben eigene Beiträge."
+        },
+        "team": {
+          "label": "Nur das Team",
+          "desc": "Mitglieder lesen, reagieren und kommentieren."
+        }
       }
     },
     "roles": {
@@ -3817,7 +3829,10 @@
       "planner": "Planer",
       "lockedSuffix": "nur mit {plan}",
       "seo": "SEO",
-      "lockedGroup": "In höheren Paketen ({count})"
+      "lockedGroup": "In höheren Paketen ({count})",
+      "moderatorGroup": "Dein Bereich",
+      "moderatorHint": "Du prüfst gemeldete Beiträge und Kommentare. Mitglieder, Inhalte und Einstellungen verwaltet das Admin-Team.",
+      "moderatorRole": "Moderation"
     },
     "media": {
       "metaTitle": "Medien",
@@ -4692,7 +4707,8 @@
         "liveWatchNow": "Jetzt ansehen",
         "liveWatchReplay": "Aufzeichnung ansehen",
         "withdrawRsvp": "Zusage zurückziehen",
-        "rsvpGoing": "Du hast zugesagt"
+        "rsvpGoing": "Du hast zugesagt",
+        "feedNoPostsTeamHint": "Hier schreibt das Team. Neue Beiträge erscheinen an dieser Stelle."
       },
       "spaceCard": {
         "space": "Space",
@@ -4815,7 +4831,8 @@
       "accountAndPurchases": "Konto & Käufe",
       "dashboard": "Dashboard",
       "logout": "Abmelden",
-      "login": "Anmelden"
+      "login": "Anmelden",
+      "moderation": "Moderation"
     },
     "joinPage": {
       "title": "Wähle deine Mitgliedschaft",
@@ -4935,7 +4952,8 @@
       "open": "Konto-Menü von {name}",
       "account": "Konto & Mitgliedschaft",
       "creatorArea": "Creator-Bereich",
-      "logout": "Abmelden"
+      "logout": "Abmelden",
+      "moderation": "Moderation"
     },
     "welcome": {
       "title": "Willkommen bei {name}! Du bist jetzt Mitglied.",

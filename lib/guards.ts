@@ -36,7 +36,8 @@ export interface TenantAdminContext {
 }
 
 /**
- * Require the current user to be staff (>= ADMIN) of the tenant.
+ * Require the current user to hold at least `minRole` (default ADMIN) in the
+ * tenant. Moderators below the threshold land on the moderation page.
  * Request-deduped: layout + page share one lookup per request.
  */
 export const requireTenantAdmin = cache(async function requireTenantAdmin(
@@ -50,11 +51,12 @@ export const requireTenantAdmin = cache(async function requireTenantAdmin(
   const membership = await prisma.membership.findUnique({
     where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
   });
-  if (
-    !membership ||
-    membership.status !== "ACTIVE" ||
-    !roleAtLeast(membership.role, minRole)
-  ) {
+  if (!membership || membership.status !== "ACTIVE") redirect("/dashboard");
+  if (!roleAtLeast(membership.role, minRole)) {
+    // Moderatoren haben im Dashboard genau eine Seite: die Moderation. Jede
+    // andere Dashboard-Seite (und jede Action darunter) schickt sie dorthin,
+    // statt auf /dashboard und von dort in den Creator-Wizard.
+    if (membership.role === "MODERATOR") redirect(`/dashboard/${tenant.slug}/moderation`);
     redirect("/dashboard");
   }
   return { user, tenant, role: membership.role };

@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# membro} other {# membros}}",
       "newCommunity": "Nova comunidade",
       "myAccount": "My account",
-      "deletedNotice": "“{name}” está sendo excluída. Isso leva alguns minutos."
+      "deletedNotice": "“{name}” está sendo excluída. Isso leva alguns minutos.",
+      "moderatorRole": "Você modera"
     },
     "assistant": {
       "title": "Assistente de IA",
@@ -3273,7 +3274,7 @@
       "tierHint": "Libera o que esta assinatura inclui – sem pagamento.",
       "roleHints": {
         "MEMBER": "Vê o que a assinatura libera e pode publicar no feed e no fórum.",
-        "MODERATOR": "Vê todos os spaces e pode publicar em qualquer um; as publicações não passam pela verificação automática. Sem acesso ao painel.",
+        "MODERATOR": "Vê todos os spaces e pode publicar em qualquer um; suas publicações não passam pela verificação automática. No painel, vê apenas a moderação: revisar, aprovar ou remover publicações sinalizadas.",
         "ADMIN": "Gerencia a comunidade no painel: conteúdo, membros, moderação e configurações. Só o proprietário pode nomear admins, conectar pagamentos, exportar dados e excluir a comunidade."
       },
       "statusHint": "“Pendente”: cadastrado, mas ainda sem acesso ao conteúdo para membros.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Crie uma assinatura paga para que os membros possam desbloquear este espaço.",
         "noPaidCta": "Criar uma assinatura primeiro",
         "specificTier": "Assinatura específica"
+      },
+      "postingLabel": "Quem pode escrever posts?",
+      "posting": {
+        "members": {
+          "label": "Todos os membros",
+          "desc": "Os membros escrevem seus próprios posts."
+        },
+        "team": {
+          "label": "Só a equipe",
+          "desc": "Os membros leem, reagem e comentam."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planejador",
       "lockedSuffix": "somente no {plan}",
       "seo": "SEO",
-      "lockedGroup": "Em planos superiores ({count})"
+      "lockedGroup": "Em planos superiores ({count})",
+      "moderatorGroup": "Sua área",
+      "moderatorHint": "Você revisa posts e comentários sinalizados. A equipe de administração gerencia membros, conteúdo e configurações.",
+      "moderatorRole": "Moderação"
     },
     "media": {
       "metaTitle": "Mídia",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Assistir agora",
         "liveWatchReplay": "Assistir à gravação",
         "withdrawRsvp": "Retirar confirmação",
-        "rsvpGoing": "Você confirmou presença"
+        "rsvpGoing": "Você confirmou presença",
+        "feedNoPostsTeamHint": "Aqui quem publica é a equipe. Novos posts aparecerão aqui."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Conta e compras",
       "dashboard": "Painel",
       "logout": "Sair",
-      "login": "Entrar"
+      "login": "Entrar",
+      "moderation": "Moderação"
     },
     "joinPage": {
       "title": "Escolha sua assinatura",
@@ -4899,7 +4916,8 @@
       "open": "Menu da conta de {name}",
       "account": "Conta e assinatura",
       "creatorArea": "Área do criador",
-      "logout": "Sair"
+      "logout": "Sair",
+      "moderation": "Moderação"
     },
     "welcome": {
       "title": "Boas-vindas a {name}! Agora você é membro.",

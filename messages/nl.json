@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# lid} other {# leden}}",
       "newCommunity": "Nieuwe community",
       "myAccount": "My account",
-      "deletedNotice": "‘{name}’ wordt verwijderd. Dat duurt een paar minuten."
+      "deletedNotice": "‘{name}’ wordt verwijderd. Dat duurt een paar minuten.",
+      "moderatorRole": "Je modereert"
     },
     "assistant": {
       "title": "AI-assistent",
@@ -3273,7 +3274,7 @@
       "tierHint": "Geeft toegang tot wat dit lidmaatschap bevat – zonder betaling.",
       "roleHints": {
         "MEMBER": "Ziet wat het lidmaatschap ontgrendelt en kan posten in feed en forum.",
-        "MODERATOR": "Ziet alle spaces en kan overal posten; zijn berichten worden niet automatisch gecontroleerd. Geen toegang tot het dashboard.",
+        "MODERATOR": "Ziet alle spaces en kan overal posten; berichten worden niet automatisch gecontroleerd. In het dashboard ziet deze alleen de moderatie: gemelde berichten beoordelen, goedkeuren of verwijderen.",
         "ADMIN": "Beheert de community in het dashboard: inhoud, leden, moderatie en instellingen. Alleen de eigenaar kan admins benoemen, betalingen koppelen, gegevens exporteren en de community verwijderen."
       },
       "statusHint": "‘In afwachting’: ingeschreven, maar nog zonder toegang tot inhoud voor leden.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Maak een betaald lidmaatschap aan, zodat leden deze space kunnen ontgrendelen.",
         "noPaidCta": "Eerst een lidmaatschap aanmaken",
         "specificTier": "Specifiek lidmaatschap"
+      },
+      "postingLabel": "Wie mag berichten schrijven?",
+      "posting": {
+        "members": {
+          "label": "Alle leden",
+          "desc": "Leden schrijven hun eigen berichten."
+        },
+        "team": {
+          "label": "Alleen het team",
+          "desc": "Leden lezen, reageren en geven commentaar."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planner",
       "lockedSuffix": "alleen met {plan}",
       "seo": "SEO",
-      "lockedGroup": "In hogere pakketten ({count})"
+      "lockedGroup": "In hogere pakketten ({count})",
+      "moderatorGroup": "Jouw gedeelte",
+      "moderatorHint": "Je beoordeelt gemelde berichten en reacties. Het beheerteam beheert leden, inhoud en instellingen.",
+      "moderatorRole": "Moderatie"
     },
     "media": {
       "metaTitle": "Media",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Nu kijken",
         "liveWatchReplay": "Opname bekijken",
         "withdrawRsvp": "Aanmelding intrekken",
-        "rsvpGoing": "Je bent aangemeld"
+        "rsvpGoing": "Je bent aangemeld",
+        "feedNoPostsTeamHint": "Hier post het team. Nieuwe berichten verschijnen op deze plek."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Account & aankopen",
       "dashboard": "Dashboard",
       "logout": "Uitloggen",
-      "login": "Inloggen"
+      "login": "Inloggen",
+      "moderation": "Moderatie"
     },
     "joinPage": {
       "title": "Kies je lidmaatschap",
@@ -4899,7 +4916,8 @@
       "open": "Accountmenu van {name}",
       "account": "Account en lidmaatschap",
       "creatorArea": "Creatoromgeving",
-      "logout": "Uitloggen"
+      "logout": "Uitloggen",
+      "moderation": "Moderatie"
     },
     "welcome": {
       "title": "Welkom bij {name}! Je bent nu lid.",

@@ -24,7 +24,17 @@ export default async function DashboardIndex({
   searchParams: Promise<{ deleted?: string }>;
 }) {
   const user = await requireUser("/dashboard");
-  const tenants = await userTenants(user.id);
+  // Auch Communities, die man nur moderiert: Moderatoren landen sonst im
+  // Creator-Wizard (/start), statt zu ihrer Moderation zu kommen.
+  const tenants = await userTenants(user.id, { includeModerator: true });
+  const moderatedIds = new Set(
+    (
+      await systemPrisma.membership.findMany({
+        where: { userId: user.id, status: "ACTIVE", role: "MODERATOR" },
+        select: { tenantId: true },
+      })
+    ).map((m) => m.tenantId),
+  );
   // Antworten des Support-Teams, die dieses Mitglied noch nicht gesehen hat.
   const supportUnread = await userUnreadCount(user.id);
   // Gerade gelöschte Community (aus der Gefahrenzone). Der Name kommt aus dem
@@ -116,7 +126,11 @@ export default async function DashboardIndex({
           {tenants.map((tenant, i) => (
             <Link
               key={tenant.id}
-              href={`/dashboard/${tenant.slug}`}
+              href={
+                moderatedIds.has(tenant.id)
+                  ? `/dashboard/${tenant.slug}/moderation`
+                  : `/dashboard/${tenant.slug}`
+              }
               className="group flex flex-col rounded-2xl border border-[#161613]/10 bg-white p-5 transition duration-300 hover:border-[#161613]/30 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
             >
               <div className="flex items-start justify-between gap-3">
@@ -146,7 +160,9 @@ export default async function DashboardIndex({
               </p>
               <p className="mt-1 truncate text-xs text-[#161613]/65">/c/{tenant.slug}</p>
               <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
-                {t("membersCount", { count: counts[i] })}
+                {moderatedIds.has(tenant.id)
+                  ? t("moderatorRole")
+                  : t("membersCount", { count: counts[i] })}
               </p>
             </Link>
           ))}

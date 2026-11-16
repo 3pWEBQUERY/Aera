@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# membre} other {# membres}}",
       "newCommunity": "Nouvelle communauté",
       "myAccount": "My account",
-      "deletedNotice": "« {name} » est en cours de suppression. Cela prend quelques minutes."
+      "deletedNotice": "« {name} » est en cours de suppression. Cela prend quelques minutes.",
+      "moderatorRole": "Vous modérez"
     },
     "assistant": {
       "title": "Assistant IA",
@@ -3273,7 +3274,7 @@
       "tierHint": "Débloque ce que comprend cette adhésion, sans paiement.",
       "roleHints": {
         "MEMBER": "Voit ce que son adhésion débloque et peut publier dans le fil et le forum.",
-        "MODERATOR": "Voit tous les spaces et peut publier partout ; ses publications échappent à la vérification automatique. Pas d’accès au tableau de bord.",
+        "MODERATOR": "Voit tous les spaces et peut publier partout ; ses publications échappent à la vérification automatique. Dans le tableau de bord, il ne voit que la modération : examiner, approuver ou retirer les publications signalées.",
         "ADMIN": "Gère la communauté depuis le tableau de bord : contenus, membres, modération et paramètres. Seul le propriétaire peut nommer des admins, connecter les paiements, exporter les données et supprimer la communauté."
       },
       "statusHint": "« En attente » : inscrit, mais pas encore d’accès aux contenus réservés aux membres.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Créez une adhésion payante pour que les membres puissent débloquer cet espace.",
         "noPaidCta": "Créer d'abord une adhésion",
         "specificTier": "Adhésion spécifique"
+      },
+      "postingLabel": "Qui peut écrire des publications ?",
+      "posting": {
+        "members": {
+          "label": "Tous les membres",
+          "desc": "Les membres écrivent leurs propres publications."
+        },
+        "team": {
+          "label": "L’équipe uniquement",
+          "desc": "Les membres lisent, réagissent et commentent."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planificateur",
       "lockedSuffix": "{plan} uniquement",
       "seo": "SEO",
-      "lockedGroup": "Dans les offres supérieures ({count})"
+      "lockedGroup": "Dans les offres supérieures ({count})",
+      "moderatorGroup": "Votre espace",
+      "moderatorHint": "Vous examinez les publications et commentaires signalés. L’équipe d’administration gère les membres, le contenu et les réglages.",
+      "moderatorRole": "Modération"
     },
     "media": {
       "metaTitle": "Médias",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Regarder",
         "liveWatchReplay": "Voir la rediffusion",
         "withdrawRsvp": "Annuler l’inscription",
-        "rsvpGoing": "Vous êtes inscrit·e"
+        "rsvpGoing": "Vous êtes inscrit·e",
+        "feedNoPostsTeamHint": "Ici, c’est l’équipe qui publie. Les nouvelles publications apparaîtront ici."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Compte et achats",
       "dashboard": "Tableau de bord",
       "logout": "Se déconnecter",
-      "login": "Se connecter"
+      "login": "Se connecter",
+      "moderation": "Modération"
     },
     "joinPage": {
       "title": "Choisissez votre adhésion",
@@ -4899,7 +4916,8 @@
       "open": "Menu du compte de {name}",
       "account": "Compte et adhésion",
       "creatorArea": "Espace créateur",
-      "logout": "Se déconnecter"
+      "logout": "Se déconnecter",
+      "moderation": "Modération"
     },
     "welcome": {
       "title": "Bienvenue chez {name} ! Vous êtes désormais membre.",

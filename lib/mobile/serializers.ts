@@ -4,6 +4,7 @@ import {
   buildAccessContext,
   canAccess,
   type AccessContext,
+  canCreatePostIn,
 } from "@/lib/entitlements";
 import { unreadNotificationCount } from "@/lib/notifications";
 import { isLessonUnlocked, daysUntilUnlock } from "@/lib/drip";
@@ -1603,7 +1604,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       return {
         kind: "posts",
         posts,
-        canPost: isActiveMember || ctx.isStaff,
+        canPost: canCreatePostIn(space, ctx),
         nextCursor: hasMore ? page[page.length - 1]!.id : null,
       };
     }
@@ -1624,7 +1625,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
         return {
           kind: "forum",
           posts,
-          canPost: isActiveMember || ctx.isStaff,
+          canPost: canCreatePostIn(space, ctx),
           tab,
           nextCursor: hasMore ? page[page.length - 1]!.id : null,
         };
@@ -1651,7 +1652,7 @@ export async function buildSpaceContent(args: ContentArgs): Promise<ContentDto> 
       return {
         kind: "forum",
         posts: page,
-        canPost: isActiveMember || ctx.isStaff,
+        canPost: canCreatePostIn(space, ctx),
         tab,
         nextCursor: hasMore && page.length ? page[page.length - 1]!.id : null,
       };

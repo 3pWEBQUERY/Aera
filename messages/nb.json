@@ -1257,7 +1257,8 @@
       "membersCount": "{count, plural, one {# medlem} other {# medlemmer}}",
       "newCommunity": "Nytt fellesskap",
       "myAccount": "My account",
-      "deletedNotice": "«{name}» slettes. Det tar noen minutter."
+      "deletedNotice": "«{name}» slettes. Det tar noen minutter.",
+      "moderatorRole": "Du modererer"
     },
     "assistant": {
       "title": "AI-assistent",
@@ -3273,7 +3274,7 @@
       "tierHint": "Låser opp det medlemskapet inneholder – uten betaling.",
       "roleHints": {
         "MEMBER": "Ser det medlemskapet låser opp, og kan skrive i feed og forum.",
-        "MODERATOR": "Ser alle spaces og kan skrive overalt; innleggene sjekkes ikke automatisk. Ingen tilgang til dashbordet.",
+        "MODERATOR": "Ser alle spaces og kan skrive overalt; innleggene sjekkes ikke automatisk. I dashbordet ser vedkommende bare modereringen: gå gjennom, godkjenn eller fjern flaggede innlegg.",
         "ADMIN": "Administrerer fellesskapet i dashbordet: innhold, medlemmer, moderering og innstillinger. Bare eieren kan utnevne administratorer, koble til betalinger, eksportere data og slette fellesskapet."
       },
       "statusHint": "«Venter»: registrert, men ennå uten tilgang til innhold for medlemmer.",
@@ -3453,6 +3454,17 @@
         "noPaidText": "Opprett et betalt medlemskap slik at medlemmer kan låse opp dette spacet.",
         "noPaidCta": "Opprett først et medlemskap",
         "specificTier": "Bestemt medlemskap"
+      },
+      "postingLabel": "Hvem kan skrive innlegg?",
+      "posting": {
+        "members": {
+          "label": "Alle medlemmer",
+          "desc": "Medlemmer skriver egne innlegg."
+        },
+        "team": {
+          "label": "Bare teamet",
+          "desc": "Medlemmer leser, reagerer og kommenterer."
+        }
       }
     },
     "roles": {
@@ -3615,7 +3627,10 @@
       "planner": "Planlegger",
       "lockedSuffix": "kun med {plan}",
       "seo": "SEO",
-      "lockedGroup": "I høyere pakker ({count})"
+      "lockedGroup": "I høyere pakker ({count})",
+      "moderatorGroup": "Ditt område",
+      "moderatorHint": "Du går gjennom flaggede innlegg og kommentarer. Admin-teamet styrer medlemmer, innhold og innstillinger.",
+      "moderatorRole": "Moderering"
     },
     "media": {
       "metaTitle": "Medier",
@@ -4610,7 +4625,8 @@
         "liveWatchNow": "Se nå",
         "liveWatchReplay": "Se opptaket",
         "withdrawRsvp": "Trekk påmeldingen",
-        "rsvpGoing": "Du er påmeldt"
+        "rsvpGoing": "Du er påmeldt",
+        "feedNoPostsTeamHint": "Her skriver teamet. Nye innlegg vises her."
       },
       "spaceCard": {
         "space": "Space",
@@ -4779,7 +4795,8 @@
       "accountAndPurchases": "Konto & kjøp",
       "dashboard": "Dashbord",
       "logout": "Logg ut",
-      "login": "Logg inn"
+      "login": "Logg inn",
+      "moderation": "Moderering"
     },
     "joinPage": {
       "title": "Velg medlemskapet ditt",
@@ -4899,7 +4916,8 @@
       "open": "Kontomeny for {name}",
       "account": "Konto og medlemskap",
       "creatorArea": "Creator-område",
-      "logout": "Logg ut"
+      "logout": "Logg ut",
+      "moderation": "Moderering"
     },
     "welcome": {
       "title": "Velkommen til {name}! Du er nå medlem.",

@@ -45,21 +45,30 @@ horizontaler Scroll bei 375 px.
 
 ## Prüfung nach den Korrekturen
 
-- `tsc`, `eslint`, 826 Vitests, `next build`, 12 Playwright-Specs grün.
+- `tsc`, `eslint`, 831 Vitests, `next build`, 12 Playwright-Specs grün.
 - axe ohne serious/critical auf allen in den Walkthroughs besuchten Seiten
   (Desktop und 375 px).
-- Neue Migration: `20261116120000_totp_recovery_codes`.
+- Neue Migrationen: `20261116120000_totp_recovery_codes`, `20261116130000_announcements_team_posting`.
+
+## Entschieden und umgesetzt
+
+1. **Moderatoren** sehen im Dashboard nur die Moderation: eigene, schmale
+   Navigation, keine Suche. Jede andere Dashboard-Seite schickt sie dorthin
+   zurück (`lib/guards.ts`), `/dashboard` listet ihre moderierten Communities.
+   Sperren und die Mitgliederliste bleiben dem Admin-Team vorbehalten.
+2. **„Nur das Team postet“** ist eine Einstellung jedes Feed- und
+   Forum-Space („Wer darf Beiträge schreiben?“). Ankündigungen aus dem
+   Onboarding stehen darauf; bestehende Ankündigungs-Spaces zieht die
+   Migration `20261116130000_announcements_team_posting` nach. Web, Mobile-API
+   und Mobile-Listen nutzen dieselbe Regel (`canCreatePostIn`). Nebenbei
+   gefunden: Die Mobile-API prüfte beim Posten gar nicht, ob Mitglieder in dem
+   Space schreiben dürfen.
 
 ## Offen, zur Entscheidung
 
-1. **Moderatoren** haben keinen Zugang zum Dashboard (`dashboard/[slug]/layout.tsx`
-   verlangt ADMIN), obwohl die Moderationsseite MODERATOR erlaubt. Soll es
-   für Moderatoren eine schmale Moderationsansicht geben?
-2. **Ankündigungen**: Mitglieder dürfen in jedem Feed-Space posten. Eine
-   Einstellung „Nur das Team postet“ gibt es nur für Chats.
-3. **Antwortzeit**: Die Kontaktseite verspricht „im Schnitt innerhalb eines
+1. **Antwortzeit**: Die Kontaktseite verspricht „im Schnitt innerhalb eines
    Werktags“.
-4. **Paid-Gate**: Ein Space „Bezahlt“ ohne bestimmte Mitgliedschaft öffnet sich
+2. **Paid-Gate**: Ein Space „Bezahlt“ ohne bestimmte Mitgliedschaft öffnet sich
    für jeden, der irgendetwas Bezahltes besitzt (auch ein Produkt). Das steht
    jetzt so im Hinweis; ob es so bleiben soll, ist eine Produktfrage.
 

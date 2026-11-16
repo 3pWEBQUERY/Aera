@@ -153,7 +153,11 @@ export default async function ModerationPage({
                     )}
                   </div>
                   <p className="mt-2 text-sm text-slate-600">
-                    {author ? (
+                    {author && !canBan ? (
+                      // Moderatoren sehen die Mitgliederliste nicht — der Link
+                      // fuehrte nur zurueck hierher.
+                      <span className="font-semibold text-slate-900">{author.name}</span>
+                    ) : author ? (
                       <Link
                         href={`/dashboard/${slug}/members?q=${encodeURIComponent(author.email)}`}
                         className="font-semibold text-slate-900 underline-offset-2 hover:underline"
