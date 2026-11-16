@@ -115,6 +115,12 @@ async function getRedisConnection(role: RedisConnectionRole): Promise<Redis | nu
         delete state.initializers[role];
       });
       state.clients[role] = client;
+      // Ohne Offline-Queue scheitert jeder Befehl, solange die Verbindung
+      // noch aufgebaut wird. Der erste Rate-Limit-Aufruf nach jedem Start fiel
+      // deshalb auf die lokale Drosselung zurück (rate_limit_redis_degraded).
+      // Einmal auf "ready" warten — begrenzt, damit ein ausgefallenes Redis
+      // den Request nicht länger aufhält als der Connect-Timeout.
+      await waitUntilReady(client, 2_500);
       return client;
     } catch (error) {
       logConnectionError(state, role, error);
@@ -125,6 +131,21 @@ async function getRedisConnection(role: RedisConnectionRole): Promise<Redis | nu
 
   state.initializers[role] = initializer;
   return initializer;
+}
+
+function waitUntilReady(client: Redis, timeoutMs: number): Promise<void> {
+  if (client.status === "ready") return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => {
+      clearTimeout(timer);
+      client.off("ready", done);
+      client.off("end", done);
+      resolve();
+    };
+    const timer = setTimeout(done, timeoutMs);
+    client.once("ready", done);
+    client.once("end", done);
+  });
 }
 
 export function getRedisCommandClient(): Promise<Redis | null> {
