@@ -540,7 +540,7 @@ export function RichTextEditor({
         </button>
       )}
       {uploading && (
-        <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-400">
+        <span className="ml-auto inline-flex items-center gap-1.5 pr-1 text-xs text-slate-500">
           <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
           {t("loading")}
         </span>
@@ -721,7 +721,7 @@ export function RichTextEditor({
             {titleSlot}
             <div className="relative mt-3">
               {isEmpty && (
-                <p className="pointer-events-none absolute left-0 top-0 text-[17px] text-slate-400">
+                <p className="pointer-events-none absolute left-0 top-0 text-[17px] text-slate-500">
                   {placeholder ?? t("placeholder")}
                 </p>
               )}
@@ -778,7 +778,7 @@ export function RichTextEditor({
       {/* Editor */}
       <div className="relative">
         {isEmpty && (
-          <p className="pointer-events-none absolute left-4 top-4 text-[15px] text-slate-400">{placeholder ?? t("placeholder")}</p>
+          <p className="pointer-events-none absolute left-4 top-4 text-[15px] text-slate-500">{placeholder ?? t("placeholder")}</p>
         )}
         <div
           ref={editorRef}
@@ -898,7 +898,7 @@ function GifPickerModal({
             </div>
           )}
         </div>
-        <div className="shrink-0 border-t border-slate-100 px-3 py-1.5 text-center text-[11px] text-slate-400">
+        <div className="shrink-0 border-t border-slate-100 px-3 py-1.5 text-center text-[11px] text-slate-500">
           {provider === "giphy" ? "Powered by GIPHY" : "Powered by Tenor"}
         </div>
       </div>
@@ -1051,7 +1051,7 @@ function RecordVideoModal({
           {error ? (
             <p className="text-sm text-red-600">{error}</p>
           ) : (
-            <span className="text-xs text-slate-400" />
+            <span className="text-xs text-slate-500" />
           )}
           <div className="flex shrink-0 items-center gap-2">
             {phase === "live" && (

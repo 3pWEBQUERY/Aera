@@ -88,7 +88,7 @@ function ImagePart({ block }: { block: ImageBlock }) {
         className="w-full rounded-3xl border border-[#161613]/10 object-cover"
       />
       {block.caption.trim() && (
-        <figcaption className="mt-3 text-center text-sm text-[#161613]/50">
+        <figcaption className="mt-3 text-center text-sm text-[#161613]/65">
           {block.caption}
         </figcaption>
       )}
@@ -143,7 +143,7 @@ function VideoPart({ block }: { block: VideoBlock }) {
         className="w-full rounded-3xl border border-[#161613]/10 bg-[#161613]"
       />
       {block.caption.trim() && (
-        <p className="mt-3 text-center text-sm text-[#161613]/50">{block.caption}</p>
+        <p className="mt-3 text-center text-sm text-[#161613]/65">{block.caption}</p>
       )}
     </section>
   );
@@ -156,7 +156,7 @@ function QuotePart({ block }: { block: QuoteBlock }) {
         {block.text}
       </blockquote>
       {(block.author.trim() || block.role.trim()) && (
-        <figcaption className="mt-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/50">
+        <figcaption className="mt-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
           {block.author}
           {block.author.trim() && block.role.trim() && " · "}
           {block.role}
@@ -179,7 +179,7 @@ function FaqPart({ block }: { block: FaqBlock }) {
               <Icon
                 name="chevron"
                 size={18}
-                className="shrink-0 text-[#161613]/35 transition-transform duration-200 group-open:rotate-180"
+                className="shrink-0 text-[#161613]/65 transition-transform duration-200 group-open:rotate-180"
               />
             </summary>
             <div className="whitespace-pre-line px-5 pb-5 text-[15px] leading-7 text-[#161613]/70">
@@ -251,7 +251,7 @@ function LinksPart({ block }: { block: LinksBlock }) {
                   {item.label}
                 </span>
                 {item.description.trim() && (
-                  <span className="mt-0.5 block truncate text-sm text-[#161613]/55">
+                  <span className="mt-0.5 block truncate text-sm text-[#161613]/65">
                     {item.description}
                   </span>
                 )}
@@ -280,7 +280,7 @@ function StatsPart({ block }: { block: StatsBlock }) {
             <dt className="sr-only">{item.label}</dt>
             <dd>
               <span className="display-serif block text-3xl text-[#161613]">{item.value}</span>
-              <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/50">
+              <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
                 {item.label}
               </span>
             </dd>
@@ -336,7 +336,7 @@ export async function CommunityPageBlocks({ blocks }: { blocks: PageBlock[] }) {
   const filled = blocks.filter((b) => !isBlockEmpty(b));
   if (filled.length === 0) {
     const t = await getTranslations("community.pages");
-    return <p className="py-10 text-center text-sm text-[#161613]/45">{t("emptyPage")}</p>;
+    return <p className="py-10 text-center text-sm text-[#161613]/65">{t("emptyPage")}</p>;
   }
   return (
     <div className="space-y-12">

@@ -38,7 +38,7 @@ export default async function PricingPage() {
             <h1 className="display-serif mt-5 text-5xl leading-[1.04] sm:text-6xl md:text-7xl">
               {t("titleA")}
               <br />
-              <span className="text-[#161613]/50">{t("titleB")}</span>
+              <span className="text-[#161613]/65">{t("titleB")}</span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
@@ -111,7 +111,7 @@ export default async function PricingPage() {
                       <p className="display-serif text-3xl">
                         {nf.format(pack.credits)}
                       </p>
-                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+                      <p className="mt-1 text-xs font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
                         {t("creditsLabel")}
                       </p>
                     </div>
@@ -127,7 +127,7 @@ export default async function PricingPage() {
 
         {/* Fußnote */}
         <Reveal>
-          <p className="mt-14 max-w-2xl text-sm leading-6 text-[#161613]/50">
+          <p className="mt-14 max-w-2xl text-sm leading-6 text-[#161613]/65">
             {t("footnote")}
           </p>
         </Reveal>

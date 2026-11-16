@@ -53,7 +53,7 @@ export function Popover({
         <Icon
           name="chevron"
           size={14}
-          className={`text-slate-400 transition-transform ${open ? "rotate-180" : ""}`}
+          className={`text-slate-500 transition-transform ${open ? "rotate-180" : ""}`}
         />
       </button>
       {open && (

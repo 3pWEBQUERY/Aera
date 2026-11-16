@@ -93,7 +93,7 @@ export function FeedStream({
           <Icon
             name="search"
             size={16}
-            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#161613]/40"
+            className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-[#161613]/65"
           />
           <input
             value={query}
@@ -105,7 +105,7 @@ export function FeedStream({
       </div>
 
       {shown.length === 0 ? (
-        <p className="mt-8 text-center text-sm text-[#161613]/50">
+        <p className="mt-8 text-center text-sm text-[#161613]/65">
           {query.trim() ? t("noResults", { q: query.trim() }) : t("empty")}
         </p>
       ) : (
@@ -159,7 +159,7 @@ function FeedCard({
         <Avatar name={post.authorName} src={post.authorAvatar} size={36} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold text-[#161613]">{post.authorName}</p>
-          <p className="text-xs text-[#161613]/45">{timeAgo(post.createdAt, locale)}</p>
+          <p className="text-xs text-[#161613]/65">{timeAgo(post.createdAt, locale)}</p>
         </div>
         {locked && (
           <span className="inline-flex shrink-0 items-center gap-1.5 rounded-lg bg-[#161613]/[0.06] px-2.5 py-1.5 text-xs font-semibold text-[#161613]/70">

@@ -66,7 +66,7 @@ export function BrandingPanel({
           <div>
             <Label>{t("logoLabel")}</Label>
             <AvatarUpload tenant={slug} name="logoUrl" purpose="logo" defaultUrl={tenant.logoUrl} fallbackName={tenant.name} onChange={setLogo} />
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs text-slate-500">
               {t("logoHint")}
             </p>
           </div>
@@ -95,7 +95,7 @@ export function BrandingPanel({
                 <option key={c.key} value={c.key}>{tCat(c.key)}</option>
               ))}
             </Select>
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("categoryHint")}
             </p>
           </div>
@@ -108,7 +108,7 @@ export function BrandingPanel({
 
         {/* Live preview */}
         <div className="lg:col-span-2">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-400">{t("preview")}</p>
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">{t("preview")}</p>
           <div className="overflow-hidden rounded-2xl border border-slate-200">
             <div
               className="flex items-center gap-3 p-5 text-white"
@@ -218,7 +218,7 @@ function ColorField({
         <input type="hidden" name={name} value={value} />
       </div>
       {parsed ? (
-        <p className="mt-1 text-xs text-slate-400">{t("hexHint")}</p>
+        <p className="mt-1 text-xs text-slate-500">{t("hexHint")}</p>
       ) : (
         <p className="mt-1 text-xs text-red-600">{t("hexError")}</p>
       )}
@@ -255,7 +255,7 @@ function CopyableAddress({
   return (
     <div className="group flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3">
       <div className="min-w-0 flex-1">
-        <p className="text-xs text-slate-400">{label}</p>
+        <p className="text-xs text-slate-500">{label}</p>
         <p className="truncate font-mono text-sm text-slate-700">{value}</p>
       </div>
       <button
@@ -265,7 +265,7 @@ function CopyableAddress({
         className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)] ${
           copied
             ? "bg-green-100 text-green-700"
-            : "text-slate-400 hover:bg-white hover:text-slate-700 hover:shadow-sm"
+            : "text-slate-500 hover:bg-white hover:text-slate-700 hover:shadow-sm"
         }`}
       >
         <Icon name={copied ? "check" : "copy"} size={15} />
@@ -334,7 +334,7 @@ export function DomainPanel({
             {pending ? t("saving") : t("save")}
           </button>
         </div>
-        <p className="text-xs text-slate-400">{t("subHint")}</p>
+        <p className="text-xs text-slate-500">{t("subHint")}</p>
       </form>
     </section>
   );

@@ -361,12 +361,26 @@ export default async function CommunityHome({
         <EmptyState
           icon="feed"
           title={t("noPostsTitle")}
-          hint={isMember ? t("noPostsHintMember") : t("noPostsHintGuest")}
+          hint={
+            ctx.isStaff
+              ? t("noPostsHintStaff")
+              : isMember
+                ? t("noPostsHintMember")
+                : t("noPostsHintGuest")
+          }
         >
-          {!isMember && (
-            <ButtonLink href={`/c/${slug}/join`} size="sm">
-              {t("joinNow")}
+          {ctx.isStaff ? (
+            // The owner sees this page right after creating the community;
+            // it must lead to the first post, not address members.
+            <ButtonLink href={`/dashboard/${slug}`} size="sm">
+              {t("writeFirstPost")}
             </ButtonLink>
+          ) : (
+            !isMember && (
+              <ButtonLink href={`/c/${slug}/join`} size="sm">
+                {t("joinNow")}
+              </ButtonLink>
+            )
           )}
         </EmptyState>
       </section>
@@ -448,7 +462,7 @@ export default async function CommunityHome({
                   </span>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
                     {t("episode")} · {timeAgo(p.createdAt, locale)}
                   </p>
                   <h3 className="display-serif mt-1 text-xl leading-snug text-[#161613] sm:text-2xl">
@@ -561,7 +575,7 @@ export default async function CommunityHome({
           </span>
           <div className="min-w-0">
             <h2 className="display-serif text-xl text-[#161613]">{t("recsTitle")}</h2>
-            <p className="text-xs text-[#161613]/50">{t("recsSubtitle")}</p>
+            <p className="text-xs text-[#161613]/65">{t("recsSubtitle")}</p>
           </div>
         </div>
         <ul className="divide-y divide-[#161613]/10">
@@ -571,15 +585,15 @@ export default async function CommunityHome({
                 href={r.href}
                 className="group flex items-center gap-3 px-5 py-3 outline-none transition-colors hover:bg-[#161613]/[0.03] focus-visible:bg-[#161613]/[0.03]"
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/50 transition-colors group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/65 transition-colors group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
                   <Icon name={recTypeIcon[r.type] ?? "sparkles"} size={18} />
                 </span>
                 <div className="min-w-0 flex-1">
-                  <span className="inline-flex items-center rounded-full bg-[#161613]/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#161613]/55">
+                  <span className="inline-flex items-center rounded-full bg-[#161613]/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#161613]/65">
                     {tRec.has(r.type) ? tRec(r.type) : r.type}
                   </span>
                   <p className="mt-1 truncate text-sm font-semibold text-[#161613]">{r.title}</p>
-                  <p className="truncate text-xs text-[#161613]/50">
+                  <p className="truncate text-xs text-[#161613]/65">
                     {tReason.has(r.reason) ? tReason(r.reason) : r.reason}
                   </p>
                 </div>
@@ -603,11 +617,11 @@ export default async function CommunityHome({
         </span>
         <div className="min-w-0">
           <h2 className="display-serif text-xl text-[#161613]">{t("leaderboardTitle")}</h2>
-          <p className="text-xs text-[#161613]/50">{t("leaderboardSubtitle")}</p>
+          <p className="text-xs text-[#161613]/65">{t("leaderboardSubtitle")}</p>
         </div>
       </div>
       {board.length === 0 ? (
-        <p className="px-5 py-8 text-center text-sm text-[#161613]/50">{t("noPoints")}</p>
+        <p className="px-5 py-8 text-center text-sm text-[#161613]/65">{t("noPoints")}</p>
       ) : (
         <ol className="divide-y divide-[#161613]/10">
           {board.map((row, i) => {
@@ -618,7 +632,7 @@ export default async function CommunityHome({
                   className={
                     medal
                       ? `flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ring-1 ${medal.bg} ${medal.text} ${medal.ring}`
-                      : "display-serif flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[#161613]/45"
+                      : "display-serif flex h-6 w-6 shrink-0 items-center justify-center text-sm text-[#161613]/65"
                   }
                 >
                   {i + 1}
@@ -626,7 +640,7 @@ export default async function CommunityHome({
                 <Avatar name={row.name} src={row.avatarUrl} size={32} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[#161613]">{row.name}</p>
-                  <p className="flex items-center gap-2 truncate text-xs text-[#161613]/45">
+                  <p className="flex items-center gap-2 truncate text-xs text-[#161613]/65">
                     {row.levelName && <span className="truncate">{row.levelName}</span>}
                     <BadgeRow badges={boardBadges.get(row.userId) ?? []} size={16} max={3} />
                   </p>

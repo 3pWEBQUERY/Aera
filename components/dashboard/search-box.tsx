@@ -176,7 +176,7 @@ export function SearchBox({ slug }: { slug: string }) {
               inputRef.current?.focus();
             }}
             aria-label={t("clear")}
-            className="mr-1.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-slate-400 transition hover:bg-[var(--action-soft)] hover:text-slate-700"
+            className="mr-1.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-slate-500 transition hover:bg-[var(--action-soft)] hover:text-slate-700"
           >
             <Icon name="close" size={14} />
           </button>
@@ -190,16 +190,16 @@ export function SearchBox({ slug }: { slug: string }) {
           className="popover-in absolute left-0 top-full z-50 mt-2 w-[min(30rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl"
         >
           {loading && !data && (
-            <p className="px-4 py-6 text-center text-sm text-slate-400">{t("searching")}</p>
+            <p className="px-4 py-6 text-center text-sm text-slate-500">{t("searching")}</p>
           )}
 
           {data && data.total === 0 && !loading && (
             <div className="px-4 py-8 text-center">
-              <span className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+              <span className="mx-auto mb-2 flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                 <Icon name="search" size={18} />
               </span>
               <p className="text-sm font-semibold text-slate-700">{t("noResults")}</p>
-              <p className="mt-0.5 text-xs text-slate-400">{t("tryOther")}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{t("tryOther")}</p>
             </div>
           )}
 
@@ -207,7 +207,7 @@ export function SearchBox({ slug }: { slug: string }) {
             <div className="max-h-[min(28rem,70vh)] overflow-y-auto py-1.5">
               {data.groups.map((group) => (
                 <div key={group.group}>
-                  <p className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+                  <p className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                     {t(`groups.${group.group}`)}
                   </p>
                   {group.hits.map((hit) => {
@@ -230,7 +230,7 @@ export function SearchBox({ slug }: { slug: string }) {
                             "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors",
                             index === cursor
                               ? "bg-[var(--action)] text-[var(--action-fg)]"
-                              : "bg-slate-100 text-slate-500",
+                              : "bg-slate-100 text-slate-600",
                           )}
                         >
                           <Icon name={hit.icon} size={15} />
@@ -240,7 +240,7 @@ export function SearchBox({ slug }: { slug: string }) {
                             {hit.title}
                           </span>
                           {hit.subtitle && (
-                            <span className="block truncate text-xs text-slate-400">
+                            <span className="block truncate text-xs text-slate-500">
                               {hit.subtitle}
                             </span>
                           )}

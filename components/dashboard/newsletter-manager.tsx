@@ -89,7 +89,7 @@ export function NewsletterManager({
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
             {t("campaignsHeading")}
-            <Pill className="bg-slate-100 text-slate-500">{campaigns.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{campaigns.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">{t("campaignsDesc")}</p>
         </div>
@@ -136,7 +136,7 @@ export function NewsletterManager({
                     <p className="truncate font-semibold text-slate-900">{c.subject}</p>
                     <Pill className={statusCls[c.status] ?? statusCls.DRAFT}>{tStatus(c.status)}</Pill>
                   </div>
-                  <p className="mt-0.5 text-sm text-slate-400">
+                  <p className="mt-0.5 text-sm text-slate-500">
                     {c.segmentName ?? t("allActiveMembers")}
                     {c.status === "SCHEDULED" && c.scheduledAt
                       ? ` · ${formatDateTime(c.scheduledAt, locale)}`
@@ -166,7 +166,7 @@ export function NewsletterManager({
     <section>
       <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
         {t("segmentsHeading")}
-        <Pill className="bg-slate-100 text-slate-500">{segments.length}</Pill>
+        <Pill className="bg-slate-100 text-slate-600">{segments.length}</Pill>
       </h2>
       <p className="mt-0.5 text-sm text-slate-500">
         {t("segmentsDesc")}
@@ -203,7 +203,7 @@ export function NewsletterManager({
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="border-b border-slate-100 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+    <h3 className="border-b border-slate-100 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
       {children}
     </h3>
   );
@@ -311,7 +311,7 @@ function CampaignForm({
                 onChange={(e) => setSubject(e.target.value)}
                 className="text-base"
               />
-              <p className={`mt-1 text-xs ${subject.length > 60 ? "text-amber-600" : "text-slate-400"}`}>
+              <p className={`mt-1 text-xs ${subject.length > 60 ? "text-amber-600" : "text-slate-500"}`}>
                 {t("subjectCount", { count: subject.length })}
               </p>
             </div>
@@ -348,7 +348,7 @@ function CampaignForm({
                 className={bodyFormat === "HTML" ? "font-mono text-xs leading-5" : undefined}
               />
               {bodyFormat === "HTML" && (
-                <p className="mt-1 text-xs text-slate-400">{t("htmlHint")}</p>
+                <p className="mt-1 text-xs text-slate-500">{t("htmlHint")}</p>
               )}
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -403,7 +403,7 @@ function CampaignForm({
                       </p>
                     ))}
                   </div>
-                  <div className="border-t border-slate-100 px-5 py-3 text-xs text-slate-400">Aera</div>
+                  <div className="border-t border-slate-100 px-5 py-3 text-xs text-slate-500">Aera</div>
                 </div>
               </div>
             )}
@@ -430,7 +430,7 @@ function CampaignForm({
               <Icon name="members" size={13} />
               {t("recipientsEstimate", { count: recipientCount })}
             </p>
-            <p className="text-xs text-slate-400">{t("recipientsInfo")}</p>
+            <p className="text-xs text-slate-500">{t("recipientsInfo")}</p>
           </section>
 
           {/* ---- Zeitplan ---- */}
@@ -445,7 +445,7 @@ function CampaignForm({
                 value={scheduledAt}
                 onChange={(event) => onScheduleChange(event.target.value)}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
             </div>
           </section>
 
@@ -526,13 +526,13 @@ function SegmentsPanel({
           <div key={sg.id} className="rounded-xl border border-slate-200 bg-white px-4 py-3">
             <div className="flex items-center justify-between gap-3">
               <div className="flex min-w-0 items-center gap-3">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
                   <Icon name="members" size={16} />
                 </span>
                 <div className="min-w-0">
                   <p className="truncate text-sm font-semibold text-slate-800">{sg.name}</p>
                   {sg.description && (
-                    <p className="truncate text-xs text-slate-400">{sg.description}</p>
+                    <p className="truncate text-xs text-slate-500">{sg.description}</p>
                   )}
                 </div>
               </div>
@@ -564,7 +564,7 @@ function SegmentsPanel({
         {segments.length === 0 && (
           <div className="rounded-xl border border-dashed border-slate-200 px-6 py-8 text-center">
             <p className="text-sm font-medium text-slate-700">{t("emptySegmentsTitle")}</p>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <p className="mt-0.5 text-xs text-slate-500">
               {t("emptySegmentsHint")}
             </p>
           </div>

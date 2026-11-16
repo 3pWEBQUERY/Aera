@@ -78,7 +78,7 @@ function Field({
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold text-slate-800">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
     </label>
   );
 }
@@ -188,7 +188,7 @@ function MediaField({
         onChange={(e) => pick(e.target.files?.[0])}
       />
       {error && <span className="mt-1 block text-xs text-red-600">{error}</span>}
-      {hint && !url && <span className="mt-1 block text-xs text-slate-400">{hint}</span>}
+      {hint && !url && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
     </div>
   );
 }
@@ -210,7 +210,7 @@ function RowFrame({
         type="button"
         onClick={onRemove}
         aria-label={removeLabel}
-        className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+        className="absolute right-2 top-2 flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
       >
         <Icon name="trash" size={14} />
       </button>
@@ -707,14 +707,14 @@ function BlockCard({
           <Icon
             name="chevron"
             size={16}
-            className={cn("shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
+            className={cn("shrink-0 text-slate-500 transition-transform", open && "rotate-180")}
           />
         </button>
         <button
           type="button"
           onClick={onRemove}
           aria-label={t("removeBlock")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
         >
           <Icon name="trash" size={15} />
         </button>
@@ -874,7 +874,7 @@ function PageEditor({
           />
           <span>
             <span className="block text-sm font-semibold text-slate-800">{t("fieldShowInNav")}</span>
-            <span className="block text-xs text-slate-400">{t("fieldShowInNavHint")}</span>
+            <span className="block text-xs text-slate-500">{t("fieldShowInNavHint")}</span>
           </span>
         </label>
       </div>
@@ -883,7 +883,7 @@ function PageEditor({
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
           <h3 className="text-sm font-bold text-slate-900">{t("blocksTitle")}</h3>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-500">
             {draft.blocks.length}/{MAX_BLOCKS}
           </span>
         </div>
@@ -923,7 +923,7 @@ function PageEditor({
         </div>
 
         {draft.blocks.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-400">
+          <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-500">
             {t("noBlocks")}
           </p>
         )}
@@ -960,7 +960,7 @@ function PageEditor({
                     <span className="block text-sm font-semibold text-slate-800">
                       {t(`blockType.${type}`)}
                     </span>
-                    <span className="block truncate text-xs text-slate-400">
+                    <span className="block truncate text-xs text-slate-500">
                       {t(`blockHint.${type}`)}
                     </span>
                   </span>
@@ -1118,7 +1118,7 @@ export function PagesPanel({
           <span className="block truncate text-sm font-semibold text-slate-800">
             {t("homeTab")}
           </span>
-          <span className="block text-xs text-slate-400">{t("homeTabHint")}</span>
+          <span className="block text-xs text-slate-500">{t("homeTabHint")}</span>
         </span>
         <Icon name="lock" size={14} className="shrink-0 text-slate-300" />
       </div>
@@ -1167,18 +1167,18 @@ export function PagesPanel({
                     <Icon name="eyeOff" size={13} className="shrink-0 text-slate-300" />
                   )}
                 </span>
-                <span className="block truncate text-xs text-slate-400">
+                <span className="block truncate text-xs text-slate-500">
                   {t("blockCount", { count: page.blocks.length })}
                 </span>
               </span>
-              <Icon name="chevron" size={16} className="shrink-0 -rotate-90 text-slate-400" />
+              <Icon name="chevron" size={16} className="shrink-0 -rotate-90 text-slate-500" />
             </button>
           </div>
         ))}
       </div>
 
       {pages.length === 0 && !adding && (
-        <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-400">
+        <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-500">
           {t("noPages")}
         </p>
       )}
@@ -1197,7 +1197,7 @@ export function PagesPanel({
               {t("cancel")}
             </button>
           </div>
-          <p className="mb-3 text-xs leading-5 text-slate-400">{tTpl("pickHint")}</p>
+          <p className="mb-3 text-xs leading-5 text-slate-500">{tTpl("pickHint")}</p>
           <div className="grid grid-cols-2 gap-2">
             {PAGE_TEMPLATES.map((key) => (
               <button
@@ -1214,14 +1214,14 @@ export function PagesPanel({
                   <span className="block text-sm font-semibold text-slate-800">
                     {tTpl(`${key}.name`)}
                   </span>
-                  <span className="mt-0.5 block text-xs leading-4 text-slate-400">
+                  <span className="mt-0.5 block text-xs leading-4 text-slate-500">
                     {tTpl(`${key}.hint`)}
                   </span>
                 </span>
               </button>
             ))}
           </div>
-          {pending && <p className="mt-3 text-sm text-slate-400">{t("creating")}</p>}
+          {pending && <p className="mt-3 text-sm text-slate-500">{t("creating")}</p>}
         </div>
       ) : (
         <button

@@ -39,7 +39,7 @@ export function EmojiPicker({
         onClick={() => setOpen((v) => !v)}
         aria-label={label}
         aria-expanded={open}
-        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#161613]/50 transition hover:bg-[#161613]/5 hover:text-[#161613]"
+        className="flex h-8 w-8 items-center justify-center rounded-lg text-[#161613]/65 transition hover:bg-[#161613]/5 hover:text-[#161613]"
       >
         <Icon name="smile" size={17} />
       </button>

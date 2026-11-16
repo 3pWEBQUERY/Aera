@@ -59,7 +59,7 @@ export function TipsManager({
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-xs font-medium uppercase tracking-wide text-slate-400">{t("totalLabel")}</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-slate-500">{t("totalLabel")}</p>
           <p className="mt-1 text-2xl font-bold text-slate-900">{money(totalCents, currency, locale)}</p>
         </div>
         <form action={action} className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -77,7 +77,7 @@ export function TipsManager({
               {pending ? t("saving") : t("save")}
             </button>
           </div>
-          <p className="mt-1 text-xs text-slate-400">{t("goalHint")}</p>
+          <p className="mt-1 text-xs text-slate-500">{t("goalHint")}</p>
         </form>
       </div>
 

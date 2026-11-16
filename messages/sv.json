@@ -196,7 +196,7 @@
     "addressLabel": "Adress",
     "alsoReachable": "Även nåbar på {url}",
     "slugFallback": "din-community",
-    "taglineLabel": "Kort beskrivning (valfritt)",
+    "taglineLabel": "Slogan (valfritt)",
     "taglinePlaceholder": "Vad handlar din community om?",
     "descLabel": "Beskrivning",
     "descPlaceholder": "Beskriv i några meningar vad medlemmar kan förvänta sig.",
@@ -316,7 +316,9 @@
     "promoLabel": "Kampanjkod (valfritt)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Har du en kod från en partner eller creator? Då startar din community direkt på det högre paketet — utan betalningsuppgifter.",
-    "hexLabel": "Egen hexkod"
+    "hexLabel": "Egen hexkod",
+    "nameRequired": "Ge din community ett namn (minst 2 tecken).",
+    "spacesRequired": "Välj minst ett område."
   },
   "seed": {
     "tierDescription": "Gratis tillgång till gemenskapen.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Flera samtidigt · MP3, M4A, WAV eller OGG",
       "trackTitleAria": "Låtens titel",
       "removeTrackAria": "Ta bort låt",
-      "trackUploading": "Laddar upp {count} … {percent}%"
+      "trackUploading": "Laddar upp {count} … {percent}%",
+      "deleteQuestion": "Radera inlägget permanent?",
+      "deleteConfirm": "Radera inlägg"
     },
     "chat": {
       "badge": "Chatt",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Köp",
       "statRevenue": "Intäkter",
       "recentMembers": "Nyaste medlemmar",
-      "noMembers": "Inga medlemmar ännu. Dela din community-länk för att komma igång."
+      "noMembers": "Inga medlemmar ännu. Dela din community-länk för att komma igång.",
+      "welcomeNew": "Kul att du är här. De här stegen får igång {name}."
     },
     "topbar": {
       "viewCommunity": "Visa community"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Ingen adress än",
       "close": "Stäng"
+    },
+    "gettingStarted": {
+      "title": "Kom igång",
+      "progress": "{done} av {total} klara",
+      "done": "klar",
+      "viewCommunity": "Visa community",
+      "viewCommunityHint": "så ser besökare din sida.",
+      "post": {
+        "title": "Publicera ditt första inlägg",
+        "desc": "Hälsa din community välkommen – några meningar räcker.",
+        "cta": "Skriv ett inlägg"
+      },
+      "look": {
+        "title": "Lägg till omslagsbild och logotyp",
+        "desc": "Så att community-sidan ser ut som du.",
+        "cta": "Öppna varumärke"
+      },
+      "invite": {
+        "title": "Bjud in dina första medlemmar",
+        "desc": "Dela din länk eller bjud in via e-post.",
+        "cta": "Bjud in medlemmar"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Medlemskapsalternativ",
         "errCheckout": "Betalningen kunde inte startas. Försök igen.",
         "errPaymentsUnavailable": "Betalningar är för närvarande otillgängliga. Försök igen senare.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Din community är redo. Ditt första inlägg visar besökarna vad det handlar om.",
+        "writeFirstPost": "Skriv ditt första inlägg"
       },
       "shop": {
         "heading": "Butik",

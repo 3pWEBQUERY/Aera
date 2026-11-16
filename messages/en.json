@@ -221,8 +221,8 @@
     "addressLabel": "Address",
     "alsoReachable": "Also reachable at {url}",
     "slugFallback": "your-community",
-    "taglineLabel": "Short description (optional)",
-    "taglinePlaceholder": "What is your community about?",
+    "taglineLabel": "Tagline (optional)",
+    "taglinePlaceholder": "One line that sparks curiosity – e.g. “Yoga for every morning”",
     "descLabel": "Description",
     "descPlaceholder": "Describe in a few sentences what members can expect.",
     "primaryColor": "Primary color",
@@ -341,7 +341,9 @@
     "promoLabel": "Promo code (optional)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Got a code from a partner or creator? Your community then starts on the higher package right away — no payment details needed.",
-    "hexLabel": "Custom hex code"
+    "hexLabel": "Custom hex code",
+    "nameRequired": "Give your community a name (at least 2 characters).",
+    "spacesRequired": "Choose at least one area."
   },
   "seed": {
     "tierDescription": "Free access to the community.",
@@ -1116,7 +1118,7 @@
       "standaloneSubtitle": "Banner management · this space is invisible to members.",
       "heading": "Announcement banners",
       "headingDesc": "Appear at the very top of all community pages — with colors, image, button and countdown.",
-      "addBtn": "Announcement",
+      "addBtn": "Add banner",
       "onlyToggleLabel": "Use for banners only",
       "onlyToggleHint": "Hides the space from navigation and the community — this page then only shows the banner management.",
       "endsAt": "Ends {date}",
@@ -1245,7 +1247,9 @@
       "trackUploadHint": "Several at once · MP3, M4A, WAV or OGG",
       "trackTitleAria": "Track title",
       "removeTrackAria": "Remove track",
-      "trackUploading": "Uploading {count} … {percent}%"
+      "trackUploading": "Uploading {count} … {percent}%",
+      "deleteQuestion": "Delete this post for good?",
+      "deleteConfirm": "Delete post"
     },
     "chat": {
       "badge": "Chat",
@@ -3208,7 +3212,8 @@
       "statPurchases": "Purchases",
       "statRevenue": "Revenue",
       "recentMembers": "Newest members",
-      "noMembers": "No members yet. Share your community link to get started."
+      "noMembers": "No members yet. Share your community link to get started.",
+      "welcomeNew": "Great to have you. These steps get {name} off the ground."
     },
     "topbar": {
       "viewCommunity": "View community"
@@ -3829,6 +3834,28 @@
       },
       "urlMissing": "No address yet",
       "close": "Close"
+    },
+    "gettingStarted": {
+      "title": "Getting started",
+      "progress": "{done} of {total} done",
+      "done": "done",
+      "viewCommunity": "View community",
+      "viewCommunityHint": "see your page the way visitors do.",
+      "post": {
+        "title": "Publish your first post",
+        "desc": "Say hello to your community – a few sentences are enough.",
+        "cta": "Write a post"
+      },
+      "look": {
+        "title": "Add a cover image and logo",
+        "desc": "So your community page looks like you.",
+        "cta": "Open branding"
+      },
+      "invite": {
+        "title": "Invite your first members",
+        "desc": "Share your link or invite people by email.",
+        "cta": "Invite members"
+      }
     }
   },
   "common": {
@@ -3989,7 +4016,7 @@
       },
       "home": {
         "untitled": "Untitled",
-        "postsCount": "{count} posts",
+        "postsCount": "{count, plural, one {# post} other {# posts}}",
         "membersCount": "{count, plural, one {# member} other {# members}}",
         "newPosts": "New posts",
         "noPostsTitle": "No posts yet",
@@ -4018,7 +4045,9 @@
         "membershipOptions": "Membership options",
         "errCheckout": "Checkout could not be started. Please try again.",
         "errPaymentsUnavailable": "Payments are currently unavailable. Please try again later.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Your community is ready. Your first post shows visitors what it is about.",
+        "writeFirstPost": "Write your first post"
       },
       "shop": {
         "heading": "Shop",

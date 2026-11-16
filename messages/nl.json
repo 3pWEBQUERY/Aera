@@ -196,7 +196,7 @@
     "addressLabel": "Adres",
     "alsoReachable": "Ook bereikbaar via {url}",
     "slugFallback": "jouw-community",
-    "taglineLabel": "Korte beschrijving (optioneel)",
+    "taglineLabel": "Slogan (optioneel)",
     "taglinePlaceholder": "Waar gaat je community over?",
     "descLabel": "Beschrijving",
     "descPlaceholder": "Beschrijf in een paar zinnen wat leden kunnen verwachten.",
@@ -316,7 +316,9 @@
     "promoLabel": "Promocode (optioneel)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Heb je een code van een partner of creator? Dan start je community meteen in het hogere pakket — zonder betaalgegevens.",
-    "hexLabel": "Eigen hexcode"
+    "hexLabel": "Eigen hexcode",
+    "nameRequired": "Geef je community een naam (minstens 2 tekens).",
+    "spacesRequired": "Kies minstens één onderdeel."
   },
   "seed": {
     "tierDescription": "Gratis toegang tot de community.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Meerdere tegelijk · MP3, M4A, WAV of OGG",
       "trackTitleAria": "Titel van het nummer",
       "removeTrackAria": "Nummer verwijderen",
-      "trackUploading": "{count} worden geüpload … {percent}%"
+      "trackUploading": "{count} worden geüpload … {percent}%",
+      "deleteQuestion": "Bericht definitief verwijderen?",
+      "deleteConfirm": "Verwijderen"
     },
     "chat": {
       "badge": "Chat",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Aankopen",
       "statRevenue": "Omzet",
       "recentMembers": "Nieuwste leden",
-      "noMembers": "Nog geen leden. Deel je community-link om te beginnen."
+      "noMembers": "Nog geen leden. Deel je community-link om te beginnen.",
+      "welcomeNew": "Fijn dat je er bent. Met deze stappen zet je {name} op de kaart."
     },
     "topbar": {
       "viewCommunity": "Community bekijken"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Nog geen adres",
       "close": "Sluiten"
+    },
+    "gettingStarted": {
+      "title": "Aan de slag",
+      "progress": "{done} van {total} klaar",
+      "done": "klaar",
+      "viewCommunity": "Community bekijken",
+      "viewCommunityHint": "zo zien bezoekers je pagina.",
+      "post": {
+        "title": "Publiceer je eerste bericht",
+        "desc": "Verwelkom je community – een paar zinnen is genoeg.",
+        "cta": "Bericht schrijven"
+      },
+      "look": {
+        "title": "Voeg een omslagfoto en logo toe",
+        "desc": "Zodat je communitypagina bij jou past.",
+        "cta": "Branding openen"
+      },
+      "invite": {
+        "title": "Nodig je eerste leden uit",
+        "desc": "Deel je link of nodig mensen uit per e-mail.",
+        "cta": "Leden uitnodigen"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Lidmaatschapsopties",
         "errCheckout": "Het afrekenen kon niet worden gestart. Probeer het opnieuw.",
         "errPaymentsUnavailable": "Betalingen zijn momenteel niet beschikbaar. Probeer het later opnieuw.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Je community staat klaar. Je eerste bericht laat bezoekers zien waar het om gaat.",
+        "writeFirstPost": "Schrijf je eerste bericht"
       },
       "shop": {
         "heading": "Shop",

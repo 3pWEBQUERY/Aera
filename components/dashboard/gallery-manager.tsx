@@ -75,9 +75,9 @@ export function GalleryManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{t("badge")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("badge")}</Pill>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               /{space.slug} · {t("packageCount", { count: packages.length })}
             </p>
           </div>
@@ -87,7 +87,7 @@ export function GalleryManager({
             href={`/c/${slug}/s/${space.slug}`}
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
           >
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("view")}
           </Link>
           <button
@@ -102,7 +102,7 @@ export function GalleryManager({
 
       {packages.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
             <Icon name="gallery" size={24} />
           </div>
           <p className="mt-3 font-medium text-slate-700">{t("emptyTitle")}</p>
@@ -213,11 +213,11 @@ function FolderCard({
         <div className="flex items-start justify-between gap-2 p-3.5">
           <div className="min-w-0">
             <p className="truncate font-semibold text-slate-900">{pkg.title}</p>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <p className="mt-0.5 text-xs text-slate-500">
               {t("mediaCount", { count: pkg.items.length })}
             </p>
           </div>
-          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 transition group-hover:bg-[var(--action)] group-hover:text-[var(--action-fg)]">
+          <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600 transition group-hover:bg-[var(--action)] group-hover:text-[var(--action-fg)]">
             <Icon name="chevron" size={15} className="-rotate-90" />
           </span>
         </div>
@@ -271,7 +271,7 @@ function PackageForm({
       {/* Existing items (edit only) — separate forms so they can be removed inline. */}
       {isEdit && pkg!.items.length > 0 && (
         <div className="shrink-0 border-b border-slate-200 bg-slate-50/60 px-6 py-4">
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             {t("contentCount", { count: pkg!.items.length })}
           </p>
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
@@ -339,7 +339,7 @@ function PackageForm({
               <Label>{isEdit ? t("addMedia") : t("media")}</Label>
               <MultiMediaUpload tenant={slug} name="items" purpose="gallery" />
               {isEdit && (
-                <p className="mt-1.5 text-xs text-slate-400">{t("addMediaHint")}</p>
+                <p className="mt-1.5 text-xs text-slate-500">{t("addMediaHint")}</p>
               )}
             </div>
 
@@ -351,7 +351,7 @@ function PackageForm({
               >
                 <span>
                   <span className="block text-sm font-medium text-slate-800">{t("sell")}</span>
-                  <span className="block text-xs text-slate-400">
+                  <span className="block text-xs text-slate-500">
                     {paid ? t("sellOn") : t("sellOff")}
                   </span>
                 </span>
@@ -391,7 +391,7 @@ function PackageForm({
                 type="datetime-local"
                 defaultValue={pkg?.availableUntil ? pkg.availableUntil.slice(0, 16) : ""}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("availableUntilHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("availableUntilHint")}</p>
             </div>
 
             <Switch

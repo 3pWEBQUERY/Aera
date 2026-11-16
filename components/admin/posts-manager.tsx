@@ -78,7 +78,7 @@ export function PostsManager({
       <div>
         <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
           {t("title")}
-          <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+          <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           {t("subtitle")}
@@ -89,7 +89,7 @@ export function PostsManager({
         <form method="GET" action="/admin/posts" className="w-full max-w-md">
           {status && <input type="hidden" name="status" value={status} />}
           <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-            <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+            <Icon name="search" size={17} className="shrink-0 text-slate-500" />
             <input
               type="search"
               name="q"
@@ -168,7 +168,7 @@ export function PostsManager({
                     {p.excerpt}
                   </p>
                 )}
-                <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-slate-400">
+                <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-xs text-slate-500">
                   <span className="truncate">
                     {p.tenantName} · {p.spaceName} · {p.authorName} ·{" "}
                     {formatDateTime(p.createdAt, locale)}

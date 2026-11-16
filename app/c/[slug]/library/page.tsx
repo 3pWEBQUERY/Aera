@@ -95,7 +95,7 @@ export default async function LibraryPage({
         <section>
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-slate-900">{t("unlockedMedia")}</h2>
-            <Pill className="bg-slate-100 text-slate-500">{ownedPackages.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{ownedPackages.length}</Pill>
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {ownedPackages.map((p) => (
@@ -125,7 +125,7 @@ export default async function LibraryPage({
                   <p className="truncate font-semibold text-slate-900 group-hover:text-[color:var(--brand)]">
                     {p.title}
                   </p>
-                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-400">
+                  <p className="mt-0.5 flex items-center gap-1.5 text-xs text-slate-500">
                     <Icon name="gallery" size={13} />
                     {t("itemCount", { count: p._count.items })}
                     <span aria-hidden>·</span> {t("openDownload")}
@@ -142,7 +142,7 @@ export default async function LibraryPage({
         <section>
           <div className="flex items-center gap-2">
             <h2 className="font-semibold text-slate-900">{t("orders")}</h2>
-            <Pill className="bg-slate-100 text-slate-500">{orders.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{orders.length}</Pill>
           </div>
           <div className="mt-4 overflow-hidden rounded-2xl border border-slate-200 bg-white">
             <ul className="divide-y divide-slate-100">
@@ -158,7 +158,7 @@ export default async function LibraryPage({
                       <p className="truncate text-sm font-medium text-slate-800">
                         {o.product?.name ?? o.description}
                       </p>
-                      <p className="text-xs text-slate-400">{formatDate(o.createdAt, locale)}</p>
+                      <p className="text-xs text-slate-500">{formatDate(o.createdAt, locale)}</p>
                     </div>
                     <Pill className={cls}>{statusLabel}</Pill>
                     <span className="w-20 shrink-0 text-right text-sm font-semibold text-slate-900">

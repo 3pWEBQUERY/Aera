@@ -86,7 +86,7 @@ function Section({
   return (
     <section>
       {hint && (
-        <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
           {hint}
         </p>
       )}
@@ -168,7 +168,7 @@ export default async function DiscoverPage({
           </h1>
           {results.length === 0 ? (
             <div className="mt-6 rounded-2xl border border-dashed border-[#161613]/25 px-6 py-12 text-center">
-              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#161613]/5 text-[#161613]/40">
+              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#161613]/5 text-[#161613]/65">
                 <Icon name="search" size={24} />
               </span>
               <p className="mt-4 font-medium text-[#161613]">{t("emptyTitle")}</p>
@@ -340,7 +340,7 @@ export default async function DiscoverPage({
                 <span className="display-serif block truncate text-base leading-tight text-[#161613]">
                   {tenant.name}
                 </span>
-                <span className="mt-1 block truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+                <span className="mt-1 block truncate text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
                   {t("memberCount", { count: tenant._count.memberships })}
                 </span>
               </span>
@@ -374,7 +374,7 @@ export default async function DiscoverPage({
                 className={`group flex h-44 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/30 sm:h-48 ${CATEGORY_TILE_TONES[i % CATEGORY_TILE_TONES.length]}`}
               >
                 <span className="flex items-start justify-between gap-3">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-60">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
                     {t("topicBadge")}
                   </span>
                   <Icon
@@ -441,7 +441,7 @@ async function SearchBar({ defaultValue = "" }: { defaultValue?: string }) {
   return (
     <form method="GET" action="/home" id="suche" className="max-w-2xl">
       <div className="flex items-center gap-3 rounded-xl border border-[#161613]/20 bg-white py-2 pl-5 pr-2 transition focus-within:border-[#161613]/50 focus-within:ring-2 focus-within:ring-[#161613]/10">
-        <Icon name="search" size={20} className="shrink-0 text-[#161613]/40" />
+        <Icon name="search" size={20} className="shrink-0 text-[#161613]/65" />
         <input
           type="search"
           name="q"

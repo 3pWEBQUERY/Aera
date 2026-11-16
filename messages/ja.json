@@ -196,7 +196,7 @@
     "addressLabel": "アドレス",
     "alsoReachable": "{url} でもアクセスできます",
     "slugFallback": "your-community",
-    "taglineLabel": "短い説明（任意）",
+    "taglineLabel": "キャッチコピー（任意）",
     "taglinePlaceholder": "あなたのコミュニティは何についてですか？",
     "descLabel": "説明",
     "descPlaceholder": "メンバーが何を期待できるか、数文で説明してください。",
@@ -316,7 +316,9 @@
     "promoLabel": "プロモコード（任意）",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "パートナーやクリエイターからコードをもらいましたか？ コミュニティはすぐに上位パッケージで開始できます — 支払い情報は不要です。",
-    "hexLabel": "任意のカラーコード"
+    "hexLabel": "任意のカラーコード",
+    "nameRequired": "コミュニティ名を入力してください（2文字以上）。",
+    "spacesRequired": "エリアを1つ以上選んでください。"
   },
   "seed": {
     "tierDescription": "コミュニティへの無料アクセス。",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "まとめて選択可 · MP3・M4A・WAV・OGG",
       "trackTitleAria": "曲名",
       "removeTrackAria": "曲を削除",
-      "trackUploading": "{count} 件をアップロード中 … {percent}%"
+      "trackUploading": "{count} 件をアップロード中 … {percent}%",
+      "deleteQuestion": "この投稿を完全に削除しますか？",
+      "deleteConfirm": "削除する"
     },
     "chat": {
       "badge": "チャット",
@@ -3010,7 +3014,8 @@
       "statPurchases": "購入",
       "statRevenue": "売上",
       "recentMembers": "最新のメンバー",
-      "noMembers": "まだメンバーがいません。コミュニティのリンクを共有して始めましょう。"
+      "noMembers": "まだメンバーがいません。コミュニティのリンクを共有して始めましょう。",
+      "welcomeNew": "ようこそ。この手順で {name} をスタートしましょう。"
     },
     "topbar": {
       "viewCommunity": "コミュニティを見る"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "アドレス未設定",
       "close": "閉じる"
+    },
+    "gettingStarted": {
+      "title": "はじめに",
+      "progress": "{total} 件中 {done} 件完了",
+      "done": "完了",
+      "viewCommunity": "コミュニティを見る",
+      "viewCommunityHint": "訪問者から見たページを確認できます。",
+      "post": {
+        "title": "最初の投稿を公開する",
+        "desc": "コミュニティに挨拶しましょう。数文で十分です。",
+        "cta": "投稿を書く"
+      },
+      "look": {
+        "title": "カバー画像とロゴを追加する",
+        "desc": "コミュニティページをあなたらしくしましょう。",
+        "cta": "ブランディングを開く"
+      },
+      "invite": {
+        "title": "最初のメンバーを招待する",
+        "desc": "リンクを共有するか、メールで招待しましょう。",
+        "cta": "メンバーを招待"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "メンバーシップの選択肢",
         "errCheckout": "決済を開始できませんでした。もう一度お試しください。",
         "errPaymentsUnavailable": "現在お支払いはご利用いただけません。後ほどお試しください。",
-        "liveHeading": "ライブ"
+        "liveHeading": "ライブ",
+        "noPostsHintStaff": "コミュニティの準備ができました。最初の投稿で訪問者に内容を伝えましょう。",
+        "writeFirstPost": "最初の投稿を書く"
       },
       "shop": {
         "heading": "ショップ",

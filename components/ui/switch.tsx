@@ -27,7 +27,7 @@ export function Switch({
       <input type="hidden" name={name} value={on ? "true" : "false"} />
       <span className="min-w-0">
         {label && <span className="block text-sm font-medium text-slate-800">{label}</span>}
-        {hint && <span className="block text-xs text-slate-400">{hint}</span>}
+        {hint && <span className="block text-xs text-slate-500">{hint}</span>}
       </span>
       <button
         type="button"

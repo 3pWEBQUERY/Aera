@@ -126,7 +126,7 @@ export function SearchExperience({ initialQuery }: { initialQuery: string }) {
       <h1 className="display-serif text-3xl text-[#161613] sm:text-4xl">
         {t("title")}
       </h1>
-      <p className="mt-2 max-w-xl text-sm leading-6 text-[#161613]/55">
+      <p className="mt-2 max-w-xl text-sm leading-6 text-[#161613]/65">
         {t("subtitle")}
       </p>
 
@@ -136,7 +136,7 @@ export function SearchExperience({ initialQuery }: { initialQuery: string }) {
           <Icon
             name="search"
             size={19}
-            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#161613]/35"
+            className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#161613]/65"
           />
           <input
             ref={inputRef}
@@ -169,7 +169,7 @@ export function SearchExperience({ initialQuery }: { initialQuery: string }) {
                   inputRef.current?.focus();
                 }}
                 aria-label={t("clear")}
-                className="flex h-7 w-7 items-center justify-center rounded-full text-[#161613]/40 transition hover:bg-[#161613]/5 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+                className="flex h-7 w-7 items-center justify-center rounded-full text-[#161613]/65 transition hover:bg-[#161613]/5 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
               >
                 <Icon name="close" size={15} />
               </button>
@@ -221,10 +221,10 @@ export function SearchExperience({ initialQuery }: { initialQuery: string }) {
 
         {grouped.map((group) => (
           <section key={group.type} className="mb-8">
-            <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#161613]/45">
+            <h2 className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-[#161613]/65">
               <Icon name={TYPE_ICON[group.type]} size={14} />
               {t(`types.${group.type}`)}
-              <span className="text-[#161613]/30">{group.items.length}</span>
+              <span className="text-[#161613]/65">{group.items.length}</span>
             </h2>
             <div className="space-y-2">
               {group.items.map((item) => (
@@ -263,7 +263,7 @@ function Chip({
       )}
     >
       {label}
-      <span className={cn("text-xs tabular-nums", active ? "text-[#f4f1ea]/60" : "text-[#161613]/35")}>
+      <span className={cn("text-xs tabular-nums", active ? "text-[#f4f1ea]/60" : "text-[#161613]/65")}>
         {count}
       </span>
     </button>
@@ -329,13 +329,13 @@ function ResultRow({
         {/* Ohne `block`: line-clamp setzt display:-webkit-box, ein zusaetzliches
             block wuerde das wieder aushebeln und der Auszug liefe ungekuerzt. */}
         {item.excerpt && (
-          <span className="mt-1 line-clamp-2 text-sm leading-6 text-[#161613]/55">
+          <span className="mt-1 line-clamp-2 text-sm leading-6 text-[#161613]/65">
             <Highlight text={item.excerpt} query={query} />
           </span>
         )}
-        <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#161613]/40">
+        <span className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#161613]/65">
           {item.community && item.type !== "community" && (
-            <span className="truncate font-medium text-[#161613]/55">{item.community.name}</span>
+            <span className="truncate font-medium text-[#161613]/65">{item.community.name}</span>
           )}
           {item.spaceName && <span className="truncate">· {item.spaceName}</span>}
           {dateLabel && <span>· {dateLabel}</span>}
@@ -381,11 +381,11 @@ function EmptyHint({
 }) {
   return (
     <div className="rounded-2xl border border-dashed border-[#161613]/15 px-6 py-14 text-center">
-      <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#161613]/5 text-[#161613]/35">
+      <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#161613]/5 text-[#161613]/65">
         <Icon name={icon} size={22} />
       </span>
       <p className="display-serif mt-4 text-xl text-[#161613]">{title}</p>
-      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-6 text-[#161613]/50">{text}</p>
+      <p className="mx-auto mt-1.5 max-w-sm text-sm leading-6 text-[#161613]/65">{text}</p>
     </div>
   );
 }

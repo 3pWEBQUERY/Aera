@@ -103,9 +103,9 @@ export function SpaceContentManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{tType.has(space.type) ? tType(space.type) : space.type}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{tType.has(space.type) ? tType(space.type) : space.type}</Pill>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               /{space.slug}
               {(isPost || isKnowledge) && ` · ${t("entryCount", { count })}`}
             </p>
@@ -113,7 +113,7 @@ export function SpaceContentManager({
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/c/${slug}/s/${space.slug}`} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("view")}
           </Link>
           {(isPost || isKnowledge) && (
@@ -134,7 +134,7 @@ export function SpaceContentManager({
             <p className="font-semibold text-slate-900">{t("manageCta", { label: managedLabel })}</p>
             <p className="text-sm text-slate-500">{t("manageDesc", { label: managedLabel })}</p>
           </div>
-          <Icon name="chevron" size={18} className="-rotate-90 text-slate-400" />
+          <Icon name="chevron" size={18} className="-rotate-90 text-slate-500" />
         </Link>
       )}
 
@@ -268,7 +268,7 @@ function PostForm({
               <div>
                 <Label>{t("musicCover")}</Label>
                 <ImageUpload tenant={slug} name="imageUrl" purpose="music-cover" />
-                <p className="mt-1.5 text-xs text-slate-400">{t("musicCoverHint")}</p>
+                <p className="mt-1.5 text-xs text-slate-500">{t("musicCoverHint")}</p>
               </div>
               <div>
                 <Label>{t("musicTracks")}</Label>
@@ -297,7 +297,7 @@ function PostForm({
                 imagePurpose="feed-image"
                 videoPurpose="feed-video"
               />
-              <p className="mt-1 text-xs text-slate-400">{t("mediaCountHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("mediaCountHint")}</p>
             </div>
           )}
 
@@ -342,7 +342,7 @@ function PostForm({
             <div>
               <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
               <ScheduleField id="sc-schedule" />
-              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
             </div>
           )}
         </div>
@@ -398,7 +398,7 @@ function PostForm({
               <div>
                 <Label htmlFor="sc-price">{t("ppvPriceLabel")}</Label>
                 <PricePointSelect id="sc-price" name="priceCents" kind="oneTime" allowFree defaultCents={0} />
-                <p className="mt-1 text-xs text-slate-400">{t("ppvPriceHint")}</p>
+                <p className="mt-1 text-xs text-slate-500">{t("ppvPriceHint")}</p>
               </div>
               <div>
                 <Label>{t("ppvTeaserLabel")}</Label>
@@ -409,7 +409,7 @@ function PostForm({
             <div>
               <Label htmlFor="sc-schedule">{t("scheduleLabel")}</Label>
               <ScheduleField id="sc-schedule" />
-              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
             </div>
           </div>
         )}
@@ -536,7 +536,7 @@ function PostList({
                 // eslint-disable-next-line @next/next/no-img-element
                 <img src={p.imageUrl} alt="" className="h-16 w-16 shrink-0 rounded-xl object-cover" />
               ) : (
-                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+                <span className="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                   <Icon name="podcast" size={24} />
                 </span>
               )}
@@ -544,7 +544,7 @@ function PostList({
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="font-semibold text-slate-900">{p.title || t("episodeFallback")}</p>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       {p.authorName} · {formatDate(p.createdAt, locale)} · {t("commentCount", { count: p.commentCount })}
                     </p>
                   </div>
@@ -589,7 +589,7 @@ function PostList({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               {p.title && <p className="font-semibold text-slate-900">{p.title}</p>}
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500">
                 {p.authorName} · {formatDate(p.createdAt, locale)} · {t("commentCount", { count: p.commentCount })}
               </p>
             </div>
@@ -630,7 +630,7 @@ function ArticleList({
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
               <p className="font-semibold text-slate-900">{a.title}</p>
-              <p className="text-xs text-slate-400">{formatDate(a.createdAt, locale)}</p>
+              <p className="text-xs text-slate-500">{formatDate(a.createdAt, locale)}</p>
             </div>
             <form action={deleteArticleAction}>
               <input type="hidden" name="tenant" value={slug} />
@@ -658,20 +658,54 @@ function DeleteBtn({
   floating?: boolean;
 }) {
   const t = useTranslations("dashboard.spaceContent");
+  // Deleting a post cannot be undone, so the first click only asks; the
+  // question names the object and the consequence, the default is to keep it.
+  const [asking, setAsking] = useState(false);
+  if (!asking) {
+    return (
+      <div className={floating ? "absolute right-2 top-2 sm:opacity-0 sm:transition sm:group-hover:opacity-100 sm:focus-within:opacity-100" : ""}>
+        <button
+          type="button"
+          onClick={() => setAsking(true)}
+          className={
+            floating
+              ? "flex h-7 w-7 items-center justify-center rounded-lg bg-white/90 text-red-600 shadow hover:bg-white"
+              : "rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
+          }
+          aria-label={t("delete")}
+        >
+          {floating ? <Icon name="close" size={14} /> : t("delete")}
+        </button>
+      </div>
+    );
+  }
   return (
-    <form action={deletePostAction} className={floating ? "absolute right-2 top-2 sm:opacity-0 sm:transition sm:group-hover:opacity-100" : ""}>
+    <form
+      action={deletePostAction}
+      role="group"
+      aria-label={t("deleteQuestion")}
+      className={
+        floating
+          ? "absolute right-2 top-2 z-10 flex max-w-[calc(100%-1rem)] flex-wrap items-center gap-2 rounded-lg bg-white p-2 text-xs shadow-lg"
+          : "flex flex-wrap items-center gap-2 text-xs"
+      }
+    >
       <input type="hidden" name="tenant" value={slug} />
       <input type="hidden" name="spaceSlug" value={space.slug} />
       <input type="hidden" name="postId" value={postId} />
+      <span className="font-medium text-slate-700" aria-live="polite">
+        {t("deleteQuestion")}
+      </span>
       <button
-        className={
-          floating
-            ? "flex h-7 w-7 items-center justify-center rounded-lg bg-white/90 text-red-600 shadow hover:bg-white"
-            : "rounded-md px-2 py-1 text-xs font-medium text-red-600 hover:bg-red-50"
-        }
-        aria-label={t("delete")}
+        type="button"
+        autoFocus
+        onClick={() => setAsking(false)}
+        className="rounded-md border border-slate-200 px-2 py-1 font-medium text-slate-700 hover:bg-slate-50"
       >
-        {floating ? <Icon name="close" size={14} /> : t("delete")}
+        {t("cancel")}
+      </button>
+      <button type="submit" className="rounded-md bg-red-600 px-2 py-1 font-semibold text-white hover:bg-red-700">
+        {t("deleteConfirm")}
       </button>
     </form>
   );

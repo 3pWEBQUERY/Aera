@@ -87,7 +87,7 @@ export function BlogManager({
         <div>
           <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
             {t("title")}
-            <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
           </h1>
           <p className="mt-1 text-sm text-slate-500">{t("subtitle")}</p>
         </div>
@@ -104,7 +104,7 @@ export function BlogManager({
         <form method="GET" action="/admin/blog" className="w-full max-w-md">
           {status && <input type="hidden" name="status" value={status} />}
           <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-            <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+            <Icon name="search" size={17} className="shrink-0 text-slate-500" />
             <input
               type="search"
               name="q"
@@ -175,9 +175,9 @@ export function BlogManager({
                     <Pill className="bg-violet-100 text-violet-700">{t("featuredShort")}</Pill>
                   )}
                   {row.categoryLabel && (
-                    <Pill className="bg-slate-100 text-slate-500">{row.categoryLabel}</Pill>
+                    <Pill className="bg-slate-100 text-slate-600">{row.categoryLabel}</Pill>
                   )}
-                  <Pill className="bg-slate-100 text-slate-500">{row.locale.toUpperCase()}</Pill>
+                  <Pill className="bg-slate-100 text-slate-600">{row.locale.toUpperCase()}</Pill>
                 </div>
                 <Link
                   href={`/admin/blog/${row.id}`}
@@ -185,7 +185,7 @@ export function BlogManager({
                 >
                   {row.title || t("untitled")}
                 </Link>
-                <p className="mt-0.5 line-clamp-1 text-xs leading-5 text-slate-400">
+                <p className="mt-0.5 line-clamp-1 text-xs leading-5 text-slate-500">
                   {row.publishedAt
                     ? t("metaLine", {
                         date: formatDateTime(row.publishedAt, locale),
@@ -226,7 +226,7 @@ export function BlogManager({
                   href={`/admin/blog/${row.id}`}
                   aria-label={tc("edit")}
                   title={tc("edit")}
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                 >
                   <Icon name="edit" size={16} />
                 </Link>
@@ -270,7 +270,7 @@ function IconAction({
       title={label}
       className={cn(
         "flex h-9 w-9 items-center justify-center rounded-lg transition hover:bg-slate-100 hover:text-slate-900",
-        active ? "text-violet-600" : "text-slate-400",
+        active ? "text-violet-600" : "text-slate-500",
       )}
     >
       <Icon name={icon} size={16} />

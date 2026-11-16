@@ -57,7 +57,7 @@ export function MobileTabbar({
       className={cn(
         "relative z-10 flex flex-1 flex-col items-center justify-center gap-1 rounded-[22px] py-2 transition-[color,transform] duration-200 active:scale-[0.92]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25",
-        active ? "text-[#161613]" : "text-[#161613]/45",
+        active ? "text-[#161613]" : "text-[#161613]/65",
       )}
     >
       {/* Aktive Glas-Linse hinter Icon + Label. */}

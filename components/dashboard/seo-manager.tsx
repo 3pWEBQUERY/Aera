@@ -126,7 +126,7 @@ export function SeoManager({
               defaultUrl={values.seoImageUrl || null}
               onChange={setImage}
             />
-            <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("imageHint")}</p>
+            <p className="mt-1.5 text-xs leading-5 text-slate-500">{t("imageHint")}</p>
           </div>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
@@ -170,7 +170,7 @@ export function SeoManager({
         {/* ------------------------------------------------------- Vorschau */}
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
               {t("previewSearch")}
             </p>
             {/* Bewusst der Google-Snippet-Aufbau: URL, blauer Titel, Grautext. */}
@@ -192,7 +192,7 @@ export function SeoManager({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
               {t("previewSocial")}
             </p>
             <div className="overflow-hidden rounded-xl border border-slate-200">
@@ -211,7 +211,7 @@ export function SeoManager({
                 )}
               </div>
               <div className="bg-slate-50 px-3.5 py-3">
-                <p className="truncate text-[11px] uppercase tracking-wide text-slate-400">
+                <p className="truncate text-[11px] uppercase tracking-wide text-slate-500">
                   {prettyUrl}
                 </p>
                 <p className="mt-0.5 truncate text-sm font-semibold text-slate-900">
@@ -224,7 +224,7 @@ export function SeoManager({
             </div>
           </div>
 
-          <p className="px-1 text-xs leading-5 text-slate-400">
+          <p className="px-1 text-xs leading-5 text-slate-500">
             {t("derivedNote", { name: communityName })}
           </p>
         </aside>
@@ -254,7 +254,7 @@ function Field({
           <span
             className={cn(
               "text-xs tabular-nums",
-              count.value > count.max * 0.9 ? "text-amber-600" : "text-slate-400",
+              count.value > count.max * 0.9 ? "text-amber-600" : "text-slate-500",
             )}
           >
             {count.value}/{count.max}
@@ -262,7 +262,7 @@ function Field({
         )}
       </div>
       {children}
-      <p className="mt-1.5 text-xs leading-5 text-slate-400">{hint}</p>
+      <p className="mt-1.5 text-xs leading-5 text-slate-500">{hint}</p>
     </div>
   );
 }

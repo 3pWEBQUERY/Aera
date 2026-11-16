@@ -93,7 +93,7 @@ export function ProductsManager({
 
       {products.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+          <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
             <Icon name="products" size={24} />
           </span>
           <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -138,13 +138,13 @@ export function ProductsManager({
                 <div className="flex flex-1 flex-col p-4">
                   <div className="flex items-center gap-2">
                     <p className="font-semibold text-slate-900">{p.name}</p>
-                    <Pill className="bg-slate-100 text-slate-500">{tTypes(`${p.type}.label`)}</Pill>
+                    <Pill className="bg-slate-100 text-slate-600">{tTypes(`${p.type}.label`)}</Pill>
                   </div>
                   {p.description && (
                     <p className="mt-1 line-clamp-2 text-sm text-slate-500">{p.description}</p>
                   )}
                   {p.requiresShipping && (
-                    <p className="mt-1.5 text-xs text-slate-400">
+                    <p className="mt-1.5 text-xs text-slate-500">
                       {p.freeShipping
                         ? t("freeShipping")
                         : t("shippingCost", { amount: formatPrice(p.shippingCents, p.currency, locale) })}
@@ -157,7 +157,7 @@ export function ProductsManager({
                   )}
                   <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
                     <span className="font-semibold text-slate-900">{formatPrice(p.priceCents, p.currency, locale)}</span>
-                    <span className="text-sm text-slate-400">
+                    <span className="text-sm text-slate-500">
                       {t("salesCount", { count: p.salesCount })}
                     </span>
                   </div>
@@ -308,7 +308,7 @@ function ProductForm({
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-slate-900">{tTypes(`${pt.value}.label`)}</span>
-                      <span className="block text-xs text-slate-400">{tTypes(`${pt.value}.desc`)}</span>
+                      <span className="block text-xs text-slate-500">{tTypes(`${pt.value}.desc`)}</span>
                     </span>
                   </button>
                 );
@@ -368,7 +368,7 @@ function ProductForm({
                       )}
                     >
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
-                      <span className="block text-xs text-slate-400">{o.desc}</span>
+                      <span className="block text-xs text-slate-500">{o.desc}</span>
                     </button>
                   );
                 })}

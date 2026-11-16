@@ -32,7 +32,7 @@ export function BadgeRow({
         />
       ))}
       {rest > 0 && (
-        <span className="text-[11px] font-semibold text-[#161613]/45">+{rest}</span>
+        <span className="text-[11px] font-semibold text-[#161613]/65">+{rest}</span>
       )}
     </span>
   );

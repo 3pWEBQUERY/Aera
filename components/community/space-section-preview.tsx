@@ -94,21 +94,21 @@ function SpotlightCard({ slug, space, locked, icon, typeLabel }: Props) {
           <Icon name={icon} size={24} />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#161613]/45">
+          <span className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#161613]/65">
             {typeLabel}
-            {locked && <Icon name="lock" size={12} className="text-[#161613]/40" />}
+            {locked && <Icon name="lock" size={12} className="text-[#161613]/65" />}
           </span>
           <span className="display-serif mt-1 block truncate text-2xl text-[#161613] group-hover:text-[color:var(--brand)]">
             {space.name}
           </span>
           {space.description && (
-            <span className="mt-1 block truncate text-sm text-[#161613]/55">{space.description}</span>
+            <span className="mt-1 block truncate text-sm text-[#161613]/65">{space.description}</span>
           )}
         </span>
         <Icon
           name="arrowRight"
           size={18}
-          className="shrink-0 text-[#161613]/30 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
+          className="shrink-0 text-[#161613]/65 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
         />
       </Link>
     </section>
@@ -275,7 +275,7 @@ async function TipsPreview({ slug, tenantId, space, locale }: Props) {
           <div className="mb-4">
             <div className="flex items-center justify-between text-sm">
               <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
-              <span className="text-[#161613]/50">{t("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
+              <span className="text-[#161613]/65">{t("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
             </div>
             <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
               <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
@@ -283,7 +283,7 @@ async function TipsPreview({ slug, tenantId, space, locale }: Props) {
           </div>
         )}
         {tips.length === 0 ? (
-          <p className="py-4 text-center text-sm text-[#161613]/50">{t("empty")}</p>
+          <p className="py-4 text-center text-sm text-[#161613]/65">{t("empty")}</p>
         ) : (
           <div className="space-y-3">
             {tips.map((tp) => (
@@ -355,7 +355,7 @@ async function CalendarPreview({ slug, tenantId, space, locale }: Props) {
               <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-[#161613]">{x.title}</p>
-                  <p className="mt-1 text-sm text-[#161613]/55">{formatDateTime(x.when, locale)}</p>
+                  <p className="mt-1 text-sm text-[#161613]/65">{formatDateTime(x.when, locale)}</p>
                 </div>
                 <Pill className={kindCls[x.kind]}>{t(`kind.${x.kind}`)}</Pill>
               </div>
@@ -399,12 +399,12 @@ async function BookingPreview({ slug, tenantId, space, locale }: Props) {
               >
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-[#161613]">{s.title}</p>
-                  <p className="mt-1 text-xs text-[#161613]/55">
+                  <p className="mt-1 text-xs text-[#161613]/65">
                     {formatDateTime(s.startsAt, locale)} · {t("minutes", { count: s.durationMin })}
                   </p>
                 </div>
                 <div className="flex items-center gap-2.5">
-                  <Pill className={full ? "bg-[#161613]/10 text-[#161613]/50" : "bg-[var(--brand-soft)] text-[color:var(--brand)]"}>
+                  <Pill className={full ? "bg-[#161613]/10 text-[#161613]/65" : "bg-[var(--brand-soft)] text-[color:var(--brand)]"}>
                     {full ? (
                       t("full")
                     ) : (

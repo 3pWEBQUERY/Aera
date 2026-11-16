@@ -356,13 +356,13 @@ function StoryForm({
             <div className={permanent ? "hidden" : "mt-4 border-t border-slate-100 pt-4"}>
               <Label htmlFor="st-ttl">{t("ttlLabel")}</Label>
               <Input id="st-ttl" name="ttlHours" type="number" min={1} max={168} defaultValue={defaultTtl} />
-              <p className="mt-1 text-xs text-slate-400">{t("ttlHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("ttlHint")}</p>
             </div>
           </div>
           <div>
             <Label htmlFor="st-schedule">{t("scheduleLabel")}</Label>
             <Input id="st-schedule" name="publishAt" type="datetime-local" defaultValue={scheduledFuture} />
-            <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
           </div>
         </div>
       </div>
@@ -400,7 +400,7 @@ function Toggle({
     <label className="flex cursor-pointer items-start justify-between gap-4">
       <span className="min-w-0">
         <span className="block text-sm font-semibold text-slate-900">{title}</span>
-        <span className="mt-0.5 block text-xs leading-5 text-slate-400">{hint}</span>
+        <span className="mt-0.5 block text-xs leading-5 text-slate-500">{hint}</span>
       </span>
       <input
         type="checkbox"
@@ -478,7 +478,7 @@ function StorySettingsForm({
                 max={168}
                 defaultValue={settings.defaultTtlHours}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("defaultTtlHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("defaultTtlHint")}</p>
             </div>
           </div>
           <div>
@@ -501,7 +501,7 @@ function StorySettingsForm({
                 </button>
               ))}
             </div>
-            <p className="mt-1 text-xs text-slate-400">{t("autoplayHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("autoplayHint")}</p>
           </div>
         </div>
       </div>

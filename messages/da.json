@@ -196,7 +196,7 @@
     "addressLabel": "Adresse",
     "alsoReachable": "Også tilgængelig på {url}",
     "slugFallback": "dit-faellesskab",
-    "taglineLabel": "Kort beskrivelse (valgfrit)",
+    "taglineLabel": "Slogan (valgfrit)",
     "taglinePlaceholder": "Hvad handler dit fællesskab om?",
     "descLabel": "Beskrivelse",
     "descPlaceholder": "Beskriv med et par sætninger, hvad medlemmer kan forvente.",
@@ -316,7 +316,9 @@
     "promoLabel": "Kampagnekode (valgfrit)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Har du en kode fra en partner eller creator? Så starter dit community direkte på den højere pakke – uden betalingsoplysninger.",
-    "hexLabel": "Egen hex-kode"
+    "hexLabel": "Egen hex-kode",
+    "nameRequired": "Giv dit community et navn (mindst 2 tegn).",
+    "spacesRequired": "Vælg mindst ét område."
   },
   "seed": {
     "tierDescription": "Gratis adgang til fællesskabet.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Flere ad gangen · MP3, M4A, WAV eller OGG",
       "trackTitleAria": "Nummerets titel",
       "removeTrackAria": "Fjern nummer",
-      "trackUploading": "Uploader {count} … {percent}%"
+      "trackUploading": "Uploader {count} … {percent}%",
+      "deleteQuestion": "Slet opslaget permanent?",
+      "deleteConfirm": "Slet opslag"
     },
     "chat": {
       "badge": "Chat",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Køb",
       "statRevenue": "Omsætning",
       "recentMembers": "Nyeste medlemmer",
-      "noMembers": "Ingen medlemmer endnu. Del dit fællesskabslink for at komme i gang."
+      "noMembers": "Ingen medlemmer endnu. Del dit fællesskabslink for at komme i gang.",
+      "welcomeNew": "Godt at have dig med. Disse trin får {name} i gang."
     },
     "topbar": {
       "viewCommunity": "Se fællesskab"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Ingen adresse endnu",
       "close": "Luk"
+    },
+    "gettingStarted": {
+      "title": "Kom godt i gang",
+      "progress": "{done} af {total} klaret",
+      "done": "klaret",
+      "viewCommunity": "Se community",
+      "viewCommunityHint": "sådan ser besøgende din side.",
+      "post": {
+        "title": "Udgiv dit første opslag",
+        "desc": "Byd dit community velkommen – et par sætninger er nok.",
+        "cta": "Skriv et opslag"
+      },
+      "look": {
+        "title": "Tilføj forsidebillede og logo",
+        "desc": "Så din community-side ligner dig.",
+        "cta": "Åbn branding"
+      },
+      "invite": {
+        "title": "Inviter dine første medlemmer",
+        "desc": "Del dit link eller inviter folk via e-mail.",
+        "cta": "Inviter medlemmer"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Medlemskabsmuligheder",
         "errCheckout": "Betalingen kunne ikke startes. Prøv igen.",
         "errPaymentsUnavailable": "Betalinger er i øjeblikket ikke tilgængelige. Prøv igen senere.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "Dit community er klar. Dit første opslag viser besøgende, hvad det handler om.",
+        "writeFirstPost": "Skriv dit første opslag"
       },
       "shop": {
         "heading": "Shop",

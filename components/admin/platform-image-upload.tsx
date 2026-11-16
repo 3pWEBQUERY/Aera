@@ -81,7 +81,7 @@ export function PlatformImageUpload({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt="" className="h-full w-full object-cover" />
         ) : (
-          <span className="flex flex-col items-center gap-1.5 text-slate-400">
+          <span className="flex flex-col items-center gap-1.5 text-slate-500">
             <Icon name="gallery" size={26} />
             <span className="text-sm font-medium">{t("cta")}</span>
             <span className="text-xs">{hint ?? t("hint")}</span>
@@ -115,7 +115,7 @@ export function PlatformImageUpload({
           <button
             type="button"
             onClick={() => apply("")}
-            className="text-xs font-medium text-slate-400 underline underline-offset-2 hover:text-red-600"
+            className="text-xs font-medium text-slate-500 underline underline-offset-2 hover:text-red-600"
           >
             {t("remove")}
           </button>

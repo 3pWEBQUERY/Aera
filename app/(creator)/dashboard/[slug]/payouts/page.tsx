@@ -199,7 +199,7 @@ export default async function PayoutsPage({
         <h3 className="text-sm font-semibold text-slate-900">{td("invoicesFromAera")}</h3>
         <p className="mt-0.5 text-xs text-slate-500">{td("invoicesFromAeraHint")}</p>
         {monthlyFees.length === 0 && creditPurchases.length === 0 ? (
-          <p className="mt-3 text-xs text-slate-400">{td("invoicesEmpty")}</p>
+          <p className="mt-3 text-xs text-slate-500">{td("invoicesEmpty")}</p>
         ) : (
           <ul className="mt-3 max-h-48 space-y-1 overflow-y-auto">
             {monthlyFees.map((m) => (
@@ -211,7 +211,7 @@ export default async function PayoutsPage({
                   <p className="truncate text-xs font-medium text-slate-700">
                     {td("invoiceFee")}
                   </p>
-                  <p className="text-[11px] capitalize text-slate-400">{monthName(m.month)}</p>
+                  <p className="text-[11px] capitalize text-slate-500">{monthName(m.month)}</p>
                 </div>
                 <span className="shrink-0 text-xs font-semibold text-slate-800">
                   {money(m.feeCents)}
@@ -227,7 +227,7 @@ export default async function PayoutsPage({
                   <p className="truncate text-xs font-medium text-slate-700">
                     {td("invoiceCredits", { credits: p.credits.toLocaleString(locale) })}
                   </p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500">
                     {formatDate(p.createdAt, locale)} · {td("refNo", { id: p.id.slice(-8).toUpperCase() })}
                   </p>
                 </div>
@@ -244,7 +244,7 @@ export default async function PayoutsPage({
         <h3 className="text-sm font-semibold text-slate-900">{td("receiptsTitle")}</h3>
         <p className="mt-0.5 text-xs text-slate-500">{td("receiptsHint")}</p>
         {paidOrders.length === 0 ? (
-          <p className="mt-3 text-xs text-slate-400">{td("receiptsEmpty")}</p>
+          <p className="mt-3 text-xs text-slate-500">{td("receiptsEmpty")}</p>
         ) : (
           <ul className="mt-3 max-h-48 space-y-1 overflow-y-auto">
             {paidOrders.map((o) => (
@@ -254,7 +254,7 @@ export default async function PayoutsPage({
               >
                 <div className="min-w-0">
                   <p className="truncate text-xs font-medium text-slate-700">{o.description}</p>
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-slate-500">
                     {formatDate(o.createdAt, locale)} · {td("refNo", { id: o.id.slice(-8).toUpperCase() })}
                   </p>
                 </div>
@@ -296,11 +296,11 @@ export default async function PayoutsPage({
         {stats.map((s) => (
           <Card key={s.label}>
             <CardBody>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 {s.label}
               </p>
               <p className="mt-1.5 text-2xl font-bold text-slate-900">{s.value}</p>
-              <p className="mt-0.5 text-xs text-slate-400">{s.hint}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{s.hint}</p>
             </CardBody>
           </Card>
         ))}
@@ -318,7 +318,7 @@ export default async function PayoutsPage({
               </p>
             ) : (
               <table className="w-full text-sm">
-                <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
+                <thead className="text-left text-xs uppercase tracking-wide text-slate-500">
                   <tr>
                     <th className="px-5 py-2.5 font-medium">{td("colCustomer")}</th>
                     <th className="px-5 py-2.5 font-medium">{td("colDescription")}</th>
@@ -332,7 +332,7 @@ export default async function PayoutsPage({
                     <tr key={o.id}>
                       <td className="px-5 py-3">
                         <p className="font-medium text-slate-800">{o.user.name}</p>
-                        <p className="text-xs text-slate-400">{o.user.email}</p>
+                        <p className="text-xs text-slate-500">{o.user.email}</p>
                       </td>
                       <td className="px-5 py-3 text-slate-600">{o.description}</td>
                       <td className="px-5 py-3 text-slate-500">{formatDate(o.createdAt, locale)}</td>

@@ -107,7 +107,7 @@ export function PlanStatusCard({
             return (
               <div key={q.labelKey}>
                 <div className="flex items-baseline justify-between gap-2">
-                  <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+                  <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                     {t(q.labelKey)}
                   </p>
                   <p

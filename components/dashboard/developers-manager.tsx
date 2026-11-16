@@ -181,7 +181,7 @@ function ApiKeysSection({
                       <Pill className="bg-emerald-50 text-emerald-700">{t("keyActive")}</Pill>
                     )}
                   </div>
-                  <p className="mt-0.5 text-xs text-slate-400">
+                  <p className="mt-0.5 text-xs text-slate-500">
                     <code>{k.prefix}</code> · {t("keyCreated", { date: dateFmt.format(new Date(k.createdAt)) })}
                     {k.lastUsedAt &&
                       ` · ${t("keyLastUsed", { date: dateFmt.format(new Date(k.lastUsedAt)) })}`}
@@ -254,7 +254,7 @@ function WebhooksSection({
                     className="h-4 w-4 rounded border-slate-300"
                   />
                   {tEvents(EVENT_KEYS[event])}
-                  <code className="text-xs text-slate-400">{event}</code>
+                  <code className="text-xs text-slate-500">{event}</code>
                 </label>
               ))}
             </div>
@@ -333,10 +333,10 @@ function EndpointCard({ slug, endpoint }: { slug: string; endpoint: EndpointRow 
               {endpoint.isActive ? (
                 <Pill className="bg-emerald-50 text-emerald-700">{t("endpointActive")}</Pill>
               ) : (
-                <Pill className="bg-slate-100 text-slate-500">{t("endpointPaused")}</Pill>
+                <Pill className="bg-slate-100 text-slate-600">{t("endpointPaused")}</Pill>
               )}
             </div>
-            <p className="mt-0.5 text-xs text-slate-400">
+            <p className="mt-0.5 text-xs text-slate-500">
               {endpoint.events.map((e) => (EVENT_KEYS[e] ? tEvents(EVENT_KEYS[e]) : e)).join(" · ")}
             </p>
           </div>
@@ -364,7 +364,7 @@ function EndpointCard({ slug, endpoint }: { slug: string; endpoint: EndpointRow 
 
         {/* Secrets are only returned once when the endpoint is created. */}
         <div className="mt-3 flex items-center gap-2 text-xs">
-          <span className="text-slate-400">{t("secretLabel")}</span>
+          <span className="text-slate-500">{t("secretLabel")}</span>
           <code className="rounded bg-slate-100 px-2 py-1">
             whsec_••••••••••••
           </code>
@@ -383,7 +383,7 @@ function EndpointCard({ slug, endpoint }: { slug: string; endpoint: EndpointRow 
                     className={`h-1.5 w-1.5 rounded-full ${d.ok ? "bg-emerald-500" : "bg-red-500"}`}
                   />
                   <code className="text-slate-600">{d.event}</code>
-                  <span className="text-slate-400">
+                  <span className="text-slate-500">
                     {d.responseCode ?? "—"} · {dateFmt.format(new Date(d.createdAt))}
                   </span>
                   {d.error && <span className="truncate text-red-500">{d.error}</span>}

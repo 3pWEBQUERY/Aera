@@ -28,13 +28,13 @@ function StatCard({
       <CardBody>
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+            <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
               {label}
             </p>
             <p className="mt-1 text-2xl font-bold text-slate-900">{value}</p>
-            {hint && <p className="mt-1 text-xs text-slate-400">{hint}</p>}
+            {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
           </div>
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
             <Icon name={icon} size={18} />
           </span>
         </div>
@@ -52,7 +52,7 @@ function Trend({
   prev: number;
   label: (value: string) => string;
 }) {
-  if (prev === 0 && now === 0) return <span className="text-slate-400">—</span>;
+  if (prev === 0 && now === 0) return <span className="text-slate-500">—</span>;
   const diff = prev === 0 ? 100 : Math.round(((now - prev) / prev) * 100);
   const up = diff >= 0;
   return (
@@ -134,7 +134,7 @@ export default async function AnalyticsPage({
                     className="w-full rounded-t-md bg-[var(--brand,#6d28d9)]/80"
                     style={{ height: `${Math.max(4, (b.value / growthMax) * 100)}%` }}
                   />
-                  <span className="text-[10px] text-slate-400">{b.label}</span>
+                  <span className="text-[10px] text-slate-500">{b.label}</span>
                 </div>
               ))}
             </div>
@@ -180,7 +180,7 @@ export default async function AnalyticsPage({
                 <li key={c.id}>
                   <div className="flex items-baseline justify-between text-sm">
                     <span className="font-medium text-slate-700">{c.title}</span>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-slate-500">
                       {t("courseMeta", {
                         students: t("courseStudents", { count: c.students }),
                         lessons: t("courseLessons", { count: c.lessonCount }),
@@ -211,7 +211,7 @@ export default async function AnalyticsPage({
             <div className="mt-4 overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="text-xs uppercase tracking-wide text-slate-400">
+                  <tr className="text-xs uppercase tracking-wide text-slate-500">
                     <th className="pb-2 pr-4 font-medium">{t("colCampaign")}</th>
                     <th className="pb-2 pr-4 font-medium">{t("colSent")}</th>
                     <th className="pb-2 pr-4 font-medium">{t("colRecipients")}</th>
@@ -232,7 +232,7 @@ export default async function AnalyticsPage({
                       <td className="py-2.5 pr-4 text-slate-500">
                         {nf.format(c.opened)}
                         {c.recipients > 0 && (
-                          <span className="ml-1 text-xs text-slate-400">
+                          <span className="ml-1 text-xs text-slate-500">
                             ({Math.round((c.opened / c.recipients) * 100)}%)
                           </span>
                         )}

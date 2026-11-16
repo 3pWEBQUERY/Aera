@@ -90,7 +90,7 @@ export function MobileCommunityNav({
                     size={17}
                     className={cn(
                       "shrink-0",
-                      active ? "text-[var(--brand)]" : "text-[#161613]/50",
+                      active ? "text-[var(--brand)]" : "text-[#161613]/65",
                     )}
                   />
                   <span className="flex-1 truncate">{item.label}</span>

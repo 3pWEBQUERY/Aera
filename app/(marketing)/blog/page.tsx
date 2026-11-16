@@ -80,7 +80,7 @@ export default async function BlogIndexPage({
             <h1 className="display-serif mt-5 text-5xl leading-[1.04] sm:text-6xl md:text-7xl">
               {t("titleA")}
               <br />
-              <span className="text-[#161613]/50">{t("titleB")}</span>
+              <span className="text-[#161613]/65">{t("titleB")}</span>
             </h1>
           </Reveal>
           <Reveal delay={240}>
@@ -119,7 +119,7 @@ export default async function BlogIndexPage({
         )}
 
         {posts.length === 0 && !featured ? (
-          <p className="mt-16 text-lg text-[#161613]/50">{t("emptyCategory")}</p>
+          <p className="mt-16 text-lg text-[#161613]/65">{t("emptyCategory")}</p>
         ) : (
           <div className="mt-12 grid gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-3">
             {posts.map((post, index) => (
@@ -138,7 +138,7 @@ export default async function BlogIndexPage({
             <PageLink href={href({ seite: page - 1 })} disabled={page <= 1}>
               {t("previous")}
             </PageLink>
-            <span className="text-sm text-[#161613]/50">
+            <span className="text-sm text-[#161613]/65">
               {t("pageOf", { page, pages: pageCount })}
             </span>
             <PageLink href={href({ seite: page + 1 })} disabled={page >= pageCount}>

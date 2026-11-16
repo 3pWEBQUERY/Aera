@@ -59,7 +59,7 @@ export function ImageUpload({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt="Cover" className="h-full w-full object-cover" />
         ) : (
-          <div className="flex flex-col items-center gap-1.5 text-slate-400">
+          <div className="flex flex-col items-center gap-1.5 text-slate-500">
             <Icon name="gallery" size={26} />
             <span className="text-sm font-medium">{t("uploadCover")}</span>
             <span className="text-xs">{t("coverHint")}</span>

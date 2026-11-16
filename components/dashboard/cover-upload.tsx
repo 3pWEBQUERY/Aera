@@ -71,7 +71,7 @@ export function CoverUpload({
           // eslint-disable-next-line @next/next/no-img-element
           <img src={url} alt="Community-Header" className="h-full w-full object-cover" />
         ) : (
-          <div className="flex flex-col items-center gap-1 text-slate-400">
+          <div className="flex flex-col items-center gap-1 text-slate-500">
             <Icon name="gallery" size={22} />
             <span className="text-sm font-medium">{t("uploadHeader")}</span>
             <span className="text-xs">{t("headerHint")}</span>
@@ -102,7 +102,7 @@ export function CoverUpload({
             </button>
           </>
         )}
-        <span className="text-xs text-slate-400">{t("appliedImmediately")}</span>
+        <span className="text-xs text-slate-500">{t("appliedImmediately")}</span>
         {error && <span className="text-xs text-red-600">{error}</span>}
       </div>
       <input

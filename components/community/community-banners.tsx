@@ -185,7 +185,7 @@ const TONE: Record<BannerConfig["tone"], { shell: string; title: string; text: s
       shell: "border border-[#161613]/10 bg-white text-[#161613] shadow-[var(--shadow-card-lg)]",
       title: "text-[#161613]",
       text: "text-[#161613]/65",
-      close: "text-[#161613]/35 hover:bg-[#161613]/5 hover:text-[#161613]",
+      close: "text-[#161613]/65 hover:bg-[#161613]/5 hover:text-[#161613]",
     },
   };
 

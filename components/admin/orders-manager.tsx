@@ -66,7 +66,7 @@ export function OrdersManager({
       <div>
         <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
           {t("title")}
-          <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+          <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           {t("subtitle")}
@@ -78,19 +78,19 @@ export function OrdersManager({
           <p className="text-2xl font-bold leading-none text-slate-900">
             {nf.format(stats.total)}
           </p>
-          <p className="mt-1 text-xs font-medium text-slate-400">{t("totalOrders")}</p>
+          <p className="mt-1 text-xs font-medium text-slate-500">{t("totalOrders")}</p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <p className="text-2xl font-bold leading-none text-slate-900">
             {formatPrice(stats.paidAmountCents, PLATFORM_CURRENCY, locale)}
           </p>
-          <p className="mt-1 text-xs font-medium text-slate-400">{t("revenuePaid")}</p>
+          <p className="mt-1 text-xs font-medium text-slate-500">{t("revenuePaid")}</p>
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-4">
           <p className="text-2xl font-bold leading-none text-slate-900">
             {formatPrice(stats.paidFeeCents, PLATFORM_CURRENCY, locale)}
           </p>
-          <p className="mt-1 text-xs font-medium text-slate-400">
+          <p className="mt-1 text-xs font-medium text-slate-500">
             {t("feesPaid")}
           </p>
         </div>
@@ -98,7 +98,7 @@ export function OrdersManager({
 
       <form method="GET" action="/admin/orders" className="max-w-md">
         <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+          <Icon name="search" size={17} className="shrink-0 text-slate-500" />
           <input
             type="search"
             name="q"
@@ -149,7 +149,7 @@ export function OrdersManager({
                       <Pill className="bg-blue-100 text-blue-700">{t("fulfilledBadge")}</Pill>
                     )}
                   </div>
-                  <p className="mt-0.5 truncate text-sm text-slate-400">
+                  <p className="mt-0.5 truncate text-sm text-slate-500">
                     {t("metaLine", { tenant: o.tenantName, email: o.userEmail, date: formatDateTime(o.createdAt, locale) })}
                   </p>
                 </div>
@@ -184,7 +184,7 @@ export function OrdersManager({
 function InfoRow({ label, value, mono }: { label: string; value: string; mono?: boolean }) {
   return (
     <div className="flex items-baseline justify-between gap-4 py-1.5">
-      <span className="shrink-0 text-sm text-slate-400">{label}</span>
+      <span className="shrink-0 text-sm text-slate-500">{label}</span>
       <span
         className={`min-w-0 truncate text-right text-sm font-medium text-slate-800 ${
           mono ? "font-mono text-xs" : ""
@@ -249,7 +249,7 @@ function EditForm({ order, onDone }: { order: OrderRowData; onDone: () => void }
               />
               <span className="min-w-0">
                 <span className="block text-sm font-medium text-slate-800">{t("fulfilled")}</span>
-                <span className="block text-xs text-slate-400">
+                <span className="block text-xs text-slate-500">
                   {t("fulfilledHint")}
                 </span>
               </span>

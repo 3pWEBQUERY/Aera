@@ -71,7 +71,7 @@ export function AeliPanel({
               schneller als an seinem Namen. */}
           <p className="flex items-baseline gap-2 text-slate-900">
             <AeliWordmark className="text-base" />
-            <span className="text-xs font-normal text-slate-400">aeli.so</span>
+            <span className="text-xs font-normal text-slate-500">aeli.so</span>
           </p>
           <p className="mt-0.5 max-w-xl text-sm text-slate-500">
             {t.rich("desc", {
@@ -89,7 +89,7 @@ export function AeliPanel({
             <Pill className="shrink-0 bg-amber-100 text-amber-700">{t("stateUnlinked")}</Pill>
           )
         ) : (
-          <Pill className="shrink-0 bg-slate-100 text-slate-500">{t("stateNoPage")}</Pill>
+          <Pill className="shrink-0 bg-slate-100 text-slate-600">{t("stateNoPage")}</Pill>
         )}
       </header>
 
@@ -200,7 +200,7 @@ function CreateForm({
               aria-describedby="aeli-handle-note"
               className="min-w-0 flex-1 rounded-l-lg bg-transparent px-3 py-2 text-sm outline-none"
             />
-            <span className="shrink-0 text-sm text-slate-400">.{suffix}</span>
+            <span className="shrink-0 text-sm text-slate-500">.{suffix}</span>
             {free !== null && (
               <span className="ml-2 shrink-0" aria-hidden>
                 <Icon
@@ -407,7 +407,7 @@ function ForeignPages({
               <p className="truncate text-sm text-slate-800">
                 {page.handle}.{suffix}
               </p>
-              <p className="truncate text-xs text-slate-400">{page.ownerEmail}</p>
+              <p className="truncate text-xs text-slate-500">{page.ownerEmail}</p>
             </div>
             <form action={unlinkAeliPageAction}>
               <input type="hidden" name="tenant" value={slug} />

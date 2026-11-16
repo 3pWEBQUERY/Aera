@@ -179,7 +179,7 @@ export function ChatHub({
 
         {searchOpen && (
           <div className="mt-4 flex items-center gap-2 rounded-xl bg-[#161613]/5 px-3 py-2">
-            <Icon name="search" size={16} className="text-[#161613]/50" />
+            <Icon name="search" size={16} className="text-[#161613]/65" />
             <input
               autoFocus
               value={query}
@@ -240,13 +240,13 @@ export function ChatHub({
                       >
                         {thread.title}
                       </p>
-                      <span className="shrink-0 text-[11px] text-[#161613]/50">{relTime(thread.lastAt, locale, t)}</span>
+                      <span className="shrink-0 text-[11px] text-[#161613]/65">{relTime(thread.lastAt, locale, t)}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <p
                         className={cn(
                           "mt-0.5 flex-1 truncate text-xs",
-                          thread.unread ? "font-medium text-[#161613]/80" : "text-[#161613]/50",
+                          thread.unread ? "font-medium text-[#161613]/80" : "text-[#161613]/65",
                         )}
                       >
                         {thread.lastBody ?? (thread.kind === "GROUP" ? t("fallback.group") : t("fallback.direct"))}
@@ -352,7 +352,7 @@ function DirectModal({
     <ModalShell title={t("newDirect")} onClose={onClose} fullscreen>
       <div className="border-b border-[#161613]/10 px-5 py-3">
         <div className="mx-auto flex w-full max-w-xl items-center gap-2 rounded-xl bg-[#161613]/5 px-3 py-2">
-          <Icon name="search" size={16} className="text-[#161613]/50" />
+          <Icon name="search" size={16} className="text-[#161613]/65" />
           <input
             autoFocus
             value={q}
@@ -365,7 +365,7 @@ function DirectModal({
       <div className="min-h-0 flex-1 overflow-y-auto py-2">
         <div className="mx-auto w-full max-w-xl">
           {filtered.length === 0 ? (
-            <p className="px-5 py-10 text-center text-sm text-[#161613]/50">{t("noMembers")}</p>
+            <p className="px-5 py-10 text-center text-sm text-[#161613]/65">{t("noMembers")}</p>
           ) : (
             filtered.map((m) => (
               <form key={m.id} action={startDirectAction}>
@@ -448,7 +448,7 @@ function GroupModal({
           {access === "level" && (
             <div className="mt-2 rounded-xl border border-[#161613]/10 p-3">
               {levels.length === 0 ? (
-                <p className="text-sm text-[#161613]/50">{t("noLevels")}</p>
+                <p className="text-sm text-[#161613]/65">{t("noLevels")}</p>
               ) : (
                 <Select value={levelKey} onChange={setLevelKey}>
                   {levels.map((l) => (

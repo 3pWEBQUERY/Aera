@@ -43,7 +43,7 @@ function CreatorTile({ c }: { c: SliderCreator }) {
         {c.name}
       </p>
       {c.tagline && (
-        <p className="mt-0.5 truncate text-sm text-[#161613]/55">{c.tagline}</p>
+        <p className="mt-0.5 truncate text-sm text-[#161613]/65">{c.tagline}</p>
       )}
     </Link>
   );
@@ -116,7 +116,7 @@ export function CreatorSlider({
       <div className="flex items-end justify-between gap-4">
         <div className="min-w-0">
           {eyebrow && (
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
               {eyebrow}
             </p>
           )}
@@ -131,7 +131,7 @@ export function CreatorSlider({
               <Icon
                 name="chevron"
                 size={16}
-                className="-rotate-90 text-[#161613]/40 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
+                className="-rotate-90 text-[#161613]/65 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
               />
             </Link>
           ) : (

@@ -196,7 +196,7 @@
     "addressLabel": "Indirizzo",
     "alsoReachable": "Raggiungibile anche su {url}",
     "slugFallback": "la-tua-community",
-    "taglineLabel": "Breve descrizione (facoltativa)",
+    "taglineLabel": "Slogan (facoltativo)",
     "taglinePlaceholder": "Di cosa parla la tua community?",
     "descLabel": "Descrizione",
     "descPlaceholder": "Descrivi in poche frasi cosa aspetta i membri.",
@@ -316,7 +316,9 @@
     "promoLabel": "Codice promozionale (opzionale)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "Hai un codice da un partner o un creator? La tua community parte subito con il pacchetto superiore — senza bisogno di dati di pagamento.",
-    "hexLabel": "Codice esadecimale personalizzato"
+    "hexLabel": "Codice esadecimale personalizzato",
+    "nameRequired": "Dai un nome alla tua community (almeno 2 caratteri).",
+    "spacesRequired": "Scegli almeno un'area."
   },
   "seed": {
     "tierDescription": "Accesso gratuito alla community.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "Più file insieme · MP3, M4A, WAV o OGG",
       "trackTitleAria": "Titolo del brano",
       "removeTrackAria": "Rimuovi brano",
-      "trackUploading": "Caricamento di {count} … {percent}%"
+      "trackUploading": "Caricamento di {count} … {percent}%",
+      "deleteQuestion": "Eliminare definitivamente il post?",
+      "deleteConfirm": "Elimina post"
     },
     "chat": {
       "badge": "Chat",
@@ -3010,7 +3014,8 @@
       "statPurchases": "Acquisti",
       "statRevenue": "Ricavi",
       "recentMembers": "Membri più recenti",
-      "noMembers": "Ancora nessun membro. Condividi il link della tua community per iniziare."
+      "noMembers": "Ancora nessun membro. Condividi il link della tua community per iniziare.",
+      "welcomeNew": "Che bello averti qui. Questi passi avviano {name}."
     },
     "topbar": {
       "viewCommunity": "Vedi community"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "Nessun indirizzo",
       "close": "Chiudi"
+    },
+    "gettingStarted": {
+      "title": "Primi passi",
+      "progress": "{done} di {total} completati",
+      "done": "completato",
+      "viewCommunity": "Vedi community",
+      "viewCommunityHint": "ecco cosa vedono i visitatori.",
+      "post": {
+        "title": "Pubblica il tuo primo post",
+        "desc": "Saluta la tua community: bastano poche frasi.",
+        "cta": "Scrivi un post"
+      },
+      "look": {
+        "title": "Aggiungi immagine di copertina e logo",
+        "desc": "Così la pagina della community ti somiglia.",
+        "cta": "Apri branding"
+      },
+      "invite": {
+        "title": "Invita i primi membri",
+        "desc": "Condividi il link o invita via email.",
+        "cta": "Invita membri"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "Opzioni di abbonamento",
         "errCheckout": "Impossibile avviare il pagamento. Riprova.",
         "errPaymentsUnavailable": "I pagamenti al momento non sono disponibili. Riprova più tardi.",
-        "liveHeading": "Live"
+        "liveHeading": "Live",
+        "noPostsHintStaff": "La tua community è pronta. Il primo post mostra ai visitatori di cosa si tratta.",
+        "writeFirstPost": "Scrivi il primo post"
       },
       "shop": {
         "heading": "Shop",

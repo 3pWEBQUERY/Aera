@@ -63,7 +63,7 @@ export async function SpaceSidebar({
       {!hideSearch && (
         <form method="GET">
           <div className="flex items-center gap-2 rounded-full border border-[#161613]/10 bg-white px-3.5 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-            <Icon name="search" size={16} className="shrink-0 text-[#161613]/50" />
+            <Icon name="search" size={16} className="shrink-0 text-[#161613]/65" />
             <input
               type="search"
               name="q"
@@ -168,7 +168,7 @@ export async function SpaceSidebar({
                     <span className="line-clamp-2 text-sm font-medium leading-snug text-[#161613] group-hover:text-[color:var(--brand)]">
                       {p.title || excerpt(p.body, 60)}
                     </span>
-                    <span className="mt-0.5 flex items-center gap-2 text-xs text-[#161613]/50">
+                    <span className="mt-0.5 flex items-center gap-2 text-xs text-[#161613]/65">
                       {timeAgo(p.createdAt, locale)}
                       <span className="inline-flex items-center gap-1">
                         <Icon name="heart" size={11} /> {p._count.reactions}

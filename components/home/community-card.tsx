@@ -71,7 +71,7 @@ export function CommunityCard({ community: c }: { community: CommunityCardData }
         )}
         {/* Die Zahlen sitzen am Fuss der Karte, nicht direkt unter dem Text —
             so stehen sie ueber alle Karten einer Reihe auf einer Linie. */}
-        <p className="mt-auto pt-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+        <p className="mt-auto pt-2.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
           {t("memberCount", { count: c.memberCount })}
           {c.postCount > 0 && (
             <>

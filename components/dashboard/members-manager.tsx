@@ -118,30 +118,37 @@ export function MembersManager({
     return (
       <div
         key={m.id}
+        // Row clickable for the mouse; keyboard and screen readers use the
+        // button on the name (a role="button" row must not contain links).
         onClick={() => editable && setEditing(m)}
-        role={editable ? "button" : undefined}
-        tabIndex={editable ? 0 : undefined}
-        onKeyDown={(e) => {
-          if (editable && (e.key === "Enter" || e.key === " ")) {
-            e.preventDefault();
-            setEditing(m);
-          }
-        }}
         className={cn(
           "group flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition sm:flex-nowrap sm:gap-4",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]",
+          "focus-within:ring-2 focus-within:ring-[var(--brand-ring)]",
           editable ? "cursor-pointer hover:border-slate-300 hover:shadow-sm" : "",
         )}
       >
         <Avatar name={m.user.name} src={m.user.avatarUrl} size={42} />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="font-semibold text-slate-900">{m.user.name}</p>
+            {editable ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setEditing(m);
+                }}
+                className="text-left font-semibold text-slate-900 focus-visible:outline-none"
+              >
+                {m.user.name}
+              </button>
+            ) : (
+              <p className="font-semibold text-slate-900">{m.user.name}</p>
+            )}
             <Pill className={roleCls[m.role] ?? roleCls.MEMBER}>{tRoles(m.role)}</Pill>
             {isSelf && <Pill className="bg-[var(--action)] text-[var(--action-fg)]">{t("you")}</Pill>}
             {m.status !== "ACTIVE" && <Pill className={statusCls[m.status] ?? statusCls.ACTIVE}>{tStatus(m.status)}</Pill>}
           </div>
-          <p className="mt-0.5 truncate text-sm text-slate-400">
+          <p className="mt-0.5 truncate text-sm text-slate-500">
             {m.user.email} · {t("joined", { date: formatDate(m.joinedAt, locale) })}
           </p>
         </div>
@@ -158,7 +165,7 @@ export function MembersManager({
               />
             ))}
             {own.length > 3 && (
-              <span className="text-xs font-semibold text-slate-400">+{own.length - 3}</span>
+              <span className="text-xs font-semibold text-slate-500">+{own.length - 3}</span>
             )}
           </span>
         )}
@@ -203,7 +210,7 @@ export function MembersManager({
         <div>
           <h2 className="flex items-center gap-2 text-lg font-semibold text-slate-900">
             {opts.heading}
-            <Pill className="bg-slate-100 text-slate-500">{opts.list.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{opts.list.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">{opts.description}</p>
         </div>
@@ -220,11 +227,11 @@ export function MembersManager({
       <div className="mt-5 space-y-2.5">
         {opts.list.length === 0 ? (
           <div className="rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center">
-            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+            <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
               <Icon name="members" size={22} />
             </div>
             <p className="mt-3 text-sm font-medium text-slate-700">{opts.emptyTitle}</p>
-            <p className="mt-0.5 text-xs text-slate-400">{opts.emptyHint}</p>
+            <p className="mt-0.5 text-xs text-slate-500">{opts.emptyHint}</p>
           </div>
         ) : (
           opts.list.map(renderRow)
@@ -424,7 +431,7 @@ function BadgeAwardPanel({
       </span>
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-slate-900">{b.name}</p>
-        <p className="truncate text-xs text-slate-400">
+        <p className="truncate text-xs text-slate-500">
           {awardedAt ? t("awardedOn", { date: formatDate(awardedAt, locale) }) : hint(b)}
         </p>
       </div>
@@ -458,7 +465,7 @@ function BadgeAwardPanel({
             <Avatar name={member.user.name} src={member.user.avatarUrl} size={44} />
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-900">{member.user.name}</p>
-              <p className="truncate text-sm text-slate-400">
+              <p className="truncate text-sm text-slate-500">
                 {t("badgeCount", { count: has.length })}
               </p>
             </div>
@@ -468,11 +475,11 @@ function BadgeAwardPanel({
 
           {badges.length === 0 ? (
             <div className="rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center">
-              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+              <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                 <Icon name="gamification" size={22} />
               </div>
               <p className="mt-3 text-sm font-medium text-slate-700">{t("badgesEmptyTitle")}</p>
-              <p className="mt-0.5 text-xs text-slate-400">{t("badgesEmptyHint")}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{t("badgesEmptyHint")}</p>
             </div>
           ) : (
             <>
@@ -480,7 +487,7 @@ function BadgeAwardPanel({
                 <div>
                   <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                     {t("badgesOwned")}
-                    <Pill className="bg-slate-100 text-slate-500">{has.length}</Pill>
+                    <Pill className="bg-slate-100 text-slate-600">{has.length}</Pill>
                   </h3>
                   <ul className="mt-2.5 space-y-2">
                     {has.map((b) =>
@@ -493,10 +500,10 @@ function BadgeAwardPanel({
               <div>
                 <h3 className="flex items-center gap-2 text-sm font-semibold text-slate-900">
                   {t("badgesAvailable")}
-                  <Pill className="bg-slate-100 text-slate-500">{open.length}</Pill>
+                  <Pill className="bg-slate-100 text-slate-600">{open.length}</Pill>
                 </h3>
                 {open.length === 0 ? (
-                  <p className="mt-2.5 rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-400">
+                  <p className="mt-2.5 rounded-xl border border-dashed border-slate-200 px-4 py-6 text-center text-sm text-slate-500">
                     {t("badgesAllGiven")}
                   </p>
                 ) : (
@@ -555,7 +562,7 @@ function InviteLinkPanel({ url, onDone }: { url: string; onDone: () => void }) {
               {copied ? t("copied") : t("copy")}
             </button>
           </div>
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             {t("inviteEmailNote")}
           </p>
         </div>
@@ -607,7 +614,7 @@ function CreateForm({
           <div>
             <Label htmlFor="cm-email">{t("emailLabel")}</Label>
             <Input id="cm-email" name="email" type="email" required autoFocus placeholder={t("emailPlaceholder")} className="text-base" />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("emailHint")}
             </p>
           </div>
@@ -691,7 +698,7 @@ function EditForm({
             <Avatar name={member.user.name} src={member.user.avatarUrl} size={44} />
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-900">{member.user.name}</p>
-              <p className="truncate text-sm text-slate-400">{member.user.email}</p>
+              <p className="truncate text-sm text-slate-500">{member.user.email}</p>
             </div>
           </div>
 
@@ -790,13 +797,13 @@ function ProfileEditForm({
           <div>
             <Label htmlFor="pe-email">{t("emailShort")}</Label>
             <Input id="pe-email" defaultValue={member.user.email} disabled className="bg-slate-50 text-slate-500" />
-            <p className="mt-1 text-xs text-slate-400">{t("emailDisabledHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("emailDisabledHint")}</p>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
             <span className="text-sm text-slate-500">{t("roleLabel")}</span>
             <Pill className={roleCls[member.role] ?? roleCls.MEMBER}>{tRoles(member.role)}</Pill>
-            <span className="ml-auto text-xs text-slate-400">{t("roleProtected")}</span>
+            <span className="ml-auto text-xs text-slate-500">{t("roleProtected")}</span>
           </div>
         </div>
       </div>

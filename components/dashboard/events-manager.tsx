@@ -94,7 +94,7 @@ export function EventsManager({
               <div className="flex flex-1 flex-col p-4">
                 <p className="font-semibold text-slate-900">{e.title}</p>
                 <p className="mt-1 text-sm text-slate-500">{formatDateTime(e.startsAt, locale)}</p>
-                <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-sm text-slate-400">
+                <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3 text-sm text-slate-500">
                   <span>{e.location || (e.isOnline ? t("online") : "—")}</span>
                   <span>{t("rsvps", { count: e.rsvpCount })}</span>
                 </div>
@@ -118,7 +118,7 @@ function Empty({ onCreate }: { onCreate: () => void }) {
   const t = useTranslations("dashboard.events");
   return (
     <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-      <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
+      <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-slate-600">
         <Icon name="events" size={24} />
       </span>
       <p className="mt-4 font-semibold text-slate-800">{t("emptyTitle")}</p>
@@ -211,7 +211,7 @@ export function EventForm({
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
-                      <span className="block text-xs text-slate-400">{o.desc}</span>
+                      <span className="block text-xs text-slate-500">{o.desc}</span>
                     </span>
                   </button>
                 );

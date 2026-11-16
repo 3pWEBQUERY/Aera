@@ -25,7 +25,7 @@ export function SpaceNav({
   return (
     <nav className="space-y-1">
       <Link href={`/c/${slug}`} className={itemClass(pathname === `/c/${slug}`)}>
-        <Icon name="home" size={17} className="shrink-0 text-[#161613]/50" />
+        <Icon name="home" size={17} className="shrink-0 text-[#161613]/65" />
         Start
       </Link>
       {spaces.map((s) => {
@@ -36,11 +36,11 @@ export function SpaceNav({
             <Icon
               name={spaceTypeIcon(s.type)}
               size={17}
-              className={cn("shrink-0", active ? "text-[var(--brand)]" : "text-[#161613]/50")}
+              className={cn("shrink-0", active ? "text-[var(--brand)]" : "text-[#161613]/65")}
             />
             <span className="flex-1 truncate">{s.name}</span>
             {s.locked && (
-              <Icon name="lock" size={14} className="shrink-0 text-[#161613]/50" />
+              <Icon name="lock" size={14} className="shrink-0 text-[#161613]/65" />
             )}
           </Link>
         );
@@ -49,14 +49,14 @@ export function SpaceNav({
         href={`/c/${slug}/leaderboard`}
         className={itemClass(isPathActive(pathname, `/c/${slug}/leaderboard`))}
       >
-        <Icon name="gamification" size={17} className="shrink-0 text-[#161613]/50" />
+        <Icon name="gamification" size={17} className="shrink-0 text-[#161613]/65" />
         Leaderboard
       </Link>
       <Link
         href={`/c/${slug}/members`}
         className={itemClass(isPathActive(pathname, `/c/${slug}/members`))}
       >
-        <Icon name="members" size={17} className="shrink-0 text-[#161613]/50" />
+        <Icon name="members" size={17} className="shrink-0 text-[#161613]/65" />
         Mitglieder
       </Link>
     </nav>

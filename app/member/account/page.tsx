@@ -49,7 +49,7 @@ const orderStatusKey: Record<string, string> = {
 function SectionHead({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div>
-      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
         {eyebrow}
       </p>
       <h2 className="display-serif mt-1 text-2xl text-[#161613]">{title}</h2>
@@ -213,7 +213,7 @@ export default async function MemberAccountPage({
             <h1 className="display-serif text-3xl leading-tight sm:text-4xl">
               {user!.name}
             </h1>
-            <p className="mt-1 text-sm text-[#161613]/55">{user!.email}</p>
+            <p className="mt-1 text-sm text-[#161613]/65">{user!.email}</p>
           </div>
         </div>
 
@@ -281,7 +281,7 @@ export default async function MemberAccountPage({
                   user={{ name: user!.name, avatarUrl: user!.avatarUrl }}
                 />
                 {!uploadSlug && (
-                  <p className="mt-3 text-xs text-[#161613]/45">{t("joinFirst")}</p>
+                  <p className="mt-3 text-xs text-[#161613]/65">{t("joinFirst")}</p>
                 )}
               </div>
             </section>
@@ -351,7 +351,7 @@ export default async function MemberAccountPage({
             <section className="mt-10">
               <SectionHead eyebrow={t("membershipsEyebrow")} title={t("membershipsTitle")} />
               {memberships.length === 0 ? (
-                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/50">
+                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/65">
                   {t.rich("noMemberships", {
                     link: (chunks) => (
                       <Link href="/home" className="font-semibold underline underline-offset-4">
@@ -395,7 +395,7 @@ export default async function MemberAccountPage({
                             <p className="display-serif truncate text-lg leading-tight">
                               {m.tenant.name}
                             </p>
-                            <p className="mt-0.5 text-xs text-[#161613]/50">
+                            <p className="mt-0.5 text-xs text-[#161613]/65">
                               {m.tier ? m.tier.name : t("memberFallback")}
                               {m.tier && m.tier.priceCents > 0 &&
                                 ` · ${formatPrice(m.tier.priceCents, m.tier.currency, locale)} ${t(intervalKey[m.tier.interval] ?? "intervalFREE")}`}
@@ -409,7 +409,7 @@ export default async function MemberAccountPage({
                           )}
                         </div>
                         {sub && (
-                          <p className="mt-3 text-xs text-[#161613]/50">
+                          <p className="mt-3 text-xs text-[#161613]/65">
                             {t("subActive")}
                             {sub.currentPeriodEnd &&
                               ` · ${t("subRenews", { date: formatDate(sub.currentPeriodEnd, locale) })}`}
@@ -420,7 +420,7 @@ export default async function MemberAccountPage({
                           <p className="text-xs font-semibold text-[#161613]/75">
                             {t("newsletterTitle")}
                           </p>
-                          <p className="mt-1 text-xs leading-5 text-[#161613]/50">
+                          <p className="mt-1 text-xs leading-5 text-[#161613]/65">
                             {newsletterSuppressed
                               ? t("newsletterSuppressed")
                               : newsletterActive
@@ -490,7 +490,7 @@ export default async function MemberAccountPage({
             <section className="mt-12">
               <SectionHead eyebrow={t("purchasesEyebrow")} title={t("purchasesTitle")} />
               {purchases.length === 0 ? (
-                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/50">
+                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/65">
                   {t("noPurchases")}
                 </p>
               ) : (
@@ -504,7 +504,7 @@ export default async function MemberAccountPage({
                         <p className="display-serif truncate text-lg">
                           {o.product?.name ?? o.description}
                         </p>
-                        <p className="mt-1 text-xs text-[#161613]/50">
+                        <p className="mt-1 text-xs text-[#161613]/65">
                           {o.tenant.name} · {formatDate(o.createdAt, locale)} ·{" "}
                           {formatPrice(o.amountCents, o.currency, locale)}
                         </p>
@@ -527,7 +527,7 @@ export default async function MemberAccountPage({
             <section className="mt-12">
               <SectionHead eyebrow={t("invoicesEyebrow")} title={t("invoicesTitle")} />
               {orders.length === 0 ? (
-                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/50">
+                <p className="mt-4 rounded-2xl border border-dashed border-[#161613]/20 px-5 py-8 text-center text-sm text-[#161613]/65">
                   {t("noInvoices")}
                 </p>
               ) : (
@@ -540,7 +540,7 @@ export default async function MemberAccountPage({
                         <li key={o.id} className="flex items-center gap-4 px-5 py-3.5">
                           <div className="min-w-0 flex-1">
                             <p className="truncate text-sm font-semibold">{o.description}</p>
-                            <p className="mt-0.5 text-xs text-[#161613]/45">
+                            <p className="mt-0.5 text-xs text-[#161613]/65">
                               {o.tenant.name} · {formatDate(o.createdAt, locale)}
                             </p>
                           </div>
@@ -561,7 +561,7 @@ export default async function MemberAccountPage({
               <section>
                 <SectionHead eyebrow={t("activityEyebrow")} title={t("commentsTitle")} />
                 {comments.length === 0 ? (
-                  <p className="mt-4 text-sm text-[#161613]/50">{t("noComments")}</p>
+                  <p className="mt-4 text-sm text-[#161613]/65">{t("noComments")}</p>
                 ) : (
                   <ul className="mt-4 space-y-3">
                     {comments.map((c) => (
@@ -573,7 +573,7 @@ export default async function MemberAccountPage({
                           <p className="text-sm leading-6 text-[#161613]/80">
                             „{excerpt(c.body, 120)}“
                           </p>
-                          <p className="mt-2 text-xs text-[#161613]/45">
+                          <p className="mt-2 text-xs text-[#161613]/65">
                             {c.tenant.name} ·{" "}
                             {t("commentOn", {
                               title: c.post.title || excerpt(c.post.body, 40) || t("postFallback"),
@@ -590,7 +590,7 @@ export default async function MemberAccountPage({
               <section>
                 <SectionHead eyebrow={t("activityEyebrow")} title={t("chatTitle")} />
                 {chatMessages.length === 0 ? (
-                  <p className="mt-4 text-sm text-[#161613]/50">{t("noMessages")}</p>
+                  <p className="mt-4 text-sm text-[#161613]/65">{t("noMessages")}</p>
                 ) : (
                   <ul className="mt-4 space-y-3">
                     {chatMessages.map((m) => {
@@ -602,7 +602,7 @@ export default async function MemberAccountPage({
                           <p className="text-sm leading-6 text-[#161613]/80">
                             „{excerpt(m.body, 120)}“
                           </p>
-                          <p className="mt-2 text-xs text-[#161613]/45">
+                          <p className="mt-2 text-xs text-[#161613]/65">
                             {m.tenant.name} ·{" "}
                             {m.space ? t("inSpace", { name: m.space.name }) : t("directMessage")} ·{" "}
                             {timeAgo(m.createdAt, locale)}

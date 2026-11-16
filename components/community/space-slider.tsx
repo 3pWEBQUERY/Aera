@@ -45,7 +45,7 @@ function SpaceCard({
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-60">
+        <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
           {t("space")}
         </span>
         {space.locked ? (

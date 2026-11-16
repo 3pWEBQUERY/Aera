@@ -196,7 +196,7 @@
     "addressLabel": "地址",
     "alsoReachable": "也可通过 {url} 访问",
     "slugFallback": "your-community",
-    "taglineLabel": "简短描述（可选）",
+    "taglineLabel": "标语（可选）",
     "taglinePlaceholder": "你的社区是关于什么的？",
     "descLabel": "描述",
     "descPlaceholder": "用几句话描述成员可以期待什么。",
@@ -316,7 +316,9 @@
     "promoLabel": "推广代码（可选）",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "有合作伙伴或创作者提供的代码？你的社区将立即以更高套餐启动——无需填写支付信息。",
-    "hexLabel": "自定义色值"
+    "hexLabel": "自定义色值",
+    "nameRequired": "请为你的社区起个名字（至少 2 个字符）。",
+    "spacesRequired": "请至少选择一个板块。"
   },
   "seed": {
     "tierDescription": "免费加入社区。",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "可一次多选 · MP3、M4A、WAV 或 OGG",
       "trackTitleAria": "曲目名称",
       "removeTrackAria": "移除曲目",
-      "trackUploading": "正在上传 {count} 个 … {percent}%"
+      "trackUploading": "正在上传 {count} 个 … {percent}%",
+      "deleteQuestion": "永久删除这篇帖子？",
+      "deleteConfirm": "删除帖子"
     },
     "chat": {
       "badge": "聊天",
@@ -3010,7 +3014,8 @@
       "statPurchases": "购买",
       "statRevenue": "收入",
       "recentMembers": "最新成员",
-      "noMembers": "还没有成员。分享你的社区链接开始吧。"
+      "noMembers": "还没有成员。分享你的社区链接开始吧。",
+      "welcomeNew": "欢迎！完成这些步骤，{name} 就能上线。"
     },
     "topbar": {
       "viewCommunity": "查看社区"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "还没有地址",
       "close": "关闭"
+    },
+    "gettingStarted": {
+      "title": "入门步骤",
+      "progress": "已完成 {done}/{total}",
+      "done": "已完成",
+      "viewCommunity": "查看社区",
+      "viewCommunityHint": "看看访客眼中的页面。",
+      "post": {
+        "title": "发布第一篇帖子",
+        "desc": "向社区打个招呼，几句话就够了。",
+        "cta": "写帖子"
+      },
+      "look": {
+        "title": "添加封面图和标志",
+        "desc": "让社区页面体现你的风格。",
+        "cta": "打开品牌设置"
+      },
+      "invite": {
+        "title": "邀请第一批成员",
+        "desc": "分享链接，或通过邮件邀请。",
+        "cta": "邀请成员"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "会员选项",
         "errCheckout": "无法开始结账。请重试。",
         "errPaymentsUnavailable": "当前无法付款。请稍后再试。",
-        "liveHeading": "直播"
+        "liveHeading": "直播",
+        "noPostsHintStaff": "你的社区已准备就绪。第一篇帖子会告诉访客这里是做什么的。",
+        "writeFirstPost": "写第一篇帖子"
       },
       "shop": {
         "heading": "商店",

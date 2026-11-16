@@ -56,7 +56,7 @@ function Field({
     <label className="block">
       <span className="mb-1.5 block text-sm font-semibold text-slate-800">{label}</span>
       {children}
-      {hint && <span className="mt-1 block text-xs text-slate-400">{hint}</span>}
+      {hint && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
     </label>
   );
 }
@@ -161,7 +161,7 @@ function TargetPicker({
             <Icon
               name={BANNER_TARGET_ICON[banner.targetType]}
               size={16}
-              className="shrink-0 text-slate-400"
+              className="shrink-0 text-slate-500"
             />
             <span className="min-w-0 flex-1 truncate font-medium">
               {t(`target.${banner.targetType}`)}
@@ -169,7 +169,7 @@ function TargetPicker({
             <Icon
               name="chevron"
               size={14}
-              className={cn("shrink-0 text-slate-400 transition", open && "rotate-180")}
+              className={cn("shrink-0 text-slate-500 transition", open && "rotate-180")}
             />
           </button>
           {open && (
@@ -186,7 +186,7 @@ function TargetPicker({
                   }}
                   className="flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm text-slate-800 transition hover:bg-slate-50"
                 >
-                  <Icon name={BANNER_TARGET_ICON[key]} size={16} className="shrink-0 text-slate-400" />
+                  <Icon name={BANNER_TARGET_ICON[key]} size={16} className="shrink-0 text-slate-500" />
                   <span className="min-w-0 flex-1 truncate font-medium">{t(`target.${key}`)}</span>
                   {key === banner.targetType && (
                     <Icon name="check" size={15} className="shrink-0 text-slate-900" />
@@ -226,7 +226,7 @@ function TargetPicker({
       )}
 
       {banner.targetType === "NONE" && (
-        <p className="text-xs leading-5 text-slate-400">{t("targetNoneHint")}</p>
+        <p className="text-xs leading-5 text-slate-500">{t("targetNoneHint")}</p>
       )}
     </div>
   );
@@ -273,30 +273,30 @@ function BannerCard({
           <span
             className={cn(
               "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
-              banner.enabled ? "bg-[var(--brand-soft)] text-[color:var(--brand)]" : "bg-slate-100 text-slate-400",
+              banner.enabled ? "bg-[var(--brand-soft)] text-[color:var(--brand)]" : "bg-slate-100 text-slate-600",
             )}
           >
             <Icon name={PLACEMENT_ICON[banner.placement]} size={15} />
           </span>
           <span className="min-w-0 flex-1">
-            <span className={cn("block truncate text-sm font-semibold", banner.enabled ? "text-slate-800" : "text-slate-400")}>
+            <span className={cn("block truncate text-sm font-semibold", banner.enabled ? "text-slate-800" : "text-slate-500")}>
               {title}
             </span>
-            <span className="block truncate text-xs text-slate-400">
+            <span className="block truncate text-xs text-slate-500">
               {t(`placement.${banner.placement}`)} · {t(`trigger.${banner.trigger}`)}
             </span>
           </span>
           <Icon
             name="chevron"
             size={16}
-            className={cn("shrink-0 text-slate-400 transition-transform", open && "rotate-180")}
+            className={cn("shrink-0 text-slate-500 transition-transform", open && "rotate-180")}
           />
         </button>
         <button
           type="button"
           onClick={onRemove}
           aria-label={t("remove")}
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
         >
           <Icon name="trash" size={15} />
         </button>
@@ -468,7 +468,7 @@ function BannerCard({
               <span className="block text-sm font-semibold text-slate-800">
                 {t("fieldDismissible")}
               </span>
-              <span className="block text-xs text-slate-400">{t("fieldDismissibleHint")}</span>
+              <span className="block text-xs text-slate-500">{t("fieldDismissibleHint")}</span>
             </span>
           </label>
         </div>
@@ -540,14 +540,14 @@ export function BannerPanel({
       </div>
 
       {banners.length === 0 && (
-        <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-400">
+        <p className="rounded-2xl border border-dashed border-slate-200 py-8 text-center text-sm text-slate-500">
           {t("empty")}
         </p>
       )}
 
       {banners.length > 1 && (
         <p className="mt-3 flex items-start gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-xs leading-5 text-slate-500">
-          <Icon name="info" size={14} className="mt-0.5 shrink-0 text-slate-400" />
+          <Icon name="info" size={14} className="mt-0.5 shrink-0 text-slate-500" />
           {t("orderHint")}
         </p>
       )}

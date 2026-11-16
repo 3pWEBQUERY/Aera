@@ -47,7 +47,7 @@ export function UsersManager({
       <div>
         <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
           {t("title")}
-          <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+          <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
         </h1>
         <p className="mt-1 text-sm text-slate-500">
           {t("subtitle")}
@@ -56,7 +56,7 @@ export function UsersManager({
 
       <form method="GET" action="/admin/users" className="max-w-md">
         <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+          <Icon name="search" size={17} className="shrink-0 text-slate-500" />
           <input
             type="search"
             name="q"
@@ -105,14 +105,14 @@ export function UsersManager({
                       {t("ownerBadge", { count: nf.format(u.ownedTenants) })}
                     </Pill>
                   )}
-                  <Pill className="bg-slate-100 text-slate-500">
+                  <Pill className="bg-slate-100 text-slate-600">
                     {t("membershipsShort", { count: nf.format(u.memberships) })}
                   </Pill>
-                  <Pill className="bg-slate-100 text-slate-500">
+                  <Pill className="bg-slate-100 text-slate-600">
                     {t("ordersShort", { count: nf.format(u.orders) })}
                   </Pill>
                 </div>
-                <p className="mt-0.5 truncate text-sm text-slate-400">
+                <p className="mt-0.5 truncate text-sm text-slate-500">
                   {t("registeredLine", { email: u.email, date: formatDate(u.createdAt, locale) })}
                 </p>
               </div>
@@ -160,7 +160,7 @@ function EditForm({ user, onDone }: { user: UserRow; onDone: () => void }) {
             <Avatar name={user.name} src={user.avatarUrl} size={44} />
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-900">{user.name}</p>
-              <p className="truncate text-sm text-slate-400">
+              <p className="truncate text-sm text-slate-500">
                 {t("editSummary", {
                   date: formatDate(user.createdAt, locale),
                   memberships: nf.format(user.memberships),
@@ -236,7 +236,7 @@ function ResetLinkSection({ userId }: { userId: string }) {
   return (
     <div className="rounded-2xl border border-slate-200 p-4">
       <p className="text-sm font-semibold text-slate-900">{t("resetTitle")}</p>
-      <p className="mt-1 text-xs text-slate-400">
+      <p className="mt-1 text-xs text-slate-500">
         {t("resetHint")}
       </p>
       <div className="mt-3">

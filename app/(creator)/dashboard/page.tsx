@@ -113,8 +113,8 @@ export default async function DashboardIndex() {
               <p className="display-serif mt-4 truncate text-xl leading-tight">
                 {tenant.name}
               </p>
-              <p className="mt-1 truncate text-xs text-[#161613]/45">/c/{tenant.slug}</p>
-              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+              <p className="mt-1 truncate text-xs text-[#161613]/65">/c/{tenant.slug}</p>
+              <p className="mt-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
                 {t("membersCount", { count: counts[i] })}
               </p>
             </Link>
@@ -123,7 +123,7 @@ export default async function DashboardIndex() {
           {/* Neue Community */}
           <Link
             href="/start"
-            className="flex min-h-[172px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#161613]/25 p-5 text-[#161613]/45 transition duration-300 hover:border-[#161613]/60 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
+            className="flex min-h-[172px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#161613]/25 p-5 text-[#161613]/65 transition duration-300 hover:border-[#161613]/60 hover:text-[#161613] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#161613]/25"
           >
             <span className="flex h-11 w-11 items-center justify-center rounded-full border border-current">
               <Icon name="plus" size={20} />

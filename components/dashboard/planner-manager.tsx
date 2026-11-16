@@ -153,10 +153,10 @@ export function PlannerManager({
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Pill className="bg-slate-100 text-slate-500">{t(`type.${p.type}`)}</Pill>
+                    <Pill className="bg-slate-100 text-slate-600">{t(`type.${p.type}`)}</Pill>
                     <Pill className={STATUS_CLS[p.status]}>{t(`status.${p.status}`)}</Pill>
                     {p.scheduledAt && (
-                      <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-500">
                         <Icon name="clock" size={12} />
                         {dateFmt.format(new Date(p.scheduledAt))}
                       </span>
@@ -166,13 +166,13 @@ export function PlannerManager({
                   {p.description && <p className="mt-0.5 line-clamp-2 text-sm text-slate-500">{p.description}</p>}
                   <div className="mt-2 flex flex-wrap items-center gap-3">
                     {p.checklist.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-500">
                         <Icon name="check" size={13} />
                         {t("checklistProgress", { done, total: p.checklist.length })}
                       </span>
                     )}
                     {p.media.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-500">
                         <Icon name="gallery" size={13} />
                         {p.media.length}
                       </span>
@@ -200,7 +200,7 @@ export function PlannerManager({
                         setNonce((n) => n + 1);
                       }}
                       aria-label={t("edit")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                     >
                       <Icon name="edit" size={16} />
                     </button>
@@ -210,7 +210,7 @@ export function PlannerManager({
                       <button
                         type="submit"
                         aria-label={t("delete")}
-                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                        className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                       >
                         <Icon name="trash" size={16} />
                       </button>
@@ -444,7 +444,7 @@ function PlanForm({
             <div>
               <Label htmlFor="pl-sched">{t("scheduleLabel")}</Label>
               <Input id="pl-sched" name="scheduledAt" type="datetime-local" defaultValue={toDatetimeLocal(plan?.scheduledAt ?? null)} />
-              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
             </div>
             <div>
               <Label htmlFor="pl-space">{t("spaceLabel")}</Label>
@@ -474,7 +474,7 @@ function PlanForm({
                   >
                     <Icon name="check" size={13} />
                   </button>
-                  <span className={cn("min-w-0 flex-1 truncate text-sm", c.done ? "text-slate-400 line-through" : "text-slate-700")}>{c.text}</span>
+                  <span className={cn("min-w-0 flex-1 truncate text-sm", c.done ? "text-slate-500 line-through" : "text-slate-700")}>{c.text}</span>
                   <button
                     type="button"
                     onClick={() => setChecklist((list) => list.filter((x) => x.id !== c.id))}
@@ -641,7 +641,7 @@ function LibraryPicker({
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="shrink-0 border-b border-slate-100 p-4">
           <div className="mx-auto flex max-w-xl items-center gap-2 rounded-xl border border-slate-200 px-3 py-2">
-            <Icon name="search" size={16} className="text-slate-400" />
+            <Icon name="search" size={16} className="text-slate-500" />
             <input
               value={q}
               onChange={(e) => setQ(e.target.value)}
@@ -652,11 +652,11 @@ function LibraryPicker({
         </div>
         <div className="min-h-0 flex-1 overflow-y-auto p-6">
           {loading ? (
-            <p className="py-10 text-center text-sm text-slate-400">{t("pickerLoading")}</p>
+            <p className="py-10 text-center text-sm text-slate-500">{t("pickerLoading")}</p>
           ) : error ? (
             <p className="py-10 text-center text-sm text-red-500">{t("pickerError")}</p>
           ) : items.length === 0 ? (
-            <p className="py-10 text-center text-sm text-slate-400">{t("pickerEmpty")}</p>
+            <p className="py-10 text-center text-sm text-slate-500">{t("pickerEmpty")}</p>
           ) : (
             <div className="mx-auto grid max-w-4xl grid-cols-3 gap-3 sm:grid-cols-4 md:grid-cols-5">
               {items.map((item) => (

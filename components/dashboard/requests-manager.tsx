@@ -92,7 +92,7 @@ export function RequestsManager({
                     <Avatar name={r.requesterName} src={r.requesterAvatar} size={30} />
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium text-slate-900">{r.requesterName}</p>
-                      <p className="text-xs text-slate-400">{dateFmt.format(new Date(r.createdAt))}</p>
+                      <p className="text-xs text-slate-500">{dateFmt.format(new Date(r.createdAt))}</p>
                     </div>
                   </div>
                   <Pill className={statusCls[r.status]}>{t(`status.${r.status}`)}</Pill>
@@ -116,7 +116,7 @@ export function RequestsManager({
                     <button
                       type="submit"
                       aria-label={t("delete")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                     >
                       <Icon name="trash" size={16} />
                     </button>
@@ -184,7 +184,7 @@ function RequestForm({
               allowFree
               defaultCents={request.priceCents > 0 ? request.priceCents : 0}
             />
-            <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("priceHint")}</p>
           </div>
           <div>
             <Label htmlFor="rq-note">{t("noteLabel")}</Label>

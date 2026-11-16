@@ -114,7 +114,7 @@ export function MultiImageUpload({
           <button
             type="button"
             onClick={() => !uploading && fileRef.current?.click()}
-            className="flex aspect-[4/3] flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-slate-400 transition hover:border-violet-400 hover:bg-violet-50/40"
+            className="flex aspect-[4/3] flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 text-slate-500 transition hover:border-violet-400 hover:bg-violet-50/40"
           >
             {uploading ? (
               <span className="h-6 w-6 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
@@ -129,7 +129,7 @@ export function MultiImageUpload({
       </div>
 
       <div className="mt-2 flex items-center gap-3">
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           {t("imageCount", { count: urls.length, max })}
         </p>
         {error && <span className="text-xs text-red-600">{error}</span>}

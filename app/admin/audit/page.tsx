@@ -86,7 +86,7 @@ export default async function AdminAuditPage({
                   key={l.id}
                   className="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-3 sm:flex-nowrap"
                 >
-                  <span className="w-32 shrink-0 text-xs tabular-nums text-slate-400">
+                  <span className="w-32 shrink-0 text-xs tabular-nums text-slate-500">
                     {formatDateTime(l.createdAt, locale)}
                   </span>
                   <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-0.5 font-mono text-xs font-medium text-slate-700">
@@ -96,11 +96,11 @@ export default async function AdminAuditPage({
                     {actor ? (
                       <span className="font-medium text-slate-800">{actor.name}</span>
                     ) : (
-                      <span className="text-slate-400">{t("system")}</span>
+                      <span className="text-slate-500">{t("system")}</span>
                     )}
-                    {tenant && <span className="text-slate-400"> · {tenant.name}</span>}
+                    {tenant && <span className="text-slate-500"> · {tenant.name}</span>}
                     {l.targetType && (
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-500">
                         {" "}
                         · {l.targetType}
                         {l.targetId ? `#${l.targetId}` : ""}

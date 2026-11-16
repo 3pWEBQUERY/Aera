@@ -75,7 +75,7 @@ export function HScrollRow({
       <div className="mb-4 flex items-end justify-between gap-4">
         <div className="min-w-0">
           {hint && (
-            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
               {hint}
             </p>
           )}
@@ -88,7 +88,7 @@ export function HScrollRow({
             <Icon
               name="chevron"
               size={16}
-              className="-rotate-90 text-[#161613]/40 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
+              className="-rotate-90 text-[#161613]/65 transition group-hover:translate-x-0.5 group-hover:text-[#161613]"
             />
           </Link>
         ) : (

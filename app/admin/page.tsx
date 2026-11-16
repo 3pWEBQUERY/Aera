@@ -26,7 +26,7 @@ function Stat({
         <Icon name={icon} size={18} />
       </span>
       <p className="mt-3 text-2xl font-bold leading-none text-slate-900">{value}</p>
-      <p className="mt-1 text-xs font-medium text-slate-400">{label}</p>
+      <p className="mt-1 text-xs font-medium text-slate-500">{label}</p>
     </>
   );
   return href ? (
@@ -131,7 +131,7 @@ export default async function AdminOverviewPage() {
                     <span className="block truncate text-sm font-medium text-slate-900">
                       {ticket.subject}
                     </span>
-                    <span className="block truncate text-xs text-slate-400">
+                    <span className="block truncate text-xs text-slate-500">
                       {ticket.name || ticket.email} · {formatDate(ticket.lastMessageAt, locale)}
                     </span>
                   </span>
@@ -188,17 +188,17 @@ export default async function AdminOverviewPage() {
                 )}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-800">{tenant.name}</p>
-                  <p className="truncate text-xs text-slate-400">
+                  <p className="truncate text-xs text-slate-500">
                     /c/{tenant.slug} · {formatDate(tenant.createdAt, locale)}
                   </p>
                 </div>
-                <Pill className="shrink-0 bg-slate-100 text-slate-500">
+                <Pill className="shrink-0 bg-slate-100 text-slate-600">
                   {t("membersShort", { count: tenant._count.memberships })}
                 </Pill>
               </li>
             ))}
             {latestTenants.length === 0 && (
-              <li className="text-sm text-slate-400">{t("noCommunities")}</li>
+              <li className="text-sm text-slate-500">{t("noCommunities")}</li>
             )}
           </ul>
         </section>
@@ -219,15 +219,15 @@ export default async function AdminOverviewPage() {
                 <Avatar name={u.name} src={u.avatarUrl} size={36} />
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-medium text-slate-800">{u.name}</p>
-                  <p className="truncate text-xs text-slate-400">{u.email}</p>
+                  <p className="truncate text-xs text-slate-500">{u.email}</p>
                 </div>
-                <span className="shrink-0 text-xs text-slate-400">
+                <span className="shrink-0 text-xs text-slate-500">
                   {formatDate(u.createdAt, locale)}
                 </span>
               </li>
             ))}
             {latestUsers.length === 0 && (
-              <li className="text-sm text-slate-400">{t("noUsers")}</li>
+              <li className="text-sm text-slate-500">{t("noUsers")}</li>
             )}
           </ul>
         </section>

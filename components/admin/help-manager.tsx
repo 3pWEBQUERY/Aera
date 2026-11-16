@@ -87,7 +87,7 @@ export function HelpManager({
           </span>
           <div>
             <h1 className="text-xl font-bold text-slate-900">{t("title")}</h1>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               {t("metaBefore", { categories: categories.length, articles: total })}
               <a href="/hilfe" target="_blank" className="underline underline-offset-2 hover:text-slate-700">
                 /hilfe
@@ -125,7 +125,7 @@ export function HelpManager({
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <h2 className="truncate font-semibold text-slate-900">{c.title}</h2>
-                    <Pill className="bg-slate-100 text-slate-500">
+                    <Pill className="bg-slate-100 text-slate-600">
                       {t("articleCount", { count: c.articles.length })}
                     </Pill>
                   </div>
@@ -140,7 +140,7 @@ export function HelpManager({
                     <button
                       disabled={i === 0}
                       aria-label={tc("moveUp")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                     >
                       <Icon name="chevron" size={15} className="rotate-180" />
                     </button>
@@ -151,7 +151,7 @@ export function HelpManager({
                     <button
                       disabled={i === categories.length - 1}
                       aria-label={tc("moveDown")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                     >
                       <Icon name="chevron" size={15} />
                     </button>
@@ -159,7 +159,7 @@ export function HelpManager({
                   <button
                     onClick={() => open({ kind: "category", category: c })}
                     aria-label={t("editCategoryAria")}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                   >
                     <Icon name="edit" size={15} />
                   </button>
@@ -182,7 +182,7 @@ export function HelpManager({
               </div>
 
               {c.articles.length === 0 ? (
-                <p className="px-5 py-6 text-sm text-slate-400">
+                <p className="px-5 py-6 text-sm text-slate-500">
                   {t("noQuestions")}
                 </p>
               ) : (
@@ -205,7 +205,7 @@ export function HelpManager({
                           <button
                             disabled={j === 0}
                             aria-label={tc("moveUp")}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                           >
                             <Icon name="chevron" size={15} className="rotate-180" />
                           </button>
@@ -216,7 +216,7 @@ export function HelpManager({
                           <button
                             disabled={j === c.articles.length - 1}
                             aria-label={tc("moveDown")}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 disabled:opacity-30"
                           >
                             <Icon name="chevron" size={15} />
                           </button>
@@ -224,7 +224,7 @@ export function HelpManager({
                         <button
                           onClick={() => open({ kind: "article", categoryId: c.id, article: a })}
                           aria-label={t("editAria")}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-900"
+                          className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-900"
                         >
                           <Icon name="edit" size={15} />
                         </button>
@@ -431,7 +431,7 @@ function ArticleForm({
               <span className="block text-sm font-semibold text-slate-900">
                 {t("published")}
               </span>
-              <span className="block text-xs text-slate-400">
+              <span className="block text-xs text-slate-500">
                 {t("publishedHint")}
               </span>
             </span>

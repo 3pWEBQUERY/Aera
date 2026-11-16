@@ -64,7 +64,7 @@ export function CommunitiesManager({
         <div>
           <h1 className="flex items-center gap-2 text-xl font-bold text-slate-900">
             {t("title")}
-            <Pill className="bg-slate-100 text-slate-500">{nf.format(total)}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{nf.format(total)}</Pill>
           </h1>
           <p className="mt-1 text-sm text-slate-500">
             {t("subtitle")}
@@ -74,7 +74,7 @@ export function CommunitiesManager({
 
       <form method="GET" action="/admin/communities" className="max-w-md">
         <div className="flex items-center gap-2.5 rounded-full border border-slate-200 bg-white px-4 py-2.5 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-          <Icon name="search" size={17} className="shrink-0 text-slate-400" />
+          <Icon name="search" size={17} className="shrink-0 text-slate-500" />
           <input
             type="search"
             name="q"
@@ -136,10 +136,10 @@ export function CommunitiesManager({
                     <p className="font-semibold text-slate-900">{tn.name}</p>
                     {/* Paket auf einen Blick — die haeufigste Frage in dieser Liste. */}
                     <PlanBadge plan={tn.creatorPlan} />
-                    <Pill className="bg-slate-100 text-slate-500">
+                    <Pill className="bg-slate-100 text-slate-600">
                       {t("membersShort", { count: nf.format(tn.members) })}
                     </Pill>
-                    <Pill className="bg-slate-100 text-slate-500">
+                    <Pill className="bg-slate-100 text-slate-600">
                       {t("postsShort", { count: nf.format(tn.posts) })}
                     </Pill>
                     {cat && (
@@ -157,7 +157,7 @@ export function CommunitiesManager({
                       {tn.status === "ACTIVE" ? t("statusActive") : t("statusSuspended")}
                     </Pill>
                   </div>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-x-2 truncate text-sm text-slate-400">
+                  <p className="mt-0.5 flex flex-wrap items-center gap-x-2 truncate text-sm text-slate-500">
                     <span className="truncate">
                       /c/{tn.slug} · {tn.ownerEmail} · {t("since", { date: formatDate(tn.createdAt, locale) })}
                     </span>
@@ -243,7 +243,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
             )}
             <div className="min-w-0">
               <p className="truncate font-semibold text-slate-900">{tenant.name}</p>
-              <p className="truncate text-sm text-slate-400">
+              <p className="truncate text-sm text-slate-500">
                 {t("owner", { name: tenant.ownerName, email: tenant.ownerEmail })}
               </p>
             </div>
@@ -305,7 +305,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
                   </option>
                 ))}
               </Select>
-              <p className="mt-1.5 text-xs text-slate-400">
+              <p className="mt-1.5 text-xs text-slate-500">
                 {tenant.billingLocked
                   ? t("planLockedHint")
                   : t(`planSourceHint.${tenant.planSource}`)}
@@ -321,7 +321,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
                 <option value="ACTIVE">{t("statusActive")}</option>
                 <option value="SUSPENDED">{t("statusSuspended")}</option>
               </Select>
-              <p className="mt-1 text-xs text-slate-400">{t("statusHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("statusHint")}</p>
             </div>
             <div>
               <Label htmlFor="at-domain">{t("customDomain")}</Label>
@@ -331,7 +331,7 @@ function EditForm({ tenant, onDone }: { tenant: TenantRow; onDone: () => void })
                 defaultValue={tenant.customDomain ?? ""}
                 placeholder={t("customDomainPlaceholder")}
               />
-              <p className="mt-1 text-xs text-slate-400">
+              <p className="mt-1 text-xs text-slate-500">
                 {t("customDomainHint")}
               </p>
             </div>

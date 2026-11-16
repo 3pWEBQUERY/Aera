@@ -407,7 +407,7 @@ function AudienceSelect({
         className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
       >
         <span className="max-w-[230px] truncate">{tAud(current.key)}</span>
-        <Icon name="chevron" size={14} className={cn("text-slate-400 transition", open && "rotate-180")} />
+        <Icon name="chevron" size={14} className={cn("text-slate-500 transition", open && "rotate-180")} />
       </button>
       {open && (
         <div className="absolute left-0 top-11 z-30 w-72 overflow-hidden rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl">
@@ -459,7 +459,7 @@ function Hub({ onOpen }: { onOpen: (v: View) => void }) {
             <Icon name={r.icon} size={18} />
           </span>
           <span className="flex-1 text-base font-semibold text-slate-900">{r.label}</span>
-          <Icon name="chevron" size={18} className="-rotate-90 text-slate-400" />
+          <Icon name="chevron" size={18} className="-rotate-90 text-slate-500" />
         </button>
       ))}
     </div>
@@ -520,7 +520,7 @@ function HeaderPanel({
           className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-sm outline-none transition focus:border-[var(--brand)] focus:bg-white focus:ring-2 focus:ring-[var(--brand-ring)]"
         />
         <NameStatusHint status={nameCheck} />
-        <p className="mt-1.5 text-xs text-slate-400">
+        <p className="mt-1.5 text-xs text-slate-500">
           {t("nameUpdateHint")}
         </p>
       </div>
@@ -528,7 +528,7 @@ function HeaderPanel({
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-slate-900">{t("profilePhoto")}</p>
-          <p className="mt-1 text-xs text-slate-400">{t("profilePhotoHint")}</p>
+          <p className="mt-1 text-xs text-slate-500">{t("profilePhotoHint")}</p>
         </div>
         <LogoUploader slug={slug} url={logoUrl} name={name} color={primaryColor} onChange={setLogoUrl} />
       </div>
@@ -557,7 +557,7 @@ function HeaderPanel({
           {mode === "PHOTO" && (
             <div className="border-t border-slate-100 px-4 py-4">
               <p className="text-sm font-semibold text-slate-800">{t("colorScheme")}</p>
-              <p className="mt-0.5 text-xs text-slate-400">{t("colorSchemeHint")}</p>
+              <p className="mt-0.5 text-xs text-slate-500">{t("colorSchemeHint")}</p>
               <div className="mt-3 flex flex-wrap items-center gap-2">
                 {COLOR_PRESETS.map((c) => (
                   <button
@@ -572,7 +572,7 @@ function HeaderPanel({
                     aria-label={c}
                   />
                 ))}
-                <label className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-300 text-slate-400">
+                <label className="relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg border border-slate-300 text-slate-500">
                   <Icon name="plus" size={16} />
                   <input
                     type="color"
@@ -599,7 +599,7 @@ function HeaderPanel({
           {mode === "COVER" && (
             <div className="border-t border-slate-100 px-4 py-4">
               <CoverUpload tenant={slug} defaultUrl={coverUrl} />
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-slate-500">
                 {t("coverApplied")}
               </p>
             </div>
@@ -609,7 +609,7 @@ function HeaderPanel({
 
       <div>
         <label className="block text-sm font-bold text-slate-900">{t("about")}</label>
-        <p className="mt-1 text-xs text-slate-400">{t("aboutHint")}</p>
+        <p className="mt-1 text-xs text-slate-500">{t("aboutHint")}</p>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -646,7 +646,7 @@ function HeaderVariantPicker({
   return (
     <div>
       <p className="text-sm font-bold text-slate-900">{t("headerStyle")}</p>
-      <p className="mt-1 text-xs text-slate-400">{t("headerStyleHint")}</p>
+      <p className="mt-1 text-xs text-slate-500">{t("headerStyleHint")}</p>
       <div className="mt-3 grid grid-cols-2 gap-2.5">
         {HEADER_VARIANTS.map((v) => {
           const active = value === v;
@@ -674,7 +674,7 @@ function HeaderVariantPicker({
                   <Icon name="check" size={14} className="shrink-0 text-[var(--action-strong)]" />
                 )}
               </span>
-              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-400">
+              <span className="mt-0.5 block px-0.5 text-[11px] leading-snug text-slate-500">
                 {t(`headerVariants.${v}.desc`)}
               </span>
             </button>
@@ -746,11 +746,11 @@ function MosaicUploader({
     <div>
       <div className="flex items-baseline justify-between gap-3">
         <p className="text-sm font-bold text-slate-900">{t("mosaicTitle")}</p>
-        <p className="shrink-0 text-xs tabular-nums text-slate-400">
+        <p className="shrink-0 text-xs tabular-nums text-slate-500">
           {images.length}/{MOSAIC_MAX}
         </p>
       </div>
-      <p className="mt-1 text-xs text-slate-400">{t("mosaicHint")}</p>
+      <p className="mt-1 text-xs text-slate-500">{t("mosaicHint")}</p>
 
       <div className="mt-3 grid grid-cols-4 gap-1.5">
         {images.map((url, i) => (
@@ -788,7 +788,7 @@ function MosaicUploader({
           <button
             type="button"
             onClick={() => ref.current?.click()}
-            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 text-slate-400 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-600"
+            className="flex aspect-square flex-col items-center justify-center gap-1 rounded-lg border border-dashed border-slate-300 text-slate-500 transition hover:border-slate-400 hover:bg-slate-50 hover:text-slate-600"
           >
             <Icon name="plus" size={18} />
           </button>
@@ -940,7 +940,7 @@ function SocialLinksEditor({
 
       <div className="mt-3 space-y-2">
         {socials.length === 0 && (
-          <p className="text-xs text-slate-400">{t("noSocials")}</p>
+          <p className="text-xs text-slate-500">{t("noSocials")}</p>
         )}
         {socials.map((s, i) => {
           const p = SOCIAL_BY_KEY[s.platform] ?? SOCIAL_BY_KEY.website;
@@ -950,7 +950,7 @@ function SocialLinksEditor({
             <div key={i} className="flex items-center gap-2">
               <SocialGlyph platform={s.platform} size={36} />
               <div className="flex min-w-0 flex-1 items-center rounded-lg border border-slate-200 bg-slate-50 transition focus-within:border-[var(--brand)] focus-within:bg-white">
-                {p.prefix && <span className="shrink-0 pl-3 text-xs text-slate-400">{p.prefix}</span>}
+                {p.prefix && <span className="shrink-0 pl-3 text-xs text-slate-500">{p.prefix}</span>}
                 <input
                   value={value}
                   onChange={(e) => {
@@ -967,7 +967,7 @@ function SocialLinksEditor({
               <button
                 type="button"
                 onClick={() => setSocials(socials.filter((_, idx) => idx !== i))}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                 aria-label={t("removeAria")}
               >
                 <Icon name="trash" size={15} />
@@ -1150,7 +1150,7 @@ function SectionsPanel({
         />
         <span>
           <span className="block text-sm font-medium text-slate-800">{t("applyAll")}</span>
-          <span className="block text-xs text-slate-400">{t("applyAllHint")}</span>
+          <span className="block text-xs text-slate-500">{t("applyAllHint")}</span>
         </span>
       </label>
 
@@ -1174,7 +1174,7 @@ function SectionsPanel({
             <button
               type="button"
               onClick={() => setEnabledByKey(keyOf(s), false)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
               aria-label={t("hideAria")}
             >
               <Icon name="eye" size={16} />
@@ -1182,7 +1182,7 @@ function SectionsPanel({
             <button
               type="button"
               onClick={() => removeSection(s)}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
               aria-label={t("removeAria")}
             >
               <Icon name="trash" size={16} />
@@ -1190,7 +1190,7 @@ function SectionsPanel({
           </div>
         ))}
         {visible.length === 0 && (
-          <p className="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-400">
+          <p className="rounded-2xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">
             {t("noSections")}
           </p>
         )}
@@ -1249,7 +1249,7 @@ function AddSectionDropdown({
     <div className="absolute left-0 top-12 z-30 max-h-96 w-80 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-2 shadow-xl">
       {groups.map((g) => (
         <div key={g}>
-          <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-slate-400">{tGroups(g)}</p>
+          <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-slate-500">{tGroups(g)}</p>
           {SECTION_CATALOG.filter((s) => s.group === g).map((s) => {
             const added = enabled.has(s.type);
             return (
@@ -1265,7 +1265,7 @@ function AddSectionDropdown({
               >
                 <Icon name={s.icon} size={18} className="text-slate-500" />
                 <span className="flex-1 text-sm font-medium text-slate-800">{tSections(s.type)}</span>
-                {added && <span className="text-xs font-medium text-slate-400">{t("added")}</span>}
+                {added && <span className="text-xs font-medium text-slate-500">{t("added")}</span>}
               </button>
             );
           })}
@@ -1273,7 +1273,7 @@ function AddSectionDropdown({
       ))}
       {spaces.length > 0 && (
         <div>
-          <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-slate-400">
+          <p className="px-4 pb-1 pt-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
             {tGroups("spaces")}
           </p>
           {spaces.map((sp) => {
@@ -1291,7 +1291,7 @@ function AddSectionDropdown({
               >
                 <Icon name={spaceTypeIcon(sp.type)} size={18} className="text-slate-500" />
                 <span className="flex-1 truncate text-sm font-medium text-slate-800">{sp.name}</span>
-                {added && <span className="shrink-0 text-xs font-medium text-slate-400">{t("added")}</span>}
+                {added && <span className="shrink-0 text-xs font-medium text-slate-500">{t("added")}</span>}
               </button>
             );
           })}
@@ -1432,14 +1432,14 @@ function MenuPanel({
             <p className="truncate text-sm font-semibold text-slate-900">
               {item.label.trim() || t(`types.${item.type}`)}
             </p>
-            <p className="truncate text-xs text-slate-400">{targetOf(item)}</p>
+            <p className="truncate text-xs text-slate-500">{targetOf(item)}</p>
           </div>
           <button
             type="button"
             onClick={() => moveSlot(slot, item.id)}
             title={slot === "BAR" ? t("toMore") : t("toBar")}
             aria-label={slot === "BAR" ? t("toMore") : t("toBar")}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
           >
             <Icon name={slot === "BAR" ? "more" : "menu"} size={15} />
           </button>
@@ -1448,7 +1448,7 @@ function MenuPanel({
             onClick={() => setOpenId(open ? null : item.id)}
             aria-expanded={open}
             aria-label={t("editAria")}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
           >
             <Icon name="chevron" size={15} className={cn("transition", open && "rotate-180")} />
           </button>
@@ -1543,13 +1543,13 @@ function MenuPanel({
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
             <h2 className="flex items-center gap-2 text-sm font-bold text-slate-900">
-              <Icon name={slot === "BAR" ? "menu" : "more"} size={15} className="text-slate-400" />
+              <Icon name={slot === "BAR" ? "menu" : "more"} size={15} className="text-slate-500" />
               {title}
               <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
                 {list.length}
               </span>
             </h2>
-            <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{hint}</p>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{hint}</p>
           </div>
           <button
             type="button"
@@ -1565,7 +1565,7 @@ function MenuPanel({
           <div
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => onDrop(slot, 0)}
-            className="mt-3 rounded-2xl border border-dashed border-slate-200 px-3 py-6 text-center text-xs leading-relaxed text-slate-400"
+            className="mt-3 rounded-2xl border border-dashed border-slate-200 px-3 py-6 text-center text-xs leading-relaxed text-slate-500"
           >
             {t("emptyZone")}
           </div>
@@ -1583,7 +1583,7 @@ function MenuPanel({
 
       <section className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5">
         <h2 className="text-sm font-bold text-slate-900">{t("moreButtonTitle")}</h2>
-        <p className="mt-0.5 text-xs leading-relaxed text-slate-400">{t("moreButtonHint")}</p>
+        <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{t("moreButtonHint")}</p>
         <label className="mt-3 flex items-center gap-3">
           <button
             type="button"
@@ -1647,7 +1647,7 @@ function Field({
     <div>
       <label className="mb-1.5 block text-xs font-bold text-slate-900">{label}</label>
       {children}
-      {hint && <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint}</p>}
+      {hint && <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>}
     </div>
   );
 }
@@ -1716,18 +1716,18 @@ function MenuAddSheet({
       </span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-slate-900">{label}</span>
-        <span className="block truncate text-xs text-slate-400">{hint}</span>
+        <span className="block truncate text-xs text-slate-500">{hint}</span>
       </span>
-      <Icon name="plus" size={16} className="shrink-0 text-slate-400" />
+      <Icon name="plus" size={16} className="shrink-0 text-slate-500" />
     </button>
   );
 
   const group = (title: string, hint: string, children: React.ReactNode) => (
     <section className="flex min-w-0 flex-col rounded-2xl border border-slate-200 bg-slate-50/60 p-4">
-      <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+      <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
         {title}
       </h3>
-      <p className="mt-1 text-xs leading-relaxed text-slate-400">{hint}</p>
+      <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p>
       {/* Ueberschrift steht, Liste scrollt: zwanzig Spaces sollen die beiden
           anderen Spalten nicht aus dem Bild schieben. */}
       <div className="mt-3 max-h-[46vh] space-y-2 overflow-y-auto pr-0.5">{children}</div>
@@ -1748,7 +1748,7 @@ function MenuAddSheet({
           </span>
           <div className="min-w-0 flex-1">
             <p className="font-semibold text-slate-900">{t("addTitle")}</p>
-            <p className="truncate text-sm text-slate-400">
+            <p className="truncate text-sm text-slate-500">
               {slot === "MORE" ? t("moreTitle") : t("barTitle")}
             </p>
           </div>
@@ -1768,7 +1768,7 @@ function MenuAddSheet({
               t("groupSpaces"),
               t("groupSpacesHint"),
               spaces.length === 0 ? (
-                <p className="text-sm text-slate-400">{t("noSpaces")}</p>
+                <p className="text-sm text-slate-500">{t("noSpaces")}</p>
               ) : (
                 spaces.map((sp) =>
                   choice(spaceTypeIcon(sp.type), sp.name, `/${sp.slug}`, () =>
@@ -1862,7 +1862,7 @@ function NavPanel({
             </span>
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-slate-900">{item.label}</p>
-              <p className="truncate text-xs text-slate-400">
+              <p className="truncate text-xs text-slate-500">
                 {tNav(item.type)}
                 {item.value ? ` · ${item.value}` : ""}
               </p>
@@ -1870,7 +1870,7 @@ function NavPanel({
             <button
               type="button"
               onClick={() => setNav(nav.filter((n) => n.id !== item.id))}
-              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
               aria-label={t("removeAria")}
             >
               <Icon name="trash" size={16} />
@@ -1929,14 +1929,14 @@ function Dropdown<T extends string>({
         onBlur={() => setTimeout(() => setOpen(false), 160)}
         className="flex w-full items-center justify-between gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 text-left text-sm outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]"
       >
-        <span className={cn("flex min-w-0 items-center gap-2 truncate", !current && "text-slate-400")}>
+        <span className={cn("flex min-w-0 items-center gap-2 truncate", !current && "text-slate-500")}>
           {current?.icon && <Icon name={current.icon} size={16} className="shrink-0 text-slate-500" />}
           <span className="truncate">{current ? current.label : placeholder ?? t("selectPlaceholder")}</span>
         </span>
         <Icon
           name="chevron"
           size={14}
-          className={cn("shrink-0 text-slate-400 transition", open && "rotate-180")}
+          className={cn("shrink-0 text-slate-500 transition", open && "rotate-180")}
         />
       </button>
       {open && (
@@ -1945,7 +1945,7 @@ function Dropdown<T extends string>({
           className="absolute left-0 right-0 top-[calc(100%+6px)] z-40 max-h-72 overflow-y-auto rounded-2xl border border-slate-200 bg-white py-1.5 shadow-xl"
         >
           {options.length === 0 ? (
-            <p className="px-4 py-3 text-sm text-slate-400">{t("noOptions")}</p>
+            <p className="px-4 py-3 text-sm text-slate-500">{t("noOptions")}</p>
           ) : (
             options.map((o) => (
               <button
@@ -1963,7 +1963,7 @@ function Dropdown<T extends string>({
                   {o.icon && <Icon name={o.icon} size={16} className="shrink-0 text-slate-500" />}
                   <span className="min-w-0">
                     <span className="block truncate text-sm font-medium text-slate-800">{o.label}</span>
-                    {o.hint && <span className="block truncate text-xs text-slate-400">{o.hint}</span>}
+                    {o.hint && <span className="block truncate text-xs text-slate-500">{o.hint}</span>}
                   </span>
                 </span>
                 {o.value === value && <Icon name="check" size={16} className="shrink-0 text-slate-900" />}
@@ -2034,7 +2034,7 @@ function AddNavModal({
         <div className="mx-auto w-full max-w-2xl px-6 py-8">
           <div className="flex items-center justify-between">
             <label className="text-sm font-bold text-slate-900">{t("titleLabel")}</label>
-            <span className="text-xs text-slate-400">{title.length} / 20</span>
+            <span className="text-xs text-slate-500">{title.length} / 20</span>
           </div>
           <input
             autoFocus
@@ -2082,7 +2082,7 @@ function AddNavModal({
           {needsSpace && (
             <>
               <label className="mt-6 block text-sm font-bold text-slate-900">{t("chooseSpace")}</label>
-              <p className="mt-0.5 text-xs text-slate-400">
+              <p className="mt-0.5 text-xs text-slate-500">
                 {t("chooseSpaceHint")}
               </p>
               <div className="mt-2">

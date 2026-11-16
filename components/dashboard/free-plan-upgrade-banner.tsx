@@ -26,7 +26,7 @@ export function FreePlanUpgradeBanner({ slug }: { slug: string }) {
                 </span>
               </div>
               <p className="mt-1 max-w-2xl text-sm leading-6 text-slate-500">{t("description")}</p>
-              <p className="mt-2 text-xs font-medium text-slate-400">{t("plans")}</p>
+              <p className="mt-2 text-xs font-medium text-slate-500">{t("plans")}</p>
             </div>
           </div>
 

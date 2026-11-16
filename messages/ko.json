@@ -196,7 +196,7 @@
     "addressLabel": "주소",
     "alsoReachable": "{url} 에서도 접근할 수 있습니다",
     "slugFallback": "your-community",
-    "taglineLabel": "간단한 설명(선택)",
+    "taglineLabel": "슬로건 (선택)",
     "taglinePlaceholder": "당신의 커뮤니티는 무엇에 관한 것인가요?",
     "descLabel": "설명",
     "descPlaceholder": "멤버가 무엇을 기대할 수 있는지 몇 문장으로 설명하세요.",
@@ -316,7 +316,9 @@
     "promoLabel": "프로모 코드(선택)",
     "promoPlaceholder": "AERA-PRO-7K2QX4",
     "promoHint": "파트너나 크리에이터에게 코드를 받으셨나요? 그러면 커뮤니티가 결제 정보 없이 바로 상위 패키지로 시작해요.",
-    "hexLabel": "직접 입력한 색상 코드"
+    "hexLabel": "직접 입력한 색상 코드",
+    "nameRequired": "커뮤니티 이름을 입력하세요(2자 이상).",
+    "spacesRequired": "영역을 하나 이상 선택하세요."
   },
   "seed": {
     "tierDescription": "커뮤니티 무료 이용.",
@@ -1220,7 +1222,9 @@
       "trackUploadHint": "여러 개 한 번에 · MP3, M4A, WAV 또는 OGG",
       "trackTitleAria": "트랙 제목",
       "removeTrackAria": "트랙 삭제",
-      "trackUploading": "{count}개 업로드 중 … {percent}%"
+      "trackUploading": "{count}개 업로드 중 … {percent}%",
+      "deleteQuestion": "이 게시물을 영구 삭제할까요?",
+      "deleteConfirm": "삭제"
     },
     "chat": {
       "badge": "채팅",
@@ -3010,7 +3014,8 @@
       "statPurchases": "구매",
       "statRevenue": "수익",
       "recentMembers": "최근 멤버",
-      "noMembers": "아직 멤버가 없습니다. 커뮤니티 링크를 공유해 시작하세요."
+      "noMembers": "아직 멤버가 없습니다. 커뮤니티 링크를 공유해 시작하세요.",
+      "welcomeNew": "환영해요. 이 단계로 {name}을(를) 시작해 보세요."
     },
     "topbar": {
       "viewCommunity": "커뮤니티 보기"
@@ -3804,6 +3809,28 @@
       },
       "urlMissing": "주소 없음",
       "close": "닫기"
+    },
+    "gettingStarted": {
+      "title": "시작하기",
+      "progress": "{total}개 중 {done}개 완료",
+      "done": "완료",
+      "viewCommunity": "커뮤니티 보기",
+      "viewCommunityHint": "방문자에게 보이는 페이지를 확인하세요.",
+      "post": {
+        "title": "첫 게시물 올리기",
+        "desc": "커뮤니티에 인사하세요. 몇 문장이면 충분해요.",
+        "cta": "게시물 작성"
+      },
+      "look": {
+        "title": "커버 이미지와 로고 추가",
+        "desc": "커뮤니티 페이지를 나답게 꾸며 보세요.",
+        "cta": "브랜딩 열기"
+      },
+      "invite": {
+        "title": "첫 멤버 초대",
+        "desc": "링크를 공유하거나 이메일로 초대하세요.",
+        "cta": "멤버 초대"
+      }
     }
   },
   "common": {
@@ -3937,7 +3964,9 @@
         "membershipOptions": "멤버십 옵션",
         "errCheckout": "결제를 시작할 수 없습니다. 다시 시도해 주세요.",
         "errPaymentsUnavailable": "현재 결제를 이용할 수 없습니다. 나중에 다시 시도해 주세요.",
-        "liveHeading": "라이브"
+        "liveHeading": "라이브",
+        "noPostsHintStaff": "커뮤니티가 준비됐어요. 첫 게시물로 방문자에게 소개해 보세요.",
+        "writeFirstPost": "첫 게시물 쓰기"
       },
       "shop": {
         "heading": "상점",

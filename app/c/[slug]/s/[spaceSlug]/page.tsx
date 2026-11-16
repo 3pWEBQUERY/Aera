@@ -127,7 +127,7 @@ export default async function SpacePage({
           {tLegal("requiredError")}
         </p>
       )}
-      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/45">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65">
         {tType.has(space.type) ? tType(space.type) : tType("fallback")}
       </p>
       <h1 className="display-serif mt-1.5 text-3xl text-[#161613] sm:text-4xl">
@@ -177,7 +177,7 @@ export default async function SpacePage({
                         {l.description}
                       </span>
                     ) : (
-                      <span className="mt-0.5 block truncate text-sm text-[#161613]/45">
+                      <span className="mt-0.5 block truncate text-sm text-[#161613]/65">
                         {l.url.replace(/^https?:\/\//i, "")}
                       </span>
                     )}
@@ -186,7 +186,7 @@ export default async function SpacePage({
                     name={external ? "external" : "chevron"}
                     size={17}
                     className={cn(
-                      "shrink-0 text-[#161613]/30 transition group-hover:text-[#161613]",
+                      "shrink-0 text-[#161613]/65 transition group-hover:text-[#161613]",
                       !external && "-rotate-90",
                     )}
                   />
@@ -279,7 +279,7 @@ export default async function SpacePage({
         )}
         <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
           <div className="min-w-0">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/45">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65">
               {tType.has(space.type) ? tType(space.type) : tType("fallback")}
             </p>
             <h1 className="display-serif mt-1.5 text-3xl text-[#161613] sm:text-4xl">
@@ -297,7 +297,7 @@ export default async function SpacePage({
         </div>
         <form method="GET" className="mb-6">
           <div className="flex items-center gap-2 rounded-xl border border-[#161613]/10 bg-white px-4 py-3 transition focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-            <Icon name="search" size={18} className="shrink-0 text-[#161613]/50" />
+            <Icon name="search" size={18} className="shrink-0 text-[#161613]/65" />
             <input
               type="search"
               name="q"
@@ -339,7 +339,7 @@ export default async function SpacePage({
               <article key={p.id} className="flex gap-3 rounded-xl border border-[#161613]/10 bg-white p-3 transition hover:border-[#161613]/25">
                 <VoteControl tenant={slug} space={spaceSlug} targetType="post" targetId={p.id} postId={p.id} score={scoreMap[p.id] ?? 0} myVote={voteMap[p.id] ?? null} />
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2 text-xs text-[#161613]/50">
+                  <div className="flex items-center gap-2 text-xs text-[#161613]/65">
                     <Avatar name={p.author.name} src={p.author.avatarUrl} size={20} />
                     <span>{p.author.name}</span>
                     <span>· {timeAgo(p.createdAt, locale)}</span>
@@ -646,7 +646,7 @@ export default async function SpacePage({
                       </span>
                     )}
                     <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
                         {t("episodeNum", { num: posts.length - i })} · {timeAgo(p.createdAt, locale)}
                       </p>
                       <h2 className="display-serif mt-1 text-xl leading-snug text-[#161613] sm:text-2xl">
@@ -1008,7 +1008,7 @@ export default async function SpacePage({
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2">
                       <Avatar name={r.requester.name} src={r.requester.avatarUrl} size={22} />
-                      <span className="truncate text-xs font-medium text-[#161613]/55">{r.requester.name}</span>
+                      <span className="truncate text-xs font-medium text-[#161613]/65">{r.requester.name}</span>
                     </div>
                     <Pill className={statusCls[r.status]}>{tReq(`status.${r.status}`)}</Pill>
                   </div>
@@ -1068,7 +1068,7 @@ export default async function SpacePage({
                 <div key={s.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-5">
                   <div className="min-w-0">
                     <p className="font-semibold text-[#161613]">{s.title}</p>
-                    <p className="mt-1 text-sm text-[#161613]/55">
+                    <p className="mt-1 text-sm text-[#161613]/65">
                       {formatDateTime(s.startsAt, locale)} · {tBook("minutes", { count: s.durationMin })}
                     </p>
                   </div>
@@ -1079,7 +1079,7 @@ export default async function SpacePage({
                     {mine ? (
                       <Pill className="bg-emerald-100 text-emerald-700">{tBook("reserved")}</Pill>
                     ) : taken ? (
-                      <Pill className="bg-[#161613]/5 text-[#161613]/50">{tBook("full")}</Pill>
+                      <Pill className="bg-[#161613]/5 text-[#161613]/65">{tBook("full")}</Pill>
                     ) : isMember ? (
                       <form action={reserveBookingAction}>
                         <input type="hidden" name="tenant" value={slug} />
@@ -1239,7 +1239,7 @@ export default async function SpacePage({
                 <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
                   <div className="min-w-0">
                     <p className="truncate font-semibold text-[#161613]">{x.title}</p>
-                    <p className="mt-1 text-sm text-[#161613]/55">{formatDateTime(x.when, locale)}</p>
+                    <p className="mt-1 text-sm text-[#161613]/65">{formatDateTime(x.when, locale)}</p>
                   </div>
                   <Pill className={kindCls[x.kind]}>{tCal(`kind.${x.kind}`)}</Pill>
                 </div>
@@ -1291,7 +1291,7 @@ export default async function SpacePage({
               <div className="flex items-center gap-2">
                 <h2 className="display-serif text-xl text-[#161613]">{c.title}</h2>
                 {courseLocked && (
-                  <Icon name="lock" size={16} className="text-[#161613]/40" />
+                  <Icon name="lock" size={16} className="text-[#161613]/65" />
                 )}
                 <Pill className={c.format === "OFFLINE" ? "bg-amber-100 text-amber-700" : "bg-blue-100 text-blue-700"}>
                   {c.format === "OFFLINE" ? t("onsite") : t("online")}
@@ -1365,17 +1365,17 @@ export default async function SpacePage({
                   return (
                   <li key={l.id} className="flex items-center justify-between py-3">
                     <div>
-                      <p className={`text-sm font-medium ${unlocked ? "text-[#161613]" : "text-[#161613]/40"}`}>
+                      <p className={`text-sm font-medium ${unlocked ? "text-[#161613]" : "text-[#161613]/65"}`}>
                         {l.title}
                       </p>
                       {unlocked && l.videoUrl && (
-                        <p className="flex items-center gap-1 text-xs text-[#161613]/50">
+                        <p className="flex items-center gap-1 text-xs text-[#161613]/65">
                           <Icon name="videos" size={12} /> {t("video")}
                         </p>
                       )}
                     </div>
                     {!unlocked ? (
-                      <Pill className="bg-[#161613]/5 text-[#161613]/50">
+                      <Pill className="bg-[#161613]/5 text-[#161613]/65">
                         <Icon name="lock" size={11} className="mr-1" />
                         {waitDays
                           ? t("inDays", { count: waitDays })
@@ -1396,7 +1396,7 @@ export default async function SpacePage({
                   );
                 })}
                 {c.lessons.length === 0 && (
-                  <li className="py-3 text-sm text-[#161613]/50">{t("noLessons")}</li>
+                  <li className="py-3 text-sm text-[#161613]/65">{t("noLessons")}</li>
                 )}
               </ul>
             </CardBody>
@@ -1451,7 +1451,7 @@ export default async function SpacePage({
                         alt={p.name}
                       />
                     ) : (
-                      <div className="absolute inset-0 flex items-center justify-center text-[#161613]/30">
+                      <div className="absolute inset-0 flex items-center justify-center text-[#161613]/65">
                         <Icon name="products" size={30} />
                       </div>
                     )}
@@ -1473,7 +1473,7 @@ export default async function SpacePage({
                       <p className="mt-1 line-clamp-2 flex-1 text-sm text-[#161613]/60">{p.description}</p>
                     )}
                     {p.requiresShipping && (
-                      <p className="mt-2 inline-flex items-center gap-1 text-xs text-[#161613]/50">
+                      <p className="mt-2 inline-flex items-center gap-1 text-xs text-[#161613]/65">
                         {p.freeShipping
                           ? tShop("freeShipping")
                           : p.stock !== null && p.stock > 0
@@ -1680,7 +1680,7 @@ export default async function SpacePage({
           <Card key={c.id}>
             <CardBody>
               <p className="font-semibold text-[#161613]">{c.subject}</p>
-              <p className="mt-1 text-xs text-[#161613]/50">
+              <p className="mt-1 text-xs text-[#161613]/65">
                 {c.sentAt ? timeAgo(c.sentAt, locale) : ""}
               </p>
               <div className="prose-body mt-2 whitespace-pre-wrap text-sm text-[#161613]/70">
@@ -1751,7 +1751,7 @@ export default async function SpacePage({
         {cfg.showSearch && (
           <form method="GET" className="mb-5">
             <div className="flex items-center gap-2 rounded-xl border border-[#161613]/10 bg-white px-3 py-2.5 focus-within:border-[var(--brand)] focus-within:ring-2 focus-within:ring-[var(--brand-ring)]">
-              <Icon name="search" size={17} className="text-[#161613]/50" />
+              <Icon name="search" size={17} className="text-[#161613]/65" />
               <input
                 type="search"
                 name="q"
@@ -1760,7 +1760,7 @@ export default async function SpacePage({
                 className="w-full bg-transparent text-sm outline-none placeholder:text-[#161613]/50"
               />
               {query && (
-                <Link href={buildHref({ q: undefined, page: undefined })} className="text-xs font-medium text-[#161613]/50 hover:text-[#161613]/80">
+                <Link href={buildHref({ q: undefined, page: undefined })} className="text-xs font-medium text-[#161613]/65 hover:text-[#161613]/80">
                   {t("reset")}
                 </Link>
               )}
@@ -1779,7 +1779,7 @@ export default async function SpacePage({
             {cfg.showIndex && (
               <aside className="mb-5 lg:mb-0">
                 <div className="lg:sticky lg:top-4">
-                  <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-[#161613]/50">
+                  <p className="mb-2 px-1 text-[11px] font-semibold uppercase tracking-wider text-[#161613]/65">
                     {t("content")}
                   </p>
                   <nav className="space-y-0.5">
@@ -1806,7 +1806,7 @@ export default async function SpacePage({
                         {a.title}
                       </h2>
                       {cfg.showDates && (
-                        <p className="mt-0.5 text-xs text-[#161613]/50">{formatDateTime(a.createdAt, locale)}</p>
+                        <p className="mt-0.5 text-xs text-[#161613]/65">{formatDateTime(a.createdAt, locale)}</p>
                       )}
                       <div className="prose-body mt-2 whitespace-pre-wrap text-sm text-[#161613]/70">
                         {cfg.layout === "GRID" ? excerpt(a.body, 220) : a.body}
@@ -1838,7 +1838,7 @@ export default async function SpacePage({
 function PageLink({ href, disabled, label }: { href: string; disabled: boolean; label: string }) {
   if (disabled) {
     return (
-      <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/30">
+      <span className="cursor-not-allowed rounded-lg border border-[#161613]/10 px-3 py-1.5 text-sm font-medium text-[#161613]/65">
         {label}
       </span>
     );

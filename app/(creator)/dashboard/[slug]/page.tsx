@@ -7,9 +7,11 @@ import { formatPrice, timeAgo } from "@/lib/utils";
 import { Avatar } from "@/components/ui/misc";
 import { PlannerUpcoming } from "@/components/dashboard/planner-upcoming";
 import { PlanStatusCard } from "@/components/dashboard/plan-status-card";
-import { limitsForPlan, nextPlanAfter } from "@/lib/plan-features";
+import { limitsForPlan, nextPlanAfter, planAllowsFeature } from "@/lib/plan-features";
 import { getOrCreateWallet } from "@/lib/credits";
 import { PLATFORM_CURRENCY } from "@/lib/currency";
+import { getCommunityCoverUrl } from "@/lib/tenant";
+import { GettingStarted, type GettingStartedTask } from "@/components/dashboard/getting-started";
 
 export default async function OverviewPage({
   params,
@@ -22,7 +24,18 @@ export default async function OverviewPage({
   const td = await getTranslations("dashboard");
   const locale = await getLocale();
 
-  const [members, posts, paidOrders, activeSubs, recentMembers, revenueAgg, wallet, spaceCount] =
+  const [
+    members,
+    posts,
+    paidOrders,
+    activeSubs,
+    recentMembers,
+    revenueAgg,
+    wallet,
+    spaceCount,
+    coverUrl,
+    firstWritableSpace,
+  ] =
     await Promise.all([
       prisma.membership.count({ where: { tenantId: t, status: "ACTIVE" } }),
       prisma.post.count({ where: { tenantId: t } }),
@@ -40,7 +53,31 @@ export default async function OverviewPage({
       }),
       getOrCreateWallet(t),
       prisma.space.count({ where: { tenantId: t, isArchived: false } }),
+      getCommunityCoverUrl(t),
+      // Where "write your first post" leads: the first space made for posts.
+      prisma.space.findFirst({
+        where: { tenantId: t, isArchived: false, type: { in: ["FEED", "FORUM", "BLOG"] } },
+        orderBy: { sortOrder: "asc" },
+        select: { slug: true },
+      }),
     ]);
+
+  const gettingStarted: GettingStartedTask[] = [
+    {
+      key: "post",
+      done: posts > 0,
+      href: firstWritableSpace
+        ? `/dashboard/${slug}/spaces/${firstWritableSpace.slug}`
+        : `/dashboard/${slug}/spaces`,
+    },
+    {
+      key: "look",
+      done: Boolean(coverUrl || tenant.logoUrl),
+      href: `/dashboard/${slug}/settings?tab=branding`,
+    },
+    { key: "invite", done: members > 1, href: `/dashboard/${slug}/members` },
+  ];
+  const isNew = gettingStarted.some((task) => !task.done);
 
   const limits = limitsForPlan(wallet.plan);
 
@@ -56,6 +93,15 @@ export default async function OverviewPage({
 
   return (
     <div>
+      <PageHeader
+        title={td("overview.title")}
+        subtitle={
+          isNew
+            ? td("overview.welcomeNew", { name: tenant.name })
+            : td("overview.welcome", { name: tenant.name })
+        }
+      />
+      <GettingStarted tasks={gettingStarted} communityHref={`/c/${slug}`} />
       <PlanStatusCard
         slug={slug}
         plan={wallet.plan}
@@ -72,15 +118,11 @@ export default async function OverviewPage({
           },
         ]}
       />
-      <PageHeader
-        title={td("overview.title")}
-        subtitle={td("overview.welcome", { name: tenant.name })}
-      />
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((s) => (
           <Card key={s.label}>
             <CardBody>
-              <p className="text-xs font-medium uppercase tracking-wide text-slate-400">
+              <p className="text-xs font-medium uppercase tracking-wide text-slate-500">
                 {s.label}
               </p>
               <p className="mt-1 text-2xl font-bold text-slate-900">{s.value}</p>
@@ -89,9 +131,13 @@ export default async function OverviewPage({
         ))}
       </div>
 
-      <div className="mt-6">
-        <PlannerUpcoming slug={slug} tenantId={t} />
-      </div>
+      {/* The content planner is a paid feature; on Free its "create" link
+          only led to a locked page. */}
+      {planAllowsFeature(wallet.plan, "planner") && (
+        <div className="mt-6">
+          <PlannerUpcoming slug={slug} tenantId={t} />
+        </div>
+      )}
 
       <div className="mt-6">
         <Card>
@@ -111,10 +157,11 @@ export default async function OverviewPage({
                         {m.user.name}
                       </p>
                       <p className="text-xs text-slate-500">
-                        {m.tier?.name ?? "—"} · {td(`roles.${m.role}`)}
+                        {m.tier?.name ? `${m.tier.name} · ` : ""}
+                        {td(`roles.${m.role}`)}
                       </p>
                     </div>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-slate-500">
                       {timeAgo(m.joinedAt, locale)}
                     </span>
                   </li>

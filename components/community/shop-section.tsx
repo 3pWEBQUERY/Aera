@@ -174,7 +174,7 @@ export async function ShopSection({
                     </p>
                   )}
                   {p.requiresShipping && (
-                    <p className="mt-2 text-xs text-[#161613]/50">
+                    <p className="mt-2 text-xs text-[#161613]/65">
                       {p.freeShipping
                         ? t("freeShipping")
                         : t("shippingCost", { price: formatPrice(p.shippingCents, PLATFORM_CURRENCY, locale) })}

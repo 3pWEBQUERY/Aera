@@ -126,7 +126,7 @@ export function LiveManager({
                           ? "bg-red-100 text-red-700"
                           : s.status === "SCHEDULED"
                             ? "bg-slate-100 text-slate-600"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-slate-100 text-slate-600"
                       }
                     >
                       {s.status === "LIVE" && (
@@ -155,7 +155,7 @@ export function LiveManager({
                       </span>
                     )}
                   </div>
-                  <p className="mt-1 text-xs text-slate-400">
+                  <p className="mt-1 text-xs text-slate-500">
                     {s.startsAt ? formatDateTime(s.startsAt, locale) : t("noStart")}
                     {s.replayUrl ? ` · ${t("hasReplay")}` : ""}
                   </p>
@@ -201,7 +201,7 @@ export function LiveManager({
                     <button
                       type="submit"
                       aria-label={t("delete")}
-                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                      className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                     >
                       <Icon name="trash" size={16} />
                     </button>
@@ -348,7 +348,7 @@ function IngestPanel({ slug, sessionId }: { slug: string; sessionId: string }) {
             type="button"
             onClick={() => setRevealed((v) => !v)}
             aria-label={revealed ? t("hideKey") : t("showKey")}
-            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-400 transition hover:bg-white hover:text-slate-700"
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-slate-500 transition hover:bg-white hover:text-slate-700"
           >
             <Icon name={revealed ? "eyeOff" : "eye"} size={15} />
           </button>
@@ -378,7 +378,7 @@ function IngestPanel({ slug, sessionId }: { slug: string; sessionId: string }) {
           <span
             className={cn(
               "inline-flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-medium",
-              info.connected ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-500",
+              info.connected ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-600",
             )}
           >
             <span
@@ -395,13 +395,13 @@ function IngestPanel({ slug, sessionId }: { slug: string; sessionId: string }) {
       {error ? (
         <FormError message={error} />
       ) : loading && !info ? (
-        <p className="text-sm text-slate-400">{t("ingestLoading")}</p>
+        <p className="text-sm text-slate-500">{t("ingestLoading")}</p>
       ) : info ? (
         <>
           {field(t("ingestUrlLabel"), info.url, "url")}
           {field(t("ingestKeyLabel"), info.key, "key", true)}
           {info.srtUrl && field(t("ingestSrtLabel"), info.srtUrl, "srt")}
-          <p className="text-xs leading-relaxed text-slate-400">{t("ingestHint")}</p>
+          <p className="text-xs leading-relaxed text-slate-500">{t("ingestHint")}</p>
           <button
             type="button"
             onClick={() => void load()}
@@ -489,7 +489,7 @@ function ExternalSource({
                     "mb-1 flex h-5 w-5 items-center justify-center rounded-full transition",
                     helpOpen
                       ? "bg-[var(--action)] text-[var(--action-fg)]"
-                      : "text-slate-400 hover:bg-[var(--action-soft)] hover:text-slate-700",
+                      : "text-slate-500 hover:bg-[var(--action-soft)] hover:text-slate-700",
                   )}
                 >
                   <Icon name="info" size={13} />
@@ -516,7 +516,7 @@ function ExternalSource({
                       type="button"
                       onClick={() => setHelpOpen(false)}
                       aria-label={t("cancel")}
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
                     >
                       <Icon name="close" size={15} />
                     </button>
@@ -546,10 +546,10 @@ function ExternalSource({
                     {t("willEmbed", { platform: detectedInfo?.label ?? "" })}
                   </p>
                 ) : (
-                  <p className="mt-1.5 text-xs text-slate-400">{t("customEmbedHint")}</p>
+                  <p className="mt-1.5 text-xs text-slate-500">{t("customEmbedHint")}</p>
                 )
               ) : (
-                <p className="mt-1.5 text-xs text-slate-400">{t("streamHint")}</p>
+                <p className="mt-1.5 text-xs text-slate-500">{t("streamHint")}</p>
               )}
             </div>
     </>
@@ -597,7 +597,7 @@ function FetchReplayButton({ slug, sessionId }: { slug: string; sessionId: strin
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h3 className="border-b border-slate-100 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400">
+    <h3 className="border-b border-slate-100 pb-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
       {children}
     </h3>
   );
@@ -741,7 +741,7 @@ function LiveForm({
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
-                      <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
+                      <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">
                         {o.desc}
                       </span>
                     </span>
@@ -784,7 +784,7 @@ function LiveForm({
                         </span>
                       )}
                     </span>
-                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-400">
+                    <span className="mt-0.5 block text-xs leading-relaxed text-slate-500">
                       {t("studioCardDesc")}
                     </span>
                   </span>
@@ -829,7 +829,7 @@ function LiveForm({
                 type="datetime-local"
                 defaultValue={session?.startsAt ? session.startsAt.slice(0, 16) : ""}
               />
-              <p className="mt-1 text-xs text-slate-400">{t("startsAtHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("startsAtHint")}</p>
             </div>
           </section>
 
@@ -864,7 +864,7 @@ function LiveForm({
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-slate-900">{o.label}</span>
-                      <span className="block text-xs text-slate-400">{o.desc}</span>
+                      <span className="block text-xs text-slate-500">{o.desc}</span>
                     </span>
                   </button>
                 );
@@ -893,7 +893,7 @@ function LiveForm({
                           </option>
                         )}
                     </Select>
-                    <p className="mt-1 text-xs text-slate-400">{t("entitlementTierHint")}</p>
+                    <p className="mt-1 text-xs text-slate-500">{t("entitlementTierHint")}</p>
                   </>
                 ) : (
                   <>
@@ -903,7 +903,7 @@ function LiveForm({
                       defaultValue={session?.requiredEntitlementKey ?? ""}
                       placeholder="tier:premium"
                     />
-                    <p className="mt-1 text-xs text-slate-400">{t("entitlementHint")}</p>
+                    <p className="mt-1 text-xs text-slate-500">{t("entitlementHint")}</p>
                   </>
                 )}
               </div>
@@ -946,7 +946,7 @@ function LiveForm({
                   defaultValue={session?.replayUrl ?? ""}
                   placeholder="https://…"
                 />
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-slate-500">
                   {mode === "OBS" ? t("replayAeraHint") : mode === "BROWSER" ? t("replayBrowserHint") : t("replayHint")}
                 </p>
                 {mode === "OBS" && <FetchReplayButton slug={slug} sessionId={session!.id} />}

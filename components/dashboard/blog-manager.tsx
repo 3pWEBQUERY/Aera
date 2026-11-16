@@ -100,20 +100,20 @@ export function BlogManager({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-xl font-bold text-slate-900">{space.name}</h1>
-              <Pill className="bg-slate-100 text-slate-500">{t("badge")}</Pill>
+              <Pill className="bg-slate-100 text-slate-600">{t("badge")}</Pill>
             </div>
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-slate-500">
               /{space.slug} · {t("postCount", { count: posts.length })}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <Link href={`/c/${slug}/s/${space.slug}`} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-            <Icon name="external" size={16} className="text-slate-400" />
+            <Icon name="external" size={16} className="text-slate-500" />
             {t("view")}
           </Link>
           <button onClick={() => setSettingsOpen(true)} className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50">
-            <Icon name="settings" size={16} className="text-slate-400" />
+            <Icon name="settings" size={16} className="text-slate-500" />
             {t("settings")}
           </button>
           <button onClick={openCreate} className="inline-flex items-center gap-2 rounded-xl bg-[var(--action)] px-4 py-2.5 text-sm font-semibold text-[var(--action-fg)] transition hover:bg-[var(--action-hover)] active:scale-[0.98]">
@@ -124,7 +124,7 @@ export function BlogManager({
       </div>
 
       <div className="mb-6 flex flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50/70 px-3 py-2.5">
-        <span className="mr-1 text-xs font-medium text-slate-400">{t("displayLabel")}</span>
+        <span className="mr-1 text-xs font-medium text-slate-500">{t("displayLabel")}</span>
         {summary.map((s) => (
           <Pill key={s} className="bg-white text-slate-600 ring-1 ring-slate-200">{s}</Pill>
         ))}
@@ -135,7 +135,7 @@ export function BlogManager({
 
       {posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-slate-300 px-6 py-16 text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-400">
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
             <Icon name="blog" size={24} />
           </div>
           <p className="mt-3 font-medium text-slate-700">{t("emptyTitle")}</p>
@@ -179,7 +179,7 @@ export function BlogManager({
                     </Pill>
                   )}
                 </p>
-                <p className="mt-0.5 text-xs text-slate-400">{p.authorName} · {formatDate(p.createdAt, locale)}</p>
+                <p className="mt-0.5 text-xs text-slate-500">{p.authorName} · {formatDate(p.createdAt, locale)}</p>
                 {p.excerpt && <p className="mt-1 line-clamp-1 text-sm text-slate-500">{p.excerpt}</p>}
               </button>
               <div className="flex shrink-0 items-center gap-1">
@@ -300,7 +300,7 @@ function BlogPostForm({
             <div>
               <Label>{t("coverLabel")}</Label>
               <ImageUpload tenant={slug} name="imageUrl" purpose="blog-cover" defaultUrl={post?.coverUrl ?? null} />
-              <p className="mt-1.5 text-xs text-slate-400">{t("coverHint")}</p>
+              <p className="mt-1.5 text-xs text-slate-500">{t("coverHint")}</p>
             </div>
             <div>
               <Label htmlFor="bp-title">{t("titleLabel")}</Label>
@@ -365,19 +365,19 @@ function BlogPostForm({
                   allowFree
                   defaultCents={post?.priceCents ?? 0}
                 />
-                <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
+                <p className="mt-1 text-xs text-slate-500">{t("priceHint")}</p>
               </div>
               <div>
                 <Label>{t("teaserLabel")}</Label>
                 <ImageUpload tenant={slug} name="teaserUrl" purpose="ppv-teaser" defaultUrl={post?.teaserUrl ?? null} />
-                <p className="mt-1.5 text-xs text-slate-400">{t("teaserHint")}</p>
+                <p className="mt-1.5 text-xs text-slate-500">{t("teaserHint")}</p>
               </div>
             </div>
 
             <div>
               <Label htmlFor="bp-schedule">{t("scheduleLabel")}</Label>
               <ScheduleField id="bp-schedule" defaultValue={toLocalInput(post?.scheduledAt)} />
-              <p className="mt-1 text-xs text-slate-400">{t("scheduleHint")}</p>
+              <p className="mt-1 text-xs text-slate-500">{t("scheduleHint")}</p>
             </div>
           </div>
 
@@ -489,7 +489,7 @@ function BlogSettingsForm({
                 { v: "LIST", label: t("layoutList") },
               ]}
             />
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs text-slate-500">
               {t("layoutHint")}
             </p>
           </div>

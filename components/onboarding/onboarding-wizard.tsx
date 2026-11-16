@@ -68,6 +68,9 @@ export function OnboardingWizard({
   const [membershipName, setMembershipName] = useState(t("defaultMembership"));
   const [promoCode, setPromoCode] = useState(initialCode);
   const [access, setAccess] = useState<"PUBLIC" | "MEMBERS">("PUBLIC");
+  // "Weiter" stays clickable; a blocked step says why instead of a silently
+  // disabled button (form.submit behave: never a disabled submit).
+  const [attempted, setAttempted] = useState(false);
 
   const effectiveSlug = slugTouched ? slug : slugify(name);
   const nameCheck = useNameAvailability(name);
@@ -87,6 +90,17 @@ export function OnboardingWizard({
     return la - lb;
   });
 
+  function goNext() {
+    if (!canProceed) {
+      setAttempted(true);
+      const target = step === 1 ? document.getElementById("ob-name") : document.getElementById("ob-spaces");
+      target?.focus();
+      return;
+    }
+    setAttempted(false);
+    setStep((s) => s + 1);
+  }
+
   function toggleSpace(t: SpaceCatalogType) {
     // Premium space types only become selectable once the package is live.
     if (!planAllowsSpaceType("FREE", t)) return;
@@ -105,6 +119,13 @@ export function OnboardingWizard({
     <form
       action={action}
       aria-describedby={state.error ? "onboarding-error" : undefined}
+      onSubmit={(e) => {
+        // Only the last step may create the community. Without this guard the
+        // click on "Weiter" in step 4 re-rendered the same button as the
+        // submit button and the browser submitted the form, skipping the
+        // review (and the promo code) entirely.
+        if (step < total) e.preventDefault();
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter" && step < total && (e.target as HTMLElement).tagName !== "TEXTAREA") {
           e.preventDefault();
@@ -140,9 +161,6 @@ export function OnboardingWizard({
             </Link>
             <span className="hidden rounded-lg border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
               Aera {PLANS[selectedPlan].name}
-            </span>
-            <span className="hidden rounded-lg border border-[#161613]/15 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/60 sm:inline-block">
-              {t("stepShort", { step, total })}
             </span>
             <div className="flex items-center gap-2">
               <Avatar name={user.name} src={user.avatarUrl} size={32} />
@@ -182,7 +200,7 @@ export function OnboardingWizard({
                     aria-current={active ? "step" : undefined}
                     className={cn(
                       "display-serif text-lg leading-none transition",
-                      active ? "text-[#161613]" : "text-[#161613]/30",
+                      active ? "text-[#161613]" : "text-[#161613]/60",
                     )}
                   >
                     {String(n).padStart(2, "0")}
@@ -190,7 +208,7 @@ export function OnboardingWizard({
                   <span
                     className={cn(
                       "text-sm font-medium transition",
-                      active ? "text-[#161613]" : done ? "text-[#161613]/70" : "text-[#161613]/40",
+                      active ? "text-[#161613]" : done ? "text-[#161613]/75" : "text-[#161613]/60",
                     )}
                   >
                     {t(`steps.${key}.label`)}
@@ -206,7 +224,7 @@ export function OnboardingWizard({
 
         {/* Content */}
         <div className="flex w-full min-w-0 flex-1 flex-col overflow-y-auto px-5 py-8 sm:px-10 sm:py-12 lg:px-14">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/45">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#161613]/65">
             {t("eyebrow", { label: t(`steps.${stepKey}.label`), step, total })}
           </p>
           <h2 className="display-serif mt-2 max-w-xl text-3xl leading-[1.1] sm:text-4xl">{t(`steps.${stepKey}.title`)}</h2>
@@ -223,9 +241,18 @@ export function OnboardingWizard({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t("namePlaceholder")}
+                    aria-invalid={attempted && step === 1 && !canProceed ? true : undefined}
+                    aria-describedby={attempted && name.trim().length < 2 ? "ob-name-error" : undefined}
                     className="rounded-xl bg-white py-3 text-base"
                   />
-                  <NameStatusHint status={nameCheck} />
+                  {attempted && name.trim().length < 2 ? (
+                    <p id="ob-name-error" role="alert" className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-red-700">
+                      <Icon name="alert" size={13} />
+                      {t("nameRequired")}
+                    </p>
+                  ) : (
+                    <NameStatusHint status={nameCheck} />
+                  )}
                 </div>
                 <div>
                   <Label htmlFor="ob-slug">{t("addressLabel")}</Label>
@@ -240,11 +267,11 @@ export function OnboardingWizard({
                       className="min-w-0 flex-1 bg-transparent px-3 py-2.5 text-sm outline-none"
                       placeholder="maker-studio"
                     />
-                    <span className="shrink-0 border-l border-[#161613]/10 bg-[#161613]/[0.03] px-3 py-2.5 text-sm text-[#161613]/55">
+                    <span className="shrink-0 border-l border-[#161613]/10 bg-[#161613]/[0.03] px-3 py-2.5 text-sm text-[#161613]/65">
                       .{rootDomain}
                     </span>
                   </div>
-                  <p className="mt-1 text-xs text-[#161613]/50">
+                  <p className="mt-1 text-xs text-[#161613]/65">
                     {t("alsoReachable", {
                       url: `${appUrl}/c/${effectiveSlug || t("slugFallback")}`,
                     })}
@@ -267,7 +294,7 @@ export function OnboardingWizard({
                 <ColorRow label={t("accentColor")} presets={ACCENT_PRESETS} value={accent} onChange={setAccent} customLabel={t("customColor")} hexLabel={t("hexLabel")} />
                 {/* Live preview — flat brand tile, editorial type */}
                 <div className="rounded-2xl border border-[#161613]/10 bg-white p-5">
-                  <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/45">
+                  <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-[#161613]/65">
                     {t("preview")}
                   </p>
                   <div className="flex items-center gap-3.5">
@@ -279,8 +306,8 @@ export function OnboardingWizard({
                     </span>
                     <div className="min-w-0">
                       <p className="display-serif truncate text-lg leading-tight">{name || t("previewNameFallback")}</p>
-                      <p className="mt-0.5 truncate text-xs text-[#161613]/50">
-                        {tagline || `aera.so/${effectiveSlug || "…"}`}
+                      <p className="mt-0.5 truncate text-xs text-[#161613]/65">
+                        {tagline || `${effectiveSlug || t("slugFallback")}.${rootDomain}`}
                       </p>
                     </div>
                     <span
@@ -294,8 +321,18 @@ export function OnboardingWizard({
               </div>
             )}
 
+            {step === 3 && attempted && selected.size === 0 && (
+              <p role="alert" className="mb-3 flex items-center gap-1.5 text-sm font-medium text-red-700">
+                <Icon name="alert" size={14} />
+                {t("spacesRequired")}
+              </p>
+            )}
             {step === 3 && (
-              <div className="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+              <div
+                id="ob-spaces"
+                tabIndex={-1}
+                className="grid grid-cols-1 gap-3.5 outline-none sm:grid-cols-2 lg:grid-cols-3"
+              >
                 {availableFirst.map((b) => {
                   const on = selected.has(b.type);
                   // A new community always starts on Free — premium formats are
@@ -327,7 +364,7 @@ export function OnboardingWizard({
                     >
                       <span className="absolute right-3.5 top-3.5">
                         {locked ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-[#161613]/8 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#161613]/55">
+                          <span className="inline-flex items-center gap-1 rounded-full bg-[#161613]/8 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#161613]/65">
                             <Icon name="lock" size={10} />
                             {PLAN_LABEL[minPlanForSpaceType(b.type)]}
                           </span>
@@ -349,11 +386,11 @@ export function OnboardingWizard({
                         <Icon name={b.icon} size={20} />
                       </span>
                       <p className="display-serif mt-4 text-base leading-tight">{tSpaces(`${b.type}.name`)}</p>
-                      <p className="mt-1 text-xs leading-relaxed text-[#161613]/50">{tSpaces(`${b.type}.tagline`)}</p>
+                      <p className="mt-1 text-xs leading-relaxed text-[#161613]/65">{tSpaces(`${b.type}.tagline`)}</p>
                     </button>
                   );
                 })}
-                <p className="col-span-full text-xs leading-relaxed text-[#161613]/45">
+                <p className="col-span-full text-xs leading-relaxed text-[#161613]/65">
                   {tSpaces("lockedNote")}
                 </p>
               </div>
@@ -364,7 +401,7 @@ export function OnboardingWizard({
                 <div>
                   <Label htmlFor="ob-tier">{t("tierNameLabel")}</Label>
                   <Input id="ob-tier" value={membershipName} onChange={(e) => setMembershipName(e.target.value)} placeholder={t("defaultMembership")} />
-                  <p className="mt-1 text-xs text-[#161613]/50">{t("tierHint")}</p>
+                  <p className="mt-1 text-xs text-[#161613]/65">{t("tierHint")}</p>
                 </div>
                 <div>
                   <Label>{t("whoCanSee")}</Label>
@@ -394,7 +431,7 @@ export function OnboardingWizard({
               <div className="max-w-lg space-y-3">
                 <SummaryRow label={t("summaryCommunity")}>
                   <p className="display-serif text-lg leading-tight">{name || "—"}</p>
-                  <p className="mt-0.5 text-xs text-[#161613]/50">
+                  <p className="mt-0.5 text-xs text-[#161613]/65">
                     {rootDomain ? `${effectiveSlug}.${rootDomain} · ` : ""}/c/{effectiveSlug}
                   </p>
                 </SummaryRow>
@@ -402,7 +439,7 @@ export function OnboardingWizard({
                   <div className="flex items-center gap-2">
                     <span className="h-6 w-6 rounded-md" style={{ backgroundColor: primary }} />
                     <span className="h-6 w-6 rounded-md" style={{ backgroundColor: accent }} />
-                    <span className="ml-1 text-xs text-[#161613]/55">
+                    <span className="ml-1 text-xs text-[#161613]/65">
                       {primary} · {accent}
                     </span>
                   </div>
@@ -421,7 +458,7 @@ export function OnboardingWizard({
                 </SummaryRow>
                 <SummaryRow label={t("summaryMembership")}>
                   <p className="font-semibold">{membershipName || t("defaultMembership")}</p>
-                  <p className="mt-0.5 text-xs text-[#161613]/50">
+                  <p className="mt-0.5 text-xs text-[#161613]/65">
                     {access === "MEMBERS" ? t("membersOnlyVisible") : t("publicFindable")}
                   </p>
                 </SummaryRow>
@@ -439,7 +476,7 @@ export function OnboardingWizard({
                     placeholder={t("promoPlaceholder")}
                     className="w-full rounded-xl border border-[#161613]/20 px-4 py-3 text-center font-mono text-base font-semibold uppercase tracking-[0.16em] outline-none transition focus:border-[#161613]"
                   />
-                  <p className="mt-2 text-xs leading-relaxed text-[#161613]/50">
+                  <p className="mt-2 text-xs leading-relaxed text-[#161613]/65">
                     {t("promoHint")}
                   </p>
                 </div>
@@ -451,16 +488,11 @@ export function OnboardingWizard({
           {/* Footer */}
           <div className="mt-10 flex items-center justify-between border-t border-[#161613]/10 pt-5">
             {step === 1 ? (
-              <Link
-                href="/home"
-                className="rounded-xl px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
-              >
-                {t("cancel")}
-              </Link>
+              <span />
             ) : (
               <button
                 type="button"
-                onClick={() => setStep((s) => Math.max(1, s - 1))}
+                onClick={() => { setAttempted(false); setStep((s) => Math.max(1, s - 1)); }}
                 className="rounded-xl px-5 py-2.5 text-sm font-semibold text-[#161613]/70 transition hover:bg-[#161613]/5 hover:text-[#161613]"
               >
                 {t("back")}
@@ -468,16 +500,17 @@ export function OnboardingWizard({
             )}
             {step < total ? (
               <button
+                key="next"
                 type="button"
-                onClick={() => canProceed && setStep((s) => s + 1)}
-                disabled={!canProceed}
-                className="inline-flex min-h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={goNext}
+                className="inline-flex min-h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white transition active:scale-[0.98]"
                 style={{ backgroundColor: primary }}
               >
                 {t("next")} <Icon name="chevron" size={16} className="-rotate-90" />
               </button>
             ) : (
               <button
+                key="create"
                 type="submit"
                 disabled={pending}
                 className="inline-flex min-h-12 items-center gap-2 rounded-xl px-7 text-sm font-semibold text-white transition active:scale-[0.98] disabled:opacity-60"
@@ -530,7 +563,7 @@ function ColorRow({
           );
         })}
         <label
-          className="relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-dashed border-[#161613]/25 text-[#161613]/40 transition hover:border-[#161613]/50 hover:text-[#161613]/70"
+          className="relative flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-dashed border-[#161613]/25 text-[#161613]/65 transition hover:border-[#161613]/50 hover:text-[#161613]/70"
           title={customLabel}
         >
           <Icon name="plus" size={14} />
@@ -626,7 +659,7 @@ function AccessCard({
         <Icon name={icon} size={18} />
       </span>
       <p className="display-serif mt-3.5 text-base leading-tight">{title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-[#161613]/50">{desc}</p>
+      <p className="mt-1 text-xs leading-relaxed text-[#161613]/65">{desc}</p>
     </button>
   );
 }
@@ -634,7 +667,7 @@ function AccessCard({
 function SummaryRow({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-start justify-between gap-4 rounded-2xl border border-[#161613]/10 bg-white px-4 py-3.5">
-      <span className="shrink-0 pt-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/45">
+      <span className="shrink-0 pt-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-[#161613]/65">
         {label}
       </span>
       <div className="min-w-0 flex-1 text-right sm:text-left">{children}</div>

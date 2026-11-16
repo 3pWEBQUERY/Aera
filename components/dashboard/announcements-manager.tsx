@@ -82,7 +82,7 @@ export function AnnouncementsManager({
           <h2 className="flex items-center gap-2 font-semibold text-slate-900">
             <Icon name="megaphone" size={18} className="text-[var(--brand)]" />
             {t("heading")}
-            <Pill className="bg-slate-100 text-slate-500">{announcements.length}</Pill>
+            <Pill className="bg-slate-100 text-slate-600">{announcements.length}</Pill>
           </h2>
           <p className="mt-0.5 text-sm text-slate-500">
             {t("headingDesc")}
@@ -115,7 +115,7 @@ export function AnnouncementsManager({
           <span className="block text-sm font-medium text-slate-800">
             {t("onlyToggleLabel")}
           </span>
-          <span className="block text-xs text-slate-400">
+          <span className="block text-xs text-slate-500">
             {t("onlyToggleHint")}
           </span>
         </label>
@@ -152,7 +152,7 @@ export function AnnouncementsManager({
                     <p className="truncate text-sm font-medium text-slate-800">{a.title}</p>
                     <Pill className={st.cls}>{t(st.key)}</Pill>
                   </div>
-                  <p className="truncate text-xs text-slate-400">
+                  <p className="truncate text-xs text-slate-500">
                     {a.endsAt ? t("endsAt", { date: formatDateTime(a.endsAt, locale) }) : t("noExpiry")}
                     {a.ctaLabel ? ` · ${t("buttonSuffix", { label: a.ctaLabel })}` : ""}
                     {a.showTimer ? ` · ${t("countdownSuffix")}` : ""}
@@ -279,7 +279,7 @@ function Toggle({
       />
       <span className="min-w-0">
         <span className="block text-sm font-medium text-slate-800">{label}</span>
-        {hint && <span className="block text-xs text-slate-400">{hint}</span>}
+        {hint && <span className="block text-xs text-slate-500">{hint}</span>}
       </span>
     </label>
   );
@@ -352,7 +352,7 @@ function AnnouncementForm({
 
       {/* Live preview pinned under the sheet header. */}
       <div className="shrink-0 border-b border-slate-200 bg-slate-50">
-        <p className="px-6 pt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+        <p className="px-6 pt-3 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
           {t("preview")}
         </p>
         <div className="mt-2 overflow-hidden border-t border-black/5">
@@ -428,7 +428,7 @@ function AnnouncementForm({
               defaultUrl={announcement?.bgImageUrl ?? null}
               onChange={setBgImageUrl}
             />
-            <p className="mt-1.5 text-xs text-slate-400">
+            <p className="mt-1.5 text-xs text-slate-500">
               {t("bgImageHint")}
             </p>
           </div>
@@ -442,7 +442,7 @@ function AnnouncementForm({
               value={endsAt}
               onChange={(e) => setEndsAt(e.target.value)}
             />
-            <p className="mt-1 text-xs text-slate-400">
+            <p className="mt-1 text-xs text-slate-500">
               {t("endsHint")}
             </p>
           </div>

@@ -44,7 +44,7 @@ export function PollBlock({
       <div className="mb-3 flex items-center justify-between gap-2">
         <p className="font-semibold text-[#161613]">{poll.question}</p>
         {poll.multiple && (
-          <span className="shrink-0 text-xs text-[#161613]/45">{t("pollMultipleHint")}</span>
+          <span className="shrink-0 text-xs text-[#161613]/65">{t("pollMultipleHint")}</span>
         )}
       </div>
 
@@ -81,7 +81,7 @@ export function PollBlock({
                   <button
                     type="button"
                     onClick={() => setMode("results")}
-                    className="text-xs font-medium text-[#161613]/50 transition hover:text-[#161613]"
+                    className="text-xs font-medium text-[#161613]/65 transition hover:text-[#161613]"
                   >
                     {t("pollShowResults")}
                   </button>
@@ -106,7 +106,7 @@ export function PollBlock({
                 <button
                   type="button"
                   onClick={() => setMode("results")}
-                  className="pt-1 text-xs font-medium text-[#161613]/50 transition hover:text-[#161613]"
+                  className="pt-1 text-xs font-medium text-[#161613]/65 transition hover:text-[#161613]"
                 >
                   {t("pollShowResults")}
                 </button>
@@ -140,12 +140,12 @@ export function PollBlock({
                     {mine && <Icon name="check" size={14} className="text-[color:var(--brand)]" />}
                     {o.label}
                   </span>
-                  <span className="shrink-0 tabular-nums text-[#161613]/55">{pct}%</span>
+                  <span className="shrink-0 tabular-nums text-[#161613]/65">{pct}%</span>
                 </div>
               </div>
             );
           })}
-          <div className="flex items-center justify-between pt-1 text-xs text-[#161613]/50">
+          <div className="flex items-center justify-between pt-1 text-xs text-[#161613]/65">
             <span>
               {total} {t("pollVotesWord")}
             </span>

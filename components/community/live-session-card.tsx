@@ -162,7 +162,7 @@ export function LiveSessionCard({
           className={
             status === "SCHEDULED"
               ? "bg-[#161613]/5 text-[#161613]/60"
-              : "bg-[#161613]/5 text-[#161613]/45"
+              : "bg-[#161613]/5 text-[#161613]/65"
           }
         >
           {statusLabel}
@@ -178,7 +178,7 @@ export function LiveSessionCard({
           <LiveCountdown startsAt={startsAtIso} />
         </span>
       )}
-      <div className="mt-auto flex items-center justify-between gap-2 pt-4 text-xs text-[#161613]/50">
+      <div className="mt-auto flex items-center justify-between gap-2 pt-4 text-xs text-[#161613]/65">
         <span className="inline-flex min-h-4 items-center gap-1.5">
           {startsAtLabel && (
             <>
@@ -188,7 +188,7 @@ export function LiveSessionCard({
           )}
         </span>
         {status === "ENDED" && watchReplayLabel ? (
-          <span className="inline-flex shrink-0 items-center gap-1.5 font-medium text-[#161613]/55 transition group-hover:text-[color:var(--brand)]">
+          <span className="inline-flex shrink-0 items-center gap-1.5 font-medium text-[#161613]/65 transition group-hover:text-[color:var(--brand)]">
             <Icon name="play" size={13} />
             {watchReplayLabel}
           </span>

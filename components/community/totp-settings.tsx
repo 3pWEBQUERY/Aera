@@ -102,7 +102,7 @@ export function TotpSettings({ enabled: initiallyEnabled }: { enabled: boolean }
               <button
                 type="button"
                 onClick={() => setShowSecret((s) => !s)}
-                className="text-[#161613]/50 transition hover:text-[#161613]"
+                className="text-[#161613]/65 transition hover:text-[#161613]"
                 aria-label={showSecret ? t("twoFaHideSecret") : t("twoFaShowSecret")}
               >
                 <Icon name={showSecret ? "eyeOff" : "eye"} size={14} />

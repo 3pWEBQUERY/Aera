@@ -126,7 +126,7 @@ export default async function CommunityMembers({
                       </span>
                     )}
                   </div>
-                  <p className="mt-0.5 truncate text-xs text-slate-400">
+                  <p className="mt-0.5 truncate text-xs text-slate-500">
                     {t("memberSince", { date: joinedLabel(m.joinedAt) })}
                   </p>
                   <BadgeRow badges={badgeBy.get(m.userId) ?? []} className="mt-1.5" />
@@ -141,7 +141,7 @@ export default async function CommunityMembers({
                 {stat && stat.points > 0 ? (
                   <span className="inline-flex shrink-0 items-center gap-1.5 text-xs">
                     {stat.levelName && (
-                      <span className="text-slate-400">{stat.levelName}</span>
+                      <span className="text-slate-500">{stat.levelName}</span>
                     )}
                     <span className="rounded-full bg-[var(--brand-soft)] px-2 py-0.5 font-semibold text-[color:var(--brand)]">
                       {nf.format(stat.points)} {t("pts")}

@@ -167,7 +167,7 @@ export function MultiMediaUpload({
           {uploads.map((u) => (
             <div
               key={u.key}
-              className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-slate-400"
+              className="flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-slate-500"
               style={{ aspectRatio: "1 / 1" }}
             >
               <span className="h-5 w-5 animate-spin rounded-full border-2 border-slate-300 border-t-violet-600" />
@@ -182,7 +182,7 @@ export function MultiMediaUpload({
 
       <div
         onClick={() => fileRef.current?.click()}
-        className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-7 text-slate-400 transition hover:border-violet-400 hover:bg-violet-50/40"
+        className="flex cursor-pointer flex-col items-center justify-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-7 text-slate-500 transition hover:border-violet-400 hover:bg-violet-50/40"
       >
         <Icon name="gallery" size={24} />
         <span className="text-sm font-medium text-slate-600">{t("addMedia")}</span>

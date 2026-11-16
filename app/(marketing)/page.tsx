@@ -100,7 +100,7 @@ export default async function LandingPage() {
                   key={`${tile.name}-${i}`}
                   className={`flex h-44 w-60 shrink-0 flex-col justify-between rounded-2xl p-5 transition duration-300 hover:shadow-md sm:h-48 sm:w-64 ${tileTones[i % tileTones.length]}`}
                 >
-                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-60">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
                     {t("tileBadge")}
                   </span>
                   <div>
@@ -124,7 +124,7 @@ export default async function LandingPage() {
           <Reveal>
             <h2 className="display-serif max-w-4xl text-4xl leading-[1.08] sm:text-6xl">
               {t("statementA")}
-              <span className="text-[#161613]/50"> {t("statementB")}</span>
+              <span className="text-[#161613]/65"> {t("statementB")}</span>
             </h2>
           </Reveal>
           <Reveal delay={150}>
@@ -141,7 +141,7 @@ export default async function LandingPage() {
           {CHAPTER_IDS.map((id, i) => (
             <Reveal key={id} delay={i * 60}>
               <article className="grid gap-6 border-t border-[#161613]/15 py-10 md:grid-cols-[80px_1.1fr_1fr] md:gap-10 md:py-14">
-                <p className="display-serif text-2xl text-[#161613]/40 md:text-3xl">
+                <p className="display-serif text-2xl text-[#161613]/65 md:text-3xl">
                   {String(i + 1).padStart(2, "0")}
                 </p>
                 <h3 className="display-serif text-3xl leading-[1.1] sm:text-4xl md:text-5xl">

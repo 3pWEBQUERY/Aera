@@ -157,7 +157,7 @@ export function BlogEditor({
 
           <StatusPill status={status} scheduled={Boolean(scheduled)} t={t} />
 
-          <span className="min-w-0 flex-1 truncate text-xs text-slate-400">
+          <span className="min-w-0 flex-1 truncate text-xs text-slate-500">
             {savedAt
               ? t("savedAt", { time: formatDateTime(savedAt, uiLocale) })
               : dirty
@@ -215,7 +215,7 @@ export function BlogEditor({
                   maxLength={200}
                   placeholder={t("coverAltPlaceholder")}
                 />
-                <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("coverAltHint")}</p>
+                <p className="mt-1.5 text-xs leading-5 text-slate-500">{t("coverAltHint")}</p>
               </div>
             )}
           </div>
@@ -300,7 +300,7 @@ export function BlogEditor({
                 }}
                 className="mt-1 w-full rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand-ring)]"
               />
-              <p className="mt-1.5 text-xs leading-5 text-slate-400">
+              <p className="mt-1.5 text-xs leading-5 text-slate-500">
                 {scheduled
                   ? t("scheduledFor", { date: formatDateTime(scheduled, uiLocale) })
                   : t("dateHint")}
@@ -318,7 +318,7 @@ export function BlogEditor({
                 <span className="block text-sm font-medium text-slate-800">
                   {t("featured")}
                 </span>
-                <span className="block text-xs leading-5 text-slate-400">
+                <span className="block text-xs leading-5 text-slate-500">
                   {t("featuredHint")}
                 </span>
               </span>
@@ -357,7 +357,7 @@ export function BlogEditor({
                   </option>
                 ))}
               </Select>
-              <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("localeHint")}</p>
+              <p className="mt-1.5 text-xs leading-5 text-slate-500">{t("localeHint")}</p>
             </div>
 
             <div className="mt-4">
@@ -373,7 +373,7 @@ export function BlogEditor({
                 maxLength={120}
                 spellCheck={false}
               />
-              <p className="mt-1.5 break-all text-xs leading-5 text-slate-400">
+              <p className="mt-1.5 break-all text-xs leading-5 text-slate-500">
                 {blogUrl}/<span className="text-slate-600">{effectiveSlug || "…"}</span>
               </p>
             </div>
@@ -392,7 +392,7 @@ export function BlogEditor({
                 rows={4}
                 placeholder={t("excerptPlaceholder")}
               />
-              <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("excerptHint")}</p>
+              <p className="mt-1.5 text-xs leading-5 text-slate-500">{t("excerptHint")}</p>
             </div>
           </Panel>
 
@@ -450,7 +450,7 @@ export function BlogEditor({
               />
               <span>
                 <span className="block text-sm font-medium text-slate-800">{t("noindex")}</span>
-                <span className="block text-xs leading-5 text-slate-400">{t("noindexHint")}</span>
+                <span className="block text-xs leading-5 text-slate-500">{t("noindexHint")}</span>
               </span>
             </label>
           </Panel>
@@ -543,7 +543,7 @@ function StatusPill({
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5">
-      <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+      <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
         {title}
       </h2>
       {children}
@@ -556,7 +556,7 @@ function Count({ value, max }: { value: number; max: number }) {
     <span
       className={cn(
         "text-xs tabular-nums",
-        value > max * 0.9 ? "text-amber-600" : "text-slate-400",
+        value > max * 0.9 ? "text-amber-600" : "text-slate-500",
       )}
     >
       {value}/{max}
@@ -591,7 +591,7 @@ function DangerPanel({
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-5">
-      <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+      <h2 className="mb-4 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
         {t("actions")}
       </h2>
 
@@ -600,7 +600,7 @@ function DangerPanel({
         form={`duplicate-${id}`}
         className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
       >
-        <Icon name="copy" size={16} className="text-slate-400" />
+        <Icon name="copy" size={16} className="text-slate-500" />
         {t("duplicate")}
       </button>
 
@@ -610,7 +610,7 @@ function DangerPanel({
           onClick={() => setConfirming(true)}
           className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-red-50 hover:text-red-700"
         >
-          <Icon name="eraser" size={16} className="text-slate-400" />
+          <Icon name="eraser" size={16} className="text-slate-500" />
           {t("delete")}
         </button>
       ) : (

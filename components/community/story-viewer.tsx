@@ -176,7 +176,7 @@ export function StoryViewer({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={grp.items[0].imageUrl} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="flex h-full w-full items-center justify-center text-[#161613]/40">
+                      <span className="flex h-full w-full items-center justify-center text-[#161613]/65">
                         <Icon name="videos" size={20} />
                       </span>
                     )}

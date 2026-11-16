@@ -145,7 +145,7 @@ export function PlatformSeoManager({
                 defaultUrl={values.imageUrl}
                 onChange={setImage}
               />
-              <p className="mt-1.5 text-xs leading-5 text-slate-400">{t("imageHint")}</p>
+              <p className="mt-1.5 text-xs leading-5 text-slate-500">{t("imageHint")}</p>
             </div>
             <Field id={ids.tw} label={t("twitter")} hint={t("twitterHint")}>
               <Input id={ids.tw} name="twitterHandle" defaultValue={values.twitterHandle} placeholder="@aera" />
@@ -181,7 +181,7 @@ export function PlatformSeoManager({
               </span>
             )}
             {updatedAt && (
-              <span className="ml-auto text-xs text-slate-400">
+              <span className="ml-auto text-xs text-slate-500">
                 {t("updatedAt", {
                   date: new Date(updatedAt).toLocaleDateString(locale, {
                     day: "2-digit", month: "2-digit", year: "numeric",
@@ -195,7 +195,7 @@ export function PlatformSeoManager({
 
         <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
               {t("previewSearch")}
             </p>
             <div className="space-y-1">
@@ -206,7 +206,7 @@ export function PlatformSeoManager({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
               {t("previewSocial")}
             </p>
             <div className="overflow-hidden rounded-xl border border-slate-200">
@@ -221,7 +221,7 @@ export function PlatformSeoManager({
                 )}
               </div>
               <div className="bg-slate-50 px-3.5 py-3">
-                <p className="truncate text-[11px] uppercase tracking-wide text-slate-400">aera.so</p>
+                <p className="truncate text-[11px] uppercase tracking-wide text-slate-500">aera.so</p>
                 <p className="mt-0.5 truncate text-sm font-semibold text-slate-900">{effTitle}</p>
                 <p className="mt-0.5 line-clamp-2 text-xs leading-5 text-slate-500">{effDesc}</p>
               </div>
@@ -229,7 +229,7 @@ export function PlatformSeoManager({
           </div>
 
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-400">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.15em] text-slate-500">
               {t("effectiveTitle")}
             </p>
             <p className="text-xs leading-6 text-slate-500">
@@ -253,13 +253,13 @@ function Field({
       <div className="flex items-baseline justify-between gap-3">
         <Label htmlFor={id}>{label}</Label>
         {count && (
-          <span className={cn("text-xs tabular-nums", count.value > count.max * 0.9 ? "text-amber-600" : "text-slate-400")}>
+          <span className={cn("text-xs tabular-nums", count.value > count.max * 0.9 ? "text-amber-600" : "text-slate-500")}>
             {count.value}/{count.max}
           </span>
         )}
       </div>
       {children}
-      <p className="mt-1.5 text-xs leading-5 text-slate-400">{hint}</p>
+      <p className="mt-1.5 text-xs leading-5 text-slate-500">{hint}</p>
     </div>
   );
 }

@@ -108,7 +108,7 @@ export function SpaceTypePicker({
             <span className={cn("text-sm font-semibold", locked ? "text-slate-500" : "text-slate-900")}>
               {t(`spaceTypes.${ty}.label`)}
             </span>
-            <span className="text-xs leading-tight text-slate-400">
+            <span className="text-xs leading-tight text-slate-500">
               {t(`spaceTypes.${ty}.desc`)}
             </span>
           </button>

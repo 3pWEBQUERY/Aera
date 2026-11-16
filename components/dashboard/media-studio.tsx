@@ -282,7 +282,7 @@ export function MediaStudio({
           </span>
           <div className="min-w-0">
             <h1 className="truncate text-base font-bold text-slate-900">{t("title")}</h1>
-            <p className="hidden truncate text-xs text-slate-400 sm:block">{t("subtitle")}</p>
+            <p className="hidden truncate text-xs text-slate-500 sm:block">{t("subtitle")}</p>
           </div>
         </div>
         <span
@@ -303,7 +303,7 @@ export function MediaStudio({
               onClick={() => fileRef.current?.click()}
               className="flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
             >
-              <Icon name="plus" size={17} className="text-slate-400" />
+              <Icon name="plus" size={17} className="text-slate-500" />
               {t("upload")}
             </button>
             <button
@@ -311,7 +311,7 @@ export function MediaStudio({
               onClick={() => setLibraryOpen(true)}
               className="flex shrink-0 items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 hover:text-slate-900"
             >
-              <Icon name="gallery" size={17} className="text-slate-400" />
+              <Icon name="gallery" size={17} className="text-slate-500" />
               {t("fromLibrary")}
             </button>
           </div>
@@ -407,7 +407,7 @@ export function MediaStudio({
               <button
                 type="button"
                 onClick={() => fileRef.current?.click()}
-                className="flex w-full max-w-md flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-slate-400 transition hover:border-slate-400 hover:text-slate-600"
+                className="flex w-full max-w-md flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-slate-500 transition hover:border-slate-400 hover:text-slate-600"
               >
                 <Icon name="gallery" size={28} />
                 <span className="text-sm font-medium text-slate-600">
@@ -476,7 +476,7 @@ export function MediaStudio({
                         aria-label={t("width")}
                         className="w-24"
                       />
-                      <span className="text-slate-400">×</span>
+                      <span className="text-slate-500">×</span>
                       <Input
                         type="number"
                         min={16}
@@ -515,7 +515,7 @@ export function MediaStudio({
           {/* Session history */}
           {history.length > 0 && (
             <div className="shrink-0 border-t border-slate-200 bg-white px-3 py-2.5 sm:px-4">
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
                 {t("history")}
               </p>
               <div className="scrollbar-none flex gap-2 overflow-x-auto">
@@ -543,7 +543,7 @@ export function MediaStudio({
                   </div>
                 ))}
               </div>
-              <p className="mt-1.5 text-[11px] text-slate-400">{t("historySaved")}</p>
+              <p className="mt-1.5 text-[11px] text-slate-500">{t("historySaved")}</p>
             </div>
           )}
         </div>
@@ -570,7 +570,7 @@ export function MediaStudio({
       >
         <div className="flex-1 overflow-y-auto p-6">
           {library.length === 0 ? (
-            <p className="py-10 text-center text-sm text-slate-400">{t("libraryEmpty")}</p>
+            <p className="py-10 text-center text-sm text-slate-500">{t("libraryEmpty")}</p>
           ) : (
             <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
               {library.map((item) => (

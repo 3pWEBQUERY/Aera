@@ -80,10 +80,10 @@ export default async function ModerationPage({
                 <CardBody>
                   <div className="flex flex-wrap items-center gap-2">
                     <Pill className={catCls}>{catLabel}</Pill>
-                    <Pill className="bg-slate-100 text-slate-500">
+                    <Pill className="bg-slate-100 text-slate-600">
                       {f.refType === "Post" ? t("refPost") : t("refComment")}
                     </Pill>
-                    <span className="text-xs text-slate-400">
+                    <span className="text-xs text-slate-500">
                       {f.authorId ? authorBy.get(f.authorId) ?? t("unknown") : t("unknown")} ·{" "}
                       {dateFmt.format(f.createdAt)} ·{" "}
                       {f.source === "gemini" ? t("sourceAi") : t("sourceHeuristic")}: {f.reason}
@@ -142,7 +142,7 @@ export default async function ModerationPage({
                   <span className="min-w-0 flex-1 truncate text-slate-500">
                     „{f.excerpt.slice(0, 80)}“
                   </span>
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-500">
                     {f.resolvedAt ? dateFmt.format(f.resolvedAt) : ""}
                   </span>
                 </li>

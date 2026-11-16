@@ -72,8 +72,10 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex min-h-screen w-full bg-slate-50">
-      {/* Far-left community rail (sticky, full height) */}
-      <div className="sticky top-0 z-30 h-screen shrink-0 self-start">
+      {/* Far-left community rail (sticky, full height). Hidden on phones,
+          where it took a fifth of the width; the menu sheet links to all
+          communities instead. */}
+      <div className="sticky top-0 z-30 hidden h-screen shrink-0 self-start sm:block">
         <CommunityRail
           activeSlug={tenant.slug}
           communities={tenants.map((t) => ({

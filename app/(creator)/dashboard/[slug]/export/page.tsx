@@ -83,7 +83,7 @@ export default async function ExportPage({
         </span>
         <div>
           <h1 className="text-xl font-bold text-slate-900">{tr("title")}</h1>
-          <p className="text-sm text-slate-400">{tr("subtitle")}</p>
+          <p className="text-sm text-slate-500">{tr("subtitle")}</p>
         </div>
       </div>
 
@@ -112,7 +112,7 @@ export default async function ExportPage({
       {/* Per-dataset */}
       <div className="mb-3 flex items-center gap-2">
         <h2 className="text-sm font-semibold text-slate-700">{tr("singleDatasets")}</h2>
-        <span className="text-xs text-slate-400">{tr("csvOrJson")}</span>
+        <span className="text-xs text-slate-500">{tr("csvOrJson")}</span>
       </div>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {datasets.map((d) => {
@@ -120,12 +120,12 @@ export default async function ExportPage({
           return (
             <div key={d.key} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-4">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-500">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-600">
                   <Icon name={d.icon} size={18} />
                 </span>
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-slate-900">{d.label}</p>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-500">
                     {tr("entries", { count: d.count })}
                   </p>
                 </div>
@@ -159,7 +159,7 @@ export default async function ExportPage({
         })}
       </div>
 
-      <p className="mt-6 text-xs text-slate-400">
+      <p className="mt-6 text-xs text-slate-500">
         {tr("footer")}
       </p>
     </div>

@@ -62,7 +62,7 @@ export function VoteControl({
         aria-label={t("upvote")}
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md transition hover:bg-[#161613]/5",
-          vote === "UP" ? "text-orange-600" : "text-[#161613]/50",
+          vote === "UP" ? "text-orange-600" : "text-[#161613]/65",
         )}
       >
         <Icon name="chevron" size={18} className="rotate-180" />
@@ -81,7 +81,7 @@ export function VoteControl({
         aria-label={t("downvote")}
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md transition hover:bg-[#161613]/5",
-          vote === "DOWN" ? "text-blue-600" : "text-[#161613]/50",
+          vote === "DOWN" ? "text-blue-600" : "text-[#161613]/65",
         )}
       >
         <Icon name="chevron" size={18} />

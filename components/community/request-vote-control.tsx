@@ -60,7 +60,7 @@ export function RequestVoteControl({
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md transition",
           canVote && "hover:bg-[#161613]/5",
-          vote === "UP" ? "text-orange-600" : "text-[#161613]/45",
+          vote === "UP" ? "text-orange-600" : "text-[#161613]/65",
           !canVote && "cursor-not-allowed opacity-60",
         )}
       >
@@ -83,7 +83,7 @@ export function RequestVoteControl({
         className={cn(
           "flex h-7 w-7 items-center justify-center rounded-md transition",
           canVote && "hover:bg-[#161613]/5",
-          vote === "DOWN" ? "text-blue-600" : "text-[#161613]/45",
+          vote === "DOWN" ? "text-blue-600" : "text-[#161613]/65",
           !canVote && "cursor-not-allowed opacity-60",
         )}
       >

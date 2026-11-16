@@ -103,7 +103,7 @@ export function MusicUpload({
                 type="button"
                 onClick={() => setItems(items.filter((_, j) => j !== i))}
                 aria-label={t("removeTrackAria")}
-                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
               >
                 <Icon name="close" size={14} />
               </button>
@@ -122,7 +122,7 @@ export function MusicUpload({
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="flex w-full flex-col items-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-8 text-slate-400 transition hover:border-violet-400 hover:bg-violet-50/40"
+          className="flex w-full flex-col items-center gap-1.5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 py-8 text-slate-500 transition hover:border-violet-400 hover:bg-violet-50/40"
         >
           <Icon name="music" size={24} />
           <span className="text-sm font-medium">{t("trackUpload")}</span>

@@ -320,7 +320,7 @@ export default async function PostDetail({
 
         {/* Header */}
         <header className="text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/50">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#161613]/65">
             <span className="text-[color:var(--brand)]">{space.name}</span>
             <span className="mx-2" aria-hidden>·</span>
             {formatDate(post.createdAt, locale)}

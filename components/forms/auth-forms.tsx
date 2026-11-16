@@ -144,7 +144,7 @@ export function LoginForm({ next }: { next?: string }) {
             autoFocus
             required
           />
-          <p className="mt-1 text-xs text-slate-400">{t("totpHint")}</p>
+          <p className="mt-1 text-xs text-slate-500">{t("totpHint")}</p>
         </div>
       )}
       <button type="submit" className={CTA_CLASS} disabled={pending}>

@@ -27,7 +27,7 @@ export function LegalShell({
           {title}
         </h1>
         {updated && (
-          <p className="mt-3 text-sm text-[#161613]/50">{updated}</p>
+          <p className="mt-3 text-sm text-[#161613]/65">{updated}</p>
         )}
         <div className="legal-prose mt-10 space-y-8 text-[15px] leading-7 text-[#161613]/80 [&_h2]:display-serif [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:text-[#161613] [&_h3]:mt-6 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:text-[#161613] [&_a]:underline [&_a]:underline-offset-4 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:space-y-1">
           {children}

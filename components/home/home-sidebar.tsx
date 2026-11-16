@@ -77,7 +77,7 @@ export function HomeSidebar({
               <Icon
                 name={item.icon}
                 size={20}
-                className={cn("shrink-0", active ? "text-[var(--action-fg)]/60" : "text-slate-400")}
+                className={cn("shrink-0", active ? "text-[var(--action-fg)]/60" : "text-slate-500")}
               />
               <span className="hidden lg:block">{t(item.labelKey)}</span>
             </Link>
@@ -88,7 +88,7 @@ export function HomeSidebar({
       {/* User's communities */}
       {communities.length > 0 && (
         <div className="mt-5 min-h-0 flex-1 overflow-y-auto px-2 lg:px-3">
-          <p className="mb-1.5 hidden px-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-400 lg:block">
+          <p className="mb-1.5 hidden px-2.5 text-[11px] font-semibold uppercase tracking-wider text-slate-500 lg:block">
             {t("yourCommunities")}
           </p>
           <div className="space-y-0.5">
@@ -151,7 +151,7 @@ export function HomeSidebar({
               <span className="block truncate text-sm font-medium text-slate-900">
                 {user.name}
               </span>
-              <span className="block truncate text-xs text-slate-400">
+              <span className="block truncate text-xs text-slate-500">
                 {t("memberships")}
               </span>
             </span>

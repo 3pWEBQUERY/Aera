@@ -45,7 +45,7 @@ export function UserMenu({
             initials(user.name)
           )}
         </span>
-        <Icon name="expand" size={14} className="text-slate-400" />
+        <Icon name="expand" size={14} className="text-slate-500" />
       </button>
 
       {open && (
@@ -60,7 +60,7 @@ export function UserMenu({
               className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
               onClick={() => setOpen(false)}
             >
-              <Icon name="external" size={16} className="text-slate-400" />
+              <Icon name="external" size={16} className="text-slate-500" />
               {t("topbar.viewCommunity")}
             </Link>
             {/*
@@ -73,7 +73,7 @@ export function UserMenu({
               className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
               onClick={() => setOpen(false)}
             >
-              <Icon name="account" size={16} className="text-slate-400" />
+              <Icon name="account" size={16} className="text-slate-500" />
               {t("userMenu.myAccount")}
             </Link>
             {subscription && (
@@ -85,7 +85,7 @@ export function UserMenu({
                 }}
                 className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100"
               >
-                <Icon name="tiers" size={16} className="text-slate-400" />
+                <Icon name="tiers" size={16} className="text-slate-500" />
                 {t("userMenu.mySubscription")}
               </button>
             )}
@@ -94,7 +94,7 @@ export function UserMenu({
               className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-slate-100"
               onClick={() => setOpen(false)}
             >
-              <Icon name="spaces" size={16} className="text-slate-400" />
+              <Icon name="spaces" size={16} className="text-slate-500" />
               {t("userMenu.switchCommunities")}
             </Link>
             <form action={logoutAction}>

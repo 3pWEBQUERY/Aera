@@ -126,7 +126,7 @@ export function MemberPasswordForm() {
           minLength={8}
           required
         />
-        <p className="mt-1 text-xs text-[#161613]/50">{t("passwordHint")}</p>
+        <p className="mt-1 text-xs text-[#161613]/65">{t("passwordHint")}</p>
       </div>
       <div className="mt-auto flex items-center gap-3">
         <button type="submit" className={CTA_CLASS} disabled={pending}>

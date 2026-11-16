@@ -68,7 +68,7 @@ export function MarketingPlanCard({
         <span
           className={cn(
             "text-sm font-medium",
-            featured ? "text-white/50" : "text-[#161613]/50",
+            featured ? "text-white/50" : "text-[#161613]/65",
           )}
         >
           {labels.perMonth}

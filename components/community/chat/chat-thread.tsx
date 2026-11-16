@@ -250,11 +250,11 @@ export function ChatThread({
       <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto px-4 py-5">
         {messages.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center text-center">
-            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#161613]/5 text-[#161613]/50">
+            <span className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-[#161613]/5 text-[#161613]/65">
               <Icon name="chat" size={22} />
             </span>
             <p className="text-sm font-medium text-[#161613]/80">{t("emptyTitle")}</p>
-            <p className="mt-1 text-sm text-[#161613]/50">
+            <p className="mt-1 text-sm text-[#161613]/65">
               {canWrite ? t("emptyWrite") : t("emptyJoin")}
             </p>
           </div>
@@ -300,7 +300,7 @@ export function ChatThread({
                       >
                         {m.body}
                       </div>
-                      <span className="mt-0.5 px-1 text-[11px] text-[#161613]/50">
+                      <span className="mt-0.5 px-1 text-[11px] text-[#161613]/65">
                         {timeLabel(m.createdAt, locale)}
                       </span>
                     </div>
@@ -340,7 +340,7 @@ export function ChatThread({
         </div>
       ) : readOnlyReason ? (
         <div className="flex items-center gap-2 border-t border-[#161613]/10 px-4 py-3 text-sm text-[#161613]/60">
-          <Icon name="lock" size={16} className="shrink-0 text-[#161613]/50" />
+          <Icon name="lock" size={16} className="shrink-0 text-[#161613]/65" />
           {readOnlyReason}
         </div>
       ) : (

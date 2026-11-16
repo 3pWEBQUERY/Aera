@@ -72,7 +72,7 @@ export function BookingManager({
             <div key={s.id} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4">
               <div className="min-w-0">
                 <p className="truncate font-semibold text-slate-900">{s.title}</p>
-                <p className="mt-1 text-xs text-slate-400">
+                <p className="mt-1 text-xs text-slate-500">
                   {new Date(s.startsAt).toLocaleString()} · {s.durationMin} min
                 </p>
               </div>
@@ -90,7 +90,7 @@ export function BookingManager({
                   <button
                     type="submit"
                     aria-label={t("delete")}
-                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-400 transition hover:bg-red-50 hover:text-red-600"
+                    className="flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 transition hover:bg-red-50 hover:text-red-600"
                   >
                     <Icon name="trash" size={16} />
                   </button>
@@ -163,7 +163,7 @@ function SlotForm({
               allowFree
               defaultCents={0}
             />
-            <p className="mt-1 text-xs text-slate-400">{t("priceHint")}</p>
+            <p className="mt-1 text-xs text-slate-500">{t("priceHint")}</p>
           </div>
         </div>
       </div>
