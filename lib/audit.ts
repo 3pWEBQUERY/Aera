@@ -15,7 +15,10 @@ export async function writeAudit(input: {
     // Audit writes intentionally use the privileged client. aera_app has no
     // EXECUTE grant on the SECURITY DEFINER function, so tenant-scoped SQL can
     // neither forge platform events nor impersonate another actor.
-    await prisma.$queryRaw`
+    // $executeRaw, nicht $queryRaw: die Funktion liefert VOID, und der
+    // pg-Adapter kann eine VOID-Spalte nicht als Ergebnis lesen
+    // (UnsupportedNativeDataType) — jeder Audit-Eintrag ging dadurch verloren.
+    await prisma.$executeRaw`
       SELECT aera_write_audit(
         ${randomUUID()},
         ${input.tenantId ?? null},

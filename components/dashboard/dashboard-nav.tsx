@@ -157,7 +157,9 @@ export function DashboardNav({
                 open ? "" : "-rotate-90",
               )}
             />
-            <span className="truncate">{label}</span>
+            {/* Umbrechen statt abschneiden: in langen Sprachen (fr: „Dans les
+                offres supérieures (9)“) verschwand sonst genau die Anzahl. */}
+            <span className="min-w-0 break-words">{label}</span>
           </button>
           {action}
         </div>
@@ -246,7 +248,7 @@ export function DashboardNav({
           action={
             <Link
               href={`${base}/spaces`}
-              className="shrink-0 text-slate-500 transition hover:text-slate-700"
+              className="-my-1 flex h-6 w-6 shrink-0 items-center justify-center rounded text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-ring)]"
               aria-label={t("nav.manageSpacesAria")}
             >
               <Icon name="plus" size={14} />
