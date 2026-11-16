@@ -21,3 +21,6 @@ test-results/
 _to_delete/
 # Xcode-Zustand pro Benutzer, kein Quellcode.
 **/xcuserdata/
+
+# Lokale Arbeitskopien von Claude-Code-Agenten.
+.claude/worktrees/
