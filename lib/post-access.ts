@@ -1,5 +1,5 @@
 import "server-only";
-import type { Visibility } from "@/app/generated/prisma/client";
+import type { Prisma, Visibility } from "@/app/generated/prisma/client";
 import type { AccessContext } from "./entitlements";
 
 /**
@@ -44,6 +44,28 @@ export function isPostLocked(post: GatedPost, ctx: AccessContext): boolean {
   // PAID ohne eigenen Preis: irgendein bezahlter Zugang genuegt (Tier, Kauf).
   if (post.visibility === "PAID") return !isActiveMember || !ctx.hasPaidEntitlement;
   return false;
+}
+
+/**
+ * Where-Fragment: genau die Beitraege, die `isPostLocked` fuer diesen Viewer
+ * NICHT sperrt. Die Suche darf den Text eines Beitrags nur dann durchsuchen —
+ * sonst bestaetigt jede Trefferliste Woerter aus bezahltem Inhalt, auch wenn
+ * der Auszug selbst geschwaerzt ist. Muss mit `isPostLocked` deckungsgleich
+ * bleiben (siehe tests/search.test.ts).
+ */
+export function unlockedPostWhere(ctx: AccessContext): Prisma.PostWhereInput {
+  if (ctx.isStaff) return {};
+  const isActiveMember = ctx.membership?.status === "ACTIVE";
+  const open: Visibility[] = ["PUBLIC"];
+  if (isActiveMember) open.push("MEMBERS");
+  if (isActiveMember && ctx.hasPaidEntitlement) open.push("PAID");
+  const keys = [...ctx.keys];
+  return {
+    OR: [
+      { priceCents: { lte: 0 }, visibility: { in: open } },
+      ...(keys.length ? [{ priceCents: { gt: 0 }, entitlementKey: { in: keys } }] : []),
+    ],
+  };
 }
 
 /**

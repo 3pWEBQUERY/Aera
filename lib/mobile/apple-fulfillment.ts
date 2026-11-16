@@ -3,7 +3,7 @@ import prisma, { withTenantContext, withTenantTransaction } from "@/lib/prisma";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
 import { awardPoints, reversePointsByReference } from "@/lib/gamification";
 import { platformFeeCents } from "@/lib/stripe";
-import { recordReferralPurchase } from "@/lib/referrals";
+import { recordReferralPurchase, reverseReferralPurchaseByRef } from "@/lib/referrals";
 import { emitWebhookEvent } from "@/lib/webhooks";
 import { writeAudit } from "@/lib/audit";
 import {
@@ -410,16 +410,25 @@ async function resolveOneTimeTarget(input: {
           const mine = await prisma.bookingReservation.findFirst({
             where: { slotId: slot.id, userId, status: { in: ["CONFIRMED", "PENDING"] } },
           });
+          // Die Transaktion wird nur an eine Reservierung gebunden, die sie
+          // selbst bestätigt — ein Refund darf keine anders bezahlte Buchung
+          // stornieren (reverseAppleOrder).
           if (mine) {
             if (mine.status !== "CONFIRMED") {
               await prisma.bookingReservation.update({
                 where: { id: mine.id },
-                data: { status: "CONFIRMED" },
+                data: { status: "CONFIRMED", appleTransactionId: txn.transactionId },
               });
             }
           } else {
             await prisma.bookingReservation.create({
-              data: { tenantId: tenant.id, slotId: slot.id, userId, status: "CONFIRMED" },
+              data: {
+                tenantId: tenant.id,
+                slotId: slot.id,
+                userId,
+                status: "CONFIRMED",
+                appleTransactionId: txn.transactionId,
+              },
             });
           }
         },
@@ -459,6 +468,7 @@ async function resolveOneTimeTarget(input: {
               currency: "eur",
               isPublic: true,
               status: "PAID",
+              appleTransactionId: txn.transactionId,
             },
           });
         },
@@ -658,8 +668,11 @@ export async function syncAppleSubscription(
 /**
  * Refund eines One-Time-Kaufs rückabwickeln — Spiegel von
  * handleChargeRefunded: Order→REFUNDED, Entitlement entziehen (sofern kein
- * anderer bezahlter Kauf denselben Key hält), Punkte stornieren, Restbestand
- * physischer Produkte zurückbuchen.
+ * anderer bezahlter Kauf denselben Key hält), Punkte und Empfehlungsprovision
+ * stornieren, Restbestand physischer Produkte zurückbuchen, Trinkgeld als
+ * REFUNDED markieren und eine bezahlte Buchung stornieren. Jeder Schritt ist
+ * über Status/`reversedAt` idempotent, Apple darf die Benachrichtigung also
+ * wiederholen.
  */
 export async function reverseAppleOrder(
   appleTransactionId: string,
@@ -720,6 +733,25 @@ export async function reverseAppleOrder(
       refType: "AppleTransaction",
       refId: appleTransactionId,
       reversalRefId: eventId,
+    });
+    await reverseReferralPurchaseByRef({
+      tenantId: order.tenantId,
+      refType: "AppleTransaction",
+      refId: appleTransactionId,
+    });
+    // Trinkgeld/Buchung hängen über die Transaktion am Kauf. Ältere Käufe
+    // ohne diese Verknüpfung bleiben unberührt (kein Raten über Betrag/Zeit).
+    await prisma.tip.updateMany({
+      where: { tenantId: order.tenantId, appleTransactionId, status: "PAID" },
+      data: { status: "REFUNDED" },
+    });
+    await prisma.bookingReservation.updateMany({
+      where: {
+        tenantId: order.tenantId,
+        appleTransactionId,
+        status: { not: "CANCELLED" },
+      },
+      data: { status: "CANCELLED" },
     });
     await writeAudit({
       tenantId: order.tenantId,

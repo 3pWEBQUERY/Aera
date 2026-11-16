@@ -1,7 +1,7 @@
 import "server-only";
 import prisma from "./prisma";
 import { canAccess, type AccessContext } from "./entitlements";
-import { isPostLocked } from "./post-access";
+import { isPostLocked, unlockedPostWhere } from "./post-access";
 import type { Space } from "@/app/generated/prisma/client";
 
 /**
@@ -56,7 +56,11 @@ export async function searchCommunity(
       where: {
         tenantId,
         isPublished: true,
-        OR: [{ title: contains }, { body: contains }],
+        // Geplante Beitraege kennt vor dem Termin nur Staff.
+        ...(ctx.isStaff ? {} : { publishedAt: { lte: new Date() } }),
+        // Gesperrte Beitraege nur ueber den Titel finden — der Text ist das
+        // Bezahlte, und jeder Treffer wuerde ein Wort daraus bestaetigen.
+        OR: [{ title: contains }, { AND: [{ body: contains }, unlockedPostWhere(ctx)] }],
       },
       orderBy: { createdAt: "desc" },
       take: PER_TYPE * 2, // Puffer, da gesperrte Treffer gefiltert werden

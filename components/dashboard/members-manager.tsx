@@ -697,15 +697,6 @@ function EditForm({
 
           <FormError message={deleteError ?? state.error} />
 
-          <div>
-            <Label>{t("profilePhoto")}</Label>
-            <AvatarUpload
-              tenant={slug}
-              defaultUrl={member.user.avatarUrl}
-              fallbackName={member.user.name}
-            />
-          </div>
-
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
               <Label htmlFor="em-role">{t("roleLabel")}</Label>

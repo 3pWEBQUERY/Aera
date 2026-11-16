@@ -1,6 +1,8 @@
 import prisma from "@/lib/prisma";
 import { canAccess } from "@/lib/entitlements";
 import { excerpt } from "@/lib/utils";
+import { unlockedPostWhere } from "@/lib/post-access";
+import { rateLimit } from "@/lib/rate-limit";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import {
   buildViewerContext,
@@ -17,6 +19,7 @@ import {
 // aus Spaces, auf die der Viewer Zugriff hat.
 
 const MAX = 10;
+const SEARCH_LIMIT_PER_MINUTE = 60;
 const POST_SPACE_TYPES = ["FEED", "FORUM", "BLOG", "VIDEOS", "PODCAST"] as const;
 
 export async function GET(
@@ -34,6 +37,10 @@ export async function GET(
   const q = (new URL(req.url).searchParams.get("q") ?? "").trim().slice(0, 80);
   if (!q) {
     return jsonOk({ posts: [], courses: [], events: [], products: [], knowledge: [] });
+  }
+  // Wie /api/search: Suchanfragen sind teuer und taugen zum Abtasten.
+  if (!(await rateLimit(`msearch:${user.id}`, SEARCH_LIMIT_PER_MINUTE, 60_000))) {
+    return jsonError("rate_limited", "Too many searches. Try again later.", 429);
   }
   const contains = { contains: q, mode: "insensitive" as const };
 
@@ -56,7 +63,8 @@ export async function GET(
           spaceId: { in: postSpaceIds },
           isPublished: true,
           publishedAt: { lte: now },
-          OR: [{ title: contains }, { body: contains }],
+          // Gesperrte Beitraege nur ueber den Titel finden (wie lib/search.ts).
+          OR: [{ title: contains }, { AND: [{ body: contains }, unlockedPostWhere(ctx)] }],
         },
         orderBy: { createdAt: "desc" },
         take: MAX,

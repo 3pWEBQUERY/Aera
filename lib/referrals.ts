@@ -184,12 +184,28 @@ export async function reverseReferralPurchase(input: {
   tenantId: string;
   stripeSessionId: string;
 }): Promise<void> {
+  await reverseReferralPurchaseByRef({
+    tenantId: input.tenantId,
+    refType: "StripeSession",
+    refId: input.stripeSessionId,
+  });
+}
+
+/**
+ * Wie reverseReferralPurchase, für jede Referenz, unter der
+ * recordReferralPurchase gebucht hat (z. B. "AppleTransaction"). Idempotent.
+ */
+export async function reverseReferralPurchaseByRef(input: {
+  tenantId: string;
+  refType: string;
+  refId: string;
+}): Promise<void> {
   await prisma.referralConversion.updateMany({
     where: {
       tenantId: input.tenantId,
       kind: "purchase",
-      refType: "StripeSession",
-      refId: input.stripeSessionId,
+      refType: input.refType,
+      refId: input.refId,
       reversedAt: null,
     },
     data: { reversedAt: new Date() },

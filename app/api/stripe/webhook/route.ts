@@ -860,6 +860,16 @@ async function reversePaymentBenefits(
           tenantId,
           stripeSessionId: order.stripeSessionId,
         });
+        // Erstattete oder strittige Buchung: der Termin gilt nicht mehr als
+        // bezahlt und wird wieder frei. Idempotent über den Status.
+        await prisma.bookingReservation.updateMany({
+          where: {
+            tenantId,
+            stripeSessionId: order.stripeSessionId,
+            status: { not: "CANCELLED" },
+          },
+          data: { status: "CANCELLED" },
+        });
         if (order.description === "Trinkgeld") {
           const stripe = getStripe();
           if (!stripe) throw new Error("Stripe is required to reverse checkout benefits");

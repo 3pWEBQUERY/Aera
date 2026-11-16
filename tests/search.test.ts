@@ -12,6 +12,7 @@ import prismaModule from "@/lib/prisma";
 const prisma = prismaModule as unknown as PrismaMock;
 
 import { searchCommunity } from "@/lib/search";
+import { isPostLocked, unlockedPostWhere } from "@/lib/post-access";
 import type { AccessContext } from "@/lib/entitlements";
 
 function ctx(overrides: Partial<AccessContext> = {}): AccessContext {
@@ -119,5 +120,76 @@ describe("searchCommunity", () => {
     const results = await searchCommunity("t1", "demo", ctx(), "antwort");
     expect(results[0]!.excerpt).not.toContain("<");
     expect(results[0]!.excerpt).toContain("Antwort auf alles");
+  });
+
+  it("never matches the body of posts the viewer cannot open", async () => {
+    await searchCommunity("t1", "demo", ctx(), "geheim");
+    const where = prisma.post.findMany.mock.calls[0][0].where;
+    expect(where.OR).toEqual([
+      { title: { contains: "geheim", mode: "insensitive" } },
+      {
+        AND: [
+          { body: { contains: "geheim", mode: "insensitive" } },
+          unlockedPostWhere(ctx()),
+        ],
+      },
+    ]);
+    // Geplante Beitraege bleiben fuer Nicht-Staff unsichtbar.
+    expect(where.publishedAt).toEqual({ lte: expect.any(Date) });
+  });
+
+  it("lets staff search post bodies without restriction", async () => {
+    await searchCommunity("t1", "demo", ctx({ isStaff: true }), "geheim");
+    const where = prisma.post.findMany.mock.calls[0][0].where;
+    expect(where.OR[1]).toEqual({
+      AND: [{ body: { contains: "geheim", mode: "insensitive" } }, {}],
+    });
+    expect(where.publishedAt).toBeUndefined();
+  });
+});
+
+describe("unlockedPostWhere", () => {
+  type Post = { visibility: "PUBLIC" | "MEMBERS" | "PAID"; priceCents: number; entitlementKey: string | null };
+  type Where = Record<string, unknown>;
+
+  // Minimaler Auswerter fuer genau die Operatoren, die unlockedPostWhere nutzt.
+  function matches(post: Post, where: Where): boolean {
+    return Object.entries(where).every(([field, cond]) => {
+      if (field === "OR") return (cond as Where[]).some((w) => matches(post, w));
+      const value = post[field as keyof Post];
+      const c = cond as { lte?: number; gt?: number; in?: unknown[] };
+      if (c.lte !== undefined && !((value as number) <= c.lte)) return false;
+      if (c.gt !== undefined && !((value as number) > c.gt)) return false;
+      if (c.in !== undefined && !c.in.includes(value)) return false;
+      return true;
+    });
+  }
+
+  const posts: Post[] = [];
+  for (const visibility of ["PUBLIC", "MEMBERS", "PAID"] as const) {
+    for (const priceCents of [0, 500]) {
+      for (const entitlementKey of [null, "post:p1"]) posts.push({ visibility, priceCents, entitlementKey });
+    }
+  }
+  const contexts: AccessContext[] = [
+    ctx({ membership: null, role: null, userId: null }),
+    ctx({ membership: { status: "BANNED" } as AccessContext["membership"] }),
+    ctx(),
+    ctx({ hasPaidEntitlement: true }),
+    ctx({ keys: new Set(["post:p1"]) }),
+    ctx({ keys: new Set(["post:p1"]), hasPaidEntitlement: true }),
+    ctx({ isStaff: true }),
+  ];
+
+  it("unlocks exactly what isPostLocked leaves open", () => {
+    for (const c of contexts) {
+      const where = unlockedPostWhere(c);
+      for (const post of posts) {
+        expect({ post, unlocked: matches(post, where) }).toEqual({
+          post,
+          unlocked: !isPostLocked(post, c),
+        });
+      }
+    }
   });
 });

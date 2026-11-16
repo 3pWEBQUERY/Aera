@@ -1,13 +1,13 @@
 import prisma from "@/lib/prisma";
 import { awardPoints } from "@/lib/gamification";
-import { isLessonUnlocked } from "@/lib/drip";
-import { roleAtLeast } from "@/lib/tenant";
+import { buildAccessContext, canParticipate } from "@/lib/entitlements";
+import { canCompleteLesson } from "@/lib/participation";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
 // POST /api/mobile/v1/c/{slug}/lessons/{lessonId}/complete
 // → { completed: true, progress: { completed, total } }
 // Logik gespiegelt aus completeLessonAction (app/actions/engage.ts) inkl.
-// serverseitigem Drip-Gate (Staff ausgenommen).
+// Space-/Kurs-Paywall und Drip-Gate (lib/participation, Staff ausgenommen).
 
 export async function POST(
   req: Request,
@@ -23,22 +23,17 @@ export async function POST(
 
   const lesson = await prisma.lesson.findFirst({
     where: { id: lessonId, tenantId: tenant.id },
+    include: { course: { include: { space: true } } },
   });
   if (!lesson) return jsonError("not_found", "Lesson not found.", 404);
 
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  if (membership?.status !== "ACTIVE") {
+  const ctx = await buildAccessContext(tenant.id, user.id);
+  if (!canParticipate(ctx)) {
     return jsonError("not_member", "Active membership required.", 403);
   }
-  const isStaff = roleAtLeast(membership.role, "MODERATOR");
-
-  // Drip-Content serverseitig durchsetzen (Staff ausgenommen).
-  if (lesson.dripAfterDays && lesson.dripAfterDays > 0) {
-    if (!isStaff && !isLessonUnlocked(membership.joinedAt, lesson.dripAfterDays)) {
-      return jsonError("payment_required", "This lesson is not unlocked yet.", 403);
-    }
+  // Space-Zugriff, Kurs-Paywall und Drip — dieselbe Regel wie im Web.
+  if (!canCompleteLesson(lesson, ctx)) {
+    return jsonError("payment_required", "This lesson is not unlocked for you.", 403);
   }
 
   const existing = await prisma.lessonProgress.findUnique({
