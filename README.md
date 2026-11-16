@@ -158,6 +158,9 @@ proxy.ts              Subdomain → /c/[slug] Auflösung (Next 16 Proxy)
 
   ```bash
   npm run admin:verify-email -- --email admin@aera.so --confirm verify-email:admin@aera.so
+  # Konto direkt anlegen (Passwort nur als bcrypt-Hash in der Umgebung):
+  AERA_NEW_USER_PASSWORD_HASH='$2b$12$…' npm run admin:create-user -- \
+    --email admin@aera.so --verified --confirm create-user:admin@aera.so
   npm run admin:status -- --email admin@aera.so
   ```
 - Tenant- und Staff-Rechte gelten nur bei `Tenant.status=ACTIVE` und einer

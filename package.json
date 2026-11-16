@@ -46,6 +46,7 @@
     "admin:status": "tsx scripts/platform-admin.ts status",
     "admin:revoke": "tsx scripts/platform-admin.ts revoke",
     "admin:verify-email": "tsx scripts/platform-admin.ts verify-email",
+    "admin:create-user": "tsx scripts/create-user.ts",
     "setup": "prisma generate && prisma migrate deploy && tsx scripts/apply-rls.ts",
     "postinstall": "prisma generate"
   },
