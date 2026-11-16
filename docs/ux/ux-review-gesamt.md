@@ -13,7 +13,7 @@ und Mitgliedern.
 | Creator: Inhalte und Geld (Mitgliedschaft, Produkt, Kurs, Event, Medien, Newsletter) | 6 | 11 von 32 |
 | Mitglieder (beitreten, Forum, Neues, Konto) | 4 | 12 von 21 |
 | Öffentliche Seiten, Anmeldung, Hilfe, Sprache | 6 | 15 von 36 |
-| Einstellungen, Layout, Mitglieder, Domain, Export, Admin | 7 | 13 von 41 |
+| Einstellungen, Layout, Mitglieder, Domain, Export (dazu Heuristik für Admin) | 5 | 13 von 30 |
 
 ## Die schwersten Befunde und ihre Korrektur
 
