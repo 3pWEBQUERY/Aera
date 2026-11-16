@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import {
@@ -30,10 +30,12 @@ function urlOrNull(v: FormDataEntryValue | null): string | null {
 
 async function loadSpace(slug: string, spaceId: string) {
   const { tenant } = await requireTenantAdmin(slug);
-  const space = await prisma.space.findFirst({
-    where: { id: spaceId, tenantId: tenant.id },
+  return withTenantContext(tenant.id, async () => {
+    const space = await prisma.space.findFirst({
+      where: { id: spaceId, tenantId: tenant.id },
+    });
+    return { tenant, space };
   });
-  return { tenant, space };
 }
 
 async function persist(
@@ -64,60 +66,61 @@ export async function saveAnnouncementAction(
   const spaceId = String(fd.get("spaceId"));
   const { tenant, space } = await loadSpace(slug, spaceId);
   if (!space) return { error: await tErr("spaceNotFound") };
+  return withTenantContext(tenant.id, async () => {
+    const title = String(fd.get("title") ?? "").trim();
+    if (!title) return { error: await tErr("titleRequired") };
+    if (title.length > 160) return { error: await tErr("titleTooLong160") };
 
-  const title = String(fd.get("title") ?? "").trim();
-  if (!title) return { error: await tErr("titleRequired") };
-  if (title.length > 160) return { error: await tErr("titleTooLong160") };
+    const message = String(fd.get("message") ?? "").trim().slice(0, 240);
+    const ctaLabel = String(fd.get("ctaLabel") ?? "").trim().slice(0, 40) || null;
+    const ctaUrl = urlOrNull(fd.get("ctaUrl"));
+    if (ctaLabel && !ctaUrl)
+      return { error: await tErr("validButtonUrl") };
 
-  const message = String(fd.get("message") ?? "").trim().slice(0, 240);
-  const ctaLabel = String(fd.get("ctaLabel") ?? "").trim().slice(0, 40) || null;
-  const ctaUrl = urlOrNull(fd.get("ctaUrl"));
-  if (ctaLabel && !ctaUrl)
-    return { error: await tErr("validButtonUrl") };
+    const endsAtRaw = String(fd.get("endsAt") ?? "").trim();
+    let endsAt: string | null = null;
+    if (endsAtRaw) {
+      const d = new Date(endsAtRaw);
+      if (Number.isNaN(d.getTime())) return { error: await tErr("invalidExpiryDate") };
+      endsAt = d.toISOString();
+    }
+    const showTimer = fd.get("showTimer") === "on";
+    if (showTimer && !endsAt)
+      return { error: await tErr("countdownNeedsExpiry") };
 
-  const endsAtRaw = String(fd.get("endsAt") ?? "").trim();
-  let endsAt: string | null = null;
-  if (endsAtRaw) {
-    const d = new Date(endsAtRaw);
-    if (Number.isNaN(d.getTime())) return { error: await tErr("invalidExpiryDate") };
-    endsAt = d.toISOString();
-  }
-  const showTimer = fd.get("showTimer") === "on";
-  if (showTimer && !endsAt)
-    return { error: await tErr("countdownNeedsExpiry") };
+    const announcements = parseAnnouncements(space.settings);
+    const existingId = String(fd.get("announcementId") ?? "");
+    const existing = announcements.find((a) => a.id === existingId);
 
-  const announcements = parseAnnouncements(space.settings);
-  const existingId = String(fd.get("announcementId") ?? "");
-  const existing = announcements.find((a) => a.id === existingId);
+    const entry: SpaceAnnouncement = {
+      id: existing?.id ?? randomUUID(),
+      title,
+      message,
+      bgColor: color(fd.get("bgColor"), ANNOUNCEMENT_DEFAULTS.bgColor),
+      textColor: color(fd.get("textColor"), ANNOUNCEMENT_DEFAULTS.textColor),
+      bgImageUrl: urlOrNull(fd.get("bgImageUrl")),
+      ctaLabel,
+      ctaUrl,
+      endsAt,
+      showTimer,
+      isPublished: fd.get("isPublished") === "on",
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+    };
 
-  const entry: SpaceAnnouncement = {
-    id: existing?.id ?? randomUUID(),
-    title,
-    message,
-    bgColor: color(fd.get("bgColor"), ANNOUNCEMENT_DEFAULTS.bgColor),
-    textColor: color(fd.get("textColor"), ANNOUNCEMENT_DEFAULTS.textColor),
-    bgImageUrl: urlOrNull(fd.get("bgImageUrl")),
-    ctaLabel,
-    ctaUrl,
-    endsAt,
-    showTimer,
-    isPublished: fd.get("isPublished") === "on",
-    createdAt: existing?.createdAt ?? new Date().toISOString(),
-  };
+    const next = existing
+      ? announcements.map((a) => (a.id === existing.id ? entry : a))
+      : [entry, ...announcements];
 
-  const next = existing
-    ? announcements.map((a) => (a.id === existing.id ? entry : a))
-    : [entry, ...announcements];
-
-  await persist(slug, space, next);
-  await writeAudit({
-    tenantId: tenant.id,
-    action: existing ? "announcement.update" : "announcement.create",
-    targetType: "Space",
-    targetId: space.id,
-    metadata: { announcementId: entry.id },
+    await persist(slug, space, next);
+    await writeAudit({
+      tenantId: tenant.id,
+      action: existing ? "announcement.update" : "announcement.create",
+      targetType: "Space",
+      targetId: space.id,
+      metadata: { announcementId: entry.id },
+    });
+    return { ok: true };
   });
-  return { ok: true };
 }
 
 /** Toggle "announcements only" mode for a space (hides it from the community). */
@@ -127,26 +130,27 @@ export async function toggleAnnouncementsOnlyAction(fd: FormData): Promise<void>
   const enabled = fd.get("enabled") === "on";
   const { tenant, space } = await loadSpace(slug, spaceId);
   if (!space) return;
-
-  const settings =
-    space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
-      ? (space.settings as Record<string, unknown>)
-      : {};
-  await prisma.space.update({
-    where: { id: space.id },
-    data: {
-      settings: { ...settings, announcementsOnly: enabled } as unknown as Prisma.InputJsonValue,
-    },
+  return withTenantContext(tenant.id, async () => {
+    const settings =
+      space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
+        ? (space.settings as Record<string, unknown>)
+        : {};
+    await prisma.space.update({
+      where: { id: space.id },
+      data: {
+        settings: { ...settings, announcementsOnly: enabled } as unknown as Prisma.InputJsonValue,
+      },
+    });
+    await writeAudit({
+      tenantId: tenant.id,
+      action: enabled ? "space.announcementsOnly.enable" : "space.announcementsOnly.disable",
+      targetType: "Space",
+      targetId: space.id,
+    });
+    revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
+    revalidatePath(`/dashboard/${slug}`, "layout");
+    revalidatePath(`/c/${slug}`, "layout");
   });
-  await writeAudit({
-    tenantId: tenant.id,
-    action: enabled ? "space.announcementsOnly.enable" : "space.announcementsOnly.disable",
-    targetType: "Space",
-    targetId: space.id,
-  });
-  revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
-  revalidatePath(`/dashboard/${slug}`, "layout");
-  revalidatePath(`/c/${slug}`, "layout");
 }
 
 export async function deleteAnnouncementAction(fd: FormData): Promise<void> {
@@ -155,17 +159,18 @@ export async function deleteAnnouncementAction(fd: FormData): Promise<void> {
   const announcementId = String(fd.get("announcementId"));
   const { tenant, space } = await loadSpace(slug, spaceId);
   if (!space) return;
+  return withTenantContext(tenant.id, async () => {
+    const announcements = parseAnnouncements(space.settings);
+    const next = announcements.filter((a) => a.id !== announcementId);
+    if (next.length === announcements.length) return;
 
-  const announcements = parseAnnouncements(space.settings);
-  const next = announcements.filter((a) => a.id !== announcementId);
-  if (next.length === announcements.length) return;
-
-  await persist(slug, space, next);
-  await writeAudit({
-    tenantId: tenant.id,
-    action: "announcement.delete",
-    targetType: "Space",
-    targetId: space.id,
-    metadata: { announcementId },
+    await persist(slug, space, next);
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "announcement.delete",
+      targetType: "Space",
+      targetId: space.id,
+      metadata: { announcementId },
+    });
   });
 }

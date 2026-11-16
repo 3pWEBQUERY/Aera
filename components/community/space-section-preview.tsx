@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { listLiveSessions } from "@/lib/live";
 import { formatPrice, formatDateTime } from "@/lib/utils";
 import { parseStorySettings } from "@/lib/space-settings";
@@ -116,35 +116,37 @@ function SpotlightCard({ slug, space, locked, icon, typeLabel }: Props) {
 }
 
 async function StoriesPreview({ slug, tenantId, space }: Props) {
-  const t = await getTranslations("community.render.stories");
-  const now = new Date();
-  const rows = await prisma.story.findMany({
-    where: {
-      tenantId,
-      spaceId: space.id,
-      publishAt: { lte: now },
-      // Ohne Ablauf bleibt eine Story dauerhaft sichtbar.
-      OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
-    },
-    orderBy: { publishAt: "desc" },
-    take: 60,
-    include: { author: { select: { name: true, avatarUrl: true } } },
+  return withTenantContext(tenantId, async () => {
+    const t = await getTranslations("community.render.stories");
+    const now = new Date();
+    const rows = await prisma.story.findMany({
+      where: {
+        tenantId,
+        spaceId: space.id,
+        publishAt: { lte: now },
+        // Ohne Ablauf bleibt eine Story dauerhaft sichtbar.
+        OR: [{ expiresAt: null }, { expiresAt: { gt: now } }],
+      },
+      orderBy: { publishAt: "desc" },
+      take: 60,
+      include: { author: { select: { name: true, avatarUrl: true } } },
+    });
+    const groups = groupStoriesByAuthor(rows);
+    return (
+      <section>
+        <Header slug={slug} space={space} />
+        {groups.length === 0 ? (
+          <EmptyState icon="sparkles" title={t("empty")} hint={t("emptyHint")} />
+        ) : (
+          <StoryViewer
+            variant="cards"
+            autoplaySeconds={parseStorySettings(space.settings).autoplaySeconds}
+            groups={groups}
+          />
+        )}
+      </section>
+    );
   });
-  const groups = groupStoriesByAuthor(rows);
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      {groups.length === 0 ? (
-        <EmptyState icon="sparkles" title={t("empty")} hint={t("emptyHint")} />
-      ) : (
-        <StoryViewer
-          variant="cards"
-          autoplaySeconds={parseStorySettings(space.settings).autoplaySeconds}
-          groups={groups}
-        />
-      )}
-    </section>
-  );
 }
 
 /**
@@ -154,275 +156,285 @@ async function StoriesPreview({ slug, tenantId, space }: Props) {
  * ausgeliefert — sichtbar ist, dass es sie gibt, hoerbar nichts.
  */
 async function MusicPreview({ slug, tenantId, space, locale, access }: Props) {
-  const t = await getTranslations("community.render.music");
-  const rows = await prisma.post.findMany({
-    where: { tenantId, spaceId: space.id, isPublished: true, publishedAt: { lte: new Date() } },
-    orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
-    take: 30,
-    include: {
-      author: { select: { name: true, avatarUrl: true } },
-      _count: { select: { reactions: true } },
-    },
-  });
-  if (rows.length === 0) {
+  return withTenantContext(tenantId, async () => {
+    const t = await getTranslations("community.render.music");
+    const rows = await prisma.post.findMany({
+      where: { tenantId, spaceId: space.id, isPublished: true, publishedAt: { lte: new Date() } },
+      orderBy: [{ isPinned: "desc" }, { createdAt: "desc" }],
+      take: 30,
+      include: {
+        author: { select: { name: true, avatarUrl: true } },
+        _count: { select: { reactions: true } },
+      },
+    });
+    if (rows.length === 0) {
+      return (
+        <section>
+          <Header slug={slug} space={space} />
+          <EmptyState icon="music" title={t("empty")} hint={t("emptyHint")} />
+        </section>
+      );
+    }
+    const tracks: MusicTrack[] = rows.map((p) => {
+      // Ohne Betrachter-Rechte bleibt jeder bezahlte Titel vorsorglich gesperrt.
+      const kind = access
+        ? postLockKind(p, access)
+        : p.priceCents > 0
+          ? ("paid" as const)
+          : ("none" as const);
+      return {
+        id: p.id,
+        title: p.title || t("untitled"),
+        href: `/c/${slug}/s/${space.slug}/${p.id}`,
+        audioUrl: kind === "none" ? p.videoUrl : null,
+        coverUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
+        artist: p.author.name,
+        artistAvatar: p.author.avatarUrl,
+        likes: p._count.reactions,
+        likedByMe: false,
+        lockKind: kind,
+        priceLabel: kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
+      };
+    });
     return (
       <section>
         <Header slug={slug} space={space} />
-        <EmptyState icon="music" title={t("empty")} hint={t("emptyHint")} />
+        <MusicPlayer slug={slug} spaceSlug={space.slug} tracks={tracks} />
       </section>
     );
-  }
-  const tracks: MusicTrack[] = rows.map((p) => {
-    // Ohne Betrachter-Rechte bleibt jeder bezahlte Titel vorsorglich gesperrt.
-    const kind = access
-      ? postLockKind(p, access)
-      : p.priceCents > 0
-        ? ("paid" as const)
-        : ("none" as const);
-    return {
-      id: p.id,
-      title: p.title || t("untitled"),
-      href: `/c/${slug}/s/${space.slug}/${p.id}`,
-      audioUrl: kind === "none" ? p.videoUrl : null,
-      coverUrl: kind === "paid" ? p.teaserUrl : p.imageUrl,
-      artist: p.author.name,
-      artistAvatar: p.author.avatarUrl,
-      likes: p._count.reactions,
-      likedByMe: false,
-      lockKind: kind,
-      priceLabel: kind === "paid" ? formatPrice(p.priceCents, p.currency, locale) : null,
-    };
   });
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      <MusicPlayer slug={slug} spaceSlug={space.slug} tracks={tracks} />
-    </section>
-  );
 }
 
 async function LivePreview({ slug, tenantId, space, locale }: Props) {
-  const tSpace = await getTranslations("community.render.space");
-  const tSpot = await getTranslations("community.render.spotlight");
-  const sessions = (await listLiveSessions(tenantId, space.id)).filter(
-    (s) => s.status !== "ENDED",
-  );
-  if (sessions.length === 0) {
-    return (
-      <section>
-        <Header slug={slug} space={space} />
-        <EmptyState icon="videos" title={tSpace("liveNone")} hint={tSpace("liveNoneHint")} />
-      </section>
+  return withTenantContext(tenantId, async () => {
+    const tSpace = await getTranslations("community.render.space");
+    const tSpot = await getTranslations("community.render.spotlight");
+    const sessions = (await listLiveSessions(tenantId, space.id)).filter(
+      (s) => s.status !== "ENDED",
     );
-  }
-  return (
-    <HScrollRow
-      title={space.name}
-      action={
-        <Link
-          href={`/c/${slug}/s/${space.slug}`}
-          className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[color:var(--brand)] transition hover:gap-1.5"
-        >
-          {tSpot("viewAll")}
-          <Icon name="chevron" size={14} className="-rotate-90" />
-        </Link>
-      }
-    >
-      {sessions.map((s) => (
-        <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
-          <LiveSessionCard
-            href={`/c/${slug}/s/${space.slug}?open=${s.id}`}
-            title={s.title}
-            status={s.status}
-            statusLabel={tSpace(`liveStatus.${s.status}`)}
-            streamUrl={s.streamUrl}
-            ownStreamLabel={s.source === "AERA" ? tSpace("liveOwnStream") : null}
-            startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
-            startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
-          />
-        </div>
-      ))}
-    </HScrollRow>
-  );
+    if (sessions.length === 0) {
+      return (
+        <section>
+          <Header slug={slug} space={space} />
+          <EmptyState icon="videos" title={tSpace("liveNone")} hint={tSpace("liveNoneHint")} />
+        </section>
+      );
+    }
+    return (
+      <HScrollRow
+        title={space.name}
+        action={
+          <Link
+            href={`/c/${slug}/s/${space.slug}`}
+            className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-[color:var(--brand)] transition hover:gap-1.5"
+          >
+            {tSpot("viewAll")}
+            <Icon name="chevron" size={14} className="-rotate-90" />
+          </Link>
+        }
+      >
+        {sessions.map((s) => (
+          <div key={s.id} className="w-[85%] shrink-0 snap-start sm:w-[calc(50%-0.5rem)]">
+            <LiveSessionCard
+              href={`/c/${slug}/s/${space.slug}?open=${s.id}`}
+              title={s.title}
+              status={s.status}
+              statusLabel={tSpace(`liveStatus.${s.status}`)}
+              streamUrl={s.streamUrl}
+              ownStreamLabel={s.source === "AERA" ? tSpace("liveOwnStream") : null}
+              startsAtLabel={s.startsAt ? formatDateTime(s.startsAt, locale) : null}
+              startsAtIso={s.startsAt ? new Date(s.startsAt).toISOString() : null}
+            />
+          </div>
+        ))}
+      </HScrollRow>
+    );
+  });
 }
 
 async function TipsPreview({ slug, tenantId, space, locale }: Props) {
-  const t = await getTranslations("community.render.tips");
-  const settings =
-    space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
-      ? (space.settings as Record<string, unknown>)
-      : {};
-  const goalCents = Number(settings.tipGoalCents) || 0;
-  const [agg, tips] = await Promise.all([
-    prisma.tip.aggregate({
-      where: { tenantId, spaceId: space.id, status: "PAID" },
-      _sum: { amountCents: true },
-    }),
-    prisma.tip.findMany({
-      where: { tenantId, spaceId: space.id, status: "PAID", isPublic: true },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      include: { user: { select: { name: true, avatarUrl: true } } },
-    }),
-  ]);
-  const raised = agg._sum.amountCents ?? 0;
-  const pct = goalCents > 0 ? Math.min(100, Math.round((raised / goalCents) * 100)) : 0;
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      <div className="rounded-2xl border border-[#161613]/10 bg-white p-5">
-        {goalCents > 0 && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between text-sm">
-              <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
-              <span className="text-[#161613]/50">{t("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
-            </div>
-            <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
-              <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
-            </div>
-          </div>
-        )}
-        {tips.length === 0 ? (
-          <p className="py-4 text-center text-sm text-[#161613]/50">{t("empty")}</p>
-        ) : (
-          <div className="space-y-3">
-            {tips.map((tp) => (
-              <div key={tp.id} className="flex items-center gap-3">
-                <Avatar name={tp.user.name} src={tp.user.avatarUrl} size={32} />
-                <span className="min-w-0 flex-1 truncate text-sm">
-                  <span className="font-semibold text-[#161613]">{tp.user.name}</span>
-                  {tp.message ? <span className="text-[#161613]/60"> — {tp.message}</span> : null}
-                </span>
-                <span className="shrink-0 text-sm font-semibold text-[color:var(--brand)]">
-                  {formatPrice(tp.amountCents, tp.currency, locale)}
-                </span>
+  return withTenantContext(tenantId, async () => {
+    const t = await getTranslations("community.render.tips");
+    const settings =
+      space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
+        ? (space.settings as Record<string, unknown>)
+        : {};
+    const goalCents = Number(settings.tipGoalCents) || 0;
+    const [agg, tips] = await Promise.all([
+      prisma.tip.aggregate({
+        where: { tenantId, spaceId: space.id, status: "PAID" },
+        _sum: { amountCents: true },
+      }),
+      prisma.tip.findMany({
+        where: { tenantId, spaceId: space.id, status: "PAID", isPublic: true },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        include: { user: { select: { name: true, avatarUrl: true } } },
+      }),
+    ]);
+    const raised = agg._sum.amountCents ?? 0;
+    const pct = goalCents > 0 ? Math.min(100, Math.round((raised / goalCents) * 100)) : 0;
+    return (
+      <section>
+        <Header slug={slug} space={space} />
+        <div className="rounded-2xl border border-[#161613]/10 bg-white p-5">
+          {goalCents > 0 && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="font-semibold text-[#161613]">{formatPrice(raised, PLATFORM_CURRENCY, locale)}</span>
+                <span className="text-[#161613]/50">{t("goal", { goal: formatPrice(goalCents, PLATFORM_CURRENCY, locale) })}</span>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </section>
-  );
+              <div className="mt-2 h-2.5 w-full overflow-hidden rounded-full bg-[#161613]/10">
+                <div className="h-full rounded-full bg-[var(--brand)]" style={{ width: `${pct}%` }} />
+              </div>
+            </div>
+          )}
+          {tips.length === 0 ? (
+            <p className="py-4 text-center text-sm text-[#161613]/50">{t("empty")}</p>
+          ) : (
+            <div className="space-y-3">
+              {tips.map((tp) => (
+                <div key={tp.id} className="flex items-center gap-3">
+                  <Avatar name={tp.user.name} src={tp.user.avatarUrl} size={32} />
+                  <span className="min-w-0 flex-1 truncate text-sm">
+                    <span className="font-semibold text-[#161613]">{tp.user.name}</span>
+                    {tp.message ? <span className="text-[#161613]/60"> — {tp.message}</span> : null}
+                  </span>
+                  <span className="shrink-0 text-sm font-semibold text-[color:var(--brand)]">
+                    {formatPrice(tp.amountCents, tp.currency, locale)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+    );
+  });
 }
 
 async function CalendarPreview({ slug, tenantId, space, locale }: Props) {
-  const t = await getTranslations("community.render.calendar");
-  const now = new Date();
-  const [events, lives, scheduled] = await Promise.all([
-    prisma.event.findMany({
-      where: { tenantId, startsAt: { gte: now } },
-      orderBy: { startsAt: "asc" },
-      take: 6,
-      select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
-    }),
-    prisma.liveSession.findMany({
-      where: { tenantId, startsAt: { gte: now }, status: { not: "ENDED" } },
-      orderBy: { startsAt: "asc" },
-      take: 6,
-      select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
-    }),
-    prisma.post.findMany({
-      where: { tenantId, scheduledAt: { not: null, gte: now } },
-      orderBy: { scheduledAt: "asc" },
-      take: 6,
-      select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
-    }),
-  ]);
-  type Entry = { id: string; title: string; when: Date; kind: "event" | "live" | "post"; href: string | null };
-  const entries: Entry[] = [
-    ...events.map((e) => ({ id: `e-${e.id}`, title: e.title, when: e.startsAt, kind: "event" as const, href: e.space ? `/c/${slug}/s/${e.space.slug}` : null })),
-    ...lives.map((l) => ({ id: `l-${l.id}`, title: l.title, when: l.startsAt as Date, kind: "live" as const, href: l.space ? `/c/${slug}/s/${l.space.slug}?open=${l.id}` : null })),
-    ...scheduled.map((p) => ({ id: `p-${p.id}`, title: p.title || t("untitledPost"), when: p.scheduledAt as Date, kind: "post" as const, href: p.space ? `/c/${slug}/s/${p.space.slug}` : null })),
-  ]
-    .filter((x) => x.when)
-    .sort((a, b) => a.when.getTime() - b.when.getTime())
-    .slice(0, 5);
+  return withTenantContext(tenantId, async () => {
+    const t = await getTranslations("community.render.calendar");
+    const now = new Date();
+    const [events, lives, scheduled] = await Promise.all([
+      prisma.event.findMany({
+        where: { tenantId, startsAt: { gte: now } },
+        orderBy: { startsAt: "asc" },
+        take: 6,
+        select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
+      }),
+      prisma.liveSession.findMany({
+        where: { tenantId, startsAt: { gte: now }, status: { not: "ENDED" } },
+        orderBy: { startsAt: "asc" },
+        take: 6,
+        select: { id: true, title: true, startsAt: true, space: { select: { slug: true } } },
+      }),
+      prisma.post.findMany({
+        where: { tenantId, scheduledAt: { not: null, gte: now } },
+        orderBy: { scheduledAt: "asc" },
+        take: 6,
+        select: { id: true, title: true, scheduledAt: true, space: { select: { slug: true } } },
+      }),
+    ]);
+    type Entry = { id: string; title: string; when: Date; kind: "event" | "live" | "post"; href: string | null };
+    const entries: Entry[] = [
+      ...events.map((e) => ({ id: `e-${e.id}`, title: e.title, when: e.startsAt, kind: "event" as const, href: e.space ? `/c/${slug}/s/${e.space.slug}` : null })),
+      ...lives.map((l) => ({ id: `l-${l.id}`, title: l.title, when: l.startsAt as Date, kind: "live" as const, href: l.space ? `/c/${slug}/s/${l.space.slug}?open=${l.id}` : null })),
+      ...scheduled.map((p) => ({ id: `p-${p.id}`, title: p.title || t("untitledPost"), when: p.scheduledAt as Date, kind: "post" as const, href: p.space ? `/c/${slug}/s/${p.space.slug}` : null })),
+    ]
+      .filter((x) => x.when)
+      .sort((a, b) => a.when.getTime() - b.when.getTime())
+      .slice(0, 5);
 
-  const kindCls: Record<string, string> = {
-    event: "bg-blue-100 text-blue-700",
-    live: "bg-red-100 text-red-700",
-    post: "bg-slate-100 text-slate-600",
-  };
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      {entries.length === 0 ? (
-        <EmptyState icon="events" title={t("empty")} hint={t("emptyHint")} />
-      ) : (
-        <div className="space-y-2.5">
-          {entries.map((x) => {
-            const inner = (
-              <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-[#161613]">{x.title}</p>
-                  <p className="mt-1 text-sm text-[#161613]/55">{formatDateTime(x.when, locale)}</p>
+    const kindCls: Record<string, string> = {
+      event: "bg-blue-100 text-blue-700",
+      live: "bg-red-100 text-red-700",
+      post: "bg-slate-100 text-slate-600",
+    };
+    return (
+      <section>
+        <Header slug={slug} space={space} />
+        {entries.length === 0 ? (
+          <EmptyState icon="events" title={t("empty")} hint={t("emptyHint")} />
+        ) : (
+          <div className="space-y-2.5">
+            {entries.map((x) => {
+              const inner = (
+                <div className="flex items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4">
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-[#161613]">{x.title}</p>
+                    <p className="mt-1 text-sm text-[#161613]/55">{formatDateTime(x.when, locale)}</p>
+                  </div>
+                  <Pill className={kindCls[x.kind]}>{t(`kind.${x.kind}`)}</Pill>
                 </div>
-                <Pill className={kindCls[x.kind]}>{t(`kind.${x.kind}`)}</Pill>
-              </div>
-            );
-            return x.href ? (
-              <Link key={x.id} href={x.href} className="block transition hover:opacity-90">
-                {inner}
-              </Link>
-            ) : (
-              <div key={x.id}>{inner}</div>
-            );
-          })}
-        </div>
-      )}
-    </section>
-  );
+              );
+              return x.href ? (
+                <Link key={x.id} href={x.href} className="block transition hover:opacity-90">
+                  {inner}
+                </Link>
+              ) : (
+                <div key={x.id}>{inner}</div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
+  });
 }
 
 async function BookingPreview({ slug, tenantId, space, locale }: Props) {
-  const t = await getTranslations("community.render.booking");
-  const now = new Date();
-  const slots = await prisma.bookingSlot.findMany({
-    where: { tenantId, spaceId: space.id, startsAt: { gte: now } },
-    orderBy: { startsAt: "asc" },
-    take: 4,
-    include: { _count: { select: { reservations: true } } },
+  return withTenantContext(tenantId, async () => {
+    const t = await getTranslations("community.render.booking");
+    const now = new Date();
+    const slots = await prisma.bookingSlot.findMany({
+      where: { tenantId, spaceId: space.id, startsAt: { gte: now } },
+      orderBy: { startsAt: "asc" },
+      take: 4,
+      include: { _count: { select: { reservations: true } } },
+    });
+    return (
+      <section>
+        <Header slug={slug} space={space} />
+        {slots.length === 0 ? (
+          <EmptyState icon="clock" title={t("empty")} hint={t("emptyHint")} />
+        ) : (
+          <div className="space-y-2.5">
+            {slots.map((s) => {
+              const full = s._count.reservations >= s.capacity;
+              return (
+                <div
+                  key={s.id}
+                  className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate font-semibold text-[#161613]">{s.title}</p>
+                    <p className="mt-1 text-xs text-[#161613]/55">
+                      {formatDateTime(s.startsAt, locale)} · {t("minutes", { count: s.durationMin })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2.5">
+                    <Pill className={full ? "bg-[#161613]/10 text-[#161613]/50" : "bg-[var(--brand-soft)] text-[color:var(--brand)]"}>
+                      {full ? (
+                        t("full")
+                      ) : (
+                        <span className="inline-flex items-center gap-1">
+                          <Icon name="members" size={12} />
+                          {s._count.reservations}/{s.capacity}
+                        </span>
+                      )}
+                    </Pill>
+                    <span className="text-sm font-semibold text-[#161613]">
+                      {s.priceCents === 0 ? t("free") : formatPrice(s.priceCents, s.currency, locale)}
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
   });
-  return (
-    <section>
-      <Header slug={slug} space={space} />
-      {slots.length === 0 ? (
-        <EmptyState icon="clock" title={t("empty")} hint={t("emptyHint")} />
-      ) : (
-        <div className="space-y-2.5">
-          {slots.map((s) => {
-            const full = s._count.reservations >= s.capacity;
-            return (
-              <div
-                key={s.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#161613]/10 bg-white p-4"
-              >
-                <div className="min-w-0">
-                  <p className="truncate font-semibold text-[#161613]">{s.title}</p>
-                  <p className="mt-1 text-xs text-[#161613]/55">
-                    {formatDateTime(s.startsAt, locale)} · {t("minutes", { count: s.durationMin })}
-                  </p>
-                </div>
-                <div className="flex items-center gap-2.5">
-                  <Pill className={full ? "bg-[#161613]/10 text-[#161613]/50" : "bg-[var(--brand-soft)] text-[color:var(--brand)]"}>
-                    {full ? (
-                      t("full")
-                    ) : (
-                      <span className="inline-flex items-center gap-1">
-                        <Icon name="members" size={12} />
-                        {s._count.reservations}/{s.capacity}
-                      </span>
-                    )}
-                  </Pill>
-                  <span className="text-sm font-semibold text-[#161613]">
-                    {s.priceCents === 0 ? t("free") : formatPrice(s.priceCents, s.currency, locale)}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </section>
-  );
 }

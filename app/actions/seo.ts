@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma, { systemPrisma } from "@/lib/prisma";
+import prisma, { systemPrisma, withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin, requirePlatformAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { tErr } from "@/lib/action-errors";
@@ -50,35 +50,36 @@ export async function updateTenantSeoAction(
 ): Promise<SeoState> {
   const slug = String(fd.get("tenant") || "");
   const { tenant, user } = await requireTenantAdmin(slug);
+  return withTenantContext(tenant.id, async () => {
+    const rawImage = String(fd.get("seoImageUrl") || "").trim();
+    const seoImageUrl = imageUrl(fd.get("seoImageUrl"));
+    if (rawImage && !seoImageUrl) return { error: await tErr("seoImageInvalid") };
 
-  const rawImage = String(fd.get("seoImageUrl") || "").trim();
-  const seoImageUrl = imageUrl(fd.get("seoImageUrl"));
-  if (rawImage && !seoImageUrl) return { error: await tErr("seoImageInvalid") };
+    await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: {
+        seoTitle: text(fd.get("seoTitle"), LIMITS.title),
+        seoDescription: text(fd.get("seoDescription"), LIMITS.description),
+        seoKeywords: text(fd.get("seoKeywords"), LIMITS.keywords),
+        seoImageUrl,
+        seoNoindex: fd.get("seoNoindex") === "on",
+      },
+    });
 
-  await prisma.tenant.update({
-    where: { id: tenant.id },
-    data: {
-      seoTitle: text(fd.get("seoTitle"), LIMITS.title),
-      seoDescription: text(fd.get("seoDescription"), LIMITS.description),
-      seoKeywords: text(fd.get("seoKeywords"), LIMITS.keywords),
-      seoImageUrl,
-      seoNoindex: fd.get("seoNoindex") === "on",
-    },
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "tenant.seo.update",
+      targetType: "Tenant",
+      targetId: tenant.id,
+      metadata: { noindex: fd.get("seoNoindex") === "on" },
+    });
+
+    // Die Metadaten haengen am Community-Layout, nicht an einer einzelnen Seite.
+    revalidatePath(`/c/${slug}`, "layout");
+    revalidatePath(`/dashboard/${slug}/seo`);
+    return { ok: true };
   });
-
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "tenant.seo.update",
-    targetType: "Tenant",
-    targetId: tenant.id,
-    metadata: { noindex: fd.get("seoNoindex") === "on" },
-  });
-
-  // Die Metadaten haengen am Community-Layout, nicht an einer einzelnen Seite.
-  revalidatePath(`/c/${slug}`, "layout");
-  revalidatePath(`/dashboard/${slug}/seo`);
-  return { ok: true };
 }
 
 // -------------------------------------------------------------- Platform

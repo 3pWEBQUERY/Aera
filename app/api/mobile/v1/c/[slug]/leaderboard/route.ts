@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { leaderboard } from "@/lib/gamification";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import { badgesForUsers } from "@/lib/member-badges";
@@ -18,51 +18,52 @@ export async function GET(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (membership?.status !== "ACTIVE") {
+      return jsonError("not_member", "Active membership required.", 403);
+    }
 
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
+    const top = await leaderboard(tenant.id, 20);
+    const memberships = await prisma.membership.findMany({
+      where: { tenantId: tenant.id, userId: { in: top.map((t) => t.userId) } },
+      include: { tier: { select: { name: true } } },
+    });
+    const mMap = new Map(memberships.map((m) => [m.userId, m]));
 
-  const top = await leaderboard(tenant.id, 20);
-  const memberships = await prisma.membership.findMany({
-    where: { tenantId: tenant.id, userId: { in: top.map((t) => t.userId) } },
-    include: { tier: { select: { name: true } } },
-  });
-  const mMap = new Map(memberships.map((m) => [m.userId, m]));
+    const myStats = await prisma.memberStats.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+      select: { points: true, levelName: true },
+    });
+    const myPoints = myStats?.points ?? 0;
+    const myRank =
+      myPoints > 0
+        ? (await prisma.memberStats.count({
+            where: { tenantId: tenant.id, points: { gt: myPoints } },
+          })) + 1
+        : null;
 
-  const myStats = await prisma.memberStats.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-    select: { points: true, levelName: true },
-  });
-  const myPoints = myStats?.points ?? 0;
-  const myRank =
-    myPoints > 0
-      ? (await prisma.memberStats.count({
-          where: { tenantId: tenant.id, points: { gt: myPoints } },
-        })) + 1
-      : null;
+    const badges = await badgesForUsers(tenant.id, top.map((t) => t.userId), 3);
 
-  const badges = await badgesForUsers(tenant.id, top.map((t) => t.userId), 3);
-
-  return jsonOk({
-    top: top.map((row, i) => {
-      const m = mMap.get(row.userId);
-      const member: MemberCardDto = {
-        userId: row.userId,
-        name: row.name,
-        avatarUrl: row.avatarUrl,
-        role: m?.role ?? "MEMBER",
-        tierName: m?.tier?.name ?? null,
-        points: row.points,
-        levelName: row.levelName,
-        joinedAt: (m?.joinedAt ?? new Date(0)).toISOString(),
-        badges: (badges.get(row.userId) ?? []).map(toBadgeDto),
-      };
-      return { rank: i + 1, member };
-    }),
-    me: { rank: myRank, points: myPoints, levelName: myStats?.levelName ?? null },
+    return jsonOk({
+      top: top.map((row, i) => {
+        const m = mMap.get(row.userId);
+        const member: MemberCardDto = {
+          userId: row.userId,
+          name: row.name,
+          avatarUrl: row.avatarUrl,
+          role: m?.role ?? "MEMBER",
+          tierName: m?.tier?.name ?? null,
+          points: row.points,
+          levelName: row.levelName,
+          joinedAt: (m?.joinedAt ?? new Date(0)).toISOString(),
+          badges: (badges.get(row.userId) ?? []).map(toBadgeDto),
+        };
+        return { rank: i + 1, member };
+      }),
+      me: { rank: myRank, points: myPoints, levelName: myStats?.levelName ?? null },
+    });
   });
 }

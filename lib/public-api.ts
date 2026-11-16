@@ -1,6 +1,6 @@
 import "server-only";
 import { NextResponse } from "next/server";
-import { setTenantContext } from "./prisma";
+import { withTenantContext } from "./prisma";
 import { authenticateApiRequest } from "./api-keys";
 import { rateLimit } from "./rate-limit";
 import { tenantHasFeature } from "./plan";
@@ -51,24 +51,24 @@ export async function withApiAuth(
       { status: 402 },
     );
   }
-  setTenantContext(auth.tenant.id);
-
-  const url = new URL(req.url);
-  const limit = Math.min(
-    Math.max(Number(url.searchParams.get("limit")) || 50, 1),
-    100,
-  );
-  const cursor = url.searchParams.get("cursor");
-
-  try {
-    return await handler({ tenant: auth.tenant, keyId: auth.keyId, limit, cursor });
-  } catch (e) {
-    console.error("Public API error:", e);
-    return NextResponse.json(
-      { error: { code: "internal", message: "Internal server error." } },
-      { status: 500 },
+  return withTenantContext(auth.tenant.id, async () => {
+    const url = new URL(req.url);
+    const limit = Math.min(
+      Math.max(Number(url.searchParams.get("limit")) || 50, 1),
+      100,
     );
-  }
+    const cursor = url.searchParams.get("cursor");
+
+    try {
+      return await handler({ tenant: auth.tenant, keyId: auth.keyId, limit, cursor });
+    } catch (e) {
+      console.error("Public API error:", e);
+      return NextResponse.json(
+        { error: { code: "internal", message: "Internal server error." } },
+        { status: 500 },
+      );
+    }
+  });
 }
 
 /** Einheitliche Listen-Antwort mit Cursor-Pagination. */

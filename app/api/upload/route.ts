@@ -13,6 +13,7 @@ import {
   failStorageReservation,
   reserveStorageUpload,
 } from "@/lib/secure-upload";
+import { withTenantContext } from "@/lib/prisma";
 
 // Local-development fallback only. Production media takes the signed direct
 // path and therefore never enters Next.js request memory.
@@ -67,49 +68,50 @@ export async function POST(req: Request) {
   }
   const access = await authorizeUpload(user, slug, purpose);
   if (!access) return NextResponse.json({ error: "Not found" }, { status: 404 });
-
-  const bytes = Buffer.from(await file.arrayBuffer());
-  if (!magicBytesMatch(file.type, bytes.subarray(0, 4096))) {
-    return NextResponse.json({ error: t("unsupportedMedia") }, { status: 400 });
-  }
-  const checksumSha256 = createHash("sha256").update(bytes).digest("base64");
-  const reserved = await reserveStorageUpload({
-    tenantId: access.tenant.id,
-    ownerId: user.id,
-    purpose,
-    contentType: file.type,
-    sizeBytes: file.size,
-    checksumSha256,
-    visibility: declaration.policy.visibility,
-  });
-  if (!reserved.ok) {
-    return NextResponse.json(
-      { error: t("uploadFailed"), storageFull: true },
-      { status: 413 },
-    );
-  }
-
-  try {
-    const uploadedUrl = await uploadObject({
-      key: reserved.reservation.key,
-      body: bytes,
-      contentType: file.type,
-    });
-    const completed = await completeStorageReservation({
+  return withTenantContext(access.tenant.id, async () => {
+    const bytes = Buffer.from(await file.arrayBuffer());
+    if (!magicBytesMatch(file.type, bytes.subarray(0, 4096))) {
+      return NextResponse.json({ error: t("unsupportedMedia") }, { status: 400 });
+    }
+    const checksumSha256 = createHash("sha256").update(bytes).digest("base64");
+    const reserved = await reserveStorageUpload({
       tenantId: access.tenant.id,
       ownerId: user.id,
-      reservationId: reserved.reservation.id,
-      urlOverride: uploadedUrl,
+      purpose,
+      contentType: file.type,
+      sizeBytes: file.size,
+      checksumSha256,
+      visibility: declaration.policy.visibility,
     });
-    if (!completed) throw new Error("Reservation could not be completed");
-    return NextResponse.json(completed);
-  } catch (error) {
-    await failStorageReservation({
-      tenantId: access.tenant.id,
-      reservationId: reserved.reservation.id,
-      key: reserved.reservation.key,
-    });
-    console.error("Buffered development upload failed:", error);
-    return NextResponse.json({ error: t("uploadFailed") }, { status: 500 });
-  }
+    if (!reserved.ok) {
+      return NextResponse.json(
+        { error: t("uploadFailed"), storageFull: true },
+        { status: 413 },
+      );
+    }
+
+    try {
+      const uploadedUrl = await uploadObject({
+        key: reserved.reservation.key,
+        body: bytes,
+        contentType: file.type,
+      });
+      const completed = await completeStorageReservation({
+        tenantId: access.tenant.id,
+        ownerId: user.id,
+        reservationId: reserved.reservation.id,
+        urlOverride: uploadedUrl,
+      });
+      if (!completed) throw new Error("Reservation could not be completed");
+      return NextResponse.json(completed);
+    } catch (error) {
+      await failStorageReservation({
+        tenantId: access.tenant.id,
+        reservationId: reserved.reservation.id,
+        key: reserved.reservation.key,
+      });
+      console.error("Buffered development upload failed:", error);
+      return NextResponse.json({ error: t("uploadFailed") }, { status: 500 });
+    }
+  });
 }

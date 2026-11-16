@@ -1,5 +1,5 @@
 import "server-only";
-import prisma from "./prisma";
+import { systemPrisma } from "./prisma";
 
 export type NameStatus = "available" | "taken" | "short" | "long";
 
@@ -16,7 +16,9 @@ export async function nameStatus(name: string, excludeSlug?: string): Promise<Na
   const n = normalizeName(name);
   if (n.length < 2) return "short";
   if (n.length > 60) return "long";
-  const found = await prisma.tenant.findFirst({
+  // Global uniqueness: must see every tenant, so it never runs under the
+  // caller's tenant RLS scope (which would only show the caller's own row).
+  const found = await systemPrisma.tenant.findFirst({
     where: {
       name: { equals: n, mode: "insensitive" },
       ...(excludeSlug ? { NOT: { slug: excludeSlug } } : {}),

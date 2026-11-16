@@ -1,5 +1,6 @@
 import { jsonError, jsonOk, mobileAuth, resolveTenant } from "@/lib/mobile/api";
 import { buildViewerContext, tierDtos } from "@/lib/mobile/serializers";
+import { withTenantContext } from "@/lib/prisma";
 
 // GET /api/mobile/v1/c/{slug}/tiers → { data: Tier[] } (Token optional)
 
@@ -11,7 +12,8 @@ export async function GET(
   const user = await mobileAuth(req);
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
-
-  const { ctx } = await buildViewerContext(tenant, user);
-  return jsonOk({ data: await tierDtos(tenant, ctx.membership) });
+  return withTenantContext(tenant.id, async () => {
+    const { ctx } = await buildViewerContext(tenant, user);
+    return jsonOk({ data: await tierDtos(tenant, ctx.membership) });
+  });
 }

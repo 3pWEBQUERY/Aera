@@ -23,7 +23,7 @@ vi.mock("@/lib/prisma", async () => {
   return {
     default: prisma,
     prisma,
-    setTenantContext: vi.fn(),
+    withTenantContext: (_tenantId: string, fn: () => unknown) => fn(),
     systemPrisma: prisma,
     withTenantTransaction: (fn: (tx: typeof prisma) => unknown) => fn(prisma),
   };

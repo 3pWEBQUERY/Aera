@@ -5,7 +5,10 @@ const mocks = vi.hoisted(() => ({
   writeAudit: vi.fn(),
 }));
 
-vi.mock("@/lib/prisma", () => ({ default: {} }));
+vi.mock("@/lib/prisma", () => ({
+  default: {},
+  withTenantContext: (_tenantId: string, fn: () => unknown) => fn(),
+}));
 vi.mock("@/lib/guards", () => ({
   requireTenantAdmin: mocks.requireTenantAdmin,
 }));

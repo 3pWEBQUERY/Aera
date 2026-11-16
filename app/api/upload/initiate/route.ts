@@ -6,6 +6,7 @@ import { authorizeUpload } from "@/lib/upload-access";
 import { validateUploadDeclaration } from "@/lib/upload-policy";
 import { reserveStorageUpload, failStorageReservation } from "@/lib/secure-upload";
 import { createDirectUploadAuthorization } from "@/lib/storage";
+import { withTenantContext } from "@/lib/prisma";
 
 const noStore = { "Cache-Control": "no-store" };
 
@@ -40,54 +41,55 @@ export async function POST(request: Request) {
   }
   const access = await authorizeUpload(user, slug, purpose);
   if (!access) return NextResponse.json({ error: "Not found" }, { status: 404, headers: noStore });
+  return withTenantContext(access.tenant.id, async () => {
+    // Local development retains the small buffered fallback. Production S3
+    // never sends media through the application process.
+    if (!features.storage) {
+      return NextResponse.json({ direct: false }, { headers: noStore });
+    }
 
-  // Local development retains the small buffered fallback. Production S3
-  // never sends media through the application process.
-  if (!features.storage) {
-    return NextResponse.json({ direct: false }, { headers: noStore });
-  }
-
-  const reserved = await reserveStorageUpload({
-    tenantId: access.tenant.id,
-    ownerId: user.id,
-    purpose,
-    contentType,
-    sizeBytes,
-    checksumSha256,
-    visibility: declaration.policy.visibility,
-  });
-  if (!reserved.ok) {
-    return NextResponse.json(
-      { error: "Storage quota exceeded", storageFull: true },
-      { status: 413, headers: noStore },
-    );
-  }
-
-  try {
-    const authorization = await createDirectUploadAuthorization({
-      key: reserved.reservation.key,
+    const reserved = await reserveStorageUpload({
+      tenantId: access.tenant.id,
+      ownerId: user.id,
+      purpose,
       contentType,
       sizeBytes,
       checksumSha256,
-      reservationId: reserved.reservation.id,
+      visibility: declaration.policy.visibility,
     });
-    return NextResponse.json(
-      {
-        direct: true,
+    if (!reserved.ok) {
+      return NextResponse.json(
+        { error: "Storage quota exceeded", storageFull: true },
+        { status: 413, headers: noStore },
+      );
+    }
+
+    try {
+      const authorization = await createDirectUploadAuthorization({
+        key: reserved.reservation.key,
+        contentType,
+        sizeBytes,
+        checksumSha256,
         reservationId: reserved.reservation.id,
-        uploadUrl: authorization.url,
-        headers: authorization.headers,
-        expiresInSeconds: authorization.expiresInSeconds,
-      },
-      { headers: noStore },
-    );
-  } catch (error) {
-    await failStorageReservation({
-      tenantId: access.tenant.id,
-      reservationId: reserved.reservation.id,
-      key: reserved.reservation.key,
-    });
-    console.error("Direct upload authorization failed:", error);
-    return NextResponse.json({ error: "Upload unavailable" }, { status: 503, headers: noStore });
-  }
+      });
+      return NextResponse.json(
+        {
+          direct: true,
+          reservationId: reserved.reservation.id,
+          uploadUrl: authorization.url,
+          headers: authorization.headers,
+          expiresInSeconds: authorization.expiresInSeconds,
+        },
+        { headers: noStore },
+      );
+    } catch (error) {
+      await failStorageReservation({
+        tenantId: access.tenant.id,
+        reservationId: reserved.reservation.id,
+        key: reserved.reservation.key,
+      });
+      console.error("Direct upload authorization failed:", error);
+      return NextResponse.json({ error: "Upload unavailable" }, { status: 503, headers: noStore });
+    }
+  });
 }

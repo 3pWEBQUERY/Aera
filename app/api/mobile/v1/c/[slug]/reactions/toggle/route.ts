@@ -1,5 +1,5 @@
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { buildAccessContext, canAccess } from "@/lib/entitlements";
 import { awardPoints } from "@/lib/gamification";
 import { notify } from "@/lib/notifications";
@@ -32,26 +32,88 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const parsed = await parseJsonBody(req, schema);
+    if ("response" in parsed) return parsed.response;
 
-  const parsed = await parseJsonBody(req, schema);
-  if ("response" in parsed) return parsed.response;
+    // Kommentar: der Weg zur Zugriffspruefung fuehrt ueber den Beitrag, an dem
+    // er haengt — der Space wird nie vom Client geglaubt.
+    if (parsed.data.commentId) {
+      const commentId = parsed.data.commentId;
+      const comment = await prisma.comment.findFirst({
+        where: { id: commentId, tenantId: tenant.id },
+        include: { post: { include: { space: true } } },
+      });
+      if (!comment) return jsonError("not_found", "Comment not found.", 404);
+      const ctx = await buildAccessContext(tenant.id, user.id);
+      if (!canAccess(comment.post.space, ctx)) {
+        return jsonError("not_member", "You do not have access to this space.", 403);
+      }
 
-  // Kommentar: der Weg zur Zugriffspruefung fuehrt ueber den Beitrag, an dem
-  // er haengt — der Space wird nie vom Client geglaubt.
-  if (parsed.data.commentId) {
-    const commentId = parsed.data.commentId;
-    const comment = await prisma.comment.findFirst({
-      where: { id: commentId, tenantId: tenant.id },
-      include: { post: { include: { space: true } } },
+      const existing = await prisma.reaction.findFirst({
+        where: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+      });
+      let liked: boolean;
+      if (existing) {
+        await prisma.reaction.delete({ where: { id: existing.id } });
+        liked = false;
+      } else {
+        await prisma.reaction.create({
+          data: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+        });
+        liked = true;
+        const alreadyAwarded = await prisma.pointsLedger.findFirst({
+          where: {
+            tenantId: tenant.id,
+            userId: user.id,
+            refType: "Comment",
+            refId: commentId,
+            rule: { trigger: "REACTION_GIVEN" },
+          },
+        });
+        if (!alreadyAwarded) {
+          await awardPoints({
+            tenantId: tenant.id,
+            userId: user.id,
+            trigger: "REACTION_GIVEN",
+            refType: "Comment",
+            refId: commentId,
+          });
+        }
+        if (comment.authorId !== user.id) {
+          await notify({
+            tenantId: tenant.id,
+            userId: comment.authorId,
+            actorId: user.id,
+            type: "REACTION",
+            message: `${user.name} gefällt dein Kommentar.`,
+            href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`,
+            refType: "Comment",
+            refId: commentId,
+          });
+        }
+      }
+
+      const likeCount = await prisma.reaction.count({
+        where: { tenantId: tenant.id, commentId, type: "LIKE" },
+      });
+      return jsonOk({ liked, likeCount });
+    }
+
+    const postId = parsed.data.postId!;
+
+    const post = await prisma.post.findFirst({
+      where: { id: postId, tenantId: tenant.id },
+      include: { space: true },
     });
-    if (!comment) return jsonError("not_found", "Comment not found.", 404);
+    if (!post) return jsonError("not_found", "Post not found.", 404);
     const ctx = await buildAccessContext(tenant.id, user.id);
-    if (!canAccess(comment.post.space, ctx)) {
+    if (!canAccess(post.space, ctx)) {
       return jsonError("not_member", "You do not have access to this space.", 403);
     }
 
     const existing = await prisma.reaction.findFirst({
-      where: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+      where: { tenantId: tenant.id, postId, userId: user.id, type: "LIKE" },
     });
     let liked: boolean;
     if (existing) {
@@ -59,15 +121,15 @@ export async function POST(
       liked = false;
     } else {
       await prisma.reaction.create({
-        data: { tenantId: tenant.id, commentId, userId: user.id, type: "LIKE" },
+        data: { tenantId: tenant.id, postId, userId: user.id, type: "LIKE" },
       });
       liked = true;
       const alreadyAwarded = await prisma.pointsLedger.findFirst({
         where: {
           tenantId: tenant.id,
           userId: user.id,
-          refType: "Comment",
-          refId: commentId,
+          refType: "Post",
+          refId: postId,
           rule: { trigger: "REACTION_GIVEN" },
         },
       });
@@ -76,86 +138,25 @@ export async function POST(
           tenantId: tenant.id,
           userId: user.id,
           trigger: "REACTION_GIVEN",
-          refType: "Comment",
-          refId: commentId,
+          refType: "Post",
+          refId: postId,
         });
       }
-      if (comment.authorId !== user.id) {
-        await notify({
-          tenantId: tenant.id,
-          userId: comment.authorId,
-          actorId: user.id,
-          type: "REACTION",
-          message: `${user.name} gefällt dein Kommentar.`,
-          href: `/c/${slug}/s/${comment.post.space.slug}/${comment.postId}`,
-          refType: "Comment",
-          refId: commentId,
-        });
-      }
-    }
-
-    const likeCount = await prisma.reaction.count({
-      where: { tenantId: tenant.id, commentId, type: "LIKE" },
-    });
-    return jsonOk({ liked, likeCount });
-  }
-
-  const postId = parsed.data.postId!;
-
-  const post = await prisma.post.findFirst({
-    where: { id: postId, tenantId: tenant.id },
-    include: { space: true },
-  });
-  if (!post) return jsonError("not_found", "Post not found.", 404);
-  const ctx = await buildAccessContext(tenant.id, user.id);
-  if (!canAccess(post.space, ctx)) {
-    return jsonError("not_member", "You do not have access to this space.", 403);
-  }
-
-  const existing = await prisma.reaction.findFirst({
-    where: { tenantId: tenant.id, postId, userId: user.id, type: "LIKE" },
-  });
-  let liked: boolean;
-  if (existing) {
-    await prisma.reaction.delete({ where: { id: existing.id } });
-    liked = false;
-  } else {
-    await prisma.reaction.create({
-      data: { tenantId: tenant.id, postId, userId: user.id, type: "LIKE" },
-    });
-    liked = true;
-    const alreadyAwarded = await prisma.pointsLedger.findFirst({
-      where: {
+      await notify({
         tenantId: tenant.id,
-        userId: user.id,
-        refType: "Post",
-        refId: postId,
-        rule: { trigger: "REACTION_GIVEN" },
-      },
-    });
-    if (!alreadyAwarded) {
-      await awardPoints({
-        tenantId: tenant.id,
-        userId: user.id,
-        trigger: "REACTION_GIVEN",
+        userId: post.authorId,
+        actorId: user.id,
+        type: "REACTION",
+        message: `${user.name} gefällt dein Beitrag.`,
+        href: `/c/${slug}/s/${post.space.slug}/${postId}`,
         refType: "Post",
         refId: postId,
       });
     }
-    await notify({
-      tenantId: tenant.id,
-      userId: post.authorId,
-      actorId: user.id,
-      type: "REACTION",
-      message: `${user.name} gefällt dein Beitrag.`,
-      href: `/c/${slug}/s/${post.space.slug}/${postId}`,
-      refType: "Post",
-      refId: postId,
-    });
-  }
 
-  const likeCount = await prisma.reaction.count({
-    where: { tenantId: tenant.id, postId, type: "LIKE" },
+    const likeCount = await prisma.reaction.count({
+      where: { tenantId: tenant.id, postId, type: "LIKE" },
+    });
+    return jsonOk({ liked, likeCount });
   });
-  return jsonOk({ liked, likeCount });
 }

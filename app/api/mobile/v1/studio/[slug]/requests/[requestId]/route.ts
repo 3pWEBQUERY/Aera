@@ -1,5 +1,5 @@
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { jsonError, jsonOk, parseJsonBody } from "@/lib/mobile/api";
 import {
   requireStudioAccess,
@@ -29,22 +29,24 @@ export async function POST(
   const { slug, requestId } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant, user } = access;
+  return withTenantContext(access.tenant.id, async () => {
+    const { tenant, user } = access;
 
-  const parsed = await parseJsonBody(req, schema);
-  if ("response" in parsed) return parsed.response;
+    const parsed = await parseJsonBody(req, schema);
+    if ("response" in parsed) return parsed.response;
 
-  const request = await prisma.memberRequest.findFirst({
-    where: { id: requestId, tenantId: tenant.id },
+    const request = await prisma.memberRequest.findFirst({
+      where: { id: requestId, tenantId: tenant.id },
+    });
+    if (!request) return jsonError("not_found", "Request not found.", 404);
+
+    const updated = await prisma.memberRequest.update({
+      where: { id: request.id },
+      data: { status: STATUS_BY_ACTION[parsed.data.action] },
+      include: STUDIO_REQUEST_INCLUDE,
+    });
+
+    const [dto] = await studioRequestDtos(tenant.id, [updated], user.id);
+    return jsonOk(dto);
   });
-  if (!request) return jsonError("not_found", "Request not found.", 404);
-
-  const updated = await prisma.memberRequest.update({
-    where: { id: request.id },
-    data: { status: STATUS_BY_ACTION[parsed.data.action] },
-    include: STUDIO_REQUEST_INCLUDE,
-  });
-
-  const [dto] = await studioRequestDtos(tenant.id, [updated], user.id);
-  return jsonOk(dto);
 }

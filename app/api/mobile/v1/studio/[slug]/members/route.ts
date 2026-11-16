@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { cursorPagination, jsonError, jsonOk } from "@/lib/mobile/api";
 import {
   requireStudioAccess,
@@ -21,40 +21,42 @@ export async function GET(
   const { slug } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant } = access;
+  return withTenantContext(access.tenant.id, async () => {
+    const { tenant } = access;
 
-  const url = new URL(req.url);
-  const statusRaw = url.searchParams.get("status") ?? "";
-  if (statusRaw && !STATUSES.includes(statusRaw as Status)) {
-    return jsonError("validation", "status: must be ACTIVE, PENDING or BANNED.", 400);
-  }
-  const q = (url.searchParams.get("q") ?? "").trim().slice(0, 80);
-  const { limit, cursor } = cursorPagination(req);
+    const url = new URL(req.url);
+    const statusRaw = url.searchParams.get("status") ?? "";
+    if (statusRaw && !STATUSES.includes(statusRaw as Status)) {
+      return jsonError("validation", "status: must be ACTIVE, PENDING or BANNED.", 400);
+    }
+    const q = (url.searchParams.get("q") ?? "").trim().slice(0, 80);
+    const { limit, cursor } = cursorPagination(req);
 
-  const rows = await prisma.membership.findMany({
-    where: {
-      tenantId: tenant.id,
-      ...(statusRaw ? { status: statusRaw as Status } : {}),
-      ...(q
-        ? {
-            user: {
-              OR: [
-                { name: { contains: q, mode: "insensitive" as const } },
-                { email: { contains: q, mode: "insensitive" as const } },
-              ],
-            },
-          }
-        : {}),
-    },
-    orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
-    take: limit + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    include: STUDIO_MEMBER_INCLUDE,
+    const rows = await prisma.membership.findMany({
+      where: {
+        tenantId: tenant.id,
+        ...(statusRaw ? { status: statusRaw as Status } : {}),
+        ...(q
+          ? {
+              user: {
+                OR: [
+                  { name: { contains: q, mode: "insensitive" as const } },
+                  { email: { contains: q, mode: "insensitive" as const } },
+                ],
+              },
+            }
+          : {}),
+      },
+      orderBy: [{ joinedAt: "asc" }, { id: "asc" }],
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      include: STUDIO_MEMBER_INCLUDE,
+    });
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+
+    const data = await studioMemberDtos(tenant.id, page);
+    // Cursor ist die Membership-ID (stabil, auch bei Namens-Suche).
+    return jsonOk({ data, nextCursor: hasMore ? page[page.length - 1]!.id : null });
   });
-  const hasMore = rows.length > limit;
-  const page = hasMore ? rows.slice(0, limit) : rows;
-
-  const data = await studioMemberDtos(tenant.id, page);
-  // Cursor ist die Membership-ID (stabil, auch bei Namens-Suche).
-  return jsonOk({ data, nextCursor: hasMore ? page[page.length - 1]!.id : null });
 }

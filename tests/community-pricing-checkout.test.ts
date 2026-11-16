@@ -16,7 +16,7 @@ vi.mock("@/lib/prisma", async () => {
   const { createPrismaMock, prismaMockRef } = await import("./helpers/prisma-mock");
   const prisma = createPrismaMock();
   prismaMockRef.current = prisma;
-  return { default: prisma, prisma };
+  return { default: prisma, prisma, systemPrisma: prisma };
 });
 vi.mock("@/lib/guards", () => ({ requireUser: mocks.requireUser }));
 vi.mock("next/navigation", () => ({ redirect: mocks.redirect }));

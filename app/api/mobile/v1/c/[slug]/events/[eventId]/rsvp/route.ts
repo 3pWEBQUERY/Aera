@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { awardPoints } from "@/lib/gamification";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
@@ -16,42 +16,43 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
-
-  const event = await prisma.event.findFirst({
-    where: { id: eventId, tenantId: tenant.id },
-  });
-  if (!event) return jsonError("not_found", "Event not found.", 404);
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
-
-  const existing = await prisma.eventRsvp.findUnique({
-    where: { eventId_userId: { eventId, userId: user.id } },
-  });
-  let going: boolean;
-  if (existing) {
-    await prisma.eventRsvp.delete({ where: { id: existing.id } });
-    going = false;
-  } else {
-    await prisma.eventRsvp.create({
-      data: { tenantId: tenant.id, eventId, userId: user.id, status: "GOING" },
+  return withTenantContext(tenant.id, async () => {
+    const event = await prisma.event.findFirst({
+      where: { id: eventId, tenantId: tenant.id },
     });
-    going = true;
-    await awardPoints({
-      tenantId: tenant.id,
-      userId: user.id,
-      trigger: "EVENT_RSVP",
-      refType: "Event",
-      refId: eventId,
-    });
-  }
+    if (!event) return jsonError("not_found", "Event not found.", 404);
 
-  const rsvpCount = await prisma.eventRsvp.count({
-    where: { tenantId: tenant.id, eventId },
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (membership?.status !== "ACTIVE") {
+      return jsonError("not_member", "Active membership required.", 403);
+    }
+
+    const existing = await prisma.eventRsvp.findUnique({
+      where: { eventId_userId: { eventId, userId: user.id } },
+    });
+    let going: boolean;
+    if (existing) {
+      await prisma.eventRsvp.delete({ where: { id: existing.id } });
+      going = false;
+    } else {
+      await prisma.eventRsvp.create({
+        data: { tenantId: tenant.id, eventId, userId: user.id, status: "GOING" },
+      });
+      going = true;
+      await awardPoints({
+        tenantId: tenant.id,
+        userId: user.id,
+        trigger: "EVENT_RSVP",
+        refType: "Event",
+        refId: eventId,
+      });
+    }
+
+    const rsvpCount = await prisma.eventRsvp.count({
+      where: { tenantId: tenant.id, eventId },
+    });
+    return jsonOk({ going, rsvpCount });
   });
-  return jsonOk({ going, rsvpCount });
 }

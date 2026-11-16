@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { tErr } from "@/lib/action-errors";
@@ -72,61 +72,63 @@ export async function createLiveSessionAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug);
-  const spaceId = String(fd.get("spaceId"));
-  const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
-  if (!space) return { error: await tErr("spaceNotFound") };
+  return withTenantContext(tenant.id, async () => {
+    const spaceId = String(fd.get("spaceId"));
+    const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
+    if (!space) return { error: await tErr("spaceNotFound") };
 
-  const title = String(fd.get("title") || "").trim();
-  if (title.length < 2) return { error: await tErr("titleRequired") };
+    const title = String(fd.get("title") || "").trim();
+    if (title.length < 2) return { error: await tErr("titleRequired") };
 
-  const source = parseSource(fd.get("source"));
-  const ingest = parseIngest(fd.get("ingest"));
-  const requiredEntitlementKey = String(fd.get("requiredEntitlementKey") || "") || null;
+    const source = parseSource(fd.get("source"));
+    const ingest = parseIngest(fd.get("ingest"));
+    const requiredEntitlementKey = String(fd.get("requiredEntitlementKey") || "") || null;
 
-  // Bei einem eigenen Stream entsteht zuerst der Live-Input bei Cloudflare.
-  // Erst danach die Session anlegen: ein Datensatz ohne Input waere eine
-  // Session, die man nicht senden kann, aber im Kalender steht.
-  let cfInputId: string | null = null;
-  if (source === "AERA") {
-    if (!streamLiveEnabled()) return { error: await tErr("streamNotConfigured") };
-    try {
-      const created = await createLiveInput({
-        name: `${tenant.slug} · ${title}`,
-        // Ein Stream mit Zugangsvoraussetzung darf sich nicht weitergeben
-        // lassen — sonst ist die Bezahlschranke eine Empfehlung.
-        requireSignedURLs: needsSignedUrls(ingest, requiredEntitlementKey),
-      });
-      cfInputId = created.uid;
-    } catch (error) {
-      return { error: await tErr(streamError(error)) };
+    // Bei einem eigenen Stream entsteht zuerst der Live-Input bei Cloudflare.
+    // Erst danach die Session anlegen: ein Datensatz ohne Input waere eine
+    // Session, die man nicht senden kann, aber im Kalender steht.
+    let cfInputId: string | null = null;
+    if (source === "AERA") {
+      if (!streamLiveEnabled()) return { error: await tErr("streamNotConfigured") };
+      try {
+        const created = await createLiveInput({
+          name: `${tenant.slug} · ${title}`,
+          // Ein Stream mit Zugangsvoraussetzung darf sich nicht weitergeben
+          // lassen — sonst ist die Bezahlschranke eine Empfehlung.
+          requireSignedURLs: needsSignedUrls(ingest, requiredEntitlementKey),
+        });
+        cfInputId = created.uid;
+      } catch (error) {
+        return { error: await tErr(streamError(error)) };
+      }
     }
-  }
 
-  const session = await prisma.liveSession.create({
-    data: {
+    const session = await prisma.liveSession.create({
+      data: {
+        tenantId: tenant.id,
+        spaceId: space.id,
+        title,
+        status: "SCHEDULED",
+        source,
+        ingest,
+        cfInputId,
+        roomName: newRoomName(),
+        hostId: user.id,
+        streamUrl: source === "AERA" ? null : String(fd.get("streamUrl") || "") || null,
+        requiredEntitlementKey,
+        startsAt: parseDate(fd.get("startsAt")),
+      },
+    });
+    await writeAudit({
       tenantId: tenant.id,
-      spaceId: space.id,
-      title,
-      status: "SCHEDULED",
-      source,
-      ingest,
-      cfInputId,
-      roomName: newRoomName(),
-      hostId: user.id,
-      streamUrl: source === "AERA" ? null : String(fd.get("streamUrl") || "") || null,
-      requiredEntitlementKey,
-      startsAt: parseDate(fd.get("startsAt")),
-    },
+      action: "live.create",
+      targetType: "LiveSession",
+      targetId: session.id,
+    });
+    revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
+    revalidatePath(`/c/${slug}/s/${space.slug}`);
+    return ok;
   });
-  await writeAudit({
-    tenantId: tenant.id,
-    action: "live.create",
-    targetType: "LiveSession",
-    targetId: session.id,
-  });
-  revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
-  revalidatePath(`/c/${slug}/s/${space.slug}`);
-  return ok;
 }
 
 /** Change a session's status (go live / end) and optionally set the replay URL. */
@@ -136,93 +138,97 @@ export async function updateLiveSessionAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const sessionId = String(fd.get("sessionId"));
-  const session = await prisma.liveSession.findFirst({
-    where: { id: sessionId, tenantId: tenant.id },
-    include: { space: { select: { slug: true } } },
-  });
-  if (!session) return { error: await tErr("liveSessionNotFound") };
+  return withTenantContext(tenant.id, async () => {
+    const sessionId = String(fd.get("sessionId"));
+    const session = await prisma.liveSession.findFirst({
+      where: { id: sessionId, tenantId: tenant.id },
+      include: { space: { select: { slug: true } } },
+    });
+    if (!session) return { error: await tErr("liveSessionNotFound") };
 
-  const rawStatus = String(fd.get("status") || "");
-  const status: LiveStatus | undefined =
-    rawStatus === "SCHEDULED" || rawStatus === "LIVE" || rawStatus === "ENDED"
-      ? rawStatus
-      : undefined;
-  const title = String(fd.get("title") || "").trim();
+    const rawStatus = String(fd.get("status") || "");
+    const status: LiveStatus | undefined =
+      rawStatus === "SCHEDULED" || rawStatus === "LIVE" || rawStatus === "ENDED"
+        ? rawStatus
+        : undefined;
+    const title = String(fd.get("title") || "").trim();
 
-  // Die Quelle darf sich aendern. Dabei entsteht bzw. verschwindet ein
-  // Live-Input — beides muss geschehen sein, bevor der Datensatz umgestellt
-  // wird, sonst zeigt die Session auf einen Eingang, den es nicht gibt.
-  const source = fd.get("source") !== null ? parseSource(fd.get("source")) : session.source;
-  const ingest = fd.get("ingest") !== null ? parseIngest(fd.get("ingest")) : session.ingest;
-  let cfInputId = session.cfInputId;
-  // Auch der Wechsel der Sendeart legt neu an: signierte Adressen lassen sich
-  // an einem bestehenden Eingang nicht sinnvoll nachtraeglich umstellen.
-  if (source !== session.source || (source === "AERA" && ingest !== session.ingest)) {
-    try {
-      if (source === "AERA") {
-        if (!streamLiveEnabled()) return { error: await tErr("streamNotConfigured") };
-        if (cfInputId) await deleteLiveInput(cfInputId);
-        const created = await createLiveInput({
-          name: `${tenant.slug} · ${title || session.title}`,
-          requireSignedURLs: needsSignedUrls(
-            ingest,
-            String(fd.get("requiredEntitlementKey") ?? session.requiredEntitlementKey ?? "") || null,
-          ),
-        });
-        cfInputId = created.uid;
-      } else if (cfInputId) {
-        await deleteLiveInput(cfInputId);
-        cfInputId = null;
+    // Die Quelle darf sich aendern. Dabei entsteht bzw. verschwindet ein
+    // Live-Input — beides muss geschehen sein, bevor der Datensatz umgestellt
+    // wird, sonst zeigt die Session auf einen Eingang, den es nicht gibt.
+    const source = fd.get("source") !== null ? parseSource(fd.get("source")) : session.source;
+    const ingest = fd.get("ingest") !== null ? parseIngest(fd.get("ingest")) : session.ingest;
+    let cfInputId = session.cfInputId;
+    // Auch der Wechsel der Sendeart legt neu an: signierte Adressen lassen sich
+    // an einem bestehenden Eingang nicht sinnvoll nachtraeglich umstellen.
+    if (source !== session.source || (source === "AERA" && ingest !== session.ingest)) {
+      try {
+        if (source === "AERA") {
+          if (!streamLiveEnabled()) return { error: await tErr("streamNotConfigured") };
+          if (cfInputId) await deleteLiveInput(cfInputId);
+          const created = await createLiveInput({
+            name: `${tenant.slug} · ${title || session.title}`,
+            requireSignedURLs: needsSignedUrls(
+              ingest,
+              String(fd.get("requiredEntitlementKey") ?? session.requiredEntitlementKey ?? "") || null,
+            ),
+          });
+          cfInputId = created.uid;
+        } else if (cfInputId) {
+          await deleteLiveInput(cfInputId);
+          cfInputId = null;
+        }
+      } catch (error) {
+        return { error: await tErr(streamError(error)) };
       }
-    } catch (error) {
-      return { error: await tErr(streamError(error)) };
     }
-  }
 
-  await prisma.liveSession.update({
-    where: { id: session.id },
-    data: {
-      ...(title.length >= 2 ? { title } : {}),
-      ...(status ? { status } : {}),
-      ...(status === "ENDED" ? { endedAt: new Date() } : {}),
-      source,
-      ingest,
-      cfInputId,
-      // Eine fremde Adresse hat bei einem eigenen Stream nichts zu suchen.
-      ...(source === "AERA"
-        ? { streamUrl: null }
-        : fd.get("streamUrl") !== null
-          ? { streamUrl: String(fd.get("streamUrl")) || null }
-          : {}),
-      ...(fd.get("replayUrl") !== null ? { replayUrl: String(fd.get("replayUrl")) || null } : {}),
-      ...(fd.get("startsAt") !== null ? { startsAt: parseDate(fd.get("startsAt")) } : {}),
-    },
+    await prisma.liveSession.update({
+      where: { id: session.id },
+      data: {
+        ...(title.length >= 2 ? { title } : {}),
+        ...(status ? { status } : {}),
+        ...(status === "ENDED" ? { endedAt: new Date() } : {}),
+        source,
+        ingest,
+        cfInputId,
+        // Eine fremde Adresse hat bei einem eigenen Stream nichts zu suchen.
+        ...(source === "AERA"
+          ? { streamUrl: null }
+          : fd.get("streamUrl") !== null
+            ? { streamUrl: String(fd.get("streamUrl")) || null }
+            : {}),
+        ...(fd.get("replayUrl") !== null ? { replayUrl: String(fd.get("replayUrl")) || null } : {}),
+        ...(fd.get("startsAt") !== null ? { startsAt: parseDate(fd.get("startsAt")) } : {}),
+      },
+    });
+    if (session.space) {
+      revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
+      revalidatePath(`/c/${slug}/s/${session.space.slug}`);
+    }
+    return ok;
   });
-  if (session.space) {
-    revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
-    revalidatePath(`/c/${slug}/s/${session.space.slug}`);
-  }
-  return ok;
 }
 
 export async function deleteLiveSessionAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const sessionId = String(fd.get("sessionId"));
-  const spaceSlug = String(fd.get("spaceSlug") || "");
-  const session = await prisma.liveSession.findFirst({ where: { id: sessionId, tenantId: tenant.id } });
-  if (session) {
-    // Den Live-Input mit aufraeumen, sonst sammeln sich bei Cloudflare
-    // Eingaenge an, die niemand mehr zuordnen kann. Scheitert das, wird
-    // trotzdem geloescht — der verwaiste Input kostet nichts.
-    if (session.cfInputId) {
-      await deleteLiveInput(session.cfInputId).catch((error) => streamError(error));
+  return withTenantContext(tenant.id, async () => {
+    const sessionId = String(fd.get("sessionId"));
+    const spaceSlug = String(fd.get("spaceSlug") || "");
+    const session = await prisma.liveSession.findFirst({ where: { id: sessionId, tenantId: tenant.id } });
+    if (session) {
+      // Den Live-Input mit aufraeumen, sonst sammeln sich bei Cloudflare
+      // Eingaenge an, die niemand mehr zuordnen kann. Scheitert das, wird
+      // trotzdem geloescht — der verwaiste Input kostet nichts.
+      if (session.cfInputId) {
+        await deleteLiveInput(session.cfInputId).catch((error) => streamError(error));
+      }
+      await prisma.liveSession.delete({ where: { id: session.id } });
     }
-    await prisma.liveSession.delete({ where: { id: session.id } });
-  }
-  revalidatePath(`/dashboard/${slug}/spaces/${spaceSlug}`);
-  revalidatePath(`/c/${slug}/s/${spaceSlug}`);
+    revalidatePath(`/dashboard/${slug}/spaces/${spaceSlug}`);
+    revalidatePath(`/c/${slug}/s/${spaceSlug}`);
+  });
 }
 
 // ---------------------------------------------------------------- Senden
@@ -252,27 +258,29 @@ export async function liveIngestAction(
 ): Promise<{ info?: IngestInfo; error?: string }> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const session = await prisma.liveSession.findFirst({
-    where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
-    select: { cfInputId: true },
+  return withTenantContext(tenant.id, async () => {
+    const session = await prisma.liveSession.findFirst({
+      where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
+      select: { cfInputId: true },
+    });
+    if (!session?.cfInputId) return { error: await tErr("liveSessionNotFound") };
+    try {
+      const input = await getLiveInput(session.cfInputId);
+      if (!input) return { error: await tErr("streamInputGone") };
+      return {
+        info: {
+          url: input.ingestUrl,
+          key: input.streamKey,
+          srtUrl: input.srtUrl,
+          srtPassphrase: input.srtPassphrase,
+          whipUrl: input.whipUrl,
+          connected: input.connected,
+        },
+      };
+    } catch (error) {
+      return { error: await tErr(streamError(error)) };
+    }
   });
-  if (!session?.cfInputId) return { error: await tErr("liveSessionNotFound") };
-  try {
-    const input = await getLiveInput(session.cfInputId);
-    if (!input) return { error: await tErr("streamInputGone") };
-    return {
-      info: {
-        url: input.ingestUrl,
-        key: input.streamKey,
-        srtUrl: input.srtUrl,
-        srtPassphrase: input.srtPassphrase,
-        whipUrl: input.whipUrl,
-        connected: input.connected,
-      },
-    };
-  } catch (error) {
-    return { error: await tErr(streamError(error)) };
-  }
 }
 
 /**
@@ -288,48 +296,50 @@ export async function setLiveStatusAction(
 ): Promise<{ ok?: boolean; error?: string }> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const raw = String(fd.get("status") || "");
-  if (raw !== "SCHEDULED" && raw !== "LIVE" && raw !== "ENDED") {
-    return { error: await tErr("invalidInput") };
-  }
-  const status: LiveStatus = raw;
-  const session = await prisma.liveSession.findFirst({
-    where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
-    include: { space: { select: { slug: true } } },
-  });
-  if (!session) return { error: await tErr("liveSessionNotFound") };
+  return withTenantContext(tenant.id, async () => {
+    const raw = String(fd.get("status") || "");
+    if (raw !== "SCHEDULED" && raw !== "LIVE" && raw !== "ENDED") {
+      return { error: await tErr("invalidInput") };
+    }
+    const status: LiveStatus = raw;
+    const session = await prisma.liveSession.findFirst({
+      where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
+      include: { space: { select: { slug: true } } },
+    });
+    if (!session) return { error: await tErr("liveSessionNotFound") };
 
-  let replay: { cfReplayId: string; replayUrl: string | null } | undefined;
-  if (status === "ENDED" && session.cfInputId && !session.cfReplayId) {
-    replay = await latestRecording(session.cfInputId)
-      .then((rec) => (rec ? { cfReplayId: rec.uid, replayUrl: rec.hlsUrl } : undefined))
-      .catch((error) => {
-        streamError(error);
-        return undefined;
-      });
-  }
+    let replay: { cfReplayId: string; replayUrl: string | null } | undefined;
+    if (status === "ENDED" && session.cfInputId && !session.cfReplayId) {
+      replay = await latestRecording(session.cfInputId)
+        .then((rec) => (rec ? { cfReplayId: rec.uid, replayUrl: rec.hlsUrl } : undefined))
+        .catch((error) => {
+          streamError(error);
+          return undefined;
+        });
+    }
 
-  await prisma.liveSession.update({
-    where: { id: session.id },
-    data: {
-      status,
-      ...(status === "ENDED" ? { endedAt: new Date() } : {}),
-      ...(status === "LIVE" ? { endedAt: null } : {}),
-      ...(replay ?? {}),
-    },
+    await prisma.liveSession.update({
+      where: { id: session.id },
+      data: {
+        status,
+        ...(status === "ENDED" ? { endedAt: new Date() } : {}),
+        ...(status === "LIVE" ? { endedAt: null } : {}),
+        ...(replay ?? {}),
+      },
+    });
+    await writeAudit({
+      tenantId: tenant.id,
+      action: status === "LIVE" ? "live.start" : "live.status",
+      targetType: "LiveSession",
+      targetId: session.id,
+    });
+    if (session.space) {
+      revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
+      revalidatePath(`/c/${slug}/s/${session.space.slug}`);
+    }
+    revalidatePath(`/c/${slug}`);
+    return { ok: true };
   });
-  await writeAudit({
-    tenantId: tenant.id,
-    action: status === "LIVE" ? "live.start" : "live.status",
-    targetType: "LiveSession",
-    targetId: session.id,
-  });
-  if (session.space) {
-    revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
-    revalidatePath(`/c/${slug}/s/${session.space.slug}`);
-  }
-  revalidatePath(`/c/${slug}`);
-  return { ok: true };
 }
 
 /**
@@ -341,24 +351,26 @@ export async function fetchReplayAction(
 ): Promise<{ ok?: boolean; error?: string }> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const session = await prisma.liveSession.findFirst({
-    where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
-    include: { space: { select: { slug: true } } },
-  });
-  if (!session?.cfInputId) return { error: await tErr("liveSessionNotFound") };
-  try {
-    const rec = await latestRecording(session.cfInputId);
-    if (!rec) return { error: await tErr("streamReplayPending") };
-    await prisma.liveSession.update({
-      where: { id: session.id },
-      data: { cfReplayId: rec.uid, replayUrl: rec.hlsUrl },
+  return withTenantContext(tenant.id, async () => {
+    const session = await prisma.liveSession.findFirst({
+      where: { id: String(fd.get("sessionId")), tenantId: tenant.id },
+      include: { space: { select: { slug: true } } },
     });
-    if (session.space) {
-      revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
-      revalidatePath(`/c/${slug}/s/${session.space.slug}`);
+    if (!session?.cfInputId) return { error: await tErr("liveSessionNotFound") };
+    try {
+      const rec = await latestRecording(session.cfInputId);
+      if (!rec) return { error: await tErr("streamReplayPending") };
+      await prisma.liveSession.update({
+        where: { id: session.id },
+        data: { cfReplayId: rec.uid, replayUrl: rec.hlsUrl },
+      });
+      if (session.space) {
+        revalidatePath(`/dashboard/${slug}/spaces/${session.space.slug}`);
+        revalidatePath(`/c/${slug}/s/${session.space.slug}`);
+      }
+      return { ok: true };
+    } catch (error) {
+      return { error: await tErr(streamError(error)) };
     }
-    return { ok: true };
-  } catch (error) {
-    return { error: await tErr(streamError(error)) };
-  }
+  });
 }

@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getCurrentUser } from "@/lib/auth";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import {
   optInToNewsletter,
   withdrawNewsletterConsent,
@@ -25,28 +25,29 @@ export async function setNewsletterConsentAction(fd: FormData): Promise<void> {
     select: { tenantId: true },
   });
   if (!membership || (intent !== "opt-in" && intent !== "withdraw")) return;
-  setTenantContext(membership.tenantId);
-  if (intent === "opt-in") {
-    await optInToNewsletter({
+  return withTenantContext(membership.tenantId, async () => {
+    if (intent === "opt-in") {
+      await optInToNewsletter({
+        tenantId: membership.tenantId,
+        userId: user.id,
+        email: user.email,
+        source: "MEMBER_ACCOUNT",
+      });
+    } else {
+      await withdrawNewsletterConsent({
+        tenantId: membership.tenantId,
+        userId: user.id,
+        email: user.email,
+        source: "MEMBER_ACCOUNT",
+      });
+    }
+    await writeAudit({
       tenantId: membership.tenantId,
-      userId: user.id,
-      email: user.email,
-      source: "MEMBER_ACCOUNT",
+      actorUserId: user.id,
+      action: intent === "opt-in" ? "newsletter.consent.opt_in" : "newsletter.consent.withdraw",
     });
-  } else {
-    await withdrawNewsletterConsent({
-      tenantId: membership.tenantId,
-      userId: user.id,
-      email: user.email,
-      source: "MEMBER_ACCOUNT",
-    });
-  }
-  await writeAudit({
-    tenantId: membership.tenantId,
-    actorUserId: user.id,
-    action: intent === "opt-in" ? "newsletter.consent.opt_in" : "newsletter.consent.withdraw",
+    revalidatePath("/member/account");
   });
-  revalidatePath("/member/account");
 }
 
 export async function unsubscribeNewsletterAction(

@@ -1,7 +1,7 @@
 import "server-only";
 import { NextResponse } from "next/server";
 import type { z } from "zod";
-import prisma, { setTenantContext, systemPrisma } from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { verifySession } from "@/lib/session";
 import { sessionMatchesUser } from "@/lib/auth";
 import type { Tenant, User } from "@/app/generated/prisma/client";
@@ -54,12 +54,14 @@ export async function requireMobileAuth(
 }
 
 // ---------------------------------------------------------------- Tenant
-/** Tenant per Slug auflösen und den RLS-Tenant-Kontext aktivieren. */
+/**
+ * Tenant per Slug auflösen. Aktiviert KEINEN RLS-Kontext: der Aufrufer muss
+ * die weiteren Abfragen in `withTenantContext(tenant.id, ...)` ausführen.
+ */
 export async function resolveTenant(slug: string): Promise<Tenant | null> {
   const tenant = await prisma.tenant.findUnique({
     where: { slug, status: "ACTIVE" },
   });
-  if (tenant) setTenantContext(tenant.id);
   return tenant;
 }
 

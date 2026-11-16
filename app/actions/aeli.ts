@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { systemPrisma } from "@/lib/prisma";
+import { systemPrisma, withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { aeliHandleTaken } from "@/lib/aeli";
@@ -72,70 +72,71 @@ export async function createAeliPageAction(
   if (!launched()) return { error: "Aeli ist noch nicht verfügbar." };
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-
-  const existing = await systemPrisma.aeliProfile.findUnique({
-    where: { userId: user.id },
-    select: { id: true },
-  });
-  if (existing) {
-    return { error: "Dieses Konto hat bereits eine Aeli-Seite." };
-  }
-
-  const handle = normalizeHandle(String(form.get("handle") ?? "").slice(0, 60));
-  const problem = checkHandle(handle);
-  if (problem) return { fieldErrors: { handle: PROBLEM_TEXT[problem] } };
-  if (await aeliHandleTaken(handle)) {
-    return { fieldErrors: { handle: PROBLEM_TEXT.taken } };
-  }
-
-  try {
-    // Eine Aeli-Seite ist ein Stapel Karten; ohne mindestens eine gäbe es
-    // nichts anzuzeigen. Der erste Baustein entsteht getrennt, weil er BEIDE
-    // Fremdschlüssel braucht und `profileId` beim verschachtelten Anlegen
-    // unter der Karte noch nicht feststeht.
-    const profile = await systemPrisma.aeliProfile.create({
-      data: {
-        userId: user.id,
-        handle,
-        // Der Community-Name als Startwert: wer die Seite von hier aus anlegt,
-        // baut sie fast immer für genau diese Community.
-        displayName: tenant.name,
-        avatarUrl: tenant.logoUrl,
-        linkedTenantId: tenant.id,
-        theme: { preset: "mitternacht" },
-        cards: { create: [{ slug: "start", title: "Start", sortOrder: 0 }] },
-      },
-      include: { cards: true },
+  return withTenantContext(tenant.id, async () => {
+    const existing = await systemPrisma.aeliProfile.findUnique({
+      where: { userId: user.id },
+      select: { id: true },
     });
-
-    await systemPrisma.aeliBlock.create({
-      data: {
-        profileId: profile.id,
-        cardId: profile.cards[0]!.id,
-        type: "COMMUNITY_CTA",
-        title: "Community beitreten",
-        subtitle: tenant.tagline,
-        sortOrder: 0,
-      },
-    });
-  } catch (e) {
-    // Der Unique-Index entscheidet, nicht die Prüfung oben: zwischen beiden
-    // liegt Zeit, in der jemand anderes zugreifen kann.
-    if ((e as { code?: string }).code === "P2002") {
-      return { fieldErrors: { handle: "Der war eine Sekunde schneller weg." } };
+    if (existing) {
+      return { error: "Dieses Konto hat bereits eine Aeli-Seite." };
     }
-    throw e;
-  }
 
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "aeli.page_created",
-    targetType: "AeliProfile",
-    targetId: handle,
+    const handle = normalizeHandle(String(form.get("handle") ?? "").slice(0, 60));
+    const problem = checkHandle(handle);
+    if (problem) return { fieldErrors: { handle: PROBLEM_TEXT[problem] } };
+    if (await aeliHandleTaken(handle)) {
+      return { fieldErrors: { handle: PROBLEM_TEXT.taken } };
+    }
+
+    try {
+      // Eine Aeli-Seite ist ein Stapel Karten; ohne mindestens eine gäbe es
+      // nichts anzuzeigen. Der erste Baustein entsteht getrennt, weil er BEIDE
+      // Fremdschlüssel braucht und `profileId` beim verschachtelten Anlegen
+      // unter der Karte noch nicht feststeht.
+      const profile = await systemPrisma.aeliProfile.create({
+        data: {
+          userId: user.id,
+          handle,
+          // Der Community-Name als Startwert: wer die Seite von hier aus anlegt,
+          // baut sie fast immer für genau diese Community.
+          displayName: tenant.name,
+          avatarUrl: tenant.logoUrl,
+          linkedTenantId: tenant.id,
+          theme: { preset: "mitternacht" },
+          cards: { create: [{ slug: "start", title: "Start", sortOrder: 0 }] },
+        },
+        include: { cards: true },
+      });
+
+      await systemPrisma.aeliBlock.create({
+        data: {
+          profileId: profile.id,
+          cardId: profile.cards[0]!.id,
+          type: "COMMUNITY_CTA",
+          title: "Community beitreten",
+          subtitle: tenant.tagline,
+          sortOrder: 0,
+        },
+      });
+    } catch (e) {
+      // Der Unique-Index entscheidet, nicht die Prüfung oben: zwischen beiden
+      // liegt Zeit, in der jemand anderes zugreifen kann.
+      if ((e as { code?: string }).code === "P2002") {
+        return { fieldErrors: { handle: "Der war eine Sekunde schneller weg." } };
+      }
+      throw e;
+    }
+
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "aeli.page_created",
+      targetType: "AeliProfile",
+      targetId: handle,
+    });
+    revalidatePath(settingsPath(slug));
+    return { notice: `${handle} gehört dir. Die Community ist bereits verknüpft.` };
   });
-  revalidatePath(settingsPath(slug));
-  return { notice: `${handle} gehört dir. Die Community ist bereits verknüpft.` };
 }
 
 /** Verknüpft die bestehende Aeli-Seite dieses Kontos mit dieser Community. */
@@ -143,21 +144,22 @@ export async function linkAeliPageAction(form: FormData): Promise<void> {
   if (!launched()) return;
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-
-  const updated = await systemPrisma.aeliProfile.updateMany({
-    where: { userId: user.id },
-    data: { linkedTenantId: tenant.id },
-  });
-  if (updated.count > 0) {
-    await writeAudit({
-      tenantId: tenant.id,
-      actorUserId: user.id,
-      action: "aeli.linked",
-      targetType: "AeliProfile",
-      targetId: user.id,
+  return withTenantContext(tenant.id, async () => {
+    const updated = await systemPrisma.aeliProfile.updateMany({
+      where: { userId: user.id },
+      data: { linkedTenantId: tenant.id },
     });
-  }
-  revalidatePath(settingsPath(slug));
+    if (updated.count > 0) {
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: "aeli.linked",
+        targetType: "AeliProfile",
+        targetId: user.id,
+      });
+    }
+    revalidatePath(settingsPath(slug));
+  });
 }
 
 /**
@@ -171,23 +173,24 @@ export async function unlinkAeliPageAction(form: FormData): Promise<void> {
   const slug = String(form.get("tenant") ?? "");
   const profileId = String(form.get("profileId") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-
-  // `updateMany` mit `linkedTenantId` in der Bedingung: so kann diese Aktion
-  // ausschließlich Zeiger auf die EIGENE Community lösen, nie einen fremden.
-  const updated = await systemPrisma.aeliProfile.updateMany({
-    where: { id: profileId, linkedTenantId: tenant.id },
-    data: { linkedTenantId: null },
-  });
-  if (updated.count > 0) {
-    await writeAudit({
-      tenantId: tenant.id,
-      actorUserId: user.id,
-      action: "aeli.unlinked",
-      targetType: "AeliProfile",
-      targetId: profileId,
+  return withTenantContext(tenant.id, async () => {
+    // `updateMany` mit `linkedTenantId` in der Bedingung: so kann diese Aktion
+    // ausschließlich Zeiger auf die EIGENE Community lösen, nie einen fremden.
+    const updated = await systemPrisma.aeliProfile.updateMany({
+      where: { id: profileId, linkedTenantId: tenant.id },
+      data: { linkedTenantId: null },
     });
-  }
-  revalidatePath(settingsPath(slug));
+    if (updated.count > 0) {
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: "aeli.unlinked",
+        targetType: "AeliProfile",
+        targetId: profileId,
+      });
+    }
+    revalidatePath(settingsPath(slug));
+  });
 }
 
 /**
@@ -204,20 +207,21 @@ export async function issueAeliLinkCodeAction(
   if (!launched()) return { error: "Aeli ist noch nicht verfügbar." };
   const slug = String(form.get("tenant") ?? "");
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
+  return withTenantContext(tenant.id, async () => {
+    if (!linkCodesConfigured()) {
+      return {
+        error:
+          "Verbindungscodes sind nicht eingerichtet — es fehlt AELI_LINK_SECRET in beiden Apps.",
+      };
+    }
 
-  if (!linkCodesConfigured()) {
-    return {
-      error:
-        "Verbindungscodes sind nicht eingerichtet — es fehlt AELI_LINK_SECRET in beiden Apps.",
-    };
-  }
-
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "aeli.link_code_issued",
-    targetType: "Tenant",
-    targetId: tenant.id,
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "aeli.link_code_issued",
+      targetType: "Tenant",
+      targetId: tenant.id,
+    });
+    return { code: issueLinkCode(tenant.id) };
   });
-  return { code: issueLinkCode(tenant.id) };
 }

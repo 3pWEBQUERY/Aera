@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { grantEntitlement } from "@/lib/entitlements";
 import { writeAudit } from "@/lib/audit";
 import { slugify } from "@/lib/utils";
@@ -67,7 +67,7 @@ async function uniqueSlug(base: string): Promise<string | null> {
   for (let i = 0; i < 25; i++) {
     const candidate = i === 0 ? root : `${root}-${i + 1}`;
     if (reserved.has(candidate)) continue;
-    const exists = await prisma.tenant.findUnique({ where: { slug: candidate } });
+    const exists = await systemPrisma.tenant.findUnique({ where: { slug: candidate } });
     if (!exists) return candidate;
   }
   return null;

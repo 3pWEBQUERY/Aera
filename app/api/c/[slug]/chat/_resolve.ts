@@ -1,4 +1,4 @@
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 import { parseChatSettings, type ChatSettings } from "@/lib/space-settings";
@@ -29,18 +29,19 @@ export async function resolveChatAccess(
 ): Promise<GroupCtx | DirectCtx | null> {
   const community = await getCommunityContext(slug);
   if (!community || !community.user) return null;
-  setTenantContext(community.tenant.id);
-
-  if (dmId) {
-    const ok = await isDirectMember(community.tenant.id, dmId, community.user.id);
-    return ok ? { kind: "dm", community, id: dmId } : null;
-  }
-  if (spaceId) {
-    const space = await prisma.space.findFirst({
-      where: { id: spaceId, tenantId: community.tenant.id, type: "CHAT", isArchived: false },
-    });
-    if (!space || !canAccess(space, community.ctx)) return null;
-    return { kind: "space", community, id: space.id, settings: parseChatSettings(space.settings) };
-  }
-  return null;
+  const user = community.user;
+  return withTenantContext(community.tenant.id, async () => {
+    if (dmId) {
+      const ok = await isDirectMember(community.tenant.id, dmId, user.id);
+      return ok ? { kind: "dm", community, id: dmId } : null;
+    }
+    if (spaceId) {
+      const space = await prisma.space.findFirst({
+        where: { id: spaceId, tenantId: community.tenant.id, type: "CHAT", isArchived: false },
+      });
+      if (!space || !canAccess(space, community.ctx)) return null;
+      return { kind: "space", community, id: space.id, settings: parseChatSettings(space.settings) };
+    }
+    return null;
+  });
 }

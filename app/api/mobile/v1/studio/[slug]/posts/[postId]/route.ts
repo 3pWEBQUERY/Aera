@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { removeFromIndex } from "@/lib/ai";
 import { jsonError, jsonOk } from "@/lib/mobile/api";
 import { requireStudioAccess } from "@/lib/mobile/studio";
@@ -16,14 +16,16 @@ export async function DELETE(
   const { slug, postId } = await params;
   const access = await requireStudioAccess(req, slug, "MODERATOR");
   if ("response" in access) return access.response;
-  const { tenant } = access;
+  return withTenantContext(access.tenant.id, async () => {
+    const { tenant } = access;
 
-  const post = await prisma.post.findFirst({
-    where: { id: postId, tenantId: tenant.id },
+    const post = await prisma.post.findFirst({
+      where: { id: postId, tenantId: tenant.id },
+    });
+    if (!post) return jsonError("not_found", "Post not found.", 404);
+
+    await removeFromIndex(tenant.id, "POST", post.id);
+    await prisma.post.delete({ where: { id: post.id } });
+    return jsonOk({ ok: true });
   });
-  if (!post) return jsonError("not_found", "Post not found.", 404);
-
-  await removeFromIndex(tenant.id, "POST", post.id);
-  await prisma.post.delete({ where: { id: post.id } });
-  return jsonOk({ ok: true });
 }

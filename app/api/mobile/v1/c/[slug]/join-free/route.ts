@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { checkMemberLimit } from "@/lib/plan";
 import { grantEntitlement, revokePreviousTierEntitlement } from "@/lib/entitlements";
 import { writeAudit } from "@/lib/audit";
@@ -22,84 +22,85 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
-
-  const existing = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  // Gebannte Mitglieder dürfen sich nicht selbst reaktivieren.
-  if (existing?.status === "BANNED") {
-    return jsonError("banned", "This account is banned from the community.", 403);
-  }
-
-  const tier =
-    (await prisma.membershipTier.findFirst({
-      where: { tenantId: tenant.id, isDefault: true, interval: "FREE" },
-    })) ??
-    (await prisma.membershipTier.findFirst({
-      where: { tenantId: tenant.id, interval: "FREE", isPublic: true },
-      orderBy: { sortOrder: "asc" },
-    }));
-  if (!tier) {
-    return jsonError("payment_required", "This community has no free tier.", 409);
-  }
-
-  // Aktive Mitglieder mit derselben Stufe: No-op.
-  const alreadyOnTier = existing?.status === "ACTIVE" && existing.tierId === tier.id;
-  // Package cap — mirrors the web join flow (app/actions/engage.ts).
-  if (
-    !alreadyOnTier &&
-    existing?.status !== "ACTIVE" &&
-    !(await checkMemberLimit(tenant.id)).allowed
-  ) {
-    return jsonError(
-      "member_limit_reached",
-      "This community is not accepting new members right now.",
-      409,
-    );
-  }
-  if (!alreadyOnTier) {
-    await prisma.membership.upsert({
+  return withTenantContext(tenant.id, async () => {
+    const existing = await prisma.membership.findUnique({
       where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-      create: {
-        tenantId: tenant.id,
-        userId: user.id,
-        role: "MEMBER",
-        status: "ACTIVE",
-        tierId: tier.id,
-      },
-      update: { status: "ACTIVE", tierId: tier.id },
     });
-    if (existing && existing.tierId !== tier.id) {
-      await revokePreviousTierEntitlement({
-        tenantId: tenant.id,
-        userId: user.id,
-        previousTierId: existing.tierId,
-        keepKey: tier.entitlementKey,
-      });
+    // Gebannte Mitglieder dürfen sich nicht selbst reaktivieren.
+    if (existing?.status === "BANNED") {
+      return jsonError("banned", "This account is banned from the community.", 403);
     }
-    await grantEntitlement({
-      tenantId: tenant.id,
-      userId: user.id,
-      key: tier.entitlementKey,
-      source: "ROLE",
-      sourceId: tier.id,
-    });
-    await writeAudit({
-      tenantId: tenant.id,
-      actorUserId: user.id,
-      action: "member.join",
-      metadata: { tier: tier.slug, via: "mobile" },
-    });
-    if (existing?.status !== "ACTIVE") {
-      await emitWebhookEvent(tenant.id, "member.joined", {
-        memberName: user.name,
-        memberEmail: user.email,
-        tier: tier.slug,
-        via: "mobile",
-      });
-    }
-  }
 
-  const { viewer } = await buildViewerContext(tenant, user);
-  return jsonOk({ viewer });
+    const tier =
+      (await prisma.membershipTier.findFirst({
+        where: { tenantId: tenant.id, isDefault: true, interval: "FREE" },
+      })) ??
+      (await prisma.membershipTier.findFirst({
+        where: { tenantId: tenant.id, interval: "FREE", isPublic: true },
+        orderBy: { sortOrder: "asc" },
+      }));
+    if (!tier) {
+      return jsonError("payment_required", "This community has no free tier.", 409);
+    }
+
+    // Aktive Mitglieder mit derselben Stufe: No-op.
+    const alreadyOnTier = existing?.status === "ACTIVE" && existing.tierId === tier.id;
+    // Package cap — mirrors the web join flow (app/actions/engage.ts).
+    if (
+      !alreadyOnTier &&
+      existing?.status !== "ACTIVE" &&
+      !(await checkMemberLimit(tenant.id)).allowed
+    ) {
+      return jsonError(
+        "member_limit_reached",
+        "This community is not accepting new members right now.",
+        409,
+      );
+    }
+    if (!alreadyOnTier) {
+      await prisma.membership.upsert({
+        where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+        create: {
+          tenantId: tenant.id,
+          userId: user.id,
+          role: "MEMBER",
+          status: "ACTIVE",
+          tierId: tier.id,
+        },
+        update: { status: "ACTIVE", tierId: tier.id },
+      });
+      if (existing && existing.tierId !== tier.id) {
+        await revokePreviousTierEntitlement({
+          tenantId: tenant.id,
+          userId: user.id,
+          previousTierId: existing.tierId,
+          keepKey: tier.entitlementKey,
+        });
+      }
+      await grantEntitlement({
+        tenantId: tenant.id,
+        userId: user.id,
+        key: tier.entitlementKey,
+        source: "ROLE",
+        sourceId: tier.id,
+      });
+      await writeAudit({
+        tenantId: tenant.id,
+        actorUserId: user.id,
+        action: "member.join",
+        metadata: { tier: tier.slug, via: "mobile" },
+      });
+      if (existing?.status !== "ACTIVE") {
+        await emitWebhookEvent(tenant.id, "member.joined", {
+          memberName: user.name,
+          memberEmail: user.email,
+          tier: tier.slug,
+          via: "mobile",
+        });
+      }
+    }
+
+    const { viewer } = await buildViewerContext(tenant, user);
+    return jsonOk({ viewer });
+  });
 }

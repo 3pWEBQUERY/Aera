@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import prisma from "@/lib/prisma";
+import prisma, { systemPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/guards";
 import { grantEntitlement } from "@/lib/entitlements";
 import { createCommunitySchema } from "@/lib/validation";
@@ -63,7 +63,7 @@ async function uniqueSlug(base: string): Promise<string | null> {
   for (let i = 0; i < 25; i++) {
     const candidate = i === 0 ? root : `${root}-${i + 1}`;
     if (reserved.has(candidate)) continue;
-    const exists = await prisma.tenant.findUnique({ where: { slug: candidate } });
+    const exists = await systemPrisma.tenant.findUnique({ where: { slug: candidate } });
     if (!exists) return candidate;
   }
   return null;

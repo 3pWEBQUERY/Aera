@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { cursorPagination, jsonError, jsonOk } from "@/lib/mobile/api";
 import {
   requireStudioAccess,
@@ -21,44 +21,46 @@ export async function GET(
   const { slug } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant } = access;
+  return withTenantContext(access.tenant.id, async () => {
+    const { tenant } = access;
 
-  const url = new URL(req.url);
-  const statusRaw = url.searchParams.get("status") ?? "";
-  if (statusRaw && !STATUSES.includes(statusRaw as OrderStatus)) {
-    return jsonError("validation", "status: must be PENDING, PAID, REFUNDED or FAILED.", 400);
-  }
-  const { limit, cursor } = cursorPagination(req);
+    const url = new URL(req.url);
+    const statusRaw = url.searchParams.get("status") ?? "";
+    if (statusRaw && !STATUSES.includes(statusRaw as OrderStatus)) {
+      return jsonError("validation", "status: must be PENDING, PAID, REFUNDED or FAILED.", 400);
+    }
+    const { limit, cursor } = cursorPagination(req);
 
-  const rows = await prisma.order.findMany({
-    where: {
-      tenantId: tenant.id,
-      ...(statusRaw ? { status: statusRaw as OrderStatus } : {}),
-    },
-    orderBy: [{ createdAt: "desc" }, { id: "desc" }],
-    take: limit + 1,
-    ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
-    include: {
-      user: { select: { name: true, email: true } },
-      product: { select: { name: true, requiresShipping: true } },
-    },
+    const rows = await prisma.order.findMany({
+      where: {
+        tenantId: tenant.id,
+        ...(statusRaw ? { status: statusRaw as OrderStatus } : {}),
+      },
+      orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      include: {
+        user: { select: { name: true, email: true } },
+        product: { select: { name: true, requiresShipping: true } },
+      },
+    });
+    const hasMore = rows.length > limit;
+    const page = hasMore ? rows.slice(0, limit) : rows;
+
+    const data: StudioOrderDto[] = page.map((o) => ({
+      id: o.id,
+      description: o.description,
+      productName: o.product?.name ?? null,
+      customer: { name: o.user.name, email: o.user.email },
+      amountCents: o.amountCents,
+      currency: o.currency,
+      status: o.status,
+      fulfilled: o.fulfilled,
+      requiresShipping: o.product?.requiresShipping ?? false,
+      shippingDetails: sanitizeShippingDetails(o.shippingDetails),
+      createdAt: o.createdAt.toISOString(),
+    }));
+
+    return jsonOk({ data, nextCursor: hasMore ? page[page.length - 1]!.id : null });
   });
-  const hasMore = rows.length > limit;
-  const page = hasMore ? rows.slice(0, limit) : rows;
-
-  const data: StudioOrderDto[] = page.map((o) => ({
-    id: o.id,
-    description: o.description,
-    productName: o.product?.name ?? null,
-    customer: { name: o.user.name, email: o.user.email },
-    amountCents: o.amountCents,
-    currency: o.currency,
-    status: o.status,
-    fulfilled: o.fulfilled,
-    requiresShipping: o.product?.requiresShipping ?? false,
-    shippingDetails: sanitizeShippingDetails(o.shippingDetails),
-    createdAt: o.createdAt.toISOString(),
-  }));
-
-  return jsonOk({ data, nextCursor: hasMore ? page[page.length - 1]!.id : null });
 }

@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 
 // POST /api/mobile/v1/c/{slug}/booking/{slotId}/reserve → { status: "CONFIRMED" }
@@ -17,43 +17,44 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (membership?.status !== "ACTIVE") {
+      return jsonError("not_member", "Active membership required.", 403);
+    }
 
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    const slot = await prisma.bookingSlot.findFirst({
+      where: { id: slotId, tenantId: tenant.id, isPublished: true },
+    });
+    if (!slot) return jsonError("not_found", "Booking slot not found.", 404);
+
+    // Bezahlte Slots laufen ausschließlich über den IAP-Flow.
+    if (slot.priceCents > 0) {
+      return jsonError(
+        "payment_required",
+        "This slot is paid — purchase it via in-app purchase.",
+        409,
+      );
+    }
+
+    const mine = await prisma.bookingReservation.findFirst({
+      where: { slotId: slot.id, userId: user.id, status: { in: ["CONFIRMED", "PENDING"] } },
+    });
+    if (mine) return jsonOk({ status: "CONFIRMED" });
+
+    // Kapazitäts-Guard: belegte Plätze = CONFIRMED + PENDING.
+    const held = await prisma.bookingReservation.count({
+      where: { slotId: slot.id, status: { in: ["CONFIRMED", "PENDING"] } },
+    });
+    if (held >= slot.capacity) {
+      return jsonError("validation", "This slot is fully booked.", 409);
+    }
+
+    await prisma.bookingReservation.create({
+      data: { tenantId: tenant.id, slotId: slot.id, userId: user.id, status: "CONFIRMED" },
+    });
+    return jsonOk({ status: "CONFIRMED" });
   });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
-
-  const slot = await prisma.bookingSlot.findFirst({
-    where: { id: slotId, tenantId: tenant.id, isPublished: true },
-  });
-  if (!slot) return jsonError("not_found", "Booking slot not found.", 404);
-
-  // Bezahlte Slots laufen ausschließlich über den IAP-Flow.
-  if (slot.priceCents > 0) {
-    return jsonError(
-      "payment_required",
-      "This slot is paid — purchase it via in-app purchase.",
-      409,
-    );
-  }
-
-  const mine = await prisma.bookingReservation.findFirst({
-    where: { slotId: slot.id, userId: user.id, status: { in: ["CONFIRMED", "PENDING"] } },
-  });
-  if (mine) return jsonOk({ status: "CONFIRMED" });
-
-  // Kapazitäts-Guard: belegte Plätze = CONFIRMED + PENDING.
-  const held = await prisma.bookingReservation.count({
-    where: { slotId: slot.id, status: { in: ["CONFIRMED", "PENDING"] } },
-  });
-  if (held >= slot.capacity) {
-    return jsonError("validation", "This slot is fully booked.", 409);
-  }
-
-  await prisma.bookingReservation.create({
-    data: { tenantId: tenant.id, slotId: slot.id, userId: user.id, status: "CONFIRMED" },
-  });
-  return jsonOk({ status: "CONFIRMED" });
 }

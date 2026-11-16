@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { markAllNotificationsRead } from "@/lib/notifications";
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import { roleMapFor, toAuthor, type NotificationDto } from "@/lib/mobile/serializers";
@@ -18,28 +18,29 @@ export async function GET(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const rows = await prisma.notification.findMany({
+      where: { tenantId: tenant.id, userId: user.id },
+      orderBy: { createdAt: "desc" },
+      take: 50,
+      include: { actor: { select: { id: true, name: true, avatarUrl: true } } },
+    });
+    const roles = await roleMapFor(
+      tenant.id,
+      rows.flatMap((r) => (r.actor ? [r.actor.id] : [])),
+    );
 
-  const rows = await prisma.notification.findMany({
-    where: { tenantId: tenant.id, userId: user.id },
-    orderBy: { createdAt: "desc" },
-    take: 50,
-    include: { actor: { select: { id: true, name: true, avatarUrl: true } } },
+    const data: NotificationDto[] = rows.map((r) => ({
+      id: r.id,
+      type: r.type,
+      message: r.message,
+      href: r.href || null,
+      actor: r.actor ? toAuthor(r.actor, roles) : null,
+      createdAt: r.createdAt.toISOString(),
+      readAt: r.readAt ? r.readAt.toISOString() : null,
+    }));
+
+    await markAllNotificationsRead(tenant.id, user.id);
+    return jsonOk({ data });
   });
-  const roles = await roleMapFor(
-    tenant.id,
-    rows.flatMap((r) => (r.actor ? [r.actor.id] : [])),
-  );
-
-  const data: NotificationDto[] = rows.map((r) => ({
-    id: r.id,
-    type: r.type,
-    message: r.message,
-    href: r.href || null,
-    actor: r.actor ? toAuthor(r.actor, roles) : null,
-    createdAt: r.createdAt.toISOString(),
-    readAt: r.readAt ? r.readAt.toISOString() : null,
-  }));
-
-  await markAllNotificationsRead(tenant.id, user.id);
-  return jsonOk({ data });
 }

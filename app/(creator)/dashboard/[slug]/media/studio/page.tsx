@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { featureGate } from "@/components/dashboard/feature-gate";
 import { requireTenantAdmin } from "@/lib/guards";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { getOrCreateWallet, walletBalance } from "@/lib/credits";
 import { features } from "@/lib/env";
 import {
@@ -24,52 +24,54 @@ export default async function MediaStudioPage({
   const { slug } = await params;
   const { image } = await searchParams;
   const { tenant } = await requireTenantAdmin(slug);
-  // Paywall: the queries below never run for a package without this feature.
-  const locked = await featureGate(tenant.id, slug, "mediaStudio");
-  if (locked) return locked;
+  return withTenantContext(tenant.id, async () => {
+    // Paywall: the queries below never run for a package without this feature.
+    const locked = await featureGate(tenant.id, slug, "mediaStudio");
+    if (locked) return locked;
 
-  // Deep link from the media library: preload this image as the working image.
-  const initial = image
-    ? await prisma.storageObject.findFirst({
-        where: {
-          id: image,
-          tenantId: tenant.id,
-          contentType: { startsWith: "image/" },
+    // Deep link from the media library: preload this image as the working image.
+    const initial = image
+      ? await prisma.storageObject.findFirst({
+          where: {
+            id: image,
+            tenantId: tenant.id,
+            contentType: { startsWith: "image/" },
+          },
+          select: { url: true },
+        })
+      : null;
+
+    const [objects, wallet] = await Promise.all([
+      prisma.storageObject.findMany({
+        where: { tenantId: tenant.id, contentType: { startsWith: "image/" } },
+        orderBy: { createdAt: "desc" },
+        take: 60,
+        select: {
+          id: true,
+          url: true,
+          key: true,
+          contentType: true,
+          displayName: true,
         },
-        select: { url: true },
-      })
-    : null;
+      }),
+      getOrCreateWallet(tenant.id),
+    ]);
 
-  const [objects, wallet] = await Promise.all([
-    prisma.storageObject.findMany({
-      where: { tenantId: tenant.id, contentType: { startsWith: "image/" } },
-      orderBy: { createdAt: "desc" },
-      take: 60,
-      select: {
-        id: true,
-        url: true,
-        key: true,
-        contentType: true,
-        displayName: true,
-      },
-    }),
-    getOrCreateWallet(tenant.id),
-  ]);
+    const library: LibraryImage[] = objects.map((o) => ({
+      id: o.id,
+      url: o.url,
+      name: o.displayName ?? (o.key.split("/").pop() || "image"),
+      contentType: o.contentType ?? "image/png",
+    }));
 
-  const library: LibraryImage[] = objects.map((o) => ({
-    id: o.id,
-    url: o.url,
-    name: o.displayName ?? (o.key.split("/").pop() || "image"),
-    contentType: o.contentType ?? "image/png",
-  }));
-
-  return (
-    <MediaStudio
-      slug={slug}
-      library={library}
-      initialBalance={walletBalance(wallet)}
-      aiEnabled={features.gemini}
-      initialImageUrl={initial?.url ?? null}
-    />
-  );
+    return (
+      <MediaStudio
+        slug={slug}
+        library={library}
+        initialBalance={walletBalance(wallet)}
+        aiEnabled={features.gemini}
+        initialImageUrl={initial?.url ?? null}
+      />
+    );
+  });
 }

@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { requireTenantAdmin } from "@/lib/guards";
 import { env, features } from "@/lib/env";
@@ -21,7 +21,6 @@ const MAX_TIP_CENTS = 100_000;
 
 async function tenantBySlug(slug: string) {
   const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
-  if (tenant) setTenantContext(tenant.id);
   return tenant;
 }
 
@@ -34,74 +33,75 @@ export async function tipAction(fd: FormData): Promise<void> {
   if (!user) redirect(`/login?next=${encodeURIComponent(back)}`);
   const tenant = await tenantBySlug(slug);
   if (!tenant) return;
-
-  const space = await prisma.space.findFirst({
-    where: { tenantId: tenant.id, slug: spaceSlug, type: "TIPS" },
-  });
-  if (!space) redirect(back);
-
-  const euro = parseFloat(String(fd.get("amount") || "").replace(",", "."));
-  const amountCents = Math.round((Number.isFinite(euro) ? euro : 0) * 100);
-  if (amountCents < MIN_TIP_CENTS || amountCents > MAX_TIP_CENTS) redirect(`${back}?error=amount`);
-  const message = String(fd.get("message") || "").trim().slice(0, 280) || null;
-  const isPublic = fd.get("isPublic") !== "false";
-
-  const tip = await prisma.tip.create({
-    data: {
-      tenantId: tenant.id,
-      spaceId: space.id,
-      userId: user!.id,
-      amountCents,
-      currency: PLATFORM_CURRENCY,
-      message,
-      isPublic,
-      status: "PENDING",
-    },
-  });
-
-  if (features.stripe) {
-    const url = await createTipCheckout({
-      tenant: {
-        id: tenant.id,
-        name: tenant.name,
-        slug: tenant.slug,
-        platformFeePercent: tenant.platformFeePercent,
-        stripeAccountId: tenant.stripeAccountId,
-      },
-      tip: { id: tip.id, amountCents, currency: tip.currency, label: `Trinkgeld · ${tenant.name}` },
-      user: { id: user!.id, email: user!.email },
-      successUrl: `${env.APP_URL}${back}?tipped=1`,
-      cancelUrl: `${env.APP_URL}${back}`,
+  return withTenantContext(tenant.id, async () => {
+    const space = await prisma.space.findFirst({
+      where: { tenantId: tenant.id, slug: spaceSlug, type: "TIPS" },
     });
-    if (url) redirect(url!);
-    // Stripe is configured but checkout could not start (e.g. Connect
-    // onboarding incomplete). In production that is a hard error; locally we
-    // fall through to the dev payment fallback below.
+    if (!space) redirect(back);
+
+    const euro = parseFloat(String(fd.get("amount") || "").replace(",", "."));
+    const amountCents = Math.round((Number.isFinite(euro) ? euro : 0) * 100);
+    if (amountCents < MIN_TIP_CENTS || amountCents > MAX_TIP_CENTS) redirect(`${back}?error=amount`);
+    const message = String(fd.get("message") || "").trim().slice(0, 280) || null;
+    const isPublic = fd.get("isPublic") !== "false";
+
+    const tip = await prisma.tip.create({
+      data: {
+        tenantId: tenant.id,
+        spaceId: space.id,
+        userId: user!.id,
+        amountCents,
+        currency: PLATFORM_CURRENCY,
+        message,
+        isPublic,
+        status: "PENDING",
+      },
+    });
+
+    if (features.stripe) {
+      const url = await createTipCheckout({
+        tenant: {
+          id: tenant.id,
+          name: tenant.name,
+          slug: tenant.slug,
+          platformFeePercent: tenant.platformFeePercent,
+          stripeAccountId: tenant.stripeAccountId,
+        },
+        tip: { id: tip.id, amountCents, currency: tip.currency, label: `Trinkgeld · ${tenant.name}` },
+        user: { id: user!.id, email: user!.email },
+        successUrl: `${env.APP_URL}${back}?tipped=1`,
+        cancelUrl: `${env.APP_URL}${back}`,
+      });
+      if (url) redirect(url!);
+      // Stripe is configured but checkout could not start (e.g. Connect
+      // onboarding incomplete). In production that is a hard error; locally we
+      // fall through to the dev payment fallback below.
+      if (!devPaymentFallbackAllowed) {
+        await prisma.tip.delete({ where: { id: tip.id } });
+        redirect(`${back}?error=checkout`);
+      }
+    }
+
     if (!devPaymentFallbackAllowed) {
       await prisma.tip.delete({ where: { id: tip.id } });
-      redirect(`${back}?error=checkout`);
+      redirect(`${back}?error=payments-unavailable`);
     }
-  }
 
-  if (!devPaymentFallbackAllowed) {
-    await prisma.tip.delete({ where: { id: tip.id } });
-    redirect(`${back}?error=payments-unavailable`);
-  }
-
-  await prisma.order.create({
-    data: {
-      tenantId: tenant.id,
-      userId: user!.id,
-      description: "Trinkgeld",
-      amountCents,
-      currency: tip.currency,
-      platformFeeCents: platformFeeCents(amountCents, tenant.platformFeePercent),
-      status: "PAID",
-    },
+    await prisma.order.create({
+      data: {
+        tenantId: tenant.id,
+        userId: user!.id,
+        description: "Trinkgeld",
+        amountCents,
+        currency: tip.currency,
+        platformFeeCents: platformFeeCents(amountCents, tenant.platformFeePercent),
+        status: "PAID",
+      },
+    });
+    await prisma.tip.update({ where: { id: tip.id }, data: { status: "PAID" } });
+    await awardPoints({ tenantId: tenant.id, userId: user!.id, trigger: "TIP", refType: "Tip", refId: tip.id }).catch(() => undefined);
+    redirect(`${back}?tipped=1`);
   });
-  await prisma.tip.update({ where: { id: tip.id }, data: { status: "PAID" } });
-  await awardPoints({ tenantId: tenant.id, userId: user!.id, trigger: "TIP", refType: "Tip", refId: tip.id }).catch(() => undefined);
-  redirect(`${back}?tipped=1`);
 }
 
 /** Staff sets an optional fundraising goal, stored in the space settings JSON. */
@@ -111,21 +111,23 @@ export async function saveTipGoalAction(
 ): Promise<ActionState> {
   const slug = String(fd.get("tenant"));
   const { tenant } = await requireTenantAdmin(slug);
-  const spaceId = String(fd.get("spaceId"));
-  const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
-  if (!space) return { error: "Space nicht gefunden." };
+  return withTenantContext(tenant.id, async () => {
+    const spaceId = String(fd.get("spaceId"));
+    const space = await prisma.space.findFirst({ where: { id: spaceId, tenantId: tenant.id } });
+    if (!space) return { error: "Space nicht gefunden." };
 
-  const euro = parseFloat(String(fd.get("goal") || "").replace(",", "."));
-  const goalCents = Math.max(0, Math.round((Number.isFinite(euro) ? euro : 0) * 100));
-  const settings =
-    space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
-      ? (space.settings as Record<string, unknown>)
-      : {};
-  await prisma.space.update({
-    where: { id: space.id },
-    data: { settings: { ...settings, tipGoalCents: goalCents } },
+    const euro = parseFloat(String(fd.get("goal") || "").replace(",", "."));
+    const goalCents = Math.max(0, Math.round((Number.isFinite(euro) ? euro : 0) * 100));
+    const settings =
+      space.settings && typeof space.settings === "object" && !Array.isArray(space.settings)
+        ? (space.settings as Record<string, unknown>)
+        : {};
+    await prisma.space.update({
+      where: { id: space.id },
+      data: { settings: { ...settings, tipGoalCents: goalCents } },
+    });
+    revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
+    revalidatePath(`/c/${slug}/s/${space.slug}`);
+    return ok;
   });
-  revalidatePath(`/dashboard/${slug}/spaces/${space.slug}`);
-  revalidatePath(`/c/${slug}/s/${space.slug}`);
-  return ok;
 }

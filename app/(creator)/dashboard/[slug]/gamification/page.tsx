@@ -1,6 +1,6 @@
 import { requireTenantAdmin } from "@/lib/guards";
 import { featureGate } from "@/components/dashboard/feature-gate";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { leaderboard } from "@/lib/gamification";
 import { parseBadgeCriteria } from "@/lib/badges";
 import {
@@ -19,50 +19,52 @@ export default async function GamificationPage({
   const { slug } = await params;
   const { tab } = await searchParams;
   const { tenant } = await requireTenantAdmin(slug);
-  // Paywall: the queries below never run for a package without this feature.
-  const locked = await featureGate(tenant.id, slug, "gamification");
-  if (locked) return locked;
-  const [rulesRaw, badgesRaw, board] = await Promise.all([
-    prisma.gamificationRule.findMany({
-      where: { tenantId: tenant.id },
-      orderBy: { trigger: "asc" },
-    }),
-    prisma.badge.findMany({
-      where: { tenantId: tenant.id },
-      include: { _count: { select: { awards: true } } },
-    }),
-    leaderboard(tenant.id, 10),
-  ]);
+  return withTenantContext(tenant.id, async () => {
+    // Paywall: the queries below never run for a package without this feature.
+    const locked = await featureGate(tenant.id, slug, "gamification");
+    if (locked) return locked;
+    const [rulesRaw, badgesRaw, board] = await Promise.all([
+      prisma.gamificationRule.findMany({
+        where: { tenantId: tenant.id },
+        orderBy: { trigger: "asc" },
+      }),
+      prisma.badge.findMany({
+        where: { tenantId: tenant.id },
+        include: { _count: { select: { awards: true } } },
+      }),
+      leaderboard(tenant.id, 10),
+    ]);
 
-  const rules: RuleData[] = rulesRaw.map((r) => ({
-    id: r.id,
-    name: r.name,
-    trigger: r.trigger,
-    points: r.points,
-    maxPerDay: r.maxPerDay,
-  }));
-  const badges: BadgeData[] = badgesRaw.map((b) => {
-    const c = parseBadgeCriteria(b.criteria);
-    return {
-      id: b.id,
-      name: b.name,
-      description: b.description,
-      type: c.type,
-      threshold: c.threshold,
-      shape: c.shape,
-      tier: c.tier,
-      icon: c.icon,
-      awardCount: b._count.awards,
-    };
+    const rules: RuleData[] = rulesRaw.map((r) => ({
+      id: r.id,
+      name: r.name,
+      trigger: r.trigger,
+      points: r.points,
+      maxPerDay: r.maxPerDay,
+    }));
+    const badges: BadgeData[] = badgesRaw.map((b) => {
+      const c = parseBadgeCriteria(b.criteria);
+      return {
+        id: b.id,
+        name: b.name,
+        description: b.description,
+        type: c.type,
+        threshold: c.threshold,
+        shape: c.shape,
+        tier: c.tier,
+        icon: c.icon,
+        awardCount: b._count.awards,
+      };
+    });
+
+    return (
+      <GamificationManager
+        slug={slug}
+        rules={rules}
+        badges={badges}
+        leaderboard={board}
+        initialTab={tab}
+      />
+    );
   });
-
-  return (
-    <GamificationManager
-      slug={slug}
-      rules={rules}
-      badges={badges}
-      leaderboard={board}
-      initialTab={tab}
-    />
-  );
 }

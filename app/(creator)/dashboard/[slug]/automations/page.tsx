@@ -2,7 +2,7 @@ import { requireTenantAdmin } from "@/lib/guards";
 import { featureGate } from "@/components/dashboard/feature-gate";
 import { hasPlatformAdminAccess } from "@/lib/platform-admin";
 import { getTranslations } from "next-intl/server";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { env, features } from "@/lib/env";
 import { PageHeader } from "@/components/dashboard/page-header";
 import {
@@ -22,47 +22,49 @@ export default async function AutomationsPage({
 }) {
   const { slug } = await params;
   const { tenant, user } = await requireTenantAdmin(slug);
-  // Paywall: the queries below never run for a package without this feature.
-  const locked = await featureGate(tenant.id, slug, "automations");
-  if (locked) return locked;
-  // Env-/Deployment-Hinweise sind nur für Plattform-Admins gedacht.
-  const isPlatformAdmin = hasPlatformAdminAccess(user);
-  const t = await getTranslations("dashboard.automations");
+  return withTenantContext(tenant.id, async () => {
+    // Paywall: the queries below never run for a package without this feature.
+    const locked = await featureGate(tenant.id, slug, "automations");
+    if (locked) return locked;
+    // Env-/Deployment-Hinweise sind nur für Plattform-Admins gedacht.
+    const isPlatformAdmin = hasPlatformAdminAccess(user);
+    const t = await getTranslations("dashboard.automations");
 
-  const rows = await prisma.automationStep.findMany({
-    where: { tenantId: tenant.id },
-    orderBy: { dayOffset: "asc" },
-    include: { _count: { select: { deliveries: true } } },
+    const rows = await prisma.automationStep.findMany({
+      where: { tenantId: tenant.id },
+      orderBy: { dayOffset: "asc" },
+      include: { _count: { select: { deliveries: true } } },
+    });
+
+    const steps: StepRow[] = rows.map((s) => ({
+      id: s.id,
+      dayOffset: s.dayOffset,
+      subject: s.subject,
+      body: s.body,
+      isActive: s.isActive,
+      deliveryCount: s._count.deliveries,
+    }));
+
+    const cronReady = env.CRON_SECRET.length >= 32;
+
+    return (
+      <div>
+        <PageHeader
+          title={t("title")}
+          subtitle={t("subtitle")}
+        />
+        {!cronReady && isPlatformAdmin && (
+          <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+            {t.rich("cronWarning", {
+              code: (chunks) => (
+                <code className="rounded bg-white px-1.5 py-0.5 text-xs ring-1 ring-amber-200">{chunks}</code>
+              ),
+            })}
+            {!features.email && ` ${t("cronWarningNoEmail")}`}
+          </p>
+        )}
+        <AutomationsManager slug={slug} steps={steps} />
+      </div>
+    );
   });
-
-  const steps: StepRow[] = rows.map((s) => ({
-    id: s.id,
-    dayOffset: s.dayOffset,
-    subject: s.subject,
-    body: s.body,
-    isActive: s.isActive,
-    deliveryCount: s._count.deliveries,
-  }));
-
-  const cronReady = env.CRON_SECRET.length >= 32;
-
-  return (
-    <div>
-      <PageHeader
-        title={t("title")}
-        subtitle={t("subtitle")}
-      />
-      {!cronReady && isPlatformAdmin && (
-        <p className="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          {t.rich("cronWarning", {
-            code: (chunks) => (
-              <code className="rounded bg-white px-1.5 py-0.5 text-xs ring-1 ring-amber-200">{chunks}</code>
-            ),
-          })}
-          {!features.email && ` ${t("cronWarningNoEmail")}`}
-        </p>
-      )}
-      <AutomationsManager slug={slug} steps={steps} />
-    </div>
-  );
 }

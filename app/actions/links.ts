@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { writeAudit } from "@/lib/audit";
 import { parseSpaceLinks, type SpaceLink } from "@/lib/space-settings";
@@ -22,10 +22,12 @@ function normalizeUrl(v: FormDataEntryValue | null): string | null {
 
 async function loadSpace(slug: string, spaceId: string) {
   const { tenant } = await requireTenantAdmin(slug);
-  const space = await prisma.space.findFirst({
-    where: { id: spaceId, tenantId: tenant.id, type: "LINKS" },
+  return withTenantContext(tenant.id, async () => {
+    const space = await prisma.space.findFirst({
+      where: { id: spaceId, tenantId: tenant.id, type: "LINKS" },
+    });
+    return { tenant, space };
   });
-  return { tenant, space };
 }
 
 async function persist(
@@ -54,41 +56,42 @@ export async function saveSpaceLinkAction(
   const spaceId = String(fd.get("spaceId"));
   const { tenant, space } = await loadSpace(slug, spaceId);
   if (!space) return { error: await tErr("spaceNotFound") };
+  return withTenantContext(tenant.id, async () => {
+    const title = String(fd.get("title") ?? "").trim();
+    if (!title) return { error: await tErr("titleRequired") };
+    if (title.length > 120) return { error: await tErr("titleTooLong120") };
 
-  const title = String(fd.get("title") ?? "").trim();
-  if (!title) return { error: await tErr("titleRequired") };
-  if (title.length > 120) return { error: await tErr("titleTooLong120") };
+    const url = normalizeUrl(fd.get("url"));
+    if (!url) return { error: await tErr("validUrlPathOrHttp") };
 
-  const url = normalizeUrl(fd.get("url"));
-  if (!url) return { error: await tErr("validUrlPathOrHttp") };
+    const description = String(fd.get("description") ?? "").trim().slice(0, 240);
 
-  const description = String(fd.get("description") ?? "").trim().slice(0, 240);
+    const links = parseSpaceLinks(space.settings);
+    const existingId = String(fd.get("linkId") ?? "");
+    const existing = links.find((l) => l.id === existingId);
 
-  const links = parseSpaceLinks(space.settings);
-  const existingId = String(fd.get("linkId") ?? "");
-  const existing = links.find((l) => l.id === existingId);
+    const entry: SpaceLink = {
+      id: existing?.id ?? randomUUID(),
+      title,
+      url,
+      description,
+      createdAt: existing?.createdAt ?? new Date().toISOString(),
+    };
 
-  const entry: SpaceLink = {
-    id: existing?.id ?? randomUUID(),
-    title,
-    url,
-    description,
-    createdAt: existing?.createdAt ?? new Date().toISOString(),
-  };
+    const next = existing
+      ? links.map((l) => (l.id === existing.id ? entry : l))
+      : [...links, entry];
 
-  const next = existing
-    ? links.map((l) => (l.id === existing.id ? entry : l))
-    : [...links, entry];
-
-  await persist(slug, space, next);
-  await writeAudit({
-    tenantId: tenant.id,
-    action: existing ? "space.link.update" : "space.link.create",
-    targetType: "Space",
-    targetId: space.id,
-    metadata: { linkId: entry.id },
+    await persist(slug, space, next);
+    await writeAudit({
+      tenantId: tenant.id,
+      action: existing ? "space.link.update" : "space.link.create",
+      targetType: "Space",
+      targetId: space.id,
+      metadata: { linkId: entry.id },
+    });
+    return { ok: true };
   });
-  return { ok: true };
 }
 
 /** Remove a curated link from a LINKS space. */
@@ -98,15 +101,16 @@ export async function deleteSpaceLinkAction(fd: FormData): Promise<void> {
   const linkId = String(fd.get("linkId"));
   const { tenant, space } = await loadSpace(slug, spaceId);
   if (!space) return;
-
-  const links = parseSpaceLinks(space.settings).filter((l) => l.id !== linkId);
-  await persist(slug, space, links);
-  await writeAudit({
-    tenantId: tenant.id,
-    action: "space.link.delete",
-    targetType: "Space",
-    targetId: space.id,
-    metadata: { linkId },
+  return withTenantContext(tenant.id, async () => {
+    const links = parseSpaceLinks(space.settings).filter((l) => l.id !== linkId);
+    await persist(slug, space, links);
+    await writeAudit({
+      tenantId: tenant.id,
+      action: "space.link.delete",
+      targetType: "Space",
+      targetId: space.id,
+      metadata: { linkId },
+    });
   });
 }
 
@@ -118,11 +122,12 @@ export async function moveSpaceLinkAction(fd: FormData): Promise<void> {
   const dir = String(fd.get("dir")) === "up" ? -1 : 1;
   const { space } = await loadSpace(slug, spaceId);
   if (!space) return;
-
-  const links = parseSpaceLinks(space.settings);
-  const idx = links.findIndex((l) => l.id === linkId);
-  const target = idx + dir;
-  if (idx === -1 || target < 0 || target >= links.length) return;
-  [links[idx], links[target]] = [links[target], links[idx]];
-  await persist(slug, space, links);
+  return withTenantContext(space.tenantId, async () => {
+    const links = parseSpaceLinks(space.settings);
+    const idx = links.findIndex((l) => l.id === linkId);
+    const target = idx + dir;
+    if (idx === -1 || target < 0 || target >= links.length) return;
+    [links[idx], links[target]] = [links[target], links[idx]];
+    await persist(slug, space, links);
+  });
 }

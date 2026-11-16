@@ -1,5 +1,5 @@
 import { z } from "zod";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { jsonError, jsonOk, parseJsonBody, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import { roleMapFor, toAuthor, type RequestDto } from "@/lib/mobile/serializers";
 
@@ -24,50 +24,51 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const parsed = await parseJsonBody(req, schema);
+    if ("response" in parsed) return parsed.response;
 
-  const parsed = await parseJsonBody(req, schema);
-  if ("response" in parsed) return parsed.response;
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (membership?.status !== "ACTIVE") {
+      return jsonError("not_member", "Active membership required.", 403);
+    }
 
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    const space = await prisma.space.findFirst({
+      where: {
+        tenantId: tenant.id,
+        type: "REQUESTS",
+        ...(parsed.data.spaceSlug ? { slug: parsed.data.spaceSlug } : {}),
+        isArchived: false,
+      },
+      orderBy: { sortOrder: "asc" },
+    });
+    if (!space) return jsonError("not_found", "Requests space not found.", 404);
+
+    const request = await prisma.memberRequest.create({
+      data: {
+        tenantId: tenant.id,
+        spaceId: space.id,
+        requesterId: user.id,
+        title: parsed.data.title.trim().slice(0, 160),
+        body: (parsed.data.body ?? "").trim().slice(0, 4000),
+        status: "OPEN",
+      },
+    });
+    const roles = await roleMapFor(tenant.id, [user.id]);
+    const dto: RequestDto = {
+      id: request.id,
+      title: request.title,
+      body: request.body,
+      status: request.status,
+      score: request.score,
+      myVote: null,
+      priceCents: null,
+      unlock: null,
+      author: toAuthor({ id: user.id, name: user.name, avatarUrl: user.avatarUrl }, roles),
+      createdAt: request.createdAt.toISOString(),
+    };
+    return jsonOk(dto);
   });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
-
-  const space = await prisma.space.findFirst({
-    where: {
-      tenantId: tenant.id,
-      type: "REQUESTS",
-      ...(parsed.data.spaceSlug ? { slug: parsed.data.spaceSlug } : {}),
-      isArchived: false,
-    },
-    orderBy: { sortOrder: "asc" },
-  });
-  if (!space) return jsonError("not_found", "Requests space not found.", 404);
-
-  const request = await prisma.memberRequest.create({
-    data: {
-      tenantId: tenant.id,
-      spaceId: space.id,
-      requesterId: user.id,
-      title: parsed.data.title.trim().slice(0, 160),
-      body: (parsed.data.body ?? "").trim().slice(0, 4000),
-      status: "OPEN",
-    },
-  });
-  const roles = await roleMapFor(tenant.id, [user.id]);
-  const dto: RequestDto = {
-    id: request.id,
-    title: request.title,
-    body: request.body,
-    status: request.status,
-    score: request.score,
-    myVote: null,
-    priceCents: null,
-    unlock: null,
-    author: toAuthor({ id: user.id, name: user.name, avatarUrl: user.avatarUrl }, roles),
-    createdAt: request.createdAt.toISOString(),
-  };
-  return jsonOk(dto);
 }

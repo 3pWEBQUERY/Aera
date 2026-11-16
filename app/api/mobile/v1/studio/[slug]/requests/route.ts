@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { jsonError, jsonOk } from "@/lib/mobile/api";
 import {
   requireStudioAccess,
@@ -21,28 +21,30 @@ export async function GET(
   const { slug } = await params;
   const access = await requireStudioAccess(req, slug);
   if ("response" in access) return access.response;
-  const { tenant, user } = access;
+  return withTenantContext(access.tenant.id, async () => {
+    const { tenant, user } = access;
 
-  const url = new URL(req.url);
-  const statusRaw = url.searchParams.get("status") ?? "";
-  if (statusRaw && !STATUSES.includes(statusRaw as RequestStatus)) {
-    return jsonError(
-      "validation",
-      "status: must be OPEN, ACCEPTED, PRICED, FULFILLED or DECLINED.",
-      400,
-    );
-  }
+    const url = new URL(req.url);
+    const statusRaw = url.searchParams.get("status") ?? "";
+    if (statusRaw && !STATUSES.includes(statusRaw as RequestStatus)) {
+      return jsonError(
+        "validation",
+        "status: must be OPEN, ACCEPTED, PRICED, FULFILLED or DECLINED.",
+        400,
+      );
+    }
 
-  const rows = await prisma.memberRequest.findMany({
-    where: {
-      tenantId: tenant.id,
-      ...(statusRaw ? { status: statusRaw as RequestStatus } : {}),
-    },
-    orderBy: [{ score: "desc" }, { createdAt: "desc" }],
-    take: 100,
-    include: STUDIO_REQUEST_INCLUDE,
+    const rows = await prisma.memberRequest.findMany({
+      where: {
+        tenantId: tenant.id,
+        ...(statusRaw ? { status: statusRaw as RequestStatus } : {}),
+      },
+      orderBy: [{ score: "desc" }, { createdAt: "desc" }],
+      take: 100,
+      include: STUDIO_REQUEST_INCLUDE,
+    });
+
+    const data = await studioRequestDtos(tenant.id, rows, user.id);
+    return jsonOk({ data });
   });
-
-  const data = await studioRequestDtos(tenant.id, rows, user.id);
-  return jsonOk({ data });
 }

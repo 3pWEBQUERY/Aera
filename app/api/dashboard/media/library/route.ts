@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 
 // GET ?slug=&q=&take= → { items: [{ id, url, name, contentType }] }
@@ -12,31 +12,32 @@ export async function GET(req: Request) {
   const take = Math.min(120, Math.max(12, Number(url.searchParams.get("take")) || 60));
 
   const { tenant } = await requireTenantAdmin(slug);
+  return withTenantContext(tenant.id, async () => {
+    const objects = await prisma.storageObject.findMany({
+      where: {
+        tenantId: tenant.id,
+        contentType: { startsWith: "image/" },
+        ...(q
+          ? {
+              OR: [
+                { displayName: { contains: q, mode: "insensitive" as const } },
+                { key: { contains: q, mode: "insensitive" as const } },
+              ],
+            }
+          : {}),
+      },
+      orderBy: { createdAt: "desc" },
+      take,
+      select: { id: true, url: true, key: true, contentType: true, displayName: true },
+    });
 
-  const objects = await prisma.storageObject.findMany({
-    where: {
-      tenantId: tenant.id,
-      contentType: { startsWith: "image/" },
-      ...(q
-        ? {
-            OR: [
-              { displayName: { contains: q, mode: "insensitive" as const } },
-              { key: { contains: q, mode: "insensitive" as const } },
-            ],
-          }
-        : {}),
-    },
-    orderBy: { createdAt: "desc" },
-    take,
-    select: { id: true, url: true, key: true, contentType: true, displayName: true },
+    const items = objects.map((o) => ({
+      id: o.id,
+      url: o.url,
+      name: o.displayName ?? (o.key.split("/").pop() || "image"),
+      contentType: o.contentType ?? "image/png",
+    }));
+
+    return NextResponse.json({ items });
   });
-
-  const items = objects.map((o) => ({
-    id: o.id,
-    url: o.url,
-    name: o.displayName ?? (o.key.split("/").pop() || "image"),
-    contentType: o.contentType ?? "image/png",
-  }));
-
-  return NextResponse.json({ items });
 }

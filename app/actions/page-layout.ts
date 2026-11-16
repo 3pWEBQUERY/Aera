@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { parseLayout } from "@/lib/layout";
 import { nameStatus } from "@/lib/tenant-name";
@@ -33,62 +33,62 @@ export async function saveLayoutAction(
 
   const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (!tenant) return { error: await tErr("communityNotFound") };
-  setTenantContext(tenant.id);
+  return withTenantContext(tenant.id, async () => {
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (!activeRoleAtLeast(membership, "MODERATOR")) {
+      return { error: await tErr("noPermission") };
+    }
 
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    let payload: Record<string, unknown>;
+    try {
+      payload = JSON.parse(String(fd.get("payload") || "{}"));
+    } catch {
+      return { error: await tErr("invalidData") };
+    }
+
+    const layout = parseLayout({
+      sectionsByAudience: payload.sectionsByAudience,
+      nav: payload.nav,
+      header: payload.header,
+      // Ältere Clients (z. B. ein offener Tab von vor dem Deploy) schicken die
+      // Menüzeile nicht mit. Dann bleibt der gespeicherte Stand stehen, statt
+      // auf die Standardbelegung zurückzufallen.
+      heroMenu: payload.heroMenu ?? (tenant.layout as { heroMenu?: unknown } | null)?.heroMenu,
+      // Wie bei der Menuezeile: ein Tab von vor dem Deploy schickt keine Banner
+      // mit. Dann bleibt der gespeicherte Stand stehen, statt geloescht zu werden.
+      banners: payload.banners ?? (tenant.layout as { banners?: unknown } | null)?.banners,
+    });
+
+    const name = String(payload.name ?? tenant.name).trim().slice(0, 60) || tenant.name;
+    if ((await nameStatus(name, slug)) === "taken") {
+      return { error: await tErr("siteNameTaken") };
+    }
+    const logoUrl = typeof payload.logoUrl === "string" ? payload.logoUrl.trim() || null : tenant.logoUrl;
+    const description =
+      typeof payload.description === "string" ? payload.description.slice(0, 2000) || null : tenant.description;
+    const primaryColor = safeColor(String(payload.primaryColor ?? ""), tenant.primaryColor);
+
+    await prisma.tenant.update({
+      where: { id: tenant.id },
+      data: {
+        name,
+        logoUrl,
+        description,
+        primaryColor,
+        layout: layout as unknown as object,
+      },
+    });
+
+    // Das Live-Vorschau-Cookie überlagert für Staff die gespeicherte Version.
+    // Nach dem Speichern löschen, damit der Creator sofort den DB-Stand sieht
+    // (sonst zeigt /c/{slug} bis zu 15 Minuten den alten Vorschau-Zustand).
+    (await cookies()).delete(`aera_preview_${slug}`);
+
+    revalidatePath(`/c/${slug}`, "layout");
+    revalidatePath(`/c/${slug}`);
+    revalidatePath(`/dashboard/${slug}/layout`);
+    return { ok: true };
   });
-  if (!activeRoleAtLeast(membership, "MODERATOR")) {
-    return { error: await tErr("noPermission") };
-  }
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = JSON.parse(String(fd.get("payload") || "{}"));
-  } catch {
-    return { error: await tErr("invalidData") };
-  }
-
-  const layout = parseLayout({
-    sectionsByAudience: payload.sectionsByAudience,
-    nav: payload.nav,
-    header: payload.header,
-    // Ältere Clients (z. B. ein offener Tab von vor dem Deploy) schicken die
-    // Menüzeile nicht mit. Dann bleibt der gespeicherte Stand stehen, statt
-    // auf die Standardbelegung zurückzufallen.
-    heroMenu: payload.heroMenu ?? (tenant.layout as { heroMenu?: unknown } | null)?.heroMenu,
-    // Wie bei der Menuezeile: ein Tab von vor dem Deploy schickt keine Banner
-    // mit. Dann bleibt der gespeicherte Stand stehen, statt geloescht zu werden.
-    banners: payload.banners ?? (tenant.layout as { banners?: unknown } | null)?.banners,
-  });
-
-  const name = String(payload.name ?? tenant.name).trim().slice(0, 60) || tenant.name;
-  if ((await nameStatus(name, slug)) === "taken") {
-    return { error: await tErr("siteNameTaken") };
-  }
-  const logoUrl = typeof payload.logoUrl === "string" ? payload.logoUrl.trim() || null : tenant.logoUrl;
-  const description =
-    typeof payload.description === "string" ? payload.description.slice(0, 2000) || null : tenant.description;
-  const primaryColor = safeColor(String(payload.primaryColor ?? ""), tenant.primaryColor);
-
-  await prisma.tenant.update({
-    where: { id: tenant.id },
-    data: {
-      name,
-      logoUrl,
-      description,
-      primaryColor,
-      layout: layout as unknown as object,
-    },
-  });
-
-  // Das Live-Vorschau-Cookie überlagert für Staff die gespeicherte Version.
-  // Nach dem Speichern löschen, damit der Creator sofort den DB-Stand sieht
-  // (sonst zeigt /c/{slug} bis zu 15 Minuten den alten Vorschau-Zustand).
-  (await cookies()).delete(`aera_preview_${slug}`);
-
-  revalidatePath(`/c/${slug}`, "layout");
-  revalidatePath(`/c/${slug}`);
-  revalidatePath(`/dashboard/${slug}/layout`);
-  return { ok: true };
 }

@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext, withTenantTransaction } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 import { tErr } from "@/lib/action-errors";
 import { activeRoleAtLeast } from "@/lib/tenant";
@@ -39,15 +39,15 @@ async function guard(slug: string) {
 
   const tenant = await prisma.tenant.findUnique({ where: { slug, status: "ACTIVE" } });
   if (!tenant) return { error: await tErr("communityNotFound") } as const;
-  setTenantContext(tenant.id);
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+  return withTenantContext(tenant.id, async () => {
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (!activeRoleAtLeast(membership, "MODERATOR")) {
+      return { error: await tErr("noPermission") } as const;
+    }
+    return { tenant, user } as const;
   });
-  if (!activeRoleAtLeast(membership, "MODERATOR")) {
-    return { error: await tErr("noPermission") } as const;
-  }
-  return { tenant, user } as const;
 }
 
 /** Die betroffenen Adressen neu aufbauen lassen. */
@@ -78,60 +78,61 @@ export async function createCommunityPageAction(
   const slug = String(fd.get("tenant") || "");
   const auth = await guard(slug);
   if ("error" in auth) return auth;
-
-  const existing = await prisma.communityPage.findMany({
-    where: { tenantId: auth.tenant.id },
-    select: { slug: true, sortOrder: true },
-  });
-  if (existing.length >= MAX_PAGES) {
-    return { error: await tErr("pageLimitReached", { max: MAX_PAGES }) };
-  }
-
-  const title = String(fd.get("title") || "").trim().slice(0, MAX_TITLE);
-  if (!title) return { error: await tErr("invalidData") };
-
-  // Aus einer Vorlage angelegt: die Bausteine kommen fertig mit. Sie gehen
-  // durch dieselbe Pruefung wie beim Speichern — dass sie aus unserer eigenen
-  // Vorlage stammen, weiss hier niemand, und darauf soll sich auch niemand
-  // verlassen muessen.
-  const raw = fd.get("blocks");
-  let blocks: PageBlock[] = [];
-  if (typeof raw === "string" && raw) {
-    try {
-      blocks = sanitizeBlocks(parsePageBlocks(JSON.parse(raw)));
-    } catch {
-      return { error: await tErr("invalidData") };
+  return withTenantContext(auth.tenant.id, async () => {
+    const existing = await prisma.communityPage.findMany({
+      where: { tenantId: auth.tenant.id },
+      select: { slug: true, sortOrder: true },
+    });
+    if (existing.length >= MAX_PAGES) {
+      return { error: await tErr("pageLimitReached", { max: MAX_PAGES }) };
     }
-  }
 
-  const pageSlug = uniquePageSlug(
-    pageSlugFrom(title),
-    existing.map((p) => p.slug),
-  );
-  const sortOrder = existing.reduce((max, p) => Math.max(max, p.sortOrder), -1) + 1;
+    const title = String(fd.get("title") || "").trim().slice(0, MAX_TITLE);
+    if (!title) return { error: await tErr("invalidData") };
 
-  const created = await prisma.communityPage.create({
-    data: {
+    // Aus einer Vorlage angelegt: die Bausteine kommen fertig mit. Sie gehen
+    // durch dieselbe Pruefung wie beim Speichern — dass sie aus unserer eigenen
+    // Vorlage stammen, weiss hier niemand, und darauf soll sich auch niemand
+    // verlassen muessen.
+    const raw = fd.get("blocks");
+    let blocks: PageBlock[] = [];
+    if (typeof raw === "string" && raw) {
+      try {
+        blocks = sanitizeBlocks(parsePageBlocks(JSON.parse(raw)));
+      } catch {
+        return { error: await tErr("invalidData") };
+      }
+    }
+
+    const pageSlug = uniquePageSlug(
+      pageSlugFrom(title),
+      existing.map((p) => p.slug),
+    );
+    const sortOrder = existing.reduce((max, p) => Math.max(max, p.sortOrder), -1) + 1;
+
+    const created = await prisma.communityPage.create({
+      data: {
+        tenantId: auth.tenant.id,
+        slug: pageSlug,
+        title,
+        sortOrder,
+        blocks: blocks as unknown as object,
+      },
+      select: { id: true },
+    });
+
+    await writeAudit({
       tenantId: auth.tenant.id,
-      slug: pageSlug,
-      title,
-      sortOrder,
-      blocks: blocks as unknown as object,
-    },
-    select: { id: true },
-  });
+      actorUserId: auth.user.id,
+      action: "page.create",
+      targetType: "CommunityPage",
+      targetId: created.id,
+      metadata: { slug: pageSlug, title, blocks: blocks.length },
+    });
 
-  await writeAudit({
-    tenantId: auth.tenant.id,
-    actorUserId: auth.user.id,
-    action: "page.create",
-    targetType: "CommunityPage",
-    targetId: created.id,
-    metadata: { slug: pageSlug, title, blocks: blocks.length },
+    revalidatePage(slug);
+    return { ok: true, createdId: created.id };
   });
-
-  revalidatePage(slug);
-  return { ok: true, createdId: created.id };
 }
 
 /** Titel, Adresse, Sichtbarkeit und Inhalt einer Seite speichern. */
@@ -142,61 +143,62 @@ export async function saveCommunityPageAction(
   const slug = String(fd.get("tenant") || "");
   const auth = await guard(slug);
   if ("error" in auth) return auth;
+  return withTenantContext(auth.tenant.id, async () => {
+    const id = String(fd.get("pageId") || "");
+    const page = await prisma.communityPage.findFirst({
+      where: { id, tenantId: auth.tenant.id },
+      select: { id: true, slug: true },
+    });
+    if (!page) return { error: await tErr("pageNotFound") };
 
-  const id = String(fd.get("pageId") || "");
-  const page = await prisma.communityPage.findFirst({
-    where: { id, tenantId: auth.tenant.id },
-    select: { id: true, slug: true },
+    let payload: Record<string, unknown>;
+    try {
+      payload = JSON.parse(String(fd.get("payload") || "{}"));
+    } catch {
+      return { error: await tErr("invalidData") };
+    }
+
+    const title = String(payload.title ?? "").trim().slice(0, MAX_TITLE);
+    if (!title) return { error: await tErr("pageTitleRequired") };
+
+    // Ein leeres Adressfeld heisst "leite mich aus dem Titel ab" — der Creator
+    // soll die Adresse setzen koennen, aber nicht setzen muessen.
+    const desired = String(payload.slug ?? "").trim();
+    const others = await prisma.communityPage.findMany({
+      where: { tenantId: auth.tenant.id, id: { not: page.id } },
+      select: { slug: true },
+    });
+    const pageSlug = uniquePageSlug(
+      pageSlugFrom(desired || title).slice(0, MAX_SLUG),
+      others.map((p) => p.slug),
+    );
+
+    const blocks = sanitizeBlocks(parsePageBlocks(payload.blocks));
+    const description = String(payload.description ?? "").trim().slice(0, MAX_DESCRIPTION);
+    const status = payload.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT";
+    const visibility =
+      payload.visibility === "MEMBERS" || payload.visibility === "PAID"
+        ? payload.visibility
+        : "PUBLIC";
+
+    await prisma.communityPage.update({
+      where: { id: page.id },
+      data: {
+        title,
+        slug: pageSlug,
+        description: description || null,
+        status,
+        visibility,
+        showInNav: payload.showInNav !== false,
+        blocks: blocks as unknown as object,
+      },
+    });
+
+    revalidatePage(slug, pageSlug);
+    // Die alte Adresse liegt sonst mit dem alten Inhalt im Cache.
+    if (page.slug !== pageSlug) revalidatePath(`/c/${slug}/p/${page.slug}`);
+    return { ok: true };
   });
-  if (!page) return { error: await tErr("pageNotFound") };
-
-  let payload: Record<string, unknown>;
-  try {
-    payload = JSON.parse(String(fd.get("payload") || "{}"));
-  } catch {
-    return { error: await tErr("invalidData") };
-  }
-
-  const title = String(payload.title ?? "").trim().slice(0, MAX_TITLE);
-  if (!title) return { error: await tErr("pageTitleRequired") };
-
-  // Ein leeres Adressfeld heisst "leite mich aus dem Titel ab" — der Creator
-  // soll die Adresse setzen koennen, aber nicht setzen muessen.
-  const desired = String(payload.slug ?? "").trim();
-  const others = await prisma.communityPage.findMany({
-    where: { tenantId: auth.tenant.id, id: { not: page.id } },
-    select: { slug: true },
-  });
-  const pageSlug = uniquePageSlug(
-    pageSlugFrom(desired || title).slice(0, MAX_SLUG),
-    others.map((p) => p.slug),
-  );
-
-  const blocks = sanitizeBlocks(parsePageBlocks(payload.blocks));
-  const description = String(payload.description ?? "").trim().slice(0, MAX_DESCRIPTION);
-  const status = payload.status === "PUBLISHED" ? "PUBLISHED" : "DRAFT";
-  const visibility =
-    payload.visibility === "MEMBERS" || payload.visibility === "PAID"
-      ? payload.visibility
-      : "PUBLIC";
-
-  await prisma.communityPage.update({
-    where: { id: page.id },
-    data: {
-      title,
-      slug: pageSlug,
-      description: description || null,
-      status,
-      visibility,
-      showInNav: payload.showInNav !== false,
-      blocks: blocks as unknown as object,
-    },
-  });
-
-  revalidatePage(slug, pageSlug);
-  // Die alte Adresse liegt sonst mit dem alten Inhalt im Cache.
-  if (page.slug !== pageSlug) revalidatePath(`/c/${slug}/p/${page.slug}`);
-  return { ok: true };
 }
 
 /** Seite loeschen. */
@@ -207,26 +209,27 @@ export async function deleteCommunityPageAction(
   const slug = String(fd.get("tenant") || "");
   const auth = await guard(slug);
   if ("error" in auth) return auth;
+  return withTenantContext(auth.tenant.id, async () => {
+    const id = String(fd.get("pageId") || "");
+    const page = await prisma.communityPage.findFirst({
+      where: { id, tenantId: auth.tenant.id },
+      select: { id: true, slug: true, title: true },
+    });
+    if (!page) return { error: await tErr("pageNotFound") };
 
-  const id = String(fd.get("pageId") || "");
-  const page = await prisma.communityPage.findFirst({
-    where: { id, tenantId: auth.tenant.id },
-    select: { id: true, slug: true, title: true },
+    await prisma.communityPage.delete({ where: { id: page.id } });
+    await writeAudit({
+      tenantId: auth.tenant.id,
+      actorUserId: auth.user.id,
+      action: "page.delete",
+      targetType: "CommunityPage",
+      targetId: page.id,
+      metadata: { slug: page.slug, title: page.title },
+    });
+
+    revalidatePage(slug, page.slug);
+    return { ok: true };
   });
-  if (!page) return { error: await tErr("pageNotFound") };
-
-  await prisma.communityPage.delete({ where: { id: page.id } });
-  await writeAudit({
-    tenantId: auth.tenant.id,
-    actorUserId: auth.user.id,
-    action: "page.delete",
-    targetType: "CommunityPage",
-    targetId: page.id,
-    metadata: { slug: page.slug, title: page.title },
-  });
-
-  revalidatePage(slug, page.slug);
-  return { ok: true };
 }
 
 /** Reihenfolge der Reiter setzen. Erwartet alle Kennungen in Wunschfolge. */
@@ -237,32 +240,33 @@ export async function reorderCommunityPagesAction(
   const slug = String(fd.get("tenant") || "");
   const auth = await guard(slug);
   if ("error" in auth) return auth;
+  return withTenantContext(auth.tenant.id, async () => {
+    let ids: unknown;
+    try {
+      ids = JSON.parse(String(fd.get("order") || "[]"));
+    } catch {
+      return { error: await tErr("invalidData") };
+    }
+    if (!Array.isArray(ids)) return { error: await tErr("invalidData") };
 
-  let ids: unknown;
-  try {
-    ids = JSON.parse(String(fd.get("order") || "[]"));
-  } catch {
-    return { error: await tErr("invalidData") };
-  }
-  if (!Array.isArray(ids)) return { error: await tErr("invalidData") };
+    const owned = await prisma.communityPage.findMany({
+      where: { tenantId: auth.tenant.id },
+      select: { id: true },
+    });
+    const ownedIds = new Set(owned.map((p) => p.id));
+    // Nur eigene Kennungen, und jede hoechstens einmal: eine praeparierte Liste
+    // darf keine fremde Seite anfassen und keine Position doppelt vergeben.
+    const order = [...new Set(ids.filter((i): i is string => typeof i === "string"))].filter((i) =>
+      ownedIds.has(i),
+    );
 
-  const owned = await prisma.communityPage.findMany({
-    where: { tenantId: auth.tenant.id },
-    select: { id: true },
+    await withTenantTransaction(async (tx) => {
+      for (const [index, pageId] of order.entries()) {
+        await tx.communityPage.update({ where: { id: pageId }, data: { sortOrder: index } });
+      }
+    });
+
+    revalidatePage(slug);
+    return { ok: true };
   });
-  const ownedIds = new Set(owned.map((p) => p.id));
-  // Nur eigene Kennungen, und jede hoechstens einmal: eine praeparierte Liste
-  // darf keine fremde Seite anfassen und keine Position doppelt vergeben.
-  const order = [...new Set(ids.filter((i): i is string => typeof i === "string"))].filter((i) =>
-    ownedIds.has(i),
-  );
-
-  await prisma.$transaction(
-    order.map((pageId, index) =>
-      prisma.communityPage.update({ where: { id: pageId }, data: { sortOrder: index } }),
-    ),
-  );
-
-  revalidatePage(slug);
-  return { ok: true };
 }

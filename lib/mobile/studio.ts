@@ -1,6 +1,6 @@
 import "server-only";
 import type { NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { activeRoleAtLeast } from "@/lib/tenant";
 import { excerpt } from "@/lib/utils";
 import { jsonError, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
@@ -29,8 +29,9 @@ export interface StudioContext {
 }
 
 /**
- * Bearer-Token → User, Tenant per Slug auflösen (setzt RLS-Kontext) und
- * Membership-Rolle >= minRole verlangen. Spiegelt requireTenantAdmin
+ * Bearer-Token → User, Tenant per Slug auflösen und Membership-Rolle >= minRole
+ * verlangen. Hinterlässt keinen RLS-Kontext: die Route führt ihre Abfragen in
+ * `withTenantContext(access.tenant.id, ...)` aus. Spiegelt requireTenantAdmin
  * (lib/guards.ts) für die Mobile-API; statt Redirect kommt 403 "not_authorized".
  */
 export async function requireStudioAccess(
@@ -43,20 +44,21 @@ export async function requireStudioAccess(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return { response: jsonError("not_found", "Community not found.", 404) };
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: auth.user.id } },
+  return withTenantContext(tenant.id, async () => {
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: auth.user.id } },
+    });
+    if (!membership || !activeRoleAtLeast(membership, minRole)) {
+      return {
+        response: jsonError(
+          "not_authorized",
+          `Studio access requires role ${minRole} or higher.`,
+          403,
+        ),
+      };
+    }
+    return { user: auth.user, tenant, membership, role: membership.role };
   });
-  if (!membership || !activeRoleAtLeast(membership, minRole)) {
-    return {
-      response: jsonError(
-        "not_authorized",
-        `Studio access requires role ${minRole} or higher.`,
-        403,
-      ),
-    };
-  }
-  return { user: auth.user, tenant, membership, role: membership.role };
 }
 
 // ================================================================ Posts

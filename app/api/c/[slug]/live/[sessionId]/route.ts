@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { fetchLiveMessagesSince, fetchRecentLiveMessages, insertLiveMessage } from "@/lib/live";
 import { publish, liveChannel } from "@/lib/realtime";
 import { resolveLiveAccess } from "./_resolve";
+import { withTenantContext } from "@/lib/prisma";
 
 // GET  /api/c/:slug/live/:sessionId           — latest live-chat messages
 // GET  /api/c/:slug/live/:sessionId?after=<iso>  — poll for newer ones
@@ -17,11 +18,12 @@ export async function GET(
 
   const r = await resolveLiveAccess(slug, sessionId);
   if (!r) return NextResponse.json({ error: "forbidden" }, { status: 403 });
-
-  const messages = after
-    ? await fetchLiveMessagesSince(r.community.tenant.id, r.sessionId, after)
-    : await fetchRecentLiveMessages(r.community.tenant.id, r.sessionId);
-  return NextResponse.json({ messages });
+  return withTenantContext(r.community.tenant.id, async () => {
+    const messages = after
+      ? await fetchLiveMessagesSince(r.community.tenant.id, r.sessionId, after)
+      : await fetchRecentLiveMessages(r.community.tenant.id, r.sessionId);
+    return NextResponse.json({ messages });
+  });
 }
 
 export async function POST(
@@ -40,14 +42,15 @@ export async function POST(
 
   const r = await resolveLiveAccess(slug, sessionId);
   if (!r) return NextResponse.json({ error: "forbidden" }, { status: 403 });
-
-  const message = await insertLiveMessage(
-    r.community.tenant.id,
-    r.sessionId,
-    r.community.user!.id,
-    body,
-  );
-  if (!message) return NextResponse.json({ error: "empty" }, { status: 400 });
-  await publish(liveChannel(r.community.tenant.id, r.sessionId), { message });
-  return NextResponse.json({ message });
+  return withTenantContext(r.community.tenant.id, async () => {
+    const message = await insertLiveMessage(
+      r.community.tenant.id,
+      r.sessionId,
+      r.community.user!.id,
+      body,
+    );
+    if (!message) return NextResponse.json({ error: "empty" }, { status: 400 });
+    await publish(liveChannel(r.community.tenant.id, r.sessionId), { message });
+    return NextResponse.json({ message });
+  });
 }

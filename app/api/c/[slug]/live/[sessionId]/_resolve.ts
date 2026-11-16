@@ -1,4 +1,4 @@
-import prisma, { setTenantContext } from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { getCommunityContext } from "@/lib/guards";
 import { canAccess } from "@/lib/entitlements";
 
@@ -19,20 +19,20 @@ export async function resolveLiveAccess(
 ): Promise<LiveCtx | null> {
   const community = await getCommunityContext(slug);
   if (!community || !community.user) return null;
-  setTenantContext(community.tenant.id);
-
-  const session = await prisma.liveSession.findFirst({
-    where: { id: sessionId, tenantId: community.tenant.id },
-    include: { space: true },
+  return withTenantContext(community.tenant.id, async () => {
+    const session = await prisma.liveSession.findFirst({
+      where: { id: sessionId, tenantId: community.tenant.id },
+      include: { space: true },
+    });
+    if (!session || !session.space) return null;
+    if (!canAccess(session.space, community.ctx)) return null;
+    if (
+      session.requiredEntitlementKey &&
+      !community.ctx.isStaff &&
+      !community.ctx.keys.has(session.requiredEntitlementKey)
+    ) {
+      return null;
+    }
+    return { community, sessionId: session.id, spaceId: session.spaceId! };
   });
-  if (!session || !session.space) return null;
-  if (!canAccess(session.space, community.ctx)) return null;
-  if (
-    session.requiredEntitlementKey &&
-    !community.ctx.isStaff &&
-    !community.ctx.keys.has(session.requiredEntitlementKey)
-  ) {
-    return null;
-  }
-  return { community, sessionId: session.id, spaceId: session.spaceId! };
 }

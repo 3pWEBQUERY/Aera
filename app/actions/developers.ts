@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { featureBlocked } from "@/lib/plan";
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { requireTenantAdmin } from "@/lib/guards";
 import { createApiKey, revokeApiKey } from "@/lib/api-keys";
 import {
@@ -34,43 +34,47 @@ export async function createApiKeyAction(
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-  // Package gate — a downgraded client keeps working Server Action ids.
-  const planBlocked = await featureBlocked(tenant.id, "developers");
-  if (planBlocked) return { error: planBlocked };
+  return withTenantContext(tenant.id, async () => {
+    // Package gate — a downgraded client keeps working Server Action ids.
+    const planBlocked = await featureBlocked(tenant.id, "developers");
+    if (planBlocked) return { error: planBlocked };
 
-  const name = String(fd.get("name") || "").trim().slice(0, 60);
-  if (name.length < 2) return { error: await tErr("keyName") };
+    const name = String(fd.get("name") || "").trim().slice(0, 60);
+    if (name.length < 2) return { error: await tErr("keyName") };
 
-  const active = await prisma.apiKey.count({
-    where: { tenantId: tenant.id, revokedAt: null },
+    const active = await prisma.apiKey.count({
+      where: { tenantId: tenant.id, revokedAt: null },
+    });
+    if (active >= MAX_KEYS) {
+      return { error: await tErr("maxKeys", { max: MAX_KEYS }) };
+    }
+
+    const created = await createApiKey(tenant.id, name);
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "apikey.create",
+      metadata: { name },
+    });
+    revalidatePath(`/dashboard/${slug}/developers`);
+    return { ok: true, createdKey: created.key };
   });
-  if (active >= MAX_KEYS) {
-    return { error: await tErr("maxKeys", { max: MAX_KEYS }) };
-  }
-
-  const created = await createApiKey(tenant.id, name);
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "apikey.create",
-    metadata: { name },
-  });
-  revalidatePath(`/dashboard/${slug}/developers`);
-  return { ok: true, createdKey: created.key };
 }
 
 export async function revokeApiKeyAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-  await revokeApiKey(tenant.id, id);
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "apikey.revoke",
-    metadata: { id },
+  return withTenantContext(tenant.id, async () => {
+    await revokeApiKey(tenant.id, id);
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "apikey.revoke",
+      metadata: { id },
+    });
+    revalidatePath(`/dashboard/${slug}/developers`);
   });
-  revalidatePath(`/dashboard/${slug}/developers`);
 }
 
 // ------------------------------------------------------------- Webhooks
@@ -80,81 +84,87 @@ export async function createWebhookEndpointAction(
 ): Promise<DeveloperState> {
   const slug = String(fd.get("tenant"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-  // Package gate — a downgraded client keeps working Server Action ids.
-  const planBlocked = await featureBlocked(tenant.id, "developers");
-  if (planBlocked) return { error: planBlocked };
+  return withTenantContext(tenant.id, async () => {
+    // Package gate — a downgraded client keeps working Server Action ids.
+    const planBlocked = await featureBlocked(tenant.id, "developers");
+    if (planBlocked) return { error: planBlocked };
 
-  const url = String(fd.get("url") || "").trim();
-  const checked = await validateWebhookUrl(url, {
-    allowHttp: process.env.NODE_ENV !== "production",
-  });
-  if (!checked.ok) {
-    if (checked.error === "HTTPS is required") return { error: await tErr("webhookHttps") };
-    return { error: await tErr("validUrl") };
-  }
-  if (!checked.url.startsWith("https:") && process.env.NODE_ENV === "production") {
-    return { error: await tErr("webhookHttps") };
-  }
+    const url = String(fd.get("url") || "").trim();
+    const checked = await validateWebhookUrl(url, {
+      allowHttp: process.env.NODE_ENV !== "production",
+    });
+    if (!checked.ok) {
+      if (checked.error === "HTTPS is required") return { error: await tErr("webhookHttps") };
+      return { error: await tErr("validUrl") };
+    }
+    if (!checked.url.startsWith("https:") && process.env.NODE_ENV === "production") {
+      return { error: await tErr("webhookHttps") };
+    }
 
-  const events = WEBHOOK_EVENTS.filter((e) => fd.get(`event:${e}`) === "on");
-  if (events.length === 0) {
-    return { error: await tErr("chooseEvent") };
-  }
+    const events = WEBHOOK_EVENTS.filter((e) => fd.get(`event:${e}`) === "on");
+    if (events.length === 0) {
+      return { error: await tErr("chooseEvent") };
+    }
 
-  const count = await prisma.webhookEndpoint.count({
-    where: { tenantId: tenant.id },
-  });
-  if (count >= MAX_ENDPOINTS) {
-    return { error: await tErr("maxEndpoints", { max: MAX_ENDPOINTS }) };
-  }
+    const count = await prisma.webhookEndpoint.count({
+      where: { tenantId: tenant.id },
+    });
+    if (count >= MAX_ENDPOINTS) {
+      return { error: await tErr("maxEndpoints", { max: MAX_ENDPOINTS }) };
+    }
 
-  const secret = generateWebhookSecret();
-  await prisma.webhookEndpoint.create({
-    data: {
+    const secret = generateWebhookSecret();
+    await prisma.webhookEndpoint.create({
+      data: {
+        tenantId: tenant.id,
+        url: checked.url,
+        secret: encryptSecret(secret),
+        events: events as WebhookEventType[],
+      },
+    });
+    await writeAudit({
       tenantId: tenant.id,
-      url: checked.url,
-      secret: encryptSecret(secret),
-      events: events as WebhookEventType[],
-    },
+      actorUserId: user.id,
+      action: "webhook.create",
+      metadata: { url: checked.url },
+    });
+    revalidatePath(`/dashboard/${slug}/developers`);
+    return { ok: true, createdWebhookSecret: secret };
   });
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "webhook.create",
-    metadata: { url: checked.url },
-  });
-  revalidatePath(`/dashboard/${slug}/developers`);
-  return { ok: true, createdWebhookSecret: secret };
 }
 
 export async function toggleWebhookEndpointAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
   const { tenant } = await requireTenantAdmin(slug, "OWNER");
-  const ep = await prisma.webhookEndpoint.findFirst({
-    where: { id, tenantId: tenant.id },
-  });
-  if (ep) {
-    await prisma.webhookEndpoint.update({
-      where: { id: ep.id },
-      data: { isActive: !ep.isActive },
+  return withTenantContext(tenant.id, async () => {
+    const ep = await prisma.webhookEndpoint.findFirst({
+      where: { id, tenantId: tenant.id },
     });
-  }
-  revalidatePath(`/dashboard/${slug}/developers`);
+    if (ep) {
+      await prisma.webhookEndpoint.update({
+        where: { id: ep.id },
+        data: { isActive: !ep.isActive },
+      });
+    }
+    revalidatePath(`/dashboard/${slug}/developers`);
+  });
 }
 
 export async function deleteWebhookEndpointAction(fd: FormData): Promise<void> {
   const slug = String(fd.get("tenant"));
   const id = String(fd.get("id"));
   const { tenant, user } = await requireTenantAdmin(slug, "OWNER");
-  await prisma.webhookEndpoint.deleteMany({
-    where: { id, tenantId: tenant.id },
+  return withTenantContext(tenant.id, async () => {
+    await prisma.webhookEndpoint.deleteMany({
+      where: { id, tenantId: tenant.id },
+    });
+    await writeAudit({
+      tenantId: tenant.id,
+      actorUserId: user.id,
+      action: "webhook.delete",
+      metadata: { id },
+    });
+    revalidatePath(`/dashboard/${slug}/developers`);
   });
-  await writeAudit({
-    tenantId: tenant.id,
-    actorUserId: user.id,
-    action: "webhook.delete",
-    metadata: { id },
-  });
-  revalidatePath(`/dashboard/${slug}/developers`);
 }

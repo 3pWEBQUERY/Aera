@@ -1,4 +1,4 @@
-import prisma from "@/lib/prisma";
+import prisma, { withTenantContext } from "@/lib/prisma";
 import { awardPoints } from "@/lib/gamification";
 import { isLessonUnlocked } from "@/lib/drip";
 import { roleAtLeast } from "@/lib/tenant";
@@ -20,55 +20,56 @@ export async function POST(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
+  return withTenantContext(tenant.id, async () => {
+    const lesson = await prisma.lesson.findFirst({
+      where: { id: lessonId, tenantId: tenant.id },
+    });
+    if (!lesson) return jsonError("not_found", "Lesson not found.", 404);
 
-  const lesson = await prisma.lesson.findFirst({
-    where: { id: lessonId, tenantId: tenant.id },
-  });
-  if (!lesson) return jsonError("not_found", "Lesson not found.", 404);
-
-  const membership = await prisma.membership.findUnique({
-    where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
-  });
-  if (membership?.status !== "ACTIVE") {
-    return jsonError("not_member", "Active membership required.", 403);
-  }
-  const isStaff = roleAtLeast(membership.role, "MODERATOR");
-
-  // Drip-Content serverseitig durchsetzen (Staff ausgenommen).
-  if (lesson.dripAfterDays && lesson.dripAfterDays > 0) {
-    if (!isStaff && !isLessonUnlocked(membership.joinedAt, lesson.dripAfterDays)) {
-      return jsonError("payment_required", "This lesson is not unlocked yet.", 403);
+    const membership = await prisma.membership.findUnique({
+      where: { tenantId_userId: { tenantId: tenant.id, userId: user.id } },
+    });
+    if (membership?.status !== "ACTIVE") {
+      return jsonError("not_member", "Active membership required.", 403);
     }
-  }
+    const isStaff = roleAtLeast(membership.role, "MODERATOR");
 
-  const existing = await prisma.lessonProgress.findUnique({
-    where: { lessonId_userId: { lessonId, userId: user.id } },
-  });
-  if (!existing) {
-    await prisma.lessonProgress.create({
-      data: { tenantId: tenant.id, lessonId, userId: user.id },
-    });
-    await awardPoints({
-      tenantId: tenant.id,
-      userId: user.id,
-      trigger: "LESSON_COMPLETED",
-      refType: "Lesson",
-      refId: lessonId,
-    });
-  }
+    // Drip-Content serverseitig durchsetzen (Staff ausgenommen).
+    if (lesson.dripAfterDays && lesson.dripAfterDays > 0) {
+      if (!isStaff && !isLessonUnlocked(membership.joinedAt, lesson.dripAfterDays)) {
+        return jsonError("payment_required", "This lesson is not unlocked yet.", 403);
+      }
+    }
 
-  // Kurs-Fortschritt nach dem Abschluss.
-  const lessonIds = (
-    await prisma.lesson.findMany({
-      where: { tenantId: tenant.id, courseId: lesson.courseId },
-      select: { id: true },
-    })
-  ).map((l) => l.id);
-  const completed = await prisma.lessonProgress.count({
-    where: { tenantId: tenant.id, userId: user.id, lessonId: { in: lessonIds } },
-  });
-  return jsonOk({
-    completed: true,
-    progress: { completed, total: lessonIds.length },
+    const existing = await prisma.lessonProgress.findUnique({
+      where: { lessonId_userId: { lessonId, userId: user.id } },
+    });
+    if (!existing) {
+      await prisma.lessonProgress.create({
+        data: { tenantId: tenant.id, lessonId, userId: user.id },
+      });
+      await awardPoints({
+        tenantId: tenant.id,
+        userId: user.id,
+        trigger: "LESSON_COMPLETED",
+        refType: "Lesson",
+        refId: lessonId,
+      });
+    }
+
+    // Kurs-Fortschritt nach dem Abschluss.
+    const lessonIds = (
+      await prisma.lesson.findMany({
+        where: { tenantId: tenant.id, courseId: lesson.courseId },
+        select: { id: true },
+      })
+    ).map((l) => l.id);
+    const completed = await prisma.lessonProgress.count({
+      where: { tenantId: tenant.id, userId: user.id, lessonId: { in: lessonIds } },
+    });
+    return jsonOk({
+      completed: true,
+      progress: { completed, total: lessonIds.length },
+    });
   });
 }

@@ -7,6 +7,7 @@ import {
   setArchived,
   deleteConversation,
 } from "@/lib/assistant";
+import { withTenantContext } from "@/lib/prisma";
 
 // GET  /api/dashboard/assistant/conversations?slug=&kind=CHAT|IMAGE  → list
 export async function GET(req: Request) {
@@ -16,8 +17,10 @@ export async function GET(req: Request) {
   const kindParam = url.searchParams.get("kind");
   const kind = kindParam === "IMAGE" ? "IMAGE" : kindParam === "CHAT" ? "CHAT" : undefined;
   const { tenant, user } = await requireTenantAdmin(slug);
-  const conversations = await listConversations(tenant.id, user.id, kind);
-  return NextResponse.json({ conversations });
+  return withTenantContext(tenant.id, async () => {
+    const conversations = await listConversations(tenant.id, user.id, kind);
+    return NextResponse.json({ conversations });
+  });
 }
 
 // POST { slug, action: "get"|"rename"|"archive"|"unarchive"|"delete", id, title? }
@@ -36,26 +39,27 @@ export async function POST(req: Request) {
   }
 
   const { tenant, user } = await requireTenantAdmin(slug);
-
-  switch (action) {
-    case "get": {
-      const conversation = await getConversation(tenant.id, user.id, id);
-      if (!conversation) return NextResponse.json({ error: "not found" }, { status: 404 });
-      return NextResponse.json({ conversation });
+  return withTenantContext(tenant.id, async () => {
+    switch (action) {
+      case "get": {
+        const conversation = await getConversation(tenant.id, user.id, id);
+        if (!conversation) return NextResponse.json({ error: "not found" }, { status: 404 });
+        return NextResponse.json({ conversation });
+      }
+      case "rename":
+        await renameConversation(tenant.id, user.id, id, String(body.title ?? ""));
+        return NextResponse.json({ ok: true });
+      case "archive":
+        await setArchived(tenant.id, user.id, id, true);
+        return NextResponse.json({ ok: true });
+      case "unarchive":
+        await setArchived(tenant.id, user.id, id, false);
+        return NextResponse.json({ ok: true });
+      case "delete":
+        await deleteConversation(tenant.id, user.id, id);
+        return NextResponse.json({ ok: true });
+      default:
+        return NextResponse.json({ error: "unknown action" }, { status: 400 });
     }
-    case "rename":
-      await renameConversation(tenant.id, user.id, id, String(body.title ?? ""));
-      return NextResponse.json({ ok: true });
-    case "archive":
-      await setArchived(tenant.id, user.id, id, true);
-      return NextResponse.json({ ok: true });
-    case "unarchive":
-      await setArchived(tenant.id, user.id, id, false);
-      return NextResponse.json({ ok: true });
-    case "delete":
-      await deleteConversation(tenant.id, user.id, id);
-      return NextResponse.json({ ok: true });
-    default:
-      return NextResponse.json({ error: "unknown action" }, { status: 400 });
-  }
+  });
 }

@@ -1,5 +1,6 @@
 import { jsonError, jsonOk, requireMobileAuth, resolveTenant } from "@/lib/mobile/api";
 import { buildViewerContext, conversationDtos } from "@/lib/mobile/serializers";
+import { withTenantContext } from "@/lib/prisma";
 
 // GET /api/mobile/v1/c/{slug}/chat → { conversations: Conversation[] }
 // Zugängliche Gruppen-Chats (CHAT-Spaces, Gate wie resolveChatAccess) + DMs.
@@ -14,7 +15,8 @@ export async function GET(
 
   const tenant = await resolveTenant(slug);
   if (!tenant) return jsonError("not_found", "Community not found.", 404);
-
-  const { ctx } = await buildViewerContext(tenant, auth.user);
-  return jsonOk({ conversations: await conversationDtos(tenant, ctx, auth.user) });
+  return withTenantContext(tenant.id, async () => {
+    const { ctx } = await buildViewerContext(tenant, auth.user);
+    return jsonOk({ conversations: await conversationDtos(tenant, ctx, auth.user) });
+  });
 }
