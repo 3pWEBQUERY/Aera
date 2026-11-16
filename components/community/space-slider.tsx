@@ -10,18 +10,21 @@ export interface SpaceCardData {
   slug: string;
   name: string;
   icon: IconName;
-  /** Category label shown big on the tile, e.g. "Galerie" or "Videos". */
+  /** Space-Typ, z. B. "Galerie" oder "Videos" (steckt auch in `meta`). */
   category: string;
-  /** Small line under the category, e.g. "Backstage · 12 Posts". */
+  /** Kleine Zeile unter dem Namen, z. B. "Galerie · 12 Beiträge". */
   meta: string;
   locked: boolean;
+  /** Was die Sperre verlangt: „Nur Mitglieder“ oder der Name der Mitgliedschaft. */
+  lockLabel?: string | null;
 }
 
 /** Poster palette — same muted tones as the landing-page space marquee. */
 const TILE_TONES = [
   "bg-[#ece7dc] text-[#161613]",
   "bg-[#21372b] text-[#ece7dc]",
-  "bg-[#c8553a] text-[#f7f1e8]",
+  // Etwas dunkler als das Landing-Rot, damit auch die kleine Zeile 4,5:1 hält.
+  "bg-[#b14a31] text-[#f7f1e8]",
   "bg-[#1c1c19] text-[#ece7dc]",
   "bg-[#d8d1f0] text-[#241458]",
 ];
@@ -36,6 +39,7 @@ function SpaceCard({
   tone: string;
 }) {
   const t = useTranslations("community.render.spaceCard");
+  const lockText = space.lockLabel ?? t("locked");
   return (
     <Link
       href={`/c/${slug}/s/${space.slug}`}
@@ -45,28 +49,17 @@ function SpaceCard({
       )}
     >
       <div className="flex items-start justify-between gap-3">
-        <span className="text-[11px] font-bold uppercase tracking-[0.18em] opacity-80">
-          {t("space")}
-        </span>
-        {space.locked ? (
-          <span className="inline-flex items-center gap-1 rounded-full bg-black/20 px-2 py-0.5 text-[11px] font-semibold">
-            <Icon name="lock" size={11} /> {t("locked")}
+        <Icon name={space.icon} size={18} className="shrink-0" />
+        {space.locked && (
+          <span className="inline-flex min-w-0 items-center gap-1 rounded-full bg-black/25 px-2 py-0.5 text-[11px] font-semibold">
+            <Icon name="lock" size={11} className="shrink-0" />
+            <span className="truncate">{lockText}</span>
           </span>
-        ) : (
-          <Icon
-            name={space.icon}
-            size={18}
-            className="opacity-50 transition group-hover:opacity-90"
-          />
         )}
       </div>
       <div className="min-w-0">
-        <p className="display-serif truncate text-3xl leading-none">
-          {space.category}
-        </p>
-        <p className="mt-2 truncate text-sm font-medium opacity-70">
-          {space.meta}
-        </p>
+        <p className="display-serif truncate text-3xl leading-none">{space.name}</p>
+        {space.meta && <p className="mt-2 truncate text-sm font-medium">{space.meta}</p>}
       </div>
     </Link>
   );

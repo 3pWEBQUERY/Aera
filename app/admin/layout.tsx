@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { requirePlatformAdmin } from "@/lib/guards";
 import { AdminNav } from "@/components/admin/admin-nav";
+import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { staffUnreadCount } from "@/lib/support";
 import { Avatar } from "@/components/ui/misc";
 
@@ -56,6 +57,11 @@ export default async function AdminLayout({
 
       {/* Content */}
       <main className="min-w-0 flex-1">
+        {/* Unter md ist die Seitenleiste ausgeblendet: Kopfzeile mit Menue. */}
+        <AdminMobileNav
+          badges={{ support }}
+          admin={{ name: admin.name, avatarUrl: admin.avatarUrl }}
+        />
         <div className="mx-auto max-w-6xl px-4 py-7 sm:px-6">{children}</div>
       </main>
     </div>

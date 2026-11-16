@@ -314,16 +314,49 @@ export default async function CommunityHome({
   const showUpsell = !!cheapestPaidTier && !ctx.hasPaidEntitlement && !ctx.isStaff;
 
   // Serializable card data for the "Entdecken" slider (client component).
+  // Gesperrte Spaces sagen, was fehlt: „Nur Mitglieder“ (kostenlos) oder der
+  // Name der nötigen Mitgliedschaft — nicht für beides dasselbe „Gesperrt“.
+  const tSpaceCard = await getTranslations("community.render.spaceCard");
+  const needsTierName = spaces.some(
+    (s) => !canAccess(s, ctx) && (s.requiredEntitlementKey || s.visibility === "PAID"),
+  );
+  const lockTiers = needsTierName
+    ? await prisma.membershipTier.findMany({
+        where: { tenantId: tenant.id },
+        orderBy: { priceCents: "asc" },
+        select: { name: true, entitlementKey: true, priceCents: true, isPublic: true },
+      })
+    : [];
+  const lockLabelFor = (s: (typeof spaces)[number]): string | null => {
+    if (canAccess(s, ctx)) return null;
+    if (s.requiredEntitlementKey) {
+      return (
+        lockTiers.find((x) => x.entitlementKey === s.requiredEntitlementKey)?.name ??
+        tSpaceCard("membersOnly")
+      );
+    }
+    if (s.visibility === "PAID") {
+      return (
+        lockTiers.find((x) => x.priceCents > 0 && x.isPublic)?.name ?? tSpaceCard("paidOnly")
+      );
+    }
+    return tSpaceCard("membersOnly");
+  };
   const spaceCards: SpaceCardData[] = spaces.map((s) => {
     const posts = s._count.posts;
+    const typeLabel = tTypes.has(s.type) ? tTypes(s.type) : s.type;
+    const postsLabel = posts > 0 ? t("postsCount", { count: posts }) : null;
+    // Name groß, darunter Typ und Anzahl — ohne Dopplung, wenn der Space
+    // genauso heißt wie sein Typ („Events“ · „Events“).
+    const sameAsType = s.name.trim().toLowerCase() === typeLabel.trim().toLowerCase();
     return {
       slug: s.slug,
       name: s.name,
       icon: spaceTypeIcon(s.type),
-      // Big serif word on the tile = the category, like the landing marquee.
-      category: tTypes.has(s.type) ? tTypes(s.type) : s.type,
-      meta: `${s.name}${posts > 0 ? ` · ${t("postsCount", { count: nf.format(posts) })}` : ""}`,
+      category: typeLabel,
+      meta: [sameAsType ? null : typeLabel, postsLabel].filter(Boolean).join(" · "),
       locked: !canAccess(s, ctx),
+      lockLabel: lockLabelFor(s),
     };
   });
 
@@ -592,12 +625,18 @@ export default async function CommunityHome({
                 className="group flex items-center gap-3 px-5 py-3 outline-none transition-colors hover:bg-[#161613]/[0.03] focus-visible:bg-[#161613]/[0.03]"
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#161613]/5 text-[#161613]/65 transition-colors group-hover:bg-[var(--brand-soft)] group-hover:text-[color:var(--brand)]">
-                  <Icon name={recTypeIcon[r.type] ?? "sparkles"} size={18} />
+                  <Icon name={r.locked ? "lock" : (recTypeIcon[r.type] ?? "sparkles")} size={18} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <span className="inline-flex items-center rounded-full bg-[#161613]/5 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-[0.1em] text-[#161613]/65">
                     {tRec.has(r.type) ? tRec(r.type) : r.type}
                   </span>
+                  {r.locked && (
+                    <span className="ml-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-[#161613]/70">
+                      <Icon name="lock" size={11} />
+                      {tPostTile("locked")}
+                    </span>
+                  )}
                   <p className="mt-1 truncate text-sm font-semibold text-[#161613]">{r.title}</p>
                   <p className="truncate text-xs text-[#161613]/65">
                     {tReason.has(r.reason) ? tReason(r.reason) : r.reason}

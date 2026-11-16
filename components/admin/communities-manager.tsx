@@ -117,7 +117,7 @@ export function CommunitiesManager({
         </div>
         <div className="grid grid-cols-2 gap-3 sm:flex sm:items-end">
           <div className="min-w-0 sm:w-44">
-            <Label htmlFor="ac-status">{t("filterStatus")}</Label>
+            <Label htmlFor="ac-status">{t("status")}</Label>
             <Select id="ac-status" name="status" defaultValue={status}>
               <option value="">{t("filterAll")}</option>
               <option value="ACTIVE">{t("statusActive")}</option>
@@ -315,6 +315,7 @@ function EditForm({
   const [confirmSlug, setConfirmSlug] = useState("");
   const [deleteError, setDeleteError] = useState<string>();
   const t = useTranslations("admin.communities");
+  const locale = useLocale();
   const [confirm, confirmDialog] = useConfirm();
   const confirmSubmit = useConfirmedSubmit(confirm);
   const tc = useTranslations("admin");
@@ -322,6 +323,10 @@ function EditForm({
   useEffect(() => {
     if (state.ok) onDone();
   }, [state.ok, onDone]);
+  // Fehler am Feld: dorthin springen, damit man ihn nicht unten im Sheet sucht.
+  useEffect(() => {
+    if (domainError) document.getElementById("at-domain")?.focus();
+  }, [domainError, state]);
 
   const formId = "admin-tenant-edit";
 

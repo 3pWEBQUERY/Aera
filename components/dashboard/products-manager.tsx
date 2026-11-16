@@ -472,7 +472,11 @@ function ProductForm({
 
           {type === "COURSE_ACCESS" && (
             <div>
-              <Label htmlFor="pf-course">{t("courseLabel")}</Label>
+              {sellableCourses.length > 0 ? (
+                <Label htmlFor="pf-course">{t("courseLabel")}</Label>
+              ) : (
+                <p className="mb-1.5 text-sm font-medium text-slate-700">{t("courseLabel")}</p>
+              )}
               {sellableCourses.length === 0 ? (
                 <p className="rounded-xl bg-slate-50 px-4 py-3 text-sm text-slate-600">
                   {t("noCourses")}{" "}

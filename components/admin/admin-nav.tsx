@@ -32,7 +32,7 @@ export function AdminNav({ badges = {} }: { badges?: Record<string, number> }) {
   const pathname = usePathname();
   const t = useTranslations("admin.nav");
   return (
-    <nav className="space-y-1">
+    <nav aria-label={t("ariaLabel")} className="space-y-1">
       {items.map((item) => {
         const active = item.exact
           ? pathname === item.href
